@@ -784,7 +784,8 @@ const _: fn() = || {
     }
     {
         let FirmwareChunk = None::<foundation_api::api::firmware::FirmwareChunk>.unwrap();
-        let _: u16 = FirmwareChunk.index;
+        let _: u8 = FirmwareChunk.diff_index;
+        let _: u16 = FirmwareChunk.chunk_index;
         let _: Vec<u8> = FirmwareChunk.data;
     }
     {
@@ -798,7 +799,11 @@ const _: fn() = || {
         } => {
             let _: f32 = progress;
         }
-        foundation_api::api::firmware::FirmwareDownloadResponse::Start { total_chunks } => {
+        foundation_api::api::firmware::FirmwareDownloadResponse::Start {
+            diff_index,
+            total_chunks,
+        } => {
+            let _: u8 = diff_index;
             let _: u16 = total_chunks;
         }
         foundation_api::api::firmware::FirmwareDownloadResponse::Chunk(field0) => {
@@ -815,6 +820,7 @@ const _: fn() = || {
         let _: String = FirmwareUpdateAvailable.changelog;
         let _: u32 = FirmwareUpdateAvailable.timestamp;
         let _: u32 = FirmwareUpdateAvailable.size;
+        let _: u8 = FirmwareUpdateAvailable.diff_count;
     }
     {
         let FirmwareUpdateCheckRequest =
@@ -1234,10 +1240,12 @@ impl SseDecode for f64 {
 impl SseDecode for foundation_api::api::firmware::FirmwareChunk {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_index = <u16>::sse_decode(deserializer);
+        let mut var_diffIndex = <u8>::sse_decode(deserializer);
+        let mut var_chunkIndex = <u16>::sse_decode(deserializer);
         let mut var_data = <Vec<u8>>::sse_decode(deserializer);
         return foundation_api::api::firmware::FirmwareChunk {
-            index: var_index,
+            diff_index: var_diffIndex,
+            chunk_index: var_chunkIndex,
             data: var_data,
         };
     }
@@ -1263,8 +1271,10 @@ impl SseDecode for foundation_api::api::firmware::FirmwareDownloadResponse {
                 return foundation_api::api::firmware::FirmwareDownloadResponse::EnvoyDownloadProgress{progress: var_progress};
             }
             1 => {
+                let mut var_diffIndex = <u8>::sse_decode(deserializer);
                 let mut var_totalChunks = <u16>::sse_decode(deserializer);
                 return foundation_api::api::firmware::FirmwareDownloadResponse::Start {
+                    diff_index: var_diffIndex,
                     total_chunks: var_totalChunks,
                 };
             }
@@ -1291,11 +1301,13 @@ impl SseDecode for foundation_api::api::firmware::FirmwareUpdateAvailable {
         let mut var_changelog = <String>::sse_decode(deserializer);
         let mut var_timestamp = <u32>::sse_decode(deserializer);
         let mut var_size = <u32>::sse_decode(deserializer);
+        let mut var_diffCount = <u8>::sse_decode(deserializer);
         return foundation_api::api::firmware::FirmwareUpdateAvailable {
             version: var_version,
             changelog: var_changelog,
             timestamp: var_timestamp,
             size: var_size,
+            diff_count: var_diffCount,
         };
     }
 }
@@ -2164,7 +2176,8 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::fx::Excha
 impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::firmware::FirmwareChunk> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
-            self.0.index.into_into_dart().into_dart(),
+            self.0.diff_index.into_into_dart().into_dart(),
+            self.0.chunk_index.into_into_dart().into_dart(),
             self.0.data.into_into_dart().into_dart(),
         ]
         .into_dart()
@@ -2211,9 +2224,15 @@ impl flutter_rust_bridge::IntoDart
             foundation_api::api::firmware::FirmwareDownloadResponse::EnvoyDownloadProgress {
                 progress,
             } => [0.into_dart(), progress.into_into_dart().into_dart()].into_dart(),
-            foundation_api::api::firmware::FirmwareDownloadResponse::Start { total_chunks } => {
-                [1.into_dart(), total_chunks.into_into_dart().into_dart()].into_dart()
-            }
+            foundation_api::api::firmware::FirmwareDownloadResponse::Start {
+                diff_index,
+                total_chunks,
+            } => [
+                1.into_dart(),
+                diff_index.into_into_dart().into_dart(),
+                total_chunks.into_into_dart().into_dart(),
+            ]
+            .into_dart(),
             foundation_api::api::firmware::FirmwareDownloadResponse::Chunk(field0) => {
                 [2.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
@@ -2249,6 +2268,7 @@ impl flutter_rust_bridge::IntoDart
             self.0.changelog.into_into_dart().into_dart(),
             self.0.timestamp.into_into_dart().into_dart(),
             self.0.size.into_into_dart().into_dart(),
+            self.0.diff_count.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -3028,7 +3048,8 @@ impl SseEncode for f64 {
 impl SseEncode for foundation_api::api::firmware::FirmwareChunk {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <u16>::sse_encode(self.index, serializer);
+        <u8>::sse_encode(self.diff_index, serializer);
+        <u16>::sse_encode(self.chunk_index, serializer);
         <Vec<u8>>::sse_encode(self.data, serializer);
     }
 }
@@ -3050,8 +3071,12 @@ impl SseEncode for foundation_api::api::firmware::FirmwareDownloadResponse {
                 <i32>::sse_encode(0, serializer);
                 <f32>::sse_encode(progress, serializer);
             }
-            foundation_api::api::firmware::FirmwareDownloadResponse::Start { total_chunks } => {
+            foundation_api::api::firmware::FirmwareDownloadResponse::Start {
+                diff_index,
+                total_chunks,
+            } => {
                 <i32>::sse_encode(1, serializer);
+                <u8>::sse_encode(diff_index, serializer);
                 <u16>::sse_encode(total_chunks, serializer);
             }
             foundation_api::api::firmware::FirmwareDownloadResponse::Chunk(field0) => {
@@ -3076,6 +3101,7 @@ impl SseEncode for foundation_api::api::firmware::FirmwareUpdateAvailable {
         <String>::sse_encode(self.changelog, serializer);
         <u32>::sse_encode(self.timestamp, serializer);
         <u32>::sse_encode(self.size, serializer);
+        <u8>::sse_encode(self.diff_count, serializer);
     }
 }
 

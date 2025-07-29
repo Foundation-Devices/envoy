@@ -324,7 +324,8 @@ class BluetoothManager {
     );
 
     // TODO: split this into chunks
-    final chunk = api.FirmwareChunk(index: 0, data: randomBytes);
+    final chunk =
+        api.FirmwareChunk(diffIndex: 0, chunkIndex: 0, data: randomBytes);
 
     writeMessage(api.QuantumLinkMessage.firmwareDownloadResponse(
         api.FirmwareDownloadResponse.chunk(chunk)));
@@ -408,13 +409,12 @@ class BluetoothManager {
     // Create dummy firmware update metadata
     final dummyUpdate = api.QuantumLinkMessage.firmwareUpdateCheckResponse(
         api.FirmwareUpdateCheckResponse.available(api.FirmwareUpdateAvailable(
-      version: 'v1.2.3-test',
-      timestamp: DateTime.now().millisecondsSinceEpoch,
-      size: 100,
-      changelog:
-          '• Fixed minor bugs\n• Improved performance\n• Added test logging',
-    )));
-
+            version: 'v1.2.3-test',
+            timestamp: DateTime.now().millisecondsSinceEpoch,
+            size: 100,
+            changelog:
+                '• Fixed minor bugs\n• Improved performance\n• Added test logging',
+            diffCount: 1)));
 
     writeMessage(dummyUpdate);
   }

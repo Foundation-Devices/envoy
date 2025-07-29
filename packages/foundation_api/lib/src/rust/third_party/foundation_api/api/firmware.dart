@@ -9,23 +9,26 @@ import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'firmware.freezed.dart';
 
 class FirmwareChunk {
-  final int index;
+  final int diffIndex;
+  final int chunkIndex;
   final Uint8List data;
 
   const FirmwareChunk({
-    required this.index,
+    required this.diffIndex,
+    required this.chunkIndex,
     required this.data,
   });
 
   @override
-  int get hashCode => index.hashCode ^ data.hashCode;
+  int get hashCode => diffIndex.hashCode ^ chunkIndex.hashCode ^ data.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is FirmwareChunk &&
           runtimeType == other.runtimeType &&
-          index == other.index &&
+          diffIndex == other.diffIndex &&
+          chunkIndex == other.chunkIndex &&
           data == other.data;
 }
 
@@ -55,6 +58,7 @@ sealed class FirmwareDownloadResponse with _$FirmwareDownloadResponse {
     required double progress,
   }) = FirmwareDownloadResponse_EnvoyDownloadProgress;
   const factory FirmwareDownloadResponse.start({
+    required int diffIndex,
     required int totalChunks,
   }) = FirmwareDownloadResponse_Start;
   const factory FirmwareDownloadResponse.chunk(
@@ -70,12 +74,14 @@ class FirmwareUpdateAvailable {
   final String changelog;
   final int timestamp;
   final int size;
+  final int diffCount;
 
   const FirmwareUpdateAvailable({
     required this.version,
     required this.changelog,
     required this.timestamp,
     required this.size,
+    required this.diffCount,
   });
 
   @override
@@ -83,7 +89,8 @@ class FirmwareUpdateAvailable {
       version.hashCode ^
       changelog.hashCode ^
       timestamp.hashCode ^
-      size.hashCode;
+      size.hashCode ^
+      diffCount.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -93,7 +100,8 @@ class FirmwareUpdateAvailable {
           version == other.version &&
           changelog == other.changelog &&
           timestamp == other.timestamp &&
-          size == other.size;
+          size == other.size &&
+          diffCount == other.diffCount;
 }
 
 class FirmwareUpdateCheckRequest {

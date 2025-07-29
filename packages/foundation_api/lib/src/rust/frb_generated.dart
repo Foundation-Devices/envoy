@@ -991,11 +991,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   FirmwareChunk dco_decode_firmware_chunk(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 2)
-      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
     return FirmwareChunk(
-      index: dco_decode_u_16(arr[0]),
-      data: dco_decode_list_prim_u_8_strict(arr[1]),
+      diffIndex: dco_decode_u_8(arr[0]),
+      chunkIndex: dco_decode_u_16(arr[1]),
+      data: dco_decode_list_prim_u_8_strict(arr[2]),
     );
   }
 
@@ -1020,7 +1021,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         );
       case 1:
         return FirmwareDownloadResponse_Start(
-          totalChunks: dco_decode_u_16(raw[1]),
+          diffIndex: dco_decode_u_8(raw[1]),
+          totalChunks: dco_decode_u_16(raw[2]),
         );
       case 2:
         return FirmwareDownloadResponse_Chunk(
@@ -1039,13 +1041,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   FirmwareUpdateAvailable dco_decode_firmware_update_available(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 4)
-      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
     return FirmwareUpdateAvailable(
       version: dco_decode_String(arr[0]),
       changelog: dco_decode_String(arr[1]),
       timestamp: dco_decode_u_32(arr[2]),
       size: dco_decode_u_32(arr[3]),
+      diffCount: dco_decode_u_8(arr[4]),
     );
   }
 
@@ -1860,9 +1863,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   FirmwareChunk sse_decode_firmware_chunk(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_index = sse_decode_u_16(deserializer);
+    var var_diffIndex = sse_decode_u_8(deserializer);
+    var var_chunkIndex = sse_decode_u_16(deserializer);
     var var_data = sse_decode_list_prim_u_8_strict(deserializer);
-    return FirmwareChunk(index: var_index, data: var_data);
+    return FirmwareChunk(
+        diffIndex: var_diffIndex, chunkIndex: var_chunkIndex, data: var_data);
   }
 
   @protected
@@ -1885,8 +1890,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return FirmwareDownloadResponse_EnvoyDownloadProgress(
             progress: var_progress);
       case 1:
+        var var_diffIndex = sse_decode_u_8(deserializer);
         var var_totalChunks = sse_decode_u_16(deserializer);
-        return FirmwareDownloadResponse_Start(totalChunks: var_totalChunks);
+        return FirmwareDownloadResponse_Start(
+            diffIndex: var_diffIndex, totalChunks: var_totalChunks);
       case 2:
         var var_field0 = sse_decode_box_autoadd_firmware_chunk(deserializer);
         return FirmwareDownloadResponse_Chunk(var_field0);
@@ -1906,11 +1913,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_changelog = sse_decode_String(deserializer);
     var var_timestamp = sse_decode_u_32(deserializer);
     var var_size = sse_decode_u_32(deserializer);
+    var var_diffCount = sse_decode_u_8(deserializer);
     return FirmwareUpdateAvailable(
         version: var_version,
         changelog: var_changelog,
         timestamp: var_timestamp,
-        size: var_size);
+        size: var_size,
+        diffCount: var_diffCount);
   }
 
   @protected
@@ -2693,7 +2702,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_firmware_chunk(FirmwareChunk self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_u_16(self.index, serializer);
+    sse_encode_u_8(self.diffIndex, serializer);
+    sse_encode_u_16(self.chunkIndex, serializer);
     sse_encode_list_prim_u_8_strict(self.data, serializer);
   }
 
@@ -2714,8 +2724,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         ):
         sse_encode_i_32(0, serializer);
         sse_encode_f_32(progress, serializer);
-      case FirmwareDownloadResponse_Start(totalChunks: final totalChunks):
+      case FirmwareDownloadResponse_Start(
+          diffIndex: final diffIndex,
+          totalChunks: final totalChunks
+        ):
         sse_encode_i_32(1, serializer);
+        sse_encode_u_8(diffIndex, serializer);
         sse_encode_u_16(totalChunks, serializer);
       case FirmwareDownloadResponse_Chunk(field0: final field0):
         sse_encode_i_32(2, serializer);
@@ -2734,6 +2748,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.changelog, serializer);
     sse_encode_u_32(self.timestamp, serializer);
     sse_encode_u_32(self.size, serializer);
+    sse_encode_u_8(self.diffCount, serializer);
   }
 
   @protected

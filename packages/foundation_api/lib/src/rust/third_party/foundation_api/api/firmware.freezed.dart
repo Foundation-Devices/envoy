@@ -19,7 +19,7 @@ mixin _$FirmwareDownloadResponse {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(double progress) envoyDownloadProgress,
-    required TResult Function(int totalChunks) start,
+    required TResult Function(int diffIndex, int totalChunks) start,
     required TResult Function(FirmwareChunk field0) chunk,
     required TResult Function(String field0) error,
   }) =>
@@ -27,7 +27,7 @@ mixin _$FirmwareDownloadResponse {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(double progress)? envoyDownloadProgress,
-    TResult? Function(int totalChunks)? start,
+    TResult? Function(int diffIndex, int totalChunks)? start,
     TResult? Function(FirmwareChunk field0)? chunk,
     TResult? Function(String field0)? error,
   }) =>
@@ -35,7 +35,7 @@ mixin _$FirmwareDownloadResponse {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double progress)? envoyDownloadProgress,
-    TResult Function(int totalChunks)? start,
+    TResult Function(int diffIndex, int totalChunks)? start,
     TResult Function(FirmwareChunk field0)? chunk,
     TResult Function(String field0)? error,
     required TResult orElse(),
@@ -177,7 +177,7 @@ class _$FirmwareDownloadResponse_EnvoyDownloadProgressImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(double progress) envoyDownloadProgress,
-    required TResult Function(int totalChunks) start,
+    required TResult Function(int diffIndex, int totalChunks) start,
     required TResult Function(FirmwareChunk field0) chunk,
     required TResult Function(String field0) error,
   }) {
@@ -188,7 +188,7 @@ class _$FirmwareDownloadResponse_EnvoyDownloadProgressImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(double progress)? envoyDownloadProgress,
-    TResult? Function(int totalChunks)? start,
+    TResult? Function(int diffIndex, int totalChunks)? start,
     TResult? Function(FirmwareChunk field0)? chunk,
     TResult? Function(String field0)? error,
   }) {
@@ -199,7 +199,7 @@ class _$FirmwareDownloadResponse_EnvoyDownloadProgressImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double progress)? envoyDownloadProgress,
-    TResult Function(int totalChunks)? start,
+    TResult Function(int diffIndex, int totalChunks)? start,
     TResult Function(FirmwareChunk field0)? chunk,
     TResult Function(String field0)? error,
     required TResult orElse(),
@@ -276,7 +276,7 @@ abstract class _$$FirmwareDownloadResponse_StartImplCopyWith<$Res> {
           $Res Function(_$FirmwareDownloadResponse_StartImpl) then) =
       __$$FirmwareDownloadResponse_StartImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({int totalChunks});
+  $Res call({int diffIndex, int totalChunks});
 }
 
 /// @nodoc
@@ -294,9 +294,14 @@ class __$$FirmwareDownloadResponse_StartImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? diffIndex = null,
     Object? totalChunks = null,
   }) {
     return _then(_$FirmwareDownloadResponse_StartImpl(
+      diffIndex: null == diffIndex
+          ? _value.diffIndex
+          : diffIndex // ignore: cast_nullable_to_non_nullable
+              as int,
       totalChunks: null == totalChunks
           ? _value.totalChunks
           : totalChunks // ignore: cast_nullable_to_non_nullable
@@ -309,15 +314,18 @@ class __$$FirmwareDownloadResponse_StartImplCopyWithImpl<$Res>
 
 class _$FirmwareDownloadResponse_StartImpl
     extends FirmwareDownloadResponse_Start {
-  const _$FirmwareDownloadResponse_StartImpl({required this.totalChunks})
+  const _$FirmwareDownloadResponse_StartImpl(
+      {required this.diffIndex, required this.totalChunks})
       : super._();
 
+  @override
+  final int diffIndex;
   @override
   final int totalChunks;
 
   @override
   String toString() {
-    return 'FirmwareDownloadResponse.start(totalChunks: $totalChunks)';
+    return 'FirmwareDownloadResponse.start(diffIndex: $diffIndex, totalChunks: $totalChunks)';
   }
 
   @override
@@ -325,12 +333,14 @@ class _$FirmwareDownloadResponse_StartImpl
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$FirmwareDownloadResponse_StartImpl &&
+            (identical(other.diffIndex, diffIndex) ||
+                other.diffIndex == diffIndex) &&
             (identical(other.totalChunks, totalChunks) ||
                 other.totalChunks == totalChunks));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, totalChunks);
+  int get hashCode => Object.hash(runtimeType, diffIndex, totalChunks);
 
   /// Create a copy of FirmwareDownloadResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -346,35 +356,35 @@ class _$FirmwareDownloadResponse_StartImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(double progress) envoyDownloadProgress,
-    required TResult Function(int totalChunks) start,
+    required TResult Function(int diffIndex, int totalChunks) start,
     required TResult Function(FirmwareChunk field0) chunk,
     required TResult Function(String field0) error,
   }) {
-    return start(totalChunks);
+    return start(diffIndex, totalChunks);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(double progress)? envoyDownloadProgress,
-    TResult? Function(int totalChunks)? start,
+    TResult? Function(int diffIndex, int totalChunks)? start,
     TResult? Function(FirmwareChunk field0)? chunk,
     TResult? Function(String field0)? error,
   }) {
-    return start?.call(totalChunks);
+    return start?.call(diffIndex, totalChunks);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double progress)? envoyDownloadProgress,
-    TResult Function(int totalChunks)? start,
+    TResult Function(int diffIndex, int totalChunks)? start,
     TResult Function(FirmwareChunk field0)? chunk,
     TResult Function(String field0)? error,
     required TResult orElse(),
   }) {
     if (start != null) {
-      return start(totalChunks);
+      return start(diffIndex, totalChunks);
     }
     return orElse();
   }
@@ -423,9 +433,11 @@ class _$FirmwareDownloadResponse_StartImpl
 
 abstract class FirmwareDownloadResponse_Start extends FirmwareDownloadResponse {
   const factory FirmwareDownloadResponse_Start(
-      {required final int totalChunks}) = _$FirmwareDownloadResponse_StartImpl;
+      {required final int diffIndex,
+      required final int totalChunks}) = _$FirmwareDownloadResponse_StartImpl;
   const FirmwareDownloadResponse_Start._() : super._();
 
+  int get diffIndex;
   int get totalChunks;
 
   /// Create a copy of FirmwareDownloadResponse
@@ -511,7 +523,7 @@ class _$FirmwareDownloadResponse_ChunkImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(double progress) envoyDownloadProgress,
-    required TResult Function(int totalChunks) start,
+    required TResult Function(int diffIndex, int totalChunks) start,
     required TResult Function(FirmwareChunk field0) chunk,
     required TResult Function(String field0) error,
   }) {
@@ -522,7 +534,7 @@ class _$FirmwareDownloadResponse_ChunkImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(double progress)? envoyDownloadProgress,
-    TResult? Function(int totalChunks)? start,
+    TResult? Function(int diffIndex, int totalChunks)? start,
     TResult? Function(FirmwareChunk field0)? chunk,
     TResult? Function(String field0)? error,
   }) {
@@ -533,7 +545,7 @@ class _$FirmwareDownloadResponse_ChunkImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double progress)? envoyDownloadProgress,
-    TResult Function(int totalChunks)? start,
+    TResult Function(int diffIndex, int totalChunks)? start,
     TResult Function(FirmwareChunk field0)? chunk,
     TResult Function(String field0)? error,
     required TResult orElse(),
@@ -676,7 +688,7 @@ class _$FirmwareDownloadResponse_ErrorImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(double progress) envoyDownloadProgress,
-    required TResult Function(int totalChunks) start,
+    required TResult Function(int diffIndex, int totalChunks) start,
     required TResult Function(FirmwareChunk field0) chunk,
     required TResult Function(String field0) error,
   }) {
@@ -687,7 +699,7 @@ class _$FirmwareDownloadResponse_ErrorImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(double progress)? envoyDownloadProgress,
-    TResult? Function(int totalChunks)? start,
+    TResult? Function(int diffIndex, int totalChunks)? start,
     TResult? Function(FirmwareChunk field0)? chunk,
     TResult? Function(String field0)? error,
   }) {
@@ -698,7 +710,7 @@ class _$FirmwareDownloadResponse_ErrorImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double progress)? envoyDownloadProgress,
-    TResult Function(int totalChunks)? start,
+    TResult Function(int diffIndex, int totalChunks)? start,
     TResult Function(FirmwareChunk field0)? chunk,
     TResult Function(String field0)? error,
     required TResult orElse(),
