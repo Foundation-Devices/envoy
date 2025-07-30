@@ -1091,6 +1091,56 @@ Future<void> main() async {
       signetTextAccount = find.text('Signet');
       expect(signetTextAccount, findsNothing);
     });
+    testWidgets('<Node selection>', (tester) async {
+      await goBackHome(tester);
+
+      // Go to privacy
+      await findAndPressTextButton(tester, 'Privacy');
+      // Tap Foundation (default) to open dropdown
+      await findAndPressTextButton(tester, 'Foundation (Default)');
+      // Select Personal Node
+      await findAndPressTextButton(tester, 'Personal Node');
+
+      // Check that it gets selected and the field to enter the personal node shows up
+      await findTextOnScreen(tester, "Personal Node");
+      await findTextOnScreen(tester, "Enter your node address");
+
+      //Tap Personal Node to open dropdown
+      await findAndPressTextButton(tester, 'Personal Node');
+      await tester.pump(Durations.long2);
+
+      // Select Blockstream
+      await findAndPressTextButton(tester, 'Blockstream');
+      await tester.pump(Durations.long2);
+
+      // Check that it gets selected and a connection is attempted
+      await findTextOnScreen(tester, "Blockstream");
+      await tester.pump(Durations.long2);
+
+      //Tap Block Stream to open dropdown
+      await findAndPressTextButton(tester, 'Blockstream');
+      await tester.pump(Durations.long2);
+      // Select DIYnodes
+      await findAndPressTextButton(tester, 'DIYnodes');
+      await tester.pump(Durations.long2);
+
+      // Check that it gets selected and a connection is attempted
+      await findTextOnScreen(tester, "DIYnodes");
+      await tester.pump(Durations.long2);
+
+      //Tap DIYnodes to open dropdown
+      await findAndPressTextButton(tester, 'DIYnodes');
+      await tester.pump(Durations.long2);
+
+      // Check if a connection is attempted over Personal node
+      await findAndPressTextButton(tester, 'Personal Node');
+      await tester.pump(Durations.long2);
+      await tester.pumpUntilFound(
+        find.byType(CircularProgressIndicator),
+        tries: 10,
+        duration: Durations.long1,
+      );
+    });
     testWidgets('<Enable tor and check top shield>', (tester) async {
       await goBackHome(tester);
 
