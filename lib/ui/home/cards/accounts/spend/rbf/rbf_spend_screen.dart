@@ -7,7 +7,6 @@ import 'dart:ui';
 import 'package:animations/animations.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
-import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -566,7 +565,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
 
-      final server = SyncManager.getElectrumServer(account.network);
+      final server = Settings().electrumAddress(account.network);
       int? port = Settings().getPort(account.network);
       if (port == -1) {
         port = null;

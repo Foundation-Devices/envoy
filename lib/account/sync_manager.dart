@@ -80,7 +80,7 @@ class SyncManager {
 
   //sync a single account
   void syncAccount(EnvoyAccount account) async {
-    final server = SyncManager.getElectrumServer(account.network);
+    final server = Settings().electrumAddress(account.network);
     int? port = Settings().getPort(account.network);
     if (port == -1) {
       port = null;
@@ -201,7 +201,7 @@ class SyncManager {
 
         _activeSyncOperations.add(accountKey);
 
-        final server = SyncManager.getElectrumServer(account.network);
+        final server = Settings().electrumAddress(account.network);
         int? port = Settings().getPort(account.network);
         if (port == -1) {
           port = null;
@@ -276,7 +276,7 @@ class SyncManager {
       return;
     }
     _activeFullScanOperations.add((account.id, addressType));
-    final server = SyncManager.getElectrumServer(account.network);
+    final server = Settings().electrumAddress(account.network);
     int? port = Settings().getPort(account.network);
     if (port == -1) {
       port = null;
@@ -354,32 +354,6 @@ class SyncManager {
     } finally {
       _currentLoading.sink.add(None());
     }
-  }
-
-  static String getElectrumServer(Network network) {
-    String server;
-    switch (network) {
-      case Network.bitcoin:
-        if (Settings().customElectrumEnabled()) {
-          server = Settings().selectedElectrumAddress.toString();
-        } else {
-          server = Settings.currentDefaultServer;
-        }
-        break;
-      case Network.testnet4:
-        server = Settings.TESTNET4_ELECTRUM_SERVER;
-        break;
-      case Network.testnet:
-        server = Settings.TESTNET_ELECTRUM_SERVER;
-        break;
-      case Network.signet:
-        server = Settings.SIGNET_ELECTRUM_SERVER;
-        break;
-      default:
-        server = "Unknown server";
-        break;
-    }
-    return server;
   }
 
   dispose() {
