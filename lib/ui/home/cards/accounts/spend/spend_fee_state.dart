@@ -65,7 +65,7 @@ final spendFeeRateBlockEstimationProvider =
 ///returns estimated block time for the transaction
 ///TODO: implement better mempool estimation
 final spendEstimatedBlockTimeProvider = Provider<String>((ref) {
-  final feeRate = ref.watch(spendFeeRateBlockEstimationProvider);
+  final feeRate = ref.watch(spendFeeRateProvider);
   final account = ref.watch(selectedAccountProvider);
   if (account == null) {
     return "~10";
