@@ -267,6 +267,22 @@ enum Network {
   /// Bitcoin's regtest network.
   regtest,
   ;
+
+  @override
+  String toString() {
+    switch (this) {
+      case Network.bitcoin:
+        return "mainnet";
+      case Network.testnet:
+        return "testnet";
+      case Network.testnet4:
+        return "testnet";
+      case Network.signet:
+        return "signet";
+      case Network.regtest:
+        return "regtest";
+    }
+  }
 }
 
 class ServerFeatures {

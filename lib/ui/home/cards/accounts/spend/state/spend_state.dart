@@ -256,9 +256,12 @@ void clearSpendState(ProviderContainer ref) {
     ref.read(spendAddressProvider.notifier).state = "";
     ref.read(spendAmountProvider.notifier).state = 0;
     //reset fee to default
-    ref.read(spendFeeRateProvider.notifier).state = Fees().slowRate(
-      ref.read(selectedAccountProvider)!.network,
-    );
+    if (ref.read(selectedAccountProvider) != null) {
+      ref.read(spendFeeRateProvider.notifier).state = Fees().slowRate(
+        ref.read(selectedAccountProvider)!.network,
+      );
+    }
+
     ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
     ref.read(stagingTxNoteProvider.notifier).state = null;
     ref.read(spendFeeProcessing.notifier).state = false;
@@ -269,7 +272,7 @@ void clearSpendState(ProviderContainer ref) {
     ref.read(displayFiatSendAmountProvider.notifier).state = 0;
     ref.read(coinSelectionStateProvider.notifier).reset();
     ref.read(spendTransactionProvider.notifier).reset();
-  } catch (e) {
-    kPrint("Error clearing spend state: $e");
+  } catch (e, s) {
+    kPrint("Error clearing spend state: $e", stackTrace: s);
   }
 }

@@ -74,8 +74,23 @@ impl Output {
     #[frb(sync)]
     pub fn get_id(&self) -> String {}
 }
-
-#[frb(mirror(Network))]
+#[frb(mirror(Network), dart_code="
+    @override
+  String toString() {
+    switch (this) {
+      case Network.bitcoin:
+        return \"mainnet\";
+      case Network.testnet:
+        return \"testnet\";
+      case Network.testnet4:
+        return \"testnet\";
+      case Network.signet:
+        return \"signet\";
+      case Network.regtest:
+        return \"regtest\";
+    }
+  }
+")]
 pub enum _Network {
     /// Mainnet Bitcoin.
     Bitcoin,
@@ -481,26 +496,27 @@ impl EnvoyAccountHandler {
             // Simulate a delay for the scan operation
             match NgWallet::<Connection>::scan(scan_request, electrum_server, socks_proxy) {
                 Ok(update) => Ok(Arc::new(Mutex::new(Update::from(update)))),
-                Err(er) => Err(anyhow!("Error during scan: {}", er)),
+                Err(er) => Err(anyhow!("Error during scan: {}", er.to_string())),
             }
         } else {
             Err(anyhow!("No Scan request found"))
         };
     }
 
-    pub fn apply_update(&mut self, update: Arc<Mutex<Update>>, address_type: AddressType) {
-        let scan_request_guard = update.lock().unwrap();
+    pub fn apply_update(&mut self, update: Arc<Mutex<Update>>, address_type: AddressType) -> Result<()> {
+        let scan_request_guard = update.lock().map_err(|_| anyhow!("Failed to lock update"))?;
         {
-            let mut account = self.ng_account.lock().unwrap();
+            let mut account = self.ng_account.lock().map_err(|_| anyhow!("Failed to lock account"))?;
             account
                 .apply((address_type, scan_request_guard.to_owned()))
-                .unwrap();
+                .map_err(|e| anyhow!("Failed to apply update: {}", e))?;
             account.config.date_synced = Some(format!("{:?}", Utc::now()));
             account
                 .persist()
-                .expect("Failed to persist account after scan");
+                .map_err(|e| anyhow!("Failed to persist account after scan: {}", e))?;
         }
         self.send_update();
+        Ok(())
     }
 
     pub fn send_update(&mut self) {

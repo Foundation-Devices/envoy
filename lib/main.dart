@@ -218,15 +218,31 @@ Future<bool> isMigrationRequired() async {
 
   final migrationVersion = (await EnvoyStorage()
       .getNoBackUpPreference(MigrationManager.migrationPrefs));
+
+  double? migrationVersionCode = (await EnvoyStorage()
+      .getNoBackUpPreference<double>(MigrationManager.migrationCodePrefs));
+
+  if (migrationVersion is String && migrationVersionCode == null) {
+    migrationVersionCode = double.parse(migrationVersion.replaceAll("v", ""));
+  }
+
+  kPrint("Migration version: $migrationVersionCode");
   final hasMigrated = (await EnvoyStorage()
           .getNoBackUpPreference(MigrationManager.migrationPrefs)) ==
       MigrationManager.migrationVersion;
 
-  kPrint("Migration version: $migrationVersion");
-  //v2 -> v2.1 migration, for xfp based accounts
-  if (migrationVersion == "v2") {
+  //
+  if (migrationVersionCode != null &&
+      (migrationVersionCode < MigrationManager.migrationVersionCode)) {
+    kPrint(
+        "Migration required: $migrationVersionCode < ${MigrationManager.migrationVersionCode}");
     return true;
   }
+
+  if (migrationVersionCode == MigrationManager.migrationVersionCode) {
+    return false;
+  }
+  kPrint("Migration required: ${hasAccounts && !hasMigrated}}");
 
   return hasAccounts && !hasMigrated;
 }

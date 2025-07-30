@@ -164,16 +164,9 @@ class EnvoySeed {
 
   Future addEnvoyAccount(String seed, Network network, String? passphrase,
       {bool requireScan = false}) async {
-    String newWalletDirectory = NgAccountManager.walletsDirectory;
-    Directory newAccountDir = Directory(
-        "${newWalletDirectory}envoy_${network.toString().toLowerCase()}_acc_0");
-
-    if (!(await newAccountDir.exists())) {
-      newAccountDir.create(recursive: true);
-    }
-
     final derivations = await EnvoyBip39.deriveDescriptorFromSeed(
         seedWords: seed, network: network, passphrase: passphrase);
+
     final descriptors = derivations
         .where((element) =>
             element.addressType == AddressType.p2Wpkh ||
@@ -185,6 +178,22 @@ class EnvoySeed {
             ))
         .toList();
 
+    final fingerprint = NgAccountManager.getFingerprint(
+        derivations.first.externalPubDescriptor);
+
+    if (fingerprint == null) {
+      throw Exception("Failed to get fingerprint");
+    }
+
+    Directory newAccountDir = NgAccountManager.getAccountDirectory(
+        deviceSerial: "envoy",
+        network: network.toString(),
+        number: 0,
+        fingerprint: fingerprint);
+    if (!(await newAccountDir.exists())) {
+      newAccountDir.create(recursive: true);
+    }
+    await Future.delayed(const Duration(milliseconds: 100));
     if (descriptors.isEmpty || descriptors.length != 2) {
       EnvoyReport().log("EnvoySeed",
           "Error creating account from descriptor: descriptors.length ${descriptors.length}");
@@ -311,11 +320,17 @@ class EnvoySeed {
     for (var accountHandler in NgAccountManager().handlers) {
       try {
         final state = await accountHandler.state();
+        final fingerprint = NgAccountManager.getFingerprint(
+            state.externalPublicDescriptors.first.$2);
+        if (fingerprint == null) {
+          throw Exception(
+              "Failed to get fingerprint for account ${state.name} ${state.descriptors.map((e) => "${e.external_} | ${e.internal}")}");
+        }
         final dirWithId = NgAccountManager.getAccountDirectory(
             deviceSerial: state.deviceSerial ?? "envoy",
             network: state.network.toString(),
             number: state.index,
-            accountId: state.id);
+            fingerprint: fingerprint);
         final jsonStr = await accountHandler.getAccountBackup();
         final json = jsonDecode(jsonStr);
         if (await dirWithId.exists()) {
@@ -752,10 +767,17 @@ class EnvoySeed {
       for (var account in accounts) {
         final config = EnvoyAccountHandler.getConfigFromBackup(
             backupJson: jsonEncode(account));
+        final descriptor = config.descriptors.first.internal;
+        final fingerprint = NgAccountManager.getFingerprint(descriptor);
+        if (fingerprint == null) {
+          throw Exception(
+              "Failed to get fingerprint for account ${config.name} $descriptor deviceSerial ${config.deviceSerial}");
+        }
         Directory dir = NgAccountManager.getAccountDirectory(
           deviceSerial: config.deviceSerial ?? "envoy",
           network: config.network.toString(),
           number: config.index,
+          fingerprint: fingerprint,
         );
         //any account that are affected by SFT-5217 issue,these require unique path
         if (account.containsKey("require_unique_path")) {
@@ -763,7 +785,7 @@ class EnvoySeed {
               deviceSerial: config.deviceSerial ?? "envoy",
               network: config.network.toString(),
               number: config.index,
-              accountId: config.id);
+              fingerprint: config.id);
         }
 
         if (await dir.exists()) {

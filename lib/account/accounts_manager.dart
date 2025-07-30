@@ -149,6 +149,7 @@ class NgAccountManager extends ChangeNotifier {
         if (element.isHot) {
           bool isP2TrDerived = element.descriptors
               .any((element) => element.addressType == AddressType.p2Tr);
+          kPrint("isP2TrDerived: $isP2TrDerived");
           if (!isP2TrDerived) {
             final seed = await EnvoySeed().get();
             if (seed != null && !element.seedHasPassphrase) {
@@ -166,6 +167,8 @@ class NgAccountManager extends ChangeNotifier {
                         ))
                     .first;
                 element.handler?.addDescriptor(ngDescriptor: descriptor);
+                EnvoyReport().log("Accounts",
+                    "Missing p2Tr descriptor added to ${element.name}");
               } catch (e) {
                 EnvoyReport().log("Accounts",
                     "Error adding p2Tr descriptor to ${element.name} $e");
@@ -258,10 +261,32 @@ class NgAccountManager extends ChangeNotifier {
     return true;
   }
 
+  static String? getFingerprint(String descriptor) {
+    final regex = RegExp(r'\[([0-9a-f]{8})/');
+    final matches = regex.allMatches(descriptor);
+    if (matches.isEmpty) {
+      EnvoyReport().log("Accounts", "Invalid fingerprint $descriptor");
+      return null;
+    }
+    return matches.map((m) => m.group(1)!).first;
+  }
+
   Future<bool> checkIfWalletFromSeedExists(String seed,
       {String? passphrase, required Network network}) async {
+    final descriptors = await EnvoyBip39.deriveDescriptorFromSeed(
+        seedWords: seed, network: network, passphrase: passphrase);
+    final fingerPrint = getFingerprint(descriptors
+        .firstWhere((element) => element.addressType == AddressType.p2Wpkh)
+        .externalPubDescriptor);
+    if (fingerPrint == null) {
+      EnvoyReport().log("Accounts", "Invalid fingerprint $fingerPrint");
+      return false;
+    }
     var dir = NgAccountManager.getAccountDirectory(
-        deviceSerial: "envoy", network: network.toString(), number: 0);
+        deviceSerial: "envoy",
+        network: network.toString(),
+        number: 0,
+        fingerprint: fingerPrint);
     if (await dir.exists()) {
       final files = dir.listSync();
       bool hasP2tr =
@@ -301,15 +326,23 @@ class NgAccountManager extends ChangeNotifier {
     required String deviceSerial,
     required String network,
     required int number,
-    String? accountId,
+    required String fingerprint,
   }) {
-    if (accountId != null) {
-      return Directory(
-          "$walletsDirectory${deviceSerial}_${network.toLowerCase()}_acc_${number}_${accountId.substring(0, 8)}");
-    } else {
-      return Directory(
-          "$walletsDirectory${deviceSerial}_${network.toLowerCase()}_acc_$number");
-    }
+    return Directory("$walletsDirectory${getUniqueAccountId(
+      deviceSerial: deviceSerial,
+      network: network,
+      number: number,
+      fingerprint: fingerprint,
+    )}");
+  }
+
+  static String getUniqueAccountId({
+    required String deviceSerial,
+    required String network,
+    required int number,
+    required String fingerprint,
+  }) {
+    return "${deviceSerial}_${network.toLowerCase()}_acc_${number}_$fingerprint";
   }
 
   void setTaprootEnabled(bool taprootEnabled) async {
@@ -532,11 +565,13 @@ class NgAccountManager extends ChangeNotifier {
       }
     }
 
+    final fingerprint =
+        NgAccountManager.getFingerprint(config.descriptors.first.internal);
     Directory dir = NgAccountManager.getAccountDirectory(
       deviceSerial: config.deviceSerial ?? "unknown-serial_${config.id}",
       network: config.network.toString(),
       number: config.index,
-      accountId: config.id,
+      fingerprint: fingerprint ?? config.id,
     );
     if (await dir.exists()) {
       EnvoyReport().log("AccountManager",
