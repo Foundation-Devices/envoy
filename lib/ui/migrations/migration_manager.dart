@@ -107,76 +107,84 @@ class MigrationManager {
     _streamController.sink.add(migrationProgress);
   }
 
-  void migrate() async {
+  Future migrate() async {
     final currentMigrationVersion = await getCurrentMigrationVersion();
     kPrint("Migration version: $currentMigrationVersion");
     if (currentMigrationVersion == 2.0 || currentMigrationVersion == 2.1) {
       await mergeWithFingerPrint();
+      await Future.delayed(const Duration(milliseconds: 50));
+      await sanityCheck();
+      await Future.delayed(const Duration(milliseconds: 50));
+      _onMigrationFinished?.call();
     } else if (currentMigrationVersion == null) {
-      final newWalletDirectory = NgAccountManager.walletsDirectory;
-      //clean directory for new wallets
-      if (await Directory(newWalletDirectory).exists()) {
-        await Directory(newWalletDirectory).delete(recursive: true);
-      }
-      final walletOrder = List<String>.empty(growable: true);
-      if (_ls.prefs.containsKey(NgAccountManager.v1AccountsPrefKey)) {
-        List<dynamic> accountsJson =
-            jsonDecode(_ls.prefs.getString(NgAccountManager.v1AccountsPrefKey)!)
-                .toList();
-        List<LegacyAccount> legacyAccounts =
-            accountsJson.map((json) => LegacyAccount.fromJson(json)).toList();
-
-        EnvoyReport().log(
-          "Migration",
-          "Total accounts found: ${legacyAccounts.length} ",
-        );
-        List<LegacyUnifiedAccounts> unifiedLegacyAccounts =
-            unify(legacyAccounts);
-        addMigrationEvent(MigrationProgress(
-            total: unifiedLegacyAccounts.length, completed: 0));
-
-        final accounts =
-            await createAccounts(unifiedLegacyAccounts, walletOrder);
-        if (accounts.isEmpty) {
-          _onMigrationFinished?.call();
-          return;
-        }
-        try {
-          try {
-            for (var account in accounts) {
-              try {
-                await migrateMeta(account, legacyAccounts);
-              } catch (e) {
-                EnvoyReport().log("Migration", "Error migrating meta: $e");
-              }
-              await Future.delayed(const Duration(milliseconds: 100));
-              addMigrationEvent(MigrationProgress(
-                  total: accounts.length,
-                  completed: accounts.indexOf(account) + 1));
-            }
-          } catch (e) {
-            EnvoyReport().log("Migration", "Error migrating meta: $e");
-          }
-          await NgAccountManager().updateAccountOrder(walletOrder);
-          for (var account in accounts) {
-            account.dispose();
-          }
-          //restore will reload all accounts and start normal sync
-          final v1backupFile =
-              File("${LocalStorage().appDocumentsDir.path}/v1_accounts.json");
-          await v1backupFile.create(recursive: true);
-          await v1backupFile.writeAsString(jsonEncode(accountsJson));
-          _onMigrationFinished?.call();
-        } catch (e) {
-          _onMigrationError?.call();
-          EnvoyReport().log("Migration", "Error migrating accounts: $e");
-        }
-        //   //Load accounts to account manager
-      } else {
-        EnvoyReport().log("Migration", "No accounts found");
-        _onMigrationFinished?.call();
-      }
+      await migrateToV2();
+      await Future.delayed(const Duration(milliseconds: 50));
+      await sanityCheck();
     } else {
+      _onMigrationFinished?.call();
+    }
+  }
+
+  Future migrateToV2() async {
+    final newWalletDirectory = NgAccountManager.walletsDirectory;
+    //clean directory for new wallets
+    if (await Directory(newWalletDirectory).exists()) {
+      await Directory(newWalletDirectory).delete(recursive: true);
+    }
+    final walletOrder = List<String>.empty(growable: true);
+    if (_ls.prefs.containsKey(NgAccountManager.v1AccountsPrefKey)) {
+      List<dynamic> accountsJson =
+          jsonDecode(_ls.prefs.getString(NgAccountManager.v1AccountsPrefKey)!)
+              .toList();
+      List<LegacyAccount> legacyAccounts =
+          accountsJson.map((json) => LegacyAccount.fromJson(json)).toList();
+
+      EnvoyReport().log(
+        "Migration",
+        "Total accounts found: ${legacyAccounts.length} ",
+      );
+      List<LegacyUnifiedAccounts> unifiedLegacyAccounts = unify(legacyAccounts);
+      addMigrationEvent(
+          MigrationProgress(total: unifiedLegacyAccounts.length, completed: 0));
+
+      final accounts = await createAccounts(unifiedLegacyAccounts);
+      if (accounts.isEmpty) {
+        _onMigrationFinished?.call();
+        return;
+      }
+      try {
+        try {
+          for (var account in accounts) {
+            try {
+              await migrateMeta(account, legacyAccounts);
+            } catch (e) {
+              EnvoyReport().log("Migration", "Error migrating meta: $e");
+            }
+            await Future.delayed(const Duration(milliseconds: 100));
+            addMigrationEvent(MigrationProgress(
+                total: accounts.length,
+                completed: accounts.indexOf(account) + 1));
+          }
+        } catch (e) {
+          EnvoyReport().log("Migration", "Error migrating meta: $e");
+        }
+        await NgAccountManager().updateAccountOrder(walletOrder);
+        for (var account in accounts) {
+          account.dispose();
+        }
+        //restore will reload all accounts and start normal sync
+        final v1backupFile =
+            File("${LocalStorage().appDocumentsDir.path}/v1_accounts.json");
+        await v1backupFile.create(recursive: true);
+        await v1backupFile.writeAsString(jsonEncode(accountsJson));
+        _onMigrationFinished?.call();
+      } catch (e) {
+        _onMigrationError?.call();
+        EnvoyReport().log("Migration", "Error migrating accounts: $e");
+      }
+      //   //Load accounts to account manager
+    } else {
+      EnvoyReport().log("Migration", "No accounts found");
       _onMigrationFinished?.call();
     }
   }
@@ -186,6 +194,8 @@ class MigrationManager {
     final newWalletDirectory = NgAccountManager.walletsDirectory;
     final walletDirectory = Directory(newWalletDirectory);
     final dirs = await walletDirectory.list().toList();
+    // Track all accounts that are opened after merge, this will be used to dispose
+    final List<EnvoyAccountHandler> accounts = [];
     try {
       List<EnvoyAccountHandler> needsMerge = [];
       List<EnvoyAccountHandler> needsDirectoryChange = [];
@@ -200,12 +210,14 @@ class MigrationManager {
               final accountHandler =
                   await EnvoyAccountHandler.openAccount(dbPath: dir.path);
               needsMerge.add(accountHandler);
+              accounts.add(accountHandler);
             } catch (e) {
               kPrint("Error opening wallet: $e");
             }
           } else {
             final accountHandler =
                 await EnvoyAccountHandler.openAccount(dbPath: dir.path);
+            accounts.add(accountHandler);
             needsDirectoryChange.add(accountHandler);
           }
         }
@@ -239,9 +251,9 @@ class MigrationManager {
         for (var directory in unified.keys) {
           final accountHandlers = unified[directory]!;
           if (accountHandlers.length == 2) {
+            final accountOne = accountHandlers.first;
+            final accountTwo = accountHandlers.last;
             try {
-              final accountOne = accountHandlers.first;
-              final accountTwo = accountHandlers.last;
               final accountOneState = await accountOne.state();
               final accountTwoState = await accountTwo.state();
               final accountOnePath = Directory(accountOneState.walletPath!);
@@ -305,6 +317,8 @@ class MigrationManager {
               await accountTwoPath.delete(recursive: true);
               kPrint("Migrated ");
             } catch (e) {
+              if (!accountOne.isDisposed) accountOne.dispose();
+              if (!accountTwo.isDisposed) accountTwo.dispose();
               kPrint("Error opening wallet: $e");
             }
           }
@@ -336,7 +350,6 @@ class MigrationManager {
             }
             await dir.create(recursive: true);
             await account.updateWalletPath(walletPath: dir.path);
-            await Future.delayed(const Duration(milliseconds: 500));
             account.dispose();
             if (await currentPath.exists()) {
               await for (var entity in currentPath.list(recursive: true)) {
@@ -355,7 +368,7 @@ class MigrationManager {
             EnvoyReport().log("Migration",
                 "Error processing directory change for account: $e",
                 stackTrace: s);
-            account.dispose();
+            if (!account.isDisposed) account.dispose();
           }
         }
       }
@@ -365,17 +378,27 @@ class MigrationManager {
     } catch (e, stack) {
       EnvoyReport()
           .log("Migration", "Error migrating accounts: $e", stackTrace: stack);
-    } finally {}
+    } finally {
+      //make sure all accounts are disposed
+      for (var account in accounts) {
+        if (!account.isDisposed) {
+          kPrint("Disposing account ${account.id}");
+          account.dispose();
+        }
+      }
+    }
     await Future.delayed(const Duration(milliseconds: 300));
-    _onMigrationFinished?.call();
     return;
   }
 
   Future<List<EnvoyAccountHandler>> createAccounts(
-      List<LegacyUnifiedAccounts> unifiedLegacyAccounts,
-      List<String> existingWalletOrder) async {
+      List<LegacyUnifiedAccounts> unifiedLegacyAccounts) async {
     final List<EnvoyAccountHandler> handlers = [];
-    final walletOrder = List<String>.empty(growable: true);
+    final accountOrder =
+        LocalStorage().prefs.getString(NgAccountManager.ACCOUNT_ORDER);
+    List<String> walletOrder =
+        List<String>.from(jsonDecode(accountOrder ?? "[]"));
+
     bool taprootEnabled = Settings().taprootEnabled();
     bool showTestnet = Settings().showTestnetAccounts();
     bool showSignet = Settings().showSignetAccounts();
@@ -564,6 +587,58 @@ class MigrationManager {
       }
     }
     return migrationVersionCode;
+  }
+
+  //Performs a sanity check to ensure all legacy accounts have been properly migrated.
+  //sanityCheck reads the v1 backup file and verifies that all legacy accounts
+  //have corresponding migrated account directories. If any accounts are missing,
+  //it triggers the migration process for those accounts.
+  Future sanityCheck() async {
+    final v1backupFile =
+        File("${LocalStorage().appDocumentsDir.path}/v1_accounts.json");
+    if (await v1backupFile.exists()) {
+      try {
+        List<dynamic> data = jsonDecode(await v1backupFile.readAsString());
+        List<LegacyAccount> legacyAccounts =
+            data.map((json) => LegacyAccount.fromJson(json)).toList();
+        EnvoyReport().log(
+          "Migration",
+          "Total accounts found: ${legacyAccounts.length} ",
+        );
+        List<LegacyUnifiedAccounts> unifiedLegacyAccounts =
+            unify(legacyAccounts);
+        for (var unified in unifiedLegacyAccounts) {
+          final legacyAccount = unified.accounts.first;
+          String? descriptor = legacyAccount.wallet.internalDescriptor ??
+              legacyAccount.wallet.externalDescriptor;
+          final fingerprint = NgAccountManager.getFingerprint(
+              legacyAccount.wallet.internalDescriptor ?? "");
+          if (fingerprint == null || descriptor == null) {
+            throw Exception(
+                "Failed to get fingerprint for account ${legacyAccount.name} ${legacyAccount.wallet.externalDescriptor} ${legacyAccount.wallet.internalDescriptor}");
+          }
+          Directory newAccountDir = NgAccountManager.getAccountDirectory(
+              deviceSerial: legacyAccount.deviceSerial,
+              network: legacyAccount.wallet.network,
+              fingerprint: fingerprint,
+              number: legacyAccount.number);
+          if (!(await newAccountDir.exists())) {
+            EnvoyReport().log("Migration",
+                "Sanity check, Found account that needs migration ${legacyAccount.name} ${legacyAccount.wallet.network} ${legacyAccount.number} ");
+            final handlers = await createAccounts(
+                List<LegacyUnifiedAccounts>.from([unified]));
+            EnvoyReport().log("Migration",
+                "Sanity check, Migrated account ${legacyAccount.name} ${legacyAccount.wallet.network} ${legacyAccount.number} ");
+            for (var handler in handlers) {
+              handler.dispose();
+            }
+          }
+        }
+      } catch (e, stack) {
+        EnvoyReport().log("Migration", "Error sanity checking accounts: $e",
+            stackTrace: stack);
+      }
+    }
   }
 }
 

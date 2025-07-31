@@ -557,12 +557,11 @@ class EnvoySeed {
     List<LegacyUnifiedAccounts> legacy = MigrationManager.unify(
         legacyWallets.where((wallet) => !wallet.wallet.hot).toList());
 
-    final accountOrder =
-        LocalStorage().prefs.getString(NgAccountManager.ACCOUNT_ORDER);
-    List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
     try {
       List<EnvoyAccountHandler> accountHandler =
-          await MigrationManager().createAccounts(legacy, order);
+          await MigrationManager().createAccounts(
+        legacy,
+      );
 
       for (var handler in accountHandler) {
         final account = await handler.state();

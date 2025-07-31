@@ -111,6 +111,9 @@ class NgAccountManager extends ChangeNotifier {
   NgAccountManager._internal();
 
   Future restore() async {
+    for (var accountHandler in _accountsHandler) {
+      accountHandler.$2.dispose();
+    }
     _accountsHandler.clear();
     final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
@@ -121,7 +124,6 @@ class NgAccountManager extends ChangeNotifier {
     if (!(await walletDirectory.exists())) {
       await walletDirectory.create(recursive: true);
     }
-
     final dirs = await walletDirectory.list().toList();
     for (var dir in dirs) {
       if (dir is Directory) {

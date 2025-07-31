@@ -134,7 +134,10 @@ class EnvoyReport extends ChangeNotifier {
     lines = lines.skipWhile((value) => value.trim().isEmpty);
     // only show the first 50 lines
     // lines = lines.toList().reversed.take(50).toList().reversed;
-    return lines.toList();
+    return lines
+        .toList()
+        .where((value) => !value.contains("<unknown>"))
+        .toList();
   }
 
   String? getBuildId(StackTrace stackTrace) {
