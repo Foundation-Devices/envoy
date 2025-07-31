@@ -45,7 +45,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.9.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -846349618;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 359751636;
 
 // Section: executor
 
@@ -77,7 +77,7 @@ fn wire__crate__api__ql__decode_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_data = <Vec<u8>>::sse_decode(&mut deserializer);
             let api_decoder = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>,
             >>::sse_decode(&mut deserializer);
             let api_quantum_link_identity = <RustOpaqueMoi<
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>,
@@ -734,6 +734,51 @@ fn wire__crate__api__ql__serialize_xid_document_impl(
         },
     )
 }
+fn wire__crate__api__ql__split_fw_update_into_chunks_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "split_fw_update_into_chunks",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_patch_index = <u8>::sse_decode(&mut deserializer);
+            let api_patch_bytes = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_chunk_size = <usize>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, ()>(
+                    (move || async move {
+                        let output_ok = Result::<_, ()>::Ok(
+                            crate::api::ql::split_fw_update_into_chunks(
+                                api_patch_index,
+                                &api_patch_bytes,
+                                api_chunk_size,
+                            )
+                            .await,
+                        )?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 
 // Section: static_checks
 
@@ -784,7 +829,7 @@ const _: fn() = || {
     }
     {
         let FirmwareChunk = None::<foundation_api::api::firmware::FirmwareChunk>.unwrap();
-        let _: u8 = FirmwareChunk.diff_index;
+        let _: u8 = FirmwareChunk.patch_index;
         let _: u16 = FirmwareChunk.chunk_index;
         let _: Vec<u8> = FirmwareChunk.data;
     }
@@ -800,10 +845,10 @@ const _: fn() = || {
             let _: f32 = progress;
         }
         foundation_api::api::firmware::FirmwareDownloadResponse::Start {
-            diff_index,
+            patch_index,
             total_chunks,
         } => {
-            let _: u8 = diff_index;
+            let _: u8 = patch_index;
             let _: u16 = total_chunks;
         }
         foundation_api::api::firmware::FirmwareDownloadResponse::Chunk(field0) => {
@@ -820,7 +865,7 @@ const _: fn() = || {
         let _: String = FirmwareUpdateAvailable.changelog;
         let _: u32 = FirmwareUpdateAvailable.timestamp;
         let _: u32 = FirmwareUpdateAvailable.size;
-        let _: u8 = FirmwareUpdateAvailable.diff_count;
+        let _: u8 = FirmwareUpdateAvailable.patch_count;
     }
     {
         let FirmwareUpdateCheckRequest =
@@ -974,7 +1019,7 @@ flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Mutex<Decoder>>>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>
@@ -1003,11 +1048,11 @@ impl SseDecode for Arc<Mutex<Decoder>> {
     }
 }
 
-impl SseDecode for Dechunker {
+impl SseDecode for EnvoyMasterDechunker {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <RustOpaqueMoi<
-            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>,
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>,
         >>::sse_decode(deserializer);
         return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
     }
@@ -1044,7 +1089,7 @@ impl SseDecode
 }
 
 impl SseDecode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1240,11 +1285,11 @@ impl SseDecode for f64 {
 impl SseDecode for foundation_api::api::firmware::FirmwareChunk {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_diffIndex = <u8>::sse_decode(deserializer);
+        let mut var_patchIndex = <u8>::sse_decode(deserializer);
         let mut var_chunkIndex = <u16>::sse_decode(deserializer);
         let mut var_data = <Vec<u8>>::sse_decode(deserializer);
         return foundation_api::api::firmware::FirmwareChunk {
-            diff_index: var_diffIndex,
+            patch_index: var_patchIndex,
             chunk_index: var_chunkIndex,
             data: var_data,
         };
@@ -1271,10 +1316,10 @@ impl SseDecode for foundation_api::api::firmware::FirmwareDownloadResponse {
                 return foundation_api::api::firmware::FirmwareDownloadResponse::EnvoyDownloadProgress{progress: var_progress};
             }
             1 => {
-                let mut var_diffIndex = <u8>::sse_decode(deserializer);
+                let mut var_patchIndex = <u8>::sse_decode(deserializer);
                 let mut var_totalChunks = <u16>::sse_decode(deserializer);
                 return foundation_api::api::firmware::FirmwareDownloadResponse::Start {
-                    diff_index: var_diffIndex,
+                    patch_index: var_patchIndex,
                     total_chunks: var_totalChunks,
                 };
             }
@@ -1301,13 +1346,13 @@ impl SseDecode for foundation_api::api::firmware::FirmwareUpdateAvailable {
         let mut var_changelog = <String>::sse_decode(deserializer);
         let mut var_timestamp = <u32>::sse_decode(deserializer);
         let mut var_size = <u32>::sse_decode(deserializer);
-        let mut var_diffCount = <u8>::sse_decode(deserializer);
+        let mut var_patchCount = <u8>::sse_decode(deserializer);
         return foundation_api::api::firmware::FirmwareUpdateAvailable {
             version: var_version,
             changelog: var_changelog,
             timestamp: var_timestamp,
             size: var_size,
-            diff_count: var_diffCount,
+            patch_count: var_patchCount,
         };
     }
 }
@@ -1401,6 +1446,18 @@ impl SseDecode for Vec<u8> {
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
             ans_.push(<u8>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<foundation_api::api::message::QuantumLinkMessage> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<foundation_api::api::message::QuantumLinkMessage>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -1848,6 +1905,12 @@ fn pde_ffi_dispatcher_primary_impl(
         12 => wire__crate__api__ql__serialize_ql_identity_impl(port, ptr, rust_vec_len, data_len),
         13 => wire__crate__api__ql__serialize_xid_impl(port, ptr, rust_vec_len, data_len),
         14 => wire__crate__api__ql__serialize_xid_document_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire__crate__api__ql__split_fw_update_into_chunks_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
         _ => unreachable!(),
     }
 }
@@ -1886,16 +1949,19 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<Arc<Mutex<Decoder>>>> for Arc<
 }
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for FrbWrapper<Dechunker> {
+impl flutter_rust_bridge::IntoDart for FrbWrapper<EnvoyMasterDechunker> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
             .into_dart()
     }
 }
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<Dechunker> {}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<EnvoyMasterDechunker>
+{
+}
 
-impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<Dechunker>> for Dechunker {
-    fn into_into_dart(self) -> FrbWrapper<Dechunker> {
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<EnvoyMasterDechunker>> for EnvoyMasterDechunker {
+    fn into_into_dart(self) -> FrbWrapper<EnvoyMasterDechunker> {
         self.into()
     }
 }
@@ -2176,7 +2242,7 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::fx::Excha
 impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::firmware::FirmwareChunk> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
-            self.0.diff_index.into_into_dart().into_dart(),
+            self.0.patch_index.into_into_dart().into_dart(),
             self.0.chunk_index.into_into_dart().into_dart(),
             self.0.data.into_into_dart().into_dart(),
         ]
@@ -2225,11 +2291,11 @@ impl flutter_rust_bridge::IntoDart
                 progress,
             } => [0.into_dart(), progress.into_into_dart().into_dart()].into_dart(),
             foundation_api::api::firmware::FirmwareDownloadResponse::Start {
-                diff_index,
+                patch_index,
                 total_chunks,
             } => [
                 1.into_dart(),
-                diff_index.into_into_dart().into_dart(),
+                patch_index.into_into_dart().into_dart(),
                 total_chunks.into_into_dart().into_dart(),
             ]
             .into_dart(),
@@ -2268,7 +2334,7 @@ impl flutter_rust_bridge::IntoDart
             self.0.changelog.into_into_dart().into_dart(),
             self.0.timestamp.into_into_dart().into_dart(),
             self.0.size.into_into_dart().into_dart(),
-            self.0.diff_count.into_into_dart().into_dart(),
+            self.0.patch_count.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -2840,10 +2906,15 @@ impl SseEncode for Arc<Mutex<Decoder>> {
     }
 }
 
-impl SseEncode for Dechunker {
+impl SseEncode for EnvoyMasterDechunker {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
+        <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>,
+        >>::sse_encode(
+            flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self),
+            serializer,
+        );
     }
 }
 
@@ -2873,7 +2944,7 @@ impl SseEncode
 }
 
 impl SseEncode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -3048,7 +3119,7 @@ impl SseEncode for f64 {
 impl SseEncode for foundation_api::api::firmware::FirmwareChunk {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <u8>::sse_encode(self.diff_index, serializer);
+        <u8>::sse_encode(self.patch_index, serializer);
         <u16>::sse_encode(self.chunk_index, serializer);
         <Vec<u8>>::sse_encode(self.data, serializer);
     }
@@ -3072,11 +3143,11 @@ impl SseEncode for foundation_api::api::firmware::FirmwareDownloadResponse {
                 <f32>::sse_encode(progress, serializer);
             }
             foundation_api::api::firmware::FirmwareDownloadResponse::Start {
-                diff_index,
+                patch_index,
                 total_chunks,
             } => {
                 <i32>::sse_encode(1, serializer);
-                <u8>::sse_encode(diff_index, serializer);
+                <u8>::sse_encode(patch_index, serializer);
                 <u16>::sse_encode(total_chunks, serializer);
             }
             foundation_api::api::firmware::FirmwareDownloadResponse::Chunk(field0) => {
@@ -3101,7 +3172,7 @@ impl SseEncode for foundation_api::api::firmware::FirmwareUpdateAvailable {
         <String>::sse_encode(self.changelog, serializer);
         <u32>::sse_encode(self.timestamp, serializer);
         <u32>::sse_encode(self.size, serializer);
-        <u8>::sse_encode(self.diff_count, serializer);
+        <u8>::sse_encode(self.patch_count, serializer);
     }
 }
 
@@ -3181,6 +3252,16 @@ impl SseEncode for Vec<u8> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <u8>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<foundation_api::api::message::QuantumLinkMessage> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <foundation_api::api::message::QuantumLinkMessage>::sse_encode(item, serializer);
         }
     }
 }
@@ -3589,17 +3670,17 @@ mod io {
     }
 
     #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_foundation_api_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+    pub extern "C" fn frbgen_foundation_api_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>::increment_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>::increment_strong_count(ptr as _);
     }
 
     #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_foundation_api_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+    pub extern "C" fn frbgen_foundation_api_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>::decrement_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>::decrement_strong_count(ptr as _);
     }
 
     #[unsafe(no_mangle)]
@@ -3677,17 +3758,17 @@ mod web {
     }
 
     #[wasm_bindgen]
-    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>::increment_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>::increment_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]
-    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>::decrement_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>::decrement_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]

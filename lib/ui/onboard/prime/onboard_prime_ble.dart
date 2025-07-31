@@ -106,6 +106,11 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         _handleOnboardingState(onboardingState);
       }
 
+      if (message.message is QuantumLinkMessage_FirmwareDownloadRequest) {
+        handleUpdateDownloadRequest();
+      }
+
+
       if (message.message is QuantumLinkMessage_SecurityChallengeResponse) {
         final SecurityChallengeResponse proofMessage =
             (message.message as QuantumLinkMessage_SecurityChallengeResponse).field0;
@@ -181,20 +186,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
         break;
       case OnboardingState.downloadingUpdate:
-        ref.read(primeUpdateStateProvider.notifier).state =
-            PrimeFwUpdateStep.downloading;
-        ref.read(fwDownloadStateProvider.notifier).updateStep(
-            S().firmware_updatingDownload_downloading, EnvoyStepState.LOADING);
-
-        await _fakeUpdateDownload();
-
-        await BluetoothManager()
-            .sendOnboardingState(OnboardingState.receivingUpdate);
-        await Future.delayed(Duration(seconds: 2));
-
-        // fake firmware payload data
-        await BluetoothManager().sendFirmwarePayload();
-
+        await handleUpdateDownloadRequest();
         break;
       case OnboardingState.receivingUpdate:
         break;
@@ -301,6 +293,22 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       case OnboardingState.securityCheckFailed:
         break;
     }
+  }
+
+  Future<void> handleUpdateDownloadRequest() async {
+    ref.read(primeUpdateStateProvider.notifier).state =
+        PrimeFwUpdateStep.downloading;
+    ref.read(fwDownloadStateProvider.notifier).updateStep(
+        S().firmware_updatingDownload_downloading, EnvoyStepState.LOADING);
+    
+    await _fakeUpdateDownload();
+    
+    await BluetoothManager()
+        .sendOnboardingState(OnboardingState.receivingUpdate);
+    await Future.delayed(Duration(seconds: 2));
+    
+    // fake firmware payload data
+    await BluetoothManager().sendFirmwarePayload();
   }
 
   void _notifyAfterOnboardingTutorial(BuildContext context) async {

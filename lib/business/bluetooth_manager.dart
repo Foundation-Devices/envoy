@@ -12,6 +12,7 @@ import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/ntp.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:ngwallet/ngwallet.dart';
@@ -46,7 +47,7 @@ class BluetoothManager {
   final StreamController<api.PassportMessage> _transactionStream =
       StreamController<api.PassportMessage>();
 
-  api.Dechunker? _decoder;
+  api.EnvoyMasterDechunker? _decoder;
   api.XidDocument? _recipientXid;
 
   bool connected = false;
@@ -231,7 +232,9 @@ class BluetoothManager {
     kPrint("Sending message: $message");
 
     final encoded = await encodeMessage(message: message);
-    _writeWithProgress(encoded);
+    kPrint("Encoded message!");
+
+    await _writeWithProgress(encoded);
   }
 
   Future<void> addDevice(String serialNumber, String firmwareVersion,
@@ -316,19 +319,35 @@ class BluetoothManager {
   }
 
   Future<void> sendFirmwarePayload() async {
-    // Create 100 KB of random data
-    final random = Random();
-    final payloadSize = 100 * 1024; // 100 KB
-    final randomBytes = Uint8List.fromList(
-      List.generate(payloadSize, (_) => random.nextInt(256)),
-    );
+    // Get first diff
+    final ByteData byteData =
+        await rootBundle.load("assets/prime/release-v1.0.1-to-v1.0.2.tar");
+    final payload = byteData.buffer.asUint8List();
 
-    // TODO: split this into chunks
-    final chunk =
-        api.FirmwareChunk(diffIndex: 0, chunkIndex: 0, data: randomBytes);
+    final chunks = await api.splitFwUpdateIntoChunks(
+        patchIndex: 0, patchBytes: payload, chunkSize: BigInt.from(10000));
 
-    writeMessage(api.QuantumLinkMessage.firmwareDownloadResponse(
-        api.FirmwareDownloadResponse.chunk(chunk)));
+    await writeMessage(api.QuantumLinkMessage.firmwareDownloadResponse(api.FirmwareDownloadResponse.start(patchIndex: 0, totalChunks: chunks.length)));
+
+
+    for (final chunk in chunks) {
+      kPrint("Sending chunkkkk");
+      await writeMessage(chunk);
+    }
+
+    final ByteData byteData2 =
+        await rootBundle.load("assets/prime/release-v1.0.2-to-v1.2.0.tar");
+    final payload2 = byteData2.buffer.asUint8List();
+
+    final chunks2 = await api.splitFwUpdateIntoChunks(
+        patchIndex: 1, patchBytes: payload2, chunkSize: BigInt.from(10000));
+
+    await writeMessage(api.QuantumLinkMessage.firmwareDownloadResponse(api.FirmwareDownloadResponse.start(patchIndex: 1, totalChunks: chunks2.length)));
+
+
+    for (final chunk in chunks2) {
+      await writeMessage(chunk);
+    }
   }
 
   Future<void> sendSecurityChallengeRequest() async {
@@ -414,12 +433,13 @@ class BluetoothManager {
             size: 100,
             changelog:
                 '• Fixed minor bugs\n• Improved performance\n• Added test logging',
-            diffCount: 1)));
+            patchCount: 1)));
 
     writeMessage(dummyUpdate);
   }
 
   Future<void> _writeWithProgress(List<Uint8List> data) async {
+    final completer = Completer<void>();
     _sendingData = true;
 
     final writeStream = bluart.writeAll(id: bleId, data: data);
@@ -431,12 +451,17 @@ class BluetoothManager {
       },
       onDone: () {
         _sendingData = false;
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
       },
       onError: (e) {
         _sendingData = false;
         _writeProgressController.addError(e);
       },
     );
+
+    return completer.future;
   }
 
   dispose() {

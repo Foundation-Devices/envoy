@@ -164,6 +164,7 @@ flutter:
     - assets/anim/
     - assets/images/
     - assets/components/icons/
+    - assets/prime/
 
   fonts:
     - family: EnvoyIcons

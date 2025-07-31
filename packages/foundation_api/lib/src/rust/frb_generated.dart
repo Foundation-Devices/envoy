@@ -82,7 +82,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => -846349618;
+  int get rustContentHash => 359751636;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -95,7 +95,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 abstract class RustLibApi extends BaseApi {
   Future<DecoderStatus> crateApiQlDecode(
       {required List<int> data,
-      required Dechunker decoder,
+      required EnvoyMasterDechunker decoder,
       required QuantumLinkIdentity quantumLinkIdentity});
 
   Future<PassportMessage> crateApiQrDecodeBleMessage({required List<int> data});
@@ -115,7 +115,7 @@ abstract class RustLibApi extends BaseApi {
 
   Future<QuantumLinkIdentity> crateApiQlGenerateQlIdentity();
 
-  Future<Dechunker> crateApiQlGetDecoder();
+  Future<EnvoyMasterDechunker> crateApiQlGetDecoder();
 
   Future<ArcMutexDecoder> crateApiQrGetQrDecoder();
 
@@ -132,6 +132,11 @@ abstract class RustLibApi extends BaseApi {
   Future<Uint8List> crateApiQlSerializeXidDocument(
       {required XidDocument xidDocument});
 
+  Future<List<QuantumLinkMessage>> crateApiQlSplitFwUpdateIntoChunks(
+      {required int patchIndex,
+      required List<int> patchBytes,
+      required BigInt chunkSize});
+
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_ArcMutexDecoder;
 
@@ -142,12 +147,13 @@ abstract class RustLibApi extends BaseApi {
       get rust_arc_decrement_strong_count_ArcMutexDecoderPtr;
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_Dechunker;
+      get rust_arc_increment_strong_count_EnvoyMasterDechunker;
 
   RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_Dechunker;
+      get rust_arc_decrement_strong_count_EnvoyMasterDechunker;
 
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_DechunkerPtr;
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_EnvoyMasterDechunkerPtr;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_QuantumLinkIdentity;
@@ -178,13 +184,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @override
   Future<DecoderStatus> crateApiQlDecode(
       {required List<int> data,
-      required Dechunker decoder,
+      required EnvoyMasterDechunker decoder,
       required QuantumLinkIdentity quantumLinkIdentity}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_prim_u_8_loose(data, serializer);
-        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
             decoder, serializer);
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
             quantumLinkIdentity, serializer);
@@ -367,7 +373,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<Dechunker> crateApiQlGetDecoder() {
+  Future<EnvoyMasterDechunker> crateApiQlGetDecoder() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -376,7 +382,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker,
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker,
         decodeErrorData: null,
       ),
       constMeta: kCrateApiQlGetDecoderConstMeta,
@@ -540,6 +546,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         argNames: ["xidDocument"],
       );
 
+  @override
+  Future<List<QuantumLinkMessage>> crateApiQlSplitFwUpdateIntoChunks(
+      {required int patchIndex,
+      required List<int> patchBytes,
+      required BigInt chunkSize}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_u_8(patchIndex, serializer);
+        sse_encode_list_prim_u_8_loose(patchBytes, serializer);
+        sse_encode_usize(chunkSize, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 15, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_quantum_link_message,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlSplitFwUpdateIntoChunksConstMeta,
+      argValues: [patchIndex, patchBytes, chunkSize],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlSplitFwUpdateIntoChunksConstMeta =>
+      const TaskConstMeta(
+        debugName: "split_fw_update_into_chunks",
+        argNames: ["patchIndex", "patchBytes", "chunkSize"],
+      );
+
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_ArcMutexDecoder => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder;
@@ -549,12 +585,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder;
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_Dechunker => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker;
+      get rust_arc_increment_strong_count_EnvoyMasterDechunker => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker;
 
   RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_Dechunker => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker;
+      get rust_arc_decrement_strong_count_EnvoyMasterDechunker => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_QuantumLinkIdentity => wire
@@ -587,11 +623,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Dechunker
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+  EnvoyMasterDechunker
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return DechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return EnvoyMasterDechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -611,11 +647,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Dechunker
-      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+  EnvoyMasterDechunker
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return DechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return EnvoyMasterDechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -651,11 +687,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Dechunker
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+  EnvoyMasterDechunker
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return DechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return EnvoyMasterDechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -994,7 +1030,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (arr.length != 3)
       throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
     return FirmwareChunk(
-      diffIndex: dco_decode_u_8(arr[0]),
+      patchIndex: dco_decode_u_8(arr[0]),
       chunkIndex: dco_decode_u_16(arr[1]),
       data: dco_decode_list_prim_u_8_strict(arr[2]),
     );
@@ -1021,7 +1057,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         );
       case 1:
         return FirmwareDownloadResponse_Start(
-          diffIndex: dco_decode_u_8(raw[1]),
+          patchIndex: dco_decode_u_8(raw[1]),
           totalChunks: dco_decode_u_16(raw[2]),
         );
       case 2:
@@ -1048,7 +1084,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       changelog: dco_decode_String(arr[1]),
       timestamp: dco_decode_u_32(arr[2]),
       size: dco_decode_u_32(arr[3]),
-      diffCount: dco_decode_u_8(arr[4]),
+      patchCount: dco_decode_u_8(arr[4]),
     );
   }
 
@@ -1125,6 +1161,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
+  }
+
+  @protected
+  List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_quantum_link_message).toList();
   }
 
   @protected
@@ -1458,11 +1500,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Dechunker
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+  EnvoyMasterDechunker
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return DechunkerImpl.frbInternalSseDecode(
+    return EnvoyMasterDechunkerImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -1485,11 +1527,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Dechunker
-      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+  EnvoyMasterDechunker
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return DechunkerImpl.frbInternalSseDecode(
+    return EnvoyMasterDechunkerImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -1530,11 +1572,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Dechunker
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+  EnvoyMasterDechunker
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return DechunkerImpl.frbInternalSseDecode(
+    return EnvoyMasterDechunkerImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -1863,11 +1905,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   FirmwareChunk sse_decode_firmware_chunk(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_diffIndex = sse_decode_u_8(deserializer);
+    var var_patchIndex = sse_decode_u_8(deserializer);
     var var_chunkIndex = sse_decode_u_16(deserializer);
     var var_data = sse_decode_list_prim_u_8_strict(deserializer);
     return FirmwareChunk(
-        diffIndex: var_diffIndex, chunkIndex: var_chunkIndex, data: var_data);
+        patchIndex: var_patchIndex, chunkIndex: var_chunkIndex, data: var_data);
   }
 
   @protected
@@ -1890,10 +1932,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return FirmwareDownloadResponse_EnvoyDownloadProgress(
             progress: var_progress);
       case 1:
-        var var_diffIndex = sse_decode_u_8(deserializer);
+        var var_patchIndex = sse_decode_u_8(deserializer);
         var var_totalChunks = sse_decode_u_16(deserializer);
         return FirmwareDownloadResponse_Start(
-            diffIndex: var_diffIndex, totalChunks: var_totalChunks);
+            patchIndex: var_patchIndex, totalChunks: var_totalChunks);
       case 2:
         var var_field0 = sse_decode_box_autoadd_firmware_chunk(deserializer);
         return FirmwareDownloadResponse_Chunk(var_field0);
@@ -1913,13 +1955,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_changelog = sse_decode_String(deserializer);
     var var_timestamp = sse_decode_u_32(deserializer);
     var var_size = sse_decode_u_32(deserializer);
-    var var_diffCount = sse_decode_u_8(deserializer);
+    var var_patchCount = sse_decode_u_8(deserializer);
     return FirmwareUpdateAvailable(
         version: var_version,
         changelog: var_changelog,
         timestamp: var_timestamp,
         size: var_size,
-        diffCount: var_diffCount);
+        patchCount: var_patchCount);
   }
 
   @protected
@@ -2004,6 +2046,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  List<QuantumLinkMessage> sse_decode_list_quantum_link_message(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <QuantumLinkMessage>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_quantum_link_message(deserializer));
+    }
+    return ans_;
   }
 
   @protected
@@ -2312,11 +2367,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
-          Dechunker self, SseSerializer serializer) {
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+          EnvoyMasterDechunker self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as DechunkerImpl).frbInternalSseEncode(move: true), serializer);
+        (self as EnvoyMasterDechunkerImpl).frbInternalSseEncode(move: true),
+        serializer);
   }
 
   @protected
@@ -2340,11 +2396,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
-          Dechunker self, SseSerializer serializer) {
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+          EnvoyMasterDechunker self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as DechunkerImpl).frbInternalSseEncode(move: false), serializer);
+        (self as EnvoyMasterDechunkerImpl).frbInternalSseEncode(move: false),
+        serializer);
   }
 
   @protected
@@ -2389,11 +2446,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
-          Dechunker self, SseSerializer serializer) {
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+          EnvoyMasterDechunker self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as DechunkerImpl).frbInternalSseEncode(move: null), serializer);
+        (self as EnvoyMasterDechunkerImpl).frbInternalSseEncode(move: null),
+        serializer);
   }
 
   @protected
@@ -2702,7 +2760,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_firmware_chunk(FirmwareChunk self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_u_8(self.diffIndex, serializer);
+    sse_encode_u_8(self.patchIndex, serializer);
     sse_encode_u_16(self.chunkIndex, serializer);
     sse_encode_list_prim_u_8_strict(self.data, serializer);
   }
@@ -2725,11 +2783,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_i_32(0, serializer);
         sse_encode_f_32(progress, serializer);
       case FirmwareDownloadResponse_Start(
-          diffIndex: final diffIndex,
+          patchIndex: final patchIndex,
           totalChunks: final totalChunks
         ):
         sse_encode_i_32(1, serializer);
-        sse_encode_u_8(diffIndex, serializer);
+        sse_encode_u_8(patchIndex, serializer);
         sse_encode_u_16(totalChunks, serializer);
       case FirmwareDownloadResponse_Chunk(field0: final field0):
         sse_encode_i_32(2, serializer);
@@ -2748,7 +2806,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.changelog, serializer);
     sse_encode_u_32(self.timestamp, serializer);
     sse_encode_u_32(self.size, serializer);
-    sse_encode_u_8(self.diffCount, serializer);
+    sse_encode_u_8(self.patchCount, serializer);
   }
 
   @protected
@@ -2824,6 +2882,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_list_quantum_link_message(
+      List<QuantumLinkMessage> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_quantum_link_message(item, serializer);
+    }
   }
 
   @protected
@@ -3101,22 +3169,24 @@ class ArcMutexDecoderImpl extends RustOpaque implements ArcMutexDecoder {
 }
 
 @sealed
-class DechunkerImpl extends RustOpaque implements Dechunker {
+class EnvoyMasterDechunkerImpl extends RustOpaque
+    implements EnvoyMasterDechunker {
   // Not to be used by end users
-  DechunkerImpl.frbInternalDcoDecode(List<dynamic> wire)
+  EnvoyMasterDechunkerImpl.frbInternalDcoDecode(List<dynamic> wire)
       : super.frbInternalDcoDecode(wire, _kStaticData);
 
   // Not to be used by end users
-  DechunkerImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+  EnvoyMasterDechunkerImpl.frbInternalSseDecode(
+      BigInt ptr, int externalSizeOnNative)
       : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
   static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_Dechunker,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_Dechunker,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_DechunkerPtr,
+    rustArcIncrementStrongCount: RustLib
+        .instance.api.rust_arc_increment_strong_count_EnvoyMasterDechunker,
+    rustArcDecrementStrongCount: RustLib
+        .instance.api.rust_arc_decrement_strong_count_EnvoyMasterDechunker,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance.api.rust_arc_decrement_strong_count_EnvoyMasterDechunkerPtr,
   );
 }
 
