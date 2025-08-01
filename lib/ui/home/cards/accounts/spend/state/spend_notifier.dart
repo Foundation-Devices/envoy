@@ -404,7 +404,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         return;
       }
       state = state.clone()..broadcastInProgress = true;
-      final server = SyncManager.getElectrumServer(account.network);
+      final server = Settings().electrumAddress(account.network);
       final syncManager = SyncManager();
       int? port = Settings().getPort(account.network);
       if (port == -1) {
