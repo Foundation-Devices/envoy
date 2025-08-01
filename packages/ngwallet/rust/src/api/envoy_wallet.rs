@@ -987,7 +987,10 @@ pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatu
                 .validate_domain(false)
                 .build()
         }
-        None => ConfigBuilder::new().build(),
+        None => ConfigBuilder::new()
+                .timeout(Some(10))
+                .validate_domain(true) 
+                .build(),
     };
 
     let client = match Client::from_config(&server, config) {
