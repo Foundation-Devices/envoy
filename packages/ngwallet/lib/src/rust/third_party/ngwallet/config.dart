@@ -33,6 +33,8 @@ enum AddressType {
 
 class NgAccountBackup {
   final NgAccountConfig ngAccountConfig;
+  final String xfp;
+  final List<(AddressType, String)> publicDescriptors;
   final List<(AddressType, KeychainKind, int)> lastUsedIndex;
   final Map<String, String> notes;
   final Map<String, String> tags;
@@ -40,6 +42,8 @@ class NgAccountBackup {
 
   const NgAccountBackup({
     required this.ngAccountConfig,
+    required this.xfp,
+    required this.publicDescriptors,
     required this.lastUsedIndex,
     required this.notes,
     required this.tags,
@@ -57,6 +61,8 @@ class NgAccountBackup {
   @override
   int get hashCode =>
       ngAccountConfig.hashCode ^
+      xfp.hashCode ^
+      publicDescriptors.hashCode ^
       lastUsedIndex.hashCode ^
       notes.hashCode ^
       tags.hashCode ^
@@ -68,6 +74,8 @@ class NgAccountBackup {
       other is NgAccountBackup &&
           runtimeType == other.runtimeType &&
           ngAccountConfig == other.ngAccountConfig &&
+          xfp == other.xfp &&
+          publicDescriptors == other.publicDescriptors &&
           lastUsedIndex == other.lastUsedIndex &&
           notes == other.notes &&
           tags == other.tags &&

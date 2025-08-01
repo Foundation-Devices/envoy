@@ -3,6 +3,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:convert';
+
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
@@ -212,38 +214,52 @@ class GlobalScrollBehavior extends ScrollBehavior {
 }
 
 Future<bool> isMigrationRequired() async {
-  //check if the user already has accounts
-  final hasAccounts =
+  // check if user has legacy accounts
+  bool hasAccounts =
       LocalStorage().prefs.containsKey(NgAccountManager.v1AccountsPrefKey);
-  //check if the user has already migrated
-
-  final migrationVersion = (await EnvoyStorage()
-      .getNoBackUpPreference(MigrationManager.migrationPrefs));
-
-  double? migrationVersionCode = (await EnvoyStorage()
-      .getNoBackUpPreference<double>(MigrationManager.migrationCodePrefs));
-
-  if (migrationVersion is String && migrationVersionCode == null) {
-    migrationVersionCode = double.parse(migrationVersion.replaceAll("v", ""));
+  if (hasAccounts) {
+    try {
+      hasAccounts = jsonDecode(LocalStorage()
+                  .prefs
+                  .getString(NgAccountManager.v1AccountsPrefKey) ??
+              "[]")
+          .isNotEmpty;
+    } catch (e) {
+      hasAccounts = false;
+    }
   }
 
-  kPrint("Migration version: $migrationVersionCode");
-  final hasMigrated = (await EnvoyStorage()
-          .getNoBackUpPreference(MigrationManager.migrationPrefs)) ==
-      MigrationManager.migrationVersion;
+  // get current migration version
+  double? currentMigrationVersion = await EnvoyStorage()
+      .getNoBackUpPreference<double>(MigrationManager.migrationCodePrefs);
 
-  bool requiresMigration = hasAccounts && !hasMigrated;
-  if (migrationVersionCode != null &&
-      (migrationVersionCode < MigrationManager.migrationVersionCode)) {
-    kPrint(
-        "Migration require: $migrationVersionCode < ${MigrationManager.migrationVersionCode}");
-    requiresMigration = true;
+  // handle legacy string-based version, TOOD: remove in v2.5
+  if (currentMigrationVersion == null) {
+    final legacyVersion = await EnvoyStorage()
+        .getNoBackUpPreference(MigrationManager.migrationPrefs);
+    if (legacyVersion is String) {
+      try {
+        currentMigrationVersion =
+            double.parse(legacyVersion.replaceAll("v", ""));
+      } catch (e) {
+        currentMigrationVersion = 0.0; // Treat as unmigrated
+      }
+    }
   }
 
-  if (migrationVersionCode == MigrationManager.migrationVersionCode) {
-    requiresMigration = false;
-  }
+  currentMigrationVersion ??= 0.0;
 
+  kPrint(
+      "Current migration version: $currentMigrationVersion, Required: ${MigrationManager.migrationVersionCode}");
+
+  if (currentMigrationVersion == 2.0 || currentMigrationVersion == 2.1) {
+    return true;
+  }
+  // Migration required if: has accounts AND version is outdated
+  final requiresMigration = hasAccounts &&
+      (currentMigrationVersion < MigrationManager.migrationVersionCode);
+
+  // Update version if no migration needed
   if (!requiresMigration) {
     await EnvoyStorage().setNoBackUpPreference(
         MigrationManager.migrationCodePrefs,

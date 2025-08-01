@@ -137,13 +137,11 @@ class MigrationManager {
     if (await Directory(newWalletDirectory).exists()) {
       await Directory(newWalletDirectory).delete(recursive: true);
     }
-    final walletOrder = List<String>.empty(growable: true);
     if (_ls.prefs.containsKey(NgAccountManager.v1AccountsPrefKey)) {
       List<dynamic> accountsJson =
           jsonDecode(_ls.prefs.getString(NgAccountManager.v1AccountsPrefKey)!)
               .toList();
-      List<LegacyAccount> legacyAccounts =
-          accountsJson.map((json) => LegacyAccount.fromJson(json)).toList();
+      final List<LegacyAccount> legacyAccounts = await loadLegacyAccounts();
 
       EnvoyReport().log(
         "Migration",
@@ -174,7 +172,7 @@ class MigrationManager {
         } catch (e) {
           EnvoyReport().log("Migration", "Error migrating meta: $e");
         }
-        await NgAccountManager().updateAccountOrder(walletOrder);
+
         for (var account in accounts) {
           account.dispose();
         }
@@ -201,6 +199,7 @@ class MigrationManager {
     final newWalletDirectory = NgAccountManager.walletsDirectory;
     final walletDirectory = Directory(newWalletDirectory);
     List<LegacyAccount> legacyAccounts = await loadLegacyAccounts();
+    List<LegacyUnifiedAccounts> unifiedLegacyAccounts = unify(legacyAccounts);
     final dirs = await walletDirectory.list().toList();
     // Track all accounts that are opened after merge, this will be used to dispose
     final List<EnvoyAccountHandler> accounts = [];
@@ -225,8 +224,21 @@ class MigrationManager {
           accounts.add(accountHandler);
         }
       }
-      EnvoyReport().log("Migration",
-          "XFP merge : merge strategy\n${needsMerges.map((k, v) => MapEntry(k.toString(), v.length)).entries.map((e) => "${e.key}: ${e.value}").join('\n')}");
+
+      String mergeStrategy = "";
+      for (var (xfp, network, index) in needsMerges.keys) {
+        List<EnvoyAccount>? states = await Future.wait(
+            needsMerges[(xfp, network, index)]!.map((e) => e.state()).toList());
+
+        mergeStrategy += "( $xfp $network $index ) -> ${needsMerges[(
+          xfp,
+          network,
+          index
+        )]!.length} | ${states.map((e) => " [${e.name} - ${e.deviceSerial}] ").join(",")} \n";
+      }
+      EnvoyReport()
+          .log("Migration", "XFP merge : merge strategy\n$mergeStrategy");
+
       for (var (xfp, network, index) in needsMerges.keys) {
         final accounts = needsMerges[(xfp, network, index)]!;
         //needs merge
@@ -287,6 +299,27 @@ class MigrationManager {
           }
         }
       }
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      //add missing legacy accounts
+      for (var legacyAccount in unifiedLegacyAccounts) {
+        if (legacyAccount.accounts.isEmpty) {
+          continue;
+        }
+        final dir = NgAccountManager.getAccountDirectory(
+            deviceSerial: legacyAccount.accounts.first.deviceSerial,
+            network: legacyAccount.accounts.first.wallet.network.toLowerCase(),
+            fingerprint: legacyAccount.fingerprint,
+            number: legacyAccount.accounts.first.number);
+        if (!await dir.exists()) {
+          final missingAccounts = await createAccounts([legacyAccount]);
+          for (var account in missingAccounts) {
+            await migrateMeta(account, legacyAccounts);
+            accounts.add(account);
+          }
+        }
+      }
       addMigrationEvent(
           MigrationProgress(total: dirs.length, completed: dirs.length));
       await Future.delayed(const Duration(milliseconds: 300));
@@ -329,13 +362,16 @@ class MigrationManager {
           legacyAccount.wallet.externalDescriptor;
       final fingerprint = NgAccountManager.getFingerprint(
           legacyAccount.wallet.internalDescriptor ?? "");
+
+      //probably hot wallet that does have descriptors
       if (fingerprint == null || descriptor == null) {
         throw Exception(
             "Failed to get fingerprint for account ${legacyAccount.name} ${legacyAccount.wallet.externalDescriptor} ${legacyAccount.wallet.internalDescriptor}");
       }
+
       Directory newAccountDir = NgAccountManager.getAccountDirectory(
           deviceSerial: legacyAccount.deviceSerial,
-          network: legacyAccount.wallet.network,
+          network: legacyAccount.wallet.network.toLowerCase(),
           fingerprint: fingerprint,
           number: legacyAccount.number);
 
@@ -407,9 +443,7 @@ class MigrationManager {
       handlers.add(envoyAccount);
       walletOrder.add(newId);
     }
-
-    await _ls.prefs
-        .setString(NgAccountManager.ACCOUNT_ORDER, jsonEncode(walletOrder));
+    await NgAccountManager().updateAccountOrder(walletOrder);
     return handlers;
   }
 
@@ -437,7 +471,7 @@ class MigrationManager {
         }
         unifiedWallets.add(LegacyUnifiedAccounts(
             accounts: accounts,
-            network: accounts.first.wallet.network,
+            network: accounts.first.wallet.network.toLowerCase(),
             fingerprint: fingerprint));
       } else {
         EnvoyReport().log(
@@ -460,7 +494,7 @@ class MigrationManager {
               accounts: [accountWithUniqueId],
               isUnified: false,
               fingerprint: fingerprint,
-              network: account.wallet.network));
+              network: account.wallet.network.toLowerCase()));
         }
       }
     }
@@ -481,7 +515,7 @@ class MigrationManager {
                 .contains(legacyAccount.wallet.network.toLowerCase()));
 
         kPrint(
-            "Migrating meta for ${legacyAccount.name} ${legacyAccount.wallet.network}");
+            "Migrating meta for ${legacyAccount.name} ${legacyAccount.wallet.network.toLowerCase()}");
         for (var descriptor in state.descriptors) {
           bool matchWithDescriptor =
               descriptor.internal == legacyAccount.wallet.internalDescriptor;
@@ -530,7 +564,6 @@ class MigrationManager {
 
       if (!await accountDir.exists()) {
         logBuffer += "Account directory does not exist: ${accountDir.path} ❌\n";
-        EnvoyReport().log("Migration", logBuffer);
         continue;
       }
 

@@ -191,14 +191,29 @@ class NgAccountManager extends ChangeNotifier {
                   if (walletPath == null) {
                     continue;
                   }
-                  //usually disposing takes a while
-                  await Future.delayed(const Duration(milliseconds: 1500));
-                  final accountHandler =
-                      await EnvoyAccountHandler.openAccount(dbPath: walletPath);
-                  _accountsHandler
-                      .add((await accountHandler.state(), accountHandler));
-                  EnvoyReport().log("Accounts",
-                      "Missing p2Tr descriptor added to ${account.name}");
+                  //frb some times takes too much time to dispose from the memory
+                  int attempts = 0;
+                  const maxAttempts = 3;
+                  EnvoyAccountHandler? accountHandler;
+                  while (attempts < maxAttempts) {
+                    try {
+                      accountHandler = await EnvoyAccountHandler.openAccount(
+                          dbPath: walletPath);
+                      _accountsHandler
+                          .add((await accountHandler.state(), accountHandler));
+                      EnvoyReport().log("Accounts",
+                          "Missing p2Tr descriptor added to ${account.name}");
+                      break;
+                    } catch (e) {
+                      attempts++;
+                      if (attempts >= maxAttempts) {
+                        EnvoyReport().log("Accounts",
+                            "Failed to reopen account ${account.name} after $maxAttempts attempts: $e");
+                        rethrow;
+                      }
+                      await Future.delayed(Duration(milliseconds: 1500));
+                    }
+                  }
                 } catch (e) {
                   EnvoyReport().log("Accounts",
                       "Error adding p2Tr descriptor to ${account.name} $e");

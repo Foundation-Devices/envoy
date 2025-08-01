@@ -321,9 +321,8 @@ class EnvoySeed {
     for (var accountHandler in NgAccountManager().handlers) {
       try {
         final state = await accountHandler.state();
-        final fingerprint = NgAccountManager.getFingerprint(
-            state.externalPublicDescriptors.first.$2);
-        if (fingerprint == null) {
+        final fingerprint = state.xfp;
+        if (fingerprint.isEmpty) {
           throw Exception(
               "Failed to get fingerprint for account ${state.name} ${state.descriptors.map((e) => "${e.external_} | ${e.internal}")}");
         }
@@ -414,9 +413,6 @@ class EnvoySeed {
       try {
         return Backup.restore(seed, Settings().envoyServerAddress, Tor.instance)
             .then((data) async {
-          final v1backupFile =
-              File("${LocalStorage().appDocumentsDir.path}/baclup.json");
-          v1backupFile.writeAsStringSync(jsonEncode(data));
           bool status = await processRecoveryData(seed!, data, passphrase);
           return status;
         }).catchError((e, st) {
@@ -769,18 +765,46 @@ class EnvoySeed {
       await store(seed);
       List<dynamic> accounts =
           jsonDecode(data[NgAccountManager.accountsPrefKey]!);
-      //no accounts in backup ? so derive from seed
-      await deriveAndAddWallets(seed,
-          passphrase: passphrase, requireScan: true);
+      List<NgAccountBackup> ngAccountBackups = [];
       for (var account in accounts) {
-        final config = EnvoyAccountHandler.getConfigFromBackup(
-            backupJson: jsonEncode(account));
-        if (config.descriptors.isEmpty) {
+        try {
+          final backup =
+              await NgAccountBackup.deserialize(data: jsonEncode(account));
+          ngAccountBackups.add(backup);
+        } catch (e, stack) {
+          EnvoyReport().log("EnvoySeed", "Error deserializing backup: $e",
+              stackTrace: stack);
+          rethrow;
+        }
+      }
+
+      for (var backUp in ngAccountBackups) {
+        final config = backUp.ngAccountConfig;
+        String fingerprint = backUp.xfp;
+        if (config.descriptors.isEmpty &&
+            backUp.publicDescriptors.isEmpty &&
+            fingerprint.isEmpty) {
+          //pre 2.1 wallets doesnt include xfp. also if descriptors are empty, derive from seed
+          await deriveAndAddWallets(seed,
+              passphrase: passphrase, requireScan: true);
           continue;
         }
-        final descriptor = config.descriptors.first.internal;
-        final fingerprint = NgAccountManager.getFingerprint(descriptor);
-        if (fingerprint == null) {
+        if (fingerprint.isEmpty) {
+          String? descriptor;
+          if (backUp.publicDescriptors.isNotEmpty) {
+            descriptor = backUp.publicDescriptors.first.$2;
+          } else if (config.descriptors.isNotEmpty) {
+            descriptor = config.descriptors.first.internal;
+          } else {
+            continue;
+          }
+          try {
+            fingerprint = NgAccountManager.getFingerprint(descriptor) ?? "";
+          } catch (e) {
+            //ignore
+          }
+        }
+        if (fingerprint.isEmpty) {
           continue;
         }
         Directory dir = NgAccountManager.getAccountDirectory(
@@ -802,12 +826,18 @@ class EnvoySeed {
         //both hot and cold wallets are restored from backup,
         //hot wallet descriptors will be derived from seed.
         final handler = await EnvoyAccountHandler.restoreFromBackup(
-            backupJson: jsonEncode(account),
+            backup: backUp,
             dbPath: dir.path,
             seed: seed,
             passphrase: passphrase);
         final state = await handler.state();
         await NgAccountManager().addAccount(state, handler);
+      }
+
+      if (!NgAccountManager().hotAccountsExist()) {
+        //pre 2.1 wallets doesnt include xfp. also if descriptors are empty, derive from seed
+        await deriveAndAddWallets(seed,
+            passphrase: passphrase, requireScan: true);
       }
     } catch (e, stack) {
       EnvoyReport()

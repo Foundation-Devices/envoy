@@ -182,12 +182,14 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
                     SizedBox(
                       height: 8,
                     ),
-                    Text(
-                      S().onboarding_migrating_xOfYSynced(
-                          progress.completed, progress.total),
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.body.copyWith(color: Colors.white),
-                    ),
+                    if (!progress.indeterminate())
+                      Text(
+                        S().onboarding_migrating_xOfYSynced(
+                            progress.completed, progress.total),
+                        textAlign: TextAlign.center,
+                        style:
+                            EnvoyTypography.body.copyWith(color: Colors.white),
+                      ),
                   ],
                 ),
               ))
