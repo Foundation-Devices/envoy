@@ -181,30 +181,31 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_apply_update_impl(
             let api_address_type = <ngwallet::config::AddressType>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let mut api_that_guard = None;
-                    let decode_indices_ =
-                        flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
-                            flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                &api_that, 0, true,
-                            ),
-                        ]);
-                    for i in decode_indices_ {
-                        match i {
-                            0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
-                            _ => unreachable!(),
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, true,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                                _ => unreachable!(),
+                            }
                         }
-                    }
-                    let mut api_that_guard = api_that_guard.unwrap();
-                    let output_ok = Result::<_, ()>::Ok({
-                        crate::api::envoy_wallet::EnvoyAccountHandler::apply_update(
-                            &mut *api_that_guard,
-                            api_update,
-                            api_address_type,
-                        );
-                    })?;
-                    Ok(output_ok)
-                })())
+                        let mut api_that_guard = api_that_guard.unwrap();
+                        let output_ok =
+                            crate::api::envoy_wallet::EnvoyAccountHandler::apply_update(
+                                &mut *api_that_guard,
+                                api_update,
+                                api_address_type,
+                            )?;
+                        Ok(output_ok)
+                    })(),
+                )
             }
         },
     )
@@ -3414,6 +3415,7 @@ impl SseDecode for crate::api::envoy_account::EnvoyAccount {
             <Vec<ngwallet::transaction::BitcoinTransaction>>::sse_decode(deserializer);
         let mut var_utxo = <Vec<ngwallet::transaction::Output>>::sse_decode(deserializer);
         let mut var_tags = <Vec<String>>::sse_decode(deserializer);
+        let mut var_xfp = <String>::sse_decode(deserializer);
         let mut var_externalPublicDescriptors =
             <Vec<(ngwallet::config::AddressType, String)>>::sse_decode(deserializer);
         return crate::api::envoy_account::EnvoyAccount {
@@ -3436,6 +3438,7 @@ impl SseDecode for crate::api::envoy_account::EnvoyAccount {
             transactions: var_transactions,
             utxo: var_utxo,
             tags: var_tags,
+            xfp: var_xfp,
             external_public_descriptors: var_externalPublicDescriptors,
         };
     }
@@ -4754,6 +4757,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::envoy_account::EnvoyAccount {
             self.transactions.into_into_dart().into_dart(),
             self.utxo.into_into_dart().into_dart(),
             self.tags.into_into_dart().into_dart(),
+            self.xfp.into_into_dart().into_dart(),
             self.external_public_descriptors
                 .into_into_dart()
                 .into_dart(),
@@ -5434,6 +5438,7 @@ impl SseEncode for crate::api::envoy_account::EnvoyAccount {
         <Vec<ngwallet::transaction::BitcoinTransaction>>::sse_encode(self.transactions, serializer);
         <Vec<ngwallet::transaction::Output>>::sse_encode(self.utxo, serializer);
         <Vec<String>>::sse_encode(self.tags, serializer);
+        <String>::sse_encode(self.xfp, serializer);
         <Vec<(ngwallet::config::AddressType, String)>>::sse_encode(
             self.external_public_descriptors,
             serializer,

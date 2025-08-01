@@ -6,6 +6,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:backup/backup.dart';
@@ -413,6 +414,9 @@ class EnvoySeed {
       try {
         return Backup.restore(seed, Settings().envoyServerAddress, Tor.instance)
             .then((data) async {
+          final v1backupFile =
+              File("${LocalStorage().appDocumentsDir.path}/baclup.json");
+          v1backupFile.writeAsStringSync(jsonEncode(data));
           bool status = await processRecoveryData(seed!, data, passphrase);
           return status;
         }).catchError((e, st) {
@@ -458,6 +462,8 @@ class EnvoySeed {
       } catch (e) {
         EnvoyReport().log("EnvoySeed", "Error restoring database: $e");
       }
+      log("NgAccountManager.accountsPrefKey ${data.containsKey(NgAccountManager.accountsPrefKey)}");
+      log("EnvoyStorage.dbName ${data.containsKey(EnvoyStorage.dbName)}");
 
       // if the data does not contains v2 backup at root (NgAccountManager.accountsPrefKey) at root,
       // Data is from older backups,so we need to restore legacy wallets
@@ -603,8 +609,14 @@ class EnvoySeed {
 
     List<dynamic> stores = json["stores"];
     var preferences = stores
-        .singleWhere((element) => element["name"] == preferencesStoreName);
+        .firstWhereOrNull((element) => element["name"] == preferencesStoreName);
 
+    if (preferences == null) {
+      return [];
+    }
+    if (preferences.isEmpty) {
+      return [];
+    }
     List<String> keys = List<String>.from(preferences["keys"]);
     List<dynamic> values = preferences["values"];
 
@@ -758,19 +770,18 @@ class EnvoySeed {
       List<dynamic> accounts =
           jsonDecode(data[NgAccountManager.accountsPrefKey]!);
       //no accounts in backup ? so derive from seed
-      if (accounts.isEmpty) {
-        await deriveAndAddWallets(seed,
-            passphrase: passphrase, requireScan: true);
-        return;
-      }
+      await deriveAndAddWallets(seed,
+          passphrase: passphrase, requireScan: true);
       for (var account in accounts) {
         final config = EnvoyAccountHandler.getConfigFromBackup(
             backupJson: jsonEncode(account));
+        if (config.descriptors.isEmpty) {
+          continue;
+        }
         final descriptor = config.descriptors.first.internal;
         final fingerprint = NgAccountManager.getFingerprint(descriptor);
         if (fingerprint == null) {
-          throw Exception(
-              "Failed to get fingerprint for account ${config.name} $descriptor deviceSerial ${config.deviceSerial}");
+          continue;
         }
         Directory dir = NgAccountManager.getAccountDirectory(
           deviceSerial: config.deviceSerial ?? "envoy",
@@ -778,15 +789,6 @@ class EnvoySeed {
           number: config.index,
           fingerprint: fingerprint,
         );
-        //any account that are affected by SFT-5217 issue,these require unique path
-        if (account.containsKey("require_unique_path")) {
-          dir = NgAccountManager.getAccountDirectory(
-              deviceSerial: config.deviceSerial ?? "envoy",
-              network: config.network.toString(),
-              number: config.index,
-              fingerprint: config.id);
-        }
-
         if (await dir.exists()) {
           bool existInAccountManager = NgAccountManager()
               .accounts
@@ -807,8 +809,9 @@ class EnvoySeed {
         final state = await handler.state();
         await NgAccountManager().addAccount(state, handler);
       }
-    } catch (e) {
-      EnvoyReport().log("EnvoySeed", "Error restoring accounts: $e");
+    } catch (e, stack) {
+      EnvoyReport()
+          .log("EnvoySeed", "Error restoring accounts: $e", stackTrace: stack);
     }
   }
 }

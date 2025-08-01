@@ -486,7 +486,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
-        decodeErrorData: null,
+        decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerApplyUpdateConstMeta,
       argValues: [that, update, addressType],
@@ -2685,8 +2685,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   EnvoyAccount dco_decode_envoy_account(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 20)
-      throw Exception('unexpected arr length: expect 20 but see ${arr.length}');
+    if (arr.length != 21)
+      throw Exception('unexpected arr length: expect 21 but see ${arr.length}');
     return EnvoyAccount(
       name: dco_decode_String(arr[0]),
       color: dco_decode_String(arr[1]),
@@ -2707,8 +2707,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       transactions: dco_decode_list_bitcoin_transaction(arr[16]),
       utxo: dco_decode_list_output(arr[17]),
       tags: dco_decode_list_String(arr[18]),
+      xfp: dco_decode_String(arr[19]),
       externalPublicDescriptors:
-          dco_decode_list_record_address_type_string(arr[19]),
+          dco_decode_list_record_address_type_string(arr[20]),
     );
   }
 
@@ -3579,6 +3580,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_transactions = sse_decode_list_bitcoin_transaction(deserializer);
     var var_utxo = sse_decode_list_output(deserializer);
     var var_tags = sse_decode_list_String(deserializer);
+    var var_xfp = sse_decode_String(deserializer);
     var var_externalPublicDescriptors =
         sse_decode_list_record_address_type_string(deserializer);
     return EnvoyAccount(
@@ -3601,6 +3603,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         transactions: var_transactions,
         utxo: var_utxo,
         tags: var_tags,
+        xfp: var_xfp,
         externalPublicDescriptors: var_externalPublicDescriptors);
   }
 
@@ -4557,6 +4560,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_list_bitcoin_transaction(self.transactions, serializer);
     sse_encode_list_output(self.utxo, serializer);
     sse_encode_list_String(self.tags, serializer);
+    sse_encode_String(self.xfp, serializer);
     sse_encode_list_record_address_type_string(
         self.externalPublicDescriptors, serializer);
   }

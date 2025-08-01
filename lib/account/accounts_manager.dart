@@ -111,8 +111,12 @@ class NgAccountManager extends ChangeNotifier {
   NgAccountManager._internal();
 
   Future restore() async {
-    for (var accountHandler in _accountsHandler) {
-      accountHandler.$2.dispose();
+    if (_accountsHandler.isNotEmpty) {
+      for (var accountHandler in _accountsHandler) {
+        accountHandler.$2.dispose();
+      }
+      //wait for the accounts to be disposed
+      await Future.delayed(const Duration(milliseconds: 1500));
     }
     _accountsHandler.clear();
     final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
@@ -141,50 +145,73 @@ class NgAccountManager extends ChangeNotifier {
     }
 
     sortByAccountOrder(_accountsHandler, order, (e) => e.$1.id);
+    await deriveMissingTypes();
 
     SyncManager().startSync();
     _accountsOrder.sink.add(order);
     notifyListeners();
+    for (var stream in streams) {
+      _syncSubscription.add(stream.listen((_) {
+        notifyIfAccountBalanceHigherThanUsd1000();
+      }));
+    }
+  }
 
-    if (hotAccountsExist()) {
-      for (var element in accounts) {
-        if (element.isHot) {
-          bool isP2TrDerived = element.descriptors
-              .any((element) => element.addressType == AddressType.p2Tr);
-          kPrint("isP2TrDerived: $isP2TrDerived");
-          if (!isP2TrDerived) {
-            final seed = await EnvoySeed().get();
-            if (seed != null && !element.seedHasPassphrase) {
-              try {
-                final derivations = await EnvoyBip39.deriveDescriptorFromSeed(
-                    seedWords: seed,
-                    network: element.network,
-                    passphrase: null);
-                final descriptor = derivations
-                    .where((element) => element.addressType == AddressType.p2Tr)
-                    .map((element) => NgDescriptor(
-                          internal: element.internalDescriptor,
-                          external_: element.externalDescriptor,
-                          addressType: element.addressType,
-                        ))
-                    .first;
-                element.handler?.addDescriptor(ngDescriptor: descriptor);
-                EnvoyReport().log("Accounts",
-                    "Missing p2Tr descriptor added to ${element.name}");
-              } catch (e) {
-                EnvoyReport().log("Accounts",
-                    "Error adding p2Tr descriptor to ${element.name} $e");
+  Future deriveMissingTypes() async {
+    try {
+      if (hotAccountsExist()) {
+        for (var account in accounts) {
+          if (account.isHot) {
+            EnvoyAccountHandler? handler = account.handler;
+            bool isP2TrDerived = account.descriptors
+                .any((element) => element.addressType == AddressType.p2Tr);
+            kPrint("isP2TrDerived: $isP2TrDerived");
+            if (!isP2TrDerived) {
+              final seed = await EnvoySeed().get();
+              if (seed != null && !account.seedHasPassphrase) {
+                try {
+                  final derivations = await EnvoyBip39.deriveDescriptorFromSeed(
+                      seedWords: seed,
+                      network: account.network,
+                      passphrase: null);
+                  final descriptor = derivations
+                      .where(
+                          (element) => element.addressType == AddressType.p2Tr)
+                      .map((element) => NgDescriptor(
+                            internal: element.internalDescriptor,
+                            external_: element.externalDescriptor,
+                            addressType: element.addressType,
+                          ))
+                      .first;
+                  handler?.addDescriptor(ngDescriptor: descriptor);
+                  _accountsHandler.removeWhere((e) => e.$1.id == account.id);
+                  final walletPath = account.walletPath;
+                  handler?.dispose();
+                  _accountsHandler.removeWhere((e) => e.$1.id == account.id);
+                  if (walletPath == null) {
+                    continue;
+                  }
+                  //usually disposing takes a while
+                  await Future.delayed(const Duration(milliseconds: 1500));
+                  final accountHandler =
+                      await EnvoyAccountHandler.openAccount(dbPath: walletPath);
+                  _accountsHandler
+                      .add((await accountHandler.state(), accountHandler));
+                  EnvoyReport().log("Accounts",
+                      "Missing p2Tr descriptor added to ${account.name}");
+                } catch (e) {
+                  EnvoyReport().log("Accounts",
+                      "Error adding p2Tr descriptor to ${account.name} $e");
+                }
               }
             }
           }
         }
       }
+    } catch (e, stack) {
+      EnvoyReport().log("Accounts", "Error deriving missing types: $e",
+          stackTrace: stack);
     }
-    // for (var stream in streams) {
-    //   _syncSubscription.add(stream.listen((_) {
-    //     notifyIfAccountBalanceHigherThanUsd1000();
-    //   }));
-    // }
   }
 
   EnvoyAccount? getAccountById(String id) {
@@ -266,11 +293,15 @@ class NgAccountManager extends ChangeNotifier {
   static String? getFingerprint(String descriptor) {
     final regex = RegExp(r'\[([0-9a-f]{8})/');
     final matches = regex.allMatches(descriptor);
-    if (matches.isEmpty) {
-      EnvoyReport().log("Accounts", "Invalid fingerprint $descriptor");
+    try {
+      if (matches.isEmpty) {
+        EnvoyReport().log("Accounts", "Invalid fingerprint $descriptor");
+        return null;
+      }
+      return matches.map((m) => m.group(1)).first;
+    } catch (e) {
       return null;
     }
-    return matches.map((m) => m.group(1)!).first;
   }
 
   Future<bool> checkIfWalletFromSeedExists(String seed,
@@ -344,7 +375,7 @@ class NgAccountManager extends ChangeNotifier {
     required int number,
     required String fingerprint,
   }) {
-    return "${deviceSerial}_${network.toLowerCase()}_acc_${number}_$fingerprint";
+    return "${deviceSerial}_${network.toLowerCase()}_${fingerprint}_acc_$number";
   }
 
   void setTaprootEnabled(bool taprootEnabled) async {

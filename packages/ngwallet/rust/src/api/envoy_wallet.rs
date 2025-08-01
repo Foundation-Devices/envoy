@@ -372,6 +372,7 @@ impl EnvoyAccountHandler {
                     transactions,
                     unlocked_balance: 0,
                     utxo: utxo.clone(),
+                    xfp: account.get_xfp().to_lowercase(),
                     tags,
                     external_public_descriptors,
                 })

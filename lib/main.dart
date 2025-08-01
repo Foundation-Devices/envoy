@@ -84,6 +84,7 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   NgAccountManager.init();
 
   if (!(await isMigrationRequired())) {
+    kPrint("Restoring accounts");
     await NgAccountManager().restore();
   }
   await NTPUtil.init();
@@ -231,18 +232,23 @@ Future<bool> isMigrationRequired() async {
           .getNoBackUpPreference(MigrationManager.migrationPrefs)) ==
       MigrationManager.migrationVersion;
 
-  //
+  bool requiresMigration = hasAccounts && !hasMigrated;
   if (migrationVersionCode != null &&
       (migrationVersionCode < MigrationManager.migrationVersionCode)) {
     kPrint(
-        "Migration required: $migrationVersionCode < ${MigrationManager.migrationVersionCode}");
-    return true;
+        "Migration require: $migrationVersionCode < ${MigrationManager.migrationVersionCode}");
+    requiresMigration = true;
   }
 
   if (migrationVersionCode == MigrationManager.migrationVersionCode) {
-    return false;
+    requiresMigration = false;
   }
-  kPrint("Migration required: ${hasAccounts && !hasMigrated}}");
 
-  return hasAccounts && !hasMigrated;
+  if (!requiresMigration) {
+    await EnvoyStorage().setNoBackUpPreference(
+        MigrationManager.migrationCodePrefs,
+        MigrationManager.migrationVersionCode);
+  }
+
+  return requiresMigration;
 }

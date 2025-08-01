@@ -52,6 +52,7 @@ class EmptyAccountsCard extends StatelessWidget {
                       color: Color(0xFFBF755F).toHex(),
                       dateSynced: null,
                       tags: [],
+                      xfp: "",
                       externalPublicDescriptors: []),
                   onTap: () {}),
             ),
