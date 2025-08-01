@@ -984,6 +984,7 @@ pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatu
             ConfigBuilder::new()
                 .timeout(Some(10))
                 .socks5(Some(socks))
+                .validate_domain(false)
                 .build()
         }
         None => ConfigBuilder::new().build(),
