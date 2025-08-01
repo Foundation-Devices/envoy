@@ -6,6 +6,7 @@ import 'dart:async';
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/node_url.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -83,6 +84,9 @@ class SyncManager {
     final server = Settings().electrumAddress(account.network);
     int? port = Settings().getPort(account.network);
     if (port == -1) {
+      port = null;
+    }
+    if (isPrivateAddress(server)) {
       port = null;
     }
     try {
@@ -206,6 +210,9 @@ class SyncManager {
         if (port == -1) {
           port = null;
         }
+        if (isPrivateAddress(server)) {
+          port = null;
+        }
 
         final request = _syncRequests[entry.key];
         if (request == null || account.handler == null) {
@@ -281,7 +288,9 @@ class SyncManager {
     if (port == -1) {
       port = null;
     }
-
+    if (isPrivateAddress(server)) {
+      port = null;
+    }
     kPrint(
         "🔍 PerformFullScan $addressType - ${account.name} | ${account.network} | $server | Tor: ${port != null} | request_disposed:${fullScanRequest.isDisposed}");
     _currentLoading.sink.add(Scanning(account.id));
