@@ -4,23 +4,30 @@
 
 import 'dart:async';
 import 'dart:io' show Platform;
+
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/backup_section_title.dart';
+import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
 import 'package:envoy/ui/home/settings/backup/export_backup_modal.dart';
 import 'package:envoy/ui/home/settings/backup/export_seed_modal.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
+import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/state/global_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart' as new_colors;
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/string_utils.dart';
@@ -28,12 +35,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/components/envoy_scaffold.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart' as new_colors;
-import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
-import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BackupPage extends ConsumerStatefulWidget {
@@ -50,6 +51,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
   Timer? _timer;
   bool _advancedVisible = false;
   double? bottomPhoneOffset;
+  bool _isExportInProgress = false;
 
   @override
   void initState() {
@@ -330,13 +332,36 @@ class _BackupPageState extends ConsumerState<BackupPage>
                               ),
                               ListTile(
                                 dense: true,
-                                onTap: () {},
+                                trailing: _isExportInProgress
+                                    ? SizedBox.square(
+                                        dimension: 12,
+                                        child: const CircularProgressIndicator(
+                                          strokeWidth: 1,
+                                        ),
+                                      )
+                                    : null,
                                 contentPadding: const EdgeInsets.all(0),
                                 title: SettingText(
-                                    S().backups_downloadBIP329BackupFile,
-                                    onTap: () {
-                                  NgAccountManager().exportBIP329(ref);
-                                }),
+                                  S().backups_downloadBIP329BackupFile,
+                                  onTap: () async {
+                                    if (!_isExportInProgress) {
+                                      setState(() {
+                                        _isExportInProgress = true;
+                                      });
+                                      try {
+                                        await NgAccountManager()
+                                            .exportBIP329(ref);
+                                        setState(() {
+                                          _isExportInProgress = false;
+                                        });
+                                      } catch (_) {
+                                        setState(() {
+                                          _isExportInProgress = false;
+                                        });
+                                      }
+                                    }
+                                  },
+                                ),
                               ),
                             ],
                           ),
