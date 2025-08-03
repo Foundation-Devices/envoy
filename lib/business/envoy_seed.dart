@@ -257,7 +257,6 @@ class EnvoySeed {
 
     //add accounts
     backupData = await processBackupData(backupData, cloud);
-
     return Backup.perform(
             backupData, seed, Settings().envoyServerAddress, Tor.instance,
             path: encryptedBackupFilePath, cloud: cloud)

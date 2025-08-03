@@ -222,7 +222,7 @@ class Settings extends ChangeNotifier {
     return !torEnabled() || isPrivateAddress(address);
   }
 
-  int? getPort(Network network, String server) {
+  int? getTorPort(Network network, String server) {
     int? port =
         onTorWhitelist(electrumAddress(network)) ? -1 : Tor.instance.port;
     if (port == -1) {
