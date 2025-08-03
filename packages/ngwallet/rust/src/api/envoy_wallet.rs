@@ -2,38 +2,22 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use std::any::Any;
-use std::collections::{BTreeMap, HashMap};
-use std::env;
-use std::fmt::format;
-use std::fs::File;
-use std::iter::Map;
+use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
-use std::sync::{Arc, LockResult, Mutex};
+use std::sync::{Arc, Mutex};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
-use std::{fs, thread};
 
-use anyhow::{anyhow, Context, Error, Result};
-use bdk_wallet::bip39::{Language, Mnemonic};
-use bdk_wallet::bitcoin::address::{NetworkUnchecked, ParseError};
-use bdk_wallet::bitcoin::base64::Engine;
-use bdk_wallet::bitcoin::bip32::Error::Secp256k1;
-use bdk_wallet::bitcoin::{absolute, psbt, Address, Amount, OutPoint, Sequence, Txid};
+use anyhow::{anyhow, Error, Result};
+use bdk_wallet::bitcoin::Address;
 pub use bdk_wallet::bitcoin::{Network, Psbt, ScriptBuf};
-use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
-use bdk_wallet::chain::{CheckPoint, Indexed};
-use bdk_wallet::descriptor::policy::PolicyError;
-use bdk_wallet::descriptor::{DescriptorError, ExtendedDescriptor};
-use bdk_wallet::error::{CreateTxError, MiniscriptPsbtError};
-use bdk_wallet::rusqlite::{Connection, OpenFlags};
-use bdk_wallet::serde::{Deserialize, Serialize};
-use bdk_wallet::serde_json::json;
+use bdk_wallet::chain::spk_client::{FullScanRequest, SyncRequest};
+use bdk_wallet::rusqlite::Connection;
 use bdk_wallet::{
-    bitcoin, coin_selection, AddressInfo, KeychainKind, PersistedWallet, Update, Wallet, WalletTx,
+    KeychainKind, Update,
 };
-use chrono::{DateTime, Local, Utc};
-use flutter_rust_bridge::{frb, PanicBacktrace};
+use chrono::Utc;
+use flutter_rust_bridge::frb;
 use log::info;
 use ngwallet::account::{Descriptor, NgAccount};
 use ngwallet::bdk_electrum::electrum_client::{Client, ConfigBuilder, ElectrumApi, Socks5Config};
@@ -41,10 +25,8 @@ use ngwallet::config::{
     AddressType, NgAccountBackup, NgAccountBuilder, NgAccountConfig, NgDescriptor,
 };
 use ngwallet::ngwallet::NgWallet;
-use ngwallet::rbf::BumpFeeError;
-use ngwallet::redb::backends::FileBackend;
 use ngwallet::send::{
-    DraftTransaction, TransactionComposeError, TransactionFeeResult, TransactionParams,
+    DraftTransaction, TransactionFeeResult, TransactionParams,
 };
 use ngwallet::transaction::{BitcoinTransaction, Output};
 
@@ -108,7 +90,7 @@ impl EnvoyAccountHandler {
     ) -> Result<EnvoyAccountHandler> {
         let descriptors = Self::get_descriptors(&descriptors, db_path.clone());
 
-        let mut ng_account = NgAccountBuilder::default()
+        let ng_account = NgAccountBuilder::default()
             .name(name.clone())
             .color(color.clone())
             .descriptors(descriptors)
@@ -848,7 +830,7 @@ impl EnvoyAccountHandler {
                 match ng_account {
                     Ok(mut account) => {
                         // Reveal addresses up to the last used index
-                        for mut wallet in &mut account.wallets {
+                        for wallet in &mut account.wallets {
                             let address_type = wallet.address_type;
                             for index in &indexes {
                                 if index.0 == address_type {
