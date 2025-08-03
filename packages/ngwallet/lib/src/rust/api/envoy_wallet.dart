@@ -88,6 +88,8 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
           .crateApiEnvoyWalletEnvoyAccountHandlerDeserializeBackup(
               backupJson: backupJson);
 
+  Future<List<String>> exportBip329Data();
+
   static Future<EnvoyAccountHandler> fromConfig(
           {required String dbPath, required NgAccountConfig config}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerFromConfig(

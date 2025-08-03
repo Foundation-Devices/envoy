@@ -11,14 +11,12 @@ import 'dart:typed_data';
 
 import 'package:envoy/account/device_manager.dart';
 import 'package:envoy/account/sync_manager.dart';
-import 'package:envoy/business/bip329.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -487,34 +485,9 @@ class NgAccountManager extends ChangeNotifier {
     List<String> allData = [];
 
     for (EnvoyAccount account in accounts) {
-      List<Output> latestOutputs = ref.read(outputsProvider(account.id));
-      List<Output> mergedUtxos =
-          mergeLatestOutputs(account.utxo, latestOutputs);
-      for (var descriptor in account.externalPublicDescriptors) {
-        String xpub = getXpub(descriptor.$2, account);
-        String xpubData = buildKeyJson("xpub", xpub, account.name);
-        allData.add(xpubData);
-
-        // Get output data and add each entry to allData
-        List<String> outputData = await getUtxosData(mergedUtxos);
-        allData.addAll(outputData);
-
-        // TODO: Link transactions to the correct descriptor.
-        // Currently, all transactions are linked to the first external descriptor only.
-        if (descriptor == account.externalPublicDescriptors.first) {
-          // Get transaction data and add each entry to allData
-          List<String> txData = await getTxData(account.id, descriptor.$2, ref);
-          allData.addAll(txData);
-        }
-      }
-      // Get xpub and create JSON data
-
-      // Join each JSON string with a newline character
-
-      // Save the file
+      List<String> accountData = await account.handler!.exportBip329Data();
+      allData.addAll(accountData);
     }
-    // Remove duplicates
-    allData = allData.toSet().toList();
 
     String fileContent = allData.join('\n');
     Uint8List fileContentBytes = Uint8List.fromList(utf8.encode(fileContent));

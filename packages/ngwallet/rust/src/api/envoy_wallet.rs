@@ -984,6 +984,11 @@ impl EnvoyAccountHandler {
     pub fn get_config_from_remote(remote_update: Vec<u8>) -> Result<NgAccountConfig> {
         NgAccountConfig::from_remote(remote_update)
     }
+
+    pub fn export_bip329_data(&self) -> Result<Vec<String>> {
+        let account = self.ng_account.lock().unwrap();
+        account.get_bip329_data()
+    }
 }
 
 #[derive(Clone, Debug)]
