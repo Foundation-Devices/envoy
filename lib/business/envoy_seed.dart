@@ -306,6 +306,9 @@ class EnvoySeed {
     // SFT-2447: flip cloud syncing to false if we're making an offline file
     if (isOnlineBackup) {
       try {
+        if (!keys.contains(Settings.SETTINGS_PREFS)) {
+          return backupData;
+        }
         var settings = values[keys.indexOf(Settings.SETTINGS_PREFS)];
         var jsonSettings = jsonDecode(settings);
         jsonSettings["syncToCloudSetting"] = false;
@@ -313,6 +316,7 @@ class EnvoySeed {
         json["stores"][indexOfPreferences]["values"]
             [keys.indexOf(Settings.SETTINGS_PREFS)] = settings;
       } catch (e, stack) {
+        debugPrintStack(stackTrace: stack);
         EnvoyReport()
             .log("EnvoySeed checking online", e.toString(), stackTrace: stack);
       }

@@ -62,6 +62,7 @@ class SyncManager {
   }
 
   startSync() {
+    kPrint("SyncManager: Starting sync");
     _syncTimer =
         Timer.periodic(const Duration(seconds: _syncInterval), (timer) {
       if (NgAccountManager().accounts.isEmpty || _pauseSync) {
@@ -110,6 +111,8 @@ class SyncManager {
   }
 
   Future<void> _syncAll() async {
+    print("SyncManager : Restoring accounts : syncaccounts");
+
     bool syncTestnet = Settings().showTestnetAccounts();
     bool syncSignet = Settings().showSignetAccounts();
     final accounts = NgAccountManager().accounts;

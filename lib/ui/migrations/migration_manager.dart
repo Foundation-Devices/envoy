@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/legacy/legacy_account.dart';
 import 'package:envoy/business/local_storage.dart';
@@ -116,15 +117,24 @@ class MigrationManager {
     kPrint("Migration version: $currentMigrationVersion");
     if (currentMigrationVersion != null &&
         currentMigrationVersion < migrationVersionCode) {
-      await mergeWithFingerPrint();
-      await Future.delayed(const Duration(milliseconds: 50));
-      await sanityCheck();
-      await Future.delayed(const Duration(milliseconds: 50));
-      _onMigrationFinished?.call();
+      try {
+        await mergeWithFingerPrint();
+        await Future.delayed(const Duration(milliseconds: 50));
+        await sanityCheck();
+        await Future.delayed(const Duration(milliseconds: 50));
+        _onMigrationFinished?.call();
+      } catch (e) {
+        _onMigrationError?.call();
+      }
     } else if (currentMigrationVersion == null) {
-      await migrateToV2();
-      await Future.delayed(const Duration(milliseconds: 50));
-      await sanityCheck();
+      try {
+        await migrateToV2();
+        await Future.delayed(const Duration(milliseconds: 50));
+        await sanityCheck();
+        _onMigrationFinished?.call();
+      } catch (e) {
+        _onMigrationError?.call();
+      }
     } else {
       _onMigrationFinished?.call();
     }
@@ -153,7 +163,6 @@ class MigrationManager {
 
       final accounts = await createAccounts(unifiedLegacyAccounts);
       if (accounts.isEmpty) {
-        _onMigrationFinished?.call();
         return;
       }
       try {
@@ -181,19 +190,20 @@ class MigrationManager {
             File("${LocalStorage().appDocumentsDir.path}/v1_accounts.json");
         await v1backupFile.create(recursive: true);
         await v1backupFile.writeAsString(jsonEncode(accountsJson));
-        _onMigrationFinished?.call();
-      } catch (e) {
-        _onMigrationError?.call();
-        EnvoyReport().log("Migration", "Error migrating accounts: $e");
+      } catch (e, stack) {
+        EnvoyReport().log("Migration", "Error migrating accounts: $e",
+            stackTrace: stack);
+        rethrow;
       }
       //   //Load accounts to account manager
     } else {
       EnvoyReport().log("Migration", "No accounts found");
-      _onMigrationFinished?.call();
     }
   }
 
   //2.2
+  //move accounts with same fingerprint to new directory
+  //the directory name will be {deviceSerial}_{network}_{xfp}_acc_{index}
   Future mergeWithFingerPrint() async {
     EnvoyReport().log("Migration", "Merging with fingerprint");
     final newWalletDirectory = NgAccountManager.walletsDirectory;
@@ -205,31 +215,35 @@ class MigrationManager {
     final List<EnvoyAccountHandler> accounts = [];
     try {
       Map<(String, Network, int), List<EnvoyAccountHandler>> needsMerges = {};
-      addMigrationEvent(MigrationProgress(total: dirs.length, completed: 1));
       for (var dir in dirs) {
         if (dir is Directory) {
-          final accountHandler =
-              await EnvoyAccountHandler.openAccount(dbPath: dir.path);
-          final state = await accountHandler.state();
-          kPrint("Checking dir: ${dir.path} ");
-          if (needsMerges
-              .containsKey((state.xfp, state.network, state.index))) {
-            needsMerges[(state.xfp, state.network, state.index)]!
-                .add(accountHandler);
-          } else {
-            needsMerges[(state.xfp, state.network, state.index)] = [
-              accountHandler
-            ];
+          try {
+            final accountHandler =
+                await EnvoyAccountHandler.openAccount(dbPath: dir.path);
+            final state = await accountHandler.state();
+            kPrint("Checking dir: ${dir.path} ");
+            if (needsMerges
+                .containsKey((state.xfp, state.network, state.index))) {
+              needsMerges[(state.xfp, state.network, state.index)]!
+                  .add(accountHandler);
+            } else {
+              needsMerges[(state.xfp, state.network, state.index)] = [
+                accountHandler
+              ];
+            }
+            accounts.add(accountHandler);
+          } catch (e, stack) {
+            EnvoyReport().log("Migration", "Error opening wallet: $e",
+                stackTrace: stack);
           }
-          accounts.add(accountHandler);
         }
       }
 
+      //for debugging purposes
       String mergeStrategy = "";
       for (var (xfp, network, index) in needsMerges.keys) {
         List<EnvoyAccount>? states = await Future.wait(
             needsMerges[(xfp, network, index)]!.map((e) => e.state()).toList());
-
         mergeStrategy += "( $xfp $network $index ) -> ${needsMerges[(
           xfp,
           network,
@@ -247,11 +261,14 @@ class MigrationManager {
         } else {
           //relocate and check missing descriptors
           if (accounts.length == 1) {
-            final parentAccount = accounts.first;
-            final parentAccountState = await accounts.first.state();
-            final addressTypes = parentAccountState.descriptors
+            final firstAccount = accounts.first;
+            final firstAccountState = await accounts.first.state();
+            final addressTypes = firstAccountState.descriptors
                 .map((e) => e.addressType)
                 .toList();
+            //if an existing account missing any descriptors, during 2.0  migration
+            //based legacy account type, if this account finger print matches any other legacy account
+            // and if they have more descriptors, then add the missing descriptors and to the parent account
             final v1Accounts =
                 legacyAccounts.where((e) => e.extractFingerprint() == xfp);
             if (v1Accounts.length == 2) {
@@ -276,7 +293,7 @@ class MigrationManager {
               }
               if (missingAccount != null) {
                 EnvoyReport().log("Migration",
-                    "Missing descriptor found for ${parentAccountState.name} adding ${missingAccount.wallet.type}");
+                    "Missing descriptor found for ${firstAccountState.name} adding ${missingAccount.wallet.type}");
                 final ngDescriptor = NgDescriptor(
                   addressType: missingAccount.wallet.type == "taproot"
                       ? AddressType.p2Tr
@@ -284,13 +301,13 @@ class MigrationManager {
                   internal: missingAccount.wallet.internalDescriptor!,
                   external_: missingAccount.wallet.externalDescriptor,
                 );
-                parentAccount.addDescriptor(ngDescriptor: ngDescriptor);
+                firstAccount.addDescriptor(ngDescriptor: ngDescriptor);
                 EnvoyReport().log("Migration",
-                    "Descriptor added for ${parentAccountState.name} ${missingAccount.wallet.type}");
-                await relocateAccount(parentAccount, parentAccountState);
+                    "Descriptor added for ${firstAccountState.name} ${missingAccount.wallet.type}");
+                await relocateAccount(firstAccount, firstAccountState);
               }
             } else {
-              await relocateAccount(parentAccount, parentAccountState);
+              await relocateAccount(firstAccount, firstAccountState);
             }
           } else {
             for (var account in accounts) {
@@ -307,12 +324,20 @@ class MigrationManager {
         if (legacyAccount.accounts.isEmpty) {
           continue;
         }
+        LegacyAccount account = legacyAccount.accounts.first;
         final dir = NgAccountManager.getAccountDirectory(
             deviceSerial: legacyAccount.accounts.first.deviceSerial,
             network: legacyAccount.accounts.first.wallet.network.toLowerCase(),
             fingerprint: legacyAccount.fingerprint,
             number: legacyAccount.accounts.first.number);
         if (!await dir.exists()) {
+          if (legacyAccount.accounts.first.deviceSerial == "envoy") {
+            final existingEnvoyWallet = dirs.firstWhereOrNull((e) => e.path
+                .contains("envoy_${account.wallet.network.toLowerCase()}"));
+            if (existingEnvoyWallet != null) {
+              continue;
+            }
+          }
           final missingAccounts = await createAccounts([legacyAccount]);
           for (var account in missingAccounts) {
             await migrateMeta(account, legacyAccounts);
@@ -323,6 +348,8 @@ class MigrationManager {
       addMigrationEvent(
           MigrationProgress(total: dirs.length, completed: dirs.length));
       await Future.delayed(const Duration(milliseconds: 300));
+
+      await cleanupMalformedDirectories();
       return;
     } catch (e, stack) {
       EnvoyReport()
@@ -508,12 +535,13 @@ class MigrationManager {
       final state = await handler.state();
       for (var legacyAccount in legacyAccounts) {
         bool matchWithHotWallet = (state.isHot &&
-            legacyAccount.wallet.hot &&
             state.network
                 .toString()
                 .toLowerCase()
                 .contains(legacyAccount.wallet.network.toLowerCase()));
-
+        if (!matchWithHotWallet) {
+          matchWithHotWallet = legacyAccount.extractFingerprint() == state.xfp;
+        }
         kPrint(
             "Migrating meta for ${legacyAccount.name} ${legacyAccount.wallet.network.toLowerCase()}");
         for (var descriptor in state.descriptors) {
@@ -536,8 +564,9 @@ class MigrationManager {
           }
         }
       }
-    } catch (e) {
-      EnvoyReport().log("Migration", "Error migrating meta: $e");
+    } catch (e, stack) {
+      EnvoyReport()
+          .log("Migration", "Error migrating meta: $e", stackTrace: stack);
     }
   }
 
@@ -549,59 +578,62 @@ class MigrationManager {
       EnvoyReport().log("Migration", "SanityCheck: No legacy accounts found");
       return;
     }
-    String logBuffer = "";
-    for (var unified in unifiedAccounts) {
-      final firstAccount = unified.accounts.first;
-      logBuffer += "\n\nChecking SuperWallet \"${firstAccount.name}\" \n";
+    try {
+      String logBuffer = "";
+      for (var unified in unifiedAccounts) {
+        final firstAccount = unified.accounts.first;
+        logBuffer += "\n\nChecking SuperWallet : \"${firstAccount.name}\" \n";
 
-      final accountDir = NgAccountManager.getAccountDirectory(
-          deviceSerial: firstAccount.deviceSerial,
-          network: unified.network,
-          fingerprint: unified.fingerprint,
-          number: firstAccount.number);
+        final accountDir = NgAccountManager.getAccountDirectory(
+            deviceSerial: firstAccount.deviceSerial,
+            network: unified.network,
+            fingerprint: unified.fingerprint,
+            number: firstAccount.number);
 
-      logBuffer += "Account directory: ${accountDir.path}\n";
+        logBuffer += "Account directory: ${accountDir.path}\n";
 
-      if (!await accountDir.exists()) {
-        logBuffer += "Account directory does not exist: ${accountDir.path} ❌\n";
-        continue;
-      }
+        if (!await accountDir.exists()) {
+          logBuffer +=
+              "Account directory does not exist: ${accountDir.path} ❌\n";
+          continue;
+        }
 
-      final files = await accountDir.list().toList();
-      logBuffer += "Found ${files.length} files in directory\n";
+        final files = await accountDir.list().toList();
+        logBuffer += "Found ${files.length} files in directory\n";
 
-      bool allAccountsValid = true;
+        bool allAccountsValid = true;
 
-      for (var account in unified.accounts) {
-        logBuffer += "-----\nValidating account Type (${account.wallet.type})";
+        for (var account in unified.accounts) {
+          logBuffer +=
+              "-----\nValidating account Type (${account.wallet.type})";
 
-        final fileNames = files.map((f) => f.path.toLowerCase()).toList();
-        bool hasP2tr = fileNames.any((name) => name.endsWith('_p2tr.sqlite'));
-        bool hasP2wpkh =
-            fileNames.any((name) => name.endsWith('_p2wpkh.sqlite'));
+          final fileNames = files.map((f) => f.path.toLowerCase()).toList();
+          bool hasP2tr = fileNames.any((name) => name.endsWith('_p2tr.sqlite'));
+          bool hasP2wpkh =
+              fileNames.any((name) => name.endsWith('_p2wpkh.sqlite'));
 
-        logBuffer += "\nFile check - P2TR: $hasP2tr, P2WPKH: $hasP2wpkh";
+          String status = "";
+          if (account.wallet.type == "taproot") {
+            status = hasP2tr ? "✅" : "❌ Missing *_P2tr.sqlite file";
+            if (!hasP2tr) allAccountsValid = false;
+          } else if (account.wallet.type == "witnessPublicKeyHash") {
+            status = hasP2wpkh ? "✅" : "❌ Missing *_P2wpkh.sqlite file";
+            if (!hasP2wpkh) allAccountsValid = false;
+          } else {
+            status = "✅"; // Other types are valid by default
+          }
 
-        String status = "";
-        if (account.wallet.type == "taproot") {
-          status = hasP2tr ? "✅" : "❌ Missing *_P2tr.sqlite file";
-          if (!hasP2tr) allAccountsValid = false;
-        } else if (account.wallet.type == "witnessPublicKeyHash") {
-          status = hasP2wpkh ? "✅" : "❌ Missing *_P2wpkh.sqlite file";
-          if (!hasP2wpkh) allAccountsValid = false;
-        } else {
-          status = "✅"; // Other types are valid by default
+          logBuffer +=
+              "\nAccount \"${account.name}\" (${account.wallet.type}): $status\n-----\n";
         }
 
         logBuffer +=
-            "\nAccount \"${account.name}\" (${account.wallet.type}): $status\n-----\n";
+            "Overall status for ${firstAccount.name}: ${allAccountsValid ? '✅' : '❌'}\n\n";
       }
-
-      logBuffer +=
-          "Overall status for ${firstAccount.name}: ${allAccountsValid ? '✅' : '❌'}\n\n";
+      EnvoyReport().log("Migration:SanityCheck", logBuffer);
+    } catch (e) {
+      //ignore
     }
-
-    EnvoyReport().log("Migration:SanityCheck", logBuffer);
   }
 
   static Future<double?> getCurrentMigrationVersion() async {
@@ -768,6 +800,101 @@ class MigrationManager {
       EnvoyReport()
           .log("Migration", "Error relocating account: $e", stackTrace: stack);
     }
+  }
+
+  Future cleanupMalformedDirectories() async {
+    final newWalletDirectory = NgAccountManager.walletsDirectory;
+    final walletDirectory = Directory(newWalletDirectory);
+    final walletDirs = await walletDirectory.list().toList();
+    try {
+      for (var dir in walletDirs) {
+        if (dir is Directory) {
+          //regex that checks the dir patter {deviceSerial}_{network}_{xfp}_acc_{index}
+          final regex = RegExp(r'^[\w-]+_\w+_[a-f0-9]+_acc_\d+$');
+          final dirName = dir.path.split(Platform.pathSeparator).last;
+          final match = regex.hasMatch(dirName.toLowerCase());
+          if (!match) {
+            dir.delete(recursive: true);
+            kPrint("Deleted dangling account: $dirName");
+          }
+        }
+      }
+    } catch (e) {
+      //ignore
+    }
+  }
+
+  Future<bool> isMigrationRequired() async {
+    // check if user has legacy accounts
+    bool hasAccounts =
+        LocalStorage().prefs.containsKey(NgAccountManager.v1AccountsPrefKey);
+    if (hasAccounts) {
+      try {
+        hasAccounts = jsonDecode(LocalStorage()
+                    .prefs
+                    .getString(NgAccountManager.v1AccountsPrefKey) ??
+                "[]")
+            .isNotEmpty;
+      } catch (e) {
+        hasAccounts = false;
+      }
+    }
+    kPrint("Has accounts: $hasAccounts");
+
+    // get current migration version
+    double? currentMigrationVersion = await EnvoyStorage()
+        .getNoBackUpPreference<double>(MigrationManager.migrationCodePrefs);
+
+    kPrint("Current migration version: $currentMigrationVersion");
+    // handle legacy string-based version, TOOD: remove in v2.5
+    if (currentMigrationVersion == null) {
+      final legacyVersion = await EnvoyStorage()
+          .getNoBackUpPreference(MigrationManager.migrationPrefs);
+      if (legacyVersion is String) {
+        try {
+          currentMigrationVersion =
+              double.parse(legacyVersion.replaceAll("v", ""));
+        } catch (e) {
+          currentMigrationVersion = 0.0; // Treat as unmigrated
+        }
+      }
+    }
+
+    currentMigrationVersion ??= 0.0;
+
+    bool requiresMigration = hasAccounts &&
+        (currentMigrationVersion < MigrationManager.migrationVersionCode);
+
+    final newWalletDirectory = NgAccountManager.walletsDirectory;
+    final legacyWalletDirectory =
+        Directory(MigrationManager.legacyWalletDirectory);
+    final walletDirectory = Directory(newWalletDirectory);
+
+    int legacyWallets = 0;
+    int ngWallets = 0;
+
+    if (await legacyWalletDirectory.exists()) {
+      legacyWallets = await legacyWalletDirectory.list().length;
+    }
+    if (await walletDirectory.exists()) {
+      ngWallets = await walletDirectory.list().length;
+    }
+    if (legacyWallets != 0 || ngWallets != 0) {
+      requiresMigration = true;
+    } else {
+      requiresMigration = false;
+    }
+
+    // Update version if no migration needed
+    if (!requiresMigration) {
+      await EnvoyStorage().setNoBackUpPreference(
+          MigrationManager.migrationCodePrefs,
+          MigrationManager.migrationVersionCode);
+    }
+    EnvoyReport().log("Migration",
+        "Current migration version: $currentMigrationVersion, Required: ${MigrationManager.migrationVersionCode}, Requires migration: $requiresMigration");
+
+    return requiresMigration;
   }
 }
 

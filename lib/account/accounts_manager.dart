@@ -111,6 +111,7 @@ class NgAccountManager extends ChangeNotifier {
   NgAccountManager._internal();
 
   Future restore() async {
+    kPrint("Restoring accounts");
     if (_accountsHandler.isNotEmpty) {
       for (var accountHandler in _accountsHandler) {
         accountHandler.$2.dispose();
@@ -147,8 +148,10 @@ class NgAccountManager extends ChangeNotifier {
     sortByAccountOrder(_accountsHandler, order, (e) => e.$1.id);
     await deriveMissingTypes();
 
-    SyncManager().startSync();
     _accountsOrder.sink.add(order);
+
+    SyncManager().startSync();
+
     notifyListeners();
     for (var stream in streams) {
       _syncSubscription.add(stream.listen((_) {

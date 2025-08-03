@@ -164,7 +164,8 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
           children: [
             if (widget.informationalText != null)
               Padding(
-                padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+                padding: const EdgeInsets.only(
+                    top: EnvoySpacing.medium1, left: EnvoySpacing.xs),
                 child: Text(
                   widget.isError
                       ? widget.errorText!
