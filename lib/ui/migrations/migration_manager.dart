@@ -123,7 +123,9 @@ class MigrationManager {
         await sanityCheck();
         await Future.delayed(const Duration(milliseconds: 50));
         _onMigrationFinished?.call();
-      } catch (e) {
+      } catch (e, stack) {
+        EnvoyReport().log("Migration", "Error migrating accounts: $e",
+            stackTrace: stack);
         _onMigrationError?.call();
       }
     } else if (currentMigrationVersion == null) {
@@ -132,7 +134,9 @@ class MigrationManager {
         await Future.delayed(const Duration(milliseconds: 50));
         await sanityCheck();
         _onMigrationFinished?.call();
-      } catch (e) {
+      } catch (e, stack) {
+        EnvoyReport()
+            .log("Migration", "Migration v2 error: $e", stackTrace: stack);
         _onMigrationError?.call();
       }
     } else {
@@ -405,6 +409,7 @@ class MigrationManager {
       if (!newAccountDir.existsSync()) {
         await newAccountDir.create(recursive: true);
       }
+      await Future.delayed(const Duration(milliseconds: 100));
 
       var network = Network.bitcoin;
       if (legacyAccount.wallet.network.toLowerCase() == "testnet") {
@@ -450,6 +455,11 @@ class MigrationManager {
         addressType = taprootEnabled ? AddressType.p2Tr : AddressType.p2Wpkh;
       }
       final newId = Uuid().v4();
+      addressType = descriptors.first.addressType;
+      EnvoyReport().log(
+          "Migration",
+          "Migrating account ${descriptors.map((e) => e.addressType)} "
+              "$addressType ${legacyAccount.name} ${legacyAccount.wallet.network.toLowerCase()}");
 
       final envoyAccount = await EnvoyAccountHandler.migrate(
           name: legacyAccount.name,
@@ -486,7 +496,7 @@ class MigrationManager {
       if (accounts.length <= 2) {
         EnvoyReport().log(
           "Migration",
-          "Unifying accounts with id ${accounts.map((item) => item.name)} ",
+          "Unifying accounts with id ${accounts.map((item) => item.name)} ${accounts.first.extractFingerprint()} ${accounts.first.wallet.network.toLowerCase()} ",
         );
         final fingerprint = accounts.first.extractFingerprint();
         if (fingerprint == null) {
@@ -503,26 +513,36 @@ class MigrationManager {
       } else {
         EnvoyReport().log(
           "Migration",
-          "Will treat as single accounts ::  ${accounts.map((item) => item.name)} ",
+          "Will treat as single accounts ::  ${accounts.map((item) => item.name)}"
+              " ${accounts.map((item) => "${item.wallet.internalDescriptor}:${item.extractFingerprint()}")} ",
         );
-        //SFT-5217, duplicated accounts with similar device serial and account number
-        //to properly migrate without conflict,adding account id as part of the device serial
+        final Map<AddressType, LegacyAccount> unifiedSet = {};
         for (var account in accounts) {
-          LegacyAccount accountWithUniqueId = account;
-          final fingerprint = accountWithUniqueId.extractFingerprint();
-          if (fingerprint == null) {
-            EnvoyReport().log(
-              "Migration",
-              "unify,Failed to get fingerprint for account ${accounts.first.name}  ",
-            );
+          AddressType addressType = AddressType.p2Wpkh;
+          if (account.wallet.type == "taproot") {
+            addressType = AddressType.p2Tr;
+          }
+          if (unifiedSet.containsKey(addressType)) {
             continue;
           }
-          unifiedWallets.add(LegacyUnifiedAccounts(
-              accounts: [accountWithUniqueId],
-              isUnified: false,
-              fingerprint: fingerprint,
-              network: account.wallet.network.toLowerCase()));
+          unifiedSet[addressType] = account;
         }
+        //SFT-5217, duplicated accounts with similar device serial and account number
+        //to properly migrate without conflict,adding account id as part of the device serial
+        LegacyAccount accountWithUniqueId = unifiedSet.values.first;
+        final fingerprint = accountWithUniqueId.extractFingerprint();
+        if (fingerprint == null) {
+          EnvoyReport().log(
+            "Migration",
+            "unify,Failed to get fingerprint for account ${accounts.first.name}  ",
+          );
+          continue;
+        }
+        unifiedWallets.add(LegacyUnifiedAccounts(
+            accounts: unifiedSet.values.toList(),
+            isUnified: false,
+            fingerprint: fingerprint,
+            network: unifiedSet.values.first.wallet.network.toLowerCase()));
       }
     }
     return unifiedWallets;
