@@ -24,7 +24,7 @@ pub use bdk_wallet::bitcoin::{Network, Psbt, ScriptBuf};
 use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
 use bdk_wallet::chain::{CheckPoint, Indexed};
 use bdk_wallet::descriptor::policy::PolicyError;
-use bdk_wallet::descriptor::{DescriptorError, DescriptorPublicKey, ExtendedDescriptor};
+use bdk_wallet::descriptor::{DescriptorError, ExtendedDescriptor};
 use bdk_wallet::error::{CreateTxError, MiniscriptPsbtError};
 use bdk_wallet::rusqlite::{Connection, OpenFlags};
 use bdk_wallet::serde::{Deserialize, Serialize};

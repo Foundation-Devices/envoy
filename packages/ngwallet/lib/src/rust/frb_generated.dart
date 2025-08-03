@@ -75,7 +75,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => 1511695888;
+  int get rustContentHash => -948040861;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -322,21 +322,6 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiEnvoyWalletInitApp();
 
-  Future<NgAccountBackup> ngwalletConfigNgAccountBackupDeserialize(
-      {required String data});
-
-  Future<String> ngwalletConfigNgAccountBackupSerialize(
-      {required NgAccountBackup that});
-
-  Future<NgAccountConfig> ngwalletConfigNgAccountConfigDeserialize(
-      {required String data});
-
-  Future<NgAccountConfig> ngwalletConfigNgAccountConfigFromRemote(
-      {required List<int> remoteUpdate});
-
-  Future<String> ngwalletConfigNgAccountConfigSerialize(
-      {required NgAccountConfig that});
-
   String ngwalletTransactionOutputGetId({required Output that});
 
   Future<TxComposeError> crateApiErrorsTxComposeErrorMapErr(
@@ -386,12 +371,13 @@ abstract class RustLibApi extends BaseApi {
       get rust_arc_decrement_strong_count_EnvoyAccountHandlerPtr;
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_KeychainKind;
+      get rust_arc_increment_strong_count_MultiSigDetails;
 
   RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_KeychainKind;
+      get rust_arc_decrement_strong_count_MultiSigDetails;
 
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_KeychainKindPtr;
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_MultiSigDetailsPtr;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_TransactionComposeError;
@@ -2153,142 +2139,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<NgAccountBackup> ngwalletConfigNgAccountBackupDeserialize(
-      {required String data}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(data, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 56, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_ng_account_backup,
-        decodeErrorData: sse_decode_AnyhowException,
-      ),
-      constMeta: kNgwalletConfigNgAccountBackupDeserializeConstMeta,
-      argValues: [data],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kNgwalletConfigNgAccountBackupDeserializeConstMeta =>
-      const TaskConstMeta(
-        debugName: "ng_account_backup_deserialize",
-        argNames: ["data"],
-      );
-
-  @override
-  Future<String> ngwalletConfigNgAccountBackupSerialize(
-      {required NgAccountBackup that}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_box_autoadd_ng_account_backup(that, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 57, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
-        decodeErrorData: null,
-      ),
-      constMeta: kNgwalletConfigNgAccountBackupSerializeConstMeta,
-      argValues: [that],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kNgwalletConfigNgAccountBackupSerializeConstMeta =>
-      const TaskConstMeta(
-        debugName: "ng_account_backup_serialize",
-        argNames: ["that"],
-      );
-
-  @override
-  Future<NgAccountConfig> ngwalletConfigNgAccountConfigDeserialize(
-      {required String data}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(data, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 58, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_ng_account_config,
-        decodeErrorData: null,
-      ),
-      constMeta: kNgwalletConfigNgAccountConfigDeserializeConstMeta,
-      argValues: [data],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kNgwalletConfigNgAccountConfigDeserializeConstMeta =>
-      const TaskConstMeta(
-        debugName: "ng_account_config_deserialize",
-        argNames: ["data"],
-      );
-
-  @override
-  Future<NgAccountConfig> ngwalletConfigNgAccountConfigFromRemote(
-      {required List<int> remoteUpdate}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_list_prim_u_8_loose(remoteUpdate, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 59, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_ng_account_config,
-        decodeErrorData: sse_decode_AnyhowException,
-      ),
-      constMeta: kNgwalletConfigNgAccountConfigFromRemoteConstMeta,
-      argValues: [remoteUpdate],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kNgwalletConfigNgAccountConfigFromRemoteConstMeta =>
-      const TaskConstMeta(
-        debugName: "ng_account_config_from_remote",
-        argNames: ["remoteUpdate"],
-      );
-
-  @override
-  Future<String> ngwalletConfigNgAccountConfigSerialize(
-      {required NgAccountConfig that}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_box_autoadd_ng_account_config(that, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 60, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
-        decodeErrorData: null,
-      ),
-      constMeta: kNgwalletConfigNgAccountConfigSerializeConstMeta,
-      argValues: [that],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kNgwalletConfigNgAccountConfigSerializeConstMeta =>
-      const TaskConstMeta(
-        debugName: "ng_account_config_serialize",
-        argNames: ["that"],
-      );
-
-  @override
   String ngwalletTransactionOutputGetId({required Output that}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_output(that, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 61)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 56)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -2315,7 +2171,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTransactionComposeError(
             transactionComposeError, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 62, port: port_);
+            funcId: 57, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_tx_compose_error,
@@ -2374,12 +2230,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler;
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_KeychainKind => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind;
+      get rust_arc_increment_strong_count_MultiSigDetails => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails;
 
   RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_KeychainKind => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind;
+      get rust_arc_decrement_strong_count_MultiSigDetails => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_TransactionComposeError => wire
@@ -2437,11 +2293,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  KeychainKind
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+  MultiSigDetails
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return KeychainKindImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return MultiSigDetailsImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -2525,11 +2381,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  KeychainKind
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+  MultiSigDetails
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return KeychainKindImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return MultiSigDetailsImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -2591,6 +2447,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  MultiSigDetails
+      dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+        raw);
+  }
+
+  @protected
   BitcoinTransaction dco_decode_box_autoadd_bitcoin_transaction(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_bitcoin_transaction(raw);
@@ -2618,12 +2483,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Network dco_decode_box_autoadd_network(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_network(raw);
-  }
-
-  @protected
-  NgAccountBackup dco_decode_box_autoadd_ng_account_backup(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_ng_account_backup(raw);
   }
 
   @protected
@@ -2834,17 +2693,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<(AddressType, KeychainKind, int)>
-      dco_decode_list_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>)
-        .map(
-            dco_decode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32)
-        .toList();
-  }
-
-  @protected
   List<(AddressType, String)> dco_decode_list_record_address_type_string(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -2881,28 +2729,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  NgAccountBackup dco_decode_ng_account_backup(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
-    return NgAccountBackup(
-      ngAccountConfig: dco_decode_ng_account_config(arr[0]),
-      lastUsedIndex:
-          dco_decode_list_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
-              arr[1]),
-      notes: dco_decode_Map_String_String_None(arr[2]),
-      tags: dco_decode_Map_String_String_None(arr[3]),
-      doNotSpend: dco_decode_Map_String_bool_None(arr[4]),
-    );
-  }
-
-  @protected
   NgAccountConfig dco_decode_ng_account_config(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 12)
-      throw Exception('unexpected arr length: expect 12 but see ${arr.length}');
+    if (arr.length != 13)
+      throw Exception('unexpected arr length: expect 13 but see ${arr.length}');
     return NgAccountConfig(
       name: dco_decode_String(arr[0]),
       color: dco_decode_String(arr[1]),
@@ -2916,6 +2747,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       accountPath: dco_decode_opt_String(arr[9]),
       network: dco_decode_network(arr[10]),
       id: dco_decode_String(arr[11]),
+      multisig:
+          dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+              arr[12]),
     );
   }
 
@@ -2943,6 +2777,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   String? dco_decode_opt_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_String(raw);
+  }
+
+  @protected
+  MultiSigDetails?
+      dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null
+        ? null
+        : dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+            raw);
   }
 
   @protected
@@ -3043,26 +2888,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       default:
         throw Exception("unreachable");
     }
-  }
-
-  @protected
-  (
-    AddressType,
-    KeychainKind,
-    int
-  ) dco_decode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
-      dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 3) {
-      throw Exception('Expected 3 elements, got ${arr.length}');
-    }
-    return (
-      dco_decode_address_type(arr[0]),
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
-          arr[1]),
-      dco_decode_u_32(arr[2]),
-    );
   }
 
   @protected
@@ -3281,11 +3106,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  KeychainKind
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+  MultiSigDetails
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return KeychainKindImpl.frbInternalSseDecode(
+    return MultiSigDetailsImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -3378,11 +3203,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  KeychainKind
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+  MultiSigDetails
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return KeychainKindImpl.frbInternalSseDecode(
+    return MultiSigDetailsImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -3458,6 +3283,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  MultiSigDetails
+      sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+        deserializer));
+  }
+
+  @protected
   BitcoinTransaction sse_decode_box_autoadd_bitcoin_transaction(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3487,13 +3321,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Network sse_decode_box_autoadd_network(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_network(deserializer));
-  }
-
-  @protected
-  NgAccountBackup sse_decode_box_autoadd_ng_account_backup(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_ng_account_backup(deserializer));
   }
 
   @protected
@@ -3762,22 +3589,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<(AddressType, KeychainKind, int)>
-      sse_decode_list_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <(AddressType, KeychainKind, int)>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(
-          sse_decode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
-              deserializer));
-    }
-    return ans_;
-  }
-
-  @protected
   List<(AddressType, String)> sse_decode_list_record_address_type_string(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3837,24 +3648,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  NgAccountBackup sse_decode_ng_account_backup(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_ngAccountConfig = sse_decode_ng_account_config(deserializer);
-    var var_lastUsedIndex =
-        sse_decode_list_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
-            deserializer);
-    var var_notes = sse_decode_Map_String_String_None(deserializer);
-    var var_tags = sse_decode_Map_String_String_None(deserializer);
-    var var_doNotSpend = sse_decode_Map_String_bool_None(deserializer);
-    return NgAccountBackup(
-        ngAccountConfig: var_ngAccountConfig,
-        lastUsedIndex: var_lastUsedIndex,
-        notes: var_notes,
-        tags: var_tags,
-        doNotSpend: var_doNotSpend);
-  }
-
-  @protected
   NgAccountConfig sse_decode_ng_account_config(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_name = sse_decode_String(deserializer);
@@ -3869,6 +3662,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_accountPath = sse_decode_opt_String(deserializer);
     var var_network = sse_decode_network(deserializer);
     var var_id = sse_decode_String(deserializer);
+    var var_multisig =
+        sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+            deserializer);
     return NgAccountConfig(
         name: var_name,
         color: var_color,
@@ -3881,7 +3677,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         dateSynced: var_dateSynced,
         accountPath: var_accountPath,
         network: var_network,
-        id: var_id);
+        id: var_id,
+        multisig: var_multisig);
   }
 
   @protected
@@ -3914,6 +3711,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
     if (sse_decode_bool(deserializer)) {
       return (sse_decode_String(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  MultiSigDetails?
+      sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+          deserializer));
     } else {
       return null;
     }
@@ -4048,22 +3859,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       default:
         throw UnimplementedError('');
     }
-  }
-
-  @protected
-  (
-    AddressType,
-    KeychainKind,
-    int
-  ) sse_decode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_field0 = sse_decode_address_type(deserializer);
-    var var_field1 =
-        sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
-            deserializer);
-    var var_field2 = sse_decode_u_32(deserializer);
-    return (var_field0, var_field1, var_field2);
   }
 
   @protected
@@ -4273,11 +4068,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
-          KeychainKind self, SseSerializer serializer) {
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+          MultiSigDetails self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as KeychainKindImpl).frbInternalSseEncode(move: true),
+        (self as MultiSigDetailsImpl).frbInternalSseEncode(move: true),
         serializer);
   }
 
@@ -4379,11 +4174,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
-          KeychainKind self, SseSerializer serializer) {
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+          MultiSigDetails self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as KeychainKindImpl).frbInternalSseEncode(move: null),
+        (self as MultiSigDetailsImpl).frbInternalSseEncode(move: null),
         serializer);
   }
 
@@ -4449,6 +4244,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void
+      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+          MultiSigDetails self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+        self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_bitcoin_transaction(
       BitcoinTransaction self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4480,13 +4284,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_box_autoadd_network(Network self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_network(self, serializer);
-  }
-
-  @protected
-  void sse_encode_box_autoadd_ng_account_backup(
-      NgAccountBackup self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_ng_account_backup(self, serializer);
   }
 
   @protected
@@ -4700,19 +4497,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void
-      sse_encode_list_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
-          List<(AddressType, KeychainKind, int)> self,
-          SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
-          item, serializer);
-    }
-  }
-
-  @protected
   void sse_encode_list_record_address_type_string(
       List<(AddressType, String)> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4759,18 +4543,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_ng_account_backup(
-      NgAccountBackup self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_ng_account_config(self.ngAccountConfig, serializer);
-    sse_encode_list_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
-        self.lastUsedIndex, serializer);
-    sse_encode_Map_String_String_None(self.notes, serializer);
-    sse_encode_Map_String_String_None(self.tags, serializer);
-    sse_encode_Map_String_bool_None(self.doNotSpend, serializer);
-  }
-
-  @protected
   void sse_encode_ng_account_config(
       NgAccountConfig self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4786,6 +4558,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_String(self.accountPath, serializer);
     sse_encode_network(self.network, serializer);
     sse_encode_String(self.id, serializer);
+    sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+        self.multisig, serializer);
   }
 
   @protected
@@ -4814,6 +4588,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_bool(self != null, serializer);
     if (self != null) {
       sse_encode_String(self, serializer);
+    }
+  }
+
+  @protected
+  void
+      sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+          MultiSigDetails? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
+          self, serializer);
     }
   }
 
@@ -4931,17 +4718,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case RBFBumpFeeError_WalletNotAvailable():
         sse_encode_i_32(11, serializer);
     }
-  }
-
-  @protected
-  void
-      sse_encode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
-          (AddressType, KeychainKind, int) self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_address_type(self.$1, serializer);
-    sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
-        self.$2, serializer);
-    sse_encode_u_32(self.$3, serializer);
   }
 
   @protected
@@ -5328,22 +5104,22 @@ class FullScanRequestImpl extends RustOpaque implements FullScanRequest {
 }
 
 @sealed
-class KeychainKindImpl extends RustOpaque implements KeychainKind {
+class MultiSigDetailsImpl extends RustOpaque implements MultiSigDetails {
   // Not to be used by end users
-  KeychainKindImpl.frbInternalDcoDecode(List<dynamic> wire)
+  MultiSigDetailsImpl.frbInternalDcoDecode(List<dynamic> wire)
       : super.frbInternalDcoDecode(wire, _kStaticData);
 
   // Not to be used by end users
-  KeychainKindImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+  MultiSigDetailsImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
       : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
   static final _kStaticData = RustArcStaticData(
     rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_KeychainKind,
+        RustLib.instance.api.rust_arc_increment_strong_count_MultiSigDetails,
     rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_KeychainKind,
+        RustLib.instance.api.rust_arc_decrement_strong_count_MultiSigDetails,
     rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_KeychainKindPtr,
+        RustLib.instance.api.rust_arc_decrement_strong_count_MultiSigDetailsPtr,
   );
 }
 
