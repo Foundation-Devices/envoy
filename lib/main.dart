@@ -3,9 +3,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
@@ -213,4 +210,3 @@ class GlobalScrollBehavior extends ScrollBehavior {
     );
   }
 }
-
