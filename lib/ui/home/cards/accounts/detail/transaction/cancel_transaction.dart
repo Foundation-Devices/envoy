@@ -4,7 +4,6 @@
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
-import 'package:envoy/business/node_url.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -511,13 +510,8 @@ class _CancelTransactionProgressState
 
     try {
       final server = Settings().electrumAddress(account.network);
-      int? port = Settings().getPort(account.network);
-      if (port == -1) {
-        port = null;
-      }
-      if (isPrivateAddress(server)) {
-        port = null;
-      }
+      int? port = Settings().getPort(account.network,server);
+
       //update draft transaction with updated tx state
       DraftTransaction cancelTx = DraftTransaction(
           transaction: BitcoinTransaction(

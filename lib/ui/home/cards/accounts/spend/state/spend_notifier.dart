@@ -6,7 +6,6 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/fees.dart';
-import 'package:envoy/business/node_url.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -407,13 +406,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       state = state.clone()..broadcastInProgress = true;
       final server = Settings().electrumAddress(account.network);
       final syncManager = SyncManager();
-      int? port = Settings().getPort(account.network);
-      if (port == -1) {
-        port = null;
-      }
-      if (isPrivateAddress(server)) {
-        port = null;
-      }
+      int? port = Settings().getPort(account.network, server);
 
       final _ = await EnvoyAccountHandler.broadcast(
         draftTransaction: state.draftTransaction!,

@@ -6,7 +6,6 @@ import 'dart:async';
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/business/node_url.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -82,13 +81,7 @@ class SyncManager {
   //sync a single account
   void syncAccount(EnvoyAccount account) async {
     final server = Settings().electrumAddress(account.network);
-    int? port = Settings().getPort(account.network);
-    if (port == -1) {
-      port = null;
-    }
-    if (isPrivateAddress(server)) {
-      port = null;
-    }
+    int? port = Settings().getPort(account.network, server);
     try {
       if (account.handler != null) {
         kPrint("SyncManager: Syncing single account ${account.name}");
@@ -206,13 +199,7 @@ class SyncManager {
         _activeSyncOperations.add(accountKey);
 
         final server = Settings().electrumAddress(account.network);
-        int? port = Settings().getPort(account.network);
-        if (port == -1) {
-          port = null;
-        }
-        if (isPrivateAddress(server)) {
-          port = null;
-        }
+        int? port = Settings().getPort(account.network, server);
 
         final request = _syncRequests[entry.key];
         if (request == null || account.handler == null) {
@@ -284,13 +271,8 @@ class SyncManager {
     }
     _activeFullScanOperations.add((account.id, addressType));
     final server = Settings().electrumAddress(account.network);
-    int? port = Settings().getPort(account.network);
-    if (port == -1) {
-      port = null;
-    }
-    if (isPrivateAddress(server)) {
-      port = null;
-    }
+    int? port = Settings().getPort(account.network, server);
+
     kPrint(
         "🔍 PerformFullScan $addressType - ${account.name} | ${account.network} | $server | Tor: ${port != null} | request_disposed:${fullScanRequest.isDisposed}");
     _currentLoading.sink.add(Scanning(account.id));
