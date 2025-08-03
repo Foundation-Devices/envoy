@@ -267,7 +267,6 @@ class EnvoySeed {
 
     //add accounts
     backupData = await processBackupData(backupData, cloud);
-
     return Backup.perform(
             backupData, seed, Settings().envoyServerAddress, Tor.instance,
             path: encryptedBackupFilePath, cloud: cloud)
@@ -772,8 +771,8 @@ class EnvoySeed {
       List<NgAccountBackup> ngAccountBackups = [];
       for (var account in accounts) {
         try {
-          final backup =
-              await NgAccountBackup.deserialize(data: jsonEncode(account));
+          final backup = await EnvoyAccountHandler.deserializeBackup(
+              backupJson: jsonEncode(account));
           ngAccountBackups.add(backup);
         } catch (e, stack) {
           EnvoyReport().log("EnvoySeed", "Error deserializing backup: $e",

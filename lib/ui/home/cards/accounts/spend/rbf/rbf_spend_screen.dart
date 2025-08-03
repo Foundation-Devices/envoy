@@ -566,10 +566,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
 
       final server = Settings().electrumAddress(account.network);
-      int? port = Settings().getPort(account.network);
-      if (port == -1) {
-        port = null;
-      }
+      int? port = Settings().getTorPort(account.network, server);
 
       //update draft transaction with latest note and change output tag
       final draftTransaction = DraftTransaction(

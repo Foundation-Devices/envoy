@@ -510,10 +510,8 @@ class _CancelTransactionProgressState
 
     try {
       final server = Settings().electrumAddress(account.network);
-      int? port = Settings().getPort(account.network);
-      if (port == -1) {
-        port = null;
-      }
+      int? port = Settings().getTorPort(account.network, server);
+
       //update draft transaction with updated tx state
       DraftTransaction cancelTx = DraftTransaction(
           transaction: BitcoinTransaction(

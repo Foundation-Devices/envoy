@@ -406,10 +406,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       state = state.clone()..broadcastInProgress = true;
       final server = Settings().electrumAddress(account.network);
       final syncManager = SyncManager();
-      int? port = Settings().getPort(account.network);
-      if (port == -1) {
-        port = null;
-      }
+      int? port = Settings().getTorPort(account.network, server);
+
       final _ = await EnvoyAccountHandler.broadcast(
         draftTransaction: state.draftTransaction!,
         electrumServer: server,

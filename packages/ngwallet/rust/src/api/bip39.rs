@@ -7,7 +7,7 @@ use bdk_wallet::bitcoin::Network;
 use bdk_wallet::miniscript::descriptor::DescriptorType;
 use bip39::{Language, Mnemonic};
 use log::info;
-use ngwallet::bip39::{get_descriptors, get_random_seed, Descriptors};
+use ngwallet::bip39::{get_descriptors, get_random_seed};
 use ngwallet::config::AddressType;
 
 pub struct Seed {

@@ -1084,7 +1084,7 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?rev=89a65ed2fbcfbfd187e7c263cc292e03d15a05f3#89a65ed2fbcfbfd187e7c263cc292e03d15a05f3"
+source = "git+https://github.com/Foundation-Devices/ngwallet?tag=1.7.0#a349f4353345138f3b36c5bbfc38d99d90e05f95"
 dependencies = [
  "anyhow",
  "bdk_core",
@@ -1094,6 +1094,7 @@ dependencies = [
  "log",
  "minicbor-serde",
  "redb",
+ "regex",
  "serde",
  "serde_json",
 ]

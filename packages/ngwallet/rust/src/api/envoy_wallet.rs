@@ -2,38 +2,22 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use std::any::Any;
-use std::collections::{BTreeMap, HashMap};
-use std::env;
-use std::fmt::format;
-use std::fs::File;
-use std::iter::Map;
+use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
-use std::sync::{Arc, LockResult, Mutex};
+use std::sync::{Arc, Mutex};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
-use std::{fs, thread};
 
-use anyhow::{anyhow, Context, Error, Result};
-use bdk_wallet::bip39::{Language, Mnemonic};
-use bdk_wallet::bitcoin::address::{NetworkUnchecked, ParseError};
-use bdk_wallet::bitcoin::base64::Engine;
-use bdk_wallet::bitcoin::bip32::Error::Secp256k1;
-use bdk_wallet::bitcoin::{absolute, psbt, Address, Amount, OutPoint, Sequence, Txid};
+use anyhow::{anyhow, Error, Result};
+use bdk_wallet::bitcoin::Address;
 pub use bdk_wallet::bitcoin::{Network, Psbt, ScriptBuf};
-use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
-use bdk_wallet::chain::{CheckPoint, Indexed};
-use bdk_wallet::descriptor::policy::PolicyError;
-use bdk_wallet::descriptor::{DescriptorError, DescriptorPublicKey, ExtendedDescriptor};
-use bdk_wallet::error::{CreateTxError, MiniscriptPsbtError};
-use bdk_wallet::rusqlite::{Connection, OpenFlags};
-use bdk_wallet::serde::{Deserialize, Serialize};
-use bdk_wallet::serde_json::json;
+use bdk_wallet::chain::spk_client::{FullScanRequest, SyncRequest};
+use bdk_wallet::rusqlite::Connection;
 use bdk_wallet::{
-    bitcoin, coin_selection, AddressInfo, KeychainKind, PersistedWallet, Update, Wallet, WalletTx,
+    KeychainKind, Update,
 };
-use chrono::{DateTime, Local, Utc};
-use flutter_rust_bridge::{frb, PanicBacktrace};
+use chrono::Utc;
+use flutter_rust_bridge::frb;
 use log::info;
 use ngwallet::account::{Descriptor, NgAccount};
 use ngwallet::bdk_electrum::electrum_client::{Client, ConfigBuilder, ElectrumApi, Socks5Config};
@@ -41,10 +25,8 @@ use ngwallet::config::{
     AddressType, NgAccountBackup, NgAccountBuilder, NgAccountConfig, NgDescriptor,
 };
 use ngwallet::ngwallet::NgWallet;
-use ngwallet::rbf::BumpFeeError;
-use ngwallet::redb::backends::FileBackend;
 use ngwallet::send::{
-    DraftTransaction, TransactionComposeError, TransactionFeeResult, TransactionParams,
+    DraftTransaction, TransactionFeeResult, TransactionParams,
 };
 use ngwallet::transaction::{BitcoinTransaction, Output};
 
@@ -74,6 +56,7 @@ impl Output {
     #[frb(sync)]
     pub fn get_id(&self) -> String {}
 }
+
 #[frb(mirror(Network), dart_code="
     @override
   String toString() {
@@ -123,7 +106,7 @@ impl EnvoyAccountHandler {
     ) -> Result<EnvoyAccountHandler> {
         let descriptors = Self::get_descriptors(&descriptors, db_path.clone());
 
-        let mut ng_account = NgAccountBuilder::default()
+        let ng_account = NgAccountBuilder::default()
             .name(name.clone())
             .color(color.clone())
             .descriptors(descriptors)
@@ -253,6 +236,17 @@ impl EnvoyAccountHandler {
         }
     }
 
+    pub fn deserialize_backup(backup_json: &str) -> Result<NgAccountBackup> {
+        match NgAccountBackup::deserialize(backup_json) {
+            Ok(backup) => {
+                Ok(backup)
+            }
+            Err(er) => {
+                Err(anyhow!("Failed to deserialize backup json: {:?}", er))
+            }
+        }
+    }
+
     pub fn from_config(db_path: String, config: NgAccountConfig) -> Result<EnvoyAccountHandler> {
         let descriptors = config
             .descriptors
@@ -372,8 +366,8 @@ impl EnvoyAccountHandler {
                     transactions,
                     unlocked_balance: 0,
                     utxo: utxo.clone(),
-                    xfp: account.get_xfp().to_lowercase(),
                     tags,
+                    xfp: account.get_xfp(),
                     external_public_descriptors,
                 })
             }
@@ -497,27 +491,26 @@ impl EnvoyAccountHandler {
             // Simulate a delay for the scan operation
             match NgWallet::<Connection>::scan(scan_request, electrum_server, socks_proxy) {
                 Ok(update) => Ok(Arc::new(Mutex::new(Update::from(update)))),
-                Err(er) => Err(anyhow!("Error during scan: {}", er.to_string())),
+                Err(er) => Err(anyhow!("Error during scan: {}", er)),
             }
         } else {
             Err(anyhow!("No Scan request found"))
         };
     }
 
-    pub fn apply_update(&mut self, update: Arc<Mutex<Update>>, address_type: AddressType) -> Result<()> {
-        let scan_request_guard = update.lock().map_err(|_| anyhow!("Failed to lock update"))?;
+    pub fn apply_update(&mut self, update: Arc<Mutex<Update>>, address_type: AddressType) {
+        let scan_request_guard = update.lock().unwrap();
         {
-            let mut account = self.ng_account.lock().map_err(|_| anyhow!("Failed to lock account"))?;
+            let mut account = self.ng_account.lock().unwrap();
             account
                 .apply((address_type, scan_request_guard.to_owned()))
-                .map_err(|e| anyhow!("Failed to apply update: {}", e))?;
+                .unwrap();
             account.config.date_synced = Some(format!("{:?}", Utc::now()));
             account
                 .persist()
-                .map_err(|e| anyhow!("Failed to persist account after scan: {}", e))?;
+                .expect("Failed to persist account after scan");
         }
         self.send_update();
-        Ok(())
     }
 
     pub fn send_update(&mut self) {
@@ -863,7 +856,7 @@ impl EnvoyAccountHandler {
         match ng_account {
             Ok(mut account) => {
                 // Reveal addresses up to the last used index
-                for mut wallet in &mut account.wallets {
+                for wallet in &mut account.wallets {
                     let address_type = wallet.address_type;
                     for index in &indexes {
                         if index.0 == address_type {
@@ -884,7 +877,7 @@ impl EnvoyAccountHandler {
                 Ok(handler)
             }
             Err(err) => {
-                Err(anyhow!("Failed to create account: {:?}", err))
+                return Err(anyhow!("Failed to create account: {:?}", err));
             }
         }
     }
@@ -926,19 +919,8 @@ impl EnvoyAccountHandler {
                 let config = backup.ng_account_config;
                 Ok(config)
             }
-            Err(er) => {
-                Err(anyhow!("Failed to deserialize backup"))
-            }
-        }
-    }
-
-    pub fn deserialize_backup(backup_json: &str) -> Result<NgAccountBackup> {
-        match NgAccountBackup::deserialize(backup_json) {
-            Ok(backup) => {
-                Ok(backup)
-            }
-            Err(er) => {
-                Err(anyhow!("Failed to deserialize backup json: {:?}", er))
+            Err(_) => {
+                return Err(anyhow!("Failed to deserialize backup"));
             }
         }
     }
@@ -1008,11 +990,15 @@ pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatu
         Some(proxy_addr) => {
             let socks = Socks5Config::new(&proxy_addr);
             ConfigBuilder::new()
-                .timeout(Some(10))
+                .timeout(Some(30))
                 .socks5(Some(socks))
+                .validate_domain(false)
                 .build()
         }
-        None => ConfigBuilder::new().build(),
+        None => ConfigBuilder::new()
+                .timeout(Some(30))
+                .validate_domain(false) 
+                .build(),
     };
 
     let client = match Client::from_config(&server, config) {

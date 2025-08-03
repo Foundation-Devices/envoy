@@ -218,8 +218,16 @@ class Settings extends ChangeNotifier {
     return !torEnabled() || isPrivateAddress(address);
   }
 
-  int getPort(Network network) {
-    return onTorWhitelist(electrumAddress(network)) ? -1 : Tor.instance.port;
+  int? getTorPort(Network network, String server) {
+    int? port =
+        onTorWhitelist(electrumAddress(network)) ? -1 : Tor.instance.port;
+    if (port == -1) {
+      port = null;
+    }
+    if (isPrivateAddress(server)) {
+      port = null;
+    }
+    return port;
   }
 
   String get envoyServerAddress {
