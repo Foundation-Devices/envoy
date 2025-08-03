@@ -21,7 +21,7 @@ class EnvoyReport extends ChangeNotifier {
   }
 
   // The maximum number of logs to keep in the database
-  static const int _logCapacity = 35;
+  static const int _logCapacity = 100;
   Database? _db;
   final StoreRef<int, Map<String, Object?>> _logsStore =
       intMapStoreFactory.store("logs");
