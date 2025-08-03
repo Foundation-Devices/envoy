@@ -969,11 +969,15 @@ pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatu
         Some(proxy_addr) => {
             let socks = Socks5Config::new(&proxy_addr);
             ConfigBuilder::new()
-                .timeout(Some(10))
+                .timeout(Some(30))
                 .socks5(Some(socks))
+                .validate_domain(false)
                 .build()
         }
-        None => ConfigBuilder::new().build(),
+        None => ConfigBuilder::new()
+                .timeout(Some(30))
+                .validate_domain(false) 
+                .build(),
     };
 
     let client = match Client::from_config(&server, config) {
