@@ -4,7 +4,6 @@
 
 use std::collections::HashMap;
 use std::error::Error;
-use std::ops::Index;
 use std::path::PathBuf;
 
 use bdk_wallet::KeychainKind;

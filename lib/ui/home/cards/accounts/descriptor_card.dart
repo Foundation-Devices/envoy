@@ -75,6 +75,8 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
         return S().accountDetails_descriptor_taproot;
       case AddressType.p2ShWpkh:
         return S().accountDetails_descriptor_wrappedSegwit;
+      case AddressType.p2ShWsh:
+        return "P2ShWsh";
     }
   }
 
