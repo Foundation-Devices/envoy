@@ -976,7 +976,7 @@ pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatu
         }
         None => ConfigBuilder::new()
                 .timeout(Some(30))
-                .validate_domain(true) 
+                .validate_domain(false) 
                 .build(),
     };
 
