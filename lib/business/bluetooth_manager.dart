@@ -450,14 +450,19 @@ class BluetoothManager {
         _writeProgressController.add(progress);
       },
       onDone: () {
+        kPrint("Progress stream done!");
         _sendingData = false;
         if (!completer.isCompleted) {
           completer.complete();
         }
       },
       onError: (e) {
+        kPrint("Progress stream errored out!");
         _sendingData = false;
         _writeProgressController.addError(e);
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
       },
     );
 
