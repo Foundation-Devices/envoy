@@ -51,17 +51,17 @@ class MigrationManager {
   static final MigrationManager _instance = MigrationManager._internal();
   static const String v1accountsPrefKey = "accounts";
 
-  //deprecated
+  //deprecated,this will be removed in future, double based versioning will be used instead
   static String migrationPrefs = "envoy_v2_migration";
 
-  //deprecated
+  //deprecated,this will be removed in future, double based versioning will be used instead
   static String migrationVersion = "v2.1";
 
   //from v2.1 will be using double based versioning for migrations
   static String migrationCodePrefs = "envoy_migration_version_code";
 
   //current migration code. if existing value is less than this, run migration
-  static double migrationVersionCode = 2.27;
+  static double migrationVersionCode = 2.25;
 
   //adds to preferences to indicate that the user has migrated to testnet4
   static String migratedToTestnet4 = "migrated_to_testnet4";
@@ -873,16 +873,20 @@ class MigrationManager {
     int legacyWallets = 0;
     int ngWallets = 0;
 
-    if (await legacyWalletDirectory.exists()) {
-      legacyWallets = await legacyWalletDirectory.list().length;
-    }
-    if (await walletDirectory.exists()) {
-      ngWallets = await walletDirectory.list().length;
-    }
-    if (legacyWallets != 0 || ngWallets != 0) {
-      requiresMigration = true;
-    } else {
-      requiresMigration = false;
+    if (currentMigrationVersion < 2) {
+      if (await legacyWalletDirectory.exists()) {
+        legacyWallets = await legacyWalletDirectory.list().length;
+      }
+      if (await walletDirectory.exists()) {
+        ngWallets = await walletDirectory.list().length;
+      }
+      kPrint("Legacy wallets: $legacyWallets, NG wallets: $ngWallets");
+      if (legacyWallets != 0 || ngWallets != 0) {
+        kPrint("Legacy wallets: requiresMigration");
+        requiresMigration = true;
+      } else {
+        requiresMigration = false;
+      }
     }
 
     // Update version if no migration needed
