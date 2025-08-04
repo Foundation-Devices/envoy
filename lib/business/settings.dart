@@ -64,8 +64,9 @@ class Settings extends ChangeNotifier {
   static const String MAINNET_ONION_ELECTRUM_SERVER =
       "mocmguuik7rws4bclpcoz2ldfzesjolatrzggaxfl37hjpreap777yqd.onion:50001";
 
-  static const String TESTNET_ONION_ELECTRUM_SERVER =
-      "5qr5mhxle4z6gjpngg5cb4v6cbxvnkccb5s5own5l7wg2tvggjqvltad.onion:50001";
+  // FD testnet4 server
+  static const String TESTNET4_ONION_ELECTRUM_SERVER =
+      "7gohqoo7du3l3p72gld33hd5d6xtciych6plli6fwrixi2tsmyqc33yd.onion:50001";
 
   static const String MUTINYNET_ONION_ELECTRUM_SERVER =
       "zal4yu74bpyjm4enzxgo42ev34usyag5cmfn3ej6q5sf72urpfbej6ad.onion:50001";
@@ -155,7 +156,7 @@ class Settings extends ChangeNotifier {
   String electrumAddress(Network network) {
     if (network == Network.testnet || network == Network.testnet4) {
       if (usingTor) {
-        return TESTNET_ONION_ELECTRUM_SERVER;
+        return TESTNET4_ONION_ELECTRUM_SERVER;
       } else {
         return TESTNET4_ELECTRUM_SERVER;
       }
