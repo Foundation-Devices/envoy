@@ -48,12 +48,7 @@ class LegacyAccount {
   String? extractFingerprint() {
     final descriptor =
         wallet.externalDescriptor ?? wallet.publicExternalDescriptor ?? "";
-    final regex = RegExp(r'\[([0-9a-f]{8})/');
-    final matches = regex.allMatches(descriptor);
-    if (matches.isEmpty) {
-      return null;
-    }
-    return matches.map((m) => m.group(1)!).first.toLowerCase();
+     return NgAccountManager.getFingerprint(descriptor);
   }
 }
 
