@@ -48,7 +48,7 @@ class LegacyAccount {
   String? extractFingerprint() {
     final descriptor =
         wallet.externalDescriptor ?? wallet.publicExternalDescriptor ?? "";
-     return NgAccountManager.getFingerprint(descriptor);
+    return NgAccountManager.getFingerprint(descriptor);
   }
 }
 

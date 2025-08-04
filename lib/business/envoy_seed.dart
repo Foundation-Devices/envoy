@@ -781,21 +781,21 @@ class EnvoySeed {
         }
       }
 
-      for (var backUp in ngAccountBackups) {
-        final config = backUp.ngAccountConfig;
-        String fingerprint = backUp.xfp;
+      for (var backup in ngAccountBackups) {
+        final config = backup.ngAccountConfig;
+        String fingerprint = backup.xfp;
         if (config.descriptors.isEmpty &&
-            backUp.publicDescriptors.isEmpty &&
+            backup.publicDescriptors.isEmpty &&
             fingerprint.isEmpty) {
-          //pre 2.1 wallets doesnt include xfp. also if descriptors are empty, derive from seed
+          //pre 2.0.1 wallets doesnt include xfp. also if descriptors are empty, derive from seed
           await deriveAndAddWallets(seed,
               passphrase: passphrase, requireScan: true);
           continue;
         }
         if (fingerprint.isEmpty) {
           String? descriptor;
-          if (backUp.publicDescriptors.isNotEmpty) {
-            descriptor = backUp.publicDescriptors.first.$2;
+          if (backup.publicDescriptors.isNotEmpty) {
+            descriptor = backup.publicDescriptors.first.$2;
           } else if (config.descriptors.isNotEmpty) {
             descriptor = config.descriptors.first.internal;
           } else {
@@ -829,7 +829,7 @@ class EnvoySeed {
         //both hot and cold wallets are restored from backup,
         //hot wallet descriptors will be derived from seed.
         final handler = await EnvoyAccountHandler.restoreFromBackup(
-            backup: backUp,
+            backup: backup,
             dbPath: dir.path,
             seed: seed,
             passphrase: passphrase);
@@ -838,7 +838,7 @@ class EnvoySeed {
       }
 
       if (!NgAccountManager().hotAccountsExist()) {
-        //pre 2.1 wallets doesnt include xfp. also if descriptors are empty, derive from seed
+        //pre 2.0.1 wallets doesnt include xfp. also if descriptors are empty, derive from seed
         await deriveAndAddWallets(seed,
             passphrase: passphrase, requireScan: true);
       }

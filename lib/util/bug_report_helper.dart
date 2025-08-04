@@ -131,6 +131,7 @@ class EnvoyReport extends ChangeNotifier {
       lines = lines.take(maxFrames);
     }
     // skip empty lines
+    // skip lines that contain <unknown> FRAME from FRB
     lines = lines
         .skipWhile((value) => value.toLowerCase().contains("<unknown>"))
         .skipWhile((value) => value.trim().isEmpty);

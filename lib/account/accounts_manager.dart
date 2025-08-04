@@ -166,7 +166,8 @@ class NgAccountManager extends ChangeNotifier {
             EnvoyAccountHandler? handler = account.handler;
             bool isP2TrDerived = account.descriptors
                 .any((element) => element.addressType == AddressType.p2Tr);
-            kPrint("isP2TrDerived: $isP2TrDerived");
+            EnvoyReport()
+                .log("AccountManager", "isP2TrDerived: $isP2TrDerived");
             if (!isP2TrDerived) {
               final seed = await EnvoySeed().get();
               if (seed != null && !account.seedHasPassphrase) {
@@ -311,7 +312,7 @@ class NgAccountManager extends ChangeNotifier {
     final matches = regex.allMatches(descriptor);
     try {
       if (matches.isEmpty) {
-        EnvoyReport().log("Accounts", "Invalid fingerprint $descriptor");
+        EnvoyReport().log("NGAccounts", "Invalid fingerprint $descriptor");
         return null;
       }
       return matches.map((m) => m.group(1)).first;
