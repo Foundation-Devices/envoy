@@ -117,6 +117,7 @@ class MigrationManager {
     kPrint("Migration version: $currentMigrationVersion");
     if (currentMigrationVersion != null &&
         currentMigrationVersion < migrationVersionCode) {
+      await EnvoyReport().clearAll();
       try {
         await mergeWithFingerPrint();
         await Future.delayed(const Duration(milliseconds: 50));
