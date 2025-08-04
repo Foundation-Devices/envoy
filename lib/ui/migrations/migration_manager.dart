@@ -225,7 +225,7 @@ class MigrationManager {
             final accountHandler =
                 await EnvoyAccountHandler.openAccount(dbPath: dir.path);
             final state = await accountHandler.state();
-            kPrint("Checking dir: ${dir.path} ");
+            kPrint("Checking dir: ${dir.path}  ${state.xfp}");
             if (needsMerges
                 .containsKey((state.xfp, state.network, state.index))) {
               needsMerges[(state.xfp, state.network, state.index)]!
@@ -706,7 +706,7 @@ class MigrationManager {
         deviceSerial: state.deviceSerial ?? "envoy",
         network: network,
         number: state.index,
-        fingerprint: state.xfp);
+        fingerprint: state.xfp.toLowerCase());
     final accountOne = first;
     final accountTwo = last;
     try {
@@ -791,7 +791,7 @@ class MigrationManager {
         deviceSerial: state.deviceSerial ?? "envoy",
         network: network,
         number: state.index,
-        fingerprint: state.xfp);
+        fingerprint: state.xfp.toLowerCase());
     if (dir.path == currentPath.path) {
       return;
     }
@@ -865,7 +865,7 @@ class MigrationManager {
     double? currentMigrationVersion = await EnvoyStorage()
         .getNoBackUpPreference<double>(MigrationManager.migrationCodePrefs);
 
-    kPrint("Current migration version: $currentMigrationVersion");
+    kPrint("Current migration version from prefs: $currentMigrationVersion");
     // handle legacy string-based version, TOOD: remove in v2.5
     if (currentMigrationVersion == null) {
       final legacyVersion = await EnvoyStorage()
@@ -919,6 +919,16 @@ class MigrationManager {
         "Current migration version: $currentMigrationVersion, Required: ${MigrationManager.migrationVersionCode}, Requires migration: $requiresMigration");
 
     return requiresMigration;
+  }
+
+  void resetMigrationPrefs() async {
+    try {
+      await EnvoyStorage().setNoBackUpPreference(
+          MigrationManager.migrationCodePrefs,
+          MigrationManager.migrationVersionCode);
+    } catch (_) {
+      //ignore
+    }
   }
 }
 

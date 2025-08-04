@@ -24,6 +24,7 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/home/migration_dialogs.dart';
 import 'package:envoy/ui/home/top_bar_home.dart';
 import 'package:envoy/ui/lock/session_manager.dart';
+import 'package:envoy/ui/migrations/migration_manager.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -163,6 +164,7 @@ class HomePageState extends ConsumerState<HomePage>
   @override
   void initState() {
     super.initState();
+    MigrationManager().resetMigrationPrefs();
     _resetTorWarningTimer();
     _resetServerDownWarningTimer();
     _resetBackupWarningTimer();
