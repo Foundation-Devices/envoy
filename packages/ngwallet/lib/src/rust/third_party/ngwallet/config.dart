@@ -5,6 +5,7 @@
 
 import '../../api/envoy_wallet.dart';
 import '../../frb_generated.dart';
+import '../../lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<MultiSigDetails>>
@@ -32,6 +33,49 @@ enum AddressType {
   /// Bip48/1 script.
   p2ShWsh,
   ;
+}
+
+class NgAccountBackup {
+  final NgAccountConfig ngAccountConfig;
+  final String xfp;
+  final List<(AddressType, String)> publicDescriptors;
+  final List<(AddressType, KeychainKind, int)> lastUsedIndex;
+  final Map<String, String> notes;
+  final Map<String, String> tags;
+  final Map<String, bool> doNotSpend;
+
+  const NgAccountBackup({
+    required this.ngAccountConfig,
+    required this.xfp,
+    required this.publicDescriptors,
+    required this.lastUsedIndex,
+    required this.notes,
+    required this.tags,
+    required this.doNotSpend,
+  });
+
+  @override
+  int get hashCode =>
+      ngAccountConfig.hashCode ^
+      xfp.hashCode ^
+      publicDescriptors.hashCode ^
+      lastUsedIndex.hashCode ^
+      notes.hashCode ^
+      tags.hashCode ^
+      doNotSpend.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NgAccountBackup &&
+          runtimeType == other.runtimeType &&
+          ngAccountConfig == other.ngAccountConfig &&
+          xfp == other.xfp &&
+          publicDescriptors == other.publicDescriptors &&
+          lastUsedIndex == other.lastUsedIndex &&
+          notes == other.notes &&
+          tags == other.tags &&
+          doNotSpend == other.doNotSpend;
 }
 
 class NgAccountConfig {

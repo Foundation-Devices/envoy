@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'legacy_account.g.dart';
@@ -36,14 +37,17 @@ class LegacyAccount {
   Map<String, dynamic> toJson() => _$LegacyAccountToJson(this);
 
   String getUnificationId() {
-    return "$deviceSerial:${wallet.network}:$number:${extractFingerprint()}";
+    return NgAccountManager.getUniqueAccountId(
+        deviceSerial: deviceSerial,
+        network: wallet.network.toLowerCase(),
+        number: number,
+        fingerprint: extractFingerprint() ?? "");
   }
 
   String? extractFingerprint() {
-    final descriptor = wallet.externalDescriptor ?? "";
-    final regex = RegExp(r'\[([0-9a-f]{8})/');
-    final matches = regex.allMatches(descriptor);
-    return matches.map((m) => m.group(1)!).first;
+    final descriptor =
+        wallet.externalDescriptor ?? wallet.publicExternalDescriptor ?? "";
+    return NgAccountManager.getFingerprint(descriptor);
   }
 }
 

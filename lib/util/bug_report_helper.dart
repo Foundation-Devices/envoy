@@ -21,7 +21,7 @@ class EnvoyReport extends ChangeNotifier {
   }
 
   // The maximum number of logs to keep in the database
-  static const int _logCapacity = 35;
+  static const int _logCapacity = 100;
   Database? _db;
   final StoreRef<int, Map<String, Object?>> _logsStore =
       intMapStoreFactory.store("logs");
@@ -131,7 +131,10 @@ class EnvoyReport extends ChangeNotifier {
       lines = lines.take(maxFrames);
     }
     // skip empty lines
-    lines = lines.skipWhile((value) => value.trim().isEmpty);
+    // skip lines that contain <unknown> FRAME from FRB
+    lines = lines
+        .skipWhile((value) => value.toLowerCase().contains("<unknown>"))
+        .skipWhile((value) => value.trim().isEmpty);
     // only show the first 50 lines
     // lines = lines.toList().reversed.take(50).toList().reversed;
     return lines.toList();

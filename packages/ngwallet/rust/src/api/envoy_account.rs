@@ -29,6 +29,7 @@ pub struct EnvoyAccount {
     pub transactions: Vec<BitcoinTransaction>,
     pub utxo: Vec<Output>,
     pub tags: Vec<String>,
+    pub xfp: String,
     pub external_public_descriptors: Vec<(AddressType, String)>,
 }
 

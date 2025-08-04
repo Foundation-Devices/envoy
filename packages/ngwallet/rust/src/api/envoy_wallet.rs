@@ -57,7 +57,23 @@ impl Output {
     pub fn get_id(&self) -> String {}
 }
 
-#[frb(mirror(Network))]
+#[frb(mirror(Network), dart_code="
+    @override
+  String toString() {
+    switch (this) {
+      case Network.bitcoin:
+        return \"mainnet\";
+      case Network.testnet:
+        return \"testnet\";
+      case Network.testnet4:
+        return \"testnet\";
+      case Network.signet:
+        return \"signet\";
+      case Network.regtest:
+        return \"regtest\";
+    }
+  }
+")]
 pub enum _Network {
     /// Mainnet Bitcoin.
     Bitcoin,
@@ -220,6 +236,17 @@ impl EnvoyAccountHandler {
         }
     }
 
+    pub fn deserialize_backup(backup_json: &str) -> Result<NgAccountBackup> {
+        match NgAccountBackup::deserialize(backup_json) {
+            Ok(backup) => {
+                Ok(backup)
+            }
+            Err(er) => {
+                Err(anyhow!("Failed to deserialize backup json: {:?}", er))
+            }
+        }
+    }
+
     pub fn from_config(db_path: String, config: NgAccountConfig) -> Result<EnvoyAccountHandler> {
         let descriptors = config
             .descriptors
@@ -340,6 +367,7 @@ impl EnvoyAccountHandler {
                     unlocked_balance: 0,
                     utxo: utxo.clone(),
                     tags,
+                    xfp: account.get_xfp().to_lowercase(),
                     external_public_descriptors,
                 })
             }
@@ -765,98 +793,91 @@ impl EnvoyAccountHandler {
     }
 
     pub fn restore_from_backup(
-        backup_json: &str,
+        backup: NgAccountBackup,
         db_path: String,
         seed: Option<String>,
         passphrase: Option<String>,
     ) -> Result<EnvoyAccountHandler> {
-        match NgAccountBackup::deserialize(backup_json) {
-            Ok(backup) => {
-                let config = backup.ng_account_config;
-                let indexes = backup.last_used_index;
-                if config.descriptors.is_empty() && seed.is_none() {
-                    return Err(anyhow!("No descriptors or seed required for restore"));
-                }
-                let descriptors = {
-                    if config.descriptors.is_empty() {
-                        match EnvoyBip39::derive_descriptor_from_seed(
-                            seed.unwrap().as_str(),
-                            config.network,
-                            passphrase,
-                        ) {
-                            Ok(descriptors) => {
-                                let ng_descriptors = descriptors
-                                    .iter()
-                                    .filter(|descriptor| {
-                                        //envoy hot wallets only support  P2wpkh, P2tr
-                                        descriptor.address_type == AddressType::P2tr
-                                            || descriptor.address_type == AddressType::P2wpkh
-                                    })
-                                    .map(|descriptor| NgDescriptor {
-                                        internal: descriptor.internal_descriptor.clone(),
-                                        external: Some(descriptor.external_descriptor.clone()),
-                                        address_type: descriptor.address_type.clone(),
-                                    })
-                                    .collect::<Vec<NgDescriptor>>();
-                                Self::get_descriptors(&ng_descriptors, db_path.clone())
-                            }
-                            Err(err) => {
-                                return Err(anyhow!(
+        let config = backup.ng_account_config;
+        let indexes = backup.last_used_index;
+        if config.descriptors.is_empty() && seed.is_none() {
+            return Err(anyhow!("No descriptors or seed required for restore"));
+        }
+        let descriptors = {
+            if config.descriptors.is_empty() {
+                match EnvoyBip39::derive_descriptor_from_seed(
+                    seed.unwrap().as_str(),
+                    config.network,
+                    passphrase,
+                ) {
+                    Ok(descriptors) => {
+                        let ng_descriptors = descriptors
+                            .iter()
+                            .filter(|descriptor| {
+                                //envoy hot wallets only support  P2wpkh, P2tr
+                                descriptor.address_type == AddressType::P2tr
+                                    || descriptor.address_type == AddressType::P2wpkh
+                            })
+                            .map(|descriptor| NgDescriptor {
+                                internal: descriptor.internal_descriptor.clone(),
+                                external: Some(descriptor.external_descriptor.clone()),
+                                address_type: descriptor.address_type.clone(),
+                            })
+                            .collect::<Vec<NgDescriptor>>();
+                        Self::get_descriptors(&ng_descriptors, db_path.clone())
+                    }
+                    Err(err) => {
+                        return Err(anyhow!(
                                     "Failed to derive descriptor from seed: {:?}",
                                     err
                                 ));
-                            }
-                        }
-                    } else {
-                        Self::get_descriptors(&config.descriptors, db_path.clone())
-                    }
-                };
-
-                let ng_account = NgAccountBuilder::default()
-                    .name(config.name.clone())
-                    .color(config.color.clone())
-                    .descriptors(descriptors)
-                    .device_serial(config.device_serial)
-                    .date_added(config.date_added)
-                    .date_synced(config.date_synced)
-                    .account_path(Some(db_path.clone()))
-                    .network(config.network)
-                    .id(config.id.clone())
-                    .seed_has_passphrase(config.seed_has_passphrase)
-                    .preferred_address_type(config.preferred_address_type)
-                    .index(config.index)
-                    .build_from_file(Some(db_path));
-
-                match ng_account {
-                    Ok(mut account) => {
-                        // Reveal addresses up to the last used index
-                        for wallet in &mut account.wallets {
-                            let address_type = wallet.address_type;
-                            for index in &indexes {
-                                if index.0 == address_type {
-                                    info!("Revealing addresses up to index: {:?}", index);
-                                    let _ = wallet
-                                        .reveal_addresses_up_to(index.1, index.2)
-                                        .unwrap_or_default();
-                                }
-                            }
-                        }
-                        let mut handler = EnvoyAccountHandler {
-                            stream_sink: None,
-                            mempool_txs: vec![],
-                            id: config.id.clone(),
-                            ng_account: Arc::new(Mutex::new(account)),
-                        };
-                        handler.migrate_meta(backup.notes, backup.tags, backup.do_not_spend);
-                        Ok(handler)
-                    }
-                    Err(err) => {
-                        return Err(anyhow!("Failed to create account: {:?}", err));
                     }
                 }
+            } else {
+                Self::get_descriptors(&config.descriptors, db_path.clone())
             }
-            Err(_) => {
-                return Err(anyhow!("Failed to deserialize backup"));
+        };
+
+        let ng_account = NgAccountBuilder::default()
+            .name(config.name.clone())
+            .color(config.color.clone())
+            .descriptors(descriptors)
+            .device_serial(config.device_serial)
+            .date_added(config.date_added)
+            .date_synced(config.date_synced)
+            .account_path(Some(db_path.clone()))
+            .network(config.network)
+            .id(config.id.clone())
+            .seed_has_passphrase(config.seed_has_passphrase)
+            .preferred_address_type(config.preferred_address_type)
+            .index(config.index)
+            .build_from_file(Some(db_path));
+
+        match ng_account {
+            Ok(mut account) => {
+                // Reveal addresses up to the last used index
+                for wallet in &mut account.wallets {
+                    let address_type = wallet.address_type;
+                    for index in &indexes {
+                        if index.0 == address_type {
+                            info!("Revealing addresses up to index: {:?}", index);
+                            let _ = wallet
+                                .reveal_addresses_up_to(index.1, index.2)
+                                .unwrap_or_default();
+                        }
+                    }
+                }
+                let mut handler = EnvoyAccountHandler {
+                    stream_sink: None,
+                    mempool_txs: vec![],
+                    id: config.id.clone(),
+                    ng_account: Arc::new(Mutex::new(account)),
+                };
+                handler.migrate_meta(backup.notes, backup.tags, backup.do_not_spend);
+                Ok(handler)
+            }
+            Err(err) => {
+                return Err(anyhow!("Failed to create account: {:?}", err));
             }
         }
     }

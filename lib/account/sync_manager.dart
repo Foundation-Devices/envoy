@@ -63,6 +63,7 @@ class SyncManager {
   }
 
   startSync() {
+    kPrint("SyncManager: Starting sync");
     _syncTimer =
         Timer.periodic(const Duration(seconds: _syncInterval), (timer) {
       if (NgAccountManager().accounts.isEmpty || _pauseSync) {

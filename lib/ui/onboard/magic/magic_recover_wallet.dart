@@ -14,6 +14,7 @@ import 'package:envoy/ui/onboard/manual/dialogs.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:envoy/ui/routes/routes.dart';
@@ -24,6 +25,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/seed_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/build_context_extension.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -33,7 +35,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart';
-import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 
 class MagicRecoverWallet extends ConsumerStatefulWidget {
   const MagicRecoverWallet({super.key});
@@ -400,8 +401,14 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
             OnboardingButton(
               label: S().component_continue,
               type: EnvoyButtonTypes.tertiary,
-              onTap: () {
-                showContinueWarningDialog(context, _seed!);
+              onTap: () async {
+                _seed ??= await EnvoySeed().get();
+                if (_seed == null) {
+                  return;
+                }
+                if (mounted) {
+                  showContinueWarningDialog(context, _seed);
+                }
               },
             ),
             OnboardingButton(
@@ -502,8 +509,11 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
             OnboardingButton(
               label: S().component_continue,
               type: EnvoyButtonTypes.tertiary,
-              onTap: () {
-                showContinueWarningDialog(context, _seed!);
+              onTap: () async {
+                _seed ??= await EnvoySeed().get();
+                if (mounted) {
+                  showContinueWarningDialog(context, _seed!);
+                }
               },
             ),
             Consumer(
@@ -745,7 +755,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     }
   }
 
-  void showContinueWarningDialog(BuildContext context, String seed) {
+  void showContinueWarningDialog(BuildContext context, String? seed) {
     showEnvoyDialog(
       context: context,
       dismissible: false,
@@ -761,7 +771,12 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         ),
         primaryButtonLabel: S().component_continue,
         onPrimaryButtonTap: (context) async {
-          await EnvoySeed().deriveAndAddWallets(seed);
+          if (seed != null) {
+            await EnvoySeed().deriveAndAddWallets(seed);
+          } else {
+            EnvoyReport().log("MagicRecoverWallet",
+                "Seed is null in continue warning dialog");
+          }
 
           await Future.delayed(const Duration(milliseconds: 120));
           if (context.mounted) {

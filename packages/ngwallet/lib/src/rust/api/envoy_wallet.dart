@@ -82,6 +82,12 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerDecodePsbt(
           draftTransaction: draftTransaction, psbt: psbt);
 
+  static Future<NgAccountBackup> deserializeBackup(
+          {required String backupJson}) =>
+      RustLib.instance.api
+          .crateApiEnvoyWalletEnvoyAccountHandlerDeserializeBackup(
+              backupJson: backupJson);
+
   Future<List<String>> exportBip329Data();
 
   static Future<EnvoyAccountHandler> fromConfig(
@@ -182,13 +188,13 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   Future<FullScanRequest> requestFullScan({required AddressType addressType});
 
   static Future<EnvoyAccountHandler> restoreFromBackup(
-          {required String backupJson,
+          {required NgAccountBackup backup,
           required String dbPath,
           String? seed,
           String? passphrase}) =>
       RustLib.instance.api
           .crateApiEnvoyWalletEnvoyAccountHandlerRestoreFromBackup(
-              backupJson: backupJson,
+              backup: backup,
               dbPath: dbPath,
               seed: seed,
               passphrase: passphrase);
@@ -269,6 +275,22 @@ enum Network {
   /// Bitcoin's regtest network.
   regtest,
   ;
+
+  @override
+  String toString() {
+    switch (this) {
+      case Network.bitcoin:
+        return "mainnet";
+      case Network.testnet:
+        return "testnet";
+      case Network.testnet4:
+        return "testnet";
+      case Network.signet:
+        return "signet";
+      case Network.regtest:
+        return "regtest";
+    }
+  }
 }
 
 class ServerFeatures {

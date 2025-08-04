@@ -104,12 +104,8 @@ class Settings extends ChangeNotifier {
 
     return fullPaths;
   }
-
-  // FD testnet3 server
-  static const String TESTNET_ELECTRUM_SERVER =
-      "ssl://testnet.foundation.xyz:50002";
-
   // FD testnet4 server
+
   static const String TESTNET4_ELECTRUM_SERVER =
       "ssl://testnet4.foundation.xyz:50002";
 
@@ -161,7 +157,7 @@ class Settings extends ChangeNotifier {
       if (usingTor) {
         return TESTNET_ONION_ELECTRUM_SERVER;
       } else {
-        return TESTNET_ELECTRUM_SERVER;
+        return TESTNET4_ELECTRUM_SERVER;
       }
     }
 

@@ -212,7 +212,8 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
           await showRestoreFailedDialog(context);
         }
       }
-    } catch (e) {
+    } catch (e, stack) {
+      debugPrintStack(stackTrace: stack);
       setState(() {
         _isRecoveryInProgress = false;
       });

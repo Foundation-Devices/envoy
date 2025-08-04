@@ -48,6 +48,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler;
 
   CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_KeychainKindPtr => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind;
+
+  CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_MultiSigDetailsPtr => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails;
 
@@ -81,6 +85,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   EnvoyAccountHandler
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          dynamic raw);
+
+  @protected
+  KeychainKind
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
           dynamic raw);
 
   @protected
@@ -135,6 +144,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  KeychainKind
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          dynamic raw);
+
+  @protected
   MultiSigDetails
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
           dynamic raw);
@@ -179,6 +193,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Network dco_decode_box_autoadd_network(dynamic raw);
+
+  @protected
+  NgAccountBackup dco_decode_box_autoadd_ng_account_backup(dynamic raw);
 
   @protected
   NgAccountConfig dco_decode_box_autoadd_ng_account_config(dynamic raw);
@@ -250,6 +267,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<(AddressType, KeychainKind, int)>
+      dco_decode_list_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
+          dynamic raw);
+
+  @protected
   List<(AddressType, String)> dco_decode_list_record_address_type_string(
       dynamic raw);
 
@@ -265,6 +287,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Network dco_decode_network(dynamic raw);
+
+  @protected
+  NgAccountBackup dco_decode_ng_account_backup(dynamic raw);
 
   @protected
   NgAccountConfig dco_decode_ng_account_config(dynamic raw);
@@ -307,6 +332,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   RBFBumpFeeError dco_decode_rbf_bump_fee_error(dynamic raw);
+
+  @protected
+  (
+    AddressType,
+    KeychainKind,
+    int
+  ) dco_decode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
+      dynamic raw);
 
   @protected
   (AddressType, String) dco_decode_record_address_type_string(dynamic raw);
@@ -379,6 +412,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  KeychainKind
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          SseDeserializer deserializer);
+
+  @protected
   MultiSigDetails
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
           SseDeserializer deserializer);
@@ -432,6 +470,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  KeychainKind
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          SseDeserializer deserializer);
+
+  @protected
   MultiSigDetails
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
           SseDeserializer deserializer);
@@ -479,6 +522,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Network sse_decode_box_autoadd_network(SseDeserializer deserializer);
+
+  @protected
+  NgAccountBackup sse_decode_box_autoadd_ng_account_backup(
+      SseDeserializer deserializer);
 
   @protected
   NgAccountConfig sse_decode_box_autoadd_ng_account_config(
@@ -556,6 +603,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<(AddressType, KeychainKind, int)>
+      sse_decode_list_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
+          SseDeserializer deserializer);
+
+  @protected
   List<(AddressType, String)> sse_decode_list_record_address_type_string(
       SseDeserializer deserializer);
 
@@ -573,6 +625,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Network sse_decode_network(SseDeserializer deserializer);
+
+  @protected
+  NgAccountBackup sse_decode_ng_account_backup(SseDeserializer deserializer);
 
   @protected
   NgAccountConfig sse_decode_ng_account_config(SseDeserializer deserializer);
@@ -615,6 +670,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   RBFBumpFeeError sse_decode_rbf_bump_fee_error(SseDeserializer deserializer);
+
+  @protected
+  (
+    AddressType,
+    KeychainKind,
+    int
+  ) sse_decode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
+      SseDeserializer deserializer);
 
   @protected
   (AddressType, String) sse_decode_record_address_type_string(
@@ -693,6 +756,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          KeychainKind self, SseSerializer serializer);
+
+  @protected
+  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
           MultiSigDetails self, SseSerializer serializer);
 
@@ -746,6 +814,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          KeychainKind self, SseSerializer serializer);
+
+  @protected
+  void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
           MultiSigDetails self, SseSerializer serializer);
 
@@ -794,6 +867,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_box_autoadd_network(Network self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_ng_account_backup(
+      NgAccountBackup self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_ng_account_config(
@@ -875,6 +952,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
+  void
+      sse_encode_list_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
+          List<(AddressType, KeychainKind, int)> self,
+          SseSerializer serializer);
+
+  @protected
   void sse_encode_list_record_address_type_string(
       List<(AddressType, String)> self, SseSerializer serializer);
 
@@ -892,6 +975,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_network(Network self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_ng_account_backup(
+      NgAccountBackup self, SseSerializer serializer);
 
   @protected
   void sse_encode_ng_account_config(
@@ -940,6 +1027,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_rbf_bump_fee_error(
       RBFBumpFeeError self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_record_address_type_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_keychain_kind_u_32(
+          (AddressType, KeychainKind, int) self, SseSerializer serializer);
 
   @protected
   void sse_encode_record_address_type_string(
@@ -1057,6 +1149,18 @@ class RustLibWire implements BaseWire {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
               ptr);
 
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          int ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+              ptr);
+
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          int ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+              ptr);
+
   void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
           int ptr) =>
       wasmModule
@@ -1126,6 +1230,14 @@ extension type RustLibWasmModule._(JSObject _) implements JSObject {
 
   external void
       rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
+          int ptr);
+
+  external void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
+          int ptr);
+
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerKeychainKind(
           int ptr);
 
   external void

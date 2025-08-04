@@ -148,7 +148,11 @@ class Fees {
   static restore() {
     if (_ls.prefs.containsKey(FEE_RATE_PREFS)) {
       var storedFees = jsonDecode(_ls.prefs.getString(FEE_RATE_PREFS)!);
-      Fees.fromJson(storedFees);
+      try {
+        Fees.fromJson(storedFees);
+      } catch (e) {
+        //ignore
+      }
     }
 
     Fees.init();
