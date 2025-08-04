@@ -193,7 +193,7 @@ class EnvoyReport extends ChangeNotifier {
     return file.path;
   }
 
-  clearAll() async {
+  Future clearAll() async {
     await _logsStore.delete(_db!);
   }
 }

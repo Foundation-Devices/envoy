@@ -41,6 +41,14 @@ extension AccountExtension on EnvoyAccount {
         .first
         .$1;
   }
+
+  Directory? getWalletDir() {
+    return NgAccountManager.getAccountDirectory(
+        deviceSerial: deviceSerial ?? "envoy",
+        network: network.toString(),
+        number: index,
+        fingerprint: xfp);
+  }
 }
 
 enum DeviceAccountResult {
@@ -168,7 +176,7 @@ class NgAccountManager extends ChangeNotifier {
                 .any((element) => element.addressType == AddressType.p2Tr);
             EnvoyReport()
                 .log("AccountManager", "isP2TrDerived: $isP2TrDerived");
-            if(handler == null){
+            if (handler == null) {
               continue;
             }
             if (!isP2TrDerived) {
@@ -190,7 +198,8 @@ class NgAccountManager extends ChangeNotifier {
                       .first;
                   await handler.addDescriptor(ngDescriptor: descriptor);
                   final state = await handler.state();
-                  final index = _accountsHandler.indexWhere((e) => e.$1.id == state.id);
+                  final index =
+                      _accountsHandler.indexWhere((e) => e.$1.id == state.id);
                   if (index != -1) {
                     _accountsHandler[index] = (state, handler);
                   } else {
@@ -447,6 +456,7 @@ class NgAccountManager extends ChangeNotifier {
     }
     _accountsOrder.sink.add(order);
     await Future.delayed(const Duration(milliseconds: 50));
+
     final dir = Directory(account.walletPath!);
     await dir.delete(recursive: true);
     _accountsHandler.removeWhere((e) => e.$1.id == account.id);

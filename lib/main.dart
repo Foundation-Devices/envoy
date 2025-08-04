@@ -102,6 +102,7 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   }
 
   EnvoyReport().init();
+  await EnvoyReport().clearAll();
   Tor.init(enabled: Settings().torEnabled());
   UpdatesManager.init();
   ScvServer.init();
