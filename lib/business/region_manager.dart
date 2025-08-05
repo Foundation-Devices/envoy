@@ -4,7 +4,6 @@
 
 import 'dart:convert';
 
-import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/services.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
