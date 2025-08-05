@@ -41,6 +41,14 @@ extension AccountExtension on EnvoyAccount {
         .first
         .$1;
   }
+
+  Directory? getWalletDir() {
+    return NgAccountManager.getAccountDirectory(
+        deviceSerial: deviceSerial ?? "envoy",
+        network: network.toString(),
+        number: index,
+        fingerprint: xfp);
+  }
 }
 
 enum DeviceAccountResult {
@@ -168,6 +176,9 @@ class NgAccountManager extends ChangeNotifier {
                 .any((element) => element.addressType == AddressType.p2Tr);
             EnvoyReport()
                 .log("AccountManager", "isP2TrDerived: $isP2TrDerived");
+            if (handler == null) {
+              continue;
+            }
             if (!isP2TrDerived) {
               final seed = await EnvoySeed().get();
               if (seed != null && !account.seedHasPassphrase) {
@@ -185,36 +196,14 @@ class NgAccountManager extends ChangeNotifier {
                             addressType: element.addressType,
                           ))
                       .first;
-                  handler?.addDescriptor(ngDescriptor: descriptor);
-                  _accountsHandler.removeWhere((e) => e.$1.id == account.id);
-                  final walletPath = account.walletPath;
-                  handler?.dispose();
-                  _accountsHandler.removeWhere((e) => e.$1.id == account.id);
-                  if (walletPath == null) {
-                    continue;
-                  }
-                  //frb some times takes too much time to dispose from the memory
-                  int attempts = 0;
-                  const maxAttempts = 3;
-                  EnvoyAccountHandler? accountHandler;
-                  while (attempts < maxAttempts) {
-                    try {
-                      accountHandler = await EnvoyAccountHandler.openAccount(
-                          dbPath: walletPath);
-                      _accountsHandler
-                          .add((await accountHandler.state(), accountHandler));
-                      EnvoyReport().log("Accounts",
-                          "Missing p2Tr descriptor added to ${account.name}");
-                      break;
-                    } catch (e) {
-                      attempts++;
-                      if (attempts >= maxAttempts) {
-                        EnvoyReport().log("Accounts",
-                            "Failed to reopen account ${account.name} after $maxAttempts attempts: $e");
-                        rethrow;
-                      }
-                      await Future.delayed(Duration(milliseconds: 1500));
-                    }
+                  await handler.addDescriptor(ngDescriptor: descriptor);
+                  final state = await handler.state();
+                  final index =
+                      _accountsHandler.indexWhere((e) => e.$1.id == state.id);
+                  if (index != -1) {
+                    _accountsHandler[index] = (state, handler);
+                  } else {
+                    _accountsHandler.add((state, handler));
                   }
                 } catch (e) {
                   EnvoyReport().log("Accounts",
@@ -467,6 +456,7 @@ class NgAccountManager extends ChangeNotifier {
     }
     _accountsOrder.sink.add(order);
     await Future.delayed(const Duration(milliseconds: 50));
+
     final dir = Directory(account.walletPath!);
     await dir.delete(recursive: true);
     _accountsHandler.removeWhere((e) => e.$1.id == account.id);

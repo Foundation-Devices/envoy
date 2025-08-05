@@ -18,6 +18,8 @@ import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
 class MigrationProgress {
@@ -61,7 +63,7 @@ class MigrationManager {
   static String migrationCodePrefs = "envoy_migration_version_code";
 
   //current migration code. if existing value is less than this, run migration
-  static double migrationVersionCode = 2.25;
+  static double migrationVersionCode = 2.26;
 
   //adds to preferences to indicate that the user has migrated to testnet4
   static String migratedToTestnet4 = "migrated_to_testnet4";
@@ -225,7 +227,6 @@ class MigrationManager {
             final accountHandler =
                 await EnvoyAccountHandler.openAccount(dbPath: dir.path);
             final state = await accountHandler.state();
-            kPrint("Checking dir: ${dir.path}  ${state.xfp}");
             if (needsMerges
                 .containsKey((state.xfp, state.network, state.index))) {
               needsMerges[(state.xfp, state.network, state.index)]!
@@ -263,7 +264,7 @@ class MigrationManager {
         if (accounts.length == 2) {
           await mergeTwoAccounts(accounts.first, accounts.last);
         } else {
-          //relocate and check missing descriptors
+          // relocate and check missing descriptors
           if (accounts.length == 1) {
             final firstAccount = accounts.first;
             final firstAccountState = await accounts.first.state();
@@ -305,14 +306,13 @@ class MigrationManager {
                   internal: missingAccount.wallet.internalDescriptor!,
                   external_: missingAccount.wallet.externalDescriptor,
                 );
-                firstAccount.addDescriptor(ngDescriptor: ngDescriptor);
+                await firstAccount.addDescriptor(ngDescriptor: ngDescriptor);
+                await Future.delayed(const Duration(milliseconds: 400));
                 EnvoyReport().log("Migration",
                     "Descriptor added for ${firstAccountState.name} ${missingAccount.wallet.type}");
-                await relocateAccount(firstAccount, firstAccountState);
               }
-            } else {
-              await relocateAccount(firstAccount, firstAccountState);
             }
+            await relocateAccount(firstAccount, firstAccountState);
           } else {
             for (var account in accounts) {
               await relocateAccount(account, await account.state());
@@ -364,12 +364,25 @@ class MigrationManager {
         if (!account.isDisposed) {
           kPrint("Disposing account after merge ${account.id()}");
           account.dispose();
+          // Wait for each disposal to complete
+          await Future.delayed(const Duration(milliseconds: 500));
         }
       }
-      kPrint("Migration complete.. waiting 1.5 seconds before exiting");
-      await Future.delayed(const Duration(milliseconds: 1500));
     }
     return;
+  }
+
+  Future<void> copyDirectory(Directory source, Directory destination) async {
+    await for (var entity in source.list(recursive: false)) {
+      if (entity is Directory) {
+        var newDirectory =
+            Directory(join(destination.absolute.path, basename(entity.path)));
+        await newDirectory.create();
+        await copyDirectory(entity.absolute, newDirectory);
+      } else if (entity is File) {
+        await entity.copy(join(destination.path, basename(entity.path)));
+      }
+    }
   }
 
   Future<List<EnvoyAccountHandler>> createAccounts(
@@ -594,6 +607,20 @@ class MigrationManager {
   Future sanityCheck() async {
     final legacyAccounts = await loadLegacyAccounts();
     final unifiedAccounts = unify(legacyAccounts);
+    final newWalletDirectory = Directory(NgAccountManager.walletsDirectory);
+    final dirs = await newWalletDirectory.list().toList();
+    for (var dir in dirs) {
+      if (dir is Directory) {
+        try {
+          final accountHandler =
+              await EnvoyAccountHandler.openAccount(dbPath: dir.path);
+          accountHandler.dispose();
+        } catch (e, stack) {
+          EnvoyReport()
+              .log("Migration", "Error opening wallet: $e", stackTrace: stack);
+        }
+      }
+    }
     if (legacyAccounts.isEmpty) {
       EnvoyReport().log("Migration", "SanityCheck: No legacy accounts found");
       return;
@@ -716,18 +743,23 @@ class MigrationManager {
       EnvoyReport().log("Migration",
           "Accounts Needs merge ${accountOneState.name} ${accountTwoState.name}");
 
-      final accountOnePath = Directory(accountOneState.walletPath!);
-      final accountTwoPath = Directory(accountTwoState.walletPath!);
+      final accountOnePath = _getCurrentWalletPath(accountOneState);
+      final accountTwoPath = _getCurrentWalletPath(accountTwoState);
 
       if (await directory.exists()) {
+        kPrint("About to delete ${directory.path}");
         await directory.delete(recursive: true);
       }
       await directory.create(recursive: true);
+      kPrint("Created directory ${directory.path}");
+      kPrint("Created directory existsSync${directory.existsSync()}");
 
       List<NgDescriptor> descriptors = [];
       descriptors.addAll(accountOneState.descriptors);
       descriptors.addAll(accountTwoState.descriptors);
       final taprootEnabled = Settings().taprootEnabled();
+      kPrint(
+          "Descriptors: ${descriptors.map((e) => e.addressType).join(",")} ");
 
       final envoyAccountHandler = await EnvoyAccountHandler.migrate(
           name: accountOneState.name,
@@ -766,19 +798,23 @@ class MigrationManager {
       await LocalStorage()
           .prefs
           .setAccountScanStatus(accountOneState.id, AddressType.p2Tr, false);
+
       accountTwo.dispose();
       envoyAccountHandler.dispose();
       accountOne.dispose();
       await Future.delayed(const Duration(milliseconds: 100));
+      kPrint("Deleting old wallet paths");
       await accountOnePath.delete(recursive: true);
       await accountTwoPath.delete(recursive: true);
+
+      kPrint("Deleting old wallet paths successful");
       EnvoyReport().log("Migration",
           "Accounts merged ${accountOneState.name} ${accountTwoState.name}  ");
       kPrint("Migrated ");
-    } catch (e) {
+    } catch (e, stack) {
       if (!accountOne.isDisposed) accountOne.dispose();
       if (!accountTwo.isDisposed) accountTwo.dispose();
-      kPrint("Error opening wallet: $e");
+      kPrint("Error opening wallet: $e", stackTrace: stack);
     }
   }
 
@@ -786,7 +822,8 @@ class MigrationManager {
   Future relocateAccount(
       EnvoyAccountHandler account, EnvoyAccount state) async {
     final network = state.network.toString();
-    final currentPath = Directory(state.walletPath!);
+    //get old wallet directory. this doesn't include xfp
+    final currentPath = _getCurrentWalletPath(state);
     final dir = NgAccountManager.getAccountDirectory(
         deviceSerial: state.deviceSerial ?? "envoy",
         network: network,
@@ -798,24 +835,15 @@ class MigrationManager {
     try {
       await dir.create(recursive: true);
       EnvoyReport().log("Migration",
-          "Relocating account ${state.name} ${state.walletPath} to ${dir.path}");
+          "Relocating account ${state.name} (${state.network}) ${state.walletPath} to ${dir.path}");
       await account.updateWalletPath(walletPath: dir.path);
       account.dispose();
-      if (await currentPath.exists()) {
-        await for (var entity in currentPath.list(recursive: true)) {
-          if (entity is File) {
-            final relativePath =
-                entity.path.substring(currentPath.path.length + 1);
-            final newFile = File('${dir.path}/$relativePath');
-            await newFile.parent.create(recursive: true);
-            await entity.copy(newFile.path);
-          }
-        }
-        EnvoyReport().log("Migration",
-            "Relocated account ${state.name} ${dir.path}, and deleting old path ${currentPath.path}");
-        await currentPath.delete(recursive: true);
-        kPrint("Deleted old wallet path");
-      }
+      await Future.delayed(const Duration(milliseconds: 600));
+      await copyDirectory(currentPath, dir);
+      EnvoyReport().log("Migration",
+          "Relocated account ${state.name} ${dir.path}, and deleting old path ${currentPath.path}");
+      await currentPath.delete(recursive: true);
+      kPrint("Deleted old wallet path");
     } catch (e, stack) {
       EnvoyReport()
           .log("Migration", "Error relocating account: $e", stackTrace: stack);
@@ -911,17 +939,34 @@ class MigrationManager {
 
     // Update version if no migration needed
     if (!requiresMigration) {
-      await EnvoyStorage().setNoBackUpPreference(
-          MigrationManager.migrationCodePrefs,
-          MigrationManager.migrationVersionCode);
+      await resetMigrationPrefs();
     }
-    EnvoyReport().log("Migration",
-        "Current migration version: $currentMigrationVersion, Required: ${MigrationManager.migrationVersionCode}, Requires migration: $requiresMigration");
+    final a = await PackageInfo.fromPlatform();
+
+    EnvoyReport().log(
+        "Migration",
+        "Current migration version: $currentMigrationVersion,"
+            " Required: ${MigrationManager.migrationVersionCode},"
+            " Requires migration: $requiresMigration\n"
+            " App version: ${a.version}  (${a.buildNumber})  ");
 
     return requiresMigration;
   }
 
-  void resetMigrationPrefs() async {
+  //[iOS] state.walletPath needs to be prefixed with
+  // NgAccountManager.walletsDirectory
+  //v2.0.2 won't be needing this since from 2.0.2 will be using xfp based directory
+  //this currently is only used in migration
+  Directory _getCurrentWalletPath(EnvoyAccount state) {
+    final walletPath = state.walletPath!;
+    final target = walletPath.split('wallets_v2/').last;
+    return Directory(join(
+      NgAccountManager.walletsDirectory,
+      target,
+    ));
+  }
+
+  Future resetMigrationPrefs() async {
     try {
       await EnvoyStorage().setNoBackUpPreference(
           MigrationManager.migrationCodePrefs,

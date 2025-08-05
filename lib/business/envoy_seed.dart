@@ -819,7 +819,7 @@ class EnvoySeed {
         if (await dir.exists()) {
           bool existInAccountManager = NgAccountManager()
               .accounts
-              .any((element) => element.walletPath == dir.path);
+              .any((element) => element.getWalletDir()?.path == dir.path);
           if (existInAccountManager) {
             continue;
           }
