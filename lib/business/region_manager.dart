@@ -50,15 +50,12 @@ class AllowedRegions {
       return _isAllowed!;
     }
     if (!(await InAppPurchase.instance.isAvailable())) {
-      EnvoyReport().log("RegionManager", "IAP not available");
       return false;
     }
     try {
       String? countryCode = await InAppPurchase.instance.countryCode();
-      EnvoyReport().log("RegionManager", "IAP CountryCode: $countryCode");
       _isAllowed = buyDisabled.contains(countryCode);
-    } catch (e, stack) {
-      EnvoyReport().log("RegionManager:IAP", e.toString(), stackTrace: stack);
+    } catch (e) {
       _isAllowed = false;
     }
     return _isAllowed!;
