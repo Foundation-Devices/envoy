@@ -873,10 +873,7 @@ class MigrationManager {
   }
 
   Future<bool> isMigrationRequired() async {
-    final walletDirectdory = Directory(NgAccountManager.walletsDirectory);
-
-    EnvoyReport().log("Migration", "walletDirectdory ${walletDirectdory.path}");
-    // check if user has legacy accounts
+     // check if user has legacy accounts
     bool hasAccounts =
         LocalStorage().prefs.containsKey(NgAccountManager.v1AccountsPrefKey);
     if (hasAccounts) {
@@ -956,9 +953,10 @@ class MigrationManager {
     return requiresMigration;
   }
 
-  //[IOS] state.walletPath needs to be prefixed with
+  //[iOS] state.walletPath needs to be prefixed with
   // NgAccountManager.walletsDirectory
-  //v2.0.2 wont be needed since xfp based directory is used
+  //v2.0.2 won't be needing this since from 2.0.2 will be using xfp based directory
+  //this currently is only used in migration
   Directory _getCurrentWalletPath(EnvoyAccount state) {
     final walletPath = state.walletPath!;
     final target = walletPath.split('wallets_v2/').last;
