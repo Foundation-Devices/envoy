@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/services.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
@@ -41,19 +42,21 @@ class AllowedRegions {
     return false;
   }
 
-  static const buyDisabled = ["IND", "GBR"];
+  static const buyDisabled = ["IN", "GB"];
 
   static Future<bool> checkBuyDisabled() async {
     if (_isAllowed != null) {
       return _isAllowed!;
     }
-    if (await InAppPurchase.instance.isAvailable()) {
+    if (!(await InAppPurchase.instance.isAvailable())) {
+      EnvoyReport().log("RegionManager", "InAppPurchase not available");
       return false;
     }
     try {
       String? countryCode = await InAppPurchase.instance.countryCode();
       _isAllowed = buyDisabled.contains(countryCode);
-    } catch (e) {
+    } catch (e, stack) {
+      EnvoyReport().log("RegionManager", e.toString(), stackTrace: stack);
       _isAllowed = false;
     }
     return _isAllowed!;
