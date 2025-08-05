@@ -113,7 +113,7 @@ class _AdvancedSettingsOptionsState
                                               launchUrl(
                                                   Uri.parse(
                                                       "https://docs.foundation.xyz/backups/envoy/"
-                                                          ""),
+                                                      ""),
                                                   mode: LaunchMode
                                                       .externalApplication);
                                             },
