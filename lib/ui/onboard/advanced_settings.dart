@@ -112,7 +112,8 @@ class _AdvancedSettingsOptionsState
                                             onTap: () {
                                               launchUrl(
                                                   Uri.parse(
-                                                      "https://docs.foundation.xyz/envoy/envoy-menu/privacy"),
+                                                      "https://docs.foundation.xyz/backups/envoy/"
+                                                          ""),
                                                   mode: LaunchMode
                                                       .externalApplication);
                                             },
