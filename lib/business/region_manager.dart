@@ -42,21 +42,23 @@ class AllowedRegions {
     return false;
   }
 
-  static const buyDisabled = ["IN", "GB"];
+  static const buyDisabled = ["IN", "GB", "IND", "GBR"];
 
+  //returns true if buy is disabled
   static Future<bool> checkBuyDisabled() async {
     if (_isAllowed != null) {
       return _isAllowed!;
     }
     if (!(await InAppPurchase.instance.isAvailable())) {
-      EnvoyReport().log("RegionManager", "InAppPurchase not available");
+      EnvoyReport().log("RegionManager", "IAP not available");
       return false;
     }
     try {
       String? countryCode = await InAppPurchase.instance.countryCode();
+      EnvoyReport().log("RegionManager", "IAP CountryCode: $countryCode");
       _isAllowed = buyDisabled.contains(countryCode);
     } catch (e, stack) {
-      EnvoyReport().log("RegionManager", e.toString(), stackTrace: stack);
+      EnvoyReport().log("RegionManager:IAP", e.toString(), stackTrace: stack);
       _isAllowed = false;
     }
     return _isAllowed!;
