@@ -94,6 +94,26 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
     _updateTorEnabledStatus();
   }
 
+  onChange(String address) {
+    widget.setter(address);
+
+    if (address.isEmpty) {
+      _state = ElectrumServerEntryState.valid;
+      _isError = false;
+      _textBelow = S().privacy_node_configure;
+    }
+
+    if (_typingTimer != null) {
+      _typingTimer!.cancel();
+    }
+    _typingTimer = Timer(const Duration(seconds: 2), () {
+      if (address.isNotEmpty) {
+        _onAddressChanged(parseNodeUrl(address));
+        _controller.text = normalizeProtocol(address);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -105,6 +125,10 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
           ),
           child: EnvoyTextField(
             controller: _controller,
+            onEditingComplete: () {
+              FocusScope.of(context).unfocus();
+              onChange(_controller.text);
+            },
             isLoading: _state == ElectrumServerEntryState.pending,
             defaultText: S().privacy_node_nodeAddress,
             informationalText: _state == ElectrumServerEntryState.valid
@@ -113,23 +137,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
             errorText: _textBelow,
             additionalButtons: true,
             onChanged: (address) {
-              widget.setter(address);
-
-              if (address.isEmpty) {
-                _state = ElectrumServerEntryState.valid;
-                _isError = false;
-                _textBelow = S().privacy_node_configure;
-              }
-
-              if (_typingTimer != null) {
-                _typingTimer!.cancel();
-              }
-              _typingTimer = Timer(const Duration(seconds: 2), () {
-                if (address.isNotEmpty) {
-                  _onAddressChanged(parseNodeUrl(address));
-                  _controller.text = normalizeProtocol(address);
-                }
-              });
+              onChange(address);
             },
             isError: _isError,
             onQrScan: () {

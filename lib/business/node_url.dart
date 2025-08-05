@@ -36,6 +36,9 @@ String parseNodeUrl(String nodeUrl) {
     return nodeUrl;
   } else {
     if (nodeUrl.contains('.onion')) {
+      if (nodeUrl.endsWith(SSL_PORT)) {
+        return SSL_PREFIX + nodeUrl;
+      }
       return TCP_PREFIX + nodeUrl;
     }
     if (nodeUrl.endsWith(SSL_SUFFIX)) {
