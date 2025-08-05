@@ -873,7 +873,7 @@ class MigrationManager {
   }
 
   Future<bool> isMigrationRequired() async {
-     // check if user has legacy accounts
+    // check if user has legacy accounts
     bool hasAccounts =
         LocalStorage().prefs.containsKey(NgAccountManager.v1AccountsPrefKey);
     if (hasAccounts) {
