@@ -381,7 +381,7 @@ class NgAccountManager extends ChangeNotifier {
     required int number,
     required String fingerprint,
   }) {
-    return "${deviceSerial}_${network.toLowerCase()}_${fingerprint}_acc_$number";
+    return "${deviceSerial}_${network.toLowerCase()}_${fingerprint.toLowerCase()}_acc_$number";
   }
 
   void setTaprootEnabled(bool taprootEnabled) async {
