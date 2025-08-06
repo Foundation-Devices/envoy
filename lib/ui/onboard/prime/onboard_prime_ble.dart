@@ -36,8 +36,9 @@ import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../business/devices.dart';
-import 'firmware_update/prime_fw_update_state.dart';
+import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/server.dart';
+import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 
 // TODO: remove this, store somewhere else
 final primeDeviceVersionProvider = StateProvider<String>((ref) => '');
@@ -78,9 +79,11 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         final response =
             (message.message as QuantumLinkMessage_PairingResponse).field0;
 
-        final deviceColor = response.passportColor == PassportColor.dark ? DeviceColor.dark : DeviceColor.light;
-        BluetoothManager().addDevice(response.passportSerial.field0, response.passportFirmwareVersion.field0, deviceColor);
-
+        final deviceColor = response.passportColor == PassportColor.dark
+            ? DeviceColor.dark
+            : DeviceColor.light;
+        BluetoothManager().addDevice(response.passportSerial.field0,
+            response.passportFirmwareVersion.field0, deviceColor);
 
         //  final response = message.message as QuantumLinkMessage_PairingResponse;
         // Create the thing that I'm gonna reveal later
@@ -101,19 +104,21 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         final onboardingState =
             (message.message as QuantumLinkMessage_OnboardingState).field0;
 
-
         kPrint("Got onboarding message: $onboardingState");
         _handleOnboardingState(onboardingState);
       }
 
       if (message.message is QuantumLinkMessage_FirmwareDownloadRequest) {
-        handleUpdateDownloadRequest();
+        handlePatchesDownloadRequest(
+            (message.message as QuantumLinkMessage_FirmwareDownloadRequest)
+                .field0
+                .version);
       }
-
 
       if (message.message is QuantumLinkMessage_SecurityChallengeResponse) {
         final SecurityChallengeResponse proofMessage =
-            (message.message as QuantumLinkMessage_SecurityChallengeResponse).field0;
+            (message.message as QuantumLinkMessage_SecurityChallengeResponse)
+                .field0;
 
         bool isVerified = await ScvServer().isProofVerified(proofMessage);
 
@@ -124,21 +129,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
           await BluetoothManager()
               .sendOnboardingState(OnboardingState.securityChecked);
-
-          await ref.read(firmWareUpdateProvider.notifier).updateStep(
-              S().onboarding_connectionChecking_forUpdates,
-              EnvoyStepState.LOADING);
-          await Future.delayed(const Duration(seconds: 10));
-          // TODO: change delayed with real firmware update check
-
-          await BluetoothManager().sendFirmwareUpdateInfo();
-
-          await ref.read(firmWareUpdateProvider.notifier).updateStep(
-              S().onboarding_connectionUpdatesAvailable_updatesAvailable,
-              EnvoyStepState.FINISHED);
-
-          await BluetoothManager()
-              .sendOnboardingState(OnboardingState.updateAvailable);
         } else {
           await ref.read(deviceSecurityProvider.notifier).updateStep(
               S().onboarding_connectionIntroError_securityCheckFailed,
@@ -150,10 +140,26 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
       if (message.message is QuantumLinkMessage_FirmwareUpdateCheckRequest) {
         final FirmwareUpdateCheckRequest updateRequest =
-            (message.message as QuantumLinkMessage_FirmwareUpdateCheckRequest).field0;
+            (message.message as QuantumLinkMessage_FirmwareUpdateCheckRequest)
+                .field0;
 
         ref.read(primeDeviceVersionProvider.notifier).state =
             updateRequest.currentVersion;
+
+        await ref.read(firmWareUpdateProvider.notifier).updateStep(
+            S().onboarding_connectionChecking_forUpdates,
+            EnvoyStepState.LOADING);
+
+        final patches =
+            await Server().fetchPrimePatches("1.0.0" /*updateRequest.currentVersion*/);
+
+        await BluetoothManager().sendFirmwareUpdateInfo(patches);
+
+        await ref.read(firmWareUpdateProvider.notifier).updateStep(
+            patches.isNotEmpty
+                ? S().onboarding_connectionUpdatesAvailable_updatesAvailable
+                : S().onboarding_connectionNoUpdates_noUpdates,
+            EnvoyStepState.FINISHED);
       }
     });
   }
@@ -186,7 +192,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
         break;
       case OnboardingState.downloadingUpdate:
-        await handleUpdateDownloadRequest();
         break;
       case OnboardingState.receivingUpdate:
         break;
@@ -295,20 +300,30 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     }
   }
 
-  Future<void> handleUpdateDownloadRequest() async {
+  Future<void> handlePatchesDownloadRequest(String currentVersion) async {
     ref.read(primeUpdateStateProvider.notifier).state =
         PrimeFwUpdateStep.downloading;
     ref.read(fwDownloadStateProvider.notifier).updateStep(
         S().firmware_updatingDownload_downloading, EnvoyStepState.LOADING);
-    
-    await _fakeUpdateDownload();
-    
+
+    final patchBinaries =
+        await Server().fetchPrimePatchBinaries("1.0.0"/*currentVersion*/);
+
+    ref.read(fwDownloadStateProvider.notifier).updateStep(
+        S().firmware_downloadingUpdate_downloaded, EnvoyStepState.FINISHED);
+
     await BluetoothManager()
         .sendOnboardingState(OnboardingState.receivingUpdate);
+
+    ref.read(fwTransferStateProvider.notifier).updateStep(
+        S().firmware_downloadingUpdate_transferring, EnvoyStepState.LOADING);
+
+    ref.read(primeUpdateStateProvider.notifier).state =
+        PrimeFwUpdateStep.transferring;
+
     await Future.delayed(Duration(seconds: 1));
-    
-    // fake firmware payload data
-    await BluetoothManager().sendFirmwarePayload();
+
+    await BluetoothManager().sendFirmwarePayload(patchBinaries);
   }
 
   void _notifyAfterOnboardingTutorial(BuildContext context) async {
@@ -330,17 +345,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
       }
     }
-  }
-
-  Future<void> _fakeUpdateDownload() async {
-    await Future.delayed(Duration(seconds: 1));
-    ref.read(fwDownloadStateProvider.notifier).updateStep(
-        S().firmware_downloadingUpdate_downloaded, EnvoyStepState.FINISHED);
-    ref.read(fwTransferStateProvider.notifier).updateStep(
-        S().firmware_downloadingUpdate_transferring, EnvoyStepState.LOADING);
-
-    ref.read(primeUpdateStateProvider.notifier).state =
-        PrimeFwUpdateStep.transferring;
   }
 
   @override

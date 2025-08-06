@@ -10,6 +10,7 @@ import 'package:bluart/bluart.dart' as bluart;
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/scv_server.dart';
+import 'package:envoy/business/server.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/ntp.dart';
 import 'package:flutter/services.dart';
@@ -190,7 +191,7 @@ class BluetoothManager {
   }
 
   scan() async {
-    if (await Permission.bluetoothScan.isGranted) {
+    if (Platform.isLinux || await Permission.bluetoothScan.isGranted) {
       await bluart.scan(filter: [""]);
     }
   }
@@ -324,35 +325,21 @@ class BluetoothManager {
     writeMessage(api.QuantumLinkMessage.onboardingState(state));
   }
 
-  Future<void> sendFirmwarePayload() async {
-    // Get first diff
-    final ByteData byteData =
-        await rootBundle.load("assets/prime/release-v1.0.1-to-v1.0.2.tar");
-    final payload = byteData.buffer.asUint8List();
+  Future<void> sendFirmwarePayload(List<Uint8List> payloads) async {
+    for (final (index, payload) in payloads.indexed) {
+      final chunks = await api.splitFwUpdateIntoChunks(
+          patchIndex: index,
+          patchBytes: payload,
+          chunkSize: BigInt.from(10000));
 
-    final chunks = await api.splitFwUpdateIntoChunks(
-        patchIndex: 0, patchBytes: payload, chunkSize: BigInt.from(10000));
+      await writeMessage(api.QuantumLinkMessage.firmwareDownloadResponse(
+          api.FirmwareDownloadResponse.start(
+              patchIndex: index, totalChunks: chunks.length)));
 
-    await writeMessage(api.QuantumLinkMessage.firmwareDownloadResponse(api.FirmwareDownloadResponse.start(patchIndex: 0, totalChunks: chunks.length)));
-
-
-    for (final chunk in chunks) {
-      kPrint("Sending chunkkkk");
-      await writeMessage(chunk);
-    }
-
-    final ByteData byteData2 =
-        await rootBundle.load("assets/prime/release-v1.0.2-to-v1.2.0.tar");
-    final payload2 = byteData2.buffer.asUint8List();
-
-    final chunks2 = await api.splitFwUpdateIntoChunks(
-        patchIndex: 1, patchBytes: payload2, chunkSize: BigInt.from(10000));
-
-    await writeMessage(api.QuantumLinkMessage.firmwareDownloadResponse(api.FirmwareDownloadResponse.start(patchIndex: 1, totalChunks: chunks2.length)));
-
-
-    for (final chunk in chunks2) {
-      await writeMessage(chunk);
+      for (final chunk in chunks) {
+        kPrint("Sending chunkkkk");
+        await writeMessage(chunk);
+      }
     }
   }
 
@@ -429,19 +416,23 @@ class BluetoothManager {
     });
   }
 
-  Future<void> sendFirmwareUpdateInfo() async {
-    // TODO: replace with actual firmware update info
-    // Create dummy firmware update metadata
-    final dummyUpdate = api.QuantumLinkMessage.firmwareUpdateCheckResponse(
-        api.FirmwareUpdateCheckResponse.available(api.FirmwareUpdateAvailable(
-            version: 'v1.2.3-test',
-            timestamp: DateTime.now().millisecondsSinceEpoch,
-            size: 100,
-            changelog:
-                '• Fixed minor bugs\n• Improved performance\n• Added test logging',
-            patchCount: 1)));
+  Future<void> sendFirmwareUpdateInfo(List<PrimePatch> patches) async {
+    if (patches.isEmpty) {
+      writeMessage(api.QuantumLinkMessage.firmwareUpdateCheckResponse(
+          api.FirmwareUpdateCheckResponse_NotAvailable()));
+      return;
+    }
 
-    writeMessage(dummyUpdate);
+    final response = api.QuantumLinkMessage.firmwareUpdateCheckResponse(
+        api.FirmwareUpdateCheckResponse.available(api.FirmwareUpdateAvailable(
+            version: patches.last.version,
+            timestamp: patches.last.releaseDate.millisecondsSinceEpoch,
+            size: 100,
+            changelog: patches.last.changelog,
+            patchCount: patches.length)));
+
+    kPrint("TELLING PRIME THERE'S UPDATES");
+    await writeMessage(response);
   }
 
   Future<void> _writeWithProgress(List<Uint8List> data) async {
