@@ -3,13 +3,12 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
-import 'dart:ffi' as _i4;
-
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i3;
-import 'package:ngwallet/src/generated_bindings.dart' as _i6;
-import 'package:ngwallet/src/wallet.dart' as _i2;
+import 'package:ngwallet/src/rust/api/envoy_account.dart' as _i2;
+import 'package:ngwallet/src/rust/api/envoy_wallet.dart' as _i5;
+import 'package:ngwallet/src/rust/third_party/ngwallet/config.dart' as _i4;
+import 'package:ngwallet/src/rust/third_party/ngwallet/transaction.dart' as _i6;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -25,8 +24,9 @@ import 'package:ngwallet/src/wallet.dart' as _i2;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakePsbt_0 extends _i1.SmartFake implements _i2.Psbt {
-  _FakePsbt_0(
+class _Fake$EnvoyAccountCopyWith_0<$Res> extends _i1.SmartFake
+    implements _i2.$EnvoyAccountCopyWith<$Res> {
+  _Fake$EnvoyAccountCopyWith_0(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -35,22 +35,11 @@ class _FakePsbt_0 extends _i1.SmartFake implements _i2.Psbt {
         );
 }
 
-class _FakeRawTransaction_1 extends _i1.SmartFake
-    implements _i2.RawTransaction {
-  _FakeRawTransaction_1(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-/// A class which mocks [Wallet].
+/// A class which mocks [EnvoyAccount].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWallet extends _i1.Mock implements _i2.Wallet {
-  MockWallet() {
+class MockEnvoyAccount extends _i1.Mock implements _i2.EnvoyAccount {
+  MockEnvoyAccount() {
     _i1.throwOnMissingStub(this);
   }
 
@@ -64,465 +53,124 @@ class MockWallet extends _i1.Mock implements _i2.Wallet {
       ) as String);
 
   @override
-  set externalDescriptor(String? _externalDescriptor) => super.noSuchMethod(
-        Invocation.setter(
-          #externalDescriptor,
-          _externalDescriptor,
+  String get color => (super.noSuchMethod(
+        Invocation.getter(#color),
+        returnValue: _i3.dummyValue<String>(
+          this,
+          Invocation.getter(#color),
         ),
-        returnValueForMissingStub: null,
-      );
+      ) as String);
 
   @override
-  set internalDescriptor(String? _internalDescriptor) => super.noSuchMethod(
-        Invocation.setter(
-          #internalDescriptor,
-          _internalDescriptor,
-        ),
-        returnValueForMissingStub: null,
-      );
+  _i4.AddressType get preferredAddressType => (super.noSuchMethod(
+        Invocation.getter(#preferredAddressType),
+        returnValue: _i4.AddressType.p2Pkh,
+      ) as _i4.AddressType);
 
   @override
-  set publicExternalDescriptor(String? _publicExternalDescriptor) =>
-      super.noSuchMethod(
-        Invocation.setter(
-          #publicExternalDescriptor,
-          _publicExternalDescriptor,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  set publicInternalDescriptor(String? _publicInternalDescriptor) =>
-      super.noSuchMethod(
-        Invocation.setter(
-          #publicInternalDescriptor,
-          _publicInternalDescriptor,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  _i2.WalletType get type => (super.noSuchMethod(
-        Invocation.getter(#type),
-        returnValue: _i2.WalletType.witnessPublicKeyHash,
-      ) as _i2.WalletType);
-
-  @override
-  _i2.WalletNetwork get network => (super.noSuchMethod(
-        Invocation.getter(#network),
-        returnValue: _i2.WalletNetwork.Mainnet,
-      ) as _i2.WalletNetwork);
-
-  @override
-  bool get hot => (super.noSuchMethod(
-        Invocation.getter(#hot),
+  bool get seedHasPassphrase => (super.noSuchMethod(
+        Invocation.getter(#seedHasPassphrase),
         returnValue: false,
       ) as bool);
 
   @override
-  bool get hasPassphrase => (super.noSuchMethod(
-        Invocation.getter(#hasPassphrase),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  List<_i2.Transaction> get transactions => (super.noSuchMethod(
-        Invocation.getter(#transactions),
-        returnValue: <_i2.Transaction>[],
-      ) as List<_i2.Transaction>);
-
-  @override
-  set transactions(List<_i2.Transaction>? _transactions) => super.noSuchMethod(
-        Invocation.setter(
-          #transactions,
-          _transactions,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  List<_i2.Utxo> get utxos => (super.noSuchMethod(
-        Invocation.getter(#utxos),
-        returnValue: <_i2.Utxo>[],
-      ) as List<_i2.Utxo>);
-
-  @override
-  set utxos(List<_i2.Utxo>? _utxos) => super.noSuchMethod(
-        Invocation.setter(
-          #utxos,
-          _utxos,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  int get balance => (super.noSuchMethod(
-        Invocation.getter(#balance),
+  int get index => (super.noSuchMethod(
+        Invocation.getter(#index),
         returnValue: 0,
       ) as int);
 
   @override
-  set balance(int? _balance) => super.noSuchMethod(
-        Invocation.setter(
-          #balance,
-          _balance,
-        ),
-        returnValueForMissingStub: null,
-      );
+  List<_i4.NgDescriptor> get descriptors => (super.noSuchMethod(
+        Invocation.getter(#descriptors),
+        returnValue: <_i4.NgDescriptor>[],
+      ) as List<_i4.NgDescriptor>);
 
   @override
-  double get feeRateFast => (super.noSuchMethod(
-        Invocation.getter(#feeRateFast),
-        returnValue: 0.0,
-      ) as double);
+  _i5.Network get network => (super.noSuchMethod(
+        Invocation.getter(#network),
+        returnValue: _i5.Network.bitcoin,
+      ) as _i5.Network);
 
   @override
-  set feeRateFast(double? _feeRateFast) => super.noSuchMethod(
-        Invocation.setter(
-          #feeRateFast,
-          _feeRateFast,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  double get feeRateSlow => (super.noSuchMethod(
-        Invocation.getter(#feeRateSlow),
-        returnValue: 0.0,
-      ) as double);
-
-  @override
-  set feeRateSlow(double? _feeRateSlow) => super.noSuchMethod(
-        Invocation.setter(
-          #feeRateSlow,
-          _feeRateSlow,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  _i4.Pointer<_i4.Uint8> getSelf() => (super.noSuchMethod(
-        Invocation.method(
-          #getSelf,
-          [],
-        ),
-        returnValue: _i3.dummyValue<_i4.Pointer<_i4.Uint8>>(
+  String get id => (super.noSuchMethod(
+        Invocation.getter(#id),
+        returnValue: _i3.dummyValue<String>(
           this,
-          Invocation.method(
-            #getSelf,
-            [],
-          ),
+          Invocation.getter(#id),
         ),
-      ) as _i4.Pointer<_i4.Uint8>);
+      ) as String);
 
   @override
-  Map<String, dynamic> toJson() => (super.noSuchMethod(
-        Invocation.method(
-          #toJson,
-          [],
-        ),
-        returnValue: <String, dynamic>{},
-      ) as Map<String, dynamic>);
+  List<(String, _i4.AddressType)> get nextAddress => (super.noSuchMethod(
+        Invocation.getter(#nextAddress),
+        returnValue: <(String, _i4.AddressType)>[],
+      ) as List<(String, _i4.AddressType)>);
 
   @override
-  dynamic init(String? walletsDirectory) =>
-      super.noSuchMethod(Invocation.method(
-        #init,
-        [walletsDirectory],
-      ));
-
-  @override
-  _i5.Future<String> getAddress() => (super.noSuchMethod(
-        Invocation.method(
-          #getAddress,
-          [],
-        ),
-        returnValue: _i5.Future<String>.value(_i3.dummyValue<String>(
+  BigInt get balance => (super.noSuchMethod(
+        Invocation.getter(#balance),
+        returnValue: _i3.dummyValue<BigInt>(
           this,
-          Invocation.method(
-            #getAddress,
-            [],
-          ),
-        )),
-      ) as _i5.Future<String>);
-
-  @override
-  _i5.Future<String> getChangeAddress() => (super.noSuchMethod(
-        Invocation.method(
-          #getChangeAddress,
-          [],
+          Invocation.getter(#balance),
         ),
-        returnValue: _i5.Future<String>.value(_i3.dummyValue<String>(
-          this,
-          Invocation.method(
-            #getChangeAddress,
-            [],
-          ),
-        )),
-      ) as _i5.Future<String>);
+      ) as BigInt);
 
   @override
-  _i5.Future<bool?> sync(
-    String? electrumAddress,
-    int? torPort,
-  ) =>
+  BigInt get unlockedBalance => (super.noSuchMethod(
+        Invocation.getter(#unlockedBalance),
+        returnValue: _i3.dummyValue<BigInt>(
+          this,
+          Invocation.getter(#unlockedBalance),
+        ),
+      ) as BigInt);
+
+  @override
+  bool get isHot => (super.noSuchMethod(
+        Invocation.getter(#isHot),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  List<_i6.BitcoinTransaction> get transactions => (super.noSuchMethod(
+        Invocation.getter(#transactions),
+        returnValue: <_i6.BitcoinTransaction>[],
+      ) as List<_i6.BitcoinTransaction>);
+
+  @override
+  List<_i6.Output> get utxo => (super.noSuchMethod(
+        Invocation.getter(#utxo),
+        returnValue: <_i6.Output>[],
+      ) as List<_i6.Output>);
+
+  @override
+  List<String> get tags => (super.noSuchMethod(
+        Invocation.getter(#tags),
+        returnValue: <String>[],
+      ) as List<String>);
+
+  @override
+  String get xfp => (super.noSuchMethod(
+        Invocation.getter(#xfp),
+        returnValue: _i3.dummyValue<String>(
+          this,
+          Invocation.getter(#xfp),
+        ),
+      ) as String);
+
+  @override
+  List<(_i4.AddressType, String)> get externalPublicDescriptors =>
       (super.noSuchMethod(
-        Invocation.method(
-          #sync,
-          [
-            electrumAddress,
-            torPort,
-          ],
-        ),
-        returnValue: _i5.Future<bool?>.value(),
-      ) as _i5.Future<bool?>);
+        Invocation.getter(#externalPublicDescriptors),
+        returnValue: <(_i4.AddressType, String)>[],
+      ) as List<(_i4.AddressType, String)>);
 
   @override
-  _i5.Future<int> getMaxFeeRate(
-    String? sendTo,
-    int? amount, {
-    List<_i2.Utxo>? mustSpendUtxos,
-    List<_i2.Utxo>? dontSpendUtxos,
-  }) =>
+  _i2.$EnvoyAccountCopyWith<_i2.EnvoyAccount> get copyWith =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getMaxFeeRate,
-          [
-            sendTo,
-            amount,
-          ],
-          {
-            #mustSpendUtxos: mustSpendUtxos,
-            #dontSpendUtxos: dontSpendUtxos,
-          },
-        ),
-        returnValue: _i5.Future<int>.value(0),
-      ) as _i5.Future<int>);
-
-  @override
-  _i5.Future<_i2.Psbt> createPsbt(
-    String? sendTo,
-    int? amount,
-    double? feeRate, {
-    required List<_i2.Utxo>? mustSpendUtxos,
-    required List<_i2.Utxo>? dontSpendUtxos,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #createPsbt,
-          [
-            sendTo,
-            amount,
-            feeRate,
-          ],
-          {
-            #mustSpendUtxos: mustSpendUtxos,
-            #dontSpendUtxos: dontSpendUtxos,
-          },
-        ),
-        returnValue: _i5.Future<_i2.Psbt>.value(_FakePsbt_0(
+        Invocation.getter(#copyWith),
+        returnValue: _Fake$EnvoyAccountCopyWith_0<_i2.EnvoyAccount>(
           this,
-          Invocation.method(
-            #createPsbt,
-            [
-              sendTo,
-              amount,
-              feeRate,
-            ],
-            {
-              #mustSpendUtxos: mustSpendUtxos,
-              #dontSpendUtxos: dontSpendUtxos,
-            },
-          ),
-        )),
-      ) as _i5.Future<_i2.Psbt>);
-
-  @override
-  _i5.Future<_i2.Psbt> decodePsbt(String? base64Psbt) => (super.noSuchMethod(
-        Invocation.method(
-          #decodePsbt,
-          [base64Psbt],
+          Invocation.getter(#copyWith),
         ),
-        returnValue: _i5.Future<_i2.Psbt>.value(_FakePsbt_0(
-          this,
-          Invocation.method(
-            #decodePsbt,
-            [base64Psbt],
-          ),
-        )),
-      ) as _i5.Future<_i2.Psbt>);
-
-  @override
-  _i5.Future<_i2.Psbt> getBumpedPSBT(
-    String? txId,
-    double? feeRate,
-    List<_i2.Utxo>? doNotSpend,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #getBumpedPSBT,
-          [
-            txId,
-            feeRate,
-            doNotSpend,
-          ],
-        ),
-        returnValue: _i5.Future<_i2.Psbt>.value(_FakePsbt_0(
-          this,
-          Invocation.method(
-            #getBumpedPSBT,
-            [
-              txId,
-              feeRate,
-              doNotSpend,
-            ],
-          ),
-        )),
-      ) as _i5.Future<_i2.Psbt>);
-
-  @override
-  _i5.Future<_i2.RawTransaction> decodeWalletRawTx(
-    String? rawTransaction,
-    _i2.WalletNetwork? network,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #decodeWalletRawTx,
-          [
-            rawTransaction,
-            network,
-          ],
-        ),
-        returnValue: _i5.Future<_i2.RawTransaction>.value(_FakeRawTransaction_1(
-          this,
-          Invocation.method(
-            #decodeWalletRawTx,
-            [
-              rawTransaction,
-              network,
-            ],
-          ),
-        )),
-      ) as _i5.Future<_i2.RawTransaction>);
-
-  @override
-  _i5.Future<_i6.RBFfeeRates> getBumpedPSBTMaxFeeRate(
-    String? txId,
-    List<_i2.Utxo>? doNotSpend,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #getBumpedPSBTMaxFeeRate,
-          [
-            txId,
-            doNotSpend,
-          ],
-        ),
-        returnValue:
-            _i5.Future<_i6.RBFfeeRates>.value(_i3.dummyValue<_i6.RBFfeeRates>(
-          this,
-          Invocation.method(
-            #getBumpedPSBTMaxFeeRate,
-            [
-              txId,
-              doNotSpend,
-            ],
-          ),
-        )),
-      ) as _i5.Future<_i6.RBFfeeRates>);
-
-  @override
-  _i5.Future<String> broadcastTx(
-    String? electrumAddress,
-    int? torPort,
-    String? tx,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #broadcastTx,
-          [
-            electrumAddress,
-            torPort,
-            tx,
-          ],
-        ),
-        returnValue: _i5.Future<String>.value(_i3.dummyValue<String>(
-          this,
-          Invocation.method(
-            #broadcastTx,
-            [
-              electrumAddress,
-              torPort,
-              tx,
-            ],
-          ),
-        )),
-      ) as _i5.Future<String>);
-
-  @override
-  _i5.Future<bool> validateAddress(String? address) => (super.noSuchMethod(
-        Invocation.method(
-          #validateAddress,
-          [address],
-        ),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
-
-  @override
-  _i5.Future<String> signPsbt(String? psbt) => (super.noSuchMethod(
-        Invocation.method(
-          #signPsbt,
-          [psbt],
-        ),
-        returnValue: _i5.Future<String>.value(_i3.dummyValue<String>(
-          this,
-          Invocation.method(
-            #signPsbt,
-            [psbt],
-          ),
-        )),
-      ) as _i5.Future<String>);
-
-  @override
-  _i5.Future<_i2.Psbt> cancelTx(
-    String? txId,
-    List<_i2.Utxo>? doNotSpend,
-    double? feeRate,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #cancelTx,
-          [
-            txId,
-            doNotSpend,
-            feeRate,
-          ],
-        ),
-        returnValue: _i5.Future<_i2.Psbt>.value(_FakePsbt_0(
-          this,
-          Invocation.method(
-            #cancelTx,
-            [
-              txId,
-              doNotSpend,
-              feeRate,
-            ],
-          ),
-        )),
-      ) as _i5.Future<_i2.Psbt>);
-
-  @override
-  _i5.Future<String> getRawTxFromTxId(String? txId) => (super.noSuchMethod(
-        Invocation.method(
-          #getRawTxFromTxId,
-          [txId],
-        ),
-        returnValue: _i5.Future<String>.value(_i3.dummyValue<String>(
-          this,
-          Invocation.method(
-            #getRawTxFromTxId,
-            [txId],
-          ),
-        )),
-      ) as _i5.Future<String>);
+      ) as _i2.$EnvoyAccountCopyWith<_i2.EnvoyAccount>);
 }

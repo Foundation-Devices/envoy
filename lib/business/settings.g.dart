@@ -14,7 +14,7 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
   ..usingDefaultElectrumServer =
       json['usingDefaultElectrumServer'] as bool? ?? true
   ..usingTor = json['usingTor'] as bool
-  ..syncToCloudSetting = json['syncToCloudSetting'] as bool? ?? false
+  ..syncToCloudSetting = json['syncToCloudSetting'] as bool? ?? true
   ..allowScreenshotsSetting = json['allowScreenshotsSetting'] as bool? ?? false
   ..showTestnetAccountsSetting =
       json['showTestnetAccountsSetting'] as bool? ?? false
