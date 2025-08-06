@@ -40,7 +40,7 @@ class SettingsPage extends ConsumerStatefulWidget {
 class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _animationsDuration = const Duration(milliseconds: 200);
   bool _advancedVisible = false;
-  bool canBuy = true;
+
   bool buyDisabledByCountry = true;
 
   final LocalAuthentication auth = LocalAuthentication();
@@ -51,25 +51,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _checkCanBuy();
       buyDisabledByCountry = await AllowedRegions.checkBuyDisabled();
     });
-  }
-
-  Future<void> _checkCanBuy() async {
-    var region = await EnvoyStorage().getCountry();
-
-    if (region != null) {
-      bool newRegionCanBuy =
-          await AllowedRegions.isRegionAllowed(region.code, region.division);
-      setState(() {
-        canBuy = newRegionCanBuy;
-      });
-    } else {
-      setState(() {
-        canBuy = true;
-      });
-    }
   }
 
   @override
@@ -301,7 +284,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   },
                 ),
               ),
-              canBuy && !buyDisabledByCountry
+              !buyDisabledByCountry
                   ? ListTile(
                       dense: true,
                       contentPadding: const EdgeInsets.all(0),
