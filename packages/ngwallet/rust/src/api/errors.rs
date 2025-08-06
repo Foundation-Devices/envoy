@@ -2,9 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use bdk_wallet::bitcoin::{OutPoint, Txid};
-use bdk_wallet::error::{BuildFeeBumpError, CreateTxError};
-use bdk_wallet::{bitcoin, AddForeignUtxoError, KeychainKind};
+use bdk_wallet::error::CreateTxError;
+use bdk_wallet::KeychainKind;
 use ngwallet::bdk_electrum::electrum_client::Error;
 use ngwallet::rbf::BumpFeeError;
 use ngwallet::send::TransactionComposeError;
@@ -143,9 +142,6 @@ impl From<Error> for BroadcastError {
             }
             Error::CouldNotCreateConnection(e) => {
                 BroadcastError::Message(format!("{}", e))
-            }
-            _ => {
-                BroadcastError::Message("Unknown error".to_string())
             }
         }
     }

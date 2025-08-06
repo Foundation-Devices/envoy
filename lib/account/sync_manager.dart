@@ -10,6 +10,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:ngwallet/ngwallet.dart';
 
@@ -62,6 +63,7 @@ class SyncManager {
   }
 
   startSync() {
+    kPrint("SyncManager: Starting sync");
     _syncTimer =
         Timer.periodic(const Duration(seconds: _syncInterval), (timer) {
       if (NgAccountManager().accounts.isEmpty || _pauseSync) {
@@ -80,11 +82,8 @@ class SyncManager {
 
   //sync a single account
   void syncAccount(EnvoyAccount account) async {
-    final server = SyncManager.getElectrumServer(account.network);
-    int? port = Settings().getPort(account.network);
-    if (port == -1) {
-      port = null;
-    }
+    final server = Settings().electrumAddress(account.network);
+    int? port = Settings().getTorPort(account.network, server);
     try {
       if (account.handler != null) {
         kPrint("SyncManager: Syncing single account ${account.name}");
@@ -201,11 +200,8 @@ class SyncManager {
 
         _activeSyncOperations.add(accountKey);
 
-        final server = SyncManager.getElectrumServer(account.network);
-        int? port = Settings().getPort(account.network);
-        if (port == -1) {
-          port = null;
-        }
+        final server = Settings().electrumAddress(account.network);
+        int? port = Settings().getTorPort(account.network, server);
 
         final request = _syncRequests[entry.key];
         if (request == null || account.handler == null) {
@@ -276,11 +272,8 @@ class SyncManager {
       return;
     }
     _activeFullScanOperations.add((account.id, addressType));
-    final server = SyncManager.getElectrumServer(account.network);
-    int? port = Settings().getPort(account.network);
-    if (port == -1) {
-      port = null;
-    }
+    final server = Settings().electrumAddress(account.network);
+    int? port = Settings().getTorPort(account.network, server);
 
     kPrint(
         "🔍 PerformFullScan $addressType - ${account.name} | ${account.network} | $server | Tor: ${port != null} | request_disposed:${fullScanRequest.isDisposed}");
@@ -356,32 +349,6 @@ class SyncManager {
     }
   }
 
-  static String getElectrumServer(Network network) {
-    String server;
-    switch (network) {
-      case Network.bitcoin:
-        if (Settings().customElectrumEnabled()) {
-          server = Settings().selectedElectrumAddress.toString();
-        } else {
-          server = Settings.currentDefaultServer;
-        }
-        break;
-      case Network.testnet4:
-        server = Settings.TESTNET4_ELECTRUM_SERVER;
-        break;
-      case Network.testnet:
-        server = Settings.TESTNET_ELECTRUM_SERVER;
-        break;
-      case Network.signet:
-        server = Settings.SIGNET_ELECTRUM_SERVER;
-        break;
-      default:
-        server = "Unknown server";
-        break;
-    }
-    return server;
-  }
-
   dispose() {
     kPrint("SyncManager: Disposing and cancelling timer");
     _syncTimer.cancel();
@@ -413,14 +380,24 @@ class SyncManager {
     if (_activeSyncOperations.isNotEmpty) {
       buffer.writeln('\nActive sync operations:');
       for (final op in _activeSyncOperations) {
-        buffer.writeln('  - Account Name: ${op.$1}, Address Type: ${op.$2}');
+        final account =
+            NgAccountManager().accounts.firstWhereOrNull((a) => a.id == op.$1);
+        if (account != null) {
+          buffer.writeln(
+              '  - Account Name: ${account.name}, Address Type: ${op.$2}, Network: ${account.network}');
+        }
       }
     }
 
     if (_activeFullScanOperations.isNotEmpty) {
       buffer.writeln('\nActive full scan operations:');
       for (final op in _activeFullScanOperations) {
-        buffer.writeln('  - Account ID: ${op.$1}, Address Type: ${op.$2}');
+        final account =
+            NgAccountManager().accounts.firstWhereOrNull((a) => a.id == op.$1);
+        if (account != null) {
+          buffer.writeln(
+              '  - Account Name: ${account.name}, Address Type: ${op.$2}, Network: ${account.network}');
+        }
       }
     }
 

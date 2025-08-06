@@ -160,9 +160,15 @@ class BluetoothManager {
             remoteUpdate: payload);
         kPrint(
             "Got config ${config.id} ${config.descriptors.map((e) => e.external_)}");
+        final fingerprint =
+            NgAccountManager.getFingerprint(config.descriptors.first.internal);
+        if (fingerprint == null) {
+          throw Exception("Invalid fingerprint $fingerprint");
+        }
         final dir = NgAccountManager.getAccountDirectory(
             deviceSerial: config.deviceSerial ?? "prime",
             network: config.network.toString(),
+            fingerprint: fingerprint,
             number: config.index);
         kPrint("Account path! ${dir.path}");
         await dir.create();

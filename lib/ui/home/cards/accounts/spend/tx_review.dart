@@ -244,39 +244,28 @@ class _TxReviewState extends ConsumerState<TxReview> {
         if (!continueBroadcast) {
           return;
         }
+      }
+    }
+    if (context.mounted) {
+      await _showNotesDialog(context);
+      if (account.isHot) {
         ref
             .read(spendTransactionProvider.notifier)
             .setProgressState(BroadcastProgress.inProgress);
         await Future.delayed(const Duration(milliseconds: 200));
         if (context.mounted) _broadcastToNetwork(context);
-      }
-    } else {
-      if (context.mounted) {
-        if (account.isHot) {
-          if (context.mounted) {
-            await _showNotesDialog(context);
-          }
+      } else {
+        if (transactionModel.isFinalized) {
+          //start the broadcast,by setting the progress state to in progress
+          //rive onInit will start the broadcast
           ref
               .read(spendTransactionProvider.notifier)
               .setProgressState(BroadcastProgress.inProgress);
           await Future.delayed(const Duration(milliseconds: 200));
           if (context.mounted) _broadcastToNetwork(context);
         } else {
-          if (transactionModel.isFinalized) {
-            if (context.mounted) {
-              await _showNotesDialog(context);
-            }
-            //start the broadcast,by setting the progress state to in progress
-            //rive onInit will start the broadcast
-            ref
-                .read(spendTransactionProvider.notifier)
-                .setProgressState(BroadcastProgress.inProgress);
-            await Future.delayed(const Duration(milliseconds: 200));
-            if (context.mounted) _broadcastToNetwork(context);
-          } else {
-            if (context.mounted) {
-              _handleQRExchange(account, rootContext, providerScope);
-            }
+          if (context.mounted) {
+            _handleQRExchange(account, rootContext, providerScope);
           }
         }
       }

@@ -41,13 +41,14 @@ class AllowedRegions {
     return false;
   }
 
-  static const buyDisabled = ["IND", "GBR"];
+  static const buyDisabled = ["IN", "GB", "IND", "GBR"];
 
+  //returns true if buy is disabled
   static Future<bool> checkBuyDisabled() async {
     if (_isAllowed != null) {
       return _isAllowed!;
     }
-    if (await InAppPurchase.instance.isAvailable()) {
+    if (!(await InAppPurchase.instance.isAvailable())) {
       return false;
     }
     try {

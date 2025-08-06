@@ -89,7 +89,8 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
                                     left: 20,
                                     right: 20,
                                     top: EnvoySpacing.small),
-                                child: CoinsList(account: account)))
+                                child: CoinsList(account: account))),
+                        const SizedBox(height: 100),
                       ],
                     ),
                   ),

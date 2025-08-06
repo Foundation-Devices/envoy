@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/main.dart';
@@ -89,8 +90,20 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
   void initState() {
     super.initState();
     MigrationManager().onMigrationFinished(() async {
+      //reload all accounts with new paths.
+      try {
+        await NgAccountManager().restore();
+        await Future.delayed(const Duration(milliseconds: 300));
+      } catch (e, stack) {
+        EnvoyReport().log("Migration", "Failed to restore accounts: $e",
+            stackTrace: stack);
+      }
       await EnvoyStorage().setNoBackUpPreference(
-          MigrationManager.migrationPrefs, MigrationManager.migrationVersion);
+          MigrationManager.migrationCodePrefs,
+          MigrationManager.migrationVersionCode);
+      await EnvoyStorage().setNoBackUpPreference(
+          MigrationManager.migrationVersion,
+          MigrationManager.migrationVersionCode.toString());
       if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
         runApp(const AuthenticateApp());
       } else {
@@ -169,12 +182,14 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
                     SizedBox(
                       height: 8,
                     ),
-                    Text(
-                      S().onboarding_migrating_xOfYSynced(
-                          progress.completed, progress.total),
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.body.copyWith(color: Colors.white),
-                    ),
+                    if (!progress.indeterminate())
+                      Text(
+                        S().onboarding_migrating_xOfYSynced(
+                            progress.completed, progress.total),
+                        textAlign: TextAlign.center,
+                        style:
+                            EnvoyTypography.body.copyWith(color: Colors.white),
+                      ),
                   ],
                 ),
               ))

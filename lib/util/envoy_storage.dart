@@ -170,11 +170,12 @@ class EnvoyStorage {
   StoreRef<int, String> quantumLinkIdentityStore =
       StoreRef<int, String>(quantumLinkIdentityStoreName);
 
+  //do not include in backup
   StoreRef<String, bool> accountFullsScanStateStore =
       StoreRef<String, bool>(accountFullsScanStateStoreName);
-
-  StoreRef<String, String> noBackUpPrefsStore =
-      StoreRef<String, String>(noBackUpPrefsStoreName);
+  //do not include in backup
+  StoreRef<String, dynamic> noBackUpPrefsStore =
+      StoreRef<String, dynamic>(noBackUpPrefsStoreName);
 
   // Store everything except videos, blogs and locations
   Map<String, StoreRef> storesToBackUp = {};
@@ -995,12 +996,12 @@ class EnvoyStorage {
         .map((event) => event?.value ?? false));
   }
 
-  Future setNoBackUpPreference(String key, String value) async {
+  Future setNoBackUpPreference(String key, dynamic value) async {
     await noBackUpPrefsStore.record(key).put(_db, value);
   }
 
-  Future<String?> getNoBackUpPreference(String key) async {
-    return await (noBackUpPrefsStore.record(key).get(_db));
+  Future<T?> getNoBackUpPreference<T>(String key) async {
+    return await (noBackUpPrefsStore.record(key).get(_db)) as T?;
   }
 
   Database db() => _db;

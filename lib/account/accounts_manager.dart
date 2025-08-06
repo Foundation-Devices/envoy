@@ -11,14 +11,12 @@ import 'dart:typed_data';
 
 import 'package:envoy/account/device_manager.dart';
 import 'package:envoy/account/sync_manager.dart';
-import 'package:envoy/business/bip329.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
-import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -42,6 +40,14 @@ extension AccountExtension on EnvoyAccount {
         )
         .first
         .$1;
+  }
+
+  Directory? getWalletDir() {
+    return NgAccountManager.getAccountDirectory(
+        deviceSerial: deviceSerial ?? "envoy",
+        network: network.toString(),
+        number: index,
+        fingerprint: xfp);
   }
 }
 
@@ -111,6 +117,14 @@ class NgAccountManager extends ChangeNotifier {
   NgAccountManager._internal();
 
   Future restore() async {
+    kPrint("Restoring accounts");
+    if (_accountsHandler.isNotEmpty) {
+      for (var accountHandler in _accountsHandler) {
+        accountHandler.$2.dispose();
+      }
+      //wait for the accounts to be disposed
+      await Future.delayed(const Duration(milliseconds: 1500));
+    }
     _accountsHandler.clear();
     final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
@@ -121,7 +135,6 @@ class NgAccountManager extends ChangeNotifier {
     if (!(await walletDirectory.exists())) {
       await walletDirectory.create(recursive: true);
     }
-
     final dirs = await walletDirectory.list().toList();
     for (var dir in dirs) {
       if (dir is Directory) {
@@ -139,47 +152,72 @@ class NgAccountManager extends ChangeNotifier {
     }
 
     sortByAccountOrder(_accountsHandler, order, (e) => e.$1.id);
+    await deriveMissingTypes();
+
+    _accountsOrder.sink.add(order);
 
     SyncManager().startSync();
-    _accountsOrder.sink.add(order);
-    notifyListeners();
 
-    if (hotAccountsExist()) {
-      for (var element in accounts) {
-        if (element.isHot) {
-          bool isP2TrDerived = element.descriptors
-              .any((element) => element.addressType == AddressType.p2Tr);
-          if (!isP2TrDerived) {
-            final seed = await EnvoySeed().get();
-            if (seed != null && !element.seedHasPassphrase) {
-              try {
-                final derivations = await EnvoyBip39.deriveDescriptorFromSeed(
-                    seedWords: seed,
-                    network: element.network,
-                    passphrase: null);
-                final descriptor = derivations
-                    .where((element) => element.addressType == AddressType.p2Tr)
-                    .map((element) => NgDescriptor(
-                          internal: element.internalDescriptor,
-                          external_: element.externalDescriptor,
-                          addressType: element.addressType,
-                        ))
-                    .first;
-                element.handler?.addDescriptor(ngDescriptor: descriptor);
-              } catch (e) {
-                EnvoyReport().log("Accounts",
-                    "Error adding p2Tr descriptor to ${element.name} $e");
+    notifyListeners();
+    for (var stream in streams) {
+      _syncSubscription.add(stream.listen((_) {
+        notifyIfAccountBalanceHigherThanUsd1000();
+      }));
+    }
+  }
+
+  Future deriveMissingTypes() async {
+    try {
+      if (hotAccountsExist()) {
+        for (var account in accounts) {
+          if (account.isHot) {
+            EnvoyAccountHandler? handler = account.handler;
+            bool isP2TrDerived = account.descriptors
+                .any((element) => element.addressType == AddressType.p2Tr);
+            EnvoyReport()
+                .log("AccountManager", "isP2TrDerived: $isP2TrDerived");
+            if (handler == null) {
+              continue;
+            }
+            if (!isP2TrDerived) {
+              final seed = await EnvoySeed().get();
+              if (seed != null && !account.seedHasPassphrase) {
+                try {
+                  final derivations = await EnvoyBip39.deriveDescriptorFromSeed(
+                      seedWords: seed,
+                      network: account.network,
+                      passphrase: null);
+                  final descriptor = derivations
+                      .where(
+                          (element) => element.addressType == AddressType.p2Tr)
+                      .map((element) => NgDescriptor(
+                            internal: element.internalDescriptor,
+                            external_: element.externalDescriptor,
+                            addressType: element.addressType,
+                          ))
+                      .first;
+                  await handler.addDescriptor(ngDescriptor: descriptor);
+                  final state = await handler.state();
+                  final index =
+                      _accountsHandler.indexWhere((e) => e.$1.id == state.id);
+                  if (index != -1) {
+                    _accountsHandler[index] = (state, handler);
+                  } else {
+                    _accountsHandler.add((state, handler));
+                  }
+                } catch (e) {
+                  EnvoyReport().log("Accounts",
+                      "Error adding p2Tr descriptor to ${account.name} $e");
+                }
               }
             }
           }
         }
       }
+    } catch (e, stack) {
+      EnvoyReport().log("Accounts", "Error deriving missing types: $e",
+          stackTrace: stack);
     }
-    // for (var stream in streams) {
-    //   _syncSubscription.add(stream.listen((_) {
-    //     notifyIfAccountBalanceHigherThanUsd1000();
-    //   }));
-    // }
   }
 
   EnvoyAccount? getAccountById(String id) {
@@ -258,10 +296,36 @@ class NgAccountManager extends ChangeNotifier {
     return true;
   }
 
+  static String? getFingerprint(String descriptor) {
+    final regex = RegExp(r'\[([0-9a-f]{8})/');
+    final matches = regex.allMatches(descriptor);
+    try {
+      if (matches.isEmpty) {
+        EnvoyReport().log("NGAccounts", "Invalid fingerprint $descriptor");
+        return null;
+      }
+      return matches.map((m) => m.group(1)).first;
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<bool> checkIfWalletFromSeedExists(String seed,
       {String? passphrase, required Network network}) async {
+    final descriptors = await EnvoyBip39.deriveDescriptorFromSeed(
+        seedWords: seed, network: network, passphrase: passphrase);
+    final fingerPrint = getFingerprint(descriptors
+        .firstWhere((element) => element.addressType == AddressType.p2Wpkh)
+        .externalPubDescriptor);
+    if (fingerPrint == null) {
+      EnvoyReport().log("Accounts", "Invalid fingerprint $fingerPrint");
+      return false;
+    }
     var dir = NgAccountManager.getAccountDirectory(
-        deviceSerial: "envoy", network: network.toString(), number: 0);
+        deviceSerial: "envoy",
+        network: network.toString(),
+        number: 0,
+        fingerprint: fingerPrint);
     if (await dir.exists()) {
       final files = dir.listSync();
       bool hasP2tr =
@@ -301,15 +365,23 @@ class NgAccountManager extends ChangeNotifier {
     required String deviceSerial,
     required String network,
     required int number,
-    String? accountId,
+    required String fingerprint,
   }) {
-    if (accountId != null) {
-      return Directory(
-          "$walletsDirectory${deviceSerial}_${network.toLowerCase()}_acc_${number}_${accountId.substring(0, 8)}");
-    } else {
-      return Directory(
-          "$walletsDirectory${deviceSerial}_${network.toLowerCase()}_acc_$number");
-    }
+    return Directory("$walletsDirectory${getUniqueAccountId(
+      deviceSerial: deviceSerial,
+      network: network,
+      number: number,
+      fingerprint: fingerprint,
+    )}");
+  }
+
+  static String getUniqueAccountId({
+    required String deviceSerial,
+    required String network,
+    required int number,
+    required String fingerprint,
+  }) {
+    return "${deviceSerial}_${network.toLowerCase()}_${fingerprint.toLowerCase()}_acc_$number";
   }
 
   void setTaprootEnabled(bool taprootEnabled) async {
@@ -384,6 +456,7 @@ class NgAccountManager extends ChangeNotifier {
     }
     _accountsOrder.sink.add(order);
     await Future.delayed(const Duration(milliseconds: 50));
+
     final dir = Directory(account.walletPath!);
     await dir.delete(recursive: true);
     _accountsHandler.removeWhere((e) => e.$1.id == account.id);
@@ -403,34 +476,9 @@ class NgAccountManager extends ChangeNotifier {
     List<String> allData = [];
 
     for (EnvoyAccount account in accounts) {
-      List<Output> latestOutputs = ref.read(outputsProvider(account.id));
-      List<Output> mergedUtxos =
-          mergeLatestOutputs(account.utxo, latestOutputs);
-      for (var descriptor in account.externalPublicDescriptors) {
-        String xpub = getXpub(descriptor.$2, account);
-        String xpubData = buildKeyJson("xpub", xpub, account.name);
-        allData.add(xpubData);
-
-        // Get output data and add each entry to allData
-        List<String> outputData = await getUtxosData(mergedUtxos);
-        allData.addAll(outputData);
-
-        // TODO: Link transactions to the correct descriptor.
-        // Currently, all transactions are linked to the first external descriptor only.
-        if (descriptor == account.externalPublicDescriptors.first) {
-          // Get transaction data and add each entry to allData
-          List<String> txData = await getTxData(account.id, descriptor.$2, ref);
-          allData.addAll(txData);
-        }
-      }
-      // Get xpub and create JSON data
-
-      // Join each JSON string with a newline character
-
-      // Save the file
+      List<String> accountData = await account.handler!.exportBip329Data();
+      allData.addAll(accountData);
     }
-    // Remove duplicates
-    allData = allData.toSet().toList();
 
     String fileContent = allData.join('\n');
     Uint8List fileContentBytes = Uint8List.fromList(utf8.encode(fileContent));
@@ -532,11 +580,13 @@ class NgAccountManager extends ChangeNotifier {
       }
     }
 
+    final fingerprint =
+        NgAccountManager.getFingerprint(config.descriptors.first.internal);
     Directory dir = NgAccountManager.getAccountDirectory(
       deviceSerial: config.deviceSerial ?? "unknown-serial_${config.id}",
       network: config.network.toString(),
       number: config.index,
-      accountId: config.id,
+      fingerprint: fingerprint ?? config.id,
     );
     if (await dir.exists()) {
       EnvoyReport().log("AccountManager",
