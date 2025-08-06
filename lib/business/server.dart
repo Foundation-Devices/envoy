@@ -32,6 +32,18 @@ class Server {
     }
   }
 
+  Future<List<PrimeUpdate>> fetchPrimeUpdates(String currentVersion) async {
+    final response =
+    await http!.get('$_serverAddress/prime/pending_updates?version=$currentVersion');
+
+    if (response.statusCode == 202) {
+      final update = PrimeUpdate.fromJson(jsonDecode(response.body));
+      return [update];
+    } else {
+      throw Exception('Failed to fetch update chain');
+    }
+  }
+
   Future<ApiKeys> fetchApiKeys() async {
     final response = await http!.get('$_serverAddress/keys');
 
@@ -70,6 +82,41 @@ class Server {
     } catch (e) {
       kPrint("Error checking for force update: $e");
     }
+  }
+}
+
+class PrimeUpdate {
+  final String version;
+  final String url;
+  final String sha256;
+  final String reproducibleHash;
+  final String md5;
+  final String changeLog;
+  final DateTime releaseDate;
+  final int deviceId;
+
+  PrimeUpdate(
+      {required this.version,
+        required this.url,
+        required this.sha256,
+        required this.reproducibleHash,
+        required this.md5,
+        required this.changeLog,
+        required this.releaseDate,
+        required this.deviceId});
+
+  factory PrimeUpdate.fromJson(Map<String, dynamic> json) {
+    final fw = json['firmware'];
+    return PrimeUpdate(
+        deviceId: fw['device_id'],
+        sha256: fw['sha256'],
+        md5: fw['md5'],
+        url: fw['url'],
+        changeLog: fw['changelog'],
+        reproducibleHash: fw['reproducible_hash'],
+        releaseDate: DateTime.fromMillisecondsSinceEpoch(
+            (fw['release_date']['secs_since_epoch']) * 1000),
+        version: fw['version']);
   }
 }
 
