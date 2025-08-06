@@ -12,6 +12,5 @@ analyzer:
     - 'packages/shards/**'
     - 'packages/bluart/**'
     - 'packages/http_tor/**'
-    - test/** # TODO: fix and enable tests after ngwallet.dart integration
   plugins:
     - custom_lint

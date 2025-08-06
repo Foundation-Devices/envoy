@@ -7,7 +7,6 @@ import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ngwallet/ngwallet.dart';
 import 'util/preload_fonts.dart';
 
 void main() {
@@ -408,7 +407,6 @@ class AmountWidgetTestnetCases extends StatelessWidget {
                   style: AmountWidgetStyle.normal,
                   locale: 'en_US',
                   badgeColor: Colors.blue,
-                  network: Network.Testnet,
                 ),
                 SizedBox(height: 10),
                 AmountWidget(
@@ -417,7 +415,6 @@ class AmountWidgetTestnetCases extends StatelessWidget {
                   style: AmountWidgetStyle.normal,
                   locale: 'en_US',
                   badgeColor: Colors.blue,
-                  network: Network.Testnet,
                 ),
                 SizedBox(height: 10),
                 AmountWidget(
@@ -426,7 +423,6 @@ class AmountWidgetTestnetCases extends StatelessWidget {
                   style: AmountWidgetStyle.singleLine,
                   locale: 'en_US',
                   badgeColor: Color(0xFFBF755F),
-                  network: Network.Testnet,
                 ),
                 AmountWidget(
                   amountSats: 421,
@@ -434,7 +430,6 @@ class AmountWidgetTestnetCases extends StatelessWidget {
                   style: AmountWidgetStyle.singleLine,
                   locale: 'en_US',
                   badgeColor: Color(0xFFBF755F),
-                  network: Network.Testnet,
                 ),
               ],
             ),
