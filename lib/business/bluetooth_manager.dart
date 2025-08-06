@@ -190,7 +190,7 @@ class BluetoothManager {
   }
 
   scan() async {
-    if (await Permission.bluetoothScan.isGranted) {
+    if (Platform.isLinux || await Permission.bluetoothScan.isGranted) {
       await bluart.scan(filter: [""]);
     }
   }
@@ -324,35 +324,17 @@ class BluetoothManager {
     writeMessage(api.QuantumLinkMessage.onboardingState(state));
   }
 
-  Future<void> sendFirmwarePayload() async {
-    // Get first diff
-    final ByteData byteData =
-        await rootBundle.load("assets/prime/release-v1.0.1-to-v1.0.2.tar");
-    final payload = byteData.buffer.asUint8List();
+  Future<void> sendFirmwarePayload(List<Uint8List> payloads) async {
+    for (final (index, payload) in payloads.indexed) {
+      final chunks = await api.splitFwUpdateIntoChunks(
+          patchIndex: index, patchBytes: payload, chunkSize: BigInt.from(10000));
 
-    final chunks = await api.splitFwUpdateIntoChunks(
-        patchIndex: 0, patchBytes: payload, chunkSize: BigInt.from(10000));
+      await writeMessage(api.QuantumLinkMessage.firmwareDownloadResponse(api.FirmwareDownloadResponse.start(patchIndex: 0, totalChunks: chunks.length)));
 
-    await writeMessage(api.QuantumLinkMessage.firmwareDownloadResponse(api.FirmwareDownloadResponse.start(patchIndex: 0, totalChunks: chunks.length)));
-
-
-    for (final chunk in chunks) {
-      kPrint("Sending chunkkkk");
-      await writeMessage(chunk);
-    }
-
-    final ByteData byteData2 =
-        await rootBundle.load("assets/prime/release-v1.0.2-to-v1.2.0.tar");
-    final payload2 = byteData2.buffer.asUint8List();
-
-    final chunks2 = await api.splitFwUpdateIntoChunks(
-        patchIndex: 1, patchBytes: payload2, chunkSize: BigInt.from(10000));
-
-    await writeMessage(api.QuantumLinkMessage.firmwareDownloadResponse(api.FirmwareDownloadResponse.start(patchIndex: 1, totalChunks: chunks2.length)));
-
-
-    for (final chunk in chunks2) {
-      await writeMessage(chunk);
+      for (final chunk in chunks) {
+        kPrint("Sending chunkkkk");
+        await writeMessage(chunk);
+      }
     }
   }
 

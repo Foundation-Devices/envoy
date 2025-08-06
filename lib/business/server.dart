@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
-import 'package:envoy/business/settings.dart';
+import 'dart:typed_data';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/util/console.dart';
 import 'package:http_tor/http_tor.dart';
@@ -14,7 +14,7 @@ import 'package:envoy/business/scheduler.dart';
 
 class Server {
   HttpTor? http;
-  final String _serverAddress = Settings().envoyServerAddress;
+  final String _serverAddress = "http://127.0.0.1:8000";
 
   Server({this.http}) {
     http ??= HttpTor(Tor.instance, EnvoyScheduler().parallel);
@@ -32,16 +32,49 @@ class Server {
     }
   }
 
-  Future<List<PrimeUpdate>> fetchPrimeUpdates(String currentVersion) async {
+  Future<List<PrimePatch>> fetchPrimePatches(String currentVersion) async {
     final response =
-    await http!.get('$_serverAddress/prime/pending_updates?version=$currentVersion');
+    await http!.get('$_serverAddress/prime/patches?version=$currentVersion');
 
-    if (response.statusCode == 202) {
-      final update = PrimeUpdate.fromJson(jsonDecode(response.body));
-      return [update];
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> json = jsonDecode(response.body);
+
+      if (json['patches'] == null) {
+        return [];
+      }
+
+      final List<dynamic> patches = json['patches'];
+
+      final List<PrimePatch> updates = [];
+      for (final patch in patches) {
+        updates.add(PrimePatch.fromJson(patch));
+      }
+
+      return updates;
     } else {
       throw Exception('Failed to fetch update chain');
     }
+  }
+
+  Future<List<Uint8List>> fetchPrimePatchBinaries(String currentVersion) async {
+    List<Uint8List> binaries = [];
+
+    try {
+      final patches = await fetchPrimePatches(currentVersion);
+      for (final patch in patches) {
+        final response = await http!.get(patch.url);
+        if (response.statusCode == 200) {
+          binaries.add(Uint8List.fromList(response.bodyBytes));
+        } else {
+          throw Exception('Failed to fetch prime patch');
+        }
+      }
+    }
+    catch (e) {
+      kPrint("Error fetching prime patches: $e");
+    }
+
+    return binaries;
   }
 
   Future<ApiKeys> fetchApiKeys() async {
@@ -85,38 +118,45 @@ class Server {
   }
 }
 
-class PrimeUpdate {
+class PrimePatch {
   final String version;
+  final String baseVersion;
+  final String signedSha256;
+  final String unsignedSha256;
+  final String updateFilename;
+  final String signatureFilename;
   final String url;
-  final String sha256;
-  final String reproducibleHash;
-  final String md5;
-  final String changeLog;
+  final String changelog;
+  final String description;
   final DateTime releaseDate;
-  final int deviceId;
 
-  PrimeUpdate(
-      {required this.version,
-        required this.url,
-        required this.sha256,
-        required this.reproducibleHash,
-        required this.md5,
-        required this.changeLog,
-        required this.releaseDate,
-        required this.deviceId});
+  PrimePatch({
+    required this.version,
+    required this.baseVersion,
+    required this.signedSha256,
+    required this.unsignedSha256,
+    required this.updateFilename,
+    required this.signatureFilename,
+    required this.url,
+    required this.changelog,
+    required this.description,
+    required this.releaseDate,
+  });
 
-  factory PrimeUpdate.fromJson(Map<String, dynamic> json) {
-    final fw = json['firmware'];
-    return PrimeUpdate(
-        deviceId: fw['device_id'],
-        sha256: fw['sha256'],
-        md5: fw['md5'],
-        url: fw['url'],
-        changeLog: fw['changelog'],
-        reproducibleHash: fw['reproducible_hash'],
-        releaseDate: DateTime.fromMillisecondsSinceEpoch(
-            (fw['release_date']['secs_since_epoch']) * 1000),
-        version: fw['version']);
+  factory PrimePatch.fromJson(Map<String, dynamic> json) {
+    return PrimePatch(
+        version: json['version'],
+        baseVersion: json['base_version'],
+        signedSha256: json['signed_sha256'],
+        unsignedSha256: json['unsigned_sha256'],
+        updateFilename: json['update_filename'],
+        signatureFilename: json['signature_filename'],
+        url: json['url'],
+        changelog: json['changelog'],
+        description: json['description'],
+        releaseDate: DateTime.parse(
+          (json['release_date']),
+        ));
   }
 }
 

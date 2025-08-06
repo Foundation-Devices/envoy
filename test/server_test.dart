@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
+
 import 'package:envoy/business/server.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http_tor/http_tor.dart';
@@ -31,11 +33,12 @@ void main() {
   });
 
   test('Fetch Prime update chain', () async {
+    Directory current = Directory.current;
+    print(current.path);
     Tor.init(enabled: false);
-    final updates = await Server().fetchPrimeUpdates("1.0.0");
+    final updates = await Server().fetchPrimePatches("1.0.0");
 
-    expect(updates[0], isA<FirmwareUpdate>());
+    expect(updates[0], isA<PrimePatch>());
     expect(updates[0].version, "v1.0.8");
-    expect(updates[0].deviceId, 1);
   });
 }
