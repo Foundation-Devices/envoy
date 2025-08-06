@@ -269,7 +269,7 @@ class EnvoySeed {
     backupData = await processBackupData(backupData, cloud);
     return Backup.perform(
             backupData, seed, Settings().envoyServerAddress, Tor.instance,
-            path: encryptedBackupFilePath, cloud: cloud)
+            path: encryptedBackupFilePath, cloud: false)
         .then((success) async {
       if (cloud && success) {
         // Only notify if we are doing an online backup
@@ -662,7 +662,6 @@ class EnvoySeed {
     String? nonSecure = await _getNonSecure();
 
     if (secure != null && nonSecure != null) {
-      EnvoyReport().log("QA", "Seed stored in both secure and regular storage");
       return secure;
 
       // TODO: show a warning to user
@@ -673,12 +672,10 @@ class EnvoySeed {
     }
 
     if (secure != null) {
-      EnvoyReport().log("QA", "Seed stored in secure storage");
       return secure;
     }
 
     if (nonSecure != null) {
-      EnvoyReport().log("QA", "Seed stored in regular storage");
       return nonSecure;
     }
 

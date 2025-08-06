@@ -307,6 +307,14 @@ class MigrationManager {
                   external_: missingAccount.wallet.externalDescriptor,
                 );
                 await firstAccount.addDescriptor(ngDescriptor: ngDescriptor);
+
+                final state = await firstAccount.state();
+                await LocalStorage()
+                    .prefs
+                    .setAccountScanStatus(state.id, AddressType.p2Pkh, false);
+                await LocalStorage()
+                    .prefs
+                    .setAccountScanStatus(state.id, AddressType.p2Tr, false);
                 await Future.delayed(const Duration(milliseconds: 400));
                 EnvoyReport().log("Migration",
                     "Descriptor added for ${firstAccountState.name} ${missingAccount.wallet.type}");
@@ -792,12 +800,13 @@ class MigrationManager {
       } catch (e) {
         EnvoyReport().log("MigrationV2.1", "Error migrating meta: $e");
       }
+      final state = await envoyAccountHandler.state();
       await LocalStorage()
           .prefs
-          .setAccountScanStatus(accountOneState.id, AddressType.p2Pkh, false);
+          .setAccountScanStatus(state.id, AddressType.p2Pkh, false);
       await LocalStorage()
           .prefs
-          .setAccountScanStatus(accountOneState.id, AddressType.p2Tr, false);
+          .setAccountScanStatus(state.id, AddressType.p2Tr, false);
 
       accountTwo.dispose();
       envoyAccountHandler.dispose();
@@ -843,6 +852,12 @@ class MigrationManager {
       EnvoyReport().log("Migration",
           "Relocated account ${state.name} ${dir.path}, and deleting old path ${currentPath.path}");
       await currentPath.delete(recursive: true);
+      await LocalStorage()
+          .prefs
+          .setAccountScanStatus(state.id, AddressType.p2Pkh, false);
+      await LocalStorage()
+          .prefs
+          .setAccountScanStatus(state.id, AddressType.p2Tr, false);
       kPrint("Deleted old wallet path");
     } catch (e, stack) {
       EnvoyReport()

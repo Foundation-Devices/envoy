@@ -17,6 +17,7 @@ class EnvoyTextField extends StatefulWidget {
     this.additionalButtons = false,
     this.onQrScan,
     required this.onChanged,
+    this.onEditingComplete,
     this.errorText,
     this.isError = false,
     this.isLoading,
@@ -29,6 +30,7 @@ class EnvoyTextField extends StatefulWidget {
   final String? errorText;
   final bool additionalButtons;
   final void Function()? onQrScan;
+  final VoidCallback? onEditingComplete;
   final void Function(String) onChanged;
   final bool isError;
   final bool? isLoading;
@@ -88,6 +90,7 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                   onChanged: (text) {
                     widget.onChanged(text);
                   },
+                  onEditingComplete: widget.onEditingComplete,
                   style: EnvoyTypography.body,
                   controller: widget.controller,
                   focusNode: _focus,

@@ -170,9 +170,10 @@ class EnvoyStorage {
   StoreRef<int, String> quantumLinkIdentityStore =
       StoreRef<int, String>(quantumLinkIdentityStoreName);
 
+  //do not include in backup
   StoreRef<String, bool> accountFullsScanStateStore =
       StoreRef<String, bool>(accountFullsScanStateStoreName);
-
+  //do not include in backup
   StoreRef<String, dynamic> noBackUpPrefsStore =
       StoreRef<String, dynamic>(noBackUpPrefsStoreName);
 

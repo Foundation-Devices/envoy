@@ -692,7 +692,6 @@ class SpendRequirementOverlayState
         ref.read(hideBottomNavProvider.notifier).state = false;
         ref.read(spendEditModeProvider.notifier).state =
             SpendOverlayContext.hidden;
-
         clearSpendState(container);
       }
     }
@@ -892,7 +891,6 @@ class _SpendSelectionCancelWarningState
       },
       tertiaryButtonLabel: S().component_no,
       onTertiaryButtonTap: (context) {
-        hideCoinSnack(ref);
         Navigator.of(context).pop(false);
       },
       checkBoxText: S().component_dontShowAgain,
