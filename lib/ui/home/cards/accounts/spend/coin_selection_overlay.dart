@@ -362,7 +362,7 @@ class SpendRequirementOverlayState
             child: Transform.scale(
               scale: 1.0,
               child: SizedBox(
-                  height: 230,
+                  height: 245,
                   width: MediaQuery.of(context).size.width,
                   child: Container(
                     decoration: BoxDecoration(
@@ -534,7 +534,7 @@ class SpendRequirementOverlayState
                                                 bottom: MediaQuery.of(context)
                                                         .padding
                                                         .bottom +
-                                                    4))
+                                                    EnvoySpacing.medium3))
                                       ],
                                     ),
                                   ),
