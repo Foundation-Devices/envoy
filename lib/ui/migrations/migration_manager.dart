@@ -63,7 +63,7 @@ class MigrationManager {
   static String migrationCodePrefs = "envoy_migration_version_code";
 
   //current migration code. if existing value is less than this, run migration
-  static double migrationVersionCode = 2.26;
+  static double migrationVersionCode = 2.27;
 
   //adds to preferences to indicate that the user has migrated to testnet4
   static String migratedToTestnet4 = "migrated_to_testnet4";
@@ -222,7 +222,13 @@ class MigrationManager {
     try {
       Map<(String, Network, int), List<EnvoyAccountHandler>> needsMerges = {};
       for (var dir in dirs) {
-        if (dir is Directory) {
+        if (dir is Directory ) {
+          final list = await dir.list().toList();
+          //if there is a corrupted account, skip it. a proper account will have at least 2 files.
+          if(list.length < 2) {
+            EnvoyReport().log("Migration", "Corrupted account found: ${dir.path}");
+            continue;
+          }
           try {
             final accountHandler =
                 await EnvoyAccountHandler.openAccount(dbPath: dir.path);
