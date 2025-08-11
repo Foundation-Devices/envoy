@@ -717,18 +717,21 @@ impl EnvoyAccountHandler {
             .map(|tx_id| tx_id.to_string())
     }
     pub fn validate_address(address: &str, network: Option<Network>) -> bool {
-        return match Address::from_str(address) {
+        match Address::from_str(address) {
             Ok(address) => match network {
                 None => true,
                 Some(network) => address.require_network(network).is_ok(),
             },
             Err(_) => false,
-        };
+        }
     }
 
     pub fn add_descriptor(&mut self, ng_descriptor: NgDescriptor) -> Result<()> {
         let result = {
-            let mut account = self.ng_account.lock().unwrap();
+            let mut account = self.ng_account.lock().unwrap_or_else(|poisoned| {
+                log::warn!("Mutex was poisoned, recovering...");
+                poisoned.into_inner()
+            });
             let path = Self::bdk_db_path(
                 &account
                     .config
@@ -786,7 +789,12 @@ impl EnvoyAccountHandler {
     }
 
     pub fn get_account_backup(&mut self) -> Result<String> {
-        match self.ng_account.lock().unwrap().get_backup_json() {
+        let account = self.ng_account.lock().unwrap_or_else(|poisoned| {
+            log::warn!("Mutex was poisoned, recovering...");
+            poisoned.into_inner()
+        });
+        
+        match account.get_backup_json() {
             Ok(json) => Ok(json),
             Err(er) => Err(anyhow!("Failed to get backup {:?}", er)),
         }
