@@ -173,7 +173,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
             icon: EnvoyIcons.stop_watch,
           );
         } else if (e.code == auth_error.notAvailable) {
-          /// use dismissed the biometric prompt
+          /// user dismissed the biometric prompt
           showAuthLockedOutDialog(
             ctaButtonTitle: S().launch_screen_faceID_fail_CTA,
             ctaTapCallback: () {
@@ -194,7 +194,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           );
         }
       } on Exception {
-        /// display the dialogue without a 'Try Again' button, as the authentication failed due to an exception."
+        /// display the dialogue without a 'Try Again' button, as the authentication failed due to an exception.
         showAuthLockedOutDialog(
           ctaButtonTitle: S().launch_screen_faceID_fail_CTA,
           ctaTapCallback: null,
