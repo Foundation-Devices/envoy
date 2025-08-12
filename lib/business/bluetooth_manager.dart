@@ -83,9 +83,7 @@ class BluetoothManager {
   }
 
   BluetoothManager._internal() {
-    if (!Platform.isIOS) {
-      _init();
-    }
+    _init();
 
     kPrint("Instance of BluetoothManager created!");
   }
