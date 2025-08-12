@@ -63,7 +63,7 @@ class MigrationManager {
   static String migrationCodePrefs = "envoy_migration_version_code";
 
   //current migration code. if existing value is less than this, run migration
-  static double migrationVersionCode = 2.3;
+  static double migrationVersionCode = 2.31;
 
   //adds to preferences to indicate that the user has migrated to testnet4
   static String migratedToTestnet4 = "migrated_to_testnet4";
@@ -122,6 +122,8 @@ class MigrationManager {
       try {
         await mergeWithFingerPrint();
         await Future.delayed(const Duration(milliseconds: 50));
+        //force rescan
+        await EnvoyStorage().clearAccountScanStateStore() ;
         await sanityCheck();
         await Future.delayed(const Duration(milliseconds: 50));
         _onMigrationFinished?.call();
@@ -134,6 +136,8 @@ class MigrationManager {
       try {
         await migrateToV2();
         await Future.delayed(const Duration(milliseconds: 50));
+        //force rescan
+        await EnvoyStorage().clearAccountScanStateStore() ;
         await sanityCheck();
         _onMigrationFinished?.call();
       } catch (e, stack) {
@@ -638,6 +642,7 @@ class MigrationManager {
           final state = await accountHandler.state();
           String message =
               "SanityCheck: ${state.name} | ${state.network} | ${state.xfp} -> \n";
+          message += "ScanStore Size : ${await EnvoyStorage().getAccountScanStatusSize()}\n";
           for (var descriptor in state.descriptors) {
             message +=
                 "| 🔁 Scan Status: ${descriptor.addressType} = ${await LocalStorage().prefs.getAccountScanStatus(state.id, descriptor.addressType)} \n";

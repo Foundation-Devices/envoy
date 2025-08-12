@@ -303,6 +303,10 @@ class EnvoyStorage {
     return true;
   }
 
+  Future clearAccountScanStateStore() async {
+    await accountFullsScanStateStore.delete(_db);
+  }
+
   Stream<bool> isPromptDismissed(DismissiblePrompt prompt) {
     final filter = Finder(filter: Filter.byKey(prompt.toString()));
     //returns boolean stream that updates when provided key is updated
@@ -986,6 +990,10 @@ class EnvoyStorage {
             .record("$accountId:${addressType.toString()}")
             .get(_db)) ??
         false;
+  }
+
+  Future<int> getAccountScanStatusSize() async {
+    return await accountFullsScanStateStore.count(_db);
   }
 
   Stream<bool> getAccountScanStatusStream(
