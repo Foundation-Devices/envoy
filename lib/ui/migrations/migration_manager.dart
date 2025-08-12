@@ -63,7 +63,7 @@ class MigrationManager {
   static String migrationCodePrefs = "envoy_migration_version_code";
 
   //current migration code. if existing value is less than this, run migration
-  static double migrationVersionCode = 2.27;
+  static double migrationVersionCode = 2.3;
 
   //adds to preferences to indicate that the user has migrated to testnet4
   static String migratedToTestnet4 = "migrated_to_testnet4";
@@ -244,6 +244,12 @@ class MigrationManager {
               ];
             }
             accounts.add(accountHandler);
+            await LocalStorage()
+                .prefs
+                .setAccountScanStatus(state.id, AddressType.p2Pkh, false);
+            await LocalStorage()
+                .prefs
+                .setAccountScanStatus(state.id, AddressType.p2Tr, false);
           } catch (e, stack) {
             EnvoyReport().log("Migration", "Error opening wallet: $e",
                 stackTrace: stack);
@@ -629,6 +635,16 @@ class MigrationManager {
         try {
           final accountHandler =
               await EnvoyAccountHandler.openAccount(dbPath: dir.path);
+          final state = await accountHandler.state();
+          String message =
+              "SanityCheck: ${state.name} | ${state.network} | ${state.xfp} -> \n";
+          for (var descriptor in state.descriptors) {
+            message +=
+                "| 🔁 Scan Status: ${descriptor.addressType} = ${await LocalStorage().prefs.getAccountScanStatus(state.id, descriptor.addressType)} \n";
+          }
+
+          EnvoyReport().log("Migration", message);
+
           accountHandler.dispose();
         } catch (e, stack) {
           EnvoyReport()

@@ -207,6 +207,8 @@ class NgAccountManager extends ChangeNotifier {
                   } else {
                     _accountsHandler.add((state, handler));
                   }
+                  EnvoyReport().log(
+                      "Accounts", "P2Tr descriptor added to ${account.name}");
                 } catch (e) {
                   EnvoyReport().log("Accounts",
                       "Error adding p2Tr descriptor to ${account.name} $e");
