@@ -222,11 +222,12 @@ class MigrationManager {
     try {
       Map<(String, Network, int), List<EnvoyAccountHandler>> needsMerges = {};
       for (var dir in dirs) {
-        if (dir is Directory ) {
+        if (dir is Directory) {
           final list = await dir.list().toList();
           //if there is a corrupted account, skip it. a proper account will have at least 2 files.
-          if(list.length < 2) {
-            EnvoyReport().log("Migration", "Corrupted account found: ${dir.path}");
+          if (list.length < 2) {
+            EnvoyReport()
+                .log("Migration", "Corrupted account found: ${dir.path}");
             continue;
           }
           try {
@@ -757,8 +758,8 @@ class MigrationManager {
       EnvoyReport().log("Migration",
           "Accounts Needs merge ${accountOneState.name} ${accountTwoState.name}");
 
-      final accountOnePath = _getCurrentWalletPath(accountOneState);
-      final accountTwoPath = _getCurrentWalletPath(accountTwoState);
+      final accountOnePath = _getCurrentWalletPath(first);
+      final accountTwoPath = _getCurrentWalletPath(last);
 
       if (await directory.exists()) {
         kPrint("About to delete ${directory.path}");
@@ -838,7 +839,7 @@ class MigrationManager {
       EnvoyAccountHandler account, EnvoyAccount state) async {
     final network = state.network.toString();
     //get old wallet directory. this doesn't include xfp
-    final currentPath = _getCurrentWalletPath(state);
+    final currentPath = _getCurrentWalletPath(account);
     final dir = NgAccountManager.getAccountDirectory(
         deviceSerial: state.deviceSerial ?? "envoy",
         network: network,
@@ -850,8 +851,8 @@ class MigrationManager {
     try {
       await dir.create(recursive: true);
       EnvoyReport().log("Migration",
-          "Relocating account ${state.name} (${state.network}) ${state.walletPath} to ${dir.path}");
-      await account.updateWalletPath(walletPath: dir.path);
+          "Relocating account ${state.name} (${state.network}) ${account.getDirectoryPath()} to ${dir.path}");
+      //close the account before moving
       account.dispose();
       await Future.delayed(const Duration(milliseconds: 600));
       await copyDirectory(currentPath, dir);
@@ -975,16 +976,11 @@ class MigrationManager {
   }
 
   //[iOS] state.walletPath needs to be prefixed with
-  // NgAccountManager.walletsDirectory
+  //NgAccountManager.walletsDirectory
   //v2.0.2 won't be needing this since from 2.0.2 will be using xfp based directory
   //this currently is only used in migration
-  Directory _getCurrentWalletPath(EnvoyAccount state) {
-    final walletPath = state.walletPath!;
-    final target = walletPath.split('wallets_v2/').last;
-    return Directory(join(
-      NgAccountManager.walletsDirectory,
-      target,
-    ));
+  Directory _getCurrentWalletPath(EnvoyAccountHandler handler) {
+    return Directory(handler.getDirectoryPath());
   }
 
   Future resetMigrationPrefs() async {

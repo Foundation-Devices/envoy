@@ -82,6 +82,8 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerDecodePsbt(
           draftTransaction: draftTransaction, psbt: psbt);
 
+  Future<void> deleteAccount();
+
   static Future<NgAccountBackup> deserializeBackup(
           {required String backupJson}) =>
       RustLib.instance.api
@@ -107,6 +109,8 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
       RustLib.instance.api
           .crateApiEnvoyWalletEnvoyAccountHandlerGetConfigFromRemote(
               remoteUpdate: remoteUpdate);
+
+  String getDirectoryPath();
 
   Future<TransactionFeeResult> getMaxBumpFeeRates(
       {required List<Output> selectedOutputs,
@@ -245,8 +249,6 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   Future<void> updateBroadcastState(
       {required DraftTransaction draftTransaction});
-
-  Future<void> updateWalletPath({required String walletPath});
 
   Future<List<Output>> utxo();
 

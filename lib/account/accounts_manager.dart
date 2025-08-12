@@ -187,6 +187,7 @@ class NgAccountManager extends ChangeNotifier {
                       seedWords: seed,
                       network: account.network,
                       passphrase: null);
+
                   final descriptor = derivations
                       .where(
                           (element) => element.addressType == AddressType.p2Tr)
@@ -196,6 +197,7 @@ class NgAccountManager extends ChangeNotifier {
                             addressType: element.addressType,
                           ))
                       .first;
+
                   await handler.addDescriptor(ngDescriptor: descriptor);
                   final state = await handler.state();
                   final index =
@@ -444,7 +446,9 @@ class NgAccountManager extends ChangeNotifier {
   }
 
   Future deleteAccount(EnvoyAccount account) async {
+    await account.handler?.deleteAccount();
     account.handler?.dispose();
+
     final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
     order.remove(account.id);
@@ -456,9 +460,6 @@ class NgAccountManager extends ChangeNotifier {
     }
     _accountsOrder.sink.add(order);
     await Future.delayed(const Duration(milliseconds: 50));
-
-    final dir = Directory(account.walletPath!);
-    await dir.delete(recursive: true);
     _accountsHandler.removeWhere((e) => e.$1.id == account.id);
     notifyListeners();
   }
