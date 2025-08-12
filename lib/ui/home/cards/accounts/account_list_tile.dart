@@ -75,13 +75,13 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
       isScanning = true;
     }
     EnvoyAccount? account = ref.watch(accountStateProvider(widget.account.id));
-    if (widget.account.walletPath == "ghost") {
+    if (widget.account.xfp == "ghost") {
       account = widget.account;
     }
     if (account == null) {
       return const SizedBox.shrink();
     }
-    int balance = widget.account.walletPath == "ghost"
+    int balance = widget.account.xfp == "ghost"
         ? 0
         : ref.watch(accountBalanceProvider(account.id));
 
