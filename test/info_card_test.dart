@@ -14,6 +14,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'util/preload_fonts.dart';
 import 'package:envoy/ui/components/envoy_tag.dart';
 
@@ -53,11 +54,32 @@ class DetailsWidgetTestCases extends StatelessWidget {
   Widget build(BuildContext context) {
     String confirmationTime = "2.5h";
     const fxRateFiat = 34743.76026697552;
+    final account = EnvoyAccount(
+        name: "name",
+        color: "color",
+        preferredAddressType: AddressType.p2Sh,
+        seedHasPassphrase: true,
+        index: 0,
+        descriptors: [
+          NgDescriptor(internal: "internal", addressType: AddressType.p2Sh)
+        ],
+        network: Network.bitcoin,
+        id: "id",
+        nextAddress: [("p2sh", AddressType.p2Sh)],
+        balance: BigInt.from(0),
+        unlockedBalance: BigInt.from(0),
+        isHot: true,
+        transactions: [],
+        utxo: [],
+        tags: [],
+        xfp: "xfp",
+        externalPublicDescriptors: [(AddressType.p2Sh, "p2sh")]);
 
     return Scaffold(
       body: EnvoyInfoCard(
         backgroundColor: EnvoyColors.accentSecondary,
-        topWidget: const AmountWidget(
+        topWidget: AmountWidget(
+          envoyAccount: account,
           amountSats: 12345678,
           primaryUnit: AmountDisplayUnit.btc,
           secondaryUnit: AmountDisplayUnit.fiat,
@@ -72,8 +94,10 @@ class DetailsWidgetTestCases extends StatelessWidget {
             title: S().coincontrol_tx_detail_expand_spentFrom,
             icon: const EnvoyIcon(EnvoyIcons.utxo,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
-            trailing: const Row(mainAxisSize: MainAxisSize.min, children: [
+            trailing: Row(mainAxisSize: MainAxisSize.min, children: [
               AmountWidget(
+                envoyAccount: account,
+                badgeColor: Colors.amber,
                 amountSats: 12345678,
                 primaryUnit: AmountDisplayUnit.btc,
                 secondaryUnit: AmountDisplayUnit.fiat,
@@ -192,12 +216,13 @@ class DetailsWidgetTestCases extends StatelessWidget {
                   ),
                 ),
               )),
-          const EnvoyInfoCardListItem(
+          EnvoyInfoCardListItem(
             title: "Boosted Fee",
-            icon: EnvoyIcon(EnvoyIcons.rbf_boost,
+            icon: const EnvoyIcon(EnvoyIcons.rbf_boost,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
             trailing: Row(mainAxisSize: MainAxisSize.min, children: [
               AmountWidget(
+                envoyAccount: account,
                 amountSats: 12345678,
                 primaryUnit: AmountDisplayUnit.btc,
                 secondaryUnit: AmountDisplayUnit.fiat,
@@ -225,8 +250,9 @@ class DetailsWidgetTestCases extends StatelessWidget {
             title: S().coincontrol_tx_detail_change,
             icon: const EnvoyIcon(EnvoyIcons.transfer,
                 color: EnvoyColors.textPrimary, size: EnvoyIconSize.extraSmall),
-            trailing: const Row(mainAxisSize: MainAxisSize.min, children: [
+            trailing: Row(mainAxisSize: MainAxisSize.min, children: [
               AmountWidget(
+                envoyAccount: account,
                 amountSats: 12345678,
                 primaryUnit: AmountDisplayUnit.btc,
                 secondaryUnit: AmountDisplayUnit.fiat,

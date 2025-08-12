@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:io';
-import 'dart:math';
 import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:test/test.dart';
@@ -14,8 +12,6 @@ import 'bitcoin_parser_test.mocks.dart';
 
 @GenerateMocks([EnvoyAccount])
 void main() async {
-  Directory dir = Directory.current;
-
   test("Test valid address and amount", () async {
     var pasted =
         "bitcoin:bc1qj9cjncwvsg02fqkjrh7p3umujyvn2a80ty3mwn?amount=5&label=Fund%20Bisq%20wallet";
