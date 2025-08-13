@@ -88,7 +88,6 @@ class NgAccountConfig {
   final int index;
   final List<NgDescriptor> descriptors;
   final String? dateSynced;
-  final String? accountPath;
   final Network network;
   final String id;
   final MultiSigDetails? multisig;
@@ -103,7 +102,6 @@ class NgAccountConfig {
     required this.index,
     required this.descriptors,
     this.dateSynced,
-    this.accountPath,
     required this.network,
     required this.id,
     this.multisig,
@@ -120,7 +118,6 @@ class NgAccountConfig {
       index.hashCode ^
       descriptors.hashCode ^
       dateSynced.hashCode ^
-      accountPath.hashCode ^
       network.hashCode ^
       id.hashCode ^
       multisig.hashCode;
@@ -139,7 +136,6 @@ class NgAccountConfig {
           index == other.index &&
           descriptors == other.descriptors &&
           dateSynced == other.dateSynced &&
-          accountPath == other.accountPath &&
           network == other.network &&
           id == other.id &&
           multisig == other.multisig;

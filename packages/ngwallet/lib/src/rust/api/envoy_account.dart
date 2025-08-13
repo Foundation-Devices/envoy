@@ -26,7 +26,6 @@ class EnvoyAccount with _$EnvoyAccount {
     required int index,
     required List<NgDescriptor> descriptors,
     String? dateSynced,
-    String? walletPath,
     required Network network,
     required String id,
     required List<(String, AddressType)> nextAddress,

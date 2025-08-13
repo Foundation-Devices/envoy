@@ -63,7 +63,7 @@ class MigrationManager {
   static String migrationCodePrefs = "envoy_migration_version_code";
 
   //current migration code. if existing value is less than this, run migration
-  static double migrationVersionCode = 2.26;
+  static double migrationVersionCode = 2.31;
 
   //adds to preferences to indicate that the user has migrated to testnet4
   static String migratedToTestnet4 = "migrated_to_testnet4";
@@ -122,6 +122,8 @@ class MigrationManager {
       try {
         await mergeWithFingerPrint();
         await Future.delayed(const Duration(milliseconds: 50));
+        //force rescan
+        await EnvoyStorage().clearAccountScanStateStore();
         await sanityCheck();
         await Future.delayed(const Duration(milliseconds: 50));
         _onMigrationFinished?.call();
@@ -134,6 +136,8 @@ class MigrationManager {
       try {
         await migrateToV2();
         await Future.delayed(const Duration(milliseconds: 50));
+        //force rescan
+        await EnvoyStorage().clearAccountScanStateStore();
         await sanityCheck();
         _onMigrationFinished?.call();
       } catch (e, stack) {
@@ -223,6 +227,13 @@ class MigrationManager {
       Map<(String, Network, int), List<EnvoyAccountHandler>> needsMerges = {};
       for (var dir in dirs) {
         if (dir is Directory) {
+          final list = await dir.list().toList();
+          //if there is a corrupted account, skip it. a proper account will have at least 2 files.
+          if (list.length < 2) {
+            EnvoyReport()
+                .log("Migration", "Corrupted account found: ${dir.path}");
+            continue;
+          }
           try {
             final accountHandler =
                 await EnvoyAccountHandler.openAccount(dbPath: dir.path);
@@ -237,6 +248,12 @@ class MigrationManager {
               ];
             }
             accounts.add(accountHandler);
+            await LocalStorage()
+                .prefs
+                .setAccountScanStatus(state.id, AddressType.p2Pkh, false);
+            await LocalStorage()
+                .prefs
+                .setAccountScanStatus(state.id, AddressType.p2Tr, false);
           } catch (e, stack) {
             EnvoyReport().log("Migration", "Error opening wallet: $e",
                 stackTrace: stack);
@@ -622,6 +639,18 @@ class MigrationManager {
         try {
           final accountHandler =
               await EnvoyAccountHandler.openAccount(dbPath: dir.path);
+          final state = await accountHandler.state();
+          String message =
+              "SanityCheck: ${state.name} | ${state.network} | ${state.xfp} -> \n";
+          message +=
+              "ScanStore Size : ${await EnvoyStorage().getAccountScanStatusSize()}\n";
+          for (var descriptor in state.descriptors) {
+            message +=
+                "| 🔁 Scan Status: ${descriptor.addressType} = ${await LocalStorage().prefs.getAccountScanStatus(state.id, descriptor.addressType)} \n";
+          }
+
+          EnvoyReport().log("Migration", message);
+
           accountHandler.dispose();
         } catch (e, stack) {
           EnvoyReport()
@@ -751,8 +780,8 @@ class MigrationManager {
       EnvoyReport().log("Migration",
           "Accounts Needs merge ${accountOneState.name} ${accountTwoState.name}");
 
-      final accountOnePath = _getCurrentWalletPath(accountOneState);
-      final accountTwoPath = _getCurrentWalletPath(accountTwoState);
+      final accountOnePath = _getCurrentWalletPath(first);
+      final accountTwoPath = _getCurrentWalletPath(last);
 
       if (await directory.exists()) {
         kPrint("About to delete ${directory.path}");
@@ -832,7 +861,7 @@ class MigrationManager {
       EnvoyAccountHandler account, EnvoyAccount state) async {
     final network = state.network.toString();
     //get old wallet directory. this doesn't include xfp
-    final currentPath = _getCurrentWalletPath(state);
+    final currentPath = _getCurrentWalletPath(account);
     final dir = NgAccountManager.getAccountDirectory(
         deviceSerial: state.deviceSerial ?? "envoy",
         network: network,
@@ -844,8 +873,8 @@ class MigrationManager {
     try {
       await dir.create(recursive: true);
       EnvoyReport().log("Migration",
-          "Relocating account ${state.name} (${state.network}) ${state.walletPath} to ${dir.path}");
-      await account.updateWalletPath(walletPath: dir.path);
+          "Relocating account ${state.name} (${state.network}) ${account.getDirectoryPath()} to ${dir.path}");
+      //close the account before moving
       account.dispose();
       await Future.delayed(const Duration(milliseconds: 600));
       await copyDirectory(currentPath, dir);
@@ -969,16 +998,11 @@ class MigrationManager {
   }
 
   //[iOS] state.walletPath needs to be prefixed with
-  // NgAccountManager.walletsDirectory
+  //NgAccountManager.walletsDirectory
   //v2.0.2 won't be needing this since from 2.0.2 will be using xfp based directory
   //this currently is only used in migration
-  Directory _getCurrentWalletPath(EnvoyAccount state) {
-    final walletPath = state.walletPath!;
-    final target = walletPath.split('wallets_v2/').last;
-    return Directory(join(
-      NgAccountManager.walletsDirectory,
-      target,
-    ));
+  Directory _getCurrentWalletPath(EnvoyAccountHandler handler) {
+    return Directory(handler.getDirectoryPath());
   }
 
   Future resetMigrationPrefs() async {
