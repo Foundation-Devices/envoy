@@ -68,7 +68,7 @@ class Settings extends ChangeNotifier {
   static const String TESTNET4_ONION_ELECTRUM_SERVER =
       "7gohqoo7du3l3p72gld33hd5d6xtciych6plli6fwrixi2tsmyqc33yd.onion:50001";
 
- // FD signet server
+  // FD signet server
   static const String SIGNET_ONION_ELECTRUM_SERVER =
       "qkpvnm3gn7x7yzxp7pddlcpn5h4tyxve7yx4olvi437fzw4gz3sxbmad.onion:50001";
 
