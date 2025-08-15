@@ -12,6 +12,8 @@ import 'package:pub_semver/pub_semver.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/scheduler.dart';
 
+typedef PatchBinary = ({Uint8List binary, PrimePatch patch});
+
 class Server {
   HttpTor? http;
   final String _serverAddress = "http://127.0.0.1:8000";
@@ -56,32 +58,36 @@ class Server {
     }
   }
 
-  Future<(String latestVersion, List<Uint8List> binaries)>
-      fetchPrimePatchBinaries(String currentVersion) async {
-    List<Uint8List> binaries = [];
-    String latestVersion = "";
+  Future<Uint8List> fetchPrimePatchBinary(PrimePatch patch) async {
+    final response = await http!.get(patch.url);
+    if (response.statusCode == 200) {
+      return Uint8List.fromList(response.bodyBytes);
+    } else {
+      throw Exception('Failed to fetch prime patch');
+    }
+  }
+
+  Future<List<PatchBinary>> fetchPrimePatchBinaries(
+      String currentVersion) async {
+    List<PatchBinary> result = [];
 
     try {
       final patches = await fetchPrimePatches(currentVersion);
       for (final patch in patches) {
         final response = await http!.get(patch.url);
         if (response.statusCode == 200) {
-          binaries.add(Uint8List.fromList(response.bodyBytes));
+          PatchBinary patchBinary =
+              (binary: Uint8List.fromList(response.bodyBytes), patch: patch);
+          result.add(patchBinary);
         } else {
           throw Exception('Failed to fetch prime patch');
         }
       }
-
-      // TODO: FIGURE THIS SHIT OUT
-      // final last = patches!.lastOrNull();
-      //       // if (last != null) {
-      //   latestVersion = last;
-      // }
     } catch (e) {
       kPrint("Error fetching prime patches: $e");
     }
 
-    return (latestVersion, binaries);
+    return result;
   }
 
   Future<ApiKeys> fetchApiKeys() async {

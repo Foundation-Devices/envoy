@@ -135,30 +135,31 @@ class ScvServer {
   }
 
   Future<bool> isProofVerified(Uint8List data) async {
-    // final Uint8List data;
     final uri = '$primeSecurityCheckUrl/verify';
 
-    final response = await http.post(
-      uri,
-      body: data.toList().toString(),
-      headers: {'Content-Type': 'application/octet-stream'},
-    );
+    try {
+      final response = await http.post(
+        uri,
+        body: data.toList().toString(),
+        headers: {'Content-Type': 'application/octet-stream'},
+      );
 
-    if (response.statusCode == 200) {
-      List<int> rawVerificationMessage = response.bodyBytes;
+      if (response.statusCode == 200) {
+        List<int> rawVerificationMessage = response.bodyBytes;
 
-      // Error code is the 33rd byte in the response
-      final errorCode =
-          rawVerificationMessage.length > 32 ? rawVerificationMessage[32] : -1;
-      kPrint('Error code: $errorCode');
+        // Error code is the 33rd byte in the response
+        final errorCode = rawVerificationMessage.length > 32
+            ? rawVerificationMessage[32]
+            : -1;
+        kPrint('Error code: $errorCode');
 
-      // TODO: remove, just for demo
-
-      return true;
-
-      //return errorCode == 0; // 0 means `ErrorCode::Ok`
-    } else {
-      kPrint('Error: ${response.statusCode}');
+        return errorCode == 0; // 0 means `ErrorCode::Ok`
+      } else {
+        kPrint('Error: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      kPrint("failed to verify proof {e}");
       return false;
     }
   }
