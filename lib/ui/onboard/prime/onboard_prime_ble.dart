@@ -233,7 +233,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         break;
       case OnboardingState.veryfyingSignatures:
         ref.read(fwTransferStateProvider.notifier).updateStep(
-            "Transferred to Passport Prime", EnvoyStepState.FINISHED);
+            S().firmware_downloadingUpdate_transferring, EnvoyStepState.FINISHED);
 
         ref.read(primeUpdateStateProvider.notifier).state =
             PrimeFwUpdateStep.verifying;
@@ -336,53 +336,74 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     }
   }
 
+  Future<void> _handleFirmwareError(String errorBody,
+      StateNotifierProvider<StepNotifier, StepModel> failedStepProvider) async {
+    ref.read(primeUpdateStateProvider.notifier).state = PrimeFwUpdateStep.error;
+
+    ref
+        .read(failedStepProvider.notifier)
+        .updateStep(errorBody, EnvoyStepState.ERROR);
+
+    await BluetoothManager()
+        .sendFirmwareFetchEvent(FirmwareFetchEvent.error(errorBody));
+  }
+
   Future<void> handleFirmwareFetchRequest(String currentVersion) async {
+    ref.read(primeUpdateStateProvider.notifier).state =
+        PrimeFwUpdateStep.downloading;
+
+    ref.read(fwDownloadStateProvider.notifier).updateStep(
+        S().firmware_updatingDownload_downloading, EnvoyStepState.LOADING);
+
+    List<PrimePatch> patches;
+
     try {
-      ref.read(primeUpdateStateProvider.notifier).state =
-          PrimeFwUpdateStep.downloading;
+      patches = await Server().fetchPrimePatches(currentVersion);
+    } catch (e) {
+      kPrint("failed to fetch patches: $e");
+      await _handleFirmwareError(
+          S().firmware_updateError_downloadFailed, fwDownloadStateProvider);
+      return;
+    }
 
-      ref.read(fwDownloadStateProvider.notifier).updateStep(
-          S().firmware_updatingDownload_downloading, EnvoyStepState.LOADING);
+    if (patches.isEmpty) {
+      await BluetoothManager()
+          .sendFirmwareFetchEvent(FirmwareFetchEvent.updateNotAvailable());
+    } else {
+      await BluetoothManager().sendFirmwareFetchEvent(
+          FirmwareFetchEvent.starting(updateAvailableMessage(patches)));
 
-      final patches = await Server().fetchPrimePatches(currentVersion);
+      List<Uint8List> patchBinaries = [];
 
-      if (patches.isEmpty) {
-        await BluetoothManager()
-            .sendFirmwareFetchEvent(FirmwareFetchEvent.updateNotAvailable());
-      } else {
-        await BluetoothManager().sendFirmwareFetchEvent(
-            FirmwareFetchEvent.starting(updateAvailableMessage(patches)));
-
-        List<Uint8List> patchBinaries = [];
-
+      try {
         for (final patch in patches) {
           final binary = await Server().fetchPrimePatchBinary(patch);
           patchBinaries.add(binary);
         }
-
-        ref.read(fwDownloadStateProvider.notifier).updateStep(
-            S().firmware_downloadingUpdate_downloaded, EnvoyStepState.FINISHED);
-
-        ref.read(fwTransferStateProvider.notifier).updateStep(
-            S().firmware_downloadingUpdate_transferring,
-            EnvoyStepState.LOADING);
-
-        ref.read(primeUpdateStateProvider.notifier).state =
-            PrimeFwUpdateStep.transferring;
-
-        await BluetoothManager().sendFirmwarePayload(patchBinaries);
-
-        ref.read(fwTransferStateProvider.notifier).updateStep(
-            S().firmware_updatingPrime_installingUpdate,
-            EnvoyStepState.LOADING);
-
-        ref.read(primeUpdateStateProvider.notifier).state =
-            PrimeFwUpdateStep.installing;
+      } catch (e) {
+        kPrint("failed to download patch binaries: $e");
+        await _handleFirmwareError(
+            S().firmware_updateError_downloadFailed, fwDownloadStateProvider);
+        return;
       }
-    } catch (e) {
-      kPrint("failed to handle firmware fetch request {e}");
-      await BluetoothManager()
-          .sendFirmwareFetchEvent(FirmwareFetchEvent.error("failed"));
+
+      ref.read(fwDownloadStateProvider.notifier).updateStep(
+          S().firmware_downloadingUpdate_downloaded, EnvoyStepState.FINISHED);
+
+      ref.read(fwTransferStateProvider.notifier).updateStep(
+          S().firmware_downloadingUpdate_transferring, EnvoyStepState.LOADING);
+
+      ref.read(primeUpdateStateProvider.notifier).state =
+          PrimeFwUpdateStep.transferring;
+
+      try {
+        await BluetoothManager().sendFirmwarePayload(patchBinaries);
+      } catch (e) {
+        kPrint("failed to transfer firmware: $e");
+        await _handleFirmwareError(
+            S().firmware_updateError_receivingFailed, fwTransferStateProvider);
+        return;
+      }
     }
   }
 
