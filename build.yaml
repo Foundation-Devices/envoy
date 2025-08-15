@@ -1,0 +1,7 @@
+targets:
+  $default:
+    builders:
+      mockito|mockBuilder:
+        options:
+          dummy_param_values:
+            'dart:core#BigInt': 'BigInt.zero' # Provide BigInt.zero as the dummy

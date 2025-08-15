@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/util/console.dart';
 import 'package:http_tor/http_tor.dart';
@@ -16,7 +17,7 @@ typedef PatchBinary = ({Uint8List binary, PrimePatch patch});
 
 class Server {
   HttpTor? http;
-  final String _serverAddress = "http://127.0.0.1:8000";
+  final String _serverAddress = "http://127.0.0.1:8000"; //Settings().envoyServerAddress;
 
   Server({this.http}) {
     http ??= HttpTor(Tor.instance, EnvoyScheduler().parallel);

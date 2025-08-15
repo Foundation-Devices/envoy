@@ -207,6 +207,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       }
       return true;
     } catch (e, stack) {
+      EnvoyReport().log("Spend", "Error composing transaction: $e");
       debugPrintStack(stackTrace: stack);
       //reset the fee rate to the one used in the transaction
       ref.read(spendFeeRateProvider.notifier).state =
@@ -456,10 +457,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           "Decoded PSBT: ${preparedTx.transaction.txId} | isFinalized : ${preparedTx.isFinalized}");
       _updateWithPreparedTransaction(preparedTx, state.transactionParams);
       await Future.delayed(const Duration(milliseconds: 100));
-    } catch (e) {
-      state = state.clone()
-        ..loading = false
-        ..error = e.toString();
+    } catch (e, stack) {
+      _setErrorState("Unable to decode PSBT");
+      EnvoyReport()
+          .log("Spend", "Unable to decode PSBT: $e", stackTrace: stack);
       rethrow;
     }
   }
@@ -480,10 +481,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           "Decoded PSBT: ${preparedTx.transaction.txId} | isFinalized : ${preparedTx.isFinalized}");
       _updateWithPreparedTransaction(preparedTx, state.transactionParams);
       await Future.delayed(const Duration(milliseconds: 100));
-    } catch (e) {
-      state = state.clone()
-        ..loading = false
-        ..error = e.toString();
+    } catch (e, stack) {
+      _setErrorState("Unable to decode PSBT");
+      EnvoyReport()
+          .log("Spend", "Unable to decode PSBT: $e", stackTrace: stack);
       rethrow;
     }
   }
@@ -508,7 +509,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
   }
 
   void _handleComposeError(Object error) {
-    String errorMessage = error.toString();
+    String errorMessage = "Unable to compose transaction";
     if (error is TxComposeError) {
       TxComposeError composeTxError = error;
 
@@ -536,7 +537,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         insufficientFees: (field0) {
           // Handle insufficient fees
           debugPrint("Insufficient fees: $field0");
-          errorMessage = S().send_keyboard_amount_too_low_info;
+          errorMessage = "Insufficient fees";
         },
         insufficientFeeRate: (field0) {
           // Handle insufficient fee rate

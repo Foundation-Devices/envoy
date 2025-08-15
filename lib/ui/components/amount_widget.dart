@@ -48,10 +48,13 @@ class AmountWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextScaler textScaler = MediaQuery.of(context).textScaler.clamp(
-          minScaleFactor: 0.8,
-          maxScaleFactor: 1.6,
-        );
+    TextScaler textScaler = MediaQuery
+        .of(context)
+        .textScaler
+        .clamp(
+      minScaleFactor: 0.8,
+      maxScaleFactor: 1.6,
+    );
     double baseFontScale = 1;
     double textScaleFactor = textScaler.scale(baseFontScale);
 
@@ -89,6 +92,7 @@ class AmountWidget extends StatelessWidget {
                 millionaireMode: millionaireMode),
             if (secondaryUnit != null)
               SecondaryAmountWidget(
+                  badgeColor: badgeColor,
                   unit: secondaryUnit!,
                   displayFiat: displayFiat,
                   style: SecondaryAmountWidgetStyle.large,
@@ -106,7 +110,7 @@ class AmountWidget extends StatelessWidget {
       case AmountWidgetStyle.normal:
         return Column(
           crossAxisAlignment:
-              alignToEnd ? CrossAxisAlignment.end : CrossAxisAlignment.center,
+          alignToEnd ? CrossAxisAlignment.end : CrossAxisAlignment.center,
           children: [
             PrimaryAmountWidget(
                 unit: primaryUnit,
@@ -125,6 +129,7 @@ class AmountWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: EnvoySpacing.xs),
                 child: SecondaryAmountWidget(
+                    badgeColor: badgeColor,
                     unit: secondaryUnit!,
                     displayFiat: displayFiat,
                     style: SecondaryAmountWidgetStyle.normal,
@@ -163,6 +168,7 @@ class AmountWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: EnvoySpacing.small),
                 child: SecondaryAmountWidget(
+                    badgeColor: badgeColor,
                     unit: secondaryUnit!,
                     displayFiat: displayFiat,
                     style: SecondaryAmountWidgetStyle.normal,
@@ -222,21 +228,20 @@ class PrimaryAmountWidget extends StatelessWidget {
   final TextStyle textStyleFiatSymbol = EnvoyTypography.digitsMedium
       .copyWith(color: EnvoyColors.textPrimary, fontSize: 24);
 
-  PrimaryAmountWidget(
-      {super.key,
-      required this.unit,
-      required this.amountSats,
-      required this.locale,
-      this.decimalSeparator = ".",
-      this.groupSeparator = ",",
-      this.symbolFiat = "",
-      this.fxRateFiat,
-      this.style = PrimaryAmountWidgetStyle.normal,
-      this.badgeColor,
-      this.envoyAccount,
-      this.sendScreen = false,
-      this.textScaleFactor = 1,
-      required this.millionaireMode});
+  PrimaryAmountWidget({super.key,
+    required this.unit,
+    required this.amountSats,
+    required this.locale,
+    this.decimalSeparator = ".",
+    this.groupSeparator = ",",
+    this.symbolFiat = "",
+    this.fxRateFiat,
+    this.style = PrimaryAmountWidgetStyle.normal,
+    this.badgeColor,
+    this.envoyAccount,
+    this.sendScreen = false,
+    this.textScaleFactor = 1,
+    required this.millionaireMode});
 
   @override
   Widget build(BuildContext context) {
@@ -250,11 +255,11 @@ class PrimaryAmountWidget extends StatelessWidget {
 
     final TextStyle textStyleBlack = style == PrimaryAmountWidgetStyle.normal
         ? EnvoyTypography.digitsMedium.copyWith(
-            color: EnvoyColors.textPrimary,
-          )
+      color: EnvoyColors.textPrimary,
+    )
         : EnvoyTypography.digitsLarge.copyWith(
-            color: EnvoyColors.textPrimary,
-          );
+      color: EnvoyColors.textPrimary,
+    );
 
     final TextStyle textStyleGray = style == PrimaryAmountWidgetStyle.normal
         ? EnvoyTypography.digitsMedium.copyWith(color: EnvoyColors.textTertiary)
@@ -269,7 +274,7 @@ class PrimaryAmountWidget extends StatelessWidget {
         : EnvoyColors.textPrimary;
 
     final unitSpacing =
-        style == PrimaryAmountWidgetStyle.normal ? 2.0 : EnvoySpacing.xs;
+    style == PrimaryAmountWidgetStyle.normal ? 2.0 : EnvoySpacing.xs;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -279,41 +284,41 @@ class PrimaryAmountWidget extends StatelessWidget {
             padding: EdgeInsets.only(right: unitSpacing),
             child: unit == AmountDisplayUnit.fiat
                 ? Text(
-                    symbolFiat,
-                    textHeightBehavior: const TextHeightBehavior(
-                      applyHeightToFirstAscent: false,
-                      applyHeightToLastDescent: false,
-                    ),
-                    style: sendScreen
-                        ? EnvoyTypography.digitsMedium
-                            .copyWith(color: EnvoyColors.textSecondary)
-                        : textStyleFiatSymbol,
-                  )
+              symbolFiat,
+              textHeightBehavior: const TextHeightBehavior(
+                applyHeightToFirstAscent: false,
+                applyHeightToLastDescent: false,
+              ),
+              style: sendScreen
+                  ? EnvoyTypography.digitsMedium
+                  .copyWith(color: EnvoyColors.textSecondary)
+                  : textStyleFiatSymbol,
+            )
                 : (envoyAccount?.network == Network.bitcoin
-                    ? EnvoyIcon(
-                        unit == AmountDisplayUnit.btc ? iconBtc : iconSat,
-                        size: iconSize,
-                        color: iconColor,
-                      )
-                    : getNonMainnetIcon(unit, badgeColor!, envoyAccount!,
-                        iconSize: iconSize, iconColor: iconColor))),
+                ? EnvoyIcon(
+              unit == AmountDisplayUnit.btc ? iconBtc : iconSat,
+              size: iconSize,
+              color: iconColor,
+            )
+                : getNonMainnetIcon(unit, badgeColor!, envoyAccount!,
+                iconSize: iconSize, iconColor: iconColor))),
         RichText(
           textScaler: TextScaler.linear(textScaleFactor),
           text: TextSpan(
             children: unit == AmountDisplayUnit.btc
                 ? buildPrimaryBtcTextSpans(amountSats, decimalSeparator,
-                    groupSeparator, textStyleBlack, textStyleGray)
+                groupSeparator, textStyleBlack, textStyleGray)
                 : unit == AmountDisplayUnit.fiat
-                    ? buildFiatTextSpans(
-                        amountSats,
-                        fxRateFiat!,
-                        textStyleBlack,
-                        locale,
-                        decimalSeparator,
-                        groupSeparator,
-                        millionaireMode: millionaireMode)
-                    : buildPrimarySatsTextSpans(amountSats, groupSeparator,
-                        textStyleBlack, textStyleGray),
+                ? buildFiatTextSpans(
+                amountSats,
+                fxRateFiat!,
+                textStyleBlack,
+                locale,
+                decimalSeparator,
+                groupSeparator,
+                millionaireMode: millionaireMode)
+                : buildPrimarySatsTextSpans(amountSats, groupSeparator,
+                textStyleBlack, textStyleGray),
           ),
         ),
       ],
@@ -339,21 +344,20 @@ class SecondaryAmountWidget extends StatelessWidget {
   final double textScaleFactor;
   final bool millionaireMode;
 
-  const SecondaryAmountWidget(
-      {super.key,
-      required this.unit,
-      required this.amountSats,
-      this.displayFiat,
-      required this.locale,
-      this.symbolFiat = "",
-      this.fxRateFiat,
-      this.decimalSeparator = ".",
-      this.groupSeparator = ",",
-      this.style = SecondaryAmountWidgetStyle.normal,
-      this.badgeColor,
-      this.envoyAccount,
-      this.textScaleFactor = 1,
-      required this.millionaireMode});
+  const SecondaryAmountWidget({super.key,
+    required this.unit,
+    required this.amountSats,
+    this.displayFiat,
+    required this.locale,
+    this.symbolFiat = "",
+    this.fxRateFiat,
+    this.decimalSeparator = ".",
+    this.groupSeparator = ",",
+    this.style = SecondaryAmountWidgetStyle.normal,
+    this.badgeColor,
+    this.envoyAccount,
+    this.textScaleFactor = 1,
+    required this.millionaireMode});
 
   @override
   Widget build(BuildContext context) {
@@ -382,45 +386,44 @@ class SecondaryAmountWidget extends StatelessWidget {
             padding: const EdgeInsets.only(right: 2.0),
             child: unit == AmountDisplayUnit.btc
                 ? (envoyAccount?.network == Network.bitcoin
-                    ? EnvoyIcon(
-                        iconBtc,
-                        size: EnvoyIconSize.extraSmall,
-                        color: iconColor,
-                      )
-                    : getNonMainnetIcon(unit, badgeColor!, envoyAccount!,
-                        iconSize: EnvoyIconSize.extraSmall,
-                        iconColor: iconColor))
+                ? EnvoyIcon(
+              iconBtc,
+              size: EnvoyIconSize.extraSmall,
+              color: iconColor,
+            )
+                : getNonMainnetIcon(unit, badgeColor!, envoyAccount!,
+                iconSize: EnvoyIconSize.extraSmall,
+                iconColor: iconColor))
                 : Text(
-                    symbolFiat,
-                    textHeightBehavior: const TextHeightBehavior(
-                      applyHeightToFirstAscent: false,
-                      applyHeightToLastDescent: false,
-                    ),
-                    style: textStyle,
-                  )),
+              symbolFiat,
+              textHeightBehavior: const TextHeightBehavior(
+                applyHeightToFirstAscent: false,
+                applyHeightToLastDescent: false,
+              ),
+              style: textStyle,
+            )),
         RichText(
           textScaler: TextScaler.linear(textScaleFactor),
           text: TextSpan(
               children: unit == AmountDisplayUnit.fiat
                   ? buildFiatTextSpans(
-                      amountSats,
-                      fxRateFiat!,
-                      displayFiat: displayFiat,
-                      textStyle,
-                      locale,
-                      decimalSeparator,
-                      groupSeparator,
-                      millionaireMode: millionaireMode)
+                  amountSats,
+                  fxRateFiat!,
+                  displayFiat: displayFiat,
+                  textStyle,
+                  locale,
+                  decimalSeparator,
+                  groupSeparator,
+                  millionaireMode: millionaireMode)
                   : buildSecondaryBtcTextSpans(amountSats, decimalSeparator,
-                      groupSeparator, textStyle, textStyle)),
+                  groupSeparator, textStyle, textStyle)),
         ),
       ],
     );
   }
 }
 
-List<TextSpan> buildPrimaryBtcTextSpans(
-    int amountSats,
+List<TextSpan> buildPrimaryBtcTextSpans(int amountSats,
     String decimalSeparator,
     String groupSeparator,
     TextStyle? textStyleBlack,
@@ -431,7 +434,7 @@ List<TextSpan> buildPrimaryBtcTextSpans(
 
   List<TextSpan> textSpans = [];
   String btcString =
-      convertSatsToBtcString(amountSats, decimalSeparator, groupSeparator);
+  convertSatsToBtcString(amountSats, decimalSeparator, groupSeparator);
 
   double amountBTC = convertSatsToBTC(amountSats);
   bool isAmountBtcUnder1 = amountBTC < 1;
@@ -492,8 +495,7 @@ List<TextSpan> buildPrimaryBtcTextSpans(
       isAmountBtcUnder1, decimalSeparator, textSpans, textStyleBlack);
 }
 
-List<TextSpan> buildTextSpansWithSpaces(
-    bool isAmountBtcUnder1,
+List<TextSpan> buildTextSpansWithSpaces(bool isAmountBtcUnder1,
     String decimalSeparator,
     List<TextSpan> textSpans,
     TextStyle? textStyleSpace) {
@@ -565,7 +567,10 @@ List<TextSpan> buildPrimarySatsTextSpans(int amountSats, String groupSeparator,
   }
 
   // Reverse the string to make it easier to insert commas from the right
-  satsString = satsString.split('').reversed.join();
+  satsString = satsString
+      .split('')
+      .reversed
+      .join();
 
   for (int i = 0; i < satsString.length; i++) {
     String char = satsString[i];
@@ -586,19 +591,18 @@ List<TextSpan> buildPrimarySatsTextSpans(int amountSats, String groupSeparator,
   return textSpans;
 }
 
-List<TextSpan> buildFiatTextSpans(
-    int amountSats,
+List<TextSpan> buildFiatTextSpans(int amountSats,
     double fxRateFiat,
     TextStyle? textStyle,
     String locale,
     String decimalSeparator,
     String groupSeparator,
     {required bool millionaireMode,
-    double? displayFiat}) {
+      double? displayFiat}) {
   List<TextSpan> textSpans = [];
 
   String amountFiatString =
-      convertSatsToFiatString(amountSats, fxRateFiat, locale);
+  convertSatsToFiatString(amountSats, fxRateFiat, locale);
 
   double amountFiatValue = convertFiatStringToFiat(
       amountFiatString, decimalSeparator, groupSeparator);
@@ -626,7 +630,7 @@ List<TextSpan> buildFiatTextSpans(
 
     if (displayFiat != null) {
       String formattedDisplayFiat =
-          ExchangeRate().formatFiatToString(displayFiat);
+      ExchangeRate().formatFiatToString(displayFiat);
       textSpans.add(_createTextSpan(formattedDisplayFiat, textStyle!));
     } else {
       for (int i = 0; i < amountFiatString.length; i++) {
@@ -639,8 +643,7 @@ List<TextSpan> buildFiatTextSpans(
   return textSpans;
 }
 
-List<TextSpan> buildSecondaryBtcTextSpans(
-    int amountSats,
+List<TextSpan> buildSecondaryBtcTextSpans(int amountSats,
     String decimalSeparator,
     String groupSeparator,
     TextStyle? textStyle,
@@ -654,7 +657,7 @@ List<TextSpan> buildSecondaryBtcTextSpans(
   bool isAmountBtcUnder1 = amountBTC < 1;
 
   String stringBtcAmount =
-      convertSatsToBtcString(amountSats, decimalSeparator, groupSeparator);
+  convertSatsToBtcString(amountSats, decimalSeparator, groupSeparator);
 
   // Add characters to textSpans without commas
   for (int i = 0; i < stringBtcAmount.length; i++) {
@@ -678,8 +681,8 @@ double convertSatsToBTC(int sats) {
   return sats / 100000000;
 }
 
-String convertSatsToBtcString(
-    int sats, String decimalSeparator, String groupSeparator,
+String convertSatsToBtcString(int sats, String decimalSeparator,
+    String groupSeparator,
     {bool trailingZeroes = true}) {
   // Divide by 100,000,000 to convert to BTC
   double btcAmount = sats / 100000000;
@@ -697,7 +700,7 @@ String formatAmountWithSeparators(double amount, bool trailingZeroes,
   String amountString = amount.toString();
 
   List<String> parts =
-      amountString.split("."); // here amount always has decimal dot
+  amountString.split("."); // here amount always has decimal dot
   String integerPart = parts[0];
   String decimalPart = parts.length > 1 ? parts[1] : '';
 
@@ -727,8 +730,8 @@ String formatAmountWithSeparators(double amount, bool trailingZeroes,
   return formattedAmount;
 }
 
-double convertFiatStringToFiat(
-    String formattedAmount, String decimalSeparator, String groupSeparator) {
+double convertFiatStringToFiat(String formattedAmount, String decimalSeparator,
+    String groupSeparator) {
   if (formattedAmount.isEmpty) {
     return 0.00;
   }
@@ -748,20 +751,20 @@ double convertFiatStringToFiat(
   }
 }
 
-String convertSatsToFiatString(
-    int amountSats, double fxRateFiat, String locale) {
+String convertSatsToFiatString(int amountSats, double fxRateFiat,
+    String locale) {
   // format via Settings().selectedFiat
   NumberFormat currencyFormatter = NumberFormat.currency(
       locale: locale, symbol: "", name: Settings().selectedFiat);
 
   String formattedAmount =
-      currencyFormatter.format(fxRateFiat * amountSats / 100000000);
+  currencyFormatter.format(fxRateFiat * amountSats / 100000000);
 
   return formattedAmount;
 }
 
-Widget getNonMainnetIcon(
-    AmountDisplayUnit unit, Color badgeColor, EnvoyAccount envoyAccount,
+Widget getNonMainnetIcon(AmountDisplayUnit unit, Color badgeColor,
+    EnvoyAccount envoyAccount,
     {EnvoyIconSize? iconSize, Color? iconColor}) {
   return NonMainnetIcon(
     unit == AmountDisplayUnit.btc ? EnvoyIcons.btc : EnvoyIcons.sats,
