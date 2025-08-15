@@ -47,7 +47,7 @@ final accountToggleStateProvider =
     StateProvider<AccountToggleState>((ref) => AccountToggleState.tx);
 
 ///clears existing filter states. this will be called when the user navigates to account detail page
-clearFilterState(WidgetRef ref) {
+void clearFilterState(WidgetRef ref) {
   ref.read(txSortStateProvider.notifier).state =
       TransactionSortTypes.newestFirst;
   ref.read(txFilterStateProvider.notifier).state = {}

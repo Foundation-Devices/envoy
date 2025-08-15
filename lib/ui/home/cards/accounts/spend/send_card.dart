@@ -96,7 +96,7 @@ class _SendCardState extends ConsumerState<SendCard>
     });
   }
 
-  _updateAmount(amount) {
+  void _updateAmount(int amount) {
     ref.read(spendAmountProvider.notifier).state = amount;
     ref.read(spendTransactionProvider.notifier).reset();
   }

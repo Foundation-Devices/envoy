@@ -94,7 +94,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
     _updateTorEnabledStatus();
   }
 
-  onChange(String address) {
+  void onChange(String address) {
     widget.setter(address);
 
     if (address.isEmpty) {

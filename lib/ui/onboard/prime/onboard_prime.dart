@@ -41,7 +41,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
     BluetoothManager().getPermissions();
   }
 
-  _connectToPrime() async {
+  Future<void> _connectToPrime() async {
     // Check Bluetooth permissions
     bool isDenied = await Permission.bluetooth.isDenied ||
         await Permission.bluetoothConnect.isDenied ||

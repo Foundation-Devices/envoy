@@ -16,7 +16,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' hide Image;
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
@@ -308,7 +308,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
     );
   }
 
-  _recoverStepsInfo(BuildContext context) {
+  Padding _recoverStepsInfo(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
       child: Column(
@@ -404,7 +404,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
     );
   }
 
-  _androidBackUPInfo(BuildContext context) {
+  PageTransitionSwitcher _androidBackUPInfo(BuildContext context) {
     return PageTransitionSwitcher(
       reverse: _androidBackupInfoPage == 1,
       duration: const Duration(milliseconds: 600),

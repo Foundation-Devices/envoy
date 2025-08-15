@@ -120,7 +120,7 @@ class Settings extends ChangeNotifier {
     return displayUnit == DisplayUnit.sat;
   }
 
-  setDisplayUnitSat(bool enable) {
+  void setDisplayUnitSat(bool enable) {
     if (enable) {
       displayUnit = DisplayUnit.sat;
     } else {
@@ -134,7 +134,7 @@ class Settings extends ChangeNotifier {
 
   String? displayFiat() => selectedFiat;
 
-  setDisplayFiat(String? displayFiat) {
+  void setDisplayFiat(String? displayFiat) {
     selectedFiat = displayFiat;
     ExchangeRate().setCurrency(selectedFiat);
 
@@ -181,13 +181,13 @@ class Settings extends ChangeNotifier {
     return selectedElectrumAddress;
   }
 
-  setCustomElectrumAddress(String electrumAddress) {
+  void setCustomElectrumAddress(String electrumAddress) {
     selectedElectrumAddress = electrumAddress;
     usingDefaultElectrumServer = false;
     store();
   }
 
-  useDefaultElectrumServer(bool enabled) {
+  void useDefaultElectrumServer(bool enabled) {
     currentDefaultServer = selectRandomDefaultServer();
     usingDefaultElectrumServer = enabled;
     notifyListeners();
@@ -204,7 +204,7 @@ class Settings extends ChangeNotifier {
     return usingTor;
   }
 
-  setTorEnabled(bool torEnabled) {
+  void setTorEnabled(bool torEnabled) {
     usingTor = torEnabled;
     if (torEnabled) {
       Tor.instance.enable();
@@ -257,7 +257,7 @@ class Settings extends ChangeNotifier {
     syncToCloudSetting = syncToCloud;
   }
 
-  setSyncToCloud(bool syncToCloud) {
+  void setSyncToCloud(bool syncToCloud) {
     syncToCloudSetting = syncToCloud;
     store();
     notifyListeners();
@@ -270,7 +270,7 @@ class Settings extends ChangeNotifier {
     return allowScreenshotsSetting;
   }
 
-  setAllowScreenshots(bool allowScreenshots) {
+  void setAllowScreenshots(bool allowScreenshots) {
     allowScreenshotsSetting = allowScreenshots;
     store();
   }
@@ -282,7 +282,7 @@ class Settings extends ChangeNotifier {
     return showTestnetAccountsSetting;
   }
 
-  setShowTestnetAccounts(bool showTestnetAccounts) {
+  void setShowTestnetAccounts(bool showTestnetAccounts) {
     showTestnetAccountsSetting = showTestnetAccounts;
     notifyListeners();
     store();
@@ -295,7 +295,7 @@ class Settings extends ChangeNotifier {
     return showSignetAccountsSetting;
   }
 
-  setShowSignetAccounts(bool showSignetAccounts) async {
+  Future<void> setShowSignetAccounts(bool showSignetAccounts) async {
     showSignetAccountsSetting = showSignetAccounts;
 
     // if a other hot wallet exists and no signet then add one
@@ -317,7 +317,7 @@ class Settings extends ChangeNotifier {
     return enableTaprootSetting;
   }
 
-  setTaprootEnabled(bool taprootEnabled) async {
+  Future<void> setTaprootEnabled(bool taprootEnabled) async {
     enableTaprootSetting = taprootEnabled;
 
     // If wpkh is derived but no taproot then do it
@@ -341,7 +341,7 @@ class Settings extends ChangeNotifier {
     return allowBuyInEnvoy;
   }
 
-  setAllowBuyInEnvoy(bool allowBuy) async {
+  Future<void> setAllowBuyInEnvoy(bool allowBuy) async {
     allowBuyInEnvoy = allowBuy;
 
     notifyListeners();
@@ -349,7 +349,7 @@ class Settings extends ChangeNotifier {
   }
 
   // ENV-989: Trigger settings to show all restored accounts.
-  updateAccountsViewSettings() {
+  void updateAccountsViewSettings() {
     setShowTestnetAccounts(showTestnetAccountsSetting);
     setTaprootEnabled(enableTaprootSetting);
     setShowSignetAccounts(showSignetAccountsSetting);
@@ -387,7 +387,7 @@ class Settings extends ChangeNotifier {
     return "USD";
   }
 
-  static restore({bool fromBackup = false}) {
+  static Future<void> restore({bool fromBackup = false}) async {
     if (ls.prefs.containsKey(SETTINGS_PREFS)) {
       var json = jsonDecode(ls.prefs.getString(SETTINGS_PREFS)!);
       if (fromBackup) {
@@ -395,10 +395,10 @@ class Settings extends ChangeNotifier {
       }
       Settings.fromJson(json);
     }
-    Settings.init();
+    await Settings.init();
   }
 
-  store() {
+  void store() {
     String json = jsonEncode(this);
     ls.prefs.setString(SETTINGS_PREFS, json);
   }

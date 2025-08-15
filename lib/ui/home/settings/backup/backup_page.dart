@@ -580,7 +580,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
         ));
   }
 
-  showEnablingBackup(BuildContext context) {
+  void showEnablingBackup(BuildContext context) {
     showEnvoyDialog(
         context: context,
         dialog: WalletSecurityModal(
@@ -590,7 +590,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
         ));
   }
 
-  showEnablingBackupDialog(BuildContext context) {
+  void showEnablingBackupDialog(BuildContext context) {
     showEnvoyPopUp(
         context,
         S().backups_manualToMagicrModal_subheader,
@@ -612,7 +612,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
         });
   }
 
-  showDisableBackupDialog(BuildContext context, Function onContinue) {
+  void showDisableBackupDialog(BuildContext context, Function onContinue) {
     showEnvoyPopUp(
       context,
       S().manual_setup_change_from_magic_modal_subheader,

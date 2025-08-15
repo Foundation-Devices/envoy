@@ -85,7 +85,7 @@ class BluetoothManager {
     kPrint("Instance of BluetoothManager created!");
   }
 
-  _init() async {
+  Future<void> _init() async {
     await api.RustLib.init();
     await bluart.RustLib.init();
 
@@ -177,7 +177,7 @@ class BluetoothManager {
     });
   }
 
-  getPermissions() async {
+  Future<void> getPermissions() async {
     await Permission.bluetooth.request();
     await Permission.bluetoothConnect.request();
     // TODO: remove this
@@ -185,7 +185,7 @@ class BluetoothManager {
     await Permission.bluetoothScan.request();
   }
 
-  scan() async {
+  Future<void> scan() async {
     if (await Permission.bluetoothScan.isGranted) {
       await bluart.scan(filter: [""]);
     }
@@ -453,7 +453,7 @@ class BluetoothManager {
     );
   }
 
-  dispose() {
+  void dispose() {
     _subscription?.cancel();
     _writeProgressSubscription?.cancel();
   }

@@ -106,7 +106,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
   final TextEditingController _tagController = TextEditingController();
   String value = '';
 
-  _tagWidget(BuildContext context) {
+  Consumer _tagWidget(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
         final tags = ref.watch(tagsProvider(widget.accountId)).toList()
@@ -234,7 +234,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
     );
   }
 
-  _tagSubtitle(BuildContext context) {
+  Container _tagSubtitle(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
       child: Column(

@@ -510,7 +510,7 @@ class EnvoySeed {
         await LocalStorage()
             .prefs
             .setBool(MigrationManager.migratedToTestnet4, true);
-        await Settings().setShowTestnetAccounts(false);
+        Settings().setShowTestnetAccounts(false);
       }
       if (showSignet && isLegacy) {
         LocalStorage()
@@ -595,7 +595,7 @@ class EnvoySeed {
     }
   }
 
-  _restoreSingletons() {
+  void _restoreSingletons() {
     Settings.restore(fromBackup: true);
     Settings().store();
     Devices().restore();
@@ -648,10 +648,11 @@ class EnvoySeed {
 
     try {
       FileSaver.instance.saveAs(
-          name: encryptedBackupFileName,
-          bytes: backupBytes,
-          ext: encryptedBackupFileExtension,
-          mimeType: MimeType.text);
+        name: encryptedBackupFileName,
+        bytes: backupBytes,
+        fileExtension: encryptedBackupFileExtension,
+        mimeType: MimeType.text,
+      );
     } catch (e) {
       kPrint(e);
     }
@@ -712,18 +713,18 @@ class EnvoySeed {
     return await LocalStorage().readFile(name);
   }
 
-  showSettingsMenu() {
+  void showSettingsMenu() {
     _platform.invokeMethod('show_settings');
   }
 
   // When manual user decides to enable Auto-Backup
-  copySeedToNonSecure() {
+  void copySeedToNonSecure() {
     _getSecure().then((seed) {
       store(seed!);
     });
   }
 
-  removeSeedFromNonSecure() async {
+  Future<void> removeSeedFromNonSecure() async {
     await LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
     if (!Platform.isLinux) {
       _platform.invokeMethod('data_changed');

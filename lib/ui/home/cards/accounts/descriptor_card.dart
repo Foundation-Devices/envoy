@@ -163,7 +163,9 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
                   padding: const EdgeInsets.only(left: EnvoySpacing.large3),
                   child: IconButton(
                       onPressed: () {
-                        Share.share(descriptor);
+                        SharePlus.instance.share(ShareParams(
+                          text: descriptor,
+                        ));
                       },
                       icon: const EnvoyIcon(EnvoyIcons.share)),
                 ),

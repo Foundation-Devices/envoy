@@ -82,7 +82,7 @@ class CoinTag {
 
   void addCoins(List<Coin> coins) => coins.forEach(addCoin);
 
-  toJsonCoin() {
+  Iterable<String> toJsonCoin() {
     return coins.map((e) => e.id);
   }
 
@@ -92,7 +92,7 @@ class CoinTag {
         .firstWhereOrNull((account) => this.account == account.id);
   }
 
-  static generateNewId() {
+  static String generateNewId() {
     return const Uuid().v4();
   }
 

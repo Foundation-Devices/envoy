@@ -128,9 +128,12 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                                     EnvoySpacing.medium3)),
                             child: SvgPicture.asset(
                               "assets/icons/ic_filter.svg",
-                              color: enabled
-                                  ? new_color_scheme.EnvoyColors.solidWhite
-                                  : new_color_scheme.EnvoyColors.textTertiary,
+                              colorFilter: ColorFilter.mode(
+                                  enabled
+                                      ? new_color_scheme.EnvoyColors.solidWhite
+                                      : new_color_scheme
+                                          .EnvoyColors.textTertiary,
+                                  BlendMode.srcIn),
                               width: 18,
                               height: 18,
                             ),

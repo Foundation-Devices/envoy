@@ -49,7 +49,7 @@ class ScvServer {
     }
   }
 
-  _storeChallenge(Challenge challenge) {
+  void _storeChallenge(Challenge challenge) {
     storedChallenge = challenge;
     String json = jsonEncode(challenge.toJson());
     _ls.prefs.setString(SCV_CHALLENGE_PREFS, json);
@@ -65,7 +65,7 @@ class ScvServer {
     return false;
   }
 
-  _clearChallenge() {
+  void _clearChallenge() {
     if (_ls.prefs.containsKey(SCV_CHALLENGE_PREFS)) {
       _ls.prefs.remove(SCV_CHALLENGE_PREFS);
     }

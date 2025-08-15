@@ -659,7 +659,7 @@ class SpendRequirementOverlayState
     );
   }
 
-  cancel(BuildContext context) async {
+  Future<void> cancel(BuildContext context) async {
     /// if the user is in utxo details screen we need to wait animations to finish
     /// before we can pop back to home screen
     ProviderContainer container = ProviderScope.containerOf(context);
@@ -855,7 +855,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
   }
 }
 
-void hideCoinSnack(ref) {
+void hideCoinSnack(WidgetRef ref) {
   ref.read(spendEditModeProvider.notifier).state = SpendOverlayContext.hidden;
   ref.read(hideBottomNavProvider.notifier).state = false;
 }

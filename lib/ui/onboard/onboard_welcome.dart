@@ -57,7 +57,7 @@ final triedAutomaticRecovery = StateProvider((ref) => false);
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   List<EscapeHatchTap> escapeHatchTaps = [];
 
-  registerEscapeTap(EscapeHatchTap tap) async {
+  Future<void> registerEscapeTap(EscapeHatchTap tap) async {
     final scaffold = ScaffoldMessenger.of(context);
     escapeHatchTaps.add(tap);
 

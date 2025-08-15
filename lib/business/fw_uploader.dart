@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+
+import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/envoy_storage.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
-import 'package:flutter/services.dart';
-import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/util/bug_report_helper.dart';
 
 const sdCardEventChannel = EventChannel('sd_card_events');
 final sdFwUploadStreamProvider = StreamProvider.autoDispose(
@@ -45,7 +46,7 @@ class FwUploader {
     }
   }
 
-  promptUserForFolderAccess() async {
+  Future<dynamic> promptUserForFolderAccess() async {
     final result = await platform.invokeMethod('prompt_folder_access');
     if (result != null && result is String) {
       _sdCardPath = result.substring(7).replaceAll("%20", " ");
@@ -55,31 +56,31 @@ class FwUploader {
     return result;
   }
 
-  _accessFolder() async {
+  Future<dynamic> _accessFolder() async {
     // We don't need arguments for this call but keeping the below for future reference
     // var argsMap = <String, dynamic>{"path": sdCardPath};
 
     return platform.invokeMethod('access_folder');
   }
 
-  _saveFile() {
+  Future<void> _saveFile() async {
     var argsMap = <String, dynamic>{"from": fw.path, "path": _sdCardPath};
-    platform.invokeMethod('save_file', argsMap);
+    await platform.invokeMethod('save_file', argsMap);
   }
 
   // ignore: unused_element
-  getManageFilesPermission() {
+  void getManageFilesPermission() {
     platform.invokeMethod('get_manage_files_permission');
   }
 
   // ignore: unused_element
-  getDirectoryContentPermission() {
+  void getDirectoryContentPermission() {
     platform.invokeMethod('get_directory_content_permission', <String, String>{
       'path': _sdCardPath,
     });
   }
 
-  upload() async {
+  Future<void> upload() async {
     if (Platform.isAndroid) {
       await _androidUpload();
     } else {
@@ -87,7 +88,7 @@ class FwUploader {
     }
   }
 
-  _iosUpload() async {
+  Future<void> _iosUpload() async {
     if (await _accessFolder()) {
       EnvoyReport().log("iOS", "Access granted to $_sdCardPath");
     } else {
@@ -103,7 +104,7 @@ class FwUploader {
     }
   }
 
-  _androidUpload() {
+  Future _androidUpload() async {
     _saveFile();
   }
 }

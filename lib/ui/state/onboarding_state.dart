@@ -32,7 +32,7 @@ class NodeConnectionState {
       this.server,
       this.electrumServerFeatures});
 
-  static getDefault() {
+  static NodeConnectionState getDefault() {
     return NodeConnectionState(isConnected: false, isConnecting: false);
   }
 }
@@ -75,7 +75,7 @@ class NodeConnectionStateNotifier extends StateNotifier<NodeConnectionState> {
     }
   }
 
-  reset() {
+  void reset() {
     state = NodeConnectionState.getDefault();
   }
 }

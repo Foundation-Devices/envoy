@@ -416,7 +416,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
     );
   }
 
-  _onEditTransaction(BuildContext context) async {
+  Future<void> _onEditTransaction(BuildContext context) async {
     Navigator.pop(context);
 
     final router = GoRouter.of(context);

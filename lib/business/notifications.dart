@@ -146,7 +146,7 @@ class Notifications {
     restoreNotifications();
   }
 
-  add(EnvoyNotification notification) {
+  void add(EnvoyNotification notification) {
     notifications.add(notification);
     _storeNotifications();
     unread++;
@@ -189,7 +189,7 @@ class Notifications {
   }
 
   // TODO: refactor this to monstrosity to use composable providers
-  _checkForNotificationsToAdd() async {
+  Future<void> _checkForNotificationsToAdd() async {
     bool newEnvoyVersionAvailable = false;
     if (!_githubVersionChecked) {
       newEnvoyVersionAvailable = await isThereNewEnvoyVersion();
@@ -247,33 +247,33 @@ class Notifications {
     }
   }
 
-  deleteFromAccount(Account account) {
+  void deleteFromAccount(Account account) {
     notifications.removeWhere((element) => account.id == element.accountId);
     _storeNotifications();
     sync();
   }
 
-  getNotificationsStream() {
+  Stream<List<EnvoyNotification>> getNotificationsStream() {
     return streamController.stream;
   }
 
   //ignore:unused_element
-  _clearNotifications() {
+  void _clearNotifications() {
     _ls.prefs.remove(notificationPrefs);
   }
 
-  dispose() {
+  void dispose() {
     streamController.close();
   }
 
-  _storeNotifications() {
+  void _storeNotifications() {
     var jsonMap = {"notifications": notifications};
 
     String json = jsonEncode(jsonMap);
     _ls.prefs.setString(notificationPrefs, json);
   }
 
-  restoreNotifications() {
+  void restoreNotifications() {
     if (_syncTimer != null) {
       _syncTimer!.cancel();
     }
@@ -327,7 +327,7 @@ class Notifications {
         .any((account) => account.id == notification.accountId);
   }
 
-  _startPeriodicSync() {
+  void _startPeriodicSync() {
     // Sync periodically
     _syncTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
       _checkForNotificationsToAdd();
