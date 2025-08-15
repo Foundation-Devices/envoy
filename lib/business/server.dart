@@ -33,8 +33,8 @@ class Server {
   }
 
   Future<List<PrimePatch>> fetchPrimePatches(String currentVersion) async {
-    final response =
-    await http!.get('$_serverAddress/prime/patches?version=$currentVersion');
+    final response = await http!
+        .get('$_serverAddress/prime/patches?version=$currentVersion');
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> json = jsonDecode(response.body);
@@ -56,8 +56,10 @@ class Server {
     }
   }
 
-  Future<List<Uint8List>> fetchPrimePatchBinaries(String currentVersion) async {
+  Future<(String latestVersion, List<Uint8List> binaries)>
+      fetchPrimePatchBinaries(String currentVersion) async {
     List<Uint8List> binaries = [];
+    String latestVersion = "";
 
     try {
       final patches = await fetchPrimePatches(currentVersion);
@@ -69,12 +71,17 @@ class Server {
           throw Exception('Failed to fetch prime patch');
         }
       }
-    }
-    catch (e) {
+
+      // TODO: FIGURE THIS SHIT OUT
+      // final last = patches!.lastOrNull();
+      //       // if (last != null) {
+      //   latestVersion = last;
+      // }
+    } catch (e) {
       kPrint("Error fetching prime patches: $e");
     }
 
-    return binaries;
+    return (latestVersion, binaries);
   }
 
   Future<ApiKeys> fetchApiKeys() async {

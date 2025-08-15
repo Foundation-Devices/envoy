@@ -51,10 +51,14 @@ Future<DecoderStatus> decode(
 
 Future<List<QuantumLinkMessage>> splitFwUpdateIntoChunks(
         {required int patchIndex,
+        required int totalPatches,
         required List<int> patchBytes,
         required BigInt chunkSize}) =>
     RustLib.instance.api.crateApiQlSplitFwUpdateIntoChunks(
-        patchIndex: patchIndex, patchBytes: patchBytes, chunkSize: chunkSize);
+        patchIndex: patchIndex,
+        totalPatches: totalPatches,
+        patchBytes: patchBytes,
+        chunkSize: chunkSize);
 
 Future<List<Uint8List>> encode(
         {required EnvoyMessage message,

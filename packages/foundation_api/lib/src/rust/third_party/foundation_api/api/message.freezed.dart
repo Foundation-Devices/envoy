@@ -24,10 +24,8 @@ mixin _$QuantumLinkMessage {
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -37,10 +35,7 @@ mixin _$QuantumLinkMessage {
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -55,9 +50,8 @@ mixin _$QuantumLinkMessage {
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -67,10 +61,7 @@ mixin _$QuantumLinkMessage {
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -85,8 +76,8 @@ mixin _$QuantumLinkMessage {
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -96,9 +87,7 @@ mixin _$QuantumLinkMessage {
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -117,10 +106,10 @@ mixin _$QuantumLinkMessage {
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -137,11 +126,8 @@ mixin _$QuantumLinkMessage {
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -160,10 +146,10 @@ mixin _$QuantumLinkMessage {
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -177,10 +163,7 @@ mixin _$QuantumLinkMessage {
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -199,10 +182,10 @@ mixin _$QuantumLinkMessage {
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -214,10 +197,7 @@ mixin _$QuantumLinkMessage {
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -332,10 +312,8 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -345,10 +323,7 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -366,9 +341,8 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -378,10 +352,7 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -399,8 +370,8 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -410,9 +381,7 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -437,10 +406,10 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -457,11 +426,8 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -483,10 +449,10 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -500,10 +466,7 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -525,10 +488,10 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -540,10 +503,7 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -663,10 +623,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -676,10 +634,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -697,9 +652,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -709,10 +663,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -730,8 +681,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -741,9 +692,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -768,10 +717,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -788,11 +737,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -814,10 +760,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -831,10 +777,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -856,10 +799,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -871,10 +814,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -1008,10 +948,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -1021,10 +959,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -1042,9 +977,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -1054,10 +988,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -1075,8 +1006,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -1086,9 +1017,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -1113,10 +1042,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -1133,11 +1062,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -1159,10 +1085,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -1176,10 +1102,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -1201,10 +1124,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -1216,10 +1139,7 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -1257,24 +1177,23 @@ abstract class QuantumLinkMessage_FirmwareUpdateCheckResponse
 }
 
 /// @nodoc
-abstract class _$$QuantumLinkMessage_FirmwareDownloadRequestImplCopyWith<$Res> {
-  factory _$$QuantumLinkMessage_FirmwareDownloadRequestImplCopyWith(
-          _$QuantumLinkMessage_FirmwareDownloadRequestImpl value,
-          $Res Function(_$QuantumLinkMessage_FirmwareDownloadRequestImpl)
-              then) =
-      __$$QuantumLinkMessage_FirmwareDownloadRequestImplCopyWithImpl<$Res>;
+abstract class _$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWith(
+          _$QuantumLinkMessage_FirmwareFetchRequestImpl value,
+          $Res Function(_$QuantumLinkMessage_FirmwareFetchRequestImpl) then) =
+      __$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({FirmwareDownloadRequest field0});
+  $Res call({FirmwareFetchRequest field0});
 }
 
 /// @nodoc
-class __$$QuantumLinkMessage_FirmwareDownloadRequestImplCopyWithImpl<$Res>
+class __$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWithImpl<$Res>
     extends _$QuantumLinkMessageCopyWithImpl<$Res,
-        _$QuantumLinkMessage_FirmwareDownloadRequestImpl>
-    implements _$$QuantumLinkMessage_FirmwareDownloadRequestImplCopyWith<$Res> {
-  __$$QuantumLinkMessage_FirmwareDownloadRequestImplCopyWithImpl(
-      _$QuantumLinkMessage_FirmwareDownloadRequestImpl _value,
-      $Res Function(_$QuantumLinkMessage_FirmwareDownloadRequestImpl) _then)
+        _$QuantumLinkMessage_FirmwareFetchRequestImpl>
+    implements _$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWithImpl(
+      _$QuantumLinkMessage_FirmwareFetchRequestImpl _value,
+      $Res Function(_$QuantumLinkMessage_FirmwareFetchRequestImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of QuantumLinkMessage
@@ -1284,35 +1203,34 @@ class __$$QuantumLinkMessage_FirmwareDownloadRequestImplCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$QuantumLinkMessage_FirmwareDownloadRequestImpl(
+    return _then(_$QuantumLinkMessage_FirmwareFetchRequestImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
-              as FirmwareDownloadRequest,
+              as FirmwareFetchRequest,
     ));
   }
 }
 
 /// @nodoc
 
-class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
-    extends QuantumLinkMessage_FirmwareDownloadRequest {
-  const _$QuantumLinkMessage_FirmwareDownloadRequestImpl(this.field0)
-      : super._();
+class _$QuantumLinkMessage_FirmwareFetchRequestImpl
+    extends QuantumLinkMessage_FirmwareFetchRequest {
+  const _$QuantumLinkMessage_FirmwareFetchRequestImpl(this.field0) : super._();
 
   @override
-  final FirmwareDownloadRequest field0;
+  final FirmwareFetchRequest field0;
 
   @override
   String toString() {
-    return 'QuantumLinkMessage.firmwareDownloadRequest(field0: $field0)';
+    return 'QuantumLinkMessage.firmwareFetchRequest(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$QuantumLinkMessage_FirmwareDownloadRequestImpl &&
+            other is _$QuantumLinkMessage_FirmwareFetchRequestImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
@@ -1324,12 +1242,11 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$QuantumLinkMessage_FirmwareDownloadRequestImplCopyWith<
-          _$QuantumLinkMessage_FirmwareDownloadRequestImpl>
+  _$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWith<
+          _$QuantumLinkMessage_FirmwareFetchRequestImpl>
       get copyWith =>
-          __$$QuantumLinkMessage_FirmwareDownloadRequestImplCopyWithImpl<
-                  _$QuantumLinkMessage_FirmwareDownloadRequestImpl>(
-              this, _$identity);
+          __$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWithImpl<
+              _$QuantumLinkMessage_FirmwareFetchRequestImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1339,10 +1256,8 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -1352,17 +1267,14 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
     required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) {
-    return firmwareDownloadRequest(field0);
+    return firmwareFetchRequest(field0);
   }
 
   @override
@@ -1373,9 +1285,8 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -1385,17 +1296,14 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
     TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) {
-    return firmwareDownloadRequest?.call(field0);
+    return firmwareFetchRequest?.call(field0);
   }
 
   @override
@@ -1406,8 +1314,8 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -1417,9 +1325,7 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -1427,8 +1333,8 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) {
-    if (firmwareDownloadRequest != null) {
-      return firmwareDownloadRequest(field0);
+    if (firmwareFetchRequest != null) {
+      return firmwareFetchRequest(field0);
     }
     return orElse();
   }
@@ -1444,10 +1350,10 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -1464,11 +1370,8 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -1479,7 +1382,7 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
         restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) {
-    return firmwareDownloadRequest(this);
+    return firmwareFetchRequest(this);
   }
 
   @override
@@ -1490,10 +1393,10 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -1507,10 +1410,7 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -1521,7 +1421,7 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
         restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) {
-    return firmwareDownloadRequest?.call(this);
+    return firmwareFetchRequest?.call(this);
   }
 
   @override
@@ -1532,10 +1432,10 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -1547,10 +1447,7 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -1562,54 +1459,51 @@ class _$QuantumLinkMessage_FirmwareDownloadRequestImpl
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) {
-    if (firmwareDownloadRequest != null) {
-      return firmwareDownloadRequest(this);
+    if (firmwareFetchRequest != null) {
+      return firmwareFetchRequest(this);
     }
     return orElse();
   }
 }
 
-abstract class QuantumLinkMessage_FirmwareDownloadRequest
+abstract class QuantumLinkMessage_FirmwareFetchRequest
     extends QuantumLinkMessage {
-  const factory QuantumLinkMessage_FirmwareDownloadRequest(
-          final FirmwareDownloadRequest field0) =
-      _$QuantumLinkMessage_FirmwareDownloadRequestImpl;
-  const QuantumLinkMessage_FirmwareDownloadRequest._() : super._();
+  const factory QuantumLinkMessage_FirmwareFetchRequest(
+          final FirmwareFetchRequest field0) =
+      _$QuantumLinkMessage_FirmwareFetchRequestImpl;
+  const QuantumLinkMessage_FirmwareFetchRequest._() : super._();
 
   @override
-  FirmwareDownloadRequest get field0;
+  FirmwareFetchRequest get field0;
 
   /// Create a copy of QuantumLinkMessage
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuantumLinkMessage_FirmwareDownloadRequestImplCopyWith<
-          _$QuantumLinkMessage_FirmwareDownloadRequestImpl>
+  _$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWith<
+          _$QuantumLinkMessage_FirmwareFetchRequestImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$QuantumLinkMessage_FirmwareDownloadResponseImplCopyWith<
-    $Res> {
-  factory _$$QuantumLinkMessage_FirmwareDownloadResponseImplCopyWith(
-          _$QuantumLinkMessage_FirmwareDownloadResponseImpl value,
-          $Res Function(_$QuantumLinkMessage_FirmwareDownloadResponseImpl)
-              then) =
-      __$$QuantumLinkMessage_FirmwareDownloadResponseImplCopyWithImpl<$Res>;
+abstract class _$$QuantumLinkMessage_FirmwareFetchEventImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_FirmwareFetchEventImplCopyWith(
+          _$QuantumLinkMessage_FirmwareFetchEventImpl value,
+          $Res Function(_$QuantumLinkMessage_FirmwareFetchEventImpl) then) =
+      __$$QuantumLinkMessage_FirmwareFetchEventImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({FirmwareDownloadResponse field0});
+  $Res call({FirmwareFetchEvent field0});
 
-  $FirmwareDownloadResponseCopyWith<$Res> get field0;
+  $FirmwareFetchEventCopyWith<$Res> get field0;
 }
 
 /// @nodoc
-class __$$QuantumLinkMessage_FirmwareDownloadResponseImplCopyWithImpl<$Res>
+class __$$QuantumLinkMessage_FirmwareFetchEventImplCopyWithImpl<$Res>
     extends _$QuantumLinkMessageCopyWithImpl<$Res,
-        _$QuantumLinkMessage_FirmwareDownloadResponseImpl>
-    implements
-        _$$QuantumLinkMessage_FirmwareDownloadResponseImplCopyWith<$Res> {
-  __$$QuantumLinkMessage_FirmwareDownloadResponseImplCopyWithImpl(
-      _$QuantumLinkMessage_FirmwareDownloadResponseImpl _value,
-      $Res Function(_$QuantumLinkMessage_FirmwareDownloadResponseImpl) _then)
+        _$QuantumLinkMessage_FirmwareFetchEventImpl>
+    implements _$$QuantumLinkMessage_FirmwareFetchEventImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_FirmwareFetchEventImplCopyWithImpl(
+      _$QuantumLinkMessage_FirmwareFetchEventImpl _value,
+      $Res Function(_$QuantumLinkMessage_FirmwareFetchEventImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of QuantumLinkMessage
@@ -1619,11 +1513,11 @@ class __$$QuantumLinkMessage_FirmwareDownloadResponseImplCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$QuantumLinkMessage_FirmwareDownloadResponseImpl(
+    return _then(_$QuantumLinkMessage_FirmwareFetchEventImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
-              as FirmwareDownloadResponse,
+              as FirmwareFetchEvent,
     ));
   }
 
@@ -1631,8 +1525,8 @@ class __$$QuantumLinkMessage_FirmwareDownloadResponseImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $FirmwareDownloadResponseCopyWith<$Res> get field0 {
-    return $FirmwareDownloadResponseCopyWith<$Res>(_value.field0, (value) {
+  $FirmwareFetchEventCopyWith<$Res> get field0 {
+    return $FirmwareFetchEventCopyWith<$Res>(_value.field0, (value) {
       return _then(_value.copyWith(field0: value));
     });
   }
@@ -1640,24 +1534,23 @@ class __$$QuantumLinkMessage_FirmwareDownloadResponseImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
-    extends QuantumLinkMessage_FirmwareDownloadResponse {
-  const _$QuantumLinkMessage_FirmwareDownloadResponseImpl(this.field0)
-      : super._();
+class _$QuantumLinkMessage_FirmwareFetchEventImpl
+    extends QuantumLinkMessage_FirmwareFetchEvent {
+  const _$QuantumLinkMessage_FirmwareFetchEventImpl(this.field0) : super._();
 
   @override
-  final FirmwareDownloadResponse field0;
+  final FirmwareFetchEvent field0;
 
   @override
   String toString() {
-    return 'QuantumLinkMessage.firmwareDownloadResponse(field0: $field0)';
+    return 'QuantumLinkMessage.firmwareFetchEvent(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$QuantumLinkMessage_FirmwareDownloadResponseImpl &&
+            other is _$QuantumLinkMessage_FirmwareFetchEventImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
@@ -1669,12 +1562,10 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$QuantumLinkMessage_FirmwareDownloadResponseImplCopyWith<
-          _$QuantumLinkMessage_FirmwareDownloadResponseImpl>
-      get copyWith =>
-          __$$QuantumLinkMessage_FirmwareDownloadResponseImplCopyWithImpl<
-                  _$QuantumLinkMessage_FirmwareDownloadResponseImpl>(
-              this, _$identity);
+  _$$QuantumLinkMessage_FirmwareFetchEventImplCopyWith<
+          _$QuantumLinkMessage_FirmwareFetchEventImpl>
+      get copyWith => __$$QuantumLinkMessage_FirmwareFetchEventImplCopyWithImpl<
+          _$QuantumLinkMessage_FirmwareFetchEventImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1684,10 +1575,8 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -1697,17 +1586,14 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
     required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) {
-    return firmwareDownloadResponse(field0);
+    return firmwareFetchEvent(field0);
   }
 
   @override
@@ -1718,9 +1604,8 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -1730,17 +1615,14 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
     TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) {
-    return firmwareDownloadResponse?.call(field0);
+    return firmwareFetchEvent?.call(field0);
   }
 
   @override
@@ -1751,8 +1633,8 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -1762,9 +1644,7 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -1772,8 +1652,8 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) {
-    if (firmwareDownloadResponse != null) {
-      return firmwareDownloadResponse(field0);
+    if (firmwareFetchEvent != null) {
+      return firmwareFetchEvent(field0);
     }
     return orElse();
   }
@@ -1789,10 +1669,10 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -1809,11 +1689,8 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -1824,7 +1701,7 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
         restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) {
-    return firmwareDownloadResponse(this);
+    return firmwareFetchEvent(this);
   }
 
   @override
@@ -1835,10 +1712,10 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -1852,10 +1729,7 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -1866,7 +1740,7 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
         restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) {
-    return firmwareDownloadResponse?.call(this);
+    return firmwareFetchEvent?.call(this);
   }
 
   @override
@@ -1877,10 +1751,10 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -1892,10 +1766,7 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -1907,28 +1778,28 @@ class _$QuantumLinkMessage_FirmwareDownloadResponseImpl
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) {
-    if (firmwareDownloadResponse != null) {
-      return firmwareDownloadResponse(this);
+    if (firmwareFetchEvent != null) {
+      return firmwareFetchEvent(this);
     }
     return orElse();
   }
 }
 
-abstract class QuantumLinkMessage_FirmwareDownloadResponse
+abstract class QuantumLinkMessage_FirmwareFetchEvent
     extends QuantumLinkMessage {
-  const factory QuantumLinkMessage_FirmwareDownloadResponse(
-          final FirmwareDownloadResponse field0) =
-      _$QuantumLinkMessage_FirmwareDownloadResponseImpl;
-  const QuantumLinkMessage_FirmwareDownloadResponse._() : super._();
+  const factory QuantumLinkMessage_FirmwareFetchEvent(
+          final FirmwareFetchEvent field0) =
+      _$QuantumLinkMessage_FirmwareFetchEventImpl;
+  const QuantumLinkMessage_FirmwareFetchEvent._() : super._();
 
   @override
-  FirmwareDownloadResponse get field0;
+  FirmwareFetchEvent get field0;
 
   /// Create a copy of QuantumLinkMessage
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuantumLinkMessage_FirmwareDownloadResponseImplCopyWith<
-          _$QuantumLinkMessage_FirmwareDownloadResponseImpl>
+  _$$QuantumLinkMessage_FirmwareFetchEventImplCopyWith<
+          _$QuantumLinkMessage_FirmwareFetchEventImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -2024,10 +1895,8 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -2037,10 +1906,7 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -2058,9 +1924,8 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -2070,10 +1935,7 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -2091,8 +1953,8 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -2102,9 +1964,7 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -2129,10 +1989,10 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -2149,11 +2009,8 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -2175,10 +2032,10 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -2192,10 +2049,7 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -2217,10 +2071,10 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -2232,10 +2086,7 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -2351,10 +2202,8 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -2364,10 +2213,7 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -2385,9 +2231,8 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -2397,10 +2242,7 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -2418,8 +2260,8 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -2429,9 +2271,7 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -2456,10 +2296,10 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -2476,11 +2316,8 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -2502,10 +2339,10 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -2519,10 +2356,7 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -2544,10 +2378,10 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -2559,10 +2393,7 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -2676,10 +2507,8 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -2689,10 +2518,7 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -2710,9 +2536,8 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -2722,10 +2547,7 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -2743,8 +2565,8 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -2754,9 +2576,7 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -2781,10 +2601,10 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -2801,11 +2621,8 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -2827,10 +2644,10 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -2844,10 +2661,7 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -2869,10 +2683,10 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -2884,10 +2698,7 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -3001,10 +2812,8 @@ class _$QuantumLinkMessage_PairingRequestImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -3014,10 +2823,7 @@ class _$QuantumLinkMessage_PairingRequestImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -3035,9 +2841,8 @@ class _$QuantumLinkMessage_PairingRequestImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -3047,10 +2852,7 @@ class _$QuantumLinkMessage_PairingRequestImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -3068,8 +2870,8 @@ class _$QuantumLinkMessage_PairingRequestImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -3079,9 +2881,7 @@ class _$QuantumLinkMessage_PairingRequestImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -3106,10 +2906,10 @@ class _$QuantumLinkMessage_PairingRequestImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -3126,11 +2926,8 @@ class _$QuantumLinkMessage_PairingRequestImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -3152,10 +2949,10 @@ class _$QuantumLinkMessage_PairingRequestImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -3169,10 +2966,7 @@ class _$QuantumLinkMessage_PairingRequestImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -3194,10 +2988,10 @@ class _$QuantumLinkMessage_PairingRequestImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -3209,10 +3003,7 @@ class _$QuantumLinkMessage_PairingRequestImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -3326,10 +3117,8 @@ class _$QuantumLinkMessage_PairingResponseImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -3339,10 +3128,7 @@ class _$QuantumLinkMessage_PairingResponseImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -3360,9 +3146,8 @@ class _$QuantumLinkMessage_PairingResponseImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -3372,10 +3157,7 @@ class _$QuantumLinkMessage_PairingResponseImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -3393,8 +3175,8 @@ class _$QuantumLinkMessage_PairingResponseImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -3404,9 +3186,7 @@ class _$QuantumLinkMessage_PairingResponseImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -3431,10 +3211,10 @@ class _$QuantumLinkMessage_PairingResponseImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -3451,11 +3231,8 @@ class _$QuantumLinkMessage_PairingResponseImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -3477,10 +3254,10 @@ class _$QuantumLinkMessage_PairingResponseImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -3494,10 +3271,7 @@ class _$QuantumLinkMessage_PairingResponseImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -3519,10 +3293,10 @@ class _$QuantumLinkMessage_PairingResponseImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -3534,10 +3308,7 @@ class _$QuantumLinkMessage_PairingResponseImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -3651,10 +3422,8 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -3664,10 +3433,7 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -3685,9 +3451,8 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -3697,10 +3462,7 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -3718,8 +3480,8 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -3729,9 +3491,7 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -3756,10 +3516,10 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -3776,11 +3536,8 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -3802,10 +3559,10 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -3819,10 +3576,7 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -3844,10 +3598,10 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -3859,10 +3613,7 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -3974,10 +3725,8 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -3987,10 +3736,7 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -4008,9 +3754,8 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -4020,10 +3765,7 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -4041,8 +3783,8 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -4052,9 +3794,7 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -4079,10 +3819,10 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -4099,11 +3839,8 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -4125,10 +3862,10 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -4142,10 +3879,7 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -4167,10 +3901,10 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -4182,10 +3916,7 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -4299,10 +4030,8 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -4312,10 +4041,7 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -4333,9 +4059,8 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -4345,10 +4070,7 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -4366,8 +4088,8 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -4377,9 +4099,7 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -4404,10 +4124,10 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -4424,11 +4144,8 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -4450,10 +4167,10 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -4467,10 +4184,7 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -4492,10 +4206,10 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -4507,10 +4221,7 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -4626,10 +4337,8 @@ class _$QuantumLinkMessage_AccountUpdateImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -4639,10 +4348,7 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -4660,9 +4366,8 @@ class _$QuantumLinkMessage_AccountUpdateImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -4672,10 +4377,7 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -4693,8 +4395,8 @@ class _$QuantumLinkMessage_AccountUpdateImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -4704,9 +4406,7 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -4731,10 +4431,10 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -4751,11 +4451,8 @@ class _$QuantumLinkMessage_AccountUpdateImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -4777,10 +4474,10 @@ class _$QuantumLinkMessage_AccountUpdateImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -4794,10 +4491,7 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -4819,10 +4513,10 @@ class _$QuantumLinkMessage_AccountUpdateImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -4834,10 +4528,7 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -4873,26 +4564,25 @@ abstract class QuantumLinkMessage_AccountUpdate extends QuantumLinkMessage {
 }
 
 /// @nodoc
-abstract class _$$QuantumLinkMessage_SecurityChallengeRequestImplCopyWith<
-    $Res> {
-  factory _$$QuantumLinkMessage_SecurityChallengeRequestImplCopyWith(
-          _$QuantumLinkMessage_SecurityChallengeRequestImpl value,
-          $Res Function(_$QuantumLinkMessage_SecurityChallengeRequestImpl)
-              then) =
-      __$$QuantumLinkMessage_SecurityChallengeRequestImplCopyWithImpl<$Res>;
+abstract class _$$QuantumLinkMessage_SecurityCheckImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_SecurityCheckImplCopyWith(
+          _$QuantumLinkMessage_SecurityCheckImpl value,
+          $Res Function(_$QuantumLinkMessage_SecurityCheckImpl) then) =
+      __$$QuantumLinkMessage_SecurityCheckImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({SecurityChallengeRequest field0});
+  $Res call({SecurityCheck field0});
+
+  $SecurityCheckCopyWith<$Res> get field0;
 }
 
 /// @nodoc
-class __$$QuantumLinkMessage_SecurityChallengeRequestImplCopyWithImpl<$Res>
+class __$$QuantumLinkMessage_SecurityCheckImplCopyWithImpl<$Res>
     extends _$QuantumLinkMessageCopyWithImpl<$Res,
-        _$QuantumLinkMessage_SecurityChallengeRequestImpl>
-    implements
-        _$$QuantumLinkMessage_SecurityChallengeRequestImplCopyWith<$Res> {
-  __$$QuantumLinkMessage_SecurityChallengeRequestImplCopyWithImpl(
-      _$QuantumLinkMessage_SecurityChallengeRequestImpl _value,
-      $Res Function(_$QuantumLinkMessage_SecurityChallengeRequestImpl) _then)
+        _$QuantumLinkMessage_SecurityCheckImpl>
+    implements _$$QuantumLinkMessage_SecurityCheckImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_SecurityCheckImplCopyWithImpl(
+      _$QuantumLinkMessage_SecurityCheckImpl _value,
+      $Res Function(_$QuantumLinkMessage_SecurityCheckImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of QuantumLinkMessage
@@ -4902,35 +4592,44 @@ class __$$QuantumLinkMessage_SecurityChallengeRequestImplCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$QuantumLinkMessage_SecurityChallengeRequestImpl(
+    return _then(_$QuantumLinkMessage_SecurityCheckImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
-              as SecurityChallengeRequest,
+              as SecurityCheck,
     ));
+  }
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $SecurityCheckCopyWith<$Res> get field0 {
+    return $SecurityCheckCopyWith<$Res>(_value.field0, (value) {
+      return _then(_value.copyWith(field0: value));
+    });
   }
 }
 
 /// @nodoc
 
-class _$QuantumLinkMessage_SecurityChallengeRequestImpl
-    extends QuantumLinkMessage_SecurityChallengeRequest {
-  const _$QuantumLinkMessage_SecurityChallengeRequestImpl(this.field0)
-      : super._();
+class _$QuantumLinkMessage_SecurityCheckImpl
+    extends QuantumLinkMessage_SecurityCheck {
+  const _$QuantumLinkMessage_SecurityCheckImpl(this.field0) : super._();
 
   @override
-  final SecurityChallengeRequest field0;
+  final SecurityCheck field0;
 
   @override
   String toString() {
-    return 'QuantumLinkMessage.securityChallengeRequest(field0: $field0)';
+    return 'QuantumLinkMessage.securityCheck(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$QuantumLinkMessage_SecurityChallengeRequestImpl &&
+            other is _$QuantumLinkMessage_SecurityCheckImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
@@ -4942,12 +4641,10 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$QuantumLinkMessage_SecurityChallengeRequestImplCopyWith<
-          _$QuantumLinkMessage_SecurityChallengeRequestImpl>
-      get copyWith =>
-          __$$QuantumLinkMessage_SecurityChallengeRequestImplCopyWithImpl<
-                  _$QuantumLinkMessage_SecurityChallengeRequestImpl>(
-              this, _$identity);
+  _$$QuantumLinkMessage_SecurityCheckImplCopyWith<
+          _$QuantumLinkMessage_SecurityCheckImpl>
+      get copyWith => __$$QuantumLinkMessage_SecurityCheckImplCopyWithImpl<
+          _$QuantumLinkMessage_SecurityCheckImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -4957,10 +4654,8 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -4970,17 +4665,14 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
     required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) {
-    return securityChallengeRequest(field0);
+    return securityCheck(field0);
   }
 
   @override
@@ -4991,9 +4683,8 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -5003,17 +4694,14 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
     TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) {
-    return securityChallengeRequest?.call(field0);
+    return securityCheck?.call(field0);
   }
 
   @override
@@ -5024,8 +4712,8 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -5035,9 +4723,7 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -5045,8 +4731,8 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) {
-    if (securityChallengeRequest != null) {
-      return securityChallengeRequest(field0);
+    if (securityCheck != null) {
+      return securityCheck(field0);
     }
     return orElse();
   }
@@ -5062,10 +4748,10 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -5082,11 +4768,8 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -5097,7 +4780,7 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
         restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) {
-    return securityChallengeRequest(this);
+    return securityCheck(this);
   }
 
   @override
@@ -5108,10 +4791,10 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -5125,10 +4808,7 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -5139,7 +4819,7 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
         restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) {
-    return securityChallengeRequest?.call(this);
+    return securityCheck?.call(this);
   }
 
   @override
@@ -5150,10 +4830,10 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -5165,10 +4845,7 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -5180,361 +4857,26 @@ class _$QuantumLinkMessage_SecurityChallengeRequestImpl
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) {
-    if (securityChallengeRequest != null) {
-      return securityChallengeRequest(this);
+    if (securityCheck != null) {
+      return securityCheck(this);
     }
     return orElse();
   }
 }
 
-abstract class QuantumLinkMessage_SecurityChallengeRequest
-    extends QuantumLinkMessage {
-  const factory QuantumLinkMessage_SecurityChallengeRequest(
-          final SecurityChallengeRequest field0) =
-      _$QuantumLinkMessage_SecurityChallengeRequestImpl;
-  const QuantumLinkMessage_SecurityChallengeRequest._() : super._();
+abstract class QuantumLinkMessage_SecurityCheck extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_SecurityCheck(final SecurityCheck field0) =
+      _$QuantumLinkMessage_SecurityCheckImpl;
+  const QuantumLinkMessage_SecurityCheck._() : super._();
 
   @override
-  SecurityChallengeRequest get field0;
+  SecurityCheck get field0;
 
   /// Create a copy of QuantumLinkMessage
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuantumLinkMessage_SecurityChallengeRequestImplCopyWith<
-          _$QuantumLinkMessage_SecurityChallengeRequestImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$QuantumLinkMessage_SecurityChallengeResponseImplCopyWith<
-    $Res> {
-  factory _$$QuantumLinkMessage_SecurityChallengeResponseImplCopyWith(
-          _$QuantumLinkMessage_SecurityChallengeResponseImpl value,
-          $Res Function(_$QuantumLinkMessage_SecurityChallengeResponseImpl)
-              then) =
-      __$$QuantumLinkMessage_SecurityChallengeResponseImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({SecurityChallengeResponse field0});
-}
-
-/// @nodoc
-class __$$QuantumLinkMessage_SecurityChallengeResponseImplCopyWithImpl<$Res>
-    extends _$QuantumLinkMessageCopyWithImpl<$Res,
-        _$QuantumLinkMessage_SecurityChallengeResponseImpl>
-    implements
-        _$$QuantumLinkMessage_SecurityChallengeResponseImplCopyWith<$Res> {
-  __$$QuantumLinkMessage_SecurityChallengeResponseImplCopyWithImpl(
-      _$QuantumLinkMessage_SecurityChallengeResponseImpl _value,
-      $Res Function(_$QuantumLinkMessage_SecurityChallengeResponseImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of QuantumLinkMessage
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? field0 = null,
-  }) {
-    return _then(_$QuantumLinkMessage_SecurityChallengeResponseImpl(
-      null == field0
-          ? _value.field0
-          : field0 // ignore: cast_nullable_to_non_nullable
-              as SecurityChallengeResponse,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$QuantumLinkMessage_SecurityChallengeResponseImpl
-    extends QuantumLinkMessage_SecurityChallengeResponse {
-  const _$QuantumLinkMessage_SecurityChallengeResponseImpl(this.field0)
-      : super._();
-
-  @override
-  final SecurityChallengeResponse field0;
-
-  @override
-  String toString() {
-    return 'QuantumLinkMessage.securityChallengeResponse(field0: $field0)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$QuantumLinkMessage_SecurityChallengeResponseImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, field0);
-
-  /// Create a copy of QuantumLinkMessage
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$QuantumLinkMessage_SecurityChallengeResponseImplCopyWith<
-          _$QuantumLinkMessage_SecurityChallengeResponseImpl>
-      get copyWith =>
-          __$$QuantumLinkMessage_SecurityChallengeResponseImplCopyWithImpl<
-                  _$QuantumLinkMessage_SecurityChallengeResponseImpl>(
-              this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdateCheckRequest field0)
-        firmwareUpdateCheckRequest,
-    required TResult Function(FirmwareUpdateCheckResponse field0)
-        firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
-    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
-    required TResult Function(DeviceStatus field0) deviceStatus,
-    required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingRequest field0) pairingRequest,
-    required TResult Function(PairingResponse field0) pairingResponse,
-    required TResult Function(OnboardingState field0) onboardingState,
-    required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
-    required TResult Function(BackupShardRequest field0) backupShardRequest,
-    required TResult Function(BackupShardResponse field0) backupShardResponse,
-    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
-    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
-    required TResult Function(RawData field0) rawData,
-  }) {
-    return securityChallengeResponse(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdateCheckRequest field0)?
-        firmwareUpdateCheckRequest,
-    TResult? Function(FirmwareUpdateCheckResponse field0)?
-        firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
-    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
-    TResult? Function(DeviceStatus field0)? deviceStatus,
-    TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingRequest field0)? pairingRequest,
-    TResult? Function(PairingResponse field0)? pairingResponse,
-    TResult? Function(OnboardingState field0)? onboardingState,
-    TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
-    TResult? Function(BackupShardRequest field0)? backupShardRequest,
-    TResult? Function(BackupShardResponse field0)? backupShardResponse,
-    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
-    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
-    TResult? Function(RawData field0)? rawData,
-  }) {
-    return securityChallengeResponse?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdateCheckRequest field0)?
-        firmwareUpdateCheckRequest,
-    TResult Function(FirmwareUpdateCheckResponse field0)?
-        firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
-    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
-    TResult Function(DeviceStatus field0)? deviceStatus,
-    TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingRequest field0)? pairingRequest,
-    TResult Function(PairingResponse field0)? pairingResponse,
-    TResult Function(OnboardingState field0)? onboardingState,
-    TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
-    TResult Function(BackupShardRequest field0)? backupShardRequest,
-    TResult Function(BackupShardResponse field0)? backupShardResponse,
-    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
-    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
-    TResult Function(RawData field0)? rawData,
-    required TResult orElse(),
-  }) {
-    if (securityChallengeResponse != null) {
-      return securityChallengeResponse(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(QuantumLinkMessage_ExchangeRate value)
-        exchangeRate,
-    required TResult Function(
-            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
-        firmwareUpdateCheckRequest,
-    required TResult Function(
-            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
-        firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
-        firmwareUpdateResult,
-    required TResult Function(QuantumLinkMessage_DeviceStatus value)
-        deviceStatus,
-    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingRequest value)
-        pairingRequest,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
-    required TResult Function(QuantumLinkMessage_OnboardingState value)
-        onboardingState,
-    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
-        broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
-    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
-        backupShardRequest,
-    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
-        backupShardResponse,
-    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
-        restoreShardRequest,
-    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
-        restoreShardResponse,
-    required TResult Function(QuantumLinkMessage_RawData value) rawData,
-  }) {
-    return securityChallengeResponse(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
-        firmwareUpdateCheckRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
-        firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
-        firmwareUpdateResult,
-    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
-    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
-    TResult? Function(QuantumLinkMessage_PairingResponse value)?
-        pairingResponse,
-    TResult? Function(QuantumLinkMessage_OnboardingState value)?
-        onboardingState,
-    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
-        broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
-    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
-        backupShardRequest,
-    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
-        backupShardResponse,
-    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
-        restoreShardRequest,
-    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
-        restoreShardResponse,
-    TResult? Function(QuantumLinkMessage_RawData value)? rawData,
-  }) {
-    return securityChallengeResponse?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
-        firmwareUpdateCheckRequest,
-    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
-        firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
-    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
-        firmwareUpdateResult,
-    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
-    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
-    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
-    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
-        broadcastTransaction,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
-    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
-        backupShardRequest,
-    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
-        backupShardResponse,
-    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
-        restoreShardRequest,
-    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
-        restoreShardResponse,
-    TResult Function(QuantumLinkMessage_RawData value)? rawData,
-    required TResult orElse(),
-  }) {
-    if (securityChallengeResponse != null) {
-      return securityChallengeResponse(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class QuantumLinkMessage_SecurityChallengeResponse
-    extends QuantumLinkMessage {
-  const factory QuantumLinkMessage_SecurityChallengeResponse(
-          final SecurityChallengeResponse field0) =
-      _$QuantumLinkMessage_SecurityChallengeResponseImpl;
-  const QuantumLinkMessage_SecurityChallengeResponse._() : super._();
-
-  @override
-  SecurityChallengeResponse get field0;
-
-  /// Create a copy of QuantumLinkMessage
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuantumLinkMessage_SecurityChallengeResponseImplCopyWith<
-          _$QuantumLinkMessage_SecurityChallengeResponseImpl>
+  _$$QuantumLinkMessage_SecurityCheckImplCopyWith<
+          _$QuantumLinkMessage_SecurityCheckImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -5617,10 +4959,8 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -5630,10 +4970,7 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -5651,9 +4988,8 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -5663,10 +4999,7 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -5684,8 +5017,8 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -5695,9 +5028,7 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -5722,10 +5053,10 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -5742,11 +5073,8 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -5768,10 +5096,10 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -5785,10 +5113,7 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -5810,10 +5135,10 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -5825,10 +5150,7 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -5957,10 +5279,8 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -5970,10 +5290,7 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -5991,9 +5308,8 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -6003,10 +5319,7 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -6024,8 +5337,8 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -6035,9 +5348,7 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -6062,10 +5373,10 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -6082,11 +5393,8 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -6108,10 +5416,10 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -6125,10 +5433,7 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -6150,10 +5455,10 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -6165,10 +5470,7 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -6285,10 +5587,8 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -6298,10 +5598,7 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -6319,9 +5616,8 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -6331,10 +5627,7 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -6352,8 +5645,8 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -6363,9 +5656,7 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -6390,10 +5681,10 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -6410,11 +5701,8 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -6436,10 +5724,10 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -6453,10 +5741,7 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -6478,10 +5763,10 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -6493,10 +5778,7 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -6625,10 +5907,8 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -6638,10 +5918,7 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -6659,9 +5936,8 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -6671,10 +5947,7 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -6692,8 +5965,8 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -6703,9 +5976,7 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -6730,10 +6001,10 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -6750,11 +6021,8 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -6776,10 +6044,10 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -6793,10 +6061,7 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -6818,10 +6083,10 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -6833,10 +6098,7 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -6950,10 +6212,8 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
         firmwareUpdateCheckRequest,
     required TResult Function(FirmwareUpdateCheckResponse field0)
         firmwareUpdateCheckResponse,
-    required TResult Function(FirmwareDownloadRequest field0)
-        firmwareDownloadRequest,
-    required TResult Function(FirmwareDownloadResponse field0)
-        firmwareDownloadResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
     required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
@@ -6963,10 +6223,7 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
     required TResult Function(SignPsbt field0) signPsbt,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(SecurityChallengeRequest field0)
-        securityChallengeRequest,
-    required TResult Function(SecurityChallengeResponse field0)
-        securityChallengeResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -6984,9 +6241,8 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
         firmwareUpdateCheckRequest,
     TResult? Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult? Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult? Function(FirmwareDownloadResponse field0)?
-        firmwareDownloadResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
@@ -6996,10 +6252,7 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
     TResult? Function(SignPsbt field0)? signPsbt,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(SecurityChallengeRequest field0)?
-        securityChallengeRequest,
-    TResult? Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -7017,8 +6270,8 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
         firmwareUpdateCheckRequest,
     TResult Function(FirmwareUpdateCheckResponse field0)?
         firmwareUpdateCheckResponse,
-    TResult Function(FirmwareDownloadRequest field0)? firmwareDownloadRequest,
-    TResult Function(FirmwareDownloadResponse field0)? firmwareDownloadResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
     TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
@@ -7028,9 +6281,7 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
     TResult Function(SignPsbt field0)? signPsbt,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(SecurityChallengeRequest field0)? securityChallengeRequest,
-    TResult Function(SecurityChallengeResponse field0)?
-        securityChallengeResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -7055,10 +6306,10 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
     required TResult Function(
             QuantumLinkMessage_FirmwareUpdateCheckResponse value)
         firmwareUpdateCheckResponse,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)
-        firmwareDownloadRequest,
-    required TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)
-        firmwareDownloadResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
     required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
         firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
@@ -7075,11 +6326,8 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
         broadcastTransaction,
     required TResult Function(QuantumLinkMessage_AccountUpdate value)
         accountUpdate,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)
-        securityChallengeRequest,
-    required TResult Function(
-            QuantumLinkMessage_SecurityChallengeResponse value)
-        securityChallengeResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -7101,10 +6349,10 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
         firmwareUpdateCheckRequest,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult? Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -7118,10 +6366,7 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -7143,10 +6388,10 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
         firmwareUpdateCheckRequest,
     TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
         firmwareUpdateCheckResponse,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadRequest value)?
-        firmwareDownloadRequest,
-    TResult Function(QuantumLinkMessage_FirmwareDownloadResponse value)?
-        firmwareDownloadResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
     TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
         firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
@@ -7158,10 +6403,7 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_SecurityChallengeRequest value)?
-        securityChallengeRequest,
-    TResult Function(QuantumLinkMessage_SecurityChallengeResponse value)?
-        securityChallengeResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?

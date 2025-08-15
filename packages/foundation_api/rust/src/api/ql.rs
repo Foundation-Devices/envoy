@@ -4,14 +4,14 @@
 
 use anyhow::anyhow;
 use anyhow::Result;
-use bc_components::{PrivateKeys, ARID};
+use bc_components::ARID;
 use bc_envelope::prelude::CBOREncodable;
-use bc_envelope::{Envelope, EventBehavior, Expression, ExpressionBehavior};
+use bc_envelope::{Envelope, Expression};
 use bc_ur::prelude::{CBORCase, CBOR};
 use bc_xid::XIDDocument;
-use btp::{chunk, Chunk, Dechunker, MasterDechunker};
+use btp::{chunk, Chunk, MasterDechunker};
 use flutter_rust_bridge::frb;
-use foundation_api::firmware::{split_update_into_chunks, FirmwareDownloadResponse};
+use foundation_api::firmware::{split_update_into_chunks, FirmwareFetchEvent};
 use foundation_api::message::{EnvoyMessage, PassportMessage, QuantumLinkMessage};
 use foundation_api::quantum_link::{QuantumLink, QuantumLinkIdentity};
 use gstp::SealedEvent;
@@ -136,12 +136,13 @@ pub async fn decode(
 
 pub async fn split_fw_update_into_chunks(
     patch_index: u8,
+    total_patches: u8,
     patch_bytes: &[u8],
     chunk_size: usize,
 ) -> Vec<QuantumLinkMessage> {
-    split_update_into_chunks(patch_index, patch_bytes, chunk_size)
+    split_update_into_chunks(patch_index, total_patches, patch_bytes, chunk_size)
         .map(|chunk| {
-            QuantumLinkMessage::FirmwareDownloadResponse(FirmwareDownloadResponse::Chunk(chunk))
+            QuantumLinkMessage::FirmwareFetchEvent(FirmwareFetchEvent::Chunk(chunk))
         })
         .collect()
 }

@@ -108,33 +108,47 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         _handleOnboardingState(onboardingState);
       }
 
-      if (message.message is QuantumLinkMessage_FirmwareDownloadRequest) {
-        handlePatchesDownloadRequest(
-            (message.message as QuantumLinkMessage_FirmwareDownloadRequest)
+      if (message.message is QuantumLinkMessage_FirmwareFetchRequest) {
+        final currentVersion =
+            (message.message as QuantumLinkMessage_FirmwareFetchRequest)
                 .field0
-                .version);
+                .currentVersion;
+        handlePatchesDownloadRequest(currentVersion);
       }
 
-      if (message.message is QuantumLinkMessage_SecurityChallengeResponse) {
-        final SecurityChallengeResponse proofMessage =
-            (message.message as QuantumLinkMessage_SecurityChallengeResponse)
-                .field0;
+      if (message.message is QuantumLinkMessage_SecurityCheck) {
+        final securityCheck =
+            message.message as QuantumLinkMessage_SecurityCheck;
 
-        bool isVerified = await ScvServer().isProofVerified(proofMessage);
+        if (securityCheck is SecurityCheck_ChallengeResponse) {
+          final proofResult =
+              (securityCheck as SecurityCheck_ChallengeResponse).field0;
 
-        if (isVerified) {
-          await ref.read(deviceSecurityProvider.notifier).updateStep(
-              S().onboarding_connectionChecking_SecurityPassed,
-              EnvoyStepState.FINISHED);
+          if (proofResult is ChallengeResponseResult_Success) {
+            // TODO: why do I not need the cast?
+            // how to do better pattern matching? can we do switch case with guard??
+            final proofData = proofResult.data;
+            bool isVerified = await ScvServer().isProofVerified(proofData);
 
-          await BluetoothManager()
-              .sendOnboardingState(OnboardingState.securityChecked);
-        } else {
-          await ref.read(deviceSecurityProvider.notifier).updateStep(
-              S().onboarding_connectionIntroError_securityCheckFailed,
-              EnvoyStepState.ERROR);
-          await BluetoothManager()
-              .sendOnboardingState(OnboardingState.securityCheckFailed);
+            if (isVerified) {
+              await ref.read(deviceSecurityProvider.notifier).updateStep(
+                  S().onboarding_connectionChecking_SecurityPassed,
+                  EnvoyStepState.FINISHED);
+
+              await BluetoothManager()
+                  .sendOnboardingState(OnboardingState.securityChecked);
+            } else {
+              await ref.read(deviceSecurityProvider.notifier).updateStep(
+                  S().onboarding_connectionIntroError_securityCheckFailed,
+                  EnvoyStepState.ERROR);
+              await BluetoothManager()
+                  .sendOnboardingState(OnboardingState.securityCheckFailed);
+            }
+          } else {
+            final proofError =
+                (securityCheck as ChallengeResponseResult_Error).error;
+            kPrint("challege proof failed $proofError");
+          }
         }
       }
 
@@ -150,8 +164,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             S().onboarding_connectionChecking_forUpdates,
             EnvoyStepState.LOADING);
 
-        final patches =
-            await Server().fetchPrimePatches("1.0.0" /*updateRequest.currentVersion*/);
+        final patches = await Server()
+            .fetchPrimePatches("1.0.0" /*updateRequest.currentVersion*/);
 
         await BluetoothManager().sendFirmwareUpdateInfo(patches);
 
@@ -306,8 +320,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     ref.read(fwDownloadStateProvider.notifier).updateStep(
         S().firmware_updatingDownload_downloading, EnvoyStepState.LOADING);
 
-    final patchBinaries =
-        await Server().fetchPrimePatchBinaries("1.0.0"/*currentVersion*/);
+    final (latestVersion, patchBinaries) =
+        await Server().fetchPrimePatchBinaries("1.0.0" /*currentVersion*/);
 
     ref.read(fwDownloadStateProvider.notifier).updateStep(
         S().firmware_downloadingUpdate_downloaded, EnvoyStepState.FINISHED);
@@ -323,7 +337,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
     await Future.delayed(Duration(seconds: 1));
 
-    await BluetoothManager().sendFirmwarePayload(patchBinaries);
+    await BluetoothManager().sendFirmwarePayload(latestVersion, patchBinaries);
   }
 
   void _notifyAfterOnboardingTutorial(BuildContext context) async {

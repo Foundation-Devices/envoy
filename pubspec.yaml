@@ -32,7 +32,7 @@ dependencies:
   flutter_local_notifications: ^17.0.0
   flutter_localizations:
     sdk: flutter
-  intl: ^0.19.0
+  intl: ^0.20.2
 
   # Rust FFI libraries
   ur:
@@ -130,6 +130,7 @@ dependencies:
 
 dependency_overrides:
   watcher: ^1.1.0
+  intl: ^0.20.2
 
 dev_dependencies:
   test: any

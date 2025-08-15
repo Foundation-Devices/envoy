@@ -119,7 +119,7 @@ class ScvServer {
     }
   }
 
-  Future<SecurityChallengeRequest?> getPrimeChallenge() async {
+  Future<ChallengeRequest?> getPrimeChallenge() async {
     try {
       final response = await http.get('$primeSecurityCheckUrl/challenge');
 
@@ -128,19 +128,19 @@ class ScvServer {
         return null;
       }
 
-      return SecurityChallengeRequest(
-          data: Uint8List.fromList(response.bodyBytes));
+      return ChallengeRequest(data: Uint8List.fromList(response.bodyBytes));
     } catch (e) {
       return null;
     }
   }
 
-  Future<bool> isProofVerified(SecurityChallengeResponse message) async {
+  Future<bool> isProofVerified(Uint8List data) async {
+    // final Uint8List data;
     final uri = '$primeSecurityCheckUrl/verify';
 
     final response = await http.post(
       uri,
-      body: message.data.toList().toString(),
+      body: data.toList().toString(),
       headers: {'Content-Type': 'application/octet-stream'},
     );
 

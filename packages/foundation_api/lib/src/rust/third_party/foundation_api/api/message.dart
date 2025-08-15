@@ -73,12 +73,12 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.firmwareUpdateCheckResponse(
     FirmwareUpdateCheckResponse field0,
   ) = QuantumLinkMessage_FirmwareUpdateCheckResponse;
-  const factory QuantumLinkMessage.firmwareDownloadRequest(
-    FirmwareDownloadRequest field0,
-  ) = QuantumLinkMessage_FirmwareDownloadRequest;
-  const factory QuantumLinkMessage.firmwareDownloadResponse(
-    FirmwareDownloadResponse field0,
-  ) = QuantumLinkMessage_FirmwareDownloadResponse;
+  const factory QuantumLinkMessage.firmwareFetchRequest(
+    FirmwareFetchRequest field0,
+  ) = QuantumLinkMessage_FirmwareFetchRequest;
+  const factory QuantumLinkMessage.firmwareFetchEvent(
+    FirmwareFetchEvent field0,
+  ) = QuantumLinkMessage_FirmwareFetchEvent;
   const factory QuantumLinkMessage.firmwareUpdateResult(
     FirmwareUpdateResult field0,
   ) = QuantumLinkMessage_FirmwareUpdateResult;
@@ -106,12 +106,9 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.accountUpdate(
     AccountUpdate field0,
   ) = QuantumLinkMessage_AccountUpdate;
-  const factory QuantumLinkMessage.securityChallengeRequest(
-    SecurityChallengeRequest field0,
-  ) = QuantumLinkMessage_SecurityChallengeRequest;
-  const factory QuantumLinkMessage.securityChallengeResponse(
-    SecurityChallengeResponse field0,
-  ) = QuantumLinkMessage_SecurityChallengeResponse;
+  const factory QuantumLinkMessage.securityCheck(
+    SecurityCheck field0,
+  ) = QuantumLinkMessage_SecurityCheck;
   const factory QuantumLinkMessage.backupShardRequest(
     BackupShardRequest field0,
   ) = QuantumLinkMessage_BackupShardRequest;

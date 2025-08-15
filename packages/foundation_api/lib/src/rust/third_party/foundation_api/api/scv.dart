@@ -5,11 +5,13 @@
 
 import '../../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+part 'scv.freezed.dart';
 
-class SecurityChallengeRequest {
+class ChallengeRequest {
   final Uint8List data;
 
-  const SecurityChallengeRequest({
+  const ChallengeRequest({
     required this.data,
   });
 
@@ -19,25 +21,44 @@ class SecurityChallengeRequest {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SecurityChallengeRequest &&
+      other is ChallengeRequest &&
           runtimeType == other.runtimeType &&
           data == other.data;
 }
 
-class SecurityChallengeResponse {
-  final Uint8List data;
+@freezed
+sealed class ChallengeResponseResult with _$ChallengeResponseResult {
+  const ChallengeResponseResult._();
 
-  const SecurityChallengeResponse({
-    required this.data,
-  });
+  const factory ChallengeResponseResult.success({
+    required Uint8List data,
+  }) = ChallengeResponseResult_Success;
+  const factory ChallengeResponseResult.error({
+    required String error,
+  }) = ChallengeResponseResult_Error;
+}
 
-  @override
-  int get hashCode => data.hashCode;
+@freezed
+sealed class SecurityCheck with _$SecurityCheck {
+  const SecurityCheck._();
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is SecurityChallengeResponse &&
-          runtimeType == other.runtimeType &&
-          data == other.data;
+  const factory SecurityCheck.challengeRequest(
+    ChallengeRequest field0,
+  ) = SecurityCheck_ChallengeRequest;
+  const factory SecurityCheck.challengeResponse(
+    ChallengeResponseResult field0,
+  ) = SecurityCheck_ChallengeResponse;
+  const factory SecurityCheck.verificationResult(
+    VerificationResult field0,
+  ) = SecurityCheck_VerificationResult;
+}
+
+@freezed
+sealed class VerificationResult with _$VerificationResult {
+  const VerificationResult._();
+
+  const factory VerificationResult.success() = VerificationResult_Success;
+  const factory VerificationResult.error({
+    required String error,
+  }) = VerificationResult_Error;
 }

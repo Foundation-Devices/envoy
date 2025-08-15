@@ -325,27 +325,36 @@ class BluetoothManager {
     writeMessage(api.QuantumLinkMessage.onboardingState(state));
   }
 
-  Future<void> sendFirmwarePayload(List<Uint8List> payloads) async {
+  Future<void> sendFirmwarePayload(
+      String latestVersion, List<Uint8List> payloads) async {
+    // TODO: get everything here.
+    await writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(
+        api.FirmwareFetchEvent.starting(api.FirmwareUpdateAvailable(
+      version: latestVersion,
+      changelog: '',
+      timestamp: 123,
+      totalSize: 123,
+      patchCount: payloads.length,
+    ))));
+
     for (final (index, payload) in payloads.indexed) {
       final chunks = await api.splitFwUpdateIntoChunks(
           patchIndex: index,
+          totalPatches: payloads.length,
           patchBytes: payload,
           chunkSize: BigInt.from(10000));
-
-      await writeMessage(api.QuantumLinkMessage.firmwareDownloadResponse(
-          api.FirmwareDownloadResponse.start(
-              patchIndex: index, totalChunks: chunks.length)));
 
       for (final chunk in chunks) {
         kPrint("Sending chunkkkk");
         await writeMessage(chunk);
       }
     }
+    await writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(
+        api.FirmwareFetchEvent.complete()));
   }
 
   Future<void> sendSecurityChallengeRequest() async {
-    api.SecurityChallengeRequest? challenge =
-        await ScvServer().getPrimeChallenge();
+    api.ChallengeRequest? challenge = await ScvServer().getPrimeChallenge();
 
     if (challenge == null) {
       // TODO: SCV what now?
@@ -353,7 +362,8 @@ class BluetoothManager {
       return;
     }
 
-    writeMessage(api.QuantumLinkMessage.securityChallengeRequest(challenge));
+    final request = api.SecurityCheck.challengeRequest(challenge);
+    writeMessage(api.QuantumLinkMessage.securityCheck(request));
   }
 
   Future<void> restorePrimeDevice() async {
@@ -427,7 +437,7 @@ class BluetoothManager {
         api.FirmwareUpdateCheckResponse.available(api.FirmwareUpdateAvailable(
             version: patches.last.version,
             timestamp: patches.last.releaseDate.millisecondsSinceEpoch,
-            size: 100,
+            totalSize: 100,
             changelog: patches.last.changelog,
             patchCount: patches.length)));
 

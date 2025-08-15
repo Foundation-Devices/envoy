@@ -10,17 +10,26 @@ part 'firmware.freezed.dart';
 
 class FirmwareChunk {
   final int patchIndex;
+  final int totalPatches;
   final int chunkIndex;
+  final int totalChunks;
   final Uint8List data;
 
   const FirmwareChunk({
     required this.patchIndex,
+    required this.totalPatches,
     required this.chunkIndex,
+    required this.totalChunks,
     required this.data,
   });
 
   @override
-  int get hashCode => patchIndex.hashCode ^ chunkIndex.hashCode ^ data.hashCode;
+  int get hashCode =>
+      patchIndex.hashCode ^
+      totalPatches.hashCode ^
+      chunkIndex.hashCode ^
+      totalChunks.hashCode ^
+      data.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -28,59 +37,62 @@ class FirmwareChunk {
       other is FirmwareChunk &&
           runtimeType == other.runtimeType &&
           patchIndex == other.patchIndex &&
+          totalPatches == other.totalPatches &&
           chunkIndex == other.chunkIndex &&
+          totalChunks == other.totalChunks &&
           data == other.data;
 }
 
-class FirmwareDownloadRequest {
-  final String version;
+@freezed
+sealed class FirmwareFetchEvent with _$FirmwareFetchEvent {
+  const FirmwareFetchEvent._();
 
-  const FirmwareDownloadRequest({
-    required this.version,
+  const factory FirmwareFetchEvent.updateNotAvailable() =
+      FirmwareFetchEvent_UpdateNotAvailable;
+  const factory FirmwareFetchEvent.starting(
+    FirmwareUpdateAvailable field0,
+  ) = FirmwareFetchEvent_Starting;
+  const factory FirmwareFetchEvent.downloading() =
+      FirmwareFetchEvent_Downloading;
+  const factory FirmwareFetchEvent.chunk(
+    FirmwareChunk field0,
+  ) = FirmwareFetchEvent_Chunk;
+  const factory FirmwareFetchEvent.complete() = FirmwareFetchEvent_Complete;
+  const factory FirmwareFetchEvent.error(
+    String field0,
+  ) = FirmwareFetchEvent_Error;
+}
+
+class FirmwareFetchRequest {
+  final String currentVersion;
+
+  const FirmwareFetchRequest({
+    required this.currentVersion,
   });
 
   @override
-  int get hashCode => version.hashCode;
+  int get hashCode => currentVersion.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is FirmwareDownloadRequest &&
+      other is FirmwareFetchRequest &&
           runtimeType == other.runtimeType &&
-          version == other.version;
-}
-
-@freezed
-sealed class FirmwareDownloadResponse with _$FirmwareDownloadResponse {
-  const FirmwareDownloadResponse._();
-
-  const factory FirmwareDownloadResponse.envoyDownloadProgress({
-    required double progress,
-  }) = FirmwareDownloadResponse_EnvoyDownloadProgress;
-  const factory FirmwareDownloadResponse.start({
-    required int patchIndex,
-    required int totalChunks,
-  }) = FirmwareDownloadResponse_Start;
-  const factory FirmwareDownloadResponse.chunk(
-    FirmwareChunk field0,
-  ) = FirmwareDownloadResponse_Chunk;
-  const factory FirmwareDownloadResponse.error(
-    String field0,
-  ) = FirmwareDownloadResponse_Error;
+          currentVersion == other.currentVersion;
 }
 
 class FirmwareUpdateAvailable {
   final String version;
   final String changelog;
   final int timestamp;
-  final int size;
+  final int totalSize;
   final int patchCount;
 
   const FirmwareUpdateAvailable({
     required this.version,
     required this.changelog,
     required this.timestamp,
-    required this.size,
+    required this.totalSize,
     required this.patchCount,
   });
 
@@ -89,7 +101,7 @@ class FirmwareUpdateAvailable {
       version.hashCode ^
       changelog.hashCode ^
       timestamp.hashCode ^
-      size.hashCode ^
+      totalSize.hashCode ^
       patchCount.hashCode;
 
   @override
@@ -100,7 +112,7 @@ class FirmwareUpdateAvailable {
           version == other.version &&
           changelog == other.changelog &&
           timestamp == other.timestamp &&
-          size == other.size &&
+          totalSize == other.totalSize &&
           patchCount == other.patchCount;
 }
 

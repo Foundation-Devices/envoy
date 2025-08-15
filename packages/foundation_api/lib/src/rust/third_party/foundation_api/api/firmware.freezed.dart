@@ -15,197 +15,177 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$FirmwareDownloadResponse {
+mixin _$FirmwareFetchEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(double progress) envoyDownloadProgress,
-    required TResult Function(int patchIndex, int totalChunks) start,
+    required TResult Function() updateNotAvailable,
+    required TResult Function(FirmwareUpdateAvailable field0) starting,
+    required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
+    required TResult Function() complete,
     required TResult Function(String field0) error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(double progress)? envoyDownloadProgress,
-    TResult? Function(int patchIndex, int totalChunks)? start,
+    TResult? Function()? updateNotAvailable,
+    TResult? Function(FirmwareUpdateAvailable field0)? starting,
+    TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
+    TResult? Function()? complete,
     TResult? Function(String field0)? error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(double progress)? envoyDownloadProgress,
-    TResult Function(int patchIndex, int totalChunks)? start,
+    TResult Function()? updateNotAvailable,
+    TResult Function(FirmwareUpdateAvailable field0)? starting,
+    TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
+    TResult Function()? complete,
     TResult Function(String field0)? error,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(
-            FirmwareDownloadResponse_EnvoyDownloadProgress value)
-        envoyDownloadProgress,
-    required TResult Function(FirmwareDownloadResponse_Start value) start,
-    required TResult Function(FirmwareDownloadResponse_Chunk value) chunk,
-    required TResult Function(FirmwareDownloadResponse_Error value) error,
+    required TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)
+        updateNotAvailable,
+    required TResult Function(FirmwareFetchEvent_Starting value) starting,
+    required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
+    required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
+    required TResult Function(FirmwareFetchEvent_Complete value) complete,
+    required TResult Function(FirmwareFetchEvent_Error value) error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(FirmwareDownloadResponse_EnvoyDownloadProgress value)?
-        envoyDownloadProgress,
-    TResult? Function(FirmwareDownloadResponse_Start value)? start,
-    TResult? Function(FirmwareDownloadResponse_Chunk value)? chunk,
-    TResult? Function(FirmwareDownloadResponse_Error value)? error,
+    TResult? Function(FirmwareFetchEvent_UpdateNotAvailable value)?
+        updateNotAvailable,
+    TResult? Function(FirmwareFetchEvent_Starting value)? starting,
+    TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
+    TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
+    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
+    TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(FirmwareDownloadResponse_EnvoyDownloadProgress value)?
-        envoyDownloadProgress,
-    TResult Function(FirmwareDownloadResponse_Start value)? start,
-    TResult Function(FirmwareDownloadResponse_Chunk value)? chunk,
-    TResult Function(FirmwareDownloadResponse_Error value)? error,
+    TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)?
+        updateNotAvailable,
+    TResult Function(FirmwareFetchEvent_Starting value)? starting,
+    TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
+    TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
+    TResult Function(FirmwareFetchEvent_Complete value)? complete,
+    TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $FirmwareDownloadResponseCopyWith<$Res> {
-  factory $FirmwareDownloadResponseCopyWith(FirmwareDownloadResponse value,
-          $Res Function(FirmwareDownloadResponse) then) =
-      _$FirmwareDownloadResponseCopyWithImpl<$Res, FirmwareDownloadResponse>;
+abstract class $FirmwareFetchEventCopyWith<$Res> {
+  factory $FirmwareFetchEventCopyWith(
+          FirmwareFetchEvent value, $Res Function(FirmwareFetchEvent) then) =
+      _$FirmwareFetchEventCopyWithImpl<$Res, FirmwareFetchEvent>;
 }
 
 /// @nodoc
-class _$FirmwareDownloadResponseCopyWithImpl<$Res,
-        $Val extends FirmwareDownloadResponse>
-    implements $FirmwareDownloadResponseCopyWith<$Res> {
-  _$FirmwareDownloadResponseCopyWithImpl(this._value, this._then);
+class _$FirmwareFetchEventCopyWithImpl<$Res, $Val extends FirmwareFetchEvent>
+    implements $FirmwareFetchEventCopyWith<$Res> {
+  _$FirmwareFetchEventCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of FirmwareDownloadResponse
+  /// Create a copy of FirmwareFetchEvent
   /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
-abstract class _$$FirmwareDownloadResponse_EnvoyDownloadProgressImplCopyWith<
-    $Res> {
-  factory _$$FirmwareDownloadResponse_EnvoyDownloadProgressImplCopyWith(
-          _$FirmwareDownloadResponse_EnvoyDownloadProgressImpl value,
-          $Res Function(_$FirmwareDownloadResponse_EnvoyDownloadProgressImpl)
-              then) =
-      __$$FirmwareDownloadResponse_EnvoyDownloadProgressImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({double progress});
+abstract class _$$FirmwareFetchEvent_UpdateNotAvailableImplCopyWith<$Res> {
+  factory _$$FirmwareFetchEvent_UpdateNotAvailableImplCopyWith(
+          _$FirmwareFetchEvent_UpdateNotAvailableImpl value,
+          $Res Function(_$FirmwareFetchEvent_UpdateNotAvailableImpl) then) =
+      __$$FirmwareFetchEvent_UpdateNotAvailableImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$FirmwareDownloadResponse_EnvoyDownloadProgressImplCopyWithImpl<$Res>
-    extends _$FirmwareDownloadResponseCopyWithImpl<$Res,
-        _$FirmwareDownloadResponse_EnvoyDownloadProgressImpl>
-    implements
-        _$$FirmwareDownloadResponse_EnvoyDownloadProgressImplCopyWith<$Res> {
-  __$$FirmwareDownloadResponse_EnvoyDownloadProgressImplCopyWithImpl(
-      _$FirmwareDownloadResponse_EnvoyDownloadProgressImpl _value,
-      $Res Function(_$FirmwareDownloadResponse_EnvoyDownloadProgressImpl) _then)
+class __$$FirmwareFetchEvent_UpdateNotAvailableImplCopyWithImpl<$Res>
+    extends _$FirmwareFetchEventCopyWithImpl<$Res,
+        _$FirmwareFetchEvent_UpdateNotAvailableImpl>
+    implements _$$FirmwareFetchEvent_UpdateNotAvailableImplCopyWith<$Res> {
+  __$$FirmwareFetchEvent_UpdateNotAvailableImplCopyWithImpl(
+      _$FirmwareFetchEvent_UpdateNotAvailableImpl _value,
+      $Res Function(_$FirmwareFetchEvent_UpdateNotAvailableImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of FirmwareDownloadResponse
+  /// Create a copy of FirmwareFetchEvent
   /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? progress = null,
-  }) {
-    return _then(_$FirmwareDownloadResponse_EnvoyDownloadProgressImpl(
-      progress: null == progress
-          ? _value.progress
-          : progress // ignore: cast_nullable_to_non_nullable
-              as double,
-    ));
-  }
 }
 
 /// @nodoc
 
-class _$FirmwareDownloadResponse_EnvoyDownloadProgressImpl
-    extends FirmwareDownloadResponse_EnvoyDownloadProgress {
-  const _$FirmwareDownloadResponse_EnvoyDownloadProgressImpl(
-      {required this.progress})
-      : super._();
-
-  @override
-  final double progress;
+class _$FirmwareFetchEvent_UpdateNotAvailableImpl
+    extends FirmwareFetchEvent_UpdateNotAvailable {
+  const _$FirmwareFetchEvent_UpdateNotAvailableImpl() : super._();
 
   @override
   String toString() {
-    return 'FirmwareDownloadResponse.envoyDownloadProgress(progress: $progress)';
+    return 'FirmwareFetchEvent.updateNotAvailable()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$FirmwareDownloadResponse_EnvoyDownloadProgressImpl &&
-            (identical(other.progress, progress) ||
-                other.progress == progress));
+            other is _$FirmwareFetchEvent_UpdateNotAvailableImpl);
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, progress);
-
-  /// Create a copy of FirmwareDownloadResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$FirmwareDownloadResponse_EnvoyDownloadProgressImplCopyWith<
-          _$FirmwareDownloadResponse_EnvoyDownloadProgressImpl>
-      get copyWith =>
-          __$$FirmwareDownloadResponse_EnvoyDownloadProgressImplCopyWithImpl<
-                  _$FirmwareDownloadResponse_EnvoyDownloadProgressImpl>(
-              this, _$identity);
+  int get hashCode => runtimeType.hashCode;
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(double progress) envoyDownloadProgress,
-    required TResult Function(int patchIndex, int totalChunks) start,
+    required TResult Function() updateNotAvailable,
+    required TResult Function(FirmwareUpdateAvailable field0) starting,
+    required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
+    required TResult Function() complete,
     required TResult Function(String field0) error,
   }) {
-    return envoyDownloadProgress(progress);
+    return updateNotAvailable();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(double progress)? envoyDownloadProgress,
-    TResult? Function(int patchIndex, int totalChunks)? start,
+    TResult? Function()? updateNotAvailable,
+    TResult? Function(FirmwareUpdateAvailable field0)? starting,
+    TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
+    TResult? Function()? complete,
     TResult? Function(String field0)? error,
   }) {
-    return envoyDownloadProgress?.call(progress);
+    return updateNotAvailable?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(double progress)? envoyDownloadProgress,
-    TResult Function(int patchIndex, int totalChunks)? start,
+    TResult Function()? updateNotAvailable,
+    TResult Function(FirmwareUpdateAvailable field0)? starting,
+    TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
+    TResult Function()? complete,
     TResult Function(String field0)? error,
     required TResult orElse(),
   }) {
-    if (envoyDownloadProgress != null) {
-      return envoyDownloadProgress(progress);
+    if (updateNotAvailable != null) {
+      return updateNotAvailable();
     }
     return orElse();
   }
@@ -213,269 +193,397 @@ class _$FirmwareDownloadResponse_EnvoyDownloadProgressImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(
-            FirmwareDownloadResponse_EnvoyDownloadProgress value)
-        envoyDownloadProgress,
-    required TResult Function(FirmwareDownloadResponse_Start value) start,
-    required TResult Function(FirmwareDownloadResponse_Chunk value) chunk,
-    required TResult Function(FirmwareDownloadResponse_Error value) error,
+    required TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)
+        updateNotAvailable,
+    required TResult Function(FirmwareFetchEvent_Starting value) starting,
+    required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
+    required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
+    required TResult Function(FirmwareFetchEvent_Complete value) complete,
+    required TResult Function(FirmwareFetchEvent_Error value) error,
   }) {
-    return envoyDownloadProgress(this);
+    return updateNotAvailable(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(FirmwareDownloadResponse_EnvoyDownloadProgress value)?
-        envoyDownloadProgress,
-    TResult? Function(FirmwareDownloadResponse_Start value)? start,
-    TResult? Function(FirmwareDownloadResponse_Chunk value)? chunk,
-    TResult? Function(FirmwareDownloadResponse_Error value)? error,
+    TResult? Function(FirmwareFetchEvent_UpdateNotAvailable value)?
+        updateNotAvailable,
+    TResult? Function(FirmwareFetchEvent_Starting value)? starting,
+    TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
+    TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
+    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
+    TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) {
-    return envoyDownloadProgress?.call(this);
+    return updateNotAvailable?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(FirmwareDownloadResponse_EnvoyDownloadProgress value)?
-        envoyDownloadProgress,
-    TResult Function(FirmwareDownloadResponse_Start value)? start,
-    TResult Function(FirmwareDownloadResponse_Chunk value)? chunk,
-    TResult Function(FirmwareDownloadResponse_Error value)? error,
+    TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)?
+        updateNotAvailable,
+    TResult Function(FirmwareFetchEvent_Starting value)? starting,
+    TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
+    TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
+    TResult Function(FirmwareFetchEvent_Complete value)? complete,
+    TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) {
-    if (envoyDownloadProgress != null) {
-      return envoyDownloadProgress(this);
+    if (updateNotAvailable != null) {
+      return updateNotAvailable(this);
     }
     return orElse();
   }
 }
 
-abstract class FirmwareDownloadResponse_EnvoyDownloadProgress
-    extends FirmwareDownloadResponse {
-  const factory FirmwareDownloadResponse_EnvoyDownloadProgress(
-          {required final double progress}) =
-      _$FirmwareDownloadResponse_EnvoyDownloadProgressImpl;
-  const FirmwareDownloadResponse_EnvoyDownloadProgress._() : super._();
-
-  double get progress;
-
-  /// Create a copy of FirmwareDownloadResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$FirmwareDownloadResponse_EnvoyDownloadProgressImplCopyWith<
-          _$FirmwareDownloadResponse_EnvoyDownloadProgressImpl>
-      get copyWith => throw _privateConstructorUsedError;
+abstract class FirmwareFetchEvent_UpdateNotAvailable
+    extends FirmwareFetchEvent {
+  const factory FirmwareFetchEvent_UpdateNotAvailable() =
+      _$FirmwareFetchEvent_UpdateNotAvailableImpl;
+  const FirmwareFetchEvent_UpdateNotAvailable._() : super._();
 }
 
 /// @nodoc
-abstract class _$$FirmwareDownloadResponse_StartImplCopyWith<$Res> {
-  factory _$$FirmwareDownloadResponse_StartImplCopyWith(
-          _$FirmwareDownloadResponse_StartImpl value,
-          $Res Function(_$FirmwareDownloadResponse_StartImpl) then) =
-      __$$FirmwareDownloadResponse_StartImplCopyWithImpl<$Res>;
+abstract class _$$FirmwareFetchEvent_StartingImplCopyWith<$Res> {
+  factory _$$FirmwareFetchEvent_StartingImplCopyWith(
+          _$FirmwareFetchEvent_StartingImpl value,
+          $Res Function(_$FirmwareFetchEvent_StartingImpl) then) =
+      __$$FirmwareFetchEvent_StartingImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({int patchIndex, int totalChunks});
+  $Res call({FirmwareUpdateAvailable field0});
 }
 
 /// @nodoc
-class __$$FirmwareDownloadResponse_StartImplCopyWithImpl<$Res>
-    extends _$FirmwareDownloadResponseCopyWithImpl<$Res,
-        _$FirmwareDownloadResponse_StartImpl>
-    implements _$$FirmwareDownloadResponse_StartImplCopyWith<$Res> {
-  __$$FirmwareDownloadResponse_StartImplCopyWithImpl(
-      _$FirmwareDownloadResponse_StartImpl _value,
-      $Res Function(_$FirmwareDownloadResponse_StartImpl) _then)
+class __$$FirmwareFetchEvent_StartingImplCopyWithImpl<$Res>
+    extends _$FirmwareFetchEventCopyWithImpl<$Res,
+        _$FirmwareFetchEvent_StartingImpl>
+    implements _$$FirmwareFetchEvent_StartingImplCopyWith<$Res> {
+  __$$FirmwareFetchEvent_StartingImplCopyWithImpl(
+      _$FirmwareFetchEvent_StartingImpl _value,
+      $Res Function(_$FirmwareFetchEvent_StartingImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of FirmwareDownloadResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? patchIndex = null,
-    Object? totalChunks = null,
-  }) {
-    return _then(_$FirmwareDownloadResponse_StartImpl(
-      patchIndex: null == patchIndex
-          ? _value.patchIndex
-          : patchIndex // ignore: cast_nullable_to_non_nullable
-              as int,
-      totalChunks: null == totalChunks
-          ? _value.totalChunks
-          : totalChunks // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$FirmwareDownloadResponse_StartImpl
-    extends FirmwareDownloadResponse_Start {
-  const _$FirmwareDownloadResponse_StartImpl(
-      {required this.patchIndex, required this.totalChunks})
-      : super._();
-
-  @override
-  final int patchIndex;
-  @override
-  final int totalChunks;
-
-  @override
-  String toString() {
-    return 'FirmwareDownloadResponse.start(patchIndex: $patchIndex, totalChunks: $totalChunks)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$FirmwareDownloadResponse_StartImpl &&
-            (identical(other.patchIndex, patchIndex) ||
-                other.patchIndex == patchIndex) &&
-            (identical(other.totalChunks, totalChunks) ||
-                other.totalChunks == totalChunks));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, patchIndex, totalChunks);
-
-  /// Create a copy of FirmwareDownloadResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$FirmwareDownloadResponse_StartImplCopyWith<
-          _$FirmwareDownloadResponse_StartImpl>
-      get copyWith => __$$FirmwareDownloadResponse_StartImplCopyWithImpl<
-          _$FirmwareDownloadResponse_StartImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(double progress) envoyDownloadProgress,
-    required TResult Function(int patchIndex, int totalChunks) start,
-    required TResult Function(FirmwareChunk field0) chunk,
-    required TResult Function(String field0) error,
-  }) {
-    return start(patchIndex, totalChunks);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(double progress)? envoyDownloadProgress,
-    TResult? Function(int patchIndex, int totalChunks)? start,
-    TResult? Function(FirmwareChunk field0)? chunk,
-    TResult? Function(String field0)? error,
-  }) {
-    return start?.call(patchIndex, totalChunks);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(double progress)? envoyDownloadProgress,
-    TResult Function(int patchIndex, int totalChunks)? start,
-    TResult Function(FirmwareChunk field0)? chunk,
-    TResult Function(String field0)? error,
-    required TResult orElse(),
-  }) {
-    if (start != null) {
-      return start(patchIndex, totalChunks);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(
-            FirmwareDownloadResponse_EnvoyDownloadProgress value)
-        envoyDownloadProgress,
-    required TResult Function(FirmwareDownloadResponse_Start value) start,
-    required TResult Function(FirmwareDownloadResponse_Chunk value) chunk,
-    required TResult Function(FirmwareDownloadResponse_Error value) error,
-  }) {
-    return start(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(FirmwareDownloadResponse_EnvoyDownloadProgress value)?
-        envoyDownloadProgress,
-    TResult? Function(FirmwareDownloadResponse_Start value)? start,
-    TResult? Function(FirmwareDownloadResponse_Chunk value)? chunk,
-    TResult? Function(FirmwareDownloadResponse_Error value)? error,
-  }) {
-    return start?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(FirmwareDownloadResponse_EnvoyDownloadProgress value)?
-        envoyDownloadProgress,
-    TResult Function(FirmwareDownloadResponse_Start value)? start,
-    TResult Function(FirmwareDownloadResponse_Chunk value)? chunk,
-    TResult Function(FirmwareDownloadResponse_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (start != null) {
-      return start(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class FirmwareDownloadResponse_Start extends FirmwareDownloadResponse {
-  const factory FirmwareDownloadResponse_Start(
-      {required final int patchIndex,
-      required final int totalChunks}) = _$FirmwareDownloadResponse_StartImpl;
-  const FirmwareDownloadResponse_Start._() : super._();
-
-  int get patchIndex;
-  int get totalChunks;
-
-  /// Create a copy of FirmwareDownloadResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$FirmwareDownloadResponse_StartImplCopyWith<
-          _$FirmwareDownloadResponse_StartImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$FirmwareDownloadResponse_ChunkImplCopyWith<$Res> {
-  factory _$$FirmwareDownloadResponse_ChunkImplCopyWith(
-          _$FirmwareDownloadResponse_ChunkImpl value,
-          $Res Function(_$FirmwareDownloadResponse_ChunkImpl) then) =
-      __$$FirmwareDownloadResponse_ChunkImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({FirmwareChunk field0});
-}
-
-/// @nodoc
-class __$$FirmwareDownloadResponse_ChunkImplCopyWithImpl<$Res>
-    extends _$FirmwareDownloadResponseCopyWithImpl<$Res,
-        _$FirmwareDownloadResponse_ChunkImpl>
-    implements _$$FirmwareDownloadResponse_ChunkImplCopyWith<$Res> {
-  __$$FirmwareDownloadResponse_ChunkImplCopyWithImpl(
-      _$FirmwareDownloadResponse_ChunkImpl _value,
-      $Res Function(_$FirmwareDownloadResponse_ChunkImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of FirmwareDownloadResponse
+  /// Create a copy of FirmwareFetchEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$FirmwareDownloadResponse_ChunkImpl(
+    return _then(_$FirmwareFetchEvent_StartingImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as FirmwareUpdateAvailable,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$FirmwareFetchEvent_StartingImpl extends FirmwareFetchEvent_Starting {
+  const _$FirmwareFetchEvent_StartingImpl(this.field0) : super._();
+
+  @override
+  final FirmwareUpdateAvailable field0;
+
+  @override
+  String toString() {
+    return 'FirmwareFetchEvent.starting(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FirmwareFetchEvent_StartingImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of FirmwareFetchEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$FirmwareFetchEvent_StartingImplCopyWith<_$FirmwareFetchEvent_StartingImpl>
+      get copyWith => __$$FirmwareFetchEvent_StartingImplCopyWithImpl<
+          _$FirmwareFetchEvent_StartingImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() updateNotAvailable,
+    required TResult Function(FirmwareUpdateAvailable field0) starting,
+    required TResult Function() downloading,
+    required TResult Function(FirmwareChunk field0) chunk,
+    required TResult Function() complete,
+    required TResult Function(String field0) error,
+  }) {
+    return starting(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? updateNotAvailable,
+    TResult? Function(FirmwareUpdateAvailable field0)? starting,
+    TResult? Function()? downloading,
+    TResult? Function(FirmwareChunk field0)? chunk,
+    TResult? Function()? complete,
+    TResult? Function(String field0)? error,
+  }) {
+    return starting?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? updateNotAvailable,
+    TResult Function(FirmwareUpdateAvailable field0)? starting,
+    TResult Function()? downloading,
+    TResult Function(FirmwareChunk field0)? chunk,
+    TResult Function()? complete,
+    TResult Function(String field0)? error,
+    required TResult orElse(),
+  }) {
+    if (starting != null) {
+      return starting(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)
+        updateNotAvailable,
+    required TResult Function(FirmwareFetchEvent_Starting value) starting,
+    required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
+    required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
+    required TResult Function(FirmwareFetchEvent_Complete value) complete,
+    required TResult Function(FirmwareFetchEvent_Error value) error,
+  }) {
+    return starting(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(FirmwareFetchEvent_UpdateNotAvailable value)?
+        updateNotAvailable,
+    TResult? Function(FirmwareFetchEvent_Starting value)? starting,
+    TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
+    TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
+    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
+    TResult? Function(FirmwareFetchEvent_Error value)? error,
+  }) {
+    return starting?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)?
+        updateNotAvailable,
+    TResult Function(FirmwareFetchEvent_Starting value)? starting,
+    TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
+    TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
+    TResult Function(FirmwareFetchEvent_Complete value)? complete,
+    TResult Function(FirmwareFetchEvent_Error value)? error,
+    required TResult orElse(),
+  }) {
+    if (starting != null) {
+      return starting(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class FirmwareFetchEvent_Starting extends FirmwareFetchEvent {
+  const factory FirmwareFetchEvent_Starting(
+      final FirmwareUpdateAvailable field0) = _$FirmwareFetchEvent_StartingImpl;
+  const FirmwareFetchEvent_Starting._() : super._();
+
+  FirmwareUpdateAvailable get field0;
+
+  /// Create a copy of FirmwareFetchEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$FirmwareFetchEvent_StartingImplCopyWith<_$FirmwareFetchEvent_StartingImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$FirmwareFetchEvent_DownloadingImplCopyWith<$Res> {
+  factory _$$FirmwareFetchEvent_DownloadingImplCopyWith(
+          _$FirmwareFetchEvent_DownloadingImpl value,
+          $Res Function(_$FirmwareFetchEvent_DownloadingImpl) then) =
+      __$$FirmwareFetchEvent_DownloadingImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$FirmwareFetchEvent_DownloadingImplCopyWithImpl<$Res>
+    extends _$FirmwareFetchEventCopyWithImpl<$Res,
+        _$FirmwareFetchEvent_DownloadingImpl>
+    implements _$$FirmwareFetchEvent_DownloadingImplCopyWith<$Res> {
+  __$$FirmwareFetchEvent_DownloadingImplCopyWithImpl(
+      _$FirmwareFetchEvent_DownloadingImpl _value,
+      $Res Function(_$FirmwareFetchEvent_DownloadingImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of FirmwareFetchEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$FirmwareFetchEvent_DownloadingImpl
+    extends FirmwareFetchEvent_Downloading {
+  const _$FirmwareFetchEvent_DownloadingImpl() : super._();
+
+  @override
+  String toString() {
+    return 'FirmwareFetchEvent.downloading()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FirmwareFetchEvent_DownloadingImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() updateNotAvailable,
+    required TResult Function(FirmwareUpdateAvailable field0) starting,
+    required TResult Function() downloading,
+    required TResult Function(FirmwareChunk field0) chunk,
+    required TResult Function() complete,
+    required TResult Function(String field0) error,
+  }) {
+    return downloading();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? updateNotAvailable,
+    TResult? Function(FirmwareUpdateAvailable field0)? starting,
+    TResult? Function()? downloading,
+    TResult? Function(FirmwareChunk field0)? chunk,
+    TResult? Function()? complete,
+    TResult? Function(String field0)? error,
+  }) {
+    return downloading?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? updateNotAvailable,
+    TResult Function(FirmwareUpdateAvailable field0)? starting,
+    TResult Function()? downloading,
+    TResult Function(FirmwareChunk field0)? chunk,
+    TResult Function()? complete,
+    TResult Function(String field0)? error,
+    required TResult orElse(),
+  }) {
+    if (downloading != null) {
+      return downloading();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)
+        updateNotAvailable,
+    required TResult Function(FirmwareFetchEvent_Starting value) starting,
+    required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
+    required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
+    required TResult Function(FirmwareFetchEvent_Complete value) complete,
+    required TResult Function(FirmwareFetchEvent_Error value) error,
+  }) {
+    return downloading(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(FirmwareFetchEvent_UpdateNotAvailable value)?
+        updateNotAvailable,
+    TResult? Function(FirmwareFetchEvent_Starting value)? starting,
+    TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
+    TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
+    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
+    TResult? Function(FirmwareFetchEvent_Error value)? error,
+  }) {
+    return downloading?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)?
+        updateNotAvailable,
+    TResult Function(FirmwareFetchEvent_Starting value)? starting,
+    TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
+    TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
+    TResult Function(FirmwareFetchEvent_Complete value)? complete,
+    TResult Function(FirmwareFetchEvent_Error value)? error,
+    required TResult orElse(),
+  }) {
+    if (downloading != null) {
+      return downloading(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class FirmwareFetchEvent_Downloading extends FirmwareFetchEvent {
+  const factory FirmwareFetchEvent_Downloading() =
+      _$FirmwareFetchEvent_DownloadingImpl;
+  const FirmwareFetchEvent_Downloading._() : super._();
+}
+
+/// @nodoc
+abstract class _$$FirmwareFetchEvent_ChunkImplCopyWith<$Res> {
+  factory _$$FirmwareFetchEvent_ChunkImplCopyWith(
+          _$FirmwareFetchEvent_ChunkImpl value,
+          $Res Function(_$FirmwareFetchEvent_ChunkImpl) then) =
+      __$$FirmwareFetchEvent_ChunkImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({FirmwareChunk field0});
+}
+
+/// @nodoc
+class __$$FirmwareFetchEvent_ChunkImplCopyWithImpl<$Res>
+    extends _$FirmwareFetchEventCopyWithImpl<$Res,
+        _$FirmwareFetchEvent_ChunkImpl>
+    implements _$$FirmwareFetchEvent_ChunkImplCopyWith<$Res> {
+  __$$FirmwareFetchEvent_ChunkImplCopyWithImpl(
+      _$FirmwareFetchEvent_ChunkImpl _value,
+      $Res Function(_$FirmwareFetchEvent_ChunkImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of FirmwareFetchEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$FirmwareFetchEvent_ChunkImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -486,45 +594,45 @@ class __$$FirmwareDownloadResponse_ChunkImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$FirmwareDownloadResponse_ChunkImpl
-    extends FirmwareDownloadResponse_Chunk {
-  const _$FirmwareDownloadResponse_ChunkImpl(this.field0) : super._();
+class _$FirmwareFetchEvent_ChunkImpl extends FirmwareFetchEvent_Chunk {
+  const _$FirmwareFetchEvent_ChunkImpl(this.field0) : super._();
 
   @override
   final FirmwareChunk field0;
 
   @override
   String toString() {
-    return 'FirmwareDownloadResponse.chunk(field0: $field0)';
+    return 'FirmwareFetchEvent.chunk(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$FirmwareDownloadResponse_ChunkImpl &&
+            other is _$FirmwareFetchEvent_ChunkImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  /// Create a copy of FirmwareDownloadResponse
+  /// Create a copy of FirmwareFetchEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$FirmwareDownloadResponse_ChunkImplCopyWith<
-          _$FirmwareDownloadResponse_ChunkImpl>
-      get copyWith => __$$FirmwareDownloadResponse_ChunkImplCopyWithImpl<
-          _$FirmwareDownloadResponse_ChunkImpl>(this, _$identity);
+  _$$FirmwareFetchEvent_ChunkImplCopyWith<_$FirmwareFetchEvent_ChunkImpl>
+      get copyWith => __$$FirmwareFetchEvent_ChunkImplCopyWithImpl<
+          _$FirmwareFetchEvent_ChunkImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(double progress) envoyDownloadProgress,
-    required TResult Function(int patchIndex, int totalChunks) start,
+    required TResult Function() updateNotAvailable,
+    required TResult Function(FirmwareUpdateAvailable field0) starting,
+    required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
+    required TResult Function() complete,
     required TResult Function(String field0) error,
   }) {
     return chunk(field0);
@@ -533,9 +641,11 @@ class _$FirmwareDownloadResponse_ChunkImpl
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(double progress)? envoyDownloadProgress,
-    TResult? Function(int patchIndex, int totalChunks)? start,
+    TResult? Function()? updateNotAvailable,
+    TResult? Function(FirmwareUpdateAvailable field0)? starting,
+    TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
+    TResult? Function()? complete,
     TResult? Function(String field0)? error,
   }) {
     return chunk?.call(field0);
@@ -544,9 +654,11 @@ class _$FirmwareDownloadResponse_ChunkImpl
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(double progress)? envoyDownloadProgress,
-    TResult Function(int patchIndex, int totalChunks)? start,
+    TResult Function()? updateNotAvailable,
+    TResult Function(FirmwareUpdateAvailable field0)? starting,
+    TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
+    TResult Function()? complete,
     TResult Function(String field0)? error,
     required TResult orElse(),
   }) {
@@ -559,12 +671,13 @@ class _$FirmwareDownloadResponse_ChunkImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(
-            FirmwareDownloadResponse_EnvoyDownloadProgress value)
-        envoyDownloadProgress,
-    required TResult Function(FirmwareDownloadResponse_Start value) start,
-    required TResult Function(FirmwareDownloadResponse_Chunk value) chunk,
-    required TResult Function(FirmwareDownloadResponse_Error value) error,
+    required TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)
+        updateNotAvailable,
+    required TResult Function(FirmwareFetchEvent_Starting value) starting,
+    required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
+    required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
+    required TResult Function(FirmwareFetchEvent_Complete value) complete,
+    required TResult Function(FirmwareFetchEvent_Error value) error,
   }) {
     return chunk(this);
   }
@@ -572,11 +685,13 @@ class _$FirmwareDownloadResponse_ChunkImpl
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(FirmwareDownloadResponse_EnvoyDownloadProgress value)?
-        envoyDownloadProgress,
-    TResult? Function(FirmwareDownloadResponse_Start value)? start,
-    TResult? Function(FirmwareDownloadResponse_Chunk value)? chunk,
-    TResult? Function(FirmwareDownloadResponse_Error value)? error,
+    TResult? Function(FirmwareFetchEvent_UpdateNotAvailable value)?
+        updateNotAvailable,
+    TResult? Function(FirmwareFetchEvent_Starting value)? starting,
+    TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
+    TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
+    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
+    TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) {
     return chunk?.call(this);
   }
@@ -584,11 +699,13 @@ class _$FirmwareDownloadResponse_ChunkImpl
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(FirmwareDownloadResponse_EnvoyDownloadProgress value)?
-        envoyDownloadProgress,
-    TResult Function(FirmwareDownloadResponse_Start value)? start,
-    TResult Function(FirmwareDownloadResponse_Chunk value)? chunk,
-    TResult Function(FirmwareDownloadResponse_Error value)? error,
+    TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)?
+        updateNotAvailable,
+    TResult Function(FirmwareFetchEvent_Starting value)? starting,
+    TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
+    TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
+    TResult Function(FirmwareFetchEvent_Complete value)? complete,
+    TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) {
     if (chunk != null) {
@@ -598,49 +715,186 @@ class _$FirmwareDownloadResponse_ChunkImpl
   }
 }
 
-abstract class FirmwareDownloadResponse_Chunk extends FirmwareDownloadResponse {
-  const factory FirmwareDownloadResponse_Chunk(final FirmwareChunk field0) =
-      _$FirmwareDownloadResponse_ChunkImpl;
-  const FirmwareDownloadResponse_Chunk._() : super._();
+abstract class FirmwareFetchEvent_Chunk extends FirmwareFetchEvent {
+  const factory FirmwareFetchEvent_Chunk(final FirmwareChunk field0) =
+      _$FirmwareFetchEvent_ChunkImpl;
+  const FirmwareFetchEvent_Chunk._() : super._();
 
   FirmwareChunk get field0;
 
-  /// Create a copy of FirmwareDownloadResponse
+  /// Create a copy of FirmwareFetchEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$FirmwareDownloadResponse_ChunkImplCopyWith<
-          _$FirmwareDownloadResponse_ChunkImpl>
+  _$$FirmwareFetchEvent_ChunkImplCopyWith<_$FirmwareFetchEvent_ChunkImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$FirmwareDownloadResponse_ErrorImplCopyWith<$Res> {
-  factory _$$FirmwareDownloadResponse_ErrorImplCopyWith(
-          _$FirmwareDownloadResponse_ErrorImpl value,
-          $Res Function(_$FirmwareDownloadResponse_ErrorImpl) then) =
-      __$$FirmwareDownloadResponse_ErrorImplCopyWithImpl<$Res>;
+abstract class _$$FirmwareFetchEvent_CompleteImplCopyWith<$Res> {
+  factory _$$FirmwareFetchEvent_CompleteImplCopyWith(
+          _$FirmwareFetchEvent_CompleteImpl value,
+          $Res Function(_$FirmwareFetchEvent_CompleteImpl) then) =
+      __$$FirmwareFetchEvent_CompleteImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$FirmwareFetchEvent_CompleteImplCopyWithImpl<$Res>
+    extends _$FirmwareFetchEventCopyWithImpl<$Res,
+        _$FirmwareFetchEvent_CompleteImpl>
+    implements _$$FirmwareFetchEvent_CompleteImplCopyWith<$Res> {
+  __$$FirmwareFetchEvent_CompleteImplCopyWithImpl(
+      _$FirmwareFetchEvent_CompleteImpl _value,
+      $Res Function(_$FirmwareFetchEvent_CompleteImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of FirmwareFetchEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$FirmwareFetchEvent_CompleteImpl extends FirmwareFetchEvent_Complete {
+  const _$FirmwareFetchEvent_CompleteImpl() : super._();
+
+  @override
+  String toString() {
+    return 'FirmwareFetchEvent.complete()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FirmwareFetchEvent_CompleteImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() updateNotAvailable,
+    required TResult Function(FirmwareUpdateAvailable field0) starting,
+    required TResult Function() downloading,
+    required TResult Function(FirmwareChunk field0) chunk,
+    required TResult Function() complete,
+    required TResult Function(String field0) error,
+  }) {
+    return complete();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? updateNotAvailable,
+    TResult? Function(FirmwareUpdateAvailable field0)? starting,
+    TResult? Function()? downloading,
+    TResult? Function(FirmwareChunk field0)? chunk,
+    TResult? Function()? complete,
+    TResult? Function(String field0)? error,
+  }) {
+    return complete?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? updateNotAvailable,
+    TResult Function(FirmwareUpdateAvailable field0)? starting,
+    TResult Function()? downloading,
+    TResult Function(FirmwareChunk field0)? chunk,
+    TResult Function()? complete,
+    TResult Function(String field0)? error,
+    required TResult orElse(),
+  }) {
+    if (complete != null) {
+      return complete();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)
+        updateNotAvailable,
+    required TResult Function(FirmwareFetchEvent_Starting value) starting,
+    required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
+    required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
+    required TResult Function(FirmwareFetchEvent_Complete value) complete,
+    required TResult Function(FirmwareFetchEvent_Error value) error,
+  }) {
+    return complete(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(FirmwareFetchEvent_UpdateNotAvailable value)?
+        updateNotAvailable,
+    TResult? Function(FirmwareFetchEvent_Starting value)? starting,
+    TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
+    TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
+    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
+    TResult? Function(FirmwareFetchEvent_Error value)? error,
+  }) {
+    return complete?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)?
+        updateNotAvailable,
+    TResult Function(FirmwareFetchEvent_Starting value)? starting,
+    TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
+    TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
+    TResult Function(FirmwareFetchEvent_Complete value)? complete,
+    TResult Function(FirmwareFetchEvent_Error value)? error,
+    required TResult orElse(),
+  }) {
+    if (complete != null) {
+      return complete(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class FirmwareFetchEvent_Complete extends FirmwareFetchEvent {
+  const factory FirmwareFetchEvent_Complete() =
+      _$FirmwareFetchEvent_CompleteImpl;
+  const FirmwareFetchEvent_Complete._() : super._();
+}
+
+/// @nodoc
+abstract class _$$FirmwareFetchEvent_ErrorImplCopyWith<$Res> {
+  factory _$$FirmwareFetchEvent_ErrorImplCopyWith(
+          _$FirmwareFetchEvent_ErrorImpl value,
+          $Res Function(_$FirmwareFetchEvent_ErrorImpl) then) =
+      __$$FirmwareFetchEvent_ErrorImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String field0});
 }
 
 /// @nodoc
-class __$$FirmwareDownloadResponse_ErrorImplCopyWithImpl<$Res>
-    extends _$FirmwareDownloadResponseCopyWithImpl<$Res,
-        _$FirmwareDownloadResponse_ErrorImpl>
-    implements _$$FirmwareDownloadResponse_ErrorImplCopyWith<$Res> {
-  __$$FirmwareDownloadResponse_ErrorImplCopyWithImpl(
-      _$FirmwareDownloadResponse_ErrorImpl _value,
-      $Res Function(_$FirmwareDownloadResponse_ErrorImpl) _then)
+class __$$FirmwareFetchEvent_ErrorImplCopyWithImpl<$Res>
+    extends _$FirmwareFetchEventCopyWithImpl<$Res,
+        _$FirmwareFetchEvent_ErrorImpl>
+    implements _$$FirmwareFetchEvent_ErrorImplCopyWith<$Res> {
+  __$$FirmwareFetchEvent_ErrorImplCopyWithImpl(
+      _$FirmwareFetchEvent_ErrorImpl _value,
+      $Res Function(_$FirmwareFetchEvent_ErrorImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of FirmwareDownloadResponse
+  /// Create a copy of FirmwareFetchEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$FirmwareDownloadResponse_ErrorImpl(
+    return _then(_$FirmwareFetchEvent_ErrorImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -651,45 +905,45 @@ class __$$FirmwareDownloadResponse_ErrorImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$FirmwareDownloadResponse_ErrorImpl
-    extends FirmwareDownloadResponse_Error {
-  const _$FirmwareDownloadResponse_ErrorImpl(this.field0) : super._();
+class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
+  const _$FirmwareFetchEvent_ErrorImpl(this.field0) : super._();
 
   @override
   final String field0;
 
   @override
   String toString() {
-    return 'FirmwareDownloadResponse.error(field0: $field0)';
+    return 'FirmwareFetchEvent.error(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$FirmwareDownloadResponse_ErrorImpl &&
+            other is _$FirmwareFetchEvent_ErrorImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  /// Create a copy of FirmwareDownloadResponse
+  /// Create a copy of FirmwareFetchEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$FirmwareDownloadResponse_ErrorImplCopyWith<
-          _$FirmwareDownloadResponse_ErrorImpl>
-      get copyWith => __$$FirmwareDownloadResponse_ErrorImplCopyWithImpl<
-          _$FirmwareDownloadResponse_ErrorImpl>(this, _$identity);
+  _$$FirmwareFetchEvent_ErrorImplCopyWith<_$FirmwareFetchEvent_ErrorImpl>
+      get copyWith => __$$FirmwareFetchEvent_ErrorImplCopyWithImpl<
+          _$FirmwareFetchEvent_ErrorImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(double progress) envoyDownloadProgress,
-    required TResult Function(int patchIndex, int totalChunks) start,
+    required TResult Function() updateNotAvailable,
+    required TResult Function(FirmwareUpdateAvailable field0) starting,
+    required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
+    required TResult Function() complete,
     required TResult Function(String field0) error,
   }) {
     return error(field0);
@@ -698,9 +952,11 @@ class _$FirmwareDownloadResponse_ErrorImpl
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(double progress)? envoyDownloadProgress,
-    TResult? Function(int patchIndex, int totalChunks)? start,
+    TResult? Function()? updateNotAvailable,
+    TResult? Function(FirmwareUpdateAvailable field0)? starting,
+    TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
+    TResult? Function()? complete,
     TResult? Function(String field0)? error,
   }) {
     return error?.call(field0);
@@ -709,9 +965,11 @@ class _$FirmwareDownloadResponse_ErrorImpl
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(double progress)? envoyDownloadProgress,
-    TResult Function(int patchIndex, int totalChunks)? start,
+    TResult Function()? updateNotAvailable,
+    TResult Function(FirmwareUpdateAvailable field0)? starting,
+    TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
+    TResult Function()? complete,
     TResult Function(String field0)? error,
     required TResult orElse(),
   }) {
@@ -724,12 +982,13 @@ class _$FirmwareDownloadResponse_ErrorImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(
-            FirmwareDownloadResponse_EnvoyDownloadProgress value)
-        envoyDownloadProgress,
-    required TResult Function(FirmwareDownloadResponse_Start value) start,
-    required TResult Function(FirmwareDownloadResponse_Chunk value) chunk,
-    required TResult Function(FirmwareDownloadResponse_Error value) error,
+    required TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)
+        updateNotAvailable,
+    required TResult Function(FirmwareFetchEvent_Starting value) starting,
+    required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
+    required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
+    required TResult Function(FirmwareFetchEvent_Complete value) complete,
+    required TResult Function(FirmwareFetchEvent_Error value) error,
   }) {
     return error(this);
   }
@@ -737,11 +996,13 @@ class _$FirmwareDownloadResponse_ErrorImpl
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(FirmwareDownloadResponse_EnvoyDownloadProgress value)?
-        envoyDownloadProgress,
-    TResult? Function(FirmwareDownloadResponse_Start value)? start,
-    TResult? Function(FirmwareDownloadResponse_Chunk value)? chunk,
-    TResult? Function(FirmwareDownloadResponse_Error value)? error,
+    TResult? Function(FirmwareFetchEvent_UpdateNotAvailable value)?
+        updateNotAvailable,
+    TResult? Function(FirmwareFetchEvent_Starting value)? starting,
+    TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
+    TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
+    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
+    TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) {
     return error?.call(this);
   }
@@ -749,11 +1010,13 @@ class _$FirmwareDownloadResponse_ErrorImpl
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(FirmwareDownloadResponse_EnvoyDownloadProgress value)?
-        envoyDownloadProgress,
-    TResult Function(FirmwareDownloadResponse_Start value)? start,
-    TResult Function(FirmwareDownloadResponse_Chunk value)? chunk,
-    TResult Function(FirmwareDownloadResponse_Error value)? error,
+    TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)?
+        updateNotAvailable,
+    TResult Function(FirmwareFetchEvent_Starting value)? starting,
+    TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
+    TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
+    TResult Function(FirmwareFetchEvent_Complete value)? complete,
+    TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -763,18 +1026,17 @@ class _$FirmwareDownloadResponse_ErrorImpl
   }
 }
 
-abstract class FirmwareDownloadResponse_Error extends FirmwareDownloadResponse {
-  const factory FirmwareDownloadResponse_Error(final String field0) =
-      _$FirmwareDownloadResponse_ErrorImpl;
-  const FirmwareDownloadResponse_Error._() : super._();
+abstract class FirmwareFetchEvent_Error extends FirmwareFetchEvent {
+  const factory FirmwareFetchEvent_Error(final String field0) =
+      _$FirmwareFetchEvent_ErrorImpl;
+  const FirmwareFetchEvent_Error._() : super._();
 
   String get field0;
 
-  /// Create a copy of FirmwareDownloadResponse
+  /// Create a copy of FirmwareFetchEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$FirmwareDownloadResponse_ErrorImplCopyWith<
-          _$FirmwareDownloadResponse_ErrorImpl>
+  _$$FirmwareFetchEvent_ErrorImplCopyWith<_$FirmwareFetchEvent_ErrorImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
