@@ -11,7 +11,7 @@ edition = "2021"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-flutter_rust_bridge = "=2.9.0"
+flutter_rust_bridge = "=2.11.1"
 
 #ngwallet = { path = "../../../../ngwallet", features = ["envoy"] }
 #ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", tag = "1.7.0", features = ["envoy"] }
