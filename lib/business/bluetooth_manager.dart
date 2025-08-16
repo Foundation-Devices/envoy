@@ -239,9 +239,10 @@ class BluetoothManager {
   }
 
   Future<void> sendPsbt(String accountId, String psbt) async {
+    //TODO:fix psbt to Uint8List
     final encoded = await encodeMessage(
-        message: api.QuantumLinkMessage.signPsbt(
-            api.SignPsbt(psbt: psbt, accountId: accountId)));
+        message: api.QuantumLinkMessage.signPsbt(api.SignPsbt(
+            psbt: Uint8List.fromList(psbt.codeUnits), accountId: accountId)));
 
     kPrint("before sending psbt");
     _writeWithProgress(encoded);

@@ -48,7 +48,7 @@ void main() {
       File wCamImgPipe = pipes[pipes.length - 1];
 
       await resetEnvoyData();
-      await Passport.reset();
+      Passport.reset();
       await Passport.cleanUp();
 
       ScreenshotController envoyScreenshotController = ScreenshotController();
@@ -350,7 +350,7 @@ class Passport {
     });
   }
 
-  static reset() {
+  static void reset() {
     final currentPath = Directory.current.path;
     final passportPath = "$currentPath/passport2";
 
@@ -365,16 +365,16 @@ class Passport {
     }
   }
 
-  static cleanUp() async {
-    cleanUpFfmpeg();
-    cleanUpSim();
+  static Future<void> cleanUp() async {
+    await cleanUpFfmpeg();
+    await cleanUpSim();
   }
 
-  static cleanUpFfmpeg() async {
+  static Future<void> cleanUpFfmpeg() async {
     await Process.run('pkill', ['-9', 'ffmpeg']);
   }
 
-  static cleanUpSim() async {
+  static Future<void> cleanUpSim() async {
     await Process.run('pkill', ['-9', 'passport-mpy']);
   }
 
