@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use anyhow::anyhow;
+use anyhow::Context;
 use anyhow::Result;
 use bc_components::ARID;
 use bc_envelope::prelude::CBOREncodable;
@@ -24,7 +25,7 @@ pub struct EnvoyMasterDechunker {
 
 pub async fn get_decoder() -> EnvoyMasterDechunker {
     EnvoyMasterDechunker {
-        inner: MasterDechunker::default()
+        inner: MasterDechunker::default(),
     }
 }
 
@@ -98,11 +99,13 @@ pub async fn decode(
 ) -> Result<DecoderStatus> {
     debug!("receiving data");
     let chunk = Chunk::decode(&data)?;
+    let msg_id = chunk.header.message_id;
 
     match decoder.inner.insert_chunk(chunk) {
         None => {
+            let progress = decoder.inner.get_dechunker(msg_id).unwrap().progress() as f64;
             Ok(DecoderStatus {
-                progress: 0.5,
+                progress,
                 payload: None,
             })
         }
@@ -124,7 +127,7 @@ pub async fn decode(
                 &envelope,
                 &quantum_link_identity.clone().private_keys.unwrap(),
             )
-                .map_err(|e| anyhow::anyhow!("Failed to unseal passport message: {:?}", e))?;
+            .context("failed to unseal passport message")?;
 
             return Ok(DecoderStatus {
                 progress: 1.0,
@@ -141,9 +144,7 @@ pub async fn split_fw_update_into_chunks(
     chunk_size: usize,
 ) -> Vec<QuantumLinkMessage> {
     split_update_into_chunks(patch_index, total_patches, patch_bytes, chunk_size)
-        .map(|chunk| {
-            QuantumLinkMessage::FirmwareFetchEvent(FirmwareFetchEvent::Chunk(chunk))
-        })
+        .map(|chunk| QuantumLinkMessage::FirmwareFetchEvent(FirmwareFetchEvent::Chunk(chunk)))
         .collect()
 }
 
