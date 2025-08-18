@@ -42,10 +42,21 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   }
 
   _connectToPrime() async {
-    // Check Bluetooth permissions
-    bool isDenied = await Permission.bluetooth.isDenied ||
-        await Permission.bluetoothConnect.isDenied ||
-        await Permission.bluetoothScan.isDenied;
+    // Check Bluetooth permissions with debug logging
+    bool bluetoothDenied = await Permission.bluetooth.isDenied;
+    bool bluetoothConnectDenied = await Permission.bluetoothConnect.isDenied;
+    bool bluetoothScanDenied = await Permission.bluetoothScan.isDenied;
+    
+    print("=== BLUETOOTH PERMISSION DEBUG ===");
+    print("Permission.bluetooth.isDenied: $bluetoothDenied");
+    print("Permission.bluetoothConnect.isDenied: $bluetoothConnectDenied");
+    print("Permission.bluetoothScan.isDenied: $bluetoothScanDenied");
+    print("Permission.bluetooth status: ${await Permission.bluetooth.status}");
+    print("Permission.bluetoothConnect status: ${await Permission.bluetoothConnect.status}");
+    print("Permission.bluetoothScan status: ${await Permission.bluetoothScan.status}");
+    print("=================================");
+    
+    bool isDenied = bluetoothDenied || bluetoothConnectDenied || bluetoothScanDenied;
     String? bleId;
 
     if (mounted) {
