@@ -18,8 +18,6 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'dart:io';
 
 class OnboardPrimeWelcome extends StatefulWidget {
   const OnboardPrimeWelcome({super.key});
@@ -43,33 +41,8 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   }
 
   _connectToPrime() async {
-    // Check Bluetooth permissions with debug logging
-    bool bluetoothDenied = await Permission.bluetooth.isDenied;
-
-    kPrint("=== BLUETOOTH PERMISSION DEBUG ===");
-    kPrint("Permission.bluetooth.isDenied: $bluetoothDenied");
-    kPrint("Permission.bluetooth status: ${await Permission.bluetooth.status}");
-
-    bool isDenied;
-
-    if (Platform.isAndroid) {
-      bool bluetoothConnectDenied = await Permission.bluetoothConnect.isDenied;
-      bool bluetoothScanDenied = await Permission.bluetoothScan.isDenied;
-      kPrint("Permission.bluetoothConnect.isDenied: $bluetoothConnectDenied");
-      kPrint("Permission.bluetoothScan.isDenied: $bluetoothScanDenied");
-      kPrint(
-          "Permission.bluetoothConnect status: ${await Permission.bluetoothConnect.status}");
-      kPrint(
-          "Permission.bluetoothScan status: ${await Permission.bluetoothScan.status}");
-
-      isDenied =
-          bluetoothDenied || bluetoothConnectDenied || bluetoothScanDenied;
-    } else {
-      kPrint(
-          "iOS: Only checking Permission.bluetooth (bluetoothConnect/Scan are Android-only)");
-      isDenied = bluetoothDenied;
-    }
-    kPrint("=================================");
+    // Check Bluetooth permissions
+    bool isDenied = await BluetoothManager.isBluetoothDenied();
     String? bleId;
 
     if (mounted) {

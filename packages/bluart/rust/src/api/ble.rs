@@ -157,7 +157,7 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
         let mut events = central.events().await.unwrap();
         debug!("Subscribed to events!");
 
-        //central.start_scan(ScanFilter::default()).await.unwrap();
+        central.start_scan(ScanFilter::default()).await.unwrap();
 
         while let Some(event) = events.next().await {
             debug!("{:?}", event);

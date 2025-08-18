@@ -101,9 +101,8 @@ class BluetoothManager {
 
     kPrint("QL Identity: $_qlIdentity");
 
-    if (bleId != "" &&
-        _qlIdentity != null &&
-        await Permission.bluetoothScan.isDenied) {
+    bool denied = await isBluetoothDenied();
+    if (bleId != "" && _qlIdentity != null && denied) {
       await getPermissions();
     }
 
@@ -186,6 +185,19 @@ class BluetoothManager {
     // TODO: remove this
     // Envoy will be getting the BT addresses via QR
     await Permission.bluetoothScan.request();
+  }
+
+  static Future<bool> isBluetoothDenied() async {
+    bool isDenied = true;
+    if (Platform.isAndroid) {
+      isDenied = await Permission.bluetooth.isDenied ||
+          await Permission.bluetoothConnect.isDenied ||
+          await Permission.bluetoothScan.isDenied;
+    } else {
+      //Permission.bluetoothConnect and Permission.bluetoothScan are not available on iOS
+      isDenied = await Permission.bluetooth.isDenied;
+    }
+    return isDenied;
   }
 
   scan() async {

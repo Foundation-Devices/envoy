@@ -233,7 +233,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         break;
       case OnboardingState.veryfyingSignatures:
         ref.read(fwTransferStateProvider.notifier).updateStep(
-            S().firmware_downloadingUpdate_transferring, EnvoyStepState.FINISHED);
+            S().firmware_downloadingUpdate_transferring,
+            EnvoyStepState.FINISHED);
 
         ref.read(primeUpdateStateProvider.notifier).state =
             PrimeFwUpdateStep.verifying;
