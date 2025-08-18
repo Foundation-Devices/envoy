@@ -11,6 +11,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -136,8 +137,8 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           if (Platform.isIOS) {
             await Future.delayed(const Duration(milliseconds: 800));
           }
-          if (widget.sessionAuthenticate && navigator.mounted) {
-            navigator.pop();
+          if (widget.sessionAuthenticate && mainNavigatorKey.currentState?.mounted == true) {
+            mainNavigatorKey.currentState?.pop();
           } else {
             runApp(const EnvoyApp());
           }
@@ -212,8 +213,8 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           ),
           localizedReason: 'Authenticate to Access Envoy');
       if (didAuthenticate) {
-        if (widget.sessionAuthenticate && navigator.mounted) {
-          navigator.pop();
+        if (widget.sessionAuthenticate && mainNavigatorKey.currentState?.mounted == true) {
+          mainNavigatorKey.currentState?.pop();
         } else {
           runApp(const EnvoyApp());
         }
