@@ -7,3 +7,6 @@ linker = "aarch64-linux-android30-clang"
 
 [target.x86_64-linux-android]
 linker = "x86_64-linux-android30-clang"
+
+[target.aarch64-apple-ios]
+rustflags = ["-C", "link-arg=-target", "-C", "link-arg=arm64-apple-ios14.0"]
