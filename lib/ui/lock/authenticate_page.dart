@@ -119,7 +119,6 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
   }
 
   void initiateAuth() async {
-    final navigator = Navigator.of(context);
     final LocalAuthentication auth = LocalAuthentication();
     final List<BiometricType> availableBiometrics =
         await auth.getAvailableBiometrics();
