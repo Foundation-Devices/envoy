@@ -194,6 +194,16 @@ class HomePageState extends ConsumerState<HomePage>
           _torWarningDisplayedMoreThan5minAgo = false;
         }
       }
+      // Also show warning when electrum becomes unreachable while using Tor
+      if (event == ConnectivityManagerEvent.electrumUnreachable) {
+        if (_torWarningDisplayedMoreThan5minAgo &&
+            Settings().usingTor &&
+            ConnectivityManager().torEnabled &&
+            mounted) {
+          _notifyAboutTor();
+          _torWarningDisplayedMoreThan5minAgo = false;
+        }
+      }
       if (event == ConnectivityManagerEvent.foundationServerDown &&
           _serverDownWarningDisplayedMoreThan5minAgo &&
           mounted) {
