@@ -137,7 +137,8 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           if (Platform.isIOS) {
             await Future.delayed(const Duration(milliseconds: 800));
           }
-          if (widget.sessionAuthenticate && mainNavigatorKey.currentState?.mounted == true) {
+          if (widget.sessionAuthenticate &&
+              mainNavigatorKey.currentState?.mounted == true) {
             mainNavigatorKey.currentState?.pop();
           } else {
             runApp(const EnvoyApp());
@@ -213,7 +214,8 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           ),
           localizedReason: 'Authenticate to Access Envoy');
       if (didAuthenticate) {
-        if (widget.sessionAuthenticate && mainNavigatorKey.currentState?.mounted == true) {
+        if (widget.sessionAuthenticate &&
+            mainNavigatorKey.currentState?.mounted == true) {
           mainNavigatorKey.currentState?.pop();
         } else {
           runApp(const EnvoyApp());
