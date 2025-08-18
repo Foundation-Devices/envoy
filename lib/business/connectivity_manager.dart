@@ -35,6 +35,7 @@ enum PublicServer {
 }
 
 const Duration _tempDisablementTimeout = Duration(hours: 24);
+const Duration _torHealthCheckInterval = Duration(seconds: 30);
 
 class ConnectivityManager {
   bool get torEnabled {
@@ -56,6 +57,8 @@ class ConnectivityManager {
   bool nguConnected = false;
 
   DateTime? torTemporarilyDisabledTimeStamp;
+  Timer? _torHealthTimer;
+  bool _lastTorHealthStatus = true;
 
   final StreamController<ConnectivityManagerEvent> events =
       StreamController.broadcast();
@@ -93,9 +96,13 @@ class ConnectivityManager {
       // Nudge listeners
       events.add(ConnectivityManagerEvent.torStatusChange);
     });
+
+    // Start proactive Tor health monitoring
+    _startTorHealthMonitoring();
   }
 
   void dispose() {
+    _torHealthTimer?.cancel();
     events.close();
   }
 
@@ -149,6 +156,50 @@ class ConnectivityManager {
     // ENV-175
     if (torEnabled) {
       Tor.instance.start();
+    }
+  }
+
+  /// Starts proactive Tor health monitoring to detect connection drops faster
+  void _startTorHealthMonitoring() {
+    _torHealthTimer = Timer.periodic(_torHealthCheckInterval, (timer) {
+      if (torEnabled && !torTemporarilyDisabled) {
+        _checkTorHealth();
+      }
+    });
+  }
+
+  /// Performs a quick health check on the Tor connection
+  void _checkTorHealth() async {
+    if (!torEnabled || torTemporarilyDisabled) {
+      return;
+    }
+
+    try {
+      // Check if Tor circuit is still established
+      bool torHealthy = Tor.instance.bootstrapped;
+
+      // If Tor status changed from healthy to unhealthy, trigger immediate check
+      if (_lastTorHealthStatus && !torHealthy) {
+        kPrint(
+            "ConnectivityManager: Tor circuit lost, marking electrum as disconnected");
+        electrumConnected = false;
+        events.add(ConnectivityManagerEvent.electrumUnreachable);
+        events.add(ConnectivityManagerEvent.torStatusChange);
+      } else if (!_lastTorHealthStatus && torHealthy) {
+        kPrint("ConnectivityManager: Tor circuit re-established");
+        events.add(ConnectivityManagerEvent.torStatusChange);
+      }
+
+      _lastTorHealthStatus = torHealthy;
+    } catch (e) {
+      kPrint("ConnectivityManager: Error checking Tor health: $e");
+      // If we can't check Tor health, assume it's down
+      if (_lastTorHealthStatus) {
+        electrumConnected = false;
+        events.add(ConnectivityManagerEvent.electrumUnreachable);
+        events.add(ConnectivityManagerEvent.torStatusChange);
+        _lastTorHealthStatus = false;
+      }
     }
   }
 }
