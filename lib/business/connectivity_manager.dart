@@ -10,6 +10,7 @@ import 'package:envoy/util/console.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/business/scheduler.dart';
 
 enum ConnectivityManagerEvent {
   torStatusChange,
@@ -35,7 +36,7 @@ enum PublicServer {
 }
 
 const Duration _tempDisablementTimeout = Duration(hours: 24);
-const Duration _torHealthCheckInterval = Duration(seconds: 30);
+const Duration _torHealthCheckInterval = Duration(seconds: 15);
 
 class ConnectivityManager {
   bool get torEnabled {
@@ -59,6 +60,7 @@ class ConnectivityManager {
   DateTime? torTemporarilyDisabledTimeStamp;
   Timer? _torHealthTimer;
   bool _lastTorHealthStatus = true;
+  bool _isInFastCheckMode = false;
 
   final StreamController<ConnectivityManagerEvent> events =
       StreamController.broadcast();
@@ -168,6 +170,28 @@ class ConnectivityManager {
     });
   }
 
+  /// Switches to fast check mode for more frequent monitoring during issues
+  void _enableFastCheckMode() {
+    if (_isInFastCheckMode) return;
+
+    _isInFastCheckMode = true;
+    _torHealthTimer?.cancel();
+
+    // Check every 5 seconds when in fast mode
+    _torHealthTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (torEnabled && !torTemporarilyDisabled) {
+        _checkTorHealth();
+      }
+    });
+
+    // Return to normal mode after 2 minutes
+    Timer(const Duration(minutes: 2), () {
+      _isInFastCheckMode = false;
+      _torHealthTimer?.cancel();
+      _startTorHealthMonitoring();
+    });
+  }
+
   /// Performs a quick health check on the Tor connection
   void _checkTorHealth() async {
     if (!torEnabled || torTemporarilyDisabled) {
@@ -175,31 +199,64 @@ class ConnectivityManager {
     }
 
     try {
-      // Check if Tor circuit is still established
-      bool torHealthy = Tor.instance.bootstrapped;
+      // First check if Tor circuit is established
+      bool torBootstrapped = Tor.instance.bootstrapped;
 
-      // If Tor status changed from healthy to unhealthy, trigger immediate check
-      if (_lastTorHealthStatus && !torHealthy) {
-        kPrint(
-            "ConnectivityManager: Tor circuit lost, marking electrum as disconnected");
-        electrumConnected = false;
-        events.add(ConnectivityManagerEvent.electrumUnreachable);
-        events.add(ConnectivityManagerEvent.torStatusChange);
-      } else if (!_lastTorHealthStatus && torHealthy) {
-        kPrint("ConnectivityManager: Tor circuit re-established");
-        events.add(ConnectivityManagerEvent.torStatusChange);
+      if (!torBootstrapped) {
+        // Tor is not bootstrapped, mark as unhealthy
+        if (_lastTorHealthStatus) {
+          kPrint(
+              "ConnectivityManager: Tor not bootstrapped, marking electrum as disconnected");
+          electrumConnected = false;
+          events.add(ConnectivityManagerEvent.electrumUnreachable);
+          events.add(ConnectivityManagerEvent.torStatusChange);
+          _lastTorHealthStatus = false;
+          _enableFastCheckMode();
+        }
+        return;
       }
 
-      _lastTorHealthStatus = torHealthy;
+      // Tor claims to be bootstrapped, but let's test actual connectivity
+      // by making a quick HTTP request through Tor
+      await _testTorConnectivity();
+
+      // If we reach here, Tor is working
+      if (!_lastTorHealthStatus) {
+        kPrint("ConnectivityManager: Tor connectivity restored");
+        events.add(ConnectivityManagerEvent.torStatusChange);
+        _lastTorHealthStatus = true;
+      }
     } catch (e) {
-      kPrint("ConnectivityManager: Error checking Tor health: $e");
-      // If we can't check Tor health, assume it's down
+      kPrint("ConnectivityManager: Tor connectivity test failed: $e");
+      // Connection test failed, mark as unhealthy
       if (_lastTorHealthStatus) {
+        kPrint(
+            "ConnectivityManager: Tor connectivity lost, marking electrum as disconnected");
         electrumConnected = false;
         events.add(ConnectivityManagerEvent.electrumUnreachable);
         events.add(ConnectivityManagerEvent.torStatusChange);
         _lastTorHealthStatus = false;
+        _enableFastCheckMode();
       }
+    }
+  }
+
+  /// Tests actual Tor connectivity by making a quick HTTP request
+  Future<void> _testTorConnectivity() async {
+    final httpTor = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+
+    // Make a quick request to a reliable endpoint with short timeout
+    try {
+      final response = await httpTor
+          .get("https://httpbin.org/ip")
+          .timeout(const Duration(seconds: 5));
+
+      if (response.statusCode != 200) {
+        throw Exception(
+            "HTTP request failed with status: ${response.statusCode}");
+      }
+    } catch (e) {
+      throw Exception("Tor connectivity test failed: $e");
     }
   }
 }
