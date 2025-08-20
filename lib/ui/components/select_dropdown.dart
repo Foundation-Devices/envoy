@@ -53,7 +53,7 @@ class EnvoyDropdown extends StatefulWidget {
 class EnvoyDropdownState extends State<EnvoyDropdown> {
   int _selectedIndex = 0;
   EnvoyDropdownOption? _selectedOption;
-  bool _isTapped = true;
+  bool isFocused = true;
   late FocusNode _focusNode;
 
   EnvoyDropdownState() {
@@ -86,6 +86,11 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
   Widget build(BuildContext context) {
     return Focus(
       focusNode: _focusNode,
+      onFocusChange: (hasFocus) {
+        setState(() {
+          isFocused = hasFocus;
+        });
+      },
       child: Container(
         decoration: BoxDecoration(
           color: widget.isDropdownActive
@@ -93,7 +98,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
               : EnvoyColors.surface2.applyOpacity(0.5),
           borderRadius: BorderRadius.circular(EnvoySpacing.small),
           border: Border.all(
-            color: (!_isTapped && widget.isDropdownActive)
+            color: (!isFocused && widget.isDropdownActive)
                 ? EnvoyColors.accentPrimary
                 : Colors.transparent,
             width: 1,
@@ -175,7 +180,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
                                   ),
                             overflow: TextOverflow.ellipsis,
                           ),
-                          if (_isTapped)
+                          if (isFocused)
                             Padding(
                               padding: const EdgeInsets.only(
                                   left: EnvoySpacing.medium1),

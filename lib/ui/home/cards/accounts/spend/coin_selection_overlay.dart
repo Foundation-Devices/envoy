@@ -195,10 +195,7 @@ class SpendRequirementOverlayState
     final unitVelocity = unitsPerSecond.distance;
 
     SpringDescription spring = SpringDescription.withDampingRatio(
-      mass: 1.5,
-      stiffness: 300.0,
-      ratio: 0.4,
-    );
+        mass: 1, stiffness: 330, ratio: 0.700);
 
     final simulation = SpringSimulation(spring, 0, 1, -unitVelocity);
 
