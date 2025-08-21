@@ -46,7 +46,7 @@ class _TorWarningState extends State<TorWarning> {
         Navigator.of(context).pop();
       },
       secondaryButtonLabel: S().torToast_learnMore_temporarilyDisableTor,
-      onTertiaryButtonTap: (context) {
+      onSecondaryButtonTap: (context) {
         ConnectivityManager().torTemporarilyDisabled = true;
         Navigator.of(context).pop();
       },
