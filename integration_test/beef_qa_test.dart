@@ -16,6 +16,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'util.dart';
 
 Future<void> main() async {
@@ -114,8 +115,9 @@ Future<void> main() async {
 
       await pressHamburgerMenu(tester);
       await goToAbout(tester);
-
-      final appVersion = find.text('2.0.2');
+      final version = await PackageInfo.fromPlatform();
+      final appVersion =
+          find.text("${version.version} (${version.buildNumber})");
       expect(appVersion, findsOneWidget);
 
       final showButton = find.text('Show');

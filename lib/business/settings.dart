@@ -68,8 +68,9 @@ class Settings extends ChangeNotifier {
   static const String TESTNET4_ONION_ELECTRUM_SERVER =
       "7gohqoo7du3l3p72gld33hd5d6xtciych6plli6fwrixi2tsmyqc33yd.onion:50001";
 
-  static const String MUTINYNET_ONION_ELECTRUM_SERVER =
-      "zal4yu74bpyjm4enzxgo42ev34usyag5cmfn3ej6q5sf72urpfbej6ad.onion:50001";
+  // FD signet server
+  static const String SIGNET_ONION_ELECTRUM_SERVER =
+      "qkpvnm3gn7x7yzxp7pddlcpn5h4tyxve7yx4olvi437fzw4gz3sxbmad.onion:50001";
 
   static final List<String> defaultServers = getDefaultFulcrumServers();
   static String currentDefaultServer = selectRandomDefaultServer();
@@ -163,6 +164,9 @@ class Settings extends ChangeNotifier {
     }
 
     if (network == Network.signet) {
+      if (usingTor) {
+        return SIGNET_ONION_ELECTRUM_SERVER;
+      }
       return SIGNET_ELECTRUM_SERVER;
     }
 
