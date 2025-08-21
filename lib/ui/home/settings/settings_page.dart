@@ -25,7 +25,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/ui/state/app_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/region_manager.dart';
@@ -77,7 +77,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 setState(() {
                   s.setDisplayFiat(enabled ? "USD" : null); // TODO: FIGMA
                   if (!enabled) {
-                    ref.read(sendScreenUnitProvider.notifier).state =
+                    ref.read(appUnitProvider.notifier).state =
                         s.displayUnitSat()
                             ? AmountDisplayUnit.sat
                             : AmountDisplayUnit.btc;

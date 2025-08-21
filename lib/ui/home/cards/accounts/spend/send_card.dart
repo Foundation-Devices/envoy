@@ -13,7 +13,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
-import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/ui/state/send_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/build_context_extension.dart';
 import 'package:envoy/util/console.dart';
@@ -50,7 +50,7 @@ class _SendCardState extends ConsumerState<SendCard>
         setAmount(parsed.amountSats!);
 
         if (parsed.unit != null) {
-          ref.read(sendScreenUnitProvider.notifier).state = parsed.unit!;
+          ref.read(sendUnitProvider.notifier).state = parsed.unit!;
         }
       }
     });
