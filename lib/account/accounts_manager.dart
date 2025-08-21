@@ -343,7 +343,8 @@ class NgAccountManager extends ChangeNotifier {
     return false;
   }
 
-  addAccount(EnvoyAccount state, EnvoyAccountHandler handler) async {
+  Future<void> addAccount(
+      EnvoyAccount state, EnvoyAccountHandler handler) async {
     if (_accountsHandler.any((element) => element.$1.id == state.id)) {
       return;
     }
@@ -414,7 +415,7 @@ class NgAccountManager extends ChangeNotifier {
     }
   }
 
-  notifyIfAccountBalanceHigherThanUsd1000() {
+  void notifyIfAccountBalanceHigherThanUsd1000() {
     for (var account in accounts) {
       if (account.isHot && account.network == Network.bitcoin) {
         var amountUSD = ExchangeRate().getUsdValue(account.balance.toInt());
@@ -490,10 +491,10 @@ class NgAccountManager extends ChangeNotifier {
         customMimeType: 'application/jsonl',
         name: 'bip329_export',
         bytes: fileContentBytes,
-        ext: 'jsonl');
+        fileExtension: 'jsonl');
   }
 
-  EnvoyAccount? getHotWalletAccount({network = Network.bitcoin}) {
+  EnvoyAccount? getHotWalletAccount({Network network = Network.bitcoin}) {
     return accounts.firstWhereOrNull(
         (element) => element.isHot && element.network == network);
   }
@@ -612,10 +613,10 @@ class NgAccountManager extends ChangeNotifier {
   }
 }
 
-List<EnvoyAccount> sortByAccountOrder<EnvoyAccount>(
-  List<EnvoyAccount> list,
+List<T> sortByAccountOrder<T>(
+  List<T> list,
   List<String> order,
-  String Function(EnvoyAccount item) getId,
+  String Function(T item) getId,
 ) {
   list.sort((a, b) {
     final aIndex = order.indexOf(getId(a));

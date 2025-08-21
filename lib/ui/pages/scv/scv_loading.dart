@@ -30,7 +30,7 @@ class _ScvLoadingPageState extends State<ScvLoadingPage> {
     _validateScvData(widget.scvData);
   }
 
-  _validateScvData(Object? object) {
+  void _validateScvData(Object? object) {
     if (object is CryptoResponse) {
       ScvChallengeResponse scvResponse =
           object.objects[0] as ScvChallengeResponse;

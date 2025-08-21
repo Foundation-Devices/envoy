@@ -6,23 +6,20 @@
 import '../../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-class ExchangeRate {
-  final String currencyCode;
-  final double rate;
+class RawData {
+  final Uint8List payload;
 
-  const ExchangeRate({
-    required this.currencyCode,
-    required this.rate,
+  const RawData({
+    required this.payload,
   });
 
   @override
-  int get hashCode => currencyCode.hashCode ^ rate.hashCode;
+  int get hashCode => payload.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ExchangeRate &&
+      other is RawData &&
           runtimeType == other.runtimeType &&
-          currencyCode == other.currencyCode &&
-          rate == other.rate;
+          payload == other.payload;
 }

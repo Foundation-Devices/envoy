@@ -19,7 +19,7 @@ import 'package:rive/rive.dart' as rive;
 
 bool _isScanDialogOpen = false;
 
-showScannerDialog(
+Future showScannerDialog(
     {required BuildContext context,
     Widget? child,
     required Function(BuildContext context) onBackPressed,

@@ -34,7 +34,7 @@ class PrimeShard {
     return _instance;
   }
 
-  getPrimeSecretPath() {
+  String getPrimeSecretPath() {
     return "${LocalStorage().appSupportDir.path}/$PRIME_SECRET";
   }
 
@@ -73,7 +73,7 @@ class PrimeShard {
   //   return await LocalStorage().readFile(name);
   // }
 
-  showSettingsMenu() {
+  void showSettingsMenu() {
     _platform.invokeMethod('show_settings');
   }
 

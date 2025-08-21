@@ -88,8 +88,11 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                   //small delay to prevent navigator gets leaked
                   await Future.delayed(const Duration(milliseconds: 200));
                   String path = await EnvoyReport().share();
-                  Share.shareXFiles([XFile(path)],
-                      text: 'Envoy Log Report', subject: "text/plain");
+                  SharePlus.instance.share(ShareParams(
+                    files: [XFile(path)],
+                    subject: "text/plain",
+                    text: "Envoy Log Report",
+                  ));
                 } catch (e) {
                   EnvoyReport().log("EnvoyReport", e.toString());
                 } finally {

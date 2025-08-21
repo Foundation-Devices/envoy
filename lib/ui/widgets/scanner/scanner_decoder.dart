@@ -17,7 +17,7 @@ abstract class ScannerDecoder {
 
   ScannerDecoder();
 
-  onProgressUpdates(Function(double progress) progressCallBack) {
+  void onProgressUpdates(Function(double progress) progressCallBack) {
     _progressCallBack = progressCallBack;
   }
 

@@ -431,7 +431,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
         ));
   }
 
-  _onInit() async {
+  Future<void> _onInit() async {
     try {
       setState(() {
         _deleteInProgress = true;

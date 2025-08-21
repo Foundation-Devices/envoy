@@ -31,7 +31,7 @@ class LocalStorage {
     kPrint("Instance of LocalStorage created!");
   }
 
-  _initAsync() async {
+  Future<void> _initAsync() async {
     appSupportDir = await getApplicationSupportDirectory();
     appDocumentsDir = await getApplicationDocumentsDirectory();
     kPrint("Async members initialized!");

@@ -137,7 +137,7 @@ class Equal<T> {
 
   @override
   int get hashCode {
-    return _hashCode != null ? _hashCode!(value) : super.hashCode;
+    return _hashCode != null ? _hashCode(value) : super.hashCode;
   }
 }
 

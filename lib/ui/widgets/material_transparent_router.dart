@@ -23,7 +23,7 @@ class MaterialTransparentRoute<T> extends PageRoute<T>
   }
 
   @override
-  bool get opaque => this.transparent;
+  bool get opaque => transparent;
 
   @override
   final bool maintainState;

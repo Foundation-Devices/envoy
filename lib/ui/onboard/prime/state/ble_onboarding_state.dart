@@ -12,8 +12,12 @@ final primeBleIdProvider = StateProvider<String?>((ref) => null);
 final primePublicKeyProvider = StateProvider<XidDocument?>((ref) => null);
 
 class StepNotifier extends StateNotifier<StepModel> {
-  StepNotifier({stepName = "Loading", state = EnvoyStepState.HIDDEN})
-      : super(StepModel(stepName: stepName, state: state));
+  StepNotifier(
+      {String stepName = "Loading",
+      EnvoyStepState state = EnvoyStepState.HIDDEN})
+      : super(StepModel(stepName: stepName, state: state)) {
+    // TODO: implement StepNotifier
+  }
 
   Future<void> updateStep(String stepName, EnvoyStepState state) async {
     this.state = StepModel(stepName: stepName, state: state);

@@ -127,7 +127,7 @@ func getSdCardBookmark() -> URL {
         print("Source application: \(sendingAppID ?? "Unknown")")
 
         let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
-        controller.engine!.navigationChannel.invokeMethod("pushRoute", arguments: url.absoluteString)
+        controller.engine.navigationChannel.invokeMethod("pushRoute", arguments: url.absoluteString)
 
         return true
     }

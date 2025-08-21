@@ -33,7 +33,7 @@ class DevicesCard extends ConsumerStatefulWidget {
 // Unfortunately it seems to only work with TabView
 class DevicesCardState extends ConsumerState<DevicesCard>
     with AutomaticKeepAliveClientMixin {
-  _redraw() {
+  void _redraw() {
     setState(() {});
   }
 
@@ -74,7 +74,7 @@ class DevicesList extends ConsumerStatefulWidget {
 }
 
 class _DevicesListState extends ConsumerState<DevicesList> {
-  _redraw() {
+  void _redraw() {
     setState(() {});
   }
 

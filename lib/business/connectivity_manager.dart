@@ -99,26 +99,26 @@ class ConnectivityManager {
     events.close();
   }
 
-  electrumSuccess() {
+  void electrumSuccess() {
     failedFoundationServerAttempts = 0;
     electrumConnected = true;
     events.add(ConnectivityManagerEvent.electrumReachable);
     checkTor();
   }
 
-  electrumFailure() {
+  void electrumFailure() {
     electrumConnected = false;
     events.add(ConnectivityManagerEvent.electrumUnreachable);
     checkTor();
     checkFoundationServer();
   }
 
-  nguSuccess() {
+  void nguSuccess() {
     nguConnected = true;
     checkTor();
   }
 
-  nguFailure() {
+  void nguFailure() {
     nguConnected = false;
     checkTor();
   }
@@ -145,7 +145,7 @@ class ConnectivityManager {
     }
   }
 
-  restartTor() {
+  void restartTor() {
     // ENV-175
     if (torEnabled) {
       Tor.instance.start();

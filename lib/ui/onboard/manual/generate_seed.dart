@@ -335,7 +335,7 @@ class _SeedScreenState extends State<SeedScreen> {
     );
   }
 
-  _buildSeedVerification(BuildContext context) {
+  Column _buildSeedVerification(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

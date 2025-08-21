@@ -85,7 +85,7 @@ class BluetoothManager {
     kPrint("Instance of BluetoothManager created!");
   }
 
-  _init() async {
+  Future<void> _init() async {
     await api.RustLib.init();
     await bluart.RustLib.init();
 
@@ -177,7 +177,7 @@ class BluetoothManager {
     });
   }
 
-  getPermissions() async {
+  Future<void> getPermissions() async {
     await Permission.bluetooth.request();
     await Permission.bluetoothConnect.request();
     // TODO: remove this
@@ -185,7 +185,7 @@ class BluetoothManager {
     await Permission.bluetoothScan.request();
   }
 
-  scan() async {
+  Future<void> scan() async {
     if (await Permission.bluetoothScan.isGranted) {
       await bluart.scan(filter: [""]);
     }
@@ -239,9 +239,10 @@ class BluetoothManager {
   }
 
   Future<void> sendPsbt(String accountId, String psbt) async {
+    //TODO:fix psbt to Uint8List
     final encoded = await encodeMessage(
-        message: api.QuantumLinkMessage.signPsbt(
-            api.SignPsbt(psbt: psbt, accountId: accountId)));
+        message: api.QuantumLinkMessage.signPsbt(api.SignPsbt(
+            psbt: Uint8List.fromList(psbt.codeUnits), accountId: accountId)));
 
     kPrint("before sending psbt");
     _writeWithProgress(encoded);
@@ -453,7 +454,7 @@ class BluetoothManager {
     );
   }
 
-  dispose() {
+  void dispose() {
     _subscription?.cancel();
     _writeProgressSubscription?.cancel();
   }

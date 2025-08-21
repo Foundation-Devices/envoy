@@ -35,7 +35,7 @@ class MapData {
     fetchAndSaveATMData();
   }
 
-  _dropVenues() {
+  void _dropVenues() {
     venues.clear();
   }
 

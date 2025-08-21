@@ -49,9 +49,9 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
   //animation status from AccountChooserOverlay
   AnimationStatus _status = AnimationStatus.dismissed;
 
-  get account => widget.account;
+  EnvoyAccount get account => widget.account;
 
-  get accounts => widget.accounts;
+  List<EnvoyAccount> get accounts => widget.accounts;
 
   bool get chooserOpen => _overlayVisible;
 
@@ -126,7 +126,7 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
                     child: Opacity(
                       opacity: _overlayVisible ? 0 : 1,
                       child: AccountListTile(
-                        key: _cardStackKeys[account.id!],
+                        key: _cardStackKeys[account.id],
                         account,
                         onTap: () {
                           openChooserOverlay(context);
@@ -204,7 +204,7 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
     overlay.insert(_entry!);
   }
 
-  dismiss() {
+  void dismiss() {
     accountChooserKey.currentState?.dismiss();
   }
 }
@@ -299,7 +299,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
   }
 
   //calculates list card rect from
-  _calcListCardRect() {
+  void _calcListCardRect() {
     _shuttleCardKeys.forEach((key, value) {
       Rect? rect = _getRect(value);
       if (rect == null) {
@@ -310,7 +310,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
   }
 
   //calculates stacked card rect from cardStackKeys
-  _calcStackCardRect() {
+  void _calcStackCardRect() {
     widget.cardStackKeys.forEach((key, value) {
       Rect? rect = _getRect(value);
       // Remove or comment out this debug print
@@ -346,7 +346,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
     return offset & renderBox.size;
   }
 
-  _selectAccount(EnvoyAccount account) async {
+  Future<void> _selectAccount(EnvoyAccount account) async {
     setState(() {
       _selectedAccount = account;
     });
@@ -517,7 +517,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
   }
 
   // builds account tile for hero like animation,
-  _buildHeroOverlay(EnvoyAccount account) {
+  Widget _buildHeroOverlay(EnvoyAccount account) {
     final startRect = _stackCardRect[account.id];
     final endRect = _listCardRect[account.id];
     if (startRect == null || endRect == null) {

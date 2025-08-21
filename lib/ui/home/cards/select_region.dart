@@ -129,7 +129,7 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
     return foundCountry;
   }
 
-  onNativeBackPressed(bool didPop) {
+  void onNativeBackPressed(bool didPop) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       String path = ref.read(routePathProvider);
 

@@ -39,7 +39,7 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
     Settings().store();
   }
 
-  onNativeBackPressed(bool didPop) {
+  void onNativeBackPressed(bool didPop) {
     if (!didPop) {
       if (_currentPage is! SettingsMenuWidget) {
         _goBackToMenu();

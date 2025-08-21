@@ -6,13 +6,11 @@ PODS:
   - file_saver (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - flutter_local_notifications (0.0.1):
-    - Flutter
   - flutter_secure_storage (6.0.0):
     - Flutter
   - flutter_vlc_player (3.0.3):
     - Flutter
-    - MobileVLCKit (~> 3.6.0b12)
+    - MobileVLCKit (~> 3.6.1b1)
   - in_app_purchase_storekit (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -23,10 +21,10 @@ PODS:
     - FlutterMacOS
   - MobileVLCKit (3.6.1b1)
   - MTBBarcodeScanner (5.0.11)
-  - ObjectBox (4.1.0)
+  - ObjectBox (4.3.0)
   - objectbox_flutter_libs (0.0.1):
     - Flutter
-    - ObjectBox (= 4.1.0)
+    - ObjectBox (= 4.3.0)
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_foundation (0.0.1):
@@ -69,7 +67,6 @@ DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - file_saver (from `.symlinks/plugins/file_saver/ios`)
   - Flutter (from `Flutter`)
-  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - flutter_vlc_player (from `.symlinks/plugins/flutter_vlc_player/ios`)
   - in_app_purchase_storekit (from `.symlinks/plugins/in_app_purchase_storekit/darwin`)
@@ -108,8 +105,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/file_saver/ios"
   Flutter:
     :path: Flutter
-  flutter_local_notifications:
-    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   flutter_vlc_player:
@@ -165,24 +160,23 @@ SPEC CHECKSUMS:
   bluart: 2e6699380d7344463ba5759f6d7866d1d8eb2593
   file_picker: 9e4c55a49b5bec4a3cc3c01410ce11348811c551
   file_saver: 503e386464dbe118f630e17b4c2e1190fa0cf808
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_secure_storage: d33dac7ae2ea08509be337e775f6b59f1ff45f12
-  flutter_vlc_player: 68553dec38187c14a7800e6d27a30bf9b25b53bc
+  flutter_vlc_player: 1508e7989e41d11328e4fa4c9a1f188c7cf4cf7a
   in_app_purchase_storekit: a1ce04056e23eecc666b086040239da7619cd783
   integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
-  local_auth_darwin: 66e40372f1c29f383a314c738c7446e2f7fdadc3
+  local_auth_darwin: fa4b06454df7df8e97c18d7ee55151c57e7af0de
   MobileVLCKit: 2d9c7c373393ae43086aeeff890bf0b1afc15c5c
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
-  ObjectBox: bf3d4b51075d52868422d5d1f2f2141b1d630d30
-  objectbox_flutter_libs: 2f30755c12b0fe104d75445c3ba879e3072eda54
+  ObjectBox: 7760fa9072adcffe102a6adf4646ca84ba70ab6b
+  objectbox_flutter_libs: 8fa96fe3ffeb448a48e8cacbbe3ec4be7a6564d8
   package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
   Ramp: 3f843fb75cac12ad40842afa3226bae36dc93521
-  ramp_flutter: aac85dee8bc93b5f7563c909ba15a37727fe3fe8
-  rive_common: 3a4c254c6e4db7e4b9e05daeb3d1f47ae4f7bf76
+  ramp_flutter: 7c2b108417cd4899c0f4aae2040a646e82b8f660
+  rive_common: 4743dbfd2911c99066547a3c6454681e0fa907df
   rust_lib_foundation_api: b926bd066994ff2c0354873b5335f7287ac62945
   rust_lib_ngwallet: a676d2f92f92a5f2b54ed711f4f1a459ca71af3a
   rust_lib_shards: 75df8eaa486e82faea1fae52144238991d037dea
@@ -191,8 +185,8 @@ SPEC CHECKSUMS:
   sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
   tor: 662a9f5b980b5c86decb8ba611de9bcd4c8286eb
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
-  wakelock_plus: 373cfe59b235a6dd5837d0fb88791d2f13a90d56
+  wakelock_plus: 76957ab028e12bfa4e66813c99e46637f367fc7e
 
-PODFILE CHECKSUM: dbcfe0eb16baa2f26e442d8dc652993159052923
+PODFILE CHECKSUM: 55bcad61272678c102921b64416a4cd4626e31a3
 
 COCOAPODS: 1.16.2
