@@ -129,10 +129,10 @@ pub async fn decode(
             )
             .context("failed to unseal passport message")?;
 
-            return Ok(DecoderStatus {
+            Ok(DecoderStatus {
                 progress: 1.0,
                 payload: Some(passport_message),
-            });
+            })
         }
     }
 }
@@ -161,14 +161,14 @@ pub async fn encode(
         .to_envelope(
             None,
             Some(&sender.clone().private_keys.unwrap()),
-            Some(Some(recipient)).unwrap(),
+            Some(recipient),
         )
         .unwrap();
 
     let cbor = envelope.to_cbor_data();
 
     let mut chunks = Vec::new();
-    for chunk in chunk(&*cbor) {
+    for chunk in chunk(&cbor) {
         chunks.push(chunk.to_vec());
     }
 
