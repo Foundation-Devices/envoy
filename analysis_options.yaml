@@ -12,5 +12,6 @@ analyzer:
     - 'packages/shards/**'
     - 'packages/bluart/**'
     - 'packages/http_tor/**'
+    - 'test/*.mocks.dart'
   plugins:
     - custom_lint

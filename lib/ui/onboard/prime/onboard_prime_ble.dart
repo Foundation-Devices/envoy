@@ -177,16 +177,16 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           switch (result) {
             // prime has applied an update
             case FirmwareUpdateResult_Success(installedVersion: final version):
-              kPrint("installed version {version}");
+              kPrint("installed version $version");
 
               ref.read(fwTransferStateProvider.notifier).updateStep(
                   S().firmware_updateSuccess_header, EnvoyStepState.FINISHED);
               ref.read(primeUpdateStateProvider.notifier).state =
                   PrimeFwUpdateStep.finished;
 
-            // prime failes to apply update
+            // prime fails to apply update
             case FirmwareUpdateResult_Error(field0: final error):
-              kPrint("failed to apply update {error}");
+              kPrint("failed to apply update: $error");
 
               ref.read(fwTransferStateProvider.notifier).updateStep(
                   S().firmware_updateError_installFailed,

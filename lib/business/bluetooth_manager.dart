@@ -88,7 +88,7 @@ class BluetoothManager {
     kPrint("Instance of BluetoothManager created!");
   }
 
-  _init() async {
+  Future _init() async {
     await api.RustLib.init();
     await bluart.RustLib.init();
 
@@ -179,7 +179,7 @@ class BluetoothManager {
     });
   }
 
-  getPermissions() async {
+  Future getPermissions() async {
     await Permission.bluetooth.request();
     await Permission.bluetoothConnect.request();
     // TODO: remove this
@@ -200,7 +200,7 @@ class BluetoothManager {
     return isDenied;
   }
 
-  scan() async {
+  Future scan() async {
     if (Platform.isLinux || await Permission.bluetoothScan.isGranted) {
       await bluart.scan(filter: [""]);
     }
@@ -484,7 +484,7 @@ class BluetoothManager {
     return completer.future;
   }
 
-  dispose() {
+  void dispose() {
     _subscription?.cancel();
     _writeProgressSubscription?.cancel();
   }
