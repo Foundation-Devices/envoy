@@ -42,6 +42,9 @@ jobs:
       - name: Verify Rust formatting
         run: cargo fmt --all -- --check
 
+      - name: Install dependencies
+        run: apt install libdbus-1-dev pkg-config
+
       - name: Catch common Rust mistakes
         run: cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
 
