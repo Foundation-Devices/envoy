@@ -21,7 +21,6 @@ pub mod device;
 pub mod peripheral;
 
 use crate::frb_generated::StreamSink;
-use flutter_rust_bridge::frb;
 
 pub use device::*;
 pub use peripheral::*;
@@ -300,7 +299,7 @@ pub fn read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
     command::send(Command::Read { id, sink })
 }
 
-#[frb(ignore)]
+/// flutter_rust_bridge:ignore
 mod command {
     use anyhow::Context;
 
@@ -427,7 +426,7 @@ mod command {
                     sink.add(result as u64).unwrap();
                 }
                 Err(e) => {
-                    error!("{}", format!("Benchmark failed: {e}"));
+                    error!("Benchmark failed: {e}");
                     break;
                 }
             }
@@ -454,7 +453,7 @@ mod command {
                 });
             }
             Err(e) => {
-                debug!("{}", format!("Got error: {:?}", e));
+                debug!("Got error: {:?}", e);
             }
         }
 
