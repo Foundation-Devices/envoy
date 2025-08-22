@@ -109,7 +109,7 @@ fn ble_state() -> &'static BleState {
     BLE_STATE.get().expect("BleState not initialized")
 }
 
-fn init_logging(level: log::LevelFilter) {
+fn init_logging(_level: log::LevelFilter) {
     //  #[cfg(target_os = "android")]
     //        let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
 
@@ -163,7 +163,7 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
             debug!("{:?}", event);
             match event {
                 CentralEvent::DeviceDiscovered(id) => {
-                    debug!("{}", format!("DeviceDiscovered: {:?}", &id));
+                    debug!("DeviceDiscovered: {:?}", &id);
                     let peripheral = central.peripheral(&id).await.unwrap();
                     let peripheral = Device::new(peripheral);
                     let mut devices = ble_state().devices.lock().await;
