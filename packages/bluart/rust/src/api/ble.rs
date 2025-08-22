@@ -176,7 +176,7 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
                     }
                 }
                 CentralEvent::DeviceConnected(id) => {
-                    debug!("{}", format!("DeviceConnected: {:?}", id));
+                    debug!("DeviceConnected: {:?}", id);
                     let mut devices = ble_state().devices.lock().await;
                     if let Some(device) = devices.get_mut(&id.to_string()) {
                         device.is_connected = true;
@@ -184,7 +184,7 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
                     }
                 }
                 CentralEvent::DeviceDisconnected(id) => {
-                    debug!("{}", format!("DeviceDisconnected: {:?}", id));
+                    debug!("DeviceDisconnected: {:?}", id);
                     let mut devices = ble_state().devices.lock().await;
                     if let Some(device) = devices.get_mut(&id.to_string()) {
                         device.is_connected = false;

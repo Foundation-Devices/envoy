@@ -9,6 +9,7 @@ use std::path::PathBuf;
 use bdk_wallet::KeychainKind;
 use sled::{IVec, Tree};
 
+#[allow(dead_code)]
 pub(crate) enum MapKey {
     LastIndex(KeychainKind),
     SyncTime,
@@ -22,9 +23,7 @@ impl MapKey {
         }
     }
     fn serialize_content(&self) -> Vec<u8> {
-        match self {
-            _ => vec![],
-        }
+        vec![]
     }
 
     pub fn as_map_key(&self) -> Vec<u8> {

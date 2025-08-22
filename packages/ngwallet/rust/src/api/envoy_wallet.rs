@@ -91,6 +91,7 @@ pub enum _Network {
 
 // Envoy Wallet is a wrapper around NgWallet for Envoy app specific functionalities
 impl EnvoyAccountHandler {
+    #[allow(clippy::too_many_arguments)]
     pub fn new_from_descriptor(
         name: String,
         device_serial: Option<String>,
@@ -116,7 +117,7 @@ impl EnvoyAccountHandler {
             .account_path(Some(db_path.clone()))
             .network(network)
             .id(id.clone())
-            .preferred_address_type(address_type.clone())
+            .preferred_address_type(address_type)
             .index(index)
             .seed_has_passphrase(seed_has_passphrase)
             .build_from_file(Some(db_path.clone()));
@@ -130,15 +131,16 @@ impl EnvoyAccountHandler {
                     directory_path: db_path.clone(),
                 }),
                 Err(_) => {
-                    return Err(anyhow!("Failed to persist account"));
+                    Err(anyhow!("Failed to persist account"))
                 }
             },
             Err(e) => {
-                return Err(anyhow!("Failed to create account : {}", e));
+                Err(anyhow!("Failed to create account : {}", e))
             }
         }
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn migrate(
         name: String,
         id: String,
@@ -164,7 +166,7 @@ impl EnvoyAccountHandler {
             .account_path(Some(db_path.clone()))
             .network(network)
             .id(id.clone())
-            .preferred_address_type(address_type.clone())
+            .preferred_address_type(address_type)
             .index(index)
             .build_from_file(Some(db_path.clone()));
 
@@ -216,7 +218,7 @@ impl EnvoyAccountHandler {
                 Ok(account)
             }
             Err(er) => {
-                return Err(anyhow!("Failed to create account: {}", er));
+                Err(anyhow!("Failed to create account: {}", er))
             }
         }
     }
@@ -233,7 +235,7 @@ impl EnvoyAccountHandler {
         match Self::from_config(db_path, config) {
             Ok(account) => Ok(account),
             Err(err) => {
-                return Err(anyhow!("Failed to load account: {}", err));
+                Err(anyhow!("Failed to load account: {}", err))
             }
         }
     }
@@ -278,7 +280,7 @@ impl EnvoyAccountHandler {
                 Ok(account)
             }
             Err(e) => {
-                return Err(anyhow!("Failed to open account: {}", e));
+                Err(anyhow!("Failed to open account: {}", e))
             }
         }
     }
@@ -338,7 +340,7 @@ impl EnvoyAccountHandler {
                     .next_address()
                     .unwrap_or_default()
                     .iter()
-                    .map(|(address, address_type)| (address.to_string(), address_type.clone()))
+                    .map(|(address, address_type)| (address.to_string(), *address_type))
                     .collect::<Vec<(String, AddressType)>>();
 
                 let external_public_descriptors = account.get_external_public_descriptors();
@@ -378,7 +380,7 @@ impl EnvoyAccountHandler {
             .unwrap()
             .iter()
             .map(|(address_info, address_type)| {
-                (address_info.address.to_string(), address_type.clone())
+                (address_info.address.to_string(), *address_type)
             })
             .collect::<Vec<(String, AddressType)>>()
     }
@@ -394,13 +396,12 @@ impl EnvoyAccountHandler {
             .full_scan_request(address_type);
         match scan_request_result {
             Ok((_, request)) => Arc::new(Mutex::new(Some(request))),
-            Err(_) => return Arc::new(Mutex::new(None)),
+            Err(_) => Arc::new(Mutex::new(None)),
         }
     }
 
     pub fn update_broadcast_state(&mut self, draft_transaction: DraftTransaction) {
         let tx = draft_transaction.transaction.clone();
-        let now = Utc::now();
         {
             let mut account = self.ng_account.lock().unwrap();
             if tx.note.is_some() {
@@ -438,6 +439,7 @@ impl EnvoyAccountHandler {
         self.send_update();
     }
 
+    #[allow(clippy::type_complexity)]
     pub fn sync_request(
         &mut self,
         address_type: AddressType,
@@ -445,10 +447,11 @@ impl EnvoyAccountHandler {
         let sync_req = self.ng_account.lock().unwrap().sync_request(address_type);
         match sync_req {
             Ok((_, request)) => Arc::new(Mutex::new(Some(request))),
-            Err(_) => return Arc::new(Mutex::new(None)),
+            Err(_) => Arc::new(Mutex::new(None)),
         }
     }
 
+    #[allow(clippy::type_complexity)]
     pub async fn sync_wallet(
         sync_request: Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
         electrum_server: &str,
@@ -460,7 +463,7 @@ impl EnvoyAccountHandler {
             std::thread::current().id()
         );
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
-        let socks_proxy = socks_proxy.as_ref().map(|s| s.as_str());
+        let socks_proxy = socks_proxy.as_deref();
         let mut scan_request_guard = sync_request.lock().expect("Failed to lock request");
         if let Some(sync_request) = scan_request_guard.take() {
             let update = NgWallet::<Connection>::sync(sync_request, electrum_server, socks_proxy)
@@ -477,11 +480,11 @@ impl EnvoyAccountHandler {
         tor_port: Option<u16>,
     ) -> Result<Arc<Mutex<Update>>, Error> {
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
-        let socks_proxy = socks_proxy.as_ref().map(|s| s.as_str());
+        let socks_proxy = socks_proxy.as_deref();
         let mut scan_request_guard = scan_request
             .lock()
             .expect("Failed to lock scan request mutex");
-        return if let Some(scan_request) = scan_request_guard.take() {
+        if let Some(scan_request) = scan_request_guard.take() {
             // Use take() to move the value out
             // Simulate a delay for the scan operation
             match NgWallet::<Connection>::scan(scan_request, electrum_server, socks_proxy) {
@@ -490,7 +493,7 @@ impl EnvoyAccountHandler {
             }
         } else {
             Err(anyhow!("No Scan request found"))
-        };
+        }
     }
 
     pub fn apply_update(&mut self, update: Arc<Mutex<Update>>, address_type: AddressType) {
@@ -595,10 +598,7 @@ impl EnvoyAccountHandler {
     }
     pub fn rename_tag(&mut self, existing_tag: &str, new_tag: Option<String>) -> Result<()> {
         //update tag listing table with new tag
-        let new_tag_ref = match &new_tag {
-            None => None,
-            Some(tag) => Some(tag.as_str()),
-        };
+        let new_tag_ref = new_tag.as_deref();
         self.ng_account
             .lock()
             .unwrap()
@@ -706,7 +706,7 @@ impl EnvoyAccountHandler {
         tor_port: Option<u16>,
     ) -> std::result::Result<String, BroadcastError> {
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
-        let socks_proxy = socks_proxy.as_ref().map(|s| s.as_str());
+        let socks_proxy = socks_proxy.as_deref();
         NgAccount::<Connection>::broadcast_psbt(draft_transaction, electrum_server, socks_proxy)
             .map_err(BroadcastError::from)
             .map(|tx_id| tx_id.to_string())
@@ -748,7 +748,7 @@ impl EnvoyAccountHandler {
     }
 
     fn get_descriptors(
-        descriptors: &Vec<NgDescriptor>,
+        descriptors: &[NgDescriptor],
         db_path: String,
     ) -> Vec<Descriptor<Connection>> {
         descriptors
@@ -771,8 +771,8 @@ impl EnvoyAccountHandler {
         }
     }
 
-    fn bdk_db_path(db_path: &String, index: usize, descriptor: &NgDescriptor) -> PathBuf {
-        let bdk_db_path = Path::new(&db_path.clone()).join(format!(
+    fn bdk_db_path(db_path: &str, index: usize, descriptor: &NgDescriptor) -> PathBuf {
+        let bdk_db_path = Path::new(&db_path.to_owned()).join(format!(
             "wallet_{}_{:?}.sqlite",
             index, descriptor.address_type
         ));
@@ -820,7 +820,7 @@ impl EnvoyAccountHandler {
                             .map(|descriptor| NgDescriptor {
                                 internal: descriptor.internal_descriptor.clone(),
                                 external: Some(descriptor.external_descriptor.clone()),
-                                address_type: descriptor.address_type.clone(),
+                                address_type: descriptor.address_type,
                             })
                             .collect::<Vec<NgDescriptor>>();
                         Self::get_descriptors(&ng_descriptors, db_path.clone())
@@ -857,7 +857,7 @@ impl EnvoyAccountHandler {
                     for index in &indexes {
                         if index.0 == address_type {
                             info!("Revealing addresses up to index: {:?}", index);
-                            let _ = wallet
+                            wallet
                                 .reveal_addresses_up_to(index.1, index.2)
                                 .unwrap_or_default();
                         }
@@ -874,7 +874,7 @@ impl EnvoyAccountHandler {
                 Ok(handler)
             }
             Err(err) => {
-                return Err(anyhow!("Failed to create account: {:?}", err));
+                Err(anyhow!("Failed to create account: {:?}", err))
             }
         }
     }
@@ -904,7 +904,7 @@ impl EnvoyAccountHandler {
             self.ng_account
                 .lock()
                 .expect("couldnt lock ngaccount")
-                .set_do_not_spend(tx_id, spend_state.clone())
+                .set_do_not_spend(tx_id, *spend_state)
                 .expect("Failed to set note ");
         });
     }
@@ -951,7 +951,7 @@ impl EnvoyAccountHandler {
             .account_path(Some(db_path.clone()))
             .network(config.network)
             .id(config.id.clone())
-            .preferred_address_type(config.preferred_address_type.clone())
+            .preferred_address_type(config.preferred_address_type)
             .index(config.index)
             .build_from_file(Some(db_path.clone()));
 
@@ -965,11 +965,11 @@ impl EnvoyAccountHandler {
                     directory_path: db_path.clone(),
                 }),
                 Err(err) => {
-                    return Err(anyhow!("Failed to persist: {:?}", err));
+                    Err(anyhow!("Failed to persist: {:?}", err))
                 }
             },
             Err(err) => {
-                return Err(anyhow!("Failed to create account: {:?}", err));
+                Err(anyhow!("Failed to create account: {:?}", err))
             }
         }
     }
