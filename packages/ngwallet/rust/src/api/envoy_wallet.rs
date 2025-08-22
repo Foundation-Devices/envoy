@@ -130,13 +130,9 @@ impl EnvoyAccountHandler {
                     ng_account: Arc::new(Mutex::new(ng_account)),
                     directory_path: db_path.clone(),
                 }),
-                Err(_) => {
-                    Err(anyhow!("Failed to persist account"))
-                }
+                Err(_) => Err(anyhow!("Failed to persist account")),
             },
-            Err(e) => {
-                Err(anyhow!("Failed to create account : {}", e))
-            }
+            Err(e) => Err(anyhow!("Failed to create account : {}", e)),
         }
     }
 
@@ -217,9 +213,7 @@ impl EnvoyAccountHandler {
 
                 Ok(account)
             }
-            Err(er) => {
-                Err(anyhow!("Failed to create account: {}", er))
-            }
+            Err(er) => Err(anyhow!("Failed to create account: {}", er)),
         }
     }
 
@@ -234,9 +228,7 @@ impl EnvoyAccountHandler {
         };
         match Self::from_config(db_path, config) {
             Ok(account) => Ok(account),
-            Err(err) => {
-                Err(anyhow!("Failed to load account: {}", err))
-            }
+            Err(err) => Err(anyhow!("Failed to load account: {}", err)),
         }
     }
 
@@ -279,9 +271,7 @@ impl EnvoyAccountHandler {
                 };
                 Ok(account)
             }
-            Err(e) => {
-                Err(anyhow!("Failed to open account: {}", e))
-            }
+            Err(e) => Err(anyhow!("Failed to open account: {}", e)),
         }
     }
 
@@ -379,9 +369,7 @@ impl EnvoyAccountHandler {
             .next_address()
             .unwrap()
             .iter()
-            .map(|(address_info, address_type)| {
-                (address_info.address.to_string(), *address_type)
-            })
+            .map(|(address_info, address_type)| (address_info.address.to_string(), *address_type))
             .collect::<Vec<(String, AddressType)>>()
     }
 
@@ -873,9 +861,7 @@ impl EnvoyAccountHandler {
                 handler.migrate_meta(backup.notes, backup.tags, backup.do_not_spend);
                 Ok(handler)
             }
-            Err(err) => {
-                Err(anyhow!("Failed to create account: {:?}", err))
-            }
+            Err(err) => Err(anyhow!("Failed to create account: {:?}", err)),
         }
     }
 
@@ -964,13 +950,9 @@ impl EnvoyAccountHandler {
                     ng_account: Arc::new(Mutex::new(account)),
                     directory_path: db_path.clone(),
                 }),
-                Err(err) => {
-                    Err(anyhow!("Failed to persist: {:?}", err))
-                }
+                Err(err) => Err(anyhow!("Failed to persist: {:?}", err)),
             },
-            Err(err) => {
-                Err(anyhow!("Failed to create account: {:?}", err))
-            }
+            Err(err) => Err(anyhow!("Failed to create account: {:?}", err)),
         }
     }
 
