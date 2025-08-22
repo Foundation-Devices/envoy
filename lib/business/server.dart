@@ -17,7 +17,8 @@ typedef PatchBinary = ({Uint8List binary, PrimePatch patch});
 
 class Server {
   HttpTor? http;
-  final String _serverAddress = "http://127.0.0.1:8000"; //Settings().envoyServerAddress;
+  final String _serverAddress =
+      "http://127.0.0.1:8000"; //Settings().envoyServerAddress;
 
   Server({this.http}) {
     http ??= HttpTor(Tor.instance, EnvoyScheduler().parallel);

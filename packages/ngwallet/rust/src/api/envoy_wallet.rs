@@ -294,7 +294,7 @@ impl EnvoyAccountHandler {
 
     #[frb(sync)]
     pub fn get_directory_path(&self) -> String {
-       self.directory_path.clone()
+        self.directory_path.clone()
     }
 
     pub fn set_preferred_address_type(&mut self, address_type: AddressType) -> Result<()> {

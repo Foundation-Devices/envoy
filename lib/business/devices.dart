@@ -26,10 +26,7 @@ enum DeviceType {
   const DeviceType(this.id);
 }
 
-enum DeviceColor {
-  light,
-  dark
-}
+enum DeviceColor { light, dark }
 
 @JsonSerializable()
 class Device {
@@ -45,7 +42,8 @@ class Device {
   final Color color;
 
   Device(this.name, this.type, this.serial, this.datePaired,
-      this.firmwareVersion, this.color, {this.deviceColor = DeviceColor.light});
+      this.firmwareVersion, this.color,
+      {this.deviceColor = DeviceColor.light});
 
   // Serialisation
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);

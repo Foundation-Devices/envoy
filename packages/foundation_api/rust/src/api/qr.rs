@@ -2,15 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use std::sync::{Arc, Mutex};
 use bc_envelope::prelude::*;
 use bc_xid::XIDDocument;
 use flutter_rust_bridge::for_generated::anyhow;
 use foundation_api::message::{PassportMessage, QuantumLinkMessage};
 use foundation_api::pairing::PairingResponse;
-use foundation_api::passport::{PassportFirmwareVersion, PassportModel, PassportSerial, PassportColor};
+use foundation_api::passport::{
+    PassportColor, PassportFirmwareVersion, PassportModel, PassportSerial,
+};
 use foundation_api::status::{DeviceState, DeviceStatus};
 use foundation_ur::{Decoder, UR};
+use std::sync::{Arc, Mutex};
 
 #[flutter_rust_bridge::frb(sync)] // Synchronous mode for simplicity of the demo
 pub fn greet(name: String) -> String {
@@ -68,9 +70,11 @@ pub async fn decode_ble_message(_data: Vec<u8>) -> PassportMessage {
         passport_serial: PassportSerial("abc".to_string()),
         passport_color: PassportColor::Dark,
     });
-    PassportMessage::new(msg, DeviceStatus::new(DeviceState::Normal, 100, 100, "1.0.0".to_string()))
+    PassportMessage::new(
+        msg,
+        DeviceStatus::new(DeviceState::Normal, 100, 100, "1.0.0".to_string()),
+    )
 }
-
 
 #[cfg(test)]
 mod tests {
