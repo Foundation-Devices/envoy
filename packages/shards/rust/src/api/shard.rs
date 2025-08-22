@@ -80,7 +80,6 @@ impl ShardBackUp {
         match std::fs::read(&file_path).map_err(|e| format!("Failed to read file: {:?}", e)) {
             Ok(file_data) => decode(&file_data)
                 .map_err(|e| format!("Failed to decode shard data: {:?}", e))
-                .and_then(|shards: Vec<ShardBackUp>| Ok(shards))
                 .unwrap_or_else(|_| Vec::new()),
             Err(_) => {
                 // If the file does not exist or is empty, return an empty vector

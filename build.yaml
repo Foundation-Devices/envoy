@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2024 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+
+targets:
+  $default:
+    builders:
+      mockito|mockBuilder:
+        options:
+          dummy_param_values:
+            'dart:core#BigInt': 'BigInt.zero' # Provide BigInt.zero as the dummy

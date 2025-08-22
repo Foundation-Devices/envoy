@@ -84,7 +84,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -846349618;
+  int get rustContentHash => 359751636;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -97,7 +97,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 abstract class RustLibApi extends BaseApi {
   Future<DecoderStatus> crateApiQlDecode(
       {required List<int> data,
-      required Dechunker decoder,
+      required EnvoyMasterDechunker decoder,
       required QuantumLinkIdentity quantumLinkIdentity});
 
   Future<PassportMessage> crateApiQrDecodeBleMessage({required List<int> data});
@@ -117,7 +117,7 @@ abstract class RustLibApi extends BaseApi {
 
   Future<QuantumLinkIdentity> crateApiQlGenerateQlIdentity();
 
-  Future<Dechunker> crateApiQlGetDecoder();
+  Future<EnvoyMasterDechunker> crateApiQlGetDecoder();
 
   Future<ArcMutexDecoder> crateApiQrGetQrDecoder();
 
@@ -134,6 +134,12 @@ abstract class RustLibApi extends BaseApi {
   Future<Uint8List> crateApiQlSerializeXidDocument(
       {required XidDocument xidDocument});
 
+  Future<List<QuantumLinkMessage>> crateApiQlSplitFwUpdateIntoChunks(
+      {required int patchIndex,
+      required int totalPatches,
+      required List<int> patchBytes,
+      required BigInt chunkSize});
+
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_ArcMutexDecoder;
 
@@ -144,12 +150,13 @@ abstract class RustLibApi extends BaseApi {
       get rust_arc_decrement_strong_count_ArcMutexDecoderPtr;
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_Dechunker;
+      get rust_arc_increment_strong_count_EnvoyMasterDechunker;
 
   RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_Dechunker;
+      get rust_arc_decrement_strong_count_EnvoyMasterDechunker;
 
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_DechunkerPtr;
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_EnvoyMasterDechunkerPtr;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_QuantumLinkIdentity;
@@ -180,13 +187,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @override
   Future<DecoderStatus> crateApiQlDecode(
       {required List<int> data,
-      required Dechunker decoder,
+      required EnvoyMasterDechunker decoder,
       required QuantumLinkIdentity quantumLinkIdentity}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_prim_u_8_loose(data, serializer);
-        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
             decoder, serializer);
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
             quantumLinkIdentity, serializer);
@@ -369,7 +376,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<Dechunker> crateApiQlGetDecoder() {
+  Future<EnvoyMasterDechunker> crateApiQlGetDecoder() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -378,7 +385,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: SseCodec(
         decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker,
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker,
         decodeErrorData: null,
       ),
       constMeta: kCrateApiQlGetDecoderConstMeta,
@@ -542,6 +549,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         argNames: ["xidDocument"],
       );
 
+  @override
+  Future<List<QuantumLinkMessage>> crateApiQlSplitFwUpdateIntoChunks(
+      {required int patchIndex,
+      required int totalPatches,
+      required List<int> patchBytes,
+      required BigInt chunkSize}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_u_8(patchIndex, serializer);
+        sse_encode_u_8(totalPatches, serializer);
+        sse_encode_list_prim_u_8_loose(patchBytes, serializer);
+        sse_encode_usize(chunkSize, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 15, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_quantum_link_message,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlSplitFwUpdateIntoChunksConstMeta,
+      argValues: [patchIndex, totalPatches, patchBytes, chunkSize],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlSplitFwUpdateIntoChunksConstMeta =>
+      const TaskConstMeta(
+        debugName: "split_fw_update_into_chunks",
+        argNames: ["patchIndex", "totalPatches", "patchBytes", "chunkSize"],
+      );
+
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_ArcMutexDecoder => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder;
@@ -551,12 +590,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder;
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_Dechunker => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker;
+      get rust_arc_increment_strong_count_EnvoyMasterDechunker => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker;
 
   RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_Dechunker => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker;
+      get rust_arc_decrement_strong_count_EnvoyMasterDechunker => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_QuantumLinkIdentity => wire
@@ -589,11 +628,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Dechunker
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+  EnvoyMasterDechunker
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return DechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return EnvoyMasterDechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -613,11 +652,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Dechunker
-      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+  EnvoyMasterDechunker
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return DechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return EnvoyMasterDechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -653,11 +692,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Dechunker
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+  EnvoyMasterDechunker
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return DechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return EnvoyMasterDechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -695,6 +734,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BackupShardRequest dco_decode_backup_shard_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return BackupShardRequest(
+      field0: dco_decode_shard(arr[0]),
+    );
+  }
+
+  @protected
+  BackupShardResponse dco_decode_backup_shard_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return BackupShardResponse_Success();
+      case 1:
+        return BackupShardResponse_Error(
+          dco_decode_String(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
   XidDocument
       dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           dynamic raw) {
@@ -710,10 +775,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BackupShardRequest dco_decode_box_autoadd_backup_shard_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_backup_shard_request(raw);
+  }
+
+  @protected
+  BackupShardResponse dco_decode_box_autoadd_backup_shard_response(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_backup_shard_response(raw);
+  }
+
+  @protected
   BroadcastTransaction dco_decode_box_autoadd_broadcast_transaction(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_broadcast_transaction(raw);
+  }
+
+  @protected
+  ChallengeRequest dco_decode_box_autoadd_challenge_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_challenge_request(raw);
+  }
+
+  @protected
+  ChallengeResponseResult dco_decode_box_autoadd_challenge_response_result(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_challenge_response_result(raw);
   }
 
   @protected
@@ -741,15 +832,50 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  FirmwarePayload dco_decode_box_autoadd_firmware_payload(dynamic raw) {
+  FirmwareChunk dco_decode_box_autoadd_firmware_chunk(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_firmware_payload(raw);
+    return dco_decode_firmware_chunk(raw);
   }
 
   @protected
-  FirmwareUpdate dco_decode_box_autoadd_firmware_update(dynamic raw) {
+  FirmwareFetchEvent dco_decode_box_autoadd_firmware_fetch_event(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_firmware_update(raw);
+    return dco_decode_firmware_fetch_event(raw);
+  }
+
+  @protected
+  FirmwareFetchRequest dco_decode_box_autoadd_firmware_fetch_request(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_firmware_fetch_request(raw);
+  }
+
+  @protected
+  FirmwareUpdateAvailable dco_decode_box_autoadd_firmware_update_available(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_firmware_update_available(raw);
+  }
+
+  @protected
+  FirmwareUpdateCheckRequest
+      dco_decode_box_autoadd_firmware_update_check_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_firmware_update_check_request(raw);
+  }
+
+  @protected
+  FirmwareUpdateCheckResponse
+      dco_decode_box_autoadd_firmware_update_check_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_firmware_update_check_response(raw);
+  }
+
+  @protected
+  FirmwareUpdateResult dco_decode_box_autoadd_firmware_update_result(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_firmware_update_result(raw);
   }
 
   @protected
@@ -777,17 +903,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  SecurityChallengeMessage dco_decode_box_autoadd_security_challenge_message(
+  RestoreShardRequest dco_decode_box_autoadd_restore_shard_request(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_security_challenge_message(raw);
+    return dco_decode_restore_shard_request(raw);
   }
 
   @protected
-  SecurityProofMessage dco_decode_box_autoadd_security_proof_message(
+  RestoreShardResponse dco_decode_box_autoadd_restore_shard_response(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_security_proof_message(raw);
+    return dco_decode_restore_shard_response(raw);
+  }
+
+  @protected
+  SecurityCheck dco_decode_box_autoadd_security_check(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_security_check(raw);
   }
 
   @protected
@@ -803,6 +935,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  VerificationResult dco_decode_box_autoadd_verification_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_verification_result(raw);
+  }
+
+  @protected
   BroadcastTransaction dco_decode_broadcast_transaction(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -812,6 +950,34 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       accountId: dco_decode_String(arr[0]),
       psbt: dco_decode_list_prim_u_8_strict(arr[1]),
     );
+  }
+
+  @protected
+  ChallengeRequest dco_decode_challenge_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return ChallengeRequest(
+      data: dco_decode_list_prim_u_8_strict(arr[0]),
+    );
+  }
+
+  @protected
+  ChallengeResponseResult dco_decode_challenge_response_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return ChallengeResponseResult_Success(
+          data: dco_decode_list_prim_u_8_strict(raw[1]),
+        );
+      case 1:
+        return ChallengeResponseResult_Error(
+          error: dco_decode_String(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
   }
 
   @protected
@@ -901,27 +1067,116 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  FirmwarePayload dco_decode_firmware_payload(dynamic raw) {
+  FirmwareChunk dco_decode_firmware_chunk(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 1)
-      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-    return FirmwarePayload(
-      payload: dco_decode_list_prim_u_8_strict(arr[0]),
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return FirmwareChunk(
+      patchIndex: dco_decode_u_8(arr[0]),
+      totalPatches: dco_decode_u_8(arr[1]),
+      chunkIndex: dco_decode_u_16(arr[2]),
+      totalChunks: dco_decode_u_16(arr[3]),
+      data: dco_decode_list_prim_u_8_strict(arr[4]),
     );
   }
 
   @protected
-  FirmwareUpdate dco_decode_firmware_update(dynamic raw) {
+  FirmwareFetchEvent dco_decode_firmware_fetch_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return FirmwareFetchEvent_UpdateNotAvailable();
+      case 1:
+        return FirmwareFetchEvent_Starting(
+          dco_decode_box_autoadd_firmware_update_available(raw[1]),
+        );
+      case 2:
+        return FirmwareFetchEvent_Downloading();
+      case 3:
+        return FirmwareFetchEvent_Chunk(
+          dco_decode_box_autoadd_firmware_chunk(raw[1]),
+        );
+      case 4:
+        return FirmwareFetchEvent_Complete();
+      case 5:
+        return FirmwareFetchEvent_Error(
+          dco_decode_String(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  FirmwareFetchRequest dco_decode_firmware_fetch_request(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 3)
-      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
-    return FirmwareUpdate(
-      version: dco_decode_String(arr[0]),
-      timestamp: dco_decode_u_32(arr[1]),
-      changelog: dco_decode_String(arr[2]),
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return FirmwareFetchRequest(
+      currentVersion: dco_decode_String(arr[0]),
     );
+  }
+
+  @protected
+  FirmwareUpdateAvailable dco_decode_firmware_update_available(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return FirmwareUpdateAvailable(
+      version: dco_decode_String(arr[0]),
+      changelog: dco_decode_String(arr[1]),
+      timestamp: dco_decode_u_32(arr[2]),
+      totalSize: dco_decode_u_32(arr[3]),
+      patchCount: dco_decode_u_8(arr[4]),
+    );
+  }
+
+  @protected
+  FirmwareUpdateCheckRequest dco_decode_firmware_update_check_request(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return FirmwareUpdateCheckRequest(
+      currentVersion: dco_decode_String(arr[0]),
+    );
+  }
+
+  @protected
+  FirmwareUpdateCheckResponse dco_decode_firmware_update_check_response(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return FirmwareUpdateCheckResponse_Available(
+          dco_decode_box_autoadd_firmware_update_available(raw[1]),
+        );
+      case 1:
+        return FirmwareUpdateCheckResponse_NotAvailable();
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  FirmwareUpdateResult dco_decode_firmware_update_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return FirmwareUpdateResult_Success(
+          installedVersion: dco_decode_String(raw[1]),
+        );
+      case 1:
+        return FirmwareUpdateResult_Error(
+          dco_decode_String(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
   }
 
   @protected
@@ -952,6 +1207,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
+  }
+
+  @protected
+  List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_quantum_link_message).toList();
   }
 
   @protected
@@ -998,8 +1259,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       passportModel: dco_decode_passport_model(arr[0]),
       passportFirmwareVersion: dco_decode_passport_firmware_version(arr[1]),
       passportSerial: dco_decode_passport_serial(arr[2]),
-      descriptor: dco_decode_String(arr[3]),
+      passportColor: dco_decode_passport_color(arr[3]),
     );
+  }
+
+  @protected
+  PassportColor dco_decode_passport_color(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PassportColor.values[raw as int];
   }
 
   @protected
@@ -1065,58 +1332,78 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_box_autoadd_exchange_rate(raw[1]),
         );
       case 1:
-        return QuantumLinkMessage_FirmwareUpdate(
-          dco_decode_box_autoadd_firmware_update(raw[1]),
+        return QuantumLinkMessage_FirmwareUpdateCheckRequest(
+          dco_decode_box_autoadd_firmware_update_check_request(raw[1]),
         );
       case 2:
+        return QuantumLinkMessage_FirmwareUpdateCheckResponse(
+          dco_decode_box_autoadd_firmware_update_check_response(raw[1]),
+        );
+      case 3:
+        return QuantumLinkMessage_FirmwareFetchRequest(
+          dco_decode_box_autoadd_firmware_fetch_request(raw[1]),
+        );
+      case 4:
+        return QuantumLinkMessage_FirmwareFetchEvent(
+          dco_decode_box_autoadd_firmware_fetch_event(raw[1]),
+        );
+      case 5:
+        return QuantumLinkMessage_FirmwareUpdateResult(
+          dco_decode_box_autoadd_firmware_update_result(raw[1]),
+        );
+      case 6:
         return QuantumLinkMessage_DeviceStatus(
           dco_decode_box_autoadd_device_status(raw[1]),
         );
-      case 3:
+      case 7:
         return QuantumLinkMessage_EnvoyStatus(
           dco_decode_box_autoadd_envoy_status(raw[1]),
         );
-      case 4:
-        return QuantumLinkMessage_PairingResponse(
-          dco_decode_box_autoadd_pairing_response(raw[1]),
-        );
-      case 5:
+      case 8:
         return QuantumLinkMessage_PairingRequest(
           dco_decode_box_autoadd_pairing_request(raw[1]),
         );
-      case 6:
+      case 9:
+        return QuantumLinkMessage_PairingResponse(
+          dco_decode_box_autoadd_pairing_response(raw[1]),
+        );
+      case 10:
         return QuantumLinkMessage_OnboardingState(
           dco_decode_onboarding_state(raw[1]),
         );
-      case 7:
+      case 11:
         return QuantumLinkMessage_SignPsbt(
           dco_decode_box_autoadd_sign_psbt(raw[1]),
         );
-      case 8:
-        return QuantumLinkMessage_AccountUpdate(
-          dco_decode_box_autoadd_account_update(raw[1]),
-        );
-      case 9:
-        return QuantumLinkMessage_FirmwarePayload(
-          dco_decode_box_autoadd_firmware_payload(raw[1]),
-        );
-      case 10:
+      case 12:
         return QuantumLinkMessage_BroadcastTransaction(
           dco_decode_box_autoadd_broadcast_transaction(raw[1]),
         );
-      case 11:
-        return QuantumLinkMessage_SecurityChallengeMessage(
-          dco_decode_box_autoadd_security_challenge_message(raw[1]),
-        );
-      case 12:
-        return QuantumLinkMessage_SecurityProofMessage(
-          dco_decode_box_autoadd_security_proof_message(raw[1]),
-        );
       case 13:
-        return QuantumLinkMessage_Shard(
-          dco_decode_box_autoadd_shard(raw[1]),
+        return QuantumLinkMessage_AccountUpdate(
+          dco_decode_box_autoadd_account_update(raw[1]),
         );
       case 14:
+        return QuantumLinkMessage_SecurityCheck(
+          dco_decode_box_autoadd_security_check(raw[1]),
+        );
+      case 15:
+        return QuantumLinkMessage_BackupShardRequest(
+          dco_decode_box_autoadd_backup_shard_request(raw[1]),
+        );
+      case 16:
+        return QuantumLinkMessage_BackupShardResponse(
+          dco_decode_box_autoadd_backup_shard_response(raw[1]),
+        );
+      case 17:
+        return QuantumLinkMessage_RestoreShardRequest(
+          dco_decode_box_autoadd_restore_shard_request(raw[1]),
+        );
+      case 18:
+        return QuantumLinkMessage_RestoreShardResponse(
+          dco_decode_box_autoadd_restore_shard_response(raw[1]),
+        );
+      case 19:
         return QuantumLinkMessage_RawData(
           dco_decode_box_autoadd_raw_data(raw[1]),
         );
@@ -1137,25 +1424,50 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  SecurityChallengeMessage dco_decode_security_challenge_message(dynamic raw) {
+  RestoreShardRequest dco_decode_restore_shard_request(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 1)
-      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-    return SecurityChallengeMessage(
-      data: dco_decode_list_prim_u_8_strict(arr[0]),
-    );
+    if (arr.length != 0)
+      throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
+    return RestoreShardRequest();
   }
 
   @protected
-  SecurityProofMessage dco_decode_security_proof_message(dynamic raw) {
+  RestoreShardResponse dco_decode_restore_shard_response(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 1)
-      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
-    return SecurityProofMessage(
-      data: dco_decode_list_prim_u_8_strict(arr[0]),
-    );
+    switch (raw[0]) {
+      case 0:
+        return RestoreShardResponse_Success(
+          dco_decode_box_autoadd_shard(raw[1]),
+        );
+      case 1:
+        return RestoreShardResponse_Error(
+          dco_decode_String(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  SecurityCheck dco_decode_security_check(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return SecurityCheck_ChallengeRequest(
+          dco_decode_box_autoadd_challenge_request(raw[1]),
+        );
+      case 1:
+        return SecurityCheck_ChallengeResponse(
+          dco_decode_box_autoadd_challenge_response_result(raw[1]),
+        );
+      case 2:
+        return SecurityCheck_VerificationResult(
+          dco_decode_box_autoadd_verification_result(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
   }
 
   @protected
@@ -1179,6 +1491,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       accountId: dco_decode_String(arr[0]),
       psbt: dco_decode_list_prim_u_8_strict(arr[1]),
     );
+  }
+
+  @protected
+  int dco_decode_u_16(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
   }
 
   @protected
@@ -1206,6 +1524,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  VerificationResult dco_decode_verification_result(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return VerificationResult_Success();
+      case 1:
+        return VerificationResult_Error(
+          error: dco_decode_String(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_String(deserializer);
@@ -1222,11 +1555,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Dechunker
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+  EnvoyMasterDechunker
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return DechunkerImpl.frbInternalSseDecode(
+    return EnvoyMasterDechunkerImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -1249,11 +1582,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Dechunker
-      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+  EnvoyMasterDechunker
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return DechunkerImpl.frbInternalSseDecode(
+    return EnvoyMasterDechunkerImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -1294,11 +1627,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Dechunker
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+  EnvoyMasterDechunker
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return DechunkerImpl.frbInternalSseDecode(
+    return EnvoyMasterDechunkerImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -1336,6 +1669,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BackupShardRequest sse_decode_backup_shard_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_shard(deserializer);
+    return BackupShardRequest(field0: var_field0);
+  }
+
+  @protected
+  BackupShardResponse sse_decode_backup_shard_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return BackupShardResponse_Success();
+      case 1:
+        var var_field0 = sse_decode_String(deserializer);
+        return BackupShardResponse_Error(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
   XidDocument
       sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           SseDeserializer deserializer) {
@@ -1352,10 +1710,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BackupShardRequest sse_decode_box_autoadd_backup_shard_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_backup_shard_request(deserializer));
+  }
+
+  @protected
+  BackupShardResponse sse_decode_box_autoadd_backup_shard_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_backup_shard_response(deserializer));
+  }
+
+  @protected
   BroadcastTransaction sse_decode_box_autoadd_broadcast_transaction(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_broadcast_transaction(deserializer));
+  }
+
+  @protected
+  ChallengeRequest sse_decode_box_autoadd_challenge_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_challenge_request(deserializer));
+  }
+
+  @protected
+  ChallengeResponseResult sse_decode_box_autoadd_challenge_response_result(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_challenge_response_result(deserializer));
   }
 
   @protected
@@ -1387,17 +1773,54 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  FirmwarePayload sse_decode_box_autoadd_firmware_payload(
+  FirmwareChunk sse_decode_box_autoadd_firmware_chunk(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_firmware_payload(deserializer));
+    return (sse_decode_firmware_chunk(deserializer));
   }
 
   @protected
-  FirmwareUpdate sse_decode_box_autoadd_firmware_update(
+  FirmwareFetchEvent sse_decode_box_autoadd_firmware_fetch_event(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_firmware_update(deserializer));
+    return (sse_decode_firmware_fetch_event(deserializer));
+  }
+
+  @protected
+  FirmwareFetchRequest sse_decode_box_autoadd_firmware_fetch_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_firmware_fetch_request(deserializer));
+  }
+
+  @protected
+  FirmwareUpdateAvailable sse_decode_box_autoadd_firmware_update_available(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_firmware_update_available(deserializer));
+  }
+
+  @protected
+  FirmwareUpdateCheckRequest
+      sse_decode_box_autoadd_firmware_update_check_request(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_firmware_update_check_request(deserializer));
+  }
+
+  @protected
+  FirmwareUpdateCheckResponse
+      sse_decode_box_autoadd_firmware_update_check_response(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_firmware_update_check_response(deserializer));
+  }
+
+  @protected
+  FirmwareUpdateResult sse_decode_box_autoadd_firmware_update_result(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_firmware_update_result(deserializer));
   }
 
   @protected
@@ -1428,17 +1851,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  SecurityChallengeMessage sse_decode_box_autoadd_security_challenge_message(
+  RestoreShardRequest sse_decode_box_autoadd_restore_shard_request(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_security_challenge_message(deserializer));
+    return (sse_decode_restore_shard_request(deserializer));
   }
 
   @protected
-  SecurityProofMessage sse_decode_box_autoadd_security_proof_message(
+  RestoreShardResponse sse_decode_box_autoadd_restore_shard_response(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_security_proof_message(deserializer));
+    return (sse_decode_restore_shard_response(deserializer));
+  }
+
+  @protected
+  SecurityCheck sse_decode_box_autoadd_security_check(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_security_check(deserializer));
   }
 
   @protected
@@ -1454,12 +1884,44 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  VerificationResult sse_decode_box_autoadd_verification_result(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_verification_result(deserializer));
+  }
+
+  @protected
   BroadcastTransaction sse_decode_broadcast_transaction(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_accountId = sse_decode_String(deserializer);
     var var_psbt = sse_decode_list_prim_u_8_strict(deserializer);
     return BroadcastTransaction(accountId: var_accountId, psbt: var_psbt);
+  }
+
+  @protected
+  ChallengeRequest sse_decode_challenge_request(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_data = sse_decode_list_prim_u_8_strict(deserializer);
+    return ChallengeRequest(data: var_data);
+  }
+
+  @protected
+  ChallengeResponseResult sse_decode_challenge_response_result(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_data = sse_decode_list_prim_u_8_strict(deserializer);
+        return ChallengeResponseResult_Success(data: var_data);
+      case 1:
+        var var_error = sse_decode_String(deserializer);
+        return ChallengeResponseResult_Error(error: var_error);
+      default:
+        throw UnimplementedError('');
+    }
   }
 
   @protected
@@ -1535,22 +1997,117 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  FirmwarePayload sse_decode_firmware_payload(SseDeserializer deserializer) {
+  FirmwareChunk sse_decode_firmware_chunk(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_payload = sse_decode_list_prim_u_8_strict(deserializer);
-    return FirmwarePayload(payload: var_payload);
+    var var_patchIndex = sse_decode_u_8(deserializer);
+    var var_totalPatches = sse_decode_u_8(deserializer);
+    var var_chunkIndex = sse_decode_u_16(deserializer);
+    var var_totalChunks = sse_decode_u_16(deserializer);
+    var var_data = sse_decode_list_prim_u_8_strict(deserializer);
+    return FirmwareChunk(
+        patchIndex: var_patchIndex,
+        totalPatches: var_totalPatches,
+        chunkIndex: var_chunkIndex,
+        totalChunks: var_totalChunks,
+        data: var_data);
   }
 
   @protected
-  FirmwareUpdate sse_decode_firmware_update(SseDeserializer deserializer) {
+  FirmwareFetchEvent sse_decode_firmware_fetch_event(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return FirmwareFetchEvent_UpdateNotAvailable();
+      case 1:
+        var var_field0 =
+            sse_decode_box_autoadd_firmware_update_available(deserializer);
+        return FirmwareFetchEvent_Starting(var_field0);
+      case 2:
+        return FirmwareFetchEvent_Downloading();
+      case 3:
+        var var_field0 = sse_decode_box_autoadd_firmware_chunk(deserializer);
+        return FirmwareFetchEvent_Chunk(var_field0);
+      case 4:
+        return FirmwareFetchEvent_Complete();
+      case 5:
+        var var_field0 = sse_decode_String(deserializer);
+        return FirmwareFetchEvent_Error(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  FirmwareFetchRequest sse_decode_firmware_fetch_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_currentVersion = sse_decode_String(deserializer);
+    return FirmwareFetchRequest(currentVersion: var_currentVersion);
+  }
+
+  @protected
+  FirmwareUpdateAvailable sse_decode_firmware_update_available(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_version = sse_decode_String(deserializer);
-    var var_timestamp = sse_decode_u_32(deserializer);
     var var_changelog = sse_decode_String(deserializer);
-    return FirmwareUpdate(
+    var var_timestamp = sse_decode_u_32(deserializer);
+    var var_totalSize = sse_decode_u_32(deserializer);
+    var var_patchCount = sse_decode_u_8(deserializer);
+    return FirmwareUpdateAvailable(
         version: var_version,
+        changelog: var_changelog,
         timestamp: var_timestamp,
-        changelog: var_changelog);
+        totalSize: var_totalSize,
+        patchCount: var_patchCount);
+  }
+
+  @protected
+  FirmwareUpdateCheckRequest sse_decode_firmware_update_check_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_currentVersion = sse_decode_String(deserializer);
+    return FirmwareUpdateCheckRequest(currentVersion: var_currentVersion);
+  }
+
+  @protected
+  FirmwareUpdateCheckResponse sse_decode_firmware_update_check_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 =
+            sse_decode_box_autoadd_firmware_update_available(deserializer);
+        return FirmwareUpdateCheckResponse_Available(var_field0);
+      case 1:
+        return FirmwareUpdateCheckResponse_NotAvailable();
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  FirmwareUpdateResult sse_decode_firmware_update_result(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_installedVersion = sse_decode_String(deserializer);
+        return FirmwareUpdateResult_Success(
+            installedVersion: var_installedVersion);
+      case 1:
+        var var_field0 = sse_decode_String(deserializer);
+        return FirmwareUpdateResult_Error(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
   }
 
   @protected
@@ -1590,6 +2147,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  List<QuantumLinkMessage> sse_decode_list_quantum_link_message(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <QuantumLinkMessage>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_quantum_link_message(deserializer));
+    }
+    return ans_;
   }
 
   @protected
@@ -1639,12 +2209,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_passportFirmwareVersion =
         sse_decode_passport_firmware_version(deserializer);
     var var_passportSerial = sse_decode_passport_serial(deserializer);
-    var var_descriptor = sse_decode_String(deserializer);
+    var var_passportColor = sse_decode_passport_color(deserializer);
     return PairingResponse(
         passportModel: var_passportModel,
         passportFirmwareVersion: var_passportFirmwareVersion,
         passportSerial: var_passportSerial,
-        descriptor: var_descriptor);
+        passportColor: var_passportColor);
+  }
+
+  @protected
+  PassportColor sse_decode_passport_color(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return PassportColor.values[inner];
   }
 
   @protected
@@ -1698,48 +2275,70 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_box_autoadd_exchange_rate(deserializer);
         return QuantumLinkMessage_ExchangeRate(var_field0);
       case 1:
-        var var_field0 = sse_decode_box_autoadd_firmware_update(deserializer);
-        return QuantumLinkMessage_FirmwareUpdate(var_field0);
+        var var_field0 =
+            sse_decode_box_autoadd_firmware_update_check_request(deserializer);
+        return QuantumLinkMessage_FirmwareUpdateCheckRequest(var_field0);
       case 2:
+        var var_field0 =
+            sse_decode_box_autoadd_firmware_update_check_response(deserializer);
+        return QuantumLinkMessage_FirmwareUpdateCheckResponse(var_field0);
+      case 3:
+        var var_field0 =
+            sse_decode_box_autoadd_firmware_fetch_request(deserializer);
+        return QuantumLinkMessage_FirmwareFetchRequest(var_field0);
+      case 4:
+        var var_field0 =
+            sse_decode_box_autoadd_firmware_fetch_event(deserializer);
+        return QuantumLinkMessage_FirmwareFetchEvent(var_field0);
+      case 5:
+        var var_field0 =
+            sse_decode_box_autoadd_firmware_update_result(deserializer);
+        return QuantumLinkMessage_FirmwareUpdateResult(var_field0);
+      case 6:
         var var_field0 = sse_decode_box_autoadd_device_status(deserializer);
         return QuantumLinkMessage_DeviceStatus(var_field0);
-      case 3:
+      case 7:
         var var_field0 = sse_decode_box_autoadd_envoy_status(deserializer);
         return QuantumLinkMessage_EnvoyStatus(var_field0);
-      case 4:
-        var var_field0 = sse_decode_box_autoadd_pairing_response(deserializer);
-        return QuantumLinkMessage_PairingResponse(var_field0);
-      case 5:
+      case 8:
         var var_field0 = sse_decode_box_autoadd_pairing_request(deserializer);
         return QuantumLinkMessage_PairingRequest(var_field0);
-      case 6:
+      case 9:
+        var var_field0 = sse_decode_box_autoadd_pairing_response(deserializer);
+        return QuantumLinkMessage_PairingResponse(var_field0);
+      case 10:
         var var_field0 = sse_decode_onboarding_state(deserializer);
         return QuantumLinkMessage_OnboardingState(var_field0);
-      case 7:
+      case 11:
         var var_field0 = sse_decode_box_autoadd_sign_psbt(deserializer);
         return QuantumLinkMessage_SignPsbt(var_field0);
-      case 8:
-        var var_field0 = sse_decode_box_autoadd_account_update(deserializer);
-        return QuantumLinkMessage_AccountUpdate(var_field0);
-      case 9:
-        var var_field0 = sse_decode_box_autoadd_firmware_payload(deserializer);
-        return QuantumLinkMessage_FirmwarePayload(var_field0);
-      case 10:
+      case 12:
         var var_field0 =
             sse_decode_box_autoadd_broadcast_transaction(deserializer);
         return QuantumLinkMessage_BroadcastTransaction(var_field0);
-      case 11:
-        var var_field0 =
-            sse_decode_box_autoadd_security_challenge_message(deserializer);
-        return QuantumLinkMessage_SecurityChallengeMessage(var_field0);
-      case 12:
-        var var_field0 =
-            sse_decode_box_autoadd_security_proof_message(deserializer);
-        return QuantumLinkMessage_SecurityProofMessage(var_field0);
       case 13:
-        var var_field0 = sse_decode_box_autoadd_shard(deserializer);
-        return QuantumLinkMessage_Shard(var_field0);
+        var var_field0 = sse_decode_box_autoadd_account_update(deserializer);
+        return QuantumLinkMessage_AccountUpdate(var_field0);
       case 14:
+        var var_field0 = sse_decode_box_autoadd_security_check(deserializer);
+        return QuantumLinkMessage_SecurityCheck(var_field0);
+      case 15:
+        var var_field0 =
+            sse_decode_box_autoadd_backup_shard_request(deserializer);
+        return QuantumLinkMessage_BackupShardRequest(var_field0);
+      case 16:
+        var var_field0 =
+            sse_decode_box_autoadd_backup_shard_response(deserializer);
+        return QuantumLinkMessage_BackupShardResponse(var_field0);
+      case 17:
+        var var_field0 =
+            sse_decode_box_autoadd_restore_shard_request(deserializer);
+        return QuantumLinkMessage_RestoreShardRequest(var_field0);
+      case 18:
+        var var_field0 =
+            sse_decode_box_autoadd_restore_shard_response(deserializer);
+        return QuantumLinkMessage_RestoreShardResponse(var_field0);
+      case 19:
         var var_field0 = sse_decode_box_autoadd_raw_data(deserializer);
         return QuantumLinkMessage_RawData(var_field0);
       default:
@@ -1755,19 +2354,50 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  SecurityChallengeMessage sse_decode_security_challenge_message(
+  RestoreShardRequest sse_decode_restore_shard_request(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_data = sse_decode_list_prim_u_8_strict(deserializer);
-    return SecurityChallengeMessage(data: var_data);
+    return RestoreShardRequest();
   }
 
   @protected
-  SecurityProofMessage sse_decode_security_proof_message(
+  RestoreShardResponse sse_decode_restore_shard_response(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_data = sse_decode_list_prim_u_8_strict(deserializer);
-    return SecurityProofMessage(data: var_data);
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 = sse_decode_box_autoadd_shard(deserializer);
+        return RestoreShardResponse_Success(var_field0);
+      case 1:
+        var var_field0 = sse_decode_String(deserializer);
+        return RestoreShardResponse_Error(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  SecurityCheck sse_decode_security_check(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 = sse_decode_box_autoadd_challenge_request(deserializer);
+        return SecurityCheck_ChallengeRequest(var_field0);
+      case 1:
+        var var_field0 =
+            sse_decode_box_autoadd_challenge_response_result(deserializer);
+        return SecurityCheck_ChallengeResponse(var_field0);
+      case 2:
+        var var_field0 =
+            sse_decode_box_autoadd_verification_result(deserializer);
+        return SecurityCheck_VerificationResult(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
   }
 
   @protected
@@ -1783,6 +2413,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_accountId = sse_decode_String(deserializer);
     var var_psbt = sse_decode_list_prim_u_8_strict(deserializer);
     return SignPsbt(accountId: var_accountId, psbt: var_psbt);
+  }
+
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint16();
   }
 
   @protected
@@ -1806,6 +2442,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   BigInt sse_decode_usize(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getBigUint64();
+  }
+
+  @protected
+  VerificationResult sse_decode_verification_result(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return VerificationResult_Success();
+      case 1:
+        var var_error = sse_decode_String(deserializer);
+        return VerificationResult_Error(error: var_error);
+      default:
+        throw UnimplementedError('');
+    }
   }
 
   @protected
@@ -1833,11 +2486,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
-          Dechunker self, SseSerializer serializer) {
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+          EnvoyMasterDechunker self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as DechunkerImpl).frbInternalSseEncode(move: true), serializer);
+        (self as EnvoyMasterDechunkerImpl).frbInternalSseEncode(move: true),
+        serializer);
   }
 
   @protected
@@ -1861,11 +2515,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
-          Dechunker self, SseSerializer serializer) {
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+          EnvoyMasterDechunker self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as DechunkerImpl).frbInternalSseEncode(move: false), serializer);
+        (self as EnvoyMasterDechunkerImpl).frbInternalSseEncode(move: false),
+        serializer);
   }
 
   @protected
@@ -1910,11 +2565,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
-          Dechunker self, SseSerializer serializer) {
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
+          EnvoyMasterDechunker self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-        (self as DechunkerImpl).frbInternalSseEncode(move: null), serializer);
+        (self as EnvoyMasterDechunkerImpl).frbInternalSseEncode(move: null),
+        serializer);
   }
 
   @protected
@@ -1950,6 +2606,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_backup_shard_request(
+      BackupShardRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_shard(self.field0, serializer);
+  }
+
+  @protected
+  void sse_encode_backup_shard_response(
+      BackupShardResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case BackupShardResponse_Success():
+        sse_encode_i_32(0, serializer);
+      case BackupShardResponse_Error(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(field0, serializer);
+    }
+  }
+
+  @protected
   void
       sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           XidDocument self, SseSerializer serializer) {
@@ -1966,10 +2642,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_backup_shard_request(
+      BackupShardRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_backup_shard_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_backup_shard_response(
+      BackupShardResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_backup_shard_response(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_broadcast_transaction(
       BroadcastTransaction self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_broadcast_transaction(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_challenge_request(
+      ChallengeRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_challenge_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_challenge_response_result(
+      ChallengeResponseResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_challenge_response_result(self, serializer);
   }
 
   @protected
@@ -2001,17 +2705,52 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_box_autoadd_firmware_payload(
-      FirmwarePayload self, SseSerializer serializer) {
+  void sse_encode_box_autoadd_firmware_chunk(
+      FirmwareChunk self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_firmware_payload(self, serializer);
+    sse_encode_firmware_chunk(self, serializer);
   }
 
   @protected
-  void sse_encode_box_autoadd_firmware_update(
-      FirmwareUpdate self, SseSerializer serializer) {
+  void sse_encode_box_autoadd_firmware_fetch_event(
+      FirmwareFetchEvent self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_firmware_update(self, serializer);
+    sse_encode_firmware_fetch_event(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_firmware_fetch_request(
+      FirmwareFetchRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_firmware_fetch_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_firmware_update_available(
+      FirmwareUpdateAvailable self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_firmware_update_available(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_firmware_update_check_request(
+      FirmwareUpdateCheckRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_firmware_update_check_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_firmware_update_check_response(
+      FirmwareUpdateCheckResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_firmware_update_check_response(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_firmware_update_result(
+      FirmwareUpdateResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_firmware_update_result(self, serializer);
   }
 
   @protected
@@ -2042,17 +2781,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_box_autoadd_security_challenge_message(
-      SecurityChallengeMessage self, SseSerializer serializer) {
+  void sse_encode_box_autoadd_restore_shard_request(
+      RestoreShardRequest self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_security_challenge_message(self, serializer);
+    sse_encode_restore_shard_request(self, serializer);
   }
 
   @protected
-  void sse_encode_box_autoadd_security_proof_message(
-      SecurityProofMessage self, SseSerializer serializer) {
+  void sse_encode_box_autoadd_restore_shard_response(
+      RestoreShardResponse self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_security_proof_message(self, serializer);
+    sse_encode_restore_shard_response(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_security_check(
+      SecurityCheck self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_security_check(self, serializer);
   }
 
   @protected
@@ -2069,11 +2815,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_verification_result(
+      VerificationResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_verification_result(self, serializer);
+  }
+
+  @protected
   void sse_encode_broadcast_transaction(
       BroadcastTransaction self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.accountId, serializer);
     sse_encode_list_prim_u_8_strict(self.psbt, serializer);
+  }
+
+  @protected
+  void sse_encode_challenge_request(
+      ChallengeRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.data, serializer);
+  }
+
+  @protected
+  void sse_encode_challenge_response_result(
+      ChallengeResponseResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case ChallengeResponseResult_Success(data: final data):
+        sse_encode_i_32(0, serializer);
+        sse_encode_list_prim_u_8_strict(data, serializer);
+      case ChallengeResponseResult_Error(error: final error):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(error, serializer);
+    }
   }
 
   @protected
@@ -2138,19 +2912,90 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_firmware_payload(
-      FirmwarePayload self, SseSerializer serializer) {
+  void sse_encode_firmware_chunk(FirmwareChunk self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_list_prim_u_8_strict(self.payload, serializer);
+    sse_encode_u_8(self.patchIndex, serializer);
+    sse_encode_u_8(self.totalPatches, serializer);
+    sse_encode_u_16(self.chunkIndex, serializer);
+    sse_encode_u_16(self.totalChunks, serializer);
+    sse_encode_list_prim_u_8_strict(self.data, serializer);
   }
 
   @protected
-  void sse_encode_firmware_update(
-      FirmwareUpdate self, SseSerializer serializer) {
+  void sse_encode_firmware_fetch_event(
+      FirmwareFetchEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case FirmwareFetchEvent_UpdateNotAvailable():
+        sse_encode_i_32(0, serializer);
+      case FirmwareFetchEvent_Starting(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_firmware_update_available(field0, serializer);
+      case FirmwareFetchEvent_Downloading():
+        sse_encode_i_32(2, serializer);
+      case FirmwareFetchEvent_Chunk(field0: final field0):
+        sse_encode_i_32(3, serializer);
+        sse_encode_box_autoadd_firmware_chunk(field0, serializer);
+      case FirmwareFetchEvent_Complete():
+        sse_encode_i_32(4, serializer);
+      case FirmwareFetchEvent_Error(field0: final field0):
+        sse_encode_i_32(5, serializer);
+        sse_encode_String(field0, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_firmware_fetch_request(
+      FirmwareFetchRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.currentVersion, serializer);
+  }
+
+  @protected
+  void sse_encode_firmware_update_available(
+      FirmwareUpdateAvailable self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.version, serializer);
-    sse_encode_u_32(self.timestamp, serializer);
     sse_encode_String(self.changelog, serializer);
+    sse_encode_u_32(self.timestamp, serializer);
+    sse_encode_u_32(self.totalSize, serializer);
+    sse_encode_u_8(self.patchCount, serializer);
+  }
+
+  @protected
+  void sse_encode_firmware_update_check_request(
+      FirmwareUpdateCheckRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.currentVersion, serializer);
+  }
+
+  @protected
+  void sse_encode_firmware_update_check_response(
+      FirmwareUpdateCheckResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case FirmwareUpdateCheckResponse_Available(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_box_autoadd_firmware_update_available(field0, serializer);
+      case FirmwareUpdateCheckResponse_NotAvailable():
+        sse_encode_i_32(1, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_firmware_update_result(
+      FirmwareUpdateResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case FirmwareUpdateResult_Success(
+          installedVersion: final installedVersion
+        ):
+        sse_encode_i_32(0, serializer);
+        sse_encode_String(installedVersion, serializer);
+      case FirmwareUpdateResult_Error(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(field0, serializer);
+    }
   }
 
   @protected
@@ -2190,6 +3035,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_list_quantum_link_message(
+      List<QuantumLinkMessage> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_quantum_link_message(item, serializer);
+    }
   }
 
   @protected
@@ -2238,7 +3093,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_passport_firmware_version(
         self.passportFirmwareVersion, serializer);
     sse_encode_passport_serial(self.passportSerial, serializer);
-    sse_encode_String(self.descriptor, serializer);
+    sse_encode_passport_color(self.passportColor, serializer);
+  }
+
+  @protected
+  void sse_encode_passport_color(PassportColor self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
   }
 
   @protected
@@ -2286,47 +3147,64 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case QuantumLinkMessage_ExchangeRate(field0: final field0):
         sse_encode_i_32(0, serializer);
         sse_encode_box_autoadd_exchange_rate(field0, serializer);
-      case QuantumLinkMessage_FirmwareUpdate(field0: final field0):
+      case QuantumLinkMessage_FirmwareUpdateCheckRequest(field0: final field0):
         sse_encode_i_32(1, serializer);
-        sse_encode_box_autoadd_firmware_update(field0, serializer);
-      case QuantumLinkMessage_DeviceStatus(field0: final field0):
+        sse_encode_box_autoadd_firmware_update_check_request(
+            field0, serializer);
+      case QuantumLinkMessage_FirmwareUpdateCheckResponse(field0: final field0):
         sse_encode_i_32(2, serializer);
+        sse_encode_box_autoadd_firmware_update_check_response(
+            field0, serializer);
+      case QuantumLinkMessage_FirmwareFetchRequest(field0: final field0):
+        sse_encode_i_32(3, serializer);
+        sse_encode_box_autoadd_firmware_fetch_request(field0, serializer);
+      case QuantumLinkMessage_FirmwareFetchEvent(field0: final field0):
+        sse_encode_i_32(4, serializer);
+        sse_encode_box_autoadd_firmware_fetch_event(field0, serializer);
+      case QuantumLinkMessage_FirmwareUpdateResult(field0: final field0):
+        sse_encode_i_32(5, serializer);
+        sse_encode_box_autoadd_firmware_update_result(field0, serializer);
+      case QuantumLinkMessage_DeviceStatus(field0: final field0):
+        sse_encode_i_32(6, serializer);
         sse_encode_box_autoadd_device_status(field0, serializer);
       case QuantumLinkMessage_EnvoyStatus(field0: final field0):
-        sse_encode_i_32(3, serializer);
+        sse_encode_i_32(7, serializer);
         sse_encode_box_autoadd_envoy_status(field0, serializer);
-      case QuantumLinkMessage_PairingResponse(field0: final field0):
-        sse_encode_i_32(4, serializer);
-        sse_encode_box_autoadd_pairing_response(field0, serializer);
       case QuantumLinkMessage_PairingRequest(field0: final field0):
-        sse_encode_i_32(5, serializer);
+        sse_encode_i_32(8, serializer);
         sse_encode_box_autoadd_pairing_request(field0, serializer);
+      case QuantumLinkMessage_PairingResponse(field0: final field0):
+        sse_encode_i_32(9, serializer);
+        sse_encode_box_autoadd_pairing_response(field0, serializer);
       case QuantumLinkMessage_OnboardingState(field0: final field0):
-        sse_encode_i_32(6, serializer);
+        sse_encode_i_32(10, serializer);
         sse_encode_onboarding_state(field0, serializer);
       case QuantumLinkMessage_SignPsbt(field0: final field0):
-        sse_encode_i_32(7, serializer);
-        sse_encode_box_autoadd_sign_psbt(field0, serializer);
-      case QuantumLinkMessage_AccountUpdate(field0: final field0):
-        sse_encode_i_32(8, serializer);
-        sse_encode_box_autoadd_account_update(field0, serializer);
-      case QuantumLinkMessage_FirmwarePayload(field0: final field0):
-        sse_encode_i_32(9, serializer);
-        sse_encode_box_autoadd_firmware_payload(field0, serializer);
-      case QuantumLinkMessage_BroadcastTransaction(field0: final field0):
-        sse_encode_i_32(10, serializer);
-        sse_encode_box_autoadd_broadcast_transaction(field0, serializer);
-      case QuantumLinkMessage_SecurityChallengeMessage(field0: final field0):
         sse_encode_i_32(11, serializer);
-        sse_encode_box_autoadd_security_challenge_message(field0, serializer);
-      case QuantumLinkMessage_SecurityProofMessage(field0: final field0):
+        sse_encode_box_autoadd_sign_psbt(field0, serializer);
+      case QuantumLinkMessage_BroadcastTransaction(field0: final field0):
         sse_encode_i_32(12, serializer);
-        sse_encode_box_autoadd_security_proof_message(field0, serializer);
-      case QuantumLinkMessage_Shard(field0: final field0):
+        sse_encode_box_autoadd_broadcast_transaction(field0, serializer);
+      case QuantumLinkMessage_AccountUpdate(field0: final field0):
         sse_encode_i_32(13, serializer);
-        sse_encode_box_autoadd_shard(field0, serializer);
-      case QuantumLinkMessage_RawData(field0: final field0):
+        sse_encode_box_autoadd_account_update(field0, serializer);
+      case QuantumLinkMessage_SecurityCheck(field0: final field0):
         sse_encode_i_32(14, serializer);
+        sse_encode_box_autoadd_security_check(field0, serializer);
+      case QuantumLinkMessage_BackupShardRequest(field0: final field0):
+        sse_encode_i_32(15, serializer);
+        sse_encode_box_autoadd_backup_shard_request(field0, serializer);
+      case QuantumLinkMessage_BackupShardResponse(field0: final field0):
+        sse_encode_i_32(16, serializer);
+        sse_encode_box_autoadd_backup_shard_response(field0, serializer);
+      case QuantumLinkMessage_RestoreShardRequest(field0: final field0):
+        sse_encode_i_32(17, serializer);
+        sse_encode_box_autoadd_restore_shard_request(field0, serializer);
+      case QuantumLinkMessage_RestoreShardResponse(field0: final field0):
+        sse_encode_i_32(18, serializer);
+        sse_encode_box_autoadd_restore_shard_response(field0, serializer);
+      case QuantumLinkMessage_RawData(field0: final field0):
+        sse_encode_i_32(19, serializer);
         sse_encode_box_autoadd_raw_data(field0, serializer);
     }
   }
@@ -2338,17 +3216,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_security_challenge_message(
-      SecurityChallengeMessage self, SseSerializer serializer) {
+  void sse_encode_restore_shard_request(
+      RestoreShardRequest self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_list_prim_u_8_strict(self.data, serializer);
   }
 
   @protected
-  void sse_encode_security_proof_message(
-      SecurityProofMessage self, SseSerializer serializer) {
+  void sse_encode_restore_shard_response(
+      RestoreShardResponse self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_list_prim_u_8_strict(self.data, serializer);
+    switch (self) {
+      case RestoreShardResponse_Success(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_box_autoadd_shard(field0, serializer);
+      case RestoreShardResponse_Error(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(field0, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_security_check(SecurityCheck self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case SecurityCheck_ChallengeRequest(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_box_autoadd_challenge_request(field0, serializer);
+      case SecurityCheck_ChallengeResponse(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_challenge_response_result(field0, serializer);
+      case SecurityCheck_VerificationResult(field0: final field0):
+        sse_encode_i_32(2, serializer);
+        sse_encode_box_autoadd_verification_result(field0, serializer);
+    }
   }
 
   @protected
@@ -2362,6 +3262,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.accountId, serializer);
     sse_encode_list_prim_u_8_strict(self.psbt, serializer);
+  }
+
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint16(self);
   }
 
   @protected
@@ -2385,6 +3291,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_usize(BigInt self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putBigUint64(self);
+  }
+
+  @protected
+  void sse_encode_verification_result(
+      VerificationResult self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case VerificationResult_Success():
+        sse_encode_i_32(0, serializer);
+      case VerificationResult_Error(error: final error):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(error, serializer);
+    }
   }
 
   @protected
@@ -2415,22 +3334,24 @@ class ArcMutexDecoderImpl extends RustOpaque implements ArcMutexDecoder {
 }
 
 @sealed
-class DechunkerImpl extends RustOpaque implements Dechunker {
+class EnvoyMasterDechunkerImpl extends RustOpaque
+    implements EnvoyMasterDechunker {
   // Not to be used by end users
-  DechunkerImpl.frbInternalDcoDecode(List<dynamic> wire)
+  EnvoyMasterDechunkerImpl.frbInternalDcoDecode(List<dynamic> wire)
       : super.frbInternalDcoDecode(wire, _kStaticData);
 
   // Not to be used by end users
-  DechunkerImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+  EnvoyMasterDechunkerImpl.frbInternalSseDecode(
+      BigInt ptr, int externalSizeOnNative)
       : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
   static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_Dechunker,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_Dechunker,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_DechunkerPtr,
+    rustArcIncrementStrongCount: RustLib
+        .instance.api.rust_arc_increment_strong_count_EnvoyMasterDechunker,
+    rustArcDecrementStrongCount: RustLib
+        .instance.api.rust_arc_decrement_strong_count_EnvoyMasterDechunker,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance.api.rust_arc_decrement_strong_count_EnvoyMasterDechunkerPtr,
   );
 }
 

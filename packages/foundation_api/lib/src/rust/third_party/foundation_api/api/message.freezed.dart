@@ -20,59 +20,78 @@ mixin _$QuantumLinkMessage {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) =>
@@ -81,76 +100,112 @@ mixin _$QuantumLinkMessage {
   TResult map<TResult extends Object?>({
     required TResult Function(QuantumLinkMessage_ExchangeRate value)
         exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
         deviceStatus,
     required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
     required TResult Function(QuantumLinkMessage_PairingRequest value)
         pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
     required TResult Function(QuantumLinkMessage_OnboardingState value)
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
     required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
         broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_PairingResponse value)?
         pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_OnboardingState value)?
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) =>
@@ -253,20 +308,26 @@ class _$QuantumLinkMessage_ExchangeRateImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) {
     return exchangeRate(field0);
@@ -276,20 +337,26 @@ class _$QuantumLinkMessage_ExchangeRateImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) {
     return exchangeRate?.call(field0);
@@ -299,19 +366,26 @@ class _$QuantumLinkMessage_ExchangeRateImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) {
@@ -326,29 +400,42 @@ class _$QuantumLinkMessage_ExchangeRateImpl
   TResult map<TResult extends Object?>({
     required TResult Function(QuantumLinkMessage_ExchangeRate value)
         exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
         deviceStatus,
     required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
     required TResult Function(QuantumLinkMessage_PairingRequest value)
         pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
     required TResult Function(QuantumLinkMessage_OnboardingState value)
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
     required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
         broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) {
     return exchangeRate(this);
@@ -358,25 +445,36 @@ class _$QuantumLinkMessage_ExchangeRateImpl
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_PairingResponse value)?
         pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_OnboardingState value)?
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) {
     return exchangeRate?.call(this);
@@ -386,22 +484,34 @@ class _$QuantumLinkMessage_ExchangeRateImpl
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) {
@@ -429,23 +539,26 @@ abstract class QuantumLinkMessage_ExchangeRate extends QuantumLinkMessage {
 }
 
 /// @nodoc
-abstract class _$$QuantumLinkMessage_FirmwareUpdateImplCopyWith<$Res> {
-  factory _$$QuantumLinkMessage_FirmwareUpdateImplCopyWith(
-          _$QuantumLinkMessage_FirmwareUpdateImpl value,
-          $Res Function(_$QuantumLinkMessage_FirmwareUpdateImpl) then) =
-      __$$QuantumLinkMessage_FirmwareUpdateImplCopyWithImpl<$Res>;
+abstract class _$$QuantumLinkMessage_FirmwareUpdateCheckRequestImplCopyWith<
+    $Res> {
+  factory _$$QuantumLinkMessage_FirmwareUpdateCheckRequestImplCopyWith(
+          _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl value,
+          $Res Function(_$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl)
+              then) =
+      __$$QuantumLinkMessage_FirmwareUpdateCheckRequestImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({FirmwareUpdate field0});
+  $Res call({FirmwareUpdateCheckRequest field0});
 }
 
 /// @nodoc
-class __$$QuantumLinkMessage_FirmwareUpdateImplCopyWithImpl<$Res>
+class __$$QuantumLinkMessage_FirmwareUpdateCheckRequestImplCopyWithImpl<$Res>
     extends _$QuantumLinkMessageCopyWithImpl<$Res,
-        _$QuantumLinkMessage_FirmwareUpdateImpl>
-    implements _$$QuantumLinkMessage_FirmwareUpdateImplCopyWith<$Res> {
-  __$$QuantumLinkMessage_FirmwareUpdateImplCopyWithImpl(
-      _$QuantumLinkMessage_FirmwareUpdateImpl _value,
-      $Res Function(_$QuantumLinkMessage_FirmwareUpdateImpl) _then)
+        _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl>
+    implements
+        _$$QuantumLinkMessage_FirmwareUpdateCheckRequestImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_FirmwareUpdateCheckRequestImplCopyWithImpl(
+      _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl _value,
+      $Res Function(_$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of QuantumLinkMessage
@@ -455,34 +568,35 @@ class __$$QuantumLinkMessage_FirmwareUpdateImplCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$QuantumLinkMessage_FirmwareUpdateImpl(
+    return _then(_$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
-              as FirmwareUpdate,
+              as FirmwareUpdateCheckRequest,
     ));
   }
 }
 
 /// @nodoc
 
-class _$QuantumLinkMessage_FirmwareUpdateImpl
-    extends QuantumLinkMessage_FirmwareUpdate {
-  const _$QuantumLinkMessage_FirmwareUpdateImpl(this.field0) : super._();
+class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
+    extends QuantumLinkMessage_FirmwareUpdateCheckRequest {
+  const _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl(this.field0)
+      : super._();
 
   @override
-  final FirmwareUpdate field0;
+  final FirmwareUpdateCheckRequest field0;
 
   @override
   String toString() {
-    return 'QuantumLinkMessage.firmwareUpdate(field0: $field0)';
+    return 'QuantumLinkMessage.firmwareUpdateCheckRequest(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$QuantumLinkMessage_FirmwareUpdateImpl &&
+            other is _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
@@ -494,79 +608,100 @@ class _$QuantumLinkMessage_FirmwareUpdateImpl
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$QuantumLinkMessage_FirmwareUpdateImplCopyWith<
-          _$QuantumLinkMessage_FirmwareUpdateImpl>
-      get copyWith => __$$QuantumLinkMessage_FirmwareUpdateImplCopyWithImpl<
-          _$QuantumLinkMessage_FirmwareUpdateImpl>(this, _$identity);
+  _$$QuantumLinkMessage_FirmwareUpdateCheckRequestImplCopyWith<
+          _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl>
+      get copyWith =>
+          __$$QuantumLinkMessage_FirmwareUpdateCheckRequestImplCopyWithImpl<
+                  _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl>(
+              this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) {
-    return firmwareUpdate(field0);
+    return firmwareUpdateCheckRequest(field0);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) {
-    return firmwareUpdate?.call(field0);
+    return firmwareUpdateCheckRequest?.call(field0);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) {
-    if (firmwareUpdate != null) {
-      return firmwareUpdate(field0);
+    if (firmwareUpdateCheckRequest != null) {
+      return firmwareUpdateCheckRequest(field0);
     }
     return orElse();
   }
@@ -576,105 +711,1415 @@ class _$QuantumLinkMessage_FirmwareUpdateImpl
   TResult map<TResult extends Object?>({
     required TResult Function(QuantumLinkMessage_ExchangeRate value)
         exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
         deviceStatus,
     required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
     required TResult Function(QuantumLinkMessage_PairingRequest value)
         pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
     required TResult Function(QuantumLinkMessage_OnboardingState value)
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
     required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
         broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) {
-    return firmwareUpdate(this);
+    return firmwareUpdateCheckRequest(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_PairingResponse value)?
         pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_OnboardingState value)?
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) {
-    return firmwareUpdate?.call(this);
+    return firmwareUpdateCheckRequest?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) {
-    if (firmwareUpdate != null) {
-      return firmwareUpdate(this);
+    if (firmwareUpdateCheckRequest != null) {
+      return firmwareUpdateCheckRequest(this);
     }
     return orElse();
   }
 }
 
-abstract class QuantumLinkMessage_FirmwareUpdate extends QuantumLinkMessage {
-  const factory QuantumLinkMessage_FirmwareUpdate(final FirmwareUpdate field0) =
-      _$QuantumLinkMessage_FirmwareUpdateImpl;
-  const QuantumLinkMessage_FirmwareUpdate._() : super._();
+abstract class QuantumLinkMessage_FirmwareUpdateCheckRequest
+    extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_FirmwareUpdateCheckRequest(
+          final FirmwareUpdateCheckRequest field0) =
+      _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl;
+  const QuantumLinkMessage_FirmwareUpdateCheckRequest._() : super._();
 
   @override
-  FirmwareUpdate get field0;
+  FirmwareUpdateCheckRequest get field0;
 
   /// Create a copy of QuantumLinkMessage
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuantumLinkMessage_FirmwareUpdateImplCopyWith<
-          _$QuantumLinkMessage_FirmwareUpdateImpl>
+  _$$QuantumLinkMessage_FirmwareUpdateCheckRequestImplCopyWith<
+          _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$QuantumLinkMessage_FirmwareUpdateCheckResponseImplCopyWith<
+    $Res> {
+  factory _$$QuantumLinkMessage_FirmwareUpdateCheckResponseImplCopyWith(
+          _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl value,
+          $Res Function(_$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl)
+              then) =
+      __$$QuantumLinkMessage_FirmwareUpdateCheckResponseImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({FirmwareUpdateCheckResponse field0});
+
+  $FirmwareUpdateCheckResponseCopyWith<$Res> get field0;
+}
+
+/// @nodoc
+class __$$QuantumLinkMessage_FirmwareUpdateCheckResponseImplCopyWithImpl<$Res>
+    extends _$QuantumLinkMessageCopyWithImpl<$Res,
+        _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl>
+    implements
+        _$$QuantumLinkMessage_FirmwareUpdateCheckResponseImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_FirmwareUpdateCheckResponseImplCopyWithImpl(
+      _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl _value,
+      $Res Function(_$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as FirmwareUpdateCheckResponse,
+    ));
+  }
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $FirmwareUpdateCheckResponseCopyWith<$Res> get field0 {
+    return $FirmwareUpdateCheckResponseCopyWith<$Res>(_value.field0, (value) {
+      return _then(_value.copyWith(field0: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
+    extends QuantumLinkMessage_FirmwareUpdateCheckResponse {
+  const _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl(this.field0)
+      : super._();
+
+  @override
+  final FirmwareUpdateCheckResponse field0;
+
+  @override
+  String toString() {
+    return 'QuantumLinkMessage.firmwareUpdateCheckResponse(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$QuantumLinkMessage_FirmwareUpdateCheckResponseImplCopyWith<
+          _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl>
+      get copyWith =>
+          __$$QuantumLinkMessage_FirmwareUpdateCheckResponseImplCopyWithImpl<
+                  _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl>(
+              this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(ExchangeRate field0) exchangeRate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
+    required TResult Function(DeviceStatus field0) deviceStatus,
+    required TResult Function(EnvoyStatus field0) envoyStatus,
+    required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
+    required TResult Function(OnboardingState field0) onboardingState,
+    required TResult Function(SignPsbt field0) signPsbt,
+    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
+    required TResult Function(RawData field0) rawData,
+  }) {
+    return firmwareUpdateCheckResponse(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ExchangeRate field0)? exchangeRate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult? Function(DeviceStatus field0)? deviceStatus,
+    TResult? Function(EnvoyStatus field0)? envoyStatus,
+    TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
+    TResult? Function(OnboardingState field0)? onboardingState,
+    TResult? Function(SignPsbt field0)? signPsbt,
+    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult? Function(RawData field0)? rawData,
+  }) {
+    return firmwareUpdateCheckResponse?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ExchangeRate field0)? exchangeRate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult Function(DeviceStatus field0)? deviceStatus,
+    TResult Function(EnvoyStatus field0)? envoyStatus,
+    TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
+    TResult Function(OnboardingState field0)? onboardingState,
+    TResult Function(SignPsbt field0)? signPsbt,
+    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult Function(RawData field0)? rawData,
+    required TResult orElse(),
+  }) {
+    if (firmwareUpdateCheckResponse != null) {
+      return firmwareUpdateCheckResponse(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(QuantumLinkMessage_ExchangeRate value)
+        exchangeRate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
+    required TResult Function(QuantumLinkMessage_DeviceStatus value)
+        deviceStatus,
+    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
+    required TResult Function(QuantumLinkMessage_PairingRequest value)
+        pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
+    required TResult Function(QuantumLinkMessage_OnboardingState value)
+        onboardingState,
+    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
+    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
+        broadcastTransaction,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
+    required TResult Function(QuantumLinkMessage_RawData value) rawData,
+  }) {
+    return firmwareUpdateCheckResponse(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult? Function(QuantumLinkMessage_PairingResponse value)?
+        pairingResponse,
+    TResult? Function(QuantumLinkMessage_OnboardingState value)?
+        onboardingState,
+    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult? Function(QuantumLinkMessage_RawData value)? rawData,
+  }) {
+    return firmwareUpdateCheckResponse?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
+    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
+    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult Function(QuantumLinkMessage_RawData value)? rawData,
+    required TResult orElse(),
+  }) {
+    if (firmwareUpdateCheckResponse != null) {
+      return firmwareUpdateCheckResponse(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class QuantumLinkMessage_FirmwareUpdateCheckResponse
+    extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_FirmwareUpdateCheckResponse(
+          final FirmwareUpdateCheckResponse field0) =
+      _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl;
+  const QuantumLinkMessage_FirmwareUpdateCheckResponse._() : super._();
+
+  @override
+  FirmwareUpdateCheckResponse get field0;
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$QuantumLinkMessage_FirmwareUpdateCheckResponseImplCopyWith<
+          _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWith(
+          _$QuantumLinkMessage_FirmwareFetchRequestImpl value,
+          $Res Function(_$QuantumLinkMessage_FirmwareFetchRequestImpl) then) =
+      __$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({FirmwareFetchRequest field0});
+}
+
+/// @nodoc
+class __$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWithImpl<$Res>
+    extends _$QuantumLinkMessageCopyWithImpl<$Res,
+        _$QuantumLinkMessage_FirmwareFetchRequestImpl>
+    implements _$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWithImpl(
+      _$QuantumLinkMessage_FirmwareFetchRequestImpl _value,
+      $Res Function(_$QuantumLinkMessage_FirmwareFetchRequestImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$QuantumLinkMessage_FirmwareFetchRequestImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as FirmwareFetchRequest,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$QuantumLinkMessage_FirmwareFetchRequestImpl
+    extends QuantumLinkMessage_FirmwareFetchRequest {
+  const _$QuantumLinkMessage_FirmwareFetchRequestImpl(this.field0) : super._();
+
+  @override
+  final FirmwareFetchRequest field0;
+
+  @override
+  String toString() {
+    return 'QuantumLinkMessage.firmwareFetchRequest(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$QuantumLinkMessage_FirmwareFetchRequestImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWith<
+          _$QuantumLinkMessage_FirmwareFetchRequestImpl>
+      get copyWith =>
+          __$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWithImpl<
+              _$QuantumLinkMessage_FirmwareFetchRequestImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(ExchangeRate field0) exchangeRate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
+    required TResult Function(DeviceStatus field0) deviceStatus,
+    required TResult Function(EnvoyStatus field0) envoyStatus,
+    required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
+    required TResult Function(OnboardingState field0) onboardingState,
+    required TResult Function(SignPsbt field0) signPsbt,
+    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
+    required TResult Function(RawData field0) rawData,
+  }) {
+    return firmwareFetchRequest(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ExchangeRate field0)? exchangeRate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult? Function(DeviceStatus field0)? deviceStatus,
+    TResult? Function(EnvoyStatus field0)? envoyStatus,
+    TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
+    TResult? Function(OnboardingState field0)? onboardingState,
+    TResult? Function(SignPsbt field0)? signPsbt,
+    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult? Function(RawData field0)? rawData,
+  }) {
+    return firmwareFetchRequest?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ExchangeRate field0)? exchangeRate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult Function(DeviceStatus field0)? deviceStatus,
+    TResult Function(EnvoyStatus field0)? envoyStatus,
+    TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
+    TResult Function(OnboardingState field0)? onboardingState,
+    TResult Function(SignPsbt field0)? signPsbt,
+    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult Function(RawData field0)? rawData,
+    required TResult orElse(),
+  }) {
+    if (firmwareFetchRequest != null) {
+      return firmwareFetchRequest(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(QuantumLinkMessage_ExchangeRate value)
+        exchangeRate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
+    required TResult Function(QuantumLinkMessage_DeviceStatus value)
+        deviceStatus,
+    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
+    required TResult Function(QuantumLinkMessage_PairingRequest value)
+        pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
+    required TResult Function(QuantumLinkMessage_OnboardingState value)
+        onboardingState,
+    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
+    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
+        broadcastTransaction,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
+    required TResult Function(QuantumLinkMessage_RawData value) rawData,
+  }) {
+    return firmwareFetchRequest(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult? Function(QuantumLinkMessage_PairingResponse value)?
+        pairingResponse,
+    TResult? Function(QuantumLinkMessage_OnboardingState value)?
+        onboardingState,
+    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult? Function(QuantumLinkMessage_RawData value)? rawData,
+  }) {
+    return firmwareFetchRequest?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
+    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
+    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult Function(QuantumLinkMessage_RawData value)? rawData,
+    required TResult orElse(),
+  }) {
+    if (firmwareFetchRequest != null) {
+      return firmwareFetchRequest(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class QuantumLinkMessage_FirmwareFetchRequest
+    extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_FirmwareFetchRequest(
+          final FirmwareFetchRequest field0) =
+      _$QuantumLinkMessage_FirmwareFetchRequestImpl;
+  const QuantumLinkMessage_FirmwareFetchRequest._() : super._();
+
+  @override
+  FirmwareFetchRequest get field0;
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$QuantumLinkMessage_FirmwareFetchRequestImplCopyWith<
+          _$QuantumLinkMessage_FirmwareFetchRequestImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$QuantumLinkMessage_FirmwareFetchEventImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_FirmwareFetchEventImplCopyWith(
+          _$QuantumLinkMessage_FirmwareFetchEventImpl value,
+          $Res Function(_$QuantumLinkMessage_FirmwareFetchEventImpl) then) =
+      __$$QuantumLinkMessage_FirmwareFetchEventImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({FirmwareFetchEvent field0});
+
+  $FirmwareFetchEventCopyWith<$Res> get field0;
+}
+
+/// @nodoc
+class __$$QuantumLinkMessage_FirmwareFetchEventImplCopyWithImpl<$Res>
+    extends _$QuantumLinkMessageCopyWithImpl<$Res,
+        _$QuantumLinkMessage_FirmwareFetchEventImpl>
+    implements _$$QuantumLinkMessage_FirmwareFetchEventImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_FirmwareFetchEventImplCopyWithImpl(
+      _$QuantumLinkMessage_FirmwareFetchEventImpl _value,
+      $Res Function(_$QuantumLinkMessage_FirmwareFetchEventImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$QuantumLinkMessage_FirmwareFetchEventImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as FirmwareFetchEvent,
+    ));
+  }
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $FirmwareFetchEventCopyWith<$Res> get field0 {
+    return $FirmwareFetchEventCopyWith<$Res>(_value.field0, (value) {
+      return _then(_value.copyWith(field0: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$QuantumLinkMessage_FirmwareFetchEventImpl
+    extends QuantumLinkMessage_FirmwareFetchEvent {
+  const _$QuantumLinkMessage_FirmwareFetchEventImpl(this.field0) : super._();
+
+  @override
+  final FirmwareFetchEvent field0;
+
+  @override
+  String toString() {
+    return 'QuantumLinkMessage.firmwareFetchEvent(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$QuantumLinkMessage_FirmwareFetchEventImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$QuantumLinkMessage_FirmwareFetchEventImplCopyWith<
+          _$QuantumLinkMessage_FirmwareFetchEventImpl>
+      get copyWith => __$$QuantumLinkMessage_FirmwareFetchEventImplCopyWithImpl<
+          _$QuantumLinkMessage_FirmwareFetchEventImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(ExchangeRate field0) exchangeRate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
+    required TResult Function(DeviceStatus field0) deviceStatus,
+    required TResult Function(EnvoyStatus field0) envoyStatus,
+    required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
+    required TResult Function(OnboardingState field0) onboardingState,
+    required TResult Function(SignPsbt field0) signPsbt,
+    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
+    required TResult Function(RawData field0) rawData,
+  }) {
+    return firmwareFetchEvent(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ExchangeRate field0)? exchangeRate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult? Function(DeviceStatus field0)? deviceStatus,
+    TResult? Function(EnvoyStatus field0)? envoyStatus,
+    TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
+    TResult? Function(OnboardingState field0)? onboardingState,
+    TResult? Function(SignPsbt field0)? signPsbt,
+    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult? Function(RawData field0)? rawData,
+  }) {
+    return firmwareFetchEvent?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ExchangeRate field0)? exchangeRate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult Function(DeviceStatus field0)? deviceStatus,
+    TResult Function(EnvoyStatus field0)? envoyStatus,
+    TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
+    TResult Function(OnboardingState field0)? onboardingState,
+    TResult Function(SignPsbt field0)? signPsbt,
+    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult Function(RawData field0)? rawData,
+    required TResult orElse(),
+  }) {
+    if (firmwareFetchEvent != null) {
+      return firmwareFetchEvent(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(QuantumLinkMessage_ExchangeRate value)
+        exchangeRate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
+    required TResult Function(QuantumLinkMessage_DeviceStatus value)
+        deviceStatus,
+    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
+    required TResult Function(QuantumLinkMessage_PairingRequest value)
+        pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
+    required TResult Function(QuantumLinkMessage_OnboardingState value)
+        onboardingState,
+    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
+    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
+        broadcastTransaction,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
+    required TResult Function(QuantumLinkMessage_RawData value) rawData,
+  }) {
+    return firmwareFetchEvent(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult? Function(QuantumLinkMessage_PairingResponse value)?
+        pairingResponse,
+    TResult? Function(QuantumLinkMessage_OnboardingState value)?
+        onboardingState,
+    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult? Function(QuantumLinkMessage_RawData value)? rawData,
+  }) {
+    return firmwareFetchEvent?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
+    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
+    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult Function(QuantumLinkMessage_RawData value)? rawData,
+    required TResult orElse(),
+  }) {
+    if (firmwareFetchEvent != null) {
+      return firmwareFetchEvent(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class QuantumLinkMessage_FirmwareFetchEvent
+    extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_FirmwareFetchEvent(
+          final FirmwareFetchEvent field0) =
+      _$QuantumLinkMessage_FirmwareFetchEventImpl;
+  const QuantumLinkMessage_FirmwareFetchEvent._() : super._();
+
+  @override
+  FirmwareFetchEvent get field0;
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$QuantumLinkMessage_FirmwareFetchEventImplCopyWith<
+          _$QuantumLinkMessage_FirmwareFetchEventImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$QuantumLinkMessage_FirmwareUpdateResultImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_FirmwareUpdateResultImplCopyWith(
+          _$QuantumLinkMessage_FirmwareUpdateResultImpl value,
+          $Res Function(_$QuantumLinkMessage_FirmwareUpdateResultImpl) then) =
+      __$$QuantumLinkMessage_FirmwareUpdateResultImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({FirmwareUpdateResult field0});
+
+  $FirmwareUpdateResultCopyWith<$Res> get field0;
+}
+
+/// @nodoc
+class __$$QuantumLinkMessage_FirmwareUpdateResultImplCopyWithImpl<$Res>
+    extends _$QuantumLinkMessageCopyWithImpl<$Res,
+        _$QuantumLinkMessage_FirmwareUpdateResultImpl>
+    implements _$$QuantumLinkMessage_FirmwareUpdateResultImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_FirmwareUpdateResultImplCopyWithImpl(
+      _$QuantumLinkMessage_FirmwareUpdateResultImpl _value,
+      $Res Function(_$QuantumLinkMessage_FirmwareUpdateResultImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$QuantumLinkMessage_FirmwareUpdateResultImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as FirmwareUpdateResult,
+    ));
+  }
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $FirmwareUpdateResultCopyWith<$Res> get field0 {
+    return $FirmwareUpdateResultCopyWith<$Res>(_value.field0, (value) {
+      return _then(_value.copyWith(field0: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$QuantumLinkMessage_FirmwareUpdateResultImpl
+    extends QuantumLinkMessage_FirmwareUpdateResult {
+  const _$QuantumLinkMessage_FirmwareUpdateResultImpl(this.field0) : super._();
+
+  @override
+  final FirmwareUpdateResult field0;
+
+  @override
+  String toString() {
+    return 'QuantumLinkMessage.firmwareUpdateResult(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$QuantumLinkMessage_FirmwareUpdateResultImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$QuantumLinkMessage_FirmwareUpdateResultImplCopyWith<
+          _$QuantumLinkMessage_FirmwareUpdateResultImpl>
+      get copyWith =>
+          __$$QuantumLinkMessage_FirmwareUpdateResultImplCopyWithImpl<
+              _$QuantumLinkMessage_FirmwareUpdateResultImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(ExchangeRate field0) exchangeRate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
+    required TResult Function(DeviceStatus field0) deviceStatus,
+    required TResult Function(EnvoyStatus field0) envoyStatus,
+    required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
+    required TResult Function(OnboardingState field0) onboardingState,
+    required TResult Function(SignPsbt field0) signPsbt,
+    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
+    required TResult Function(RawData field0) rawData,
+  }) {
+    return firmwareUpdateResult(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ExchangeRate field0)? exchangeRate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult? Function(DeviceStatus field0)? deviceStatus,
+    TResult? Function(EnvoyStatus field0)? envoyStatus,
+    TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
+    TResult? Function(OnboardingState field0)? onboardingState,
+    TResult? Function(SignPsbt field0)? signPsbt,
+    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult? Function(RawData field0)? rawData,
+  }) {
+    return firmwareUpdateResult?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ExchangeRate field0)? exchangeRate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult Function(DeviceStatus field0)? deviceStatus,
+    TResult Function(EnvoyStatus field0)? envoyStatus,
+    TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
+    TResult Function(OnboardingState field0)? onboardingState,
+    TResult Function(SignPsbt field0)? signPsbt,
+    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult Function(RawData field0)? rawData,
+    required TResult orElse(),
+  }) {
+    if (firmwareUpdateResult != null) {
+      return firmwareUpdateResult(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(QuantumLinkMessage_ExchangeRate value)
+        exchangeRate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
+    required TResult Function(QuantumLinkMessage_DeviceStatus value)
+        deviceStatus,
+    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
+    required TResult Function(QuantumLinkMessage_PairingRequest value)
+        pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
+    required TResult Function(QuantumLinkMessage_OnboardingState value)
+        onboardingState,
+    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
+    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
+        broadcastTransaction,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
+    required TResult Function(QuantumLinkMessage_RawData value) rawData,
+  }) {
+    return firmwareUpdateResult(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult? Function(QuantumLinkMessage_PairingResponse value)?
+        pairingResponse,
+    TResult? Function(QuantumLinkMessage_OnboardingState value)?
+        onboardingState,
+    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult? Function(QuantumLinkMessage_RawData value)? rawData,
+  }) {
+    return firmwareUpdateResult?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
+    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
+    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult Function(QuantumLinkMessage_RawData value)? rawData,
+    required TResult orElse(),
+  }) {
+    if (firmwareUpdateResult != null) {
+      return firmwareUpdateResult(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class QuantumLinkMessage_FirmwareUpdateResult
+    extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_FirmwareUpdateResult(
+          final FirmwareUpdateResult field0) =
+      _$QuantumLinkMessage_FirmwareUpdateResultImpl;
+  const QuantumLinkMessage_FirmwareUpdateResult._() : super._();
+
+  @override
+  FirmwareUpdateResult get field0;
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$QuantumLinkMessage_FirmwareUpdateResultImplCopyWith<
+          _$QuantumLinkMessage_FirmwareUpdateResultImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -753,20 +2198,26 @@ class _$QuantumLinkMessage_DeviceStatusImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) {
     return deviceStatus(field0);
@@ -776,20 +2227,26 @@ class _$QuantumLinkMessage_DeviceStatusImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) {
     return deviceStatus?.call(field0);
@@ -799,19 +2256,26 @@ class _$QuantumLinkMessage_DeviceStatusImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) {
@@ -826,29 +2290,42 @@ class _$QuantumLinkMessage_DeviceStatusImpl
   TResult map<TResult extends Object?>({
     required TResult Function(QuantumLinkMessage_ExchangeRate value)
         exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
         deviceStatus,
     required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
     required TResult Function(QuantumLinkMessage_PairingRequest value)
         pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
     required TResult Function(QuantumLinkMessage_OnboardingState value)
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
     required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
         broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) {
     return deviceStatus(this);
@@ -858,25 +2335,36 @@ class _$QuantumLinkMessage_DeviceStatusImpl
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_PairingResponse value)?
         pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_OnboardingState value)?
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) {
     return deviceStatus?.call(this);
@@ -886,22 +2374,34 @@ class _$QuantumLinkMessage_DeviceStatusImpl
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) {
@@ -1003,20 +2503,26 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) {
     return envoyStatus(field0);
@@ -1026,20 +2532,26 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) {
     return envoyStatus?.call(field0);
@@ -1049,19 +2561,26 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) {
@@ -1076,29 +2595,42 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
   TResult map<TResult extends Object?>({
     required TResult Function(QuantumLinkMessage_ExchangeRate value)
         exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
         deviceStatus,
     required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
     required TResult Function(QuantumLinkMessage_PairingRequest value)
         pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
     required TResult Function(QuantumLinkMessage_OnboardingState value)
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
     required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
         broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) {
     return envoyStatus(this);
@@ -1108,25 +2640,36 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_PairingResponse value)?
         pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_OnboardingState value)?
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) {
     return envoyStatus?.call(this);
@@ -1136,22 +2679,34 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) {
@@ -1175,256 +2730,6 @@ abstract class QuantumLinkMessage_EnvoyStatus extends QuantumLinkMessage {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$QuantumLinkMessage_EnvoyStatusImplCopyWith<
           _$QuantumLinkMessage_EnvoyStatusImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$QuantumLinkMessage_PairingResponseImplCopyWith<$Res> {
-  factory _$$QuantumLinkMessage_PairingResponseImplCopyWith(
-          _$QuantumLinkMessage_PairingResponseImpl value,
-          $Res Function(_$QuantumLinkMessage_PairingResponseImpl) then) =
-      __$$QuantumLinkMessage_PairingResponseImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({PairingResponse field0});
-}
-
-/// @nodoc
-class __$$QuantumLinkMessage_PairingResponseImplCopyWithImpl<$Res>
-    extends _$QuantumLinkMessageCopyWithImpl<$Res,
-        _$QuantumLinkMessage_PairingResponseImpl>
-    implements _$$QuantumLinkMessage_PairingResponseImplCopyWith<$Res> {
-  __$$QuantumLinkMessage_PairingResponseImplCopyWithImpl(
-      _$QuantumLinkMessage_PairingResponseImpl _value,
-      $Res Function(_$QuantumLinkMessage_PairingResponseImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of QuantumLinkMessage
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? field0 = null,
-  }) {
-    return _then(_$QuantumLinkMessage_PairingResponseImpl(
-      null == field0
-          ? _value.field0
-          : field0 // ignore: cast_nullable_to_non_nullable
-              as PairingResponse,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$QuantumLinkMessage_PairingResponseImpl
-    extends QuantumLinkMessage_PairingResponse {
-  const _$QuantumLinkMessage_PairingResponseImpl(this.field0) : super._();
-
-  @override
-  final PairingResponse field0;
-
-  @override
-  String toString() {
-    return 'QuantumLinkMessage.pairingResponse(field0: $field0)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$QuantumLinkMessage_PairingResponseImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, field0);
-
-  /// Create a copy of QuantumLinkMessage
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$QuantumLinkMessage_PairingResponseImplCopyWith<
-          _$QuantumLinkMessage_PairingResponseImpl>
-      get copyWith => __$$QuantumLinkMessage_PairingResponseImplCopyWithImpl<
-          _$QuantumLinkMessage_PairingResponseImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
-    required TResult Function(DeviceStatus field0) deviceStatus,
-    required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
-    required TResult Function(PairingRequest field0) pairingRequest,
-    required TResult Function(OnboardingState field0) onboardingState,
-    required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
-    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
-    required TResult Function(RawData field0) rawData,
-  }) {
-    return pairingResponse(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
-    TResult? Function(DeviceStatus field0)? deviceStatus,
-    TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
-    TResult? Function(PairingRequest field0)? pairingRequest,
-    TResult? Function(OnboardingState field0)? onboardingState,
-    TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
-    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
-    TResult? Function(RawData field0)? rawData,
-  }) {
-    return pairingResponse?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
-    TResult Function(DeviceStatus field0)? deviceStatus,
-    TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
-    TResult Function(PairingRequest field0)? pairingRequest,
-    TResult Function(OnboardingState field0)? onboardingState,
-    TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
-    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
-    TResult Function(RawData field0)? rawData,
-    required TResult orElse(),
-  }) {
-    if (pairingResponse != null) {
-      return pairingResponse(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(QuantumLinkMessage_ExchangeRate value)
-        exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
-    required TResult Function(QuantumLinkMessage_DeviceStatus value)
-        deviceStatus,
-    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
-    required TResult Function(QuantumLinkMessage_PairingRequest value)
-        pairingRequest,
-    required TResult Function(QuantumLinkMessage_OnboardingState value)
-        onboardingState,
-    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
-    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
-        broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
-    required TResult Function(QuantumLinkMessage_RawData value) rawData,
-  }) {
-    return pairingResponse(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
-    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
-    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult? Function(QuantumLinkMessage_PairingResponse value)?
-        pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
-    TResult? Function(QuantumLinkMessage_OnboardingState value)?
-        onboardingState,
-    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
-    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
-        broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
-    TResult? Function(QuantumLinkMessage_RawData value)? rawData,
-  }) {
-    return pairingResponse?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
-    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
-    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
-    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
-    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
-    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
-    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
-        broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
-    TResult Function(QuantumLinkMessage_RawData value)? rawData,
-    required TResult orElse(),
-  }) {
-    if (pairingResponse != null) {
-      return pairingResponse(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class QuantumLinkMessage_PairingResponse extends QuantumLinkMessage {
-  const factory QuantumLinkMessage_PairingResponse(
-      final PairingResponse field0) = _$QuantumLinkMessage_PairingResponseImpl;
-  const QuantumLinkMessage_PairingResponse._() : super._();
-
-  @override
-  PairingResponse get field0;
-
-  /// Create a copy of QuantumLinkMessage
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuantumLinkMessage_PairingResponseImplCopyWith<
-          _$QuantumLinkMessage_PairingResponseImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -1503,20 +2808,26 @@ class _$QuantumLinkMessage_PairingRequestImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) {
     return pairingRequest(field0);
@@ -1526,20 +2837,26 @@ class _$QuantumLinkMessage_PairingRequestImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) {
     return pairingRequest?.call(field0);
@@ -1549,19 +2866,26 @@ class _$QuantumLinkMessage_PairingRequestImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) {
@@ -1576,29 +2900,42 @@ class _$QuantumLinkMessage_PairingRequestImpl
   TResult map<TResult extends Object?>({
     required TResult Function(QuantumLinkMessage_ExchangeRate value)
         exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
         deviceStatus,
     required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
     required TResult Function(QuantumLinkMessage_PairingRequest value)
         pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
     required TResult Function(QuantumLinkMessage_OnboardingState value)
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
     required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
         broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) {
     return pairingRequest(this);
@@ -1608,25 +2945,36 @@ class _$QuantumLinkMessage_PairingRequestImpl
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_PairingResponse value)?
         pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_OnboardingState value)?
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) {
     return pairingRequest?.call(this);
@@ -1636,22 +2984,34 @@ class _$QuantumLinkMessage_PairingRequestImpl
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) {
@@ -1675,6 +3035,311 @@ abstract class QuantumLinkMessage_PairingRequest extends QuantumLinkMessage {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$QuantumLinkMessage_PairingRequestImplCopyWith<
           _$QuantumLinkMessage_PairingRequestImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$QuantumLinkMessage_PairingResponseImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_PairingResponseImplCopyWith(
+          _$QuantumLinkMessage_PairingResponseImpl value,
+          $Res Function(_$QuantumLinkMessage_PairingResponseImpl) then) =
+      __$$QuantumLinkMessage_PairingResponseImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({PairingResponse field0});
+}
+
+/// @nodoc
+class __$$QuantumLinkMessage_PairingResponseImplCopyWithImpl<$Res>
+    extends _$QuantumLinkMessageCopyWithImpl<$Res,
+        _$QuantumLinkMessage_PairingResponseImpl>
+    implements _$$QuantumLinkMessage_PairingResponseImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_PairingResponseImplCopyWithImpl(
+      _$QuantumLinkMessage_PairingResponseImpl _value,
+      $Res Function(_$QuantumLinkMessage_PairingResponseImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$QuantumLinkMessage_PairingResponseImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as PairingResponse,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$QuantumLinkMessage_PairingResponseImpl
+    extends QuantumLinkMessage_PairingResponse {
+  const _$QuantumLinkMessage_PairingResponseImpl(this.field0) : super._();
+
+  @override
+  final PairingResponse field0;
+
+  @override
+  String toString() {
+    return 'QuantumLinkMessage.pairingResponse(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$QuantumLinkMessage_PairingResponseImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$QuantumLinkMessage_PairingResponseImplCopyWith<
+          _$QuantumLinkMessage_PairingResponseImpl>
+      get copyWith => __$$QuantumLinkMessage_PairingResponseImplCopyWithImpl<
+          _$QuantumLinkMessage_PairingResponseImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(ExchangeRate field0) exchangeRate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
+    required TResult Function(DeviceStatus field0) deviceStatus,
+    required TResult Function(EnvoyStatus field0) envoyStatus,
+    required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
+    required TResult Function(OnboardingState field0) onboardingState,
+    required TResult Function(SignPsbt field0) signPsbt,
+    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
+    required TResult Function(RawData field0) rawData,
+  }) {
+    return pairingResponse(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ExchangeRate field0)? exchangeRate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult? Function(DeviceStatus field0)? deviceStatus,
+    TResult? Function(EnvoyStatus field0)? envoyStatus,
+    TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
+    TResult? Function(OnboardingState field0)? onboardingState,
+    TResult? Function(SignPsbt field0)? signPsbt,
+    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult? Function(RawData field0)? rawData,
+  }) {
+    return pairingResponse?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ExchangeRate field0)? exchangeRate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult Function(DeviceStatus field0)? deviceStatus,
+    TResult Function(EnvoyStatus field0)? envoyStatus,
+    TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
+    TResult Function(OnboardingState field0)? onboardingState,
+    TResult Function(SignPsbt field0)? signPsbt,
+    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult Function(RawData field0)? rawData,
+    required TResult orElse(),
+  }) {
+    if (pairingResponse != null) {
+      return pairingResponse(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(QuantumLinkMessage_ExchangeRate value)
+        exchangeRate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
+    required TResult Function(QuantumLinkMessage_DeviceStatus value)
+        deviceStatus,
+    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
+    required TResult Function(QuantumLinkMessage_PairingRequest value)
+        pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
+    required TResult Function(QuantumLinkMessage_OnboardingState value)
+        onboardingState,
+    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
+    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
+        broadcastTransaction,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
+    required TResult Function(QuantumLinkMessage_RawData value) rawData,
+  }) {
+    return pairingResponse(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult? Function(QuantumLinkMessage_PairingResponse value)?
+        pairingResponse,
+    TResult? Function(QuantumLinkMessage_OnboardingState value)?
+        onboardingState,
+    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult? Function(QuantumLinkMessage_RawData value)? rawData,
+  }) {
+    return pairingResponse?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
+    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
+    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult Function(QuantumLinkMessage_RawData value)? rawData,
+    required TResult orElse(),
+  }) {
+    if (pairingResponse != null) {
+      return pairingResponse(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class QuantumLinkMessage_PairingResponse extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_PairingResponse(
+      final PairingResponse field0) = _$QuantumLinkMessage_PairingResponseImpl;
+  const QuantumLinkMessage_PairingResponse._() : super._();
+
+  @override
+  PairingResponse get field0;
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$QuantumLinkMessage_PairingResponseImplCopyWith<
+          _$QuantumLinkMessage_PairingResponseImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -1753,20 +3418,26 @@ class _$QuantumLinkMessage_OnboardingStateImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) {
     return onboardingState(field0);
@@ -1776,20 +3447,26 @@ class _$QuantumLinkMessage_OnboardingStateImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) {
     return onboardingState?.call(field0);
@@ -1799,19 +3476,26 @@ class _$QuantumLinkMessage_OnboardingStateImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) {
@@ -1826,29 +3510,42 @@ class _$QuantumLinkMessage_OnboardingStateImpl
   TResult map<TResult extends Object?>({
     required TResult Function(QuantumLinkMessage_ExchangeRate value)
         exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
         deviceStatus,
     required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
     required TResult Function(QuantumLinkMessage_PairingRequest value)
         pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
     required TResult Function(QuantumLinkMessage_OnboardingState value)
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
     required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
         broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) {
     return onboardingState(this);
@@ -1858,25 +3555,36 @@ class _$QuantumLinkMessage_OnboardingStateImpl
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_PairingResponse value)?
         pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_OnboardingState value)?
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) {
     return onboardingState?.call(this);
@@ -1886,22 +3594,34 @@ class _$QuantumLinkMessage_OnboardingStateImpl
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) {
@@ -2001,20 +3721,26 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) {
     return signPsbt(field0);
@@ -2024,20 +3750,26 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) {
     return signPsbt?.call(field0);
@@ -2047,19 +3779,26 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) {
@@ -2074,29 +3813,42 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
   TResult map<TResult extends Object?>({
     required TResult Function(QuantumLinkMessage_ExchangeRate value)
         exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
         deviceStatus,
     required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
     required TResult Function(QuantumLinkMessage_PairingRequest value)
         pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
     required TResult Function(QuantumLinkMessage_OnboardingState value)
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
     required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
         broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) {
     return signPsbt(this);
@@ -2106,25 +3858,36 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_PairingResponse value)?
         pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_OnboardingState value)?
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) {
     return signPsbt?.call(this);
@@ -2134,22 +3897,34 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) {
@@ -2172,506 +3947,6 @@ abstract class QuantumLinkMessage_SignPsbt extends QuantumLinkMessage {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$QuantumLinkMessage_SignPsbtImplCopyWith<_$QuantumLinkMessage_SignPsbtImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$QuantumLinkMessage_AccountUpdateImplCopyWith<$Res> {
-  factory _$$QuantumLinkMessage_AccountUpdateImplCopyWith(
-          _$QuantumLinkMessage_AccountUpdateImpl value,
-          $Res Function(_$QuantumLinkMessage_AccountUpdateImpl) then) =
-      __$$QuantumLinkMessage_AccountUpdateImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({AccountUpdate field0});
-}
-
-/// @nodoc
-class __$$QuantumLinkMessage_AccountUpdateImplCopyWithImpl<$Res>
-    extends _$QuantumLinkMessageCopyWithImpl<$Res,
-        _$QuantumLinkMessage_AccountUpdateImpl>
-    implements _$$QuantumLinkMessage_AccountUpdateImplCopyWith<$Res> {
-  __$$QuantumLinkMessage_AccountUpdateImplCopyWithImpl(
-      _$QuantumLinkMessage_AccountUpdateImpl _value,
-      $Res Function(_$QuantumLinkMessage_AccountUpdateImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of QuantumLinkMessage
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? field0 = null,
-  }) {
-    return _then(_$QuantumLinkMessage_AccountUpdateImpl(
-      null == field0
-          ? _value.field0
-          : field0 // ignore: cast_nullable_to_non_nullable
-              as AccountUpdate,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$QuantumLinkMessage_AccountUpdateImpl
-    extends QuantumLinkMessage_AccountUpdate {
-  const _$QuantumLinkMessage_AccountUpdateImpl(this.field0) : super._();
-
-  @override
-  final AccountUpdate field0;
-
-  @override
-  String toString() {
-    return 'QuantumLinkMessage.accountUpdate(field0: $field0)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$QuantumLinkMessage_AccountUpdateImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, field0);
-
-  /// Create a copy of QuantumLinkMessage
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$QuantumLinkMessage_AccountUpdateImplCopyWith<
-          _$QuantumLinkMessage_AccountUpdateImpl>
-      get copyWith => __$$QuantumLinkMessage_AccountUpdateImplCopyWithImpl<
-          _$QuantumLinkMessage_AccountUpdateImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
-    required TResult Function(DeviceStatus field0) deviceStatus,
-    required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
-    required TResult Function(PairingRequest field0) pairingRequest,
-    required TResult Function(OnboardingState field0) onboardingState,
-    required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
-    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
-    required TResult Function(RawData field0) rawData,
-  }) {
-    return accountUpdate(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
-    TResult? Function(DeviceStatus field0)? deviceStatus,
-    TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
-    TResult? Function(PairingRequest field0)? pairingRequest,
-    TResult? Function(OnboardingState field0)? onboardingState,
-    TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
-    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
-    TResult? Function(RawData field0)? rawData,
-  }) {
-    return accountUpdate?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
-    TResult Function(DeviceStatus field0)? deviceStatus,
-    TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
-    TResult Function(PairingRequest field0)? pairingRequest,
-    TResult Function(OnboardingState field0)? onboardingState,
-    TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
-    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
-    TResult Function(RawData field0)? rawData,
-    required TResult orElse(),
-  }) {
-    if (accountUpdate != null) {
-      return accountUpdate(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(QuantumLinkMessage_ExchangeRate value)
-        exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
-    required TResult Function(QuantumLinkMessage_DeviceStatus value)
-        deviceStatus,
-    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
-    required TResult Function(QuantumLinkMessage_PairingRequest value)
-        pairingRequest,
-    required TResult Function(QuantumLinkMessage_OnboardingState value)
-        onboardingState,
-    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
-    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
-        broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
-    required TResult Function(QuantumLinkMessage_RawData value) rawData,
-  }) {
-    return accountUpdate(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
-    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
-    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult? Function(QuantumLinkMessage_PairingResponse value)?
-        pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
-    TResult? Function(QuantumLinkMessage_OnboardingState value)?
-        onboardingState,
-    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
-    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
-        broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
-    TResult? Function(QuantumLinkMessage_RawData value)? rawData,
-  }) {
-    return accountUpdate?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
-    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
-    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
-    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
-    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
-    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
-    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
-        broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
-    TResult Function(QuantumLinkMessage_RawData value)? rawData,
-    required TResult orElse(),
-  }) {
-    if (accountUpdate != null) {
-      return accountUpdate(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class QuantumLinkMessage_AccountUpdate extends QuantumLinkMessage {
-  const factory QuantumLinkMessage_AccountUpdate(final AccountUpdate field0) =
-      _$QuantumLinkMessage_AccountUpdateImpl;
-  const QuantumLinkMessage_AccountUpdate._() : super._();
-
-  @override
-  AccountUpdate get field0;
-
-  /// Create a copy of QuantumLinkMessage
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuantumLinkMessage_AccountUpdateImplCopyWith<
-          _$QuantumLinkMessage_AccountUpdateImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$QuantumLinkMessage_FirmwarePayloadImplCopyWith<$Res> {
-  factory _$$QuantumLinkMessage_FirmwarePayloadImplCopyWith(
-          _$QuantumLinkMessage_FirmwarePayloadImpl value,
-          $Res Function(_$QuantumLinkMessage_FirmwarePayloadImpl) then) =
-      __$$QuantumLinkMessage_FirmwarePayloadImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({FirmwarePayload field0});
-}
-
-/// @nodoc
-class __$$QuantumLinkMessage_FirmwarePayloadImplCopyWithImpl<$Res>
-    extends _$QuantumLinkMessageCopyWithImpl<$Res,
-        _$QuantumLinkMessage_FirmwarePayloadImpl>
-    implements _$$QuantumLinkMessage_FirmwarePayloadImplCopyWith<$Res> {
-  __$$QuantumLinkMessage_FirmwarePayloadImplCopyWithImpl(
-      _$QuantumLinkMessage_FirmwarePayloadImpl _value,
-      $Res Function(_$QuantumLinkMessage_FirmwarePayloadImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of QuantumLinkMessage
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? field0 = null,
-  }) {
-    return _then(_$QuantumLinkMessage_FirmwarePayloadImpl(
-      null == field0
-          ? _value.field0
-          : field0 // ignore: cast_nullable_to_non_nullable
-              as FirmwarePayload,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$QuantumLinkMessage_FirmwarePayloadImpl
-    extends QuantumLinkMessage_FirmwarePayload {
-  const _$QuantumLinkMessage_FirmwarePayloadImpl(this.field0) : super._();
-
-  @override
-  final FirmwarePayload field0;
-
-  @override
-  String toString() {
-    return 'QuantumLinkMessage.firmwarePayload(field0: $field0)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$QuantumLinkMessage_FirmwarePayloadImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, field0);
-
-  /// Create a copy of QuantumLinkMessage
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$QuantumLinkMessage_FirmwarePayloadImplCopyWith<
-          _$QuantumLinkMessage_FirmwarePayloadImpl>
-      get copyWith => __$$QuantumLinkMessage_FirmwarePayloadImplCopyWithImpl<
-          _$QuantumLinkMessage_FirmwarePayloadImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
-    required TResult Function(DeviceStatus field0) deviceStatus,
-    required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
-    required TResult Function(PairingRequest field0) pairingRequest,
-    required TResult Function(OnboardingState field0) onboardingState,
-    required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
-    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
-    required TResult Function(RawData field0) rawData,
-  }) {
-    return firmwarePayload(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
-    TResult? Function(DeviceStatus field0)? deviceStatus,
-    TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
-    TResult? Function(PairingRequest field0)? pairingRequest,
-    TResult? Function(OnboardingState field0)? onboardingState,
-    TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
-    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
-    TResult? Function(RawData field0)? rawData,
-  }) {
-    return firmwarePayload?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
-    TResult Function(DeviceStatus field0)? deviceStatus,
-    TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
-    TResult Function(PairingRequest field0)? pairingRequest,
-    TResult Function(OnboardingState field0)? onboardingState,
-    TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
-    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
-    TResult Function(RawData field0)? rawData,
-    required TResult orElse(),
-  }) {
-    if (firmwarePayload != null) {
-      return firmwarePayload(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(QuantumLinkMessage_ExchangeRate value)
-        exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
-    required TResult Function(QuantumLinkMessage_DeviceStatus value)
-        deviceStatus,
-    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
-    required TResult Function(QuantumLinkMessage_PairingRequest value)
-        pairingRequest,
-    required TResult Function(QuantumLinkMessage_OnboardingState value)
-        onboardingState,
-    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
-    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
-        broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
-    required TResult Function(QuantumLinkMessage_RawData value) rawData,
-  }) {
-    return firmwarePayload(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
-    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
-    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult? Function(QuantumLinkMessage_PairingResponse value)?
-        pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
-    TResult? Function(QuantumLinkMessage_OnboardingState value)?
-        onboardingState,
-    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
-    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
-        broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
-    TResult? Function(QuantumLinkMessage_RawData value)? rawData,
-  }) {
-    return firmwarePayload?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
-    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
-    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
-    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
-    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
-    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
-    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
-        broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
-    TResult Function(QuantumLinkMessage_RawData value)? rawData,
-    required TResult orElse(),
-  }) {
-    if (firmwarePayload != null) {
-      return firmwarePayload(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class QuantumLinkMessage_FirmwarePayload extends QuantumLinkMessage {
-  const factory QuantumLinkMessage_FirmwarePayload(
-      final FirmwarePayload field0) = _$QuantumLinkMessage_FirmwarePayloadImpl;
-  const QuantumLinkMessage_FirmwarePayload._() : super._();
-
-  @override
-  FirmwarePayload get field0;
-
-  /// Create a copy of QuantumLinkMessage
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuantumLinkMessage_FirmwarePayloadImplCopyWith<
-          _$QuantumLinkMessage_FirmwarePayloadImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -2751,20 +4026,26 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) {
     return broadcastTransaction(field0);
@@ -2774,20 +4055,26 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) {
     return broadcastTransaction?.call(field0);
@@ -2797,19 +4084,26 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) {
@@ -2824,29 +4118,42 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
   TResult map<TResult extends Object?>({
     required TResult Function(QuantumLinkMessage_ExchangeRate value)
         exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
         deviceStatus,
     required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
     required TResult Function(QuantumLinkMessage_PairingRequest value)
         pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
     required TResult Function(QuantumLinkMessage_OnboardingState value)
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
     required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
         broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) {
     return broadcastTransaction(this);
@@ -2856,25 +4163,36 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_PairingResponse value)?
         pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_OnboardingState value)?
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) {
     return broadcastTransaction?.call(this);
@@ -2884,22 +4202,34 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) {
@@ -2929,26 +4259,23 @@ abstract class QuantumLinkMessage_BroadcastTransaction
 }
 
 /// @nodoc
-abstract class _$$QuantumLinkMessage_SecurityChallengeMessageImplCopyWith<
-    $Res> {
-  factory _$$QuantumLinkMessage_SecurityChallengeMessageImplCopyWith(
-          _$QuantumLinkMessage_SecurityChallengeMessageImpl value,
-          $Res Function(_$QuantumLinkMessage_SecurityChallengeMessageImpl)
-              then) =
-      __$$QuantumLinkMessage_SecurityChallengeMessageImplCopyWithImpl<$Res>;
+abstract class _$$QuantumLinkMessage_AccountUpdateImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_AccountUpdateImplCopyWith(
+          _$QuantumLinkMessage_AccountUpdateImpl value,
+          $Res Function(_$QuantumLinkMessage_AccountUpdateImpl) then) =
+      __$$QuantumLinkMessage_AccountUpdateImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({SecurityChallengeMessage field0});
+  $Res call({AccountUpdate field0});
 }
 
 /// @nodoc
-class __$$QuantumLinkMessage_SecurityChallengeMessageImplCopyWithImpl<$Res>
+class __$$QuantumLinkMessage_AccountUpdateImplCopyWithImpl<$Res>
     extends _$QuantumLinkMessageCopyWithImpl<$Res,
-        _$QuantumLinkMessage_SecurityChallengeMessageImpl>
-    implements
-        _$$QuantumLinkMessage_SecurityChallengeMessageImplCopyWith<$Res> {
-  __$$QuantumLinkMessage_SecurityChallengeMessageImplCopyWithImpl(
-      _$QuantumLinkMessage_SecurityChallengeMessageImpl _value,
-      $Res Function(_$QuantumLinkMessage_SecurityChallengeMessageImpl) _then)
+        _$QuantumLinkMessage_AccountUpdateImpl>
+    implements _$$QuantumLinkMessage_AccountUpdateImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_AccountUpdateImplCopyWithImpl(
+      _$QuantumLinkMessage_AccountUpdateImpl _value,
+      $Res Function(_$QuantumLinkMessage_AccountUpdateImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of QuantumLinkMessage
@@ -2958,35 +4285,34 @@ class __$$QuantumLinkMessage_SecurityChallengeMessageImplCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$QuantumLinkMessage_SecurityChallengeMessageImpl(
+    return _then(_$QuantumLinkMessage_AccountUpdateImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
-              as SecurityChallengeMessage,
+              as AccountUpdate,
     ));
   }
 }
 
 /// @nodoc
 
-class _$QuantumLinkMessage_SecurityChallengeMessageImpl
-    extends QuantumLinkMessage_SecurityChallengeMessage {
-  const _$QuantumLinkMessage_SecurityChallengeMessageImpl(this.field0)
-      : super._();
+class _$QuantumLinkMessage_AccountUpdateImpl
+    extends QuantumLinkMessage_AccountUpdate {
+  const _$QuantumLinkMessage_AccountUpdateImpl(this.field0) : super._();
 
   @override
-  final SecurityChallengeMessage field0;
+  final AccountUpdate field0;
 
   @override
   String toString() {
-    return 'QuantumLinkMessage.securityChallengeMessage(field0: $field0)';
+    return 'QuantumLinkMessage.accountUpdate(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$QuantumLinkMessage_SecurityChallengeMessageImpl &&
+            other is _$QuantumLinkMessage_AccountUpdateImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
@@ -2998,81 +4324,98 @@ class _$QuantumLinkMessage_SecurityChallengeMessageImpl
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$QuantumLinkMessage_SecurityChallengeMessageImplCopyWith<
-          _$QuantumLinkMessage_SecurityChallengeMessageImpl>
-      get copyWith =>
-          __$$QuantumLinkMessage_SecurityChallengeMessageImplCopyWithImpl<
-                  _$QuantumLinkMessage_SecurityChallengeMessageImpl>(
-              this, _$identity);
+  _$$QuantumLinkMessage_AccountUpdateImplCopyWith<
+          _$QuantumLinkMessage_AccountUpdateImpl>
+      get copyWith => __$$QuantumLinkMessage_AccountUpdateImplCopyWithImpl<
+          _$QuantumLinkMessage_AccountUpdateImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) {
-    return securityChallengeMessage(field0);
+    return accountUpdate(field0);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) {
-    return securityChallengeMessage?.call(field0);
+    return accountUpdate?.call(field0);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) {
-    if (securityChallengeMessage != null) {
-      return securityChallengeMessage(field0);
+    if (accountUpdate != null) {
+      return accountUpdate(field0);
     }
     return orElse();
   }
@@ -3082,128 +4425,164 @@ class _$QuantumLinkMessage_SecurityChallengeMessageImpl
   TResult map<TResult extends Object?>({
     required TResult Function(QuantumLinkMessage_ExchangeRate value)
         exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
         deviceStatus,
     required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
     required TResult Function(QuantumLinkMessage_PairingRequest value)
         pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
     required TResult Function(QuantumLinkMessage_OnboardingState value)
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
     required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
         broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) {
-    return securityChallengeMessage(this);
+    return accountUpdate(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_PairingResponse value)?
         pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_OnboardingState value)?
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) {
-    return securityChallengeMessage?.call(this);
+    return accountUpdate?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) {
-    if (securityChallengeMessage != null) {
-      return securityChallengeMessage(this);
+    if (accountUpdate != null) {
+      return accountUpdate(this);
     }
     return orElse();
   }
 }
 
-abstract class QuantumLinkMessage_SecurityChallengeMessage
-    extends QuantumLinkMessage {
-  const factory QuantumLinkMessage_SecurityChallengeMessage(
-          final SecurityChallengeMessage field0) =
-      _$QuantumLinkMessage_SecurityChallengeMessageImpl;
-  const QuantumLinkMessage_SecurityChallengeMessage._() : super._();
+abstract class QuantumLinkMessage_AccountUpdate extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_AccountUpdate(final AccountUpdate field0) =
+      _$QuantumLinkMessage_AccountUpdateImpl;
+  const QuantumLinkMessage_AccountUpdate._() : super._();
 
   @override
-  SecurityChallengeMessage get field0;
+  AccountUpdate get field0;
 
   /// Create a copy of QuantumLinkMessage
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuantumLinkMessage_SecurityChallengeMessageImplCopyWith<
-          _$QuantumLinkMessage_SecurityChallengeMessageImpl>
+  _$$QuantumLinkMessage_AccountUpdateImplCopyWith<
+          _$QuantumLinkMessage_AccountUpdateImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$QuantumLinkMessage_SecurityProofMessageImplCopyWith<$Res> {
-  factory _$$QuantumLinkMessage_SecurityProofMessageImplCopyWith(
-          _$QuantumLinkMessage_SecurityProofMessageImpl value,
-          $Res Function(_$QuantumLinkMessage_SecurityProofMessageImpl) then) =
-      __$$QuantumLinkMessage_SecurityProofMessageImplCopyWithImpl<$Res>;
+abstract class _$$QuantumLinkMessage_SecurityCheckImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_SecurityCheckImplCopyWith(
+          _$QuantumLinkMessage_SecurityCheckImpl value,
+          $Res Function(_$QuantumLinkMessage_SecurityCheckImpl) then) =
+      __$$QuantumLinkMessage_SecurityCheckImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({SecurityProofMessage field0});
+  $Res call({SecurityCheck field0});
+
+  $SecurityCheckCopyWith<$Res> get field0;
 }
 
 /// @nodoc
-class __$$QuantumLinkMessage_SecurityProofMessageImplCopyWithImpl<$Res>
+class __$$QuantumLinkMessage_SecurityCheckImplCopyWithImpl<$Res>
     extends _$QuantumLinkMessageCopyWithImpl<$Res,
-        _$QuantumLinkMessage_SecurityProofMessageImpl>
-    implements _$$QuantumLinkMessage_SecurityProofMessageImplCopyWith<$Res> {
-  __$$QuantumLinkMessage_SecurityProofMessageImplCopyWithImpl(
-      _$QuantumLinkMessage_SecurityProofMessageImpl _value,
-      $Res Function(_$QuantumLinkMessage_SecurityProofMessageImpl) _then)
+        _$QuantumLinkMessage_SecurityCheckImpl>
+    implements _$$QuantumLinkMessage_SecurityCheckImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_SecurityCheckImplCopyWithImpl(
+      _$QuantumLinkMessage_SecurityCheckImpl _value,
+      $Res Function(_$QuantumLinkMessage_SecurityCheckImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of QuantumLinkMessage
@@ -3213,34 +4592,44 @@ class __$$QuantumLinkMessage_SecurityProofMessageImplCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$QuantumLinkMessage_SecurityProofMessageImpl(
+    return _then(_$QuantumLinkMessage_SecurityCheckImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
-              as SecurityProofMessage,
+              as SecurityCheck,
     ));
+  }
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $SecurityCheckCopyWith<$Res> get field0 {
+    return $SecurityCheckCopyWith<$Res>(_value.field0, (value) {
+      return _then(_value.copyWith(field0: value));
+    });
   }
 }
 
 /// @nodoc
 
-class _$QuantumLinkMessage_SecurityProofMessageImpl
-    extends QuantumLinkMessage_SecurityProofMessage {
-  const _$QuantumLinkMessage_SecurityProofMessageImpl(this.field0) : super._();
+class _$QuantumLinkMessage_SecurityCheckImpl
+    extends QuantumLinkMessage_SecurityCheck {
+  const _$QuantumLinkMessage_SecurityCheckImpl(this.field0) : super._();
 
   @override
-  final SecurityProofMessage field0;
+  final SecurityCheck field0;
 
   @override
   String toString() {
-    return 'QuantumLinkMessage.securityProofMessage(field0: $field0)';
+    return 'QuantumLinkMessage.securityCheck(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$QuantumLinkMessage_SecurityProofMessageImpl &&
+            other is _$QuantumLinkMessage_SecurityCheckImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
@@ -3252,80 +4641,98 @@ class _$QuantumLinkMessage_SecurityProofMessageImpl
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$QuantumLinkMessage_SecurityProofMessageImplCopyWith<
-          _$QuantumLinkMessage_SecurityProofMessageImpl>
-      get copyWith =>
-          __$$QuantumLinkMessage_SecurityProofMessageImplCopyWithImpl<
-              _$QuantumLinkMessage_SecurityProofMessageImpl>(this, _$identity);
+  _$$QuantumLinkMessage_SecurityCheckImplCopyWith<
+          _$QuantumLinkMessage_SecurityCheckImpl>
+      get copyWith => __$$QuantumLinkMessage_SecurityCheckImplCopyWithImpl<
+          _$QuantumLinkMessage_SecurityCheckImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) {
-    return securityProofMessage(field0);
+    return securityCheck(field0);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) {
-    return securityProofMessage?.call(field0);
+    return securityCheck?.call(field0);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) {
-    if (securityProofMessage != null) {
-      return securityProofMessage(field0);
+    if (securityCheck != null) {
+      return securityCheck(field0);
     }
     return orElse();
   }
@@ -3335,128 +4742,162 @@ class _$QuantumLinkMessage_SecurityProofMessageImpl
   TResult map<TResult extends Object?>({
     required TResult Function(QuantumLinkMessage_ExchangeRate value)
         exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
         deviceStatus,
     required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
     required TResult Function(QuantumLinkMessage_PairingRequest value)
         pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
     required TResult Function(QuantumLinkMessage_OnboardingState value)
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
     required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
         broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) {
-    return securityProofMessage(this);
+    return securityCheck(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_PairingResponse value)?
         pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_OnboardingState value)?
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) {
-    return securityProofMessage?.call(this);
+    return securityCheck?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) {
-    if (securityProofMessage != null) {
-      return securityProofMessage(this);
+    if (securityCheck != null) {
+      return securityCheck(this);
     }
     return orElse();
   }
 }
 
-abstract class QuantumLinkMessage_SecurityProofMessage
-    extends QuantumLinkMessage {
-  const factory QuantumLinkMessage_SecurityProofMessage(
-          final SecurityProofMessage field0) =
-      _$QuantumLinkMessage_SecurityProofMessageImpl;
-  const QuantumLinkMessage_SecurityProofMessage._() : super._();
+abstract class QuantumLinkMessage_SecurityCheck extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_SecurityCheck(final SecurityCheck field0) =
+      _$QuantumLinkMessage_SecurityCheckImpl;
+  const QuantumLinkMessage_SecurityCheck._() : super._();
 
   @override
-  SecurityProofMessage get field0;
+  SecurityCheck get field0;
 
   /// Create a copy of QuantumLinkMessage
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuantumLinkMessage_SecurityProofMessageImplCopyWith<
-          _$QuantumLinkMessage_SecurityProofMessageImpl>
+  _$$QuantumLinkMessage_SecurityCheckImplCopyWith<
+          _$QuantumLinkMessage_SecurityCheckImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$QuantumLinkMessage_ShardImplCopyWith<$Res> {
-  factory _$$QuantumLinkMessage_ShardImplCopyWith(
-          _$QuantumLinkMessage_ShardImpl value,
-          $Res Function(_$QuantumLinkMessage_ShardImpl) then) =
-      __$$QuantumLinkMessage_ShardImplCopyWithImpl<$Res>;
+abstract class _$$QuantumLinkMessage_BackupShardRequestImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_BackupShardRequestImplCopyWith(
+          _$QuantumLinkMessage_BackupShardRequestImpl value,
+          $Res Function(_$QuantumLinkMessage_BackupShardRequestImpl) then) =
+      __$$QuantumLinkMessage_BackupShardRequestImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({Shard field0});
+  $Res call({BackupShardRequest field0});
 }
 
 /// @nodoc
-class __$$QuantumLinkMessage_ShardImplCopyWithImpl<$Res>
+class __$$QuantumLinkMessage_BackupShardRequestImplCopyWithImpl<$Res>
     extends _$QuantumLinkMessageCopyWithImpl<$Res,
-        _$QuantumLinkMessage_ShardImpl>
-    implements _$$QuantumLinkMessage_ShardImplCopyWith<$Res> {
-  __$$QuantumLinkMessage_ShardImplCopyWithImpl(
-      _$QuantumLinkMessage_ShardImpl _value,
-      $Res Function(_$QuantumLinkMessage_ShardImpl) _then)
+        _$QuantumLinkMessage_BackupShardRequestImpl>
+    implements _$$QuantumLinkMessage_BackupShardRequestImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_BackupShardRequestImplCopyWithImpl(
+      _$QuantumLinkMessage_BackupShardRequestImpl _value,
+      $Res Function(_$QuantumLinkMessage_BackupShardRequestImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of QuantumLinkMessage
@@ -3466,33 +4907,34 @@ class __$$QuantumLinkMessage_ShardImplCopyWithImpl<$Res>
   $Res call({
     Object? field0 = null,
   }) {
-    return _then(_$QuantumLinkMessage_ShardImpl(
+    return _then(_$QuantumLinkMessage_BackupShardRequestImpl(
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
-              as Shard,
+              as BackupShardRequest,
     ));
   }
 }
 
 /// @nodoc
 
-class _$QuantumLinkMessage_ShardImpl extends QuantumLinkMessage_Shard {
-  const _$QuantumLinkMessage_ShardImpl(this.field0) : super._();
+class _$QuantumLinkMessage_BackupShardRequestImpl
+    extends QuantumLinkMessage_BackupShardRequest {
+  const _$QuantumLinkMessage_BackupShardRequestImpl(this.field0) : super._();
 
   @override
-  final Shard field0;
+  final BackupShardRequest field0;
 
   @override
   String toString() {
-    return 'QuantumLinkMessage.shard(field0: $field0)';
+    return 'QuantumLinkMessage.backupShardRequest(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$QuantumLinkMessage_ShardImpl &&
+            other is _$QuantumLinkMessage_BackupShardRequestImpl &&
             (identical(other.field0, field0) || other.field0 == field0));
   }
 
@@ -3504,78 +4946,98 @@ class _$QuantumLinkMessage_ShardImpl extends QuantumLinkMessage_Shard {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$QuantumLinkMessage_ShardImplCopyWith<_$QuantumLinkMessage_ShardImpl>
-      get copyWith => __$$QuantumLinkMessage_ShardImplCopyWithImpl<
-          _$QuantumLinkMessage_ShardImpl>(this, _$identity);
+  _$$QuantumLinkMessage_BackupShardRequestImplCopyWith<
+          _$QuantumLinkMessage_BackupShardRequestImpl>
+      get copyWith => __$$QuantumLinkMessage_BackupShardRequestImplCopyWithImpl<
+          _$QuantumLinkMessage_BackupShardRequestImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) {
-    return shard(field0);
+    return backupShardRequest(field0);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) {
-    return shard?.call(field0);
+    return backupShardRequest?.call(field0);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) {
-    if (shard != null) {
-      return shard(field0);
+    if (backupShardRequest != null) {
+      return backupShardRequest(field0);
     }
     return orElse();
   }
@@ -3585,104 +5047,1091 @@ class _$QuantumLinkMessage_ShardImpl extends QuantumLinkMessage_Shard {
   TResult map<TResult extends Object?>({
     required TResult Function(QuantumLinkMessage_ExchangeRate value)
         exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
         deviceStatus,
     required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
     required TResult Function(QuantumLinkMessage_PairingRequest value)
         pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
     required TResult Function(QuantumLinkMessage_OnboardingState value)
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
     required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
         broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) {
-    return shard(this);
+    return backupShardRequest(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_PairingResponse value)?
         pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_OnboardingState value)?
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) {
-    return shard?.call(this);
+    return backupShardRequest?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) {
-    if (shard != null) {
-      return shard(this);
+    if (backupShardRequest != null) {
+      return backupShardRequest(this);
     }
     return orElse();
   }
 }
 
-abstract class QuantumLinkMessage_Shard extends QuantumLinkMessage {
-  const factory QuantumLinkMessage_Shard(final Shard field0) =
-      _$QuantumLinkMessage_ShardImpl;
-  const QuantumLinkMessage_Shard._() : super._();
+abstract class QuantumLinkMessage_BackupShardRequest
+    extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_BackupShardRequest(
+          final BackupShardRequest field0) =
+      _$QuantumLinkMessage_BackupShardRequestImpl;
+  const QuantumLinkMessage_BackupShardRequest._() : super._();
 
   @override
-  Shard get field0;
+  BackupShardRequest get field0;
 
   /// Create a copy of QuantumLinkMessage
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuantumLinkMessage_ShardImplCopyWith<_$QuantumLinkMessage_ShardImpl>
+  _$$QuantumLinkMessage_BackupShardRequestImplCopyWith<
+          _$QuantumLinkMessage_BackupShardRequestImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$QuantumLinkMessage_BackupShardResponseImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_BackupShardResponseImplCopyWith(
+          _$QuantumLinkMessage_BackupShardResponseImpl value,
+          $Res Function(_$QuantumLinkMessage_BackupShardResponseImpl) then) =
+      __$$QuantumLinkMessage_BackupShardResponseImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({BackupShardResponse field0});
+
+  $BackupShardResponseCopyWith<$Res> get field0;
+}
+
+/// @nodoc
+class __$$QuantumLinkMessage_BackupShardResponseImplCopyWithImpl<$Res>
+    extends _$QuantumLinkMessageCopyWithImpl<$Res,
+        _$QuantumLinkMessage_BackupShardResponseImpl>
+    implements _$$QuantumLinkMessage_BackupShardResponseImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_BackupShardResponseImplCopyWithImpl(
+      _$QuantumLinkMessage_BackupShardResponseImpl _value,
+      $Res Function(_$QuantumLinkMessage_BackupShardResponseImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$QuantumLinkMessage_BackupShardResponseImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as BackupShardResponse,
+    ));
+  }
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $BackupShardResponseCopyWith<$Res> get field0 {
+    return $BackupShardResponseCopyWith<$Res>(_value.field0, (value) {
+      return _then(_value.copyWith(field0: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$QuantumLinkMessage_BackupShardResponseImpl
+    extends QuantumLinkMessage_BackupShardResponse {
+  const _$QuantumLinkMessage_BackupShardResponseImpl(this.field0) : super._();
+
+  @override
+  final BackupShardResponse field0;
+
+  @override
+  String toString() {
+    return 'QuantumLinkMessage.backupShardResponse(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$QuantumLinkMessage_BackupShardResponseImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$QuantumLinkMessage_BackupShardResponseImplCopyWith<
+          _$QuantumLinkMessage_BackupShardResponseImpl>
+      get copyWith =>
+          __$$QuantumLinkMessage_BackupShardResponseImplCopyWithImpl<
+              _$QuantumLinkMessage_BackupShardResponseImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(ExchangeRate field0) exchangeRate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
+    required TResult Function(DeviceStatus field0) deviceStatus,
+    required TResult Function(EnvoyStatus field0) envoyStatus,
+    required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
+    required TResult Function(OnboardingState field0) onboardingState,
+    required TResult Function(SignPsbt field0) signPsbt,
+    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
+    required TResult Function(RawData field0) rawData,
+  }) {
+    return backupShardResponse(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ExchangeRate field0)? exchangeRate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult? Function(DeviceStatus field0)? deviceStatus,
+    TResult? Function(EnvoyStatus field0)? envoyStatus,
+    TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
+    TResult? Function(OnboardingState field0)? onboardingState,
+    TResult? Function(SignPsbt field0)? signPsbt,
+    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult? Function(RawData field0)? rawData,
+  }) {
+    return backupShardResponse?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ExchangeRate field0)? exchangeRate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult Function(DeviceStatus field0)? deviceStatus,
+    TResult Function(EnvoyStatus field0)? envoyStatus,
+    TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
+    TResult Function(OnboardingState field0)? onboardingState,
+    TResult Function(SignPsbt field0)? signPsbt,
+    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult Function(RawData field0)? rawData,
+    required TResult orElse(),
+  }) {
+    if (backupShardResponse != null) {
+      return backupShardResponse(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(QuantumLinkMessage_ExchangeRate value)
+        exchangeRate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
+    required TResult Function(QuantumLinkMessage_DeviceStatus value)
+        deviceStatus,
+    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
+    required TResult Function(QuantumLinkMessage_PairingRequest value)
+        pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
+    required TResult Function(QuantumLinkMessage_OnboardingState value)
+        onboardingState,
+    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
+    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
+        broadcastTransaction,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
+    required TResult Function(QuantumLinkMessage_RawData value) rawData,
+  }) {
+    return backupShardResponse(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult? Function(QuantumLinkMessage_PairingResponse value)?
+        pairingResponse,
+    TResult? Function(QuantumLinkMessage_OnboardingState value)?
+        onboardingState,
+    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult? Function(QuantumLinkMessage_RawData value)? rawData,
+  }) {
+    return backupShardResponse?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
+    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
+    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult Function(QuantumLinkMessage_RawData value)? rawData,
+    required TResult orElse(),
+  }) {
+    if (backupShardResponse != null) {
+      return backupShardResponse(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class QuantumLinkMessage_BackupShardResponse
+    extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_BackupShardResponse(
+          final BackupShardResponse field0) =
+      _$QuantumLinkMessage_BackupShardResponseImpl;
+  const QuantumLinkMessage_BackupShardResponse._() : super._();
+
+  @override
+  BackupShardResponse get field0;
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$QuantumLinkMessage_BackupShardResponseImplCopyWith<
+          _$QuantumLinkMessage_BackupShardResponseImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$QuantumLinkMessage_RestoreShardRequestImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_RestoreShardRequestImplCopyWith(
+          _$QuantumLinkMessage_RestoreShardRequestImpl value,
+          $Res Function(_$QuantumLinkMessage_RestoreShardRequestImpl) then) =
+      __$$QuantumLinkMessage_RestoreShardRequestImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({RestoreShardRequest field0});
+}
+
+/// @nodoc
+class __$$QuantumLinkMessage_RestoreShardRequestImplCopyWithImpl<$Res>
+    extends _$QuantumLinkMessageCopyWithImpl<$Res,
+        _$QuantumLinkMessage_RestoreShardRequestImpl>
+    implements _$$QuantumLinkMessage_RestoreShardRequestImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_RestoreShardRequestImplCopyWithImpl(
+      _$QuantumLinkMessage_RestoreShardRequestImpl _value,
+      $Res Function(_$QuantumLinkMessage_RestoreShardRequestImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$QuantumLinkMessage_RestoreShardRequestImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as RestoreShardRequest,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$QuantumLinkMessage_RestoreShardRequestImpl
+    extends QuantumLinkMessage_RestoreShardRequest {
+  const _$QuantumLinkMessage_RestoreShardRequestImpl(this.field0) : super._();
+
+  @override
+  final RestoreShardRequest field0;
+
+  @override
+  String toString() {
+    return 'QuantumLinkMessage.restoreShardRequest(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$QuantumLinkMessage_RestoreShardRequestImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$QuantumLinkMessage_RestoreShardRequestImplCopyWith<
+          _$QuantumLinkMessage_RestoreShardRequestImpl>
+      get copyWith =>
+          __$$QuantumLinkMessage_RestoreShardRequestImplCopyWithImpl<
+              _$QuantumLinkMessage_RestoreShardRequestImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(ExchangeRate field0) exchangeRate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
+    required TResult Function(DeviceStatus field0) deviceStatus,
+    required TResult Function(EnvoyStatus field0) envoyStatus,
+    required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
+    required TResult Function(OnboardingState field0) onboardingState,
+    required TResult Function(SignPsbt field0) signPsbt,
+    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
+    required TResult Function(RawData field0) rawData,
+  }) {
+    return restoreShardRequest(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ExchangeRate field0)? exchangeRate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult? Function(DeviceStatus field0)? deviceStatus,
+    TResult? Function(EnvoyStatus field0)? envoyStatus,
+    TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
+    TResult? Function(OnboardingState field0)? onboardingState,
+    TResult? Function(SignPsbt field0)? signPsbt,
+    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult? Function(RawData field0)? rawData,
+  }) {
+    return restoreShardRequest?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ExchangeRate field0)? exchangeRate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult Function(DeviceStatus field0)? deviceStatus,
+    TResult Function(EnvoyStatus field0)? envoyStatus,
+    TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
+    TResult Function(OnboardingState field0)? onboardingState,
+    TResult Function(SignPsbt field0)? signPsbt,
+    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult Function(RawData field0)? rawData,
+    required TResult orElse(),
+  }) {
+    if (restoreShardRequest != null) {
+      return restoreShardRequest(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(QuantumLinkMessage_ExchangeRate value)
+        exchangeRate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
+    required TResult Function(QuantumLinkMessage_DeviceStatus value)
+        deviceStatus,
+    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
+    required TResult Function(QuantumLinkMessage_PairingRequest value)
+        pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
+    required TResult Function(QuantumLinkMessage_OnboardingState value)
+        onboardingState,
+    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
+    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
+        broadcastTransaction,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
+    required TResult Function(QuantumLinkMessage_RawData value) rawData,
+  }) {
+    return restoreShardRequest(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult? Function(QuantumLinkMessage_PairingResponse value)?
+        pairingResponse,
+    TResult? Function(QuantumLinkMessage_OnboardingState value)?
+        onboardingState,
+    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult? Function(QuantumLinkMessage_RawData value)? rawData,
+  }) {
+    return restoreShardRequest?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
+    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
+    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult Function(QuantumLinkMessage_RawData value)? rawData,
+    required TResult orElse(),
+  }) {
+    if (restoreShardRequest != null) {
+      return restoreShardRequest(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class QuantumLinkMessage_RestoreShardRequest
+    extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_RestoreShardRequest(
+          final RestoreShardRequest field0) =
+      _$QuantumLinkMessage_RestoreShardRequestImpl;
+  const QuantumLinkMessage_RestoreShardRequest._() : super._();
+
+  @override
+  RestoreShardRequest get field0;
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$QuantumLinkMessage_RestoreShardRequestImplCopyWith<
+          _$QuantumLinkMessage_RestoreShardRequestImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$QuantumLinkMessage_RestoreShardResponseImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_RestoreShardResponseImplCopyWith(
+          _$QuantumLinkMessage_RestoreShardResponseImpl value,
+          $Res Function(_$QuantumLinkMessage_RestoreShardResponseImpl) then) =
+      __$$QuantumLinkMessage_RestoreShardResponseImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({RestoreShardResponse field0});
+
+  $RestoreShardResponseCopyWith<$Res> get field0;
+}
+
+/// @nodoc
+class __$$QuantumLinkMessage_RestoreShardResponseImplCopyWithImpl<$Res>
+    extends _$QuantumLinkMessageCopyWithImpl<$Res,
+        _$QuantumLinkMessage_RestoreShardResponseImpl>
+    implements _$$QuantumLinkMessage_RestoreShardResponseImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_RestoreShardResponseImplCopyWithImpl(
+      _$QuantumLinkMessage_RestoreShardResponseImpl _value,
+      $Res Function(_$QuantumLinkMessage_RestoreShardResponseImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$QuantumLinkMessage_RestoreShardResponseImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as RestoreShardResponse,
+    ));
+  }
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $RestoreShardResponseCopyWith<$Res> get field0 {
+    return $RestoreShardResponseCopyWith<$Res>(_value.field0, (value) {
+      return _then(_value.copyWith(field0: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$QuantumLinkMessage_RestoreShardResponseImpl
+    extends QuantumLinkMessage_RestoreShardResponse {
+  const _$QuantumLinkMessage_RestoreShardResponseImpl(this.field0) : super._();
+
+  @override
+  final RestoreShardResponse field0;
+
+  @override
+  String toString() {
+    return 'QuantumLinkMessage.restoreShardResponse(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$QuantumLinkMessage_RestoreShardResponseImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$QuantumLinkMessage_RestoreShardResponseImplCopyWith<
+          _$QuantumLinkMessage_RestoreShardResponseImpl>
+      get copyWith =>
+          __$$QuantumLinkMessage_RestoreShardResponseImplCopyWithImpl<
+              _$QuantumLinkMessage_RestoreShardResponseImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(ExchangeRate field0) exchangeRate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
+    required TResult Function(DeviceStatus field0) deviceStatus,
+    required TResult Function(EnvoyStatus field0) envoyStatus,
+    required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
+    required TResult Function(OnboardingState field0) onboardingState,
+    required TResult Function(SignPsbt field0) signPsbt,
+    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
+    required TResult Function(RawData field0) rawData,
+  }) {
+    return restoreShardResponse(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ExchangeRate field0)? exchangeRate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult? Function(DeviceStatus field0)? deviceStatus,
+    TResult? Function(EnvoyStatus field0)? envoyStatus,
+    TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
+    TResult? Function(OnboardingState field0)? onboardingState,
+    TResult? Function(SignPsbt field0)? signPsbt,
+    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult? Function(RawData field0)? rawData,
+  }) {
+    return restoreShardResponse?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ExchangeRate field0)? exchangeRate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult Function(DeviceStatus field0)? deviceStatus,
+    TResult Function(EnvoyStatus field0)? envoyStatus,
+    TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
+    TResult Function(OnboardingState field0)? onboardingState,
+    TResult Function(SignPsbt field0)? signPsbt,
+    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult Function(RawData field0)? rawData,
+    required TResult orElse(),
+  }) {
+    if (restoreShardResponse != null) {
+      return restoreShardResponse(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(QuantumLinkMessage_ExchangeRate value)
+        exchangeRate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
+    required TResult Function(QuantumLinkMessage_DeviceStatus value)
+        deviceStatus,
+    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
+    required TResult Function(QuantumLinkMessage_PairingRequest value)
+        pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
+    required TResult Function(QuantumLinkMessage_OnboardingState value)
+        onboardingState,
+    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
+    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
+        broadcastTransaction,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
+    required TResult Function(QuantumLinkMessage_RawData value) rawData,
+  }) {
+    return restoreShardResponse(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult? Function(QuantumLinkMessage_PairingResponse value)?
+        pairingResponse,
+    TResult? Function(QuantumLinkMessage_OnboardingState value)?
+        onboardingState,
+    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult? Function(QuantumLinkMessage_RawData value)? rawData,
+  }) {
+    return restoreShardResponse?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
+    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
+    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult Function(QuantumLinkMessage_RawData value)? rawData,
+    required TResult orElse(),
+  }) {
+    if (restoreShardResponse != null) {
+      return restoreShardResponse(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class QuantumLinkMessage_RestoreShardResponse
+    extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_RestoreShardResponse(
+          final RestoreShardResponse field0) =
+      _$QuantumLinkMessage_RestoreShardResponseImpl;
+  const QuantumLinkMessage_RestoreShardResponse._() : super._();
+
+  @override
+  RestoreShardResponse get field0;
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$QuantumLinkMessage_RestoreShardResponseImplCopyWith<
+          _$QuantumLinkMessage_RestoreShardResponseImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -3759,20 +6208,26 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ExchangeRate field0) exchangeRate,
-    required TResult Function(FirmwareUpdate field0) firmwareUpdate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
     required TResult Function(DeviceStatus field0) deviceStatus,
     required TResult Function(EnvoyStatus field0) envoyStatus,
-    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
     required TResult Function(OnboardingState field0) onboardingState,
     required TResult Function(SignPsbt field0) signPsbt,
-    required TResult Function(AccountUpdate field0) accountUpdate,
-    required TResult Function(FirmwarePayload field0) firmwarePayload,
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
-    required TResult Function(SecurityChallengeMessage field0)
-        securityChallengeMessage,
-    required TResult Function(SecurityProofMessage field0) securityProofMessage,
-    required TResult Function(Shard field0) shard,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
     required TResult Function(RawData field0) rawData,
   }) {
     return rawData(field0);
@@ -3782,20 +6237,26 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ExchangeRate field0)? exchangeRate,
-    TResult? Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult? Function(DeviceStatus field0)? deviceStatus,
     TResult? Function(EnvoyStatus field0)? envoyStatus,
-    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
     TResult? Function(OnboardingState field0)? onboardingState,
     TResult? Function(SignPsbt field0)? signPsbt,
-    TResult? Function(AccountUpdate field0)? accountUpdate,
-    TResult? Function(FirmwarePayload field0)? firmwarePayload,
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult? Function(SecurityChallengeMessage field0)?
-        securityChallengeMessage,
-    TResult? Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult? Function(Shard field0)? shard,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult? Function(RawData field0)? rawData,
   }) {
     return rawData?.call(field0);
@@ -3805,19 +6266,26 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ExchangeRate field0)? exchangeRate,
-    TResult Function(FirmwareUpdate field0)? firmwareUpdate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
     TResult Function(DeviceStatus field0)? deviceStatus,
     TResult Function(EnvoyStatus field0)? envoyStatus,
-    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
     TResult Function(OnboardingState field0)? onboardingState,
     TResult Function(SignPsbt field0)? signPsbt,
-    TResult Function(AccountUpdate field0)? accountUpdate,
-    TResult Function(FirmwarePayload field0)? firmwarePayload,
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
-    TResult Function(SecurityChallengeMessage field0)? securityChallengeMessage,
-    TResult Function(SecurityProofMessage field0)? securityProofMessage,
-    TResult Function(Shard field0)? shard,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
     TResult Function(RawData field0)? rawData,
     required TResult orElse(),
   }) {
@@ -3832,29 +6300,42 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
   TResult map<TResult extends Object?>({
     required TResult Function(QuantumLinkMessage_ExchangeRate value)
         exchangeRate,
-    required TResult Function(QuantumLinkMessage_FirmwareUpdate value)
-        firmwareUpdate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
     required TResult Function(QuantumLinkMessage_DeviceStatus value)
         deviceStatus,
     required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
-    required TResult Function(QuantumLinkMessage_PairingResponse value)
-        pairingResponse,
     required TResult Function(QuantumLinkMessage_PairingRequest value)
         pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
     required TResult Function(QuantumLinkMessage_OnboardingState value)
         onboardingState,
     required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
-    required TResult Function(QuantumLinkMessage_AccountUpdate value)
-        accountUpdate,
-    required TResult Function(QuantumLinkMessage_FirmwarePayload value)
-        firmwarePayload,
     required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
         broadcastTransaction,
-    required TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)
-        securityChallengeMessage,
-    required TResult Function(QuantumLinkMessage_SecurityProofMessage value)
-        securityProofMessage,
-    required TResult Function(QuantumLinkMessage_Shard value) shard,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
     required TResult Function(QuantumLinkMessage_RawData value) rawData,
   }) {
     return rawData(this);
@@ -3864,25 +6345,36 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult? Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_PairingResponse value)?
         pairingResponse,
-    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
     TResult? Function(QuantumLinkMessage_OnboardingState value)?
         onboardingState,
     TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult? Function(QuantumLinkMessage_FirmwarePayload value)?
-        firmwarePayload,
     TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult? Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult? Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult? Function(QuantumLinkMessage_Shard value)? shard,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult? Function(QuantumLinkMessage_RawData value)? rawData,
   }) {
     return rawData?.call(this);
@@ -3892,22 +6384,34 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
-    TResult Function(QuantumLinkMessage_FirmwareUpdate value)? firmwareUpdate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
     TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
     TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
-    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
     TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
     TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
-    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
-    TResult Function(QuantumLinkMessage_FirmwarePayload value)? firmwarePayload,
     TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
         broadcastTransaction,
-    TResult Function(QuantumLinkMessage_SecurityChallengeMessage value)?
-        securityChallengeMessage,
-    TResult Function(QuantumLinkMessage_SecurityProofMessage value)?
-        securityProofMessage,
-    TResult Function(QuantumLinkMessage_Shard value)? shard,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
     TResult Function(QuantumLinkMessage_RawData value)? rawData,
     required TResult orElse(),
   }) {

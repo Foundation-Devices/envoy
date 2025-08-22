@@ -45,7 +45,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -846349618;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 359751636;
 
 // Section: executor
 
@@ -77,7 +77,7 @@ fn wire__crate__api__ql__decode_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_data = <Vec<u8>>::sse_decode(&mut deserializer);
             let api_decoder = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>,
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>,
             >>::sse_decode(&mut deserializer);
             let api_quantum_link_identity = <RustOpaqueMoi<
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>,
@@ -156,13 +156,13 @@ fn wire__crate__api__qr__decode_ble_message_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_data = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api__data = <Vec<u8>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, ()>(
                     (move || async move {
                         let output_ok = Result::<_, ()>::Ok(
-                            crate::api::qr::decode_ble_message(api_data).await,
+                            crate::api::qr::decode_ble_message(api__data).await,
                         )?;
                         Ok(output_ok)
                     })()
@@ -734,6 +734,53 @@ fn wire__crate__api__ql__serialize_xid_document_impl(
         },
     )
 }
+fn wire__crate__api__ql__split_fw_update_into_chunks_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "split_fw_update_into_chunks",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_patch_index = <u8>::sse_decode(&mut deserializer);
+            let api_total_patches = <u8>::sse_decode(&mut deserializer);
+            let api_patch_bytes = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_chunk_size = <usize>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, ()>(
+                    (move || async move {
+                        let output_ok = Result::<_, ()>::Ok(
+                            crate::api::ql::split_fw_update_into_chunks(
+                                api_patch_index,
+                                api_total_patches,
+                                &api_patch_bytes,
+                                api_chunk_size,
+                            )
+                            .await,
+                        )?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 
 // Section: static_checks
 
@@ -745,10 +792,32 @@ const _: fn() = || {
         let _: Vec<u8> = AccountUpdate.update;
     }
     {
+        let BackupShardRequest_ = None::<foundation_api::api::backup::BackupShardRequest>.unwrap();
+        let _: foundation_api::api::backup::Shard = BackupShardRequest_.0;
+    }
+    match None::<foundation_api::api::backup::BackupShardResponse>.unwrap() {
+        foundation_api::api::backup::BackupShardResponse::Success => {}
+        foundation_api::api::backup::BackupShardResponse::Error(field0) => {
+            let _: String = field0;
+        }
+    }
+    {
         let BroadcastTransaction =
             None::<foundation_api::api::bitcoin::BroadcastTransaction>.unwrap();
         let _: String = BroadcastTransaction.account_id;
         let _: Vec<u8> = BroadcastTransaction.psbt;
+    }
+    {
+        let ChallengeRequest = None::<foundation_api::api::scv::ChallengeRequest>.unwrap();
+        let _: Vec<u8> = ChallengeRequest.data;
+    }
+    match None::<foundation_api::api::scv::ChallengeResponseResult>.unwrap() {
+        foundation_api::api::scv::ChallengeResponseResult::Success { data } => {
+            let _: Vec<u8> = data;
+        }
+        foundation_api::api::scv::ChallengeResponseResult::Error { error } => {
+            let _: String = error;
+        }
     }
     {
         let DeviceStatus = None::<foundation_api::api::status::DeviceStatus>.unwrap();
@@ -773,14 +842,59 @@ const _: fn() = || {
         let _: f32 = ExchangeRate.rate;
     }
     {
-        let FirmwarePayload = None::<foundation_api::api::firmware::FirmwarePayload>.unwrap();
-        let _: Vec<u8> = FirmwarePayload.payload;
+        let FirmwareChunk = None::<foundation_api::api::firmware::FirmwareChunk>.unwrap();
+        let _: u8 = FirmwareChunk.patch_index;
+        let _: u8 = FirmwareChunk.total_patches;
+        let _: u16 = FirmwareChunk.chunk_index;
+        let _: u16 = FirmwareChunk.total_chunks;
+        let _: Vec<u8> = FirmwareChunk.data;
+    }
+    match None::<foundation_api::api::firmware::FirmwareFetchEvent>.unwrap() {
+        foundation_api::api::firmware::FirmwareFetchEvent::UpdateNotAvailable => {}
+        foundation_api::api::firmware::FirmwareFetchEvent::Starting(field0) => {
+            let _: foundation_api::api::firmware::FirmwareUpdateAvailable = field0;
+        }
+        foundation_api::api::firmware::FirmwareFetchEvent::Downloading => {}
+        foundation_api::api::firmware::FirmwareFetchEvent::Chunk(field0) => {
+            let _: foundation_api::api::firmware::FirmwareChunk = field0;
+        }
+        foundation_api::api::firmware::FirmwareFetchEvent::Complete => {}
+        foundation_api::api::firmware::FirmwareFetchEvent::Error(field0) => {
+            let _: String = field0;
+        }
     }
     {
-        let FirmwareUpdate = None::<foundation_api::api::firmware::FirmwareUpdate>.unwrap();
-        let _: String = FirmwareUpdate.version;
-        let _: u32 = FirmwareUpdate.timestamp;
-        let _: String = FirmwareUpdate.changelog;
+        let FirmwareFetchRequest =
+            None::<foundation_api::api::firmware::FirmwareFetchRequest>.unwrap();
+        let _: String = FirmwareFetchRequest.current_version;
+    }
+    {
+        let FirmwareUpdateAvailable =
+            None::<foundation_api::api::firmware::FirmwareUpdateAvailable>.unwrap();
+        let _: String = FirmwareUpdateAvailable.version;
+        let _: String = FirmwareUpdateAvailable.changelog;
+        let _: u32 = FirmwareUpdateAvailable.timestamp;
+        let _: u32 = FirmwareUpdateAvailable.total_size;
+        let _: u8 = FirmwareUpdateAvailable.patch_count;
+    }
+    {
+        let FirmwareUpdateCheckRequest =
+            None::<foundation_api::api::firmware::FirmwareUpdateCheckRequest>.unwrap();
+        let _: String = FirmwareUpdateCheckRequest.current_version;
+    }
+    match None::<foundation_api::api::firmware::FirmwareUpdateCheckResponse>.unwrap() {
+        foundation_api::api::firmware::FirmwareUpdateCheckResponse::Available(field0) => {
+            let _: foundation_api::api::firmware::FirmwareUpdateAvailable = field0;
+        }
+        foundation_api::api::firmware::FirmwareUpdateCheckResponse::NotAvailable => {}
+    }
+    match None::<foundation_api::api::firmware::FirmwareUpdateResult>.unwrap() {
+        foundation_api::api::firmware::FirmwareUpdateResult::Success { installed_version } => {
+            let _: String = installed_version;
+        }
+        foundation_api::api::firmware::FirmwareUpdateResult::Error(field0) => {
+            let _: String = field0;
+        }
     }
     {
         let PairingRequest = None::<foundation_api::api::pairing::PairingRequest>.unwrap();
@@ -792,7 +906,7 @@ const _: fn() = || {
         let _: foundation_api::api::passport::PassportFirmwareVersion =
             PairingResponse.passport_firmware_version;
         let _: foundation_api::api::passport::PassportSerial = PairingResponse.passport_serial;
-        let _: String = PairingResponse.descriptor;
+        let _: foundation_api::api::passport::PassportColor = PairingResponse.passport_color;
     }
     {
         let PassportFirmwareVersion_ =
@@ -812,8 +926,20 @@ const _: fn() = || {
         foundation_api::api::message::QuantumLinkMessage::ExchangeRate(field0) => {
             let _: foundation_api::api::fx::ExchangeRate = field0;
         }
-        foundation_api::api::message::QuantumLinkMessage::FirmwareUpdate(field0) => {
-            let _: foundation_api::api::firmware::FirmwareUpdate = field0;
+        foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateCheckRequest(field0) => {
+            let _: foundation_api::api::firmware::FirmwareUpdateCheckRequest = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateCheckResponse(field0) => {
+            let _: foundation_api::api::firmware::FirmwareUpdateCheckResponse = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::FirmwareFetchRequest(field0) => {
+            let _: foundation_api::api::firmware::FirmwareFetchRequest = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::FirmwareFetchEvent(field0) => {
+            let _: foundation_api::api::firmware::FirmwareFetchEvent = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateResult(field0) => {
+            let _: foundation_api::api::firmware::FirmwareUpdateResult = field0;
         }
         foundation_api::api::message::QuantumLinkMessage::DeviceStatus(field0) => {
             let _: foundation_api::api::status::DeviceStatus = field0;
@@ -821,11 +947,11 @@ const _: fn() = || {
         foundation_api::api::message::QuantumLinkMessage::EnvoyStatus(field0) => {
             let _: foundation_api::api::status::EnvoyStatus = field0;
         }
-        foundation_api::api::message::QuantumLinkMessage::PairingResponse(field0) => {
-            let _: foundation_api::api::pairing::PairingResponse = field0;
-        }
         foundation_api::api::message::QuantumLinkMessage::PairingRequest(field0) => {
             let _: foundation_api::api::pairing::PairingRequest = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::PairingResponse(field0) => {
+            let _: foundation_api::api::pairing::PairingResponse = field0;
         }
         foundation_api::api::message::QuantumLinkMessage::OnboardingState(field0) => {
             let _: foundation_api::api::onboarding::OnboardingState = field0;
@@ -833,23 +959,26 @@ const _: fn() = || {
         foundation_api::api::message::QuantumLinkMessage::SignPsbt(field0) => {
             let _: foundation_api::api::bitcoin::SignPsbt = field0;
         }
-        foundation_api::api::message::QuantumLinkMessage::AccountUpdate(field0) => {
-            let _: foundation_api::api::bitcoin::AccountUpdate = field0;
-        }
-        foundation_api::api::message::QuantumLinkMessage::FirmwarePayload(field0) => {
-            let _: foundation_api::api::firmware::FirmwarePayload = field0;
-        }
         foundation_api::api::message::QuantumLinkMessage::BroadcastTransaction(field0) => {
             let _: foundation_api::api::bitcoin::BroadcastTransaction = field0;
         }
-        foundation_api::api::message::QuantumLinkMessage::SecurityChallengeMessage(field0) => {
-            let _: foundation_api::api::scv::SecurityChallengeMessage = field0;
+        foundation_api::api::message::QuantumLinkMessage::AccountUpdate(field0) => {
+            let _: foundation_api::api::bitcoin::AccountUpdate = field0;
         }
-        foundation_api::api::message::QuantumLinkMessage::SecurityProofMessage(field0) => {
-            let _: foundation_api::api::scv::SecurityProofMessage = field0;
+        foundation_api::api::message::QuantumLinkMessage::SecurityCheck(field0) => {
+            let _: foundation_api::api::scv::SecurityCheck = field0;
         }
-        foundation_api::api::message::QuantumLinkMessage::Shard(field0) => {
-            let _: foundation_api::api::backup::Shard = field0;
+        foundation_api::api::message::QuantumLinkMessage::BackupShardRequest(field0) => {
+            let _: foundation_api::api::backup::BackupShardRequest = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::BackupShardResponse(field0) => {
+            let _: foundation_api::api::backup::BackupShardResponse = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::RestoreShardRequest(field0) => {
+            let _: foundation_api::api::backup::RestoreShardRequest = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::RestoreShardResponse(field0) => {
+            let _: foundation_api::api::backup::RestoreShardResponse = field0;
         }
         foundation_api::api::message::QuantumLinkMessage::RawData(field0) => {
             let _: foundation_api::api::raw::RawData = field0;
@@ -860,13 +989,26 @@ const _: fn() = || {
         let _: Vec<u8> = RawData.payload;
     }
     {
-        let SecurityChallengeMessage =
-            None::<foundation_api::api::scv::SecurityChallengeMessage>.unwrap();
-        let _: Vec<u8> = SecurityChallengeMessage.data;
+        let RestoreShardRequest = None::<foundation_api::api::backup::RestoreShardRequest>.unwrap();
     }
-    {
-        let SecurityProofMessage = None::<foundation_api::api::scv::SecurityProofMessage>.unwrap();
-        let _: Vec<u8> = SecurityProofMessage.data;
+    match None::<foundation_api::api::backup::RestoreShardResponse>.unwrap() {
+        foundation_api::api::backup::RestoreShardResponse::Success(field0) => {
+            let _: foundation_api::api::backup::Shard = field0;
+        }
+        foundation_api::api::backup::RestoreShardResponse::Error(field0) => {
+            let _: String = field0;
+        }
+    }
+    match None::<foundation_api::api::scv::SecurityCheck>.unwrap() {
+        foundation_api::api::scv::SecurityCheck::ChallengeRequest(field0) => {
+            let _: foundation_api::api::scv::ChallengeRequest = field0;
+        }
+        foundation_api::api::scv::SecurityCheck::ChallengeResponse(field0) => {
+            let _: foundation_api::api::scv::ChallengeResponseResult = field0;
+        }
+        foundation_api::api::scv::SecurityCheck::VerificationResult(field0) => {
+            let _: foundation_api::api::scv::VerificationResult = field0;
+        }
     }
     {
         let Shard = None::<foundation_api::api::backup::Shard>.unwrap();
@@ -877,6 +1019,12 @@ const _: fn() = || {
         let _: String = SignPsbt.account_id;
         let _: Vec<u8> = SignPsbt.psbt;
     }
+    match None::<foundation_api::api::scv::VerificationResult>.unwrap() {
+        foundation_api::api::scv::VerificationResult::Success => {}
+        foundation_api::api::scv::VerificationResult::Error { error } => {
+            let _: String = error;
+        }
+    }
 };
 
 // Section: related_funcs
@@ -885,7 +1033,7 @@ flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc<Mutex<Decoder>>>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>
@@ -914,11 +1062,11 @@ impl SseDecode for Arc<Mutex<Decoder>> {
     }
 }
 
-impl SseDecode for Dechunker {
+impl SseDecode for EnvoyMasterDechunker {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <RustOpaqueMoi<
-            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>,
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>,
         >>::sse_decode(deserializer);
         return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
     }
@@ -955,7 +1103,7 @@ impl SseDecode
 }
 
 impl SseDecode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1004,6 +1152,33 @@ impl SseDecode for foundation_api::api::bitcoin::AccountUpdate {
     }
 }
 
+impl SseDecode for foundation_api::api::backup::BackupShardRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <foundation_api::api::backup::Shard>::sse_decode(deserializer);
+        return foundation_api::api::backup::BackupShardRequest(var_field0);
+    }
+}
+
+impl SseDecode for foundation_api::api::backup::BackupShardResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                return foundation_api::api::backup::BackupShardResponse::Success;
+            }
+            1 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return foundation_api::api::backup::BackupShardResponse::Error(var_field0);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
 impl SseDecode for foundation_api::api::bitcoin::BroadcastTransaction {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1013,6 +1188,38 @@ impl SseDecode for foundation_api::api::bitcoin::BroadcastTransaction {
             account_id: var_accountId,
             psbt: var_psbt,
         };
+    }
+}
+
+impl SseDecode for foundation_api::api::scv::ChallengeRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_data = <Vec<u8>>::sse_decode(deserializer);
+        return foundation_api::api::scv::ChallengeRequest { data: var_data };
+    }
+}
+
+impl SseDecode for foundation_api::api::scv::ChallengeResponseResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                let mut var_data = <Vec<u8>>::sse_decode(deserializer);
+                return foundation_api::api::scv::ChallengeResponseResult::Success {
+                    data: var_data,
+                };
+            }
+            1 => {
+                let mut var_error = <String>::sse_decode(deserializer);
+                return foundation_api::api::scv::ChallengeResponseResult::Error {
+                    error: var_error,
+                };
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -1121,27 +1328,142 @@ impl SseDecode for f64 {
     }
 }
 
-impl SseDecode for foundation_api::api::firmware::FirmwarePayload {
+impl SseDecode for foundation_api::api::firmware::FirmwareChunk {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_payload = <Vec<u8>>::sse_decode(deserializer);
-        return foundation_api::api::firmware::FirmwarePayload {
-            payload: var_payload,
+        let mut var_patchIndex = <u8>::sse_decode(deserializer);
+        let mut var_totalPatches = <u8>::sse_decode(deserializer);
+        let mut var_chunkIndex = <u16>::sse_decode(deserializer);
+        let mut var_totalChunks = <u16>::sse_decode(deserializer);
+        let mut var_data = <Vec<u8>>::sse_decode(deserializer);
+        return foundation_api::api::firmware::FirmwareChunk {
+            patch_index: var_patchIndex,
+            total_patches: var_totalPatches,
+            chunk_index: var_chunkIndex,
+            total_chunks: var_totalChunks,
+            data: var_data,
         };
     }
 }
 
-impl SseDecode for foundation_api::api::firmware::FirmwareUpdate {
+impl SseDecode for foundation_api::api::firmware::FirmwareFetchEvent {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                return foundation_api::api::firmware::FirmwareFetchEvent::UpdateNotAvailable;
+            }
+            1 => {
+                let mut var_field0 =
+                    <foundation_api::api::firmware::FirmwareUpdateAvailable>::sse_decode(
+                        deserializer,
+                    );
+                return foundation_api::api::firmware::FirmwareFetchEvent::Starting(var_field0);
+            }
+            2 => {
+                return foundation_api::api::firmware::FirmwareFetchEvent::Downloading;
+            }
+            3 => {
+                let mut var_field0 =
+                    <foundation_api::api::firmware::FirmwareChunk>::sse_decode(deserializer);
+                return foundation_api::api::firmware::FirmwareFetchEvent::Chunk(var_field0);
+            }
+            4 => {
+                return foundation_api::api::firmware::FirmwareFetchEvent::Complete;
+            }
+            5 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return foundation_api::api::firmware::FirmwareFetchEvent::Error(var_field0);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseDecode for foundation_api::api::firmware::FirmwareFetchRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_currentVersion = <String>::sse_decode(deserializer);
+        return foundation_api::api::firmware::FirmwareFetchRequest {
+            current_version: var_currentVersion,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::firmware::FirmwareUpdateAvailable {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_version = <String>::sse_decode(deserializer);
-        let mut var_timestamp = <u32>::sse_decode(deserializer);
         let mut var_changelog = <String>::sse_decode(deserializer);
-        return foundation_api::api::firmware::FirmwareUpdate {
+        let mut var_timestamp = <u32>::sse_decode(deserializer);
+        let mut var_totalSize = <u32>::sse_decode(deserializer);
+        let mut var_patchCount = <u8>::sse_decode(deserializer);
+        return foundation_api::api::firmware::FirmwareUpdateAvailable {
             version: var_version,
-            timestamp: var_timestamp,
             changelog: var_changelog,
+            timestamp: var_timestamp,
+            total_size: var_totalSize,
+            patch_count: var_patchCount,
         };
+    }
+}
+
+impl SseDecode for foundation_api::api::firmware::FirmwareUpdateCheckRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_currentVersion = <String>::sse_decode(deserializer);
+        return foundation_api::api::firmware::FirmwareUpdateCheckRequest {
+            current_version: var_currentVersion,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::firmware::FirmwareUpdateCheckResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                let mut var_field0 =
+                    <foundation_api::api::firmware::FirmwareUpdateAvailable>::sse_decode(
+                        deserializer,
+                    );
+                return foundation_api::api::firmware::FirmwareUpdateCheckResponse::Available(
+                    var_field0,
+                );
+            }
+            1 => {
+                return foundation_api::api::firmware::FirmwareUpdateCheckResponse::NotAvailable;
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseDecode for foundation_api::api::firmware::FirmwareUpdateResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                let mut var_installedVersion = <String>::sse_decode(deserializer);
+                return foundation_api::api::firmware::FirmwareUpdateResult::Success {
+                    installed_version: var_installedVersion,
+                };
+            }
+            1 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return foundation_api::api::firmware::FirmwareUpdateResult::Error(var_field0);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -1178,6 +1500,18 @@ impl SseDecode for Vec<u8> {
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
             ans_.push(<u8>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<foundation_api::api::message::QuantumLinkMessage> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<foundation_api::api::message::QuantumLinkMessage>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -1261,12 +1595,25 @@ impl SseDecode for foundation_api::api::pairing::PairingResponse {
             <foundation_api::api::passport::PassportFirmwareVersion>::sse_decode(deserializer);
         let mut var_passportSerial =
             <foundation_api::api::passport::PassportSerial>::sse_decode(deserializer);
-        let mut var_descriptor = <String>::sse_decode(deserializer);
+        let mut var_passportColor =
+            <foundation_api::api::passport::PassportColor>::sse_decode(deserializer);
         return foundation_api::api::pairing::PairingResponse {
             passport_model: var_passportModel,
             passport_firmware_version: var_passportFirmwareVersion,
             passport_serial: var_passportSerial,
-            descriptor: var_descriptor,
+            passport_color: var_passportColor,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::passport::PassportColor {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => foundation_api::api::passport::PassportColor::Light,
+            1 => foundation_api::api::passport::PassportColor::Dark,
+            _ => unreachable!("Invalid variant for PassportColor: {}", inner),
         };
     }
 }
@@ -1337,85 +1684,121 @@ impl SseDecode for foundation_api::api::message::QuantumLinkMessage {
             }
             1 => {
                 let mut var_field0 =
-                    <foundation_api::api::firmware::FirmwareUpdate>::sse_decode(deserializer);
-                return foundation_api::api::message::QuantumLinkMessage::FirmwareUpdate(
-                    var_field0,
-                );
+                    <foundation_api::api::firmware::FirmwareUpdateCheckRequest>::sse_decode(
+                        deserializer,
+                    );
+                return foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateCheckRequest(var_field0);
             }
             2 => {
                 let mut var_field0 =
-                    <foundation_api::api::status::DeviceStatus>::sse_decode(deserializer);
-                return foundation_api::api::message::QuantumLinkMessage::DeviceStatus(var_field0);
+                    <foundation_api::api::firmware::FirmwareUpdateCheckResponse>::sse_decode(
+                        deserializer,
+                    );
+                return foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateCheckResponse(var_field0);
             }
             3 => {
                 let mut var_field0 =
-                    <foundation_api::api::status::EnvoyStatus>::sse_decode(deserializer);
-                return foundation_api::api::message::QuantumLinkMessage::EnvoyStatus(var_field0);
+                    <foundation_api::api::firmware::FirmwareFetchRequest>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::FirmwareFetchRequest(
+                    var_field0,
+                );
             }
             4 => {
                 let mut var_field0 =
-                    <foundation_api::api::pairing::PairingResponse>::sse_decode(deserializer);
-                return foundation_api::api::message::QuantumLinkMessage::PairingResponse(
+                    <foundation_api::api::firmware::FirmwareFetchEvent>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::FirmwareFetchEvent(
                     var_field0,
                 );
             }
             5 => {
+                let mut var_field0 =
+                    <foundation_api::api::firmware::FirmwareUpdateResult>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateResult(
+                    var_field0,
+                );
+            }
+            6 => {
+                let mut var_field0 =
+                    <foundation_api::api::status::DeviceStatus>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::DeviceStatus(var_field0);
+            }
+            7 => {
+                let mut var_field0 =
+                    <foundation_api::api::status::EnvoyStatus>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::EnvoyStatus(var_field0);
+            }
+            8 => {
                 let mut var_field0 =
                     <foundation_api::api::pairing::PairingRequest>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::PairingRequest(
                     var_field0,
                 );
             }
-            6 => {
+            9 => {
+                let mut var_field0 =
+                    <foundation_api::api::pairing::PairingResponse>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::PairingResponse(
+                    var_field0,
+                );
+            }
+            10 => {
                 let mut var_field0 =
                     <foundation_api::api::onboarding::OnboardingState>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::OnboardingState(
                     var_field0,
                 );
             }
-            7 => {
+            11 => {
                 let mut var_field0 =
                     <foundation_api::api::bitcoin::SignPsbt>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::SignPsbt(var_field0);
             }
-            8 => {
-                let mut var_field0 =
-                    <foundation_api::api::bitcoin::AccountUpdate>::sse_decode(deserializer);
-                return foundation_api::api::message::QuantumLinkMessage::AccountUpdate(var_field0);
-            }
-            9 => {
-                let mut var_field0 =
-                    <foundation_api::api::firmware::FirmwarePayload>::sse_decode(deserializer);
-                return foundation_api::api::message::QuantumLinkMessage::FirmwarePayload(
-                    var_field0,
-                );
-            }
-            10 => {
+            12 => {
                 let mut var_field0 =
                     <foundation_api::api::bitcoin::BroadcastTransaction>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::BroadcastTransaction(
                     var_field0,
                 );
             }
-            11 => {
-                let mut var_field0 =
-                    <foundation_api::api::scv::SecurityChallengeMessage>::sse_decode(deserializer);
-                return foundation_api::api::message::QuantumLinkMessage::SecurityChallengeMessage(
-                    var_field0,
-                );
-            }
-            12 => {
-                let mut var_field0 =
-                    <foundation_api::api::scv::SecurityProofMessage>::sse_decode(deserializer);
-                return foundation_api::api::message::QuantumLinkMessage::SecurityProofMessage(
-                    var_field0,
-                );
-            }
             13 => {
-                let mut var_field0 = <foundation_api::api::backup::Shard>::sse_decode(deserializer);
-                return foundation_api::api::message::QuantumLinkMessage::Shard(var_field0);
+                let mut var_field0 =
+                    <foundation_api::api::bitcoin::AccountUpdate>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::AccountUpdate(var_field0);
             }
             14 => {
+                let mut var_field0 =
+                    <foundation_api::api::scv::SecurityCheck>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::SecurityCheck(var_field0);
+            }
+            15 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::BackupShardRequest>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::BackupShardRequest(
+                    var_field0,
+                );
+            }
+            16 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::BackupShardResponse>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::BackupShardResponse(
+                    var_field0,
+                );
+            }
+            17 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::RestoreShardRequest>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::RestoreShardRequest(
+                    var_field0,
+                );
+            }
+            18 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::RestoreShardResponse>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::RestoreShardResponse(
+                    var_field0,
+                );
+            }
+            19 => {
                 let mut var_field0 = <foundation_api::api::raw::RawData>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::RawData(var_field0);
             }
@@ -1436,19 +1819,57 @@ impl SseDecode for foundation_api::api::raw::RawData {
     }
 }
 
-impl SseDecode for foundation_api::api::scv::SecurityChallengeMessage {
+impl SseDecode for foundation_api::api::backup::RestoreShardRequest {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_data = <Vec<u8>>::sse_decode(deserializer);
-        return foundation_api::api::scv::SecurityChallengeMessage { data: var_data };
+        return foundation_api::api::backup::RestoreShardRequest {};
     }
 }
 
-impl SseDecode for foundation_api::api::scv::SecurityProofMessage {
+impl SseDecode for foundation_api::api::backup::RestoreShardResponse {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_data = <Vec<u8>>::sse_decode(deserializer);
-        return foundation_api::api::scv::SecurityProofMessage { data: var_data };
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                let mut var_field0 = <foundation_api::api::backup::Shard>::sse_decode(deserializer);
+                return foundation_api::api::backup::RestoreShardResponse::Success(var_field0);
+            }
+            1 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return foundation_api::api::backup::RestoreShardResponse::Error(var_field0);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseDecode for foundation_api::api::scv::SecurityCheck {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                let mut var_field0 =
+                    <foundation_api::api::scv::ChallengeRequest>::sse_decode(deserializer);
+                return foundation_api::api::scv::SecurityCheck::ChallengeRequest(var_field0);
+            }
+            1 => {
+                let mut var_field0 =
+                    <foundation_api::api::scv::ChallengeResponseResult>::sse_decode(deserializer);
+                return foundation_api::api::scv::SecurityCheck::ChallengeResponse(var_field0);
+            }
+            2 => {
+                let mut var_field0 =
+                    <foundation_api::api::scv::VerificationResult>::sse_decode(deserializer);
+                return foundation_api::api::scv::SecurityCheck::VerificationResult(var_field0);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -1471,6 +1892,13 @@ impl SseDecode for foundation_api::api::bitcoin::SignPsbt {
             account_id: var_accountId,
             psbt: var_psbt,
         };
+    }
+}
+
+impl SseDecode for u16 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u16::<NativeEndian>().unwrap()
     }
 }
 
@@ -1497,6 +1925,25 @@ impl SseDecode for usize {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_u64::<NativeEndian>().unwrap() as _
+    }
+}
+
+impl SseDecode for foundation_api::api::scv::VerificationResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                return foundation_api::api::scv::VerificationResult::Success;
+            }
+            1 => {
+                let mut var_error = <String>::sse_decode(deserializer);
+                return foundation_api::api::scv::VerificationResult::Error { error: var_error };
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -1529,6 +1976,12 @@ fn pde_ffi_dispatcher_primary_impl(
         12 => wire__crate__api__ql__serialize_ql_identity_impl(port, ptr, rust_vec_len, data_len),
         13 => wire__crate__api__ql__serialize_xid_impl(port, ptr, rust_vec_len, data_len),
         14 => wire__crate__api__ql__serialize_xid_document_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire__crate__api__ql__split_fw_update_into_chunks_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
         _ => unreachable!(),
     }
 }
@@ -1567,16 +2020,19 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<Arc<Mutex<Decoder>>>> for Arc<
 }
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for FrbWrapper<Dechunker> {
+impl flutter_rust_bridge::IntoDart for FrbWrapper<EnvoyMasterDechunker> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
             .into_dart()
     }
 }
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<Dechunker> {}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<EnvoyMasterDechunker>
+{
+}
 
-impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<Dechunker>> for Dechunker {
-    fn into_into_dart(self) -> FrbWrapper<Dechunker> {
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<EnvoyMasterDechunker>> for EnvoyMasterDechunker {
+    fn into_into_dart(self) -> FrbWrapper<EnvoyMasterDechunker> {
         self.into()
     }
 }
@@ -1636,6 +2092,52 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::bitcoin::
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::backup::BackupShardRequest> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0 .0.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::backup::BackupShardRequest>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::backup::BackupShardRequest>>
+    for foundation_api::api::backup::BackupShardRequest
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::BackupShardRequest> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::backup::BackupShardResponse>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::backup::BackupShardResponse::Success => {
+                [0.into_dart()].into_dart()
+            }
+            foundation_api::api::backup::BackupShardResponse::Error(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::backup::BackupShardResponse>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::backup::BackupShardResponse>>
+    for foundation_api::api::backup::BackupShardResponse
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::BackupShardResponse> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart
     for FrbWrapper<foundation_api::api::bitcoin::BroadcastTransaction>
 {
@@ -1657,6 +2159,53 @@ impl
     > for foundation_api::api::bitcoin::BroadcastTransaction
 {
     fn into_into_dart(self) -> FrbWrapper<foundation_api::api::bitcoin::BroadcastTransaction> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::scv::ChallengeRequest> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0.data.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::scv::ChallengeRequest>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::scv::ChallengeRequest>>
+    for foundation_api::api::scv::ChallengeRequest
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::scv::ChallengeRequest> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::scv::ChallengeResponseResult>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::scv::ChallengeResponseResult::Success { data } => {
+                [0.into_dart(), data.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::scv::ChallengeResponseResult::Error { error } => {
+                [1.into_dart(), error.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::scv::ChallengeResponseResult>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::scv::ChallengeResponseResult>>
+    for foundation_api::api::scv::ChallengeResponseResult
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::scv::ChallengeResponseResult> {
         self.into()
     }
 }
@@ -1808,41 +2357,206 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::fx::Excha
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::firmware::FirmwarePayload> {
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        [self.0.payload.into_into_dart().into_dart()].into_dart()
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for FrbWrapper<foundation_api::api::firmware::FirmwarePayload>
-{
-}
-impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::firmware::FirmwarePayload>>
-    for foundation_api::api::firmware::FirmwarePayload
-{
-    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::firmware::FirmwarePayload> {
-        self.into()
-    }
-}
-// Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::firmware::FirmwareUpdate> {
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::firmware::FirmwareChunk> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
-            self.0.version.into_into_dart().into_dart(),
-            self.0.timestamp.into_into_dart().into_dart(),
-            self.0.changelog.into_into_dart().into_dart(),
+            self.0.patch_index.into_into_dart().into_dart(),
+            self.0.total_patches.into_into_dart().into_dart(),
+            self.0.chunk_index.into_into_dart().into_dart(),
+            self.0.total_chunks.into_into_dart().into_dart(),
+            self.0.data.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for FrbWrapper<foundation_api::api::firmware::FirmwareUpdate>
+    for FrbWrapper<foundation_api::api::firmware::FirmwareChunk>
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::firmware::FirmwareUpdate>>
-    for foundation_api::api::firmware::FirmwareUpdate
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::firmware::FirmwareChunk>>
+    for foundation_api::api::firmware::FirmwareChunk
 {
-    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::firmware::FirmwareUpdate> {
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::firmware::FirmwareChunk> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::firmware::FirmwareFetchEvent>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::firmware::FirmwareFetchEvent::UpdateNotAvailable => {
+                [0.into_dart()].into_dart()
+            }
+            foundation_api::api::firmware::FirmwareFetchEvent::Starting(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::firmware::FirmwareFetchEvent::Downloading => {
+                [2.into_dart()].into_dart()
+            }
+            foundation_api::api::firmware::FirmwareFetchEvent::Chunk(field0) => {
+                [3.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::firmware::FirmwareFetchEvent::Complete => {
+                [4.into_dart()].into_dart()
+            }
+            foundation_api::api::firmware::FirmwareFetchEvent::Error(field0) => {
+                [5.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::firmware::FirmwareFetchEvent>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::firmware::FirmwareFetchEvent>>
+    for foundation_api::api::firmware::FirmwareFetchEvent
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::firmware::FirmwareFetchEvent> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::firmware::FirmwareFetchRequest>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0.current_version.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::firmware::FirmwareFetchRequest>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        FrbWrapper<foundation_api::api::firmware::FirmwareFetchRequest>,
+    > for foundation_api::api::firmware::FirmwareFetchRequest
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::firmware::FirmwareFetchRequest> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::firmware::FirmwareUpdateAvailable>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.version.into_into_dart().into_dart(),
+            self.0.changelog.into_into_dart().into_dart(),
+            self.0.timestamp.into_into_dart().into_dart(),
+            self.0.total_size.into_into_dart().into_dart(),
+            self.0.patch_count.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::firmware::FirmwareUpdateAvailable>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        FrbWrapper<foundation_api::api::firmware::FirmwareUpdateAvailable>,
+    > for foundation_api::api::firmware::FirmwareUpdateAvailable
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::firmware::FirmwareUpdateAvailable> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::firmware::FirmwareUpdateCheckRequest>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0.current_version.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::firmware::FirmwareUpdateCheckRequest>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        FrbWrapper<foundation_api::api::firmware::FirmwareUpdateCheckRequest>,
+    > for foundation_api::api::firmware::FirmwareUpdateCheckRequest
+{
+    fn into_into_dart(
+        self,
+    ) -> FrbWrapper<foundation_api::api::firmware::FirmwareUpdateCheckRequest> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::firmware::FirmwareUpdateCheckResponse>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::firmware::FirmwareUpdateCheckResponse::Available(field0) => {
+                [0.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::firmware::FirmwareUpdateCheckResponse::NotAvailable => {
+                [1.into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::firmware::FirmwareUpdateCheckResponse>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        FrbWrapper<foundation_api::api::firmware::FirmwareUpdateCheckResponse>,
+    > for foundation_api::api::firmware::FirmwareUpdateCheckResponse
+{
+    fn into_into_dart(
+        self,
+    ) -> FrbWrapper<foundation_api::api::firmware::FirmwareUpdateCheckResponse> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::firmware::FirmwareUpdateResult>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::firmware::FirmwareUpdateResult::Success { installed_version } => [
+                0.into_dart(),
+                installed_version.into_into_dart().into_dart(),
+            ]
+            .into_dart(),
+            foundation_api::api::firmware::FirmwareUpdateResult::Error(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::firmware::FirmwareUpdateResult>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        FrbWrapper<foundation_api::api::firmware::FirmwareUpdateResult>,
+    > for foundation_api::api::firmware::FirmwareUpdateResult
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::firmware::FirmwareUpdateResult> {
         self.into()
     }
 }
@@ -1925,7 +2639,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::pairing::
                 .into_into_dart()
                 .into_dart(),
             self.0.passport_serial.into_into_dart().into_dart(),
-            self.0.descriptor.into_into_dart().into_dart(),
+            self.0.passport_color.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -1938,6 +2652,27 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::pairing::
     for foundation_api::api::pairing::PairingResponse
 {
     fn into_into_dart(self) -> FrbWrapper<foundation_api::api::pairing::PairingResponse> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::passport::PassportColor> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::passport::PassportColor::Light => 0.into_dart(),
+            foundation_api::api::passport::PassportColor::Dark => 1.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::passport::PassportColor>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::passport::PassportColor>>
+    for foundation_api::api::passport::PassportColor
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::passport::PassportColor> {
         self.into()
     }
 }
@@ -2052,47 +2787,62 @@ impl flutter_rust_bridge::IntoDart
             foundation_api::api::message::QuantumLinkMessage::ExchangeRate(field0) => {
                 [0.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::FirmwareUpdate(field0) => {
-                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
-            }
-            foundation_api::api::message::QuantumLinkMessage::DeviceStatus(field0) => {
-                [2.into_dart(), field0.into_into_dart().into_dart()].into_dart()
-            }
-            foundation_api::api::message::QuantumLinkMessage::EnvoyStatus(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateCheckRequest(
+                field0,
+            ) => [1.into_dart(), field0.into_into_dart().into_dart()].into_dart(),
+            foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateCheckResponse(
+                field0,
+            ) => [2.into_dart(), field0.into_into_dart().into_dart()].into_dart(),
+            foundation_api::api::message::QuantumLinkMessage::FirmwareFetchRequest(field0) => {
                 [3.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::PairingResponse(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::FirmwareFetchEvent(field0) => {
                 [4.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::PairingRequest(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateResult(field0) => {
                 [5.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::OnboardingState(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::DeviceStatus(field0) => {
                 [6.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::SignPsbt(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::EnvoyStatus(field0) => {
                 [7.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::AccountUpdate(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::PairingRequest(field0) => {
                 [8.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::FirmwarePayload(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::PairingResponse(field0) => {
                 [9.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::BroadcastTransaction(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::OnboardingState(field0) => {
                 [10.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::SecurityChallengeMessage(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::SignPsbt(field0) => {
                 [11.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::SecurityProofMessage(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::BroadcastTransaction(field0) => {
                 [12.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::Shard(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::AccountUpdate(field0) => {
                 [13.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::RawData(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::SecurityCheck(field0) => {
                 [14.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::BackupShardRequest(field0) => {
+                [15.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::BackupShardResponse(field0) => {
+                [16.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::RestoreShardRequest(field0) => {
+                [17.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::RestoreShardResponse(field0) => {
+                [18.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::RawData(field0) => {
+                [19.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
             _ => {
                 unimplemented!("");
@@ -2130,39 +2880,80 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::raw::RawD
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart
-    for FrbWrapper<foundation_api::api::scv::SecurityChallengeMessage>
+    for FrbWrapper<foundation_api::api::backup::RestoreShardRequest>
 {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        [self.0.data.into_into_dart().into_dart()].into_dart()
+        Vec::<u8>::new().into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for FrbWrapper<foundation_api::api::scv::SecurityChallengeMessage>
+    for FrbWrapper<foundation_api::api::backup::RestoreShardRequest>
 {
 }
-impl
-    flutter_rust_bridge::IntoIntoDart<
-        FrbWrapper<foundation_api::api::scv::SecurityChallengeMessage>,
-    > for foundation_api::api::scv::SecurityChallengeMessage
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::backup::RestoreShardRequest>>
+    for foundation_api::api::backup::RestoreShardRequest
 {
-    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::scv::SecurityChallengeMessage> {
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::RestoreShardRequest> {
         self.into()
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::scv::SecurityProofMessage> {
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::backup::RestoreShardResponse>
+{
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        [self.0.data.into_into_dart().into_dart()].into_dart()
+        match self.0 {
+            foundation_api::api::backup::RestoreShardResponse::Success(field0) => {
+                [0.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::backup::RestoreShardResponse::Error(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for FrbWrapper<foundation_api::api::scv::SecurityProofMessage>
+    for FrbWrapper<foundation_api::api::backup::RestoreShardResponse>
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::scv::SecurityProofMessage>>
-    for foundation_api::api::scv::SecurityProofMessage
+impl
+    flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::backup::RestoreShardResponse>>
+    for foundation_api::api::backup::RestoreShardResponse
 {
-    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::scv::SecurityProofMessage> {
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::RestoreShardResponse> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::scv::SecurityCheck> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::scv::SecurityCheck::ChallengeRequest(field0) => {
+                [0.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::scv::SecurityCheck::ChallengeResponse(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::scv::SecurityCheck::VerificationResult(field0) => {
+                [2.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::scv::SecurityCheck>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::scv::SecurityCheck>>
+    for foundation_api::api::scv::SecurityCheck
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::scv::SecurityCheck> {
         self.into()
     }
 }
@@ -2204,6 +2995,31 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::bitcoin::
         self.into()
     }
 }
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::scv::VerificationResult> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::scv::VerificationResult::Success => [0.into_dart()].into_dart(),
+            foundation_api::api::scv::VerificationResult::Error { error } => {
+                [1.into_dart(), error.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::scv::VerificationResult>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::scv::VerificationResult>>
+    for foundation_api::api::scv::VerificationResult
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::scv::VerificationResult> {
+        self.into()
+    }
+}
 
 impl SseEncode for flutter_rust_bridge::for_generated::anyhow::Error {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2219,10 +3035,15 @@ impl SseEncode for Arc<Mutex<Decoder>> {
     }
 }
 
-impl SseEncode for Dechunker {
+impl SseEncode for EnvoyMasterDechunker {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
+        <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>,
+        >>::sse_encode(
+            flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self),
+            serializer,
+        );
     }
 }
 
@@ -2252,7 +3073,7 @@ impl SseEncode
 }
 
 impl SseEncode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2299,11 +3120,62 @@ impl SseEncode for foundation_api::api::bitcoin::AccountUpdate {
     }
 }
 
+impl SseEncode for foundation_api::api::backup::BackupShardRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <foundation_api::api::backup::Shard>::sse_encode(self.0, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::backup::BackupShardResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            foundation_api::api::backup::BackupShardResponse::Success => {
+                <i32>::sse_encode(0, serializer);
+            }
+            foundation_api::api::backup::BackupShardResponse::Error(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
 impl SseEncode for foundation_api::api::bitcoin::BroadcastTransaction {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.account_id, serializer);
         <Vec<u8>>::sse_encode(self.psbt, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::scv::ChallengeRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<u8>>::sse_encode(self.data, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::scv::ChallengeResponseResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            foundation_api::api::scv::ChallengeResponseResult::Success { data } => {
+                <i32>::sse_encode(0, serializer);
+                <Vec<u8>>::sse_encode(data, serializer);
+            }
+            foundation_api::api::scv::ChallengeResponseResult::Error { error } => {
+                <i32>::sse_encode(1, serializer);
+                <String>::sse_encode(error, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -2399,19 +3271,112 @@ impl SseEncode for f64 {
     }
 }
 
-impl SseEncode for foundation_api::api::firmware::FirmwarePayload {
+impl SseEncode for foundation_api::api::firmware::FirmwareChunk {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <Vec<u8>>::sse_encode(self.payload, serializer);
+        <u8>::sse_encode(self.patch_index, serializer);
+        <u8>::sse_encode(self.total_patches, serializer);
+        <u16>::sse_encode(self.chunk_index, serializer);
+        <u16>::sse_encode(self.total_chunks, serializer);
+        <Vec<u8>>::sse_encode(self.data, serializer);
     }
 }
 
-impl SseEncode for foundation_api::api::firmware::FirmwareUpdate {
+impl SseEncode for foundation_api::api::firmware::FirmwareFetchEvent {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            foundation_api::api::firmware::FirmwareFetchEvent::UpdateNotAvailable => {
+                <i32>::sse_encode(0, serializer);
+            }
+            foundation_api::api::firmware::FirmwareFetchEvent::Starting(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <foundation_api::api::firmware::FirmwareUpdateAvailable>::sse_encode(
+                    field0, serializer,
+                );
+            }
+            foundation_api::api::firmware::FirmwareFetchEvent::Downloading => {
+                <i32>::sse_encode(2, serializer);
+            }
+            foundation_api::api::firmware::FirmwareFetchEvent::Chunk(field0) => {
+                <i32>::sse_encode(3, serializer);
+                <foundation_api::api::firmware::FirmwareChunk>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::firmware::FirmwareFetchEvent::Complete => {
+                <i32>::sse_encode(4, serializer);
+            }
+            foundation_api::api::firmware::FirmwareFetchEvent::Error(field0) => {
+                <i32>::sse_encode(5, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseEncode for foundation_api::api::firmware::FirmwareFetchRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.current_version, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::firmware::FirmwareUpdateAvailable {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.version, serializer);
-        <u32>::sse_encode(self.timestamp, serializer);
         <String>::sse_encode(self.changelog, serializer);
+        <u32>::sse_encode(self.timestamp, serializer);
+        <u32>::sse_encode(self.total_size, serializer);
+        <u8>::sse_encode(self.patch_count, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::firmware::FirmwareUpdateCheckRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.current_version, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::firmware::FirmwareUpdateCheckResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            foundation_api::api::firmware::FirmwareUpdateCheckResponse::Available(field0) => {
+                <i32>::sse_encode(0, serializer);
+                <foundation_api::api::firmware::FirmwareUpdateAvailable>::sse_encode(
+                    field0, serializer,
+                );
+            }
+            foundation_api::api::firmware::FirmwareUpdateCheckResponse::NotAvailable => {
+                <i32>::sse_encode(1, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseEncode for foundation_api::api::firmware::FirmwareUpdateResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            foundation_api::api::firmware::FirmwareUpdateResult::Success { installed_version } => {
+                <i32>::sse_encode(0, serializer);
+                <String>::sse_encode(installed_version, serializer);
+            }
+            foundation_api::api::firmware::FirmwareUpdateResult::Error(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -2445,6 +3410,16 @@ impl SseEncode for Vec<u8> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <u8>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<foundation_api::api::message::QuantumLinkMessage> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <foundation_api::api::message::QuantumLinkMessage>::sse_encode(item, serializer);
         }
     }
 }
@@ -2527,7 +3502,23 @@ impl SseEncode for foundation_api::api::pairing::PairingResponse {
             self.passport_serial,
             serializer,
         );
-        <String>::sse_encode(self.descriptor, serializer);
+        <foundation_api::api::passport::PassportColor>::sse_encode(self.passport_color, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::passport::PassportColor {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                foundation_api::api::passport::PassportColor::Light => 0,
+                foundation_api::api::passport::PassportColor::Dark => 1,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
     }
 }
 
@@ -2586,64 +3577,94 @@ impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
                 <i32>::sse_encode(0, serializer);
                 <foundation_api::api::fx::ExchangeRate>::sse_encode(field0, serializer);
             }
-            foundation_api::api::message::QuantumLinkMessage::FirmwareUpdate(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateCheckRequest(
+                field0,
+            ) => {
                 <i32>::sse_encode(1, serializer);
-                <foundation_api::api::firmware::FirmwareUpdate>::sse_encode(field0, serializer);
+                <foundation_api::api::firmware::FirmwareUpdateCheckRequest>::sse_encode(
+                    field0, serializer,
+                );
+            }
+            foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateCheckResponse(
+                field0,
+            ) => {
+                <i32>::sse_encode(2, serializer);
+                <foundation_api::api::firmware::FirmwareUpdateCheckResponse>::sse_encode(
+                    field0, serializer,
+                );
+            }
+            foundation_api::api::message::QuantumLinkMessage::FirmwareFetchRequest(field0) => {
+                <i32>::sse_encode(3, serializer);
+                <foundation_api::api::firmware::FirmwareFetchRequest>::sse_encode(
+                    field0, serializer,
+                );
+            }
+            foundation_api::api::message::QuantumLinkMessage::FirmwareFetchEvent(field0) => {
+                <i32>::sse_encode(4, serializer);
+                <foundation_api::api::firmware::FirmwareFetchEvent>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateResult(field0) => {
+                <i32>::sse_encode(5, serializer);
+                <foundation_api::api::firmware::FirmwareUpdateResult>::sse_encode(
+                    field0, serializer,
+                );
             }
             foundation_api::api::message::QuantumLinkMessage::DeviceStatus(field0) => {
-                <i32>::sse_encode(2, serializer);
+                <i32>::sse_encode(6, serializer);
                 <foundation_api::api::status::DeviceStatus>::sse_encode(field0, serializer);
             }
             foundation_api::api::message::QuantumLinkMessage::EnvoyStatus(field0) => {
-                <i32>::sse_encode(3, serializer);
+                <i32>::sse_encode(7, serializer);
                 <foundation_api::api::status::EnvoyStatus>::sse_encode(field0, serializer);
             }
-            foundation_api::api::message::QuantumLinkMessage::PairingResponse(field0) => {
-                <i32>::sse_encode(4, serializer);
-                <foundation_api::api::pairing::PairingResponse>::sse_encode(field0, serializer);
-            }
             foundation_api::api::message::QuantumLinkMessage::PairingRequest(field0) => {
-                <i32>::sse_encode(5, serializer);
+                <i32>::sse_encode(8, serializer);
                 <foundation_api::api::pairing::PairingRequest>::sse_encode(field0, serializer);
             }
+            foundation_api::api::message::QuantumLinkMessage::PairingResponse(field0) => {
+                <i32>::sse_encode(9, serializer);
+                <foundation_api::api::pairing::PairingResponse>::sse_encode(field0, serializer);
+            }
             foundation_api::api::message::QuantumLinkMessage::OnboardingState(field0) => {
-                <i32>::sse_encode(6, serializer);
+                <i32>::sse_encode(10, serializer);
                 <foundation_api::api::onboarding::OnboardingState>::sse_encode(field0, serializer);
             }
             foundation_api::api::message::QuantumLinkMessage::SignPsbt(field0) => {
-                <i32>::sse_encode(7, serializer);
+                <i32>::sse_encode(11, serializer);
                 <foundation_api::api::bitcoin::SignPsbt>::sse_encode(field0, serializer);
             }
-            foundation_api::api::message::QuantumLinkMessage::AccountUpdate(field0) => {
-                <i32>::sse_encode(8, serializer);
-                <foundation_api::api::bitcoin::AccountUpdate>::sse_encode(field0, serializer);
-            }
-            foundation_api::api::message::QuantumLinkMessage::FirmwarePayload(field0) => {
-                <i32>::sse_encode(9, serializer);
-                <foundation_api::api::firmware::FirmwarePayload>::sse_encode(field0, serializer);
-            }
             foundation_api::api::message::QuantumLinkMessage::BroadcastTransaction(field0) => {
-                <i32>::sse_encode(10, serializer);
+                <i32>::sse_encode(12, serializer);
                 <foundation_api::api::bitcoin::BroadcastTransaction>::sse_encode(
                     field0, serializer,
                 );
             }
-            foundation_api::api::message::QuantumLinkMessage::SecurityChallengeMessage(field0) => {
-                <i32>::sse_encode(11, serializer);
-                <foundation_api::api::scv::SecurityChallengeMessage>::sse_encode(
-                    field0, serializer,
-                );
-            }
-            foundation_api::api::message::QuantumLinkMessage::SecurityProofMessage(field0) => {
-                <i32>::sse_encode(12, serializer);
-                <foundation_api::api::scv::SecurityProofMessage>::sse_encode(field0, serializer);
-            }
-            foundation_api::api::message::QuantumLinkMessage::Shard(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::AccountUpdate(field0) => {
                 <i32>::sse_encode(13, serializer);
-                <foundation_api::api::backup::Shard>::sse_encode(field0, serializer);
+                <foundation_api::api::bitcoin::AccountUpdate>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::SecurityCheck(field0) => {
+                <i32>::sse_encode(14, serializer);
+                <foundation_api::api::scv::SecurityCheck>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::BackupShardRequest(field0) => {
+                <i32>::sse_encode(15, serializer);
+                <foundation_api::api::backup::BackupShardRequest>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::BackupShardResponse(field0) => {
+                <i32>::sse_encode(16, serializer);
+                <foundation_api::api::backup::BackupShardResponse>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::RestoreShardRequest(field0) => {
+                <i32>::sse_encode(17, serializer);
+                <foundation_api::api::backup::RestoreShardRequest>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::RestoreShardResponse(field0) => {
+                <i32>::sse_encode(18, serializer);
+                <foundation_api::api::backup::RestoreShardResponse>::sse_encode(field0, serializer);
             }
             foundation_api::api::message::QuantumLinkMessage::RawData(field0) => {
-                <i32>::sse_encode(14, serializer);
+                <i32>::sse_encode(19, serializer);
                 <foundation_api::api::raw::RawData>::sse_encode(field0, serializer);
             }
             _ => {
@@ -2660,17 +3681,50 @@ impl SseEncode for foundation_api::api::raw::RawData {
     }
 }
 
-impl SseEncode for foundation_api::api::scv::SecurityChallengeMessage {
+impl SseEncode for foundation_api::api::backup::RestoreShardRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+}
+
+impl SseEncode for foundation_api::api::backup::RestoreShardResponse {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <Vec<u8>>::sse_encode(self.data, serializer);
+        match self {
+            foundation_api::api::backup::RestoreShardResponse::Success(field0) => {
+                <i32>::sse_encode(0, serializer);
+                <foundation_api::api::backup::Shard>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::backup::RestoreShardResponse::Error(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
-impl SseEncode for foundation_api::api::scv::SecurityProofMessage {
+impl SseEncode for foundation_api::api::scv::SecurityCheck {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <Vec<u8>>::sse_encode(self.data, serializer);
+        match self {
+            foundation_api::api::scv::SecurityCheck::ChallengeRequest(field0) => {
+                <i32>::sse_encode(0, serializer);
+                <foundation_api::api::scv::ChallengeRequest>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::scv::SecurityCheck::ChallengeResponse(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <foundation_api::api::scv::ChallengeResponseResult>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::scv::SecurityCheck::VerificationResult(field0) => {
+                <i32>::sse_encode(2, serializer);
+                <foundation_api::api::scv::VerificationResult>::sse_encode(field0, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -2686,6 +3740,13 @@ impl SseEncode for foundation_api::api::bitcoin::SignPsbt {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.account_id, serializer);
         <Vec<u8>>::sse_encode(self.psbt, serializer);
+    }
+}
+
+impl SseEncode for u16 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u16::<NativeEndian>(self).unwrap();
     }
 }
 
@@ -2715,6 +3776,24 @@ impl SseEncode for usize {
             .cursor
             .write_u64::<NativeEndian>(self as _)
             .unwrap();
+    }
+}
+
+impl SseEncode for foundation_api::api::scv::VerificationResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            foundation_api::api::scv::VerificationResult::Success => {
+                <i32>::sse_encode(0, serializer);
+            }
+            foundation_api::api::scv::VerificationResult::Error { error } => {
+                <i32>::sse_encode(1, serializer);
+                <String>::sse_encode(error, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -2766,17 +3845,17 @@ mod io {
     }
 
     #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_foundation_api_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+    pub extern "C" fn frbgen_foundation_api_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>::increment_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>::increment_strong_count(ptr as _);
     }
 
     #[unsafe(no_mangle)]
-    pub extern "C" fn frbgen_foundation_api_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+    pub extern "C" fn frbgen_foundation_api_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>::decrement_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>::decrement_strong_count(ptr as _);
     }
 
     #[unsafe(no_mangle)]
@@ -2854,17 +3933,17 @@ mod web {
     }
 
     #[wasm_bindgen]
-    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>::increment_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>::increment_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]
-    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDechunker(
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
         ptr: *const std::ffi::c_void,
     ) {
-        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Dechunker>>::decrement_strong_count(ptr as _);
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>::decrement_strong_count(ptr as _);
     }
 
     #[wasm_bindgen]

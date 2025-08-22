@@ -465,9 +465,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_list_ble_device(raw[1]),
         );
       case 1:
-        return Event_DeviceDisconnected();
+        return const Event_DeviceDisconnected();
       case 2:
-        return Event_DeviceConnected();
+        return const Event_DeviceConnected();
       default:
         throw Exception("unreachable");
     }
@@ -618,9 +618,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_list_ble_device(deserializer);
         return Event_ScanResult(var_field0);
       case 1:
-        return Event_DeviceDisconnected();
+        return const Event_DeviceDisconnected();
       case 2:
-        return Event_DeviceConnected();
+        return const Event_DeviceConnected();
       default:
         throw UnimplementedError('');
     }

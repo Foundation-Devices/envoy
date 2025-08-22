@@ -995,8 +995,8 @@ Future<Finder> checkForEnvoyIcon(
   final iconFinder = find.byWidgetPredicate(
     (widget) =>
         widget is SvgPicture &&
-        widget.pictureProvider is ExactAssetPicture &&
-        (widget.pictureProvider as ExactAssetPicture).assetName == assetPath,
+        widget.bytesLoader is SvgAssetLoader &&
+        (widget.bytesLoader as SvgAssetLoader).assetName == assetPath,
     description: 'SvgPicture with asset $assetPath',
   );
 
