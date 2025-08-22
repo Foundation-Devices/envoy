@@ -95,7 +95,7 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
     );
   }
 
-  showPage(int page) {
+  Future<void> showPage(int page) async {
     _pageController.animateToPage(page,
         duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
   }

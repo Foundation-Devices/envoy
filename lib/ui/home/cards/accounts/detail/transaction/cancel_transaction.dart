@@ -227,7 +227,7 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
     super.dispose();
   }
 
-  _findCancellationFee() {
+  void _findCancellationFee() {
     int originalSpendAmount = 0;
     for (var element in originalTransaction.outputs) {
       if (element.keychain == null) {
@@ -492,7 +492,7 @@ class _CancelTransactionProgressState
     });
   }
 
-  _broadcastTx() async {
+  Future<void> _broadcastTx() async {
     final originalTx =
         ref.read(getTransactionProvider(widget.originalTx.txId)) ??
             widget.originalTx;

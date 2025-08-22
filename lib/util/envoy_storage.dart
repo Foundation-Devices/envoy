@@ -284,7 +284,7 @@ class EnvoyStorage {
   }
 
   // Preferences are stored in a cache for fast retrieval
-  _updatePreferencesCache(DatabaseClient db) async {
+  Future<void> _updatePreferencesCache(DatabaseClient db) async {
     final keys = await preferencesStore.findKeys(db);
 
     for (String key in keys) {
@@ -301,6 +301,10 @@ class EnvoyStorage {
   Future removePromptState(DismissiblePrompt prompt) async {
     await dismissedPromptsStore.record(prompt.toString()).delete(_db);
     return true;
+  }
+
+  Future clearAccountScanStateStore() async {
+    await accountFullsScanStateStore.delete(_db);
   }
 
   Stream<bool> isPromptDismissed(DismissiblePrompt prompt) {
@@ -675,7 +679,7 @@ class EnvoyStorage {
         await exportDatabase(_db, storeNames: storesToBackUp.keys.toList()));
   }
 
-  restore(String json) async {
+  Future<void> restore(String json) async {
     var map = jsonDecode(json) as Map;
     if (map.isEmpty) {
       return;
@@ -715,7 +719,7 @@ class EnvoyStorage {
     return cleared != 0;
   }
 
-  Future<bool> remove(key) async {
+  Future<bool> remove(String key) async {
     var removed = await preferencesStore.record(key).delete(_db);
     return removed == key;
   }
@@ -754,11 +758,11 @@ class EnvoyStorage {
     return cleared > 0;
   }
 
-  insertVideo(Video video) async {
+  Future<void> insertVideo(Video video) async {
     await videoStore.record(video.id).put(_db, jsonEncode(video));
   }
 
-  updateVideo(Video video) {
+  void updateVideo(Video video) {
     videoStore.record(video.id).update(_db, jsonEncode(video));
   }
 
@@ -785,11 +789,11 @@ class EnvoyStorage {
     });
   }
 
-  updateBlogPost(BlogPost blog) {
+  void updateBlogPost(BlogPost blog) {
     blogPostsStore.record(blog.id).update(_db, jsonEncode(blog));
   }
 
-  insertBlogPost(BlogPost blog) async {
+  Future<void> insertBlogPost(BlogPost blog) async {
     await blogPostsStore.record(blog.id).put(_db, jsonEncode(blog));
   }
 
@@ -986,6 +990,10 @@ class EnvoyStorage {
             .record("$accountId:${addressType.toString()}")
             .get(_db)) ??
         false;
+  }
+
+  Future<int> getAccountScanStatusSize() async {
+    return await accountFullsScanStateStore.count(_db);
   }
 
   Stream<bool> getAccountScanStatusStream(

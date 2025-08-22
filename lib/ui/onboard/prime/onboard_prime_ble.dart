@@ -59,7 +59,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
   Completer<QuantumLinkMessage_BroadcastTransaction>? _completer;
 
-  get completer => _completer;
+  Completer<QuantumLinkMessage_BroadcastTransaction>? get completer =>
+      _completer;
 
   @override
   void initState() {
@@ -594,7 +595,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     );
   }
 
-  pairWithPrime(XidDocument payload) async {
+  Future<void> pairWithPrime(XidDocument payload) async {
     await BluetoothManager().pair(payload);
   }
 

@@ -70,7 +70,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
     });
   }
 
-  _connectBLE() async {
+  Future<void> _connectBLE() async {
     try {
       if (mounted) {
         setState(() {

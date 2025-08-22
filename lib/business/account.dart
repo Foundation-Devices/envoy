@@ -15,7 +15,7 @@ part 'account.g.dart';
 class Account with _$Account {
   const Account._();
 
-  static generateNewId() {
+  static String generateNewId() {
     return const Uuid().v4();
   }
 

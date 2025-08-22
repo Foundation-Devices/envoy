@@ -13,7 +13,7 @@ import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
-import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/ui/state/send_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -64,7 +64,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
   @override
   void initState() {
     super.initState();
-    var unit = ref.read(sendScreenUnitProvider);
+    var unit = ref.read(sendUnitProvider);
 
     if (widget.initalSatAmount > 0) {
       _amountSats = widget.initalSatAmount;
@@ -74,7 +74,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             .formatFiatToString(ref.read(displayFiatSendAmountProvider)!);
       } else {
         _enteredAmount = getDisplayAmount(
-            _amountSats, ref.read(sendScreenUnitProvider),
+            _amountSats, ref.read(sendUnitProvider),
             trailingZeros: widget.onPaste != null);
       }
     }
@@ -93,7 +93,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
   }
 
   int getAmountSats() {
-    final unit = ref.read(sendScreenUnitProvider);
+    final unit = ref.read(sendUnitProvider);
     return unit == AmountDisplayUnit.btc
         ? convertBtcStringToSats(_enteredAmount)
         : (unit == AmountDisplayUnit.sat
@@ -106,7 +106,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     if (selectedAccount == null) {
       return;
     }
-    var unit = ref.read(sendScreenUnitProvider);
+    var unit = ref.read(sendUnitProvider);
     ClipboardData? cdata = await Clipboard.getData(Clipboard.kTextPlain);
 
     String? text = cdata?.text;
@@ -118,8 +118,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         selectedFiat: Settings().selectedFiat,
         currentUnit: unit,
       );
-      ref.read(sendScreenUnitProvider.notifier).state =
-          decodedInfo.unit ?? unit;
+      ref.read(sendUnitProvider.notifier).state = decodedInfo.unit ?? unit;
 
       setState(() {
         unit = decodedInfo.unit ?? unit;
@@ -141,7 +140,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     if (tx.loading) {
       return;
     }
-    var unit = ref.read(sendScreenUnitProvider);
+    var unit = ref.read(sendUnitProvider);
     switch (event) {
       case NumPadEvents.backspace:
         {
@@ -297,7 +296,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsProvider);
-    var unit = ref.watch(sendScreenUnitProvider);
+    var unit = ref.watch(sendUnitProvider);
 
     NumPad numpad = NumPad(unit,
         isAmountZero: _enteredAmount.isEmpty || _enteredAmount == "0",
@@ -323,7 +322,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
               amountSats: _amountSats,
               onUnitToggled: (enteredAmount) {
                 // SFT-2508: special rule for circling through is to pad fiat with last 0
-                final unit = ref.watch(sendScreenUnitProvider);
+                final unit = ref.watch(sendUnitProvider);
                 if (unit == AmountDisplayUnit.fiat) {
                   enteredAmount = ExchangeRate().formatFiatToString(
                       ref.watch(displayFiatSendAmountProvider)!,
@@ -363,7 +362,7 @@ class SpendableAmountWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sendScreenUnit = ref.watch(sendScreenUnitProvider);
+    final sendScreenUnit = ref.watch(sendUnitProvider);
     final totalAmount = ref.watch(totalSpendableAmountProvider);
     final isCoinsSelected = ref.watch(isCoinsSelectedProvider);
 

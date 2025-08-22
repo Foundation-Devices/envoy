@@ -59,7 +59,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
         fontStyle: FontStyle.normal);
   }
 
-  selectFeeTab(num fee) {
+  void selectFeeTab(num fee) {
     int index = 0;
     if (fee.toInt() == standardFee.toInt()) {
       index = 0;

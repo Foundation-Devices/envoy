@@ -84,7 +84,7 @@ class Devices extends ChangeNotifier {
     restore();
   }
 
-  add(Device device) {
+  void add(Device device) {
     for (var currentDevice in devices) {
       // Don't add if device with same serial already present
       if (currentDevice.serial == device.serial) {
@@ -101,16 +101,16 @@ class Devices extends ChangeNotifier {
   }
 
   //ignore:unused_element
-  _clearDevices() {
+  void _clearDevices() {
     _ls.prefs.remove(DEVICES_PREFS);
   }
 
-  storeDevices() {
+  void storeDevices() {
     String json = jsonEncode(devices);
     _ls.prefs.setString(DEVICES_PREFS, json);
   }
 
-  restore() {
+  void restore() {
     devices.clear();
 
     if (_ls.prefs.containsKey(DEVICES_PREFS)) {
@@ -121,13 +121,13 @@ class Devices extends ChangeNotifier {
     }
   }
 
-  renameDevice(Device device, String newName) {
+  void renameDevice(Device device, String newName) {
     device.name = newName;
     storeDevices();
     notifyListeners();
   }
 
-  markDeviceUpdated(int deviceId, String firmwareVersion) {
+  void markDeviceUpdated(int deviceId, String firmwareVersion) {
     for (var device in devices) {
       if (deviceId == device.type.index) {
         device.firmwareVersion = firmwareVersion;
@@ -138,7 +138,7 @@ class Devices extends ChangeNotifier {
     notifyListeners();
   }
 
-  deleteDevice(Device device) {
+  void deleteDevice(Device device) {
     // Delete connected accounts
     NgAccountManager().deleteDeviceAccounts(device);
 
@@ -151,7 +151,7 @@ class Devices extends ChangeNotifier {
     }
   }
 
-  getDeviceName(String serialNumber) {
+  String getDeviceName(String serialNumber) {
     if (serialNumber == "envoy") {
       return S().accounts_screen_walletType_Envoy;
     }

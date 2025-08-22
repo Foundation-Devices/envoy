@@ -39,11 +39,11 @@ class OnboardingPage extends StatelessWidget {
   // Default functions need to be static:
   //https://github.com/dart-lang/language/issues/1048
   //https://stackoverflow.com/a/62379038
-  static goBack(context) {
+  static Future<void> goBack(BuildContext context) async {
     Navigator.pop(context);
   }
 
-  static popBackToHome(BuildContext context) {
+  static void popBackToHome(BuildContext context) {
     context.go("/");
   }
 

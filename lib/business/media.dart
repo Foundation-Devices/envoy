@@ -44,7 +44,7 @@ class Media {
     return sha256.convert(thumbnailUrl!.codeUnits).toString();
   }
 
-  _fetchThumbnail() async {
+  Future<void> _fetchThumbnail() async {
     HttpTor(Tor.instance, EnvoyScheduler().parallel)
         .get(thumbnailUrl!)
         .then((response) async {

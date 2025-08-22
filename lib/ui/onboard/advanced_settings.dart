@@ -54,6 +54,7 @@ class _AdvancedSettingsOptionsState
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
               elevation: 0,
+              backgroundColor: Colors.transparent,
               leading: CupertinoNavigationBarBackButton(
                 color: Colors.white,
                 onPressed: context.pop,

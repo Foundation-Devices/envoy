@@ -693,7 +693,7 @@ class _TransactionsDetailsWidgetState
           )
         : SvgPicture.asset(
             "assets/icons/ic_bitcoin_straight_circle.svg",
-            color: Colors.black,
+            colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
             height: 18,
           );
 
@@ -834,7 +834,8 @@ class NoteDisplay extends StatelessWidget {
                 padding: const EdgeInsets.only(left: EnvoySpacing.xs),
                 child: SvgPicture.asset(
                   "assets/icons/ic_edit_note.svg",
-                  color: Theme.of(context).primaryColor,
+                  colorFilter: ColorFilter.mode(
+                      Theme.of(context).primaryColor, BlendMode.srcIn),
                   height: 14,
                 ),
               ),

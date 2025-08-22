@@ -187,6 +187,7 @@ class NgAccountManager extends ChangeNotifier {
                       seedWords: seed,
                       network: account.network,
                       passphrase: null);
+
                   final descriptor = derivations
                       .where(
                           (element) => element.addressType == AddressType.p2Tr)
@@ -196,6 +197,7 @@ class NgAccountManager extends ChangeNotifier {
                             addressType: element.addressType,
                           ))
                       .first;
+
                   await handler.addDescriptor(ngDescriptor: descriptor);
                   final state = await handler.state();
                   final index =
@@ -205,6 +207,8 @@ class NgAccountManager extends ChangeNotifier {
                   } else {
                     _accountsHandler.add((state, handler));
                   }
+                  EnvoyReport().log(
+                      "Accounts", "P2Tr descriptor added to ${account.name}");
                 } catch (e) {
                   EnvoyReport().log("Accounts",
                       "Error adding p2Tr descriptor to ${account.name} $e");
@@ -339,7 +343,8 @@ class NgAccountManager extends ChangeNotifier {
     return false;
   }
 
-  addAccount(EnvoyAccount state, EnvoyAccountHandler handler) async {
+  Future<void> addAccount(
+      EnvoyAccount state, EnvoyAccountHandler handler) async {
     if (_accountsHandler.any((element) => element.$1.id == state.id)) {
       return;
     }
@@ -410,7 +415,7 @@ class NgAccountManager extends ChangeNotifier {
     }
   }
 
-  notifyIfAccountBalanceHigherThanUsd1000() {
+  void notifyIfAccountBalanceHigherThanUsd1000() {
     for (var account in accounts) {
       if (account.isHot && account.network == Network.bitcoin) {
         var amountUSD = ExchangeRate().getUsdValue(account.balance.toInt());
@@ -444,7 +449,9 @@ class NgAccountManager extends ChangeNotifier {
   }
 
   Future deleteAccount(EnvoyAccount account) async {
+    await account.handler?.deleteAccount();
     account.handler?.dispose();
+
     final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
     order.remove(account.id);
@@ -456,9 +463,6 @@ class NgAccountManager extends ChangeNotifier {
     }
     _accountsOrder.sink.add(order);
     await Future.delayed(const Duration(milliseconds: 50));
-
-    final dir = Directory(account.walletPath!);
-    await dir.delete(recursive: true);
     _accountsHandler.removeWhere((e) => e.$1.id == account.id);
     notifyListeners();
   }
@@ -487,10 +491,10 @@ class NgAccountManager extends ChangeNotifier {
         customMimeType: 'application/jsonl',
         name: 'bip329_export',
         bytes: fileContentBytes,
-        ext: 'jsonl');
+        fileExtension: 'jsonl');
   }
 
-  EnvoyAccount? getHotWalletAccount({network = Network.bitcoin}) {
+  EnvoyAccount? getHotWalletAccount({Network network = Network.bitcoin}) {
     return accounts.firstWhereOrNull(
         (element) => element.isHot && element.network == network);
   }
@@ -609,10 +613,10 @@ class NgAccountManager extends ChangeNotifier {
   }
 }
 
-List<EnvoyAccount> sortByAccountOrder<EnvoyAccount>(
-  List<EnvoyAccount> list,
+List<T> sortByAccountOrder<T>(
+  List<T> list,
   List<String> order,
-  String Function(EnvoyAccount item) getId,
+  String Function(T item) getId,
 ) {
   list.sort((a, b) {
     final aIndex = order.indexOf(getId(a));

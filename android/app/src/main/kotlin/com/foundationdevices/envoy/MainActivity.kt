@@ -34,8 +34,8 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
     private var sdCard: File? = null
     private var firmware: File? = null
 
-    private var directoryContentRequestCode = 21;
-    private var saveFileRequestCode = 22;
+    private var directoryContentRequestCode = 21
+    private var saveFileRequestCode = 22
 
     init {
         System.loadLibrary("bluart")
@@ -66,7 +66,7 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == directoryContentRequestCode && resultCode == Activity.RESULT_OK) {
+        if (requestCode == directoryContentRequestCode && resultCode == RESULT_OK) {
             if (data != null) {
                 val uri = data.data
                 if (uri != null) {
@@ -75,7 +75,7 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
             }
         }
 
-        if (requestCode == saveFileRequestCode && resultCode == Activity.RESULT_OK) {
+        if (requestCode == saveFileRequestCode && resultCode == RESULT_OK) {
             if (data != null) {
                 val uri = data.data
                 if (uri != null && firmware != null) {
@@ -99,7 +99,7 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
                     )
                 }
             }
-        } else if (requestCode == saveFileRequestCode && resultCode == Activity.RESULT_CANCELED) {
+        } else if (requestCode == saveFileRequestCode && resultCode == RESULT_CANCELED) {
             Handler().postDelayed(
                 {
                     sdCardEventSink?.success(false)
@@ -200,7 +200,7 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
                         window.setFlags(
                             WindowManager.LayoutParams.FLAG_SECURE,
                             WindowManager.LayoutParams.FLAG_SECURE
-                        );
+                        )
                     } else {
                         window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
                     }

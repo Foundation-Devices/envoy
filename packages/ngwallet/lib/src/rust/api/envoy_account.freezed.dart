@@ -25,7 +25,6 @@ mixin _$EnvoyAccount {
   int get index => throw _privateConstructorUsedError;
   List<NgDescriptor> get descriptors => throw _privateConstructorUsedError;
   String? get dateSynced => throw _privateConstructorUsedError;
-  String? get walletPath => throw _privateConstructorUsedError;
   Network get network => throw _privateConstructorUsedError;
   String get id => throw _privateConstructorUsedError;
   List<(String, AddressType)> get nextAddress =>
@@ -64,7 +63,6 @@ abstract class $EnvoyAccountCopyWith<$Res> {
       int index,
       List<NgDescriptor> descriptors,
       String? dateSynced,
-      String? walletPath,
       Network network,
       String id,
       List<(String, AddressType)> nextAddress,
@@ -102,7 +100,6 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
     Object? index = null,
     Object? descriptors = null,
     Object? dateSynced = freezed,
-    Object? walletPath = freezed,
     Object? network = null,
     Object? id = null,
     Object? nextAddress = null,
@@ -151,10 +148,6 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
       dateSynced: freezed == dateSynced
           ? _value.dateSynced
           : dateSynced // ignore: cast_nullable_to_non_nullable
-              as String?,
-      walletPath: freezed == walletPath
-          ? _value.walletPath
-          : walletPath // ignore: cast_nullable_to_non_nullable
               as String?,
       network: null == network
           ? _value.network
@@ -222,7 +215,6 @@ abstract class _$$EnvoyAccountImplCopyWith<$Res>
       int index,
       List<NgDescriptor> descriptors,
       String? dateSynced,
-      String? walletPath,
       Network network,
       String id,
       List<(String, AddressType)> nextAddress,
@@ -258,7 +250,6 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
     Object? index = null,
     Object? descriptors = null,
     Object? dateSynced = freezed,
-    Object? walletPath = freezed,
     Object? network = null,
     Object? id = null,
     Object? nextAddress = null,
@@ -307,10 +298,6 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
       dateSynced: freezed == dateSynced
           ? _value.dateSynced
           : dateSynced // ignore: cast_nullable_to_non_nullable
-              as String?,
-      walletPath: freezed == walletPath
-          ? _value.walletPath
-          : walletPath // ignore: cast_nullable_to_non_nullable
               as String?,
       network: null == network
           ? _value.network
@@ -373,7 +360,6 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
       required this.index,
       required final List<NgDescriptor> descriptors,
       this.dateSynced,
-      this.walletPath,
       required this.network,
       required this.id,
       required final List<(String, AddressType)> nextAddress,
@@ -416,8 +402,6 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
 
   @override
   final String? dateSynced;
-  @override
-  final String? walletPath;
   @override
   final Network network;
   @override
@@ -473,7 +457,7 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
 
   @override
   String toString() {
-    return 'EnvoyAccount(name: $name, color: $color, deviceSerial: $deviceSerial, dateAdded: $dateAdded, preferredAddressType: $preferredAddressType, seedHasPassphrase: $seedHasPassphrase, index: $index, descriptors: $descriptors, dateSynced: $dateSynced, walletPath: $walletPath, network: $network, id: $id, nextAddress: $nextAddress, balance: $balance, unlockedBalance: $unlockedBalance, isHot: $isHot, transactions: $transactions, utxo: $utxo, tags: $tags, xfp: $xfp, externalPublicDescriptors: $externalPublicDescriptors)';
+    return 'EnvoyAccount(name: $name, color: $color, deviceSerial: $deviceSerial, dateAdded: $dateAdded, preferredAddressType: $preferredAddressType, seedHasPassphrase: $seedHasPassphrase, index: $index, descriptors: $descriptors, dateSynced: $dateSynced, network: $network, id: $id, nextAddress: $nextAddress, balance: $balance, unlockedBalance: $unlockedBalance, isHot: $isHot, transactions: $transactions, utxo: $utxo, tags: $tags, xfp: $xfp, externalPublicDescriptors: $externalPublicDescriptors)';
   }
 
   @override
@@ -496,8 +480,6 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
                 .equals(other._descriptors, _descriptors) &&
             (identical(other.dateSynced, dateSynced) ||
                 other.dateSynced == dateSynced) &&
-            (identical(other.walletPath, walletPath) ||
-                other.walletPath == walletPath) &&
             (identical(other.network, network) || other.network == network) &&
             (identical(other.id, id) || other.id == id) &&
             const DeepCollectionEquality()
@@ -527,7 +509,6 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
         index,
         const DeepCollectionEquality().hash(_descriptors),
         dateSynced,
-        walletPath,
         network,
         id,
         const DeepCollectionEquality().hash(_nextAddress),
@@ -561,7 +542,6 @@ abstract class _EnvoyAccount implements EnvoyAccount {
       required final int index,
       required final List<NgDescriptor> descriptors,
       final String? dateSynced,
-      final String? walletPath,
       required final Network network,
       required final String id,
       required final List<(String, AddressType)> nextAddress,
@@ -593,8 +573,6 @@ abstract class _EnvoyAccount implements EnvoyAccount {
   List<NgDescriptor> get descriptors;
   @override
   String? get dateSynced;
-  @override
-  String? get walletPath;
   @override
   Network get network;
   @override

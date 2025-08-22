@@ -62,7 +62,7 @@ class SyncManager {
     return _instance;
   }
 
-  startSync() {
+  void startSync() {
     kPrint("SyncManager: Starting sync");
     _syncTimer =
         Timer.periodic(const Duration(seconds: _syncInterval), (timer) {
@@ -349,7 +349,7 @@ class SyncManager {
     }
   }
 
-  dispose() {
+  void dispose() {
     kPrint("SyncManager: Disposing and cancelling timer");
     _syncTimer.cancel();
     _currentLoading.close();

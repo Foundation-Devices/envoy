@@ -3,6 +3,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
+
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
@@ -33,6 +35,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rive/rive.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:tor/tor.dart';
 
@@ -80,7 +83,7 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   // kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
   //
   await LocalStorage.init();
-
+  unawaited(RiveFile.initialize());
   NgAccountManager.init();
 
   if (!(await MigrationManager().isMigrationRequired())) {

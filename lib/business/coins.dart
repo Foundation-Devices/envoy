@@ -9,7 +9,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'coins.g.dart';
 
-_utxoToJson(Utxo utxo) {
+Map<String, dynamic> _utxoToJson(Utxo utxo) {
   return utxo.toJson();
 }
 
@@ -44,10 +44,10 @@ class Coin {
 /// Utxo is a freezed class, so we can't add the getter directly to
 /// the class
 extension UtxoExtension on Utxo {
-  get id => '$txid:$vout';
+  String get id => '$txid:$vout';
 }
 
-_coinToJson(Coin coin) {
+Map<String, dynamic> _coinToJson(Coin coin) {
   return coin.toJson();
 }
 

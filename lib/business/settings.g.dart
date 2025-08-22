@@ -9,6 +9,8 @@ part of 'settings.dart';
 Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
   ..displayUnit = $enumDecode(_$DisplayUnitEnumMap, json['displayUnit'])
   ..selectedFiat = json['selectedFiat'] as String?
+  ..sendUnit =
+      $enumDecodeNullable(_$AmountDisplayUnitEnumMap, json['sendScreenUnit'])
   ..environment = $enumDecode(_$EnvironmentEnumMap, json['environment'])
   ..selectedElectrumAddress = json['selectedElectrumAddress'] as String
   ..usingDefaultElectrumServer =
@@ -26,6 +28,8 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'displayUnit': _$DisplayUnitEnumMap[instance.displayUnit]!,
       'selectedFiat': instance.selectedFiat,
+      if (_$AmountDisplayUnitEnumMap[instance.sendUnit] case final value?)
+        'sendScreenUnit': value,
       'environment': _$EnvironmentEnumMap[instance.environment]!,
       'selectedElectrumAddress': instance.selectedElectrumAddress,
       'usingDefaultElectrumServer': instance.usingDefaultElectrumServer,
@@ -41,6 +45,12 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
 const _$DisplayUnitEnumMap = {
   DisplayUnit.btc: 'btc',
   DisplayUnit.sat: 'sat',
+};
+
+const _$AmountDisplayUnitEnumMap = {
+  AmountDisplayUnit.btc: 'btc',
+  AmountDisplayUnit.sat: 'sat',
+  AmountDisplayUnit.fiat: 'fiat',
 };
 
 const _$EnvironmentEnumMap = {
