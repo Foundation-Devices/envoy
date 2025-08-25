@@ -49,7 +49,7 @@ class ScvServer {
     }
   }
 
-  _storeChallenge(Challenge challenge) {
+  void _storeChallenge(Challenge challenge) {
     storedChallenge = challenge;
     String json = jsonEncode(challenge.toJson());
     _ls.prefs.setString(SCV_CHALLENGE_PREFS, json);
@@ -65,7 +65,7 @@ class ScvServer {
     return false;
   }
 
-  _clearChallenge() {
+  void _clearChallenge() {
     if (_ls.prefs.containsKey(SCV_CHALLENGE_PREFS)) {
       _ls.prefs.remove(SCV_CHALLENGE_PREFS);
     }
@@ -119,7 +119,7 @@ class ScvServer {
     }
   }
 
-  Future<SecurityChallengeMessage?> getPrimeChallenge() async {
+  Future<ChallengeRequest?> getPrimeChallenge() async {
     try {
       final response = await http.get('$primeSecurityCheckUrl/challenge');
 
@@ -128,37 +128,38 @@ class ScvServer {
         return null;
       }
 
-      return SecurityChallengeMessage(
-          data: Uint8List.fromList(response.bodyBytes));
+      return ChallengeRequest(data: Uint8List.fromList(response.bodyBytes));
     } catch (e) {
       return null;
     }
   }
 
-  Future<bool> isProofVerified(SecurityProofMessage message) async {
+  Future<bool> isProofVerified(Uint8List data) async {
     final uri = '$primeSecurityCheckUrl/verify';
 
-    final response = await http.post(
-      uri,
-      body: message.data.toList().toString(),
-      headers: {'Content-Type': 'application/octet-stream'},
-    );
+    try {
+      final response = await http.post(
+        uri,
+        body: data.toList().toString(),
+        headers: {'Content-Type': 'application/octet-stream'},
+      );
 
-    if (response.statusCode == 200) {
-      List<int> rawVerificationMessage = response.bodyBytes;
+      if (response.statusCode == 200) {
+        List<int> rawVerificationMessage = response.bodyBytes;
 
-      // Error code is the 33rd byte in the response
-      final errorCode =
-          rawVerificationMessage.length > 32 ? rawVerificationMessage[32] : -1;
-      kPrint('Error code: $errorCode');
+        // Error code is the 33rd byte in the response
+        final errorCode = rawVerificationMessage.length > 32
+            ? rawVerificationMessage[32]
+            : -1;
+        kPrint('Error code: $errorCode');
 
-      // TODO: remove, just for demo
-
-      return true;
-
-      //return errorCode == 0; // 0 means `ErrorCode::Ok`
-    } else {
-      kPrint('Error: ${response.statusCode}');
+        return errorCode == 0; // 0 means `ErrorCode::Ok`
+      } else {
+        kPrint('Error: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      kPrint("failed to verify proof {e}");
       return false;
     }
   }

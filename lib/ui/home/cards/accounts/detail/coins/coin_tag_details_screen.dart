@@ -632,7 +632,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     );
   }
 
-  _deleteTag(BuildContext context) {
+  void _deleteTag(BuildContext context) {
     final navigator = Navigator.of(context);
     showEnvoyDialog(
       context: context,
@@ -666,7 +666,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     );
   }
 
-  _deleteEmptyTag(BuildContext context) {
+  void _deleteEmptyTag(BuildContext context) {
     final navigator = Navigator.of(context);
     showEnvoyDialog(
       context: context,
@@ -700,7 +700,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     );
   }
 
-  _editTagName(BuildContext context) {
+  void _editTagName(BuildContext context) {
     final textEntry = TextEntry(
       maxLength: 30,
       placeholder: widget.coinTag.name,

@@ -25,7 +25,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/ui/state/app_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/region_manager.dart';
@@ -40,7 +40,7 @@ class SettingsPage extends ConsumerStatefulWidget {
 class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _animationsDuration = const Duration(milliseconds: 200);
   bool _advancedVisible = false;
-  bool canBuy = true;
+
   bool buyDisabledByCountry = true;
 
   final LocalAuthentication auth = LocalAuthentication();
@@ -51,25 +51,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _checkCanBuy();
       buyDisabledByCountry = await AllowedRegions.checkBuyDisabled();
     });
-  }
-
-  Future<void> _checkCanBuy() async {
-    var region = await EnvoyStorage().getCountry();
-
-    if (region != null) {
-      bool newRegionCanBuy =
-          await AllowedRegions.isRegionAllowed(region.code, region.division);
-      setState(() {
-        canBuy = newRegionCanBuy;
-      });
-    } else {
-      setState(() {
-        canBuy = true;
-      });
-    }
   }
 
   @override
@@ -94,7 +77,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 setState(() {
                   s.setDisplayFiat(enabled ? "USD" : null); // TODO: FIGMA
                   if (!enabled) {
-                    ref.read(sendScreenUnitProvider.notifier).state =
+                    ref.read(appUnitProvider.notifier).state =
                         s.displayUnitSat()
                             ? AmountDisplayUnit.sat
                             : AmountDisplayUnit.btc;
@@ -301,7 +284,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   },
                 ),
               ),
-              canBuy && !buyDisabledByCountry
+              !buyDisabledByCountry
                   ? ListTile(
                       dense: true,
                       contentPadding: const EdgeInsets.all(0),

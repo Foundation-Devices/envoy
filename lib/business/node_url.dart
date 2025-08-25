@@ -30,12 +30,24 @@ String normalizeProtocol(String nodeUrl) {
   return nodeUrl;
 }
 
+//TODO: improve node URL parsing
 String parseNodeUrl(String nodeUrl) {
   nodeUrl = normalizeProtocol(nodeUrl);
   if (nodeUrl.startsWith(TCP_PREFIX) || nodeUrl.startsWith(SSL_PREFIX)) {
     return nodeUrl;
   } else {
     if (nodeUrl.contains('.onion')) {
+      if (nodeUrl.endsWith(SSL_PORT)) {
+        return SSL_PREFIX + nodeUrl;
+      }
+      if (nodeUrl.endsWith(SSL_SUFFIX)) {
+        return SSL_PREFIX +
+            nodeUrl.substring(0, nodeUrl.length - SSL_SUFFIX.length);
+      }
+      if (nodeUrl.endsWith(TCP_SUFFIX)) {
+        return TCP_PREFIX +
+            nodeUrl.substring(0, nodeUrl.length - TCP_SUFFIX.length);
+      }
       return TCP_PREFIX + nodeUrl;
     }
     if (nodeUrl.endsWith(SSL_SUFFIX)) {

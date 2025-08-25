@@ -154,7 +154,9 @@ class PsbtCard extends ConsumerWidget {
                               ))),
                       IconButton(
                           onPressed: () {
-                            Share.share(base64Encode(transaction.psbt));
+                            SharePlus.instance.share(ShareParams(
+                              text: base64Encode(transaction.psbt),
+                            ));
                           },
                           icon: const EnvoyIcon(
                             EnvoyIcons.externalLink,

@@ -28,4 +28,20 @@ void main() {
     expect(fw.version, "v1.0.8");
     expect(fw.deviceId, 1);
   });
+
+  test('Fetch Prime update chain', () async {
+    final mockHttp = MockHttpTor();
+
+    when(mockHttp
+            .get('https://envoy.foundation.xyz/prime/patches?version=1.0.0'))
+        .thenAnswer((_) async => Response(
+            200,
+            '{"patches": [{"version": "1.0.2","base_version": "1.0.0","signed_sha256": "a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456","unsigned_sha256": "f6e5d4c3b2a1098765432109876543210987fedcba0987654321fedcba098765","update_filename": "firmware_v1.0.2.bin","signature_filename": "firmware_v1.0.2.bin.sig","url": "https://github.com/Foundation-Devices/KeyOS-Releases/releases/download/1.0.2/firmware_v1.0.2.bin","changelog": "","description": "Firmware update from version 1.0.0 to 1.0.2","release_date": "2025-07-30T00:00:00Z"},{"version": "1.2.0","base_version": "1.0.2","signed_sha256": "a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456","unsigned_sha256": "f6e5d4c3b2a1098765432109876543210987fedcba0987654321fedcba098765","update_filename": "firmware_v1.2.0.bin","signature_filename": "firmware_v1.2.0.bin.sig","url": "https://github.com/Foundation-Devices/KeyOS-Releases/releases/download/1.2.0/firmware_v1.2.0.bin","changelog": "","description": "Firmware update from version 1.0.2 to 1.2.0","release_date": "2025-07-30T00:00:00Z"}]}'
+                .codeUnits));
+
+    final updates = await Server(http: mockHttp).fetchPrimePatches("1.0.0");
+
+    expect(updates[0], isA<PrimePatch>());
+    expect(updates[0].version, "1.0.2");
+  });
 }

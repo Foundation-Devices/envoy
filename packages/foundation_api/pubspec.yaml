@@ -40,7 +40,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   rust_lib_foundation_api:
     path: rust_builder
-  flutter_rust_bridge: 2.9.0
+  flutter_rust_bridge: 2.11.1
   freezed_annotation: ^2.0.0
 
 dev_dependencies:

@@ -3,6 +3,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
+
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
@@ -33,6 +35,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rive/rive.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:tor/tor.dart';
 
@@ -48,7 +51,7 @@ Future<void> main() async {
   } catch (e, stack) {
     EnvoyReport().log("Envoy init", stack.toString());
   }
-  if (await isMigrationRequired()) {
+  if (await MigrationManager().isMigrationRequired()) {
     runApp(MigrationApp());
   } else if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
     runApp(const AuthenticateApp());
@@ -80,10 +83,11 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   // kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
   //
   await LocalStorage.init();
-
+  unawaited(RiveFile.initialize());
   NgAccountManager.init();
 
-  if (!(await isMigrationRequired())) {
+  if (!(await MigrationManager().isMigrationRequired())) {
+    kPrint("Restoring accounts");
     await NgAccountManager().restore();
   }
   await NTPUtil.init();
@@ -208,25 +212,4 @@ class GlobalScrollBehavior extends ScrollBehavior {
       child: child, // Turn off overscroll indicator
     );
   }
-}
-
-Future<bool> isMigrationRequired() async {
-  //check if the user already has accounts
-  final hasAccounts =
-      LocalStorage().prefs.containsKey(NgAccountManager.v1AccountsPrefKey);
-  //check if the user has already migrated
-
-  final migrationVersion = (await EnvoyStorage()
-      .getNoBackUpPreference(MigrationManager.migrationPrefs));
-  final hasMigrated = (await EnvoyStorage()
-          .getNoBackUpPreference(MigrationManager.migrationPrefs)) ==
-      MigrationManager.migrationVersion;
-
-  kPrint("Migration version: $migrationVersion");
-  //v2 -> v2.1 migration, for xfp based accounts
-  if (migrationVersion == "v2") {
-    return true;
-  }
-
-  return hasAccounts && !hasMigrated;
 }

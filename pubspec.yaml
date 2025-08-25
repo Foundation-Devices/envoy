@@ -19,20 +19,19 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.0.2+3
+version: 2.1.0+6
 
 environment:
-  sdk: ">=3.0.0"
+  sdk: ">=3.5.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  ramp_flutter: ^3.0.0
-  flutter_platform_widgets: ^6.0.2
-  flutter_local_notifications: ^17.0.0
+  ramp_flutter: ^4.0.1
+  flutter_platform_widgets: ^9.0.0
   flutter_localizations:
     sdk: flutter
-  intl: ^0.19.0
+  intl: ^0.20.2
 
   # Rust FFI libraries
   ur:
@@ -61,35 +60,35 @@ dependencies:
   flutter_vlc_player:
     git:
       url: https://github.com/foundation-devices/flutter_vlc_player.git
-      ref: f4140425a5510c8059db6915bde8eab8031870fe
+      ref: 2dabebfd6caff27db87e9e917f8b87d6fc2ede3b
       path: flutter_vlc_player
 
   tor:
    git:
      url: https://github.com/Foundation-Devices/tor.git
-     ref: 440a2d2207da26683893bf8a2440499f4b43f019
+     ref: c089d8bc1dc459c609a9f75303c4243d21eb4724
   qr_flutter: ^4.1.0
-  dots_indicator: ^2.0.0
+  dots_indicator: ^4.0.1
   flutter_secure_storage: ^9.2.2
   shared_preferences: ^2.0.11
   cbor: ^4.1.0
   uuid: ^4.4.2
   google_fonts: ^6.1.0
-  carousel_slider: ^4.0.0
+  carousel_slider: ^5.1.1
   url_launcher: ^6.2.5
-  email_validator: ^2.0.1
+  email_validator: ^3.0.0
   json_annotation: ^4.8.1
   animations: ^2.0.2
-  share_plus: ^10.1.3
+  share_plus: ^11.1.0
   timeago: ^3.2.2
   webfeed:
     git:
       url: https://github.com/foundation-devices/webfeed.git
-      ref: 2e0f4ec0bffb85df13b2c114d93d5ec0490bd2c1
-  flutter_svg: ^1.0.3
+      ref: 22b45ac97e335f2564e94ff54657eb0fd0199245
+  flutter_svg: ^2.2.0
   bip32: ^2.0.0
   package_info_plus: ^8.1.2
-  permission_handler: ^11.3.1
+  permission_handler: ^12.0.1
   flutter_html:
     git:
       url: https://github.com/foundation-devices/flutter_html.git
@@ -97,10 +96,10 @@ dependencies:
   pub_semver: ^2.1.1
   flutter_riverpod: ^2.3.6
   cupertino_icons: ^1.0.5
-  rive: ^0.12.4
+  rive: ^0.13.20
   local_auth: ^2.1.6
-  file_saver: ^0.2.12
-  file_picker: ^8.1.6
+  file_saver: ^0.3.1
+  file_picker: ^10.3.1
   intl_utils: ^2.8.2
   schedulers:
     git:
@@ -110,7 +109,7 @@ dependencies:
   path_provider: ^2.1.2
   stack_trace: ^1.11.0
   freezed_annotation: ^2.2.0
-  go_router: ^15.1.2
+  go_router: ^16.1.0
   wakelock_plus: ^1.1.1
   cached_network_image: ^3.3.1
   path: any
@@ -121,11 +120,11 @@ dependencies:
   latlng: any
   http: ^1.2.1
   persistent_bottom_nav_bar: ^6.2.1
-  flutter_map: ^7.0.2
+  flutter_map: ^8.2.1
   latlong2: ^0.9.1
-  flutter_map_tile_caching: ^9.1.3
-  in_app_purchase: ^3.2.0
-  archive: ^3.6.1
+  flutter_map_tile_caching: ^10.1.1
+  in_app_purchase: ^3.2.3
+  archive: ^4.0.7
   async: ^2.11.0
 
 dependency_overrides:

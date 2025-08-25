@@ -89,6 +89,7 @@ class AmountWidget extends StatelessWidget {
                 millionaireMode: millionaireMode),
             if (secondaryUnit != null)
               SecondaryAmountWidget(
+                  badgeColor: badgeColor,
                   unit: secondaryUnit!,
                   displayFiat: displayFiat,
                   style: SecondaryAmountWidgetStyle.large,
@@ -125,6 +126,7 @@ class AmountWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: EnvoySpacing.xs),
                 child: SecondaryAmountWidget(
+                    badgeColor: badgeColor,
                     unit: secondaryUnit!,
                     displayFiat: displayFiat,
                     style: SecondaryAmountWidgetStyle.normal,
@@ -163,6 +165,7 @@ class AmountWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: EnvoySpacing.small),
                 child: SecondaryAmountWidget(
+                    badgeColor: badgeColor,
                     unit: secondaryUnit!,
                     displayFiat: displayFiat,
                     style: SecondaryAmountWidgetStyle.normal,
