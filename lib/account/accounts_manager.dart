@@ -316,31 +316,36 @@ class NgAccountManager extends ChangeNotifier {
 
   Future<bool> checkIfWalletFromSeedExists(String seed,
       {String? passphrase, required Network network}) async {
-    final descriptors = await EnvoyBip39.deriveDescriptorFromSeed(
-        seedWords: seed, network: network, passphrase: passphrase);
-    final fingerPrint = getFingerprint(descriptors
-        .firstWhere((element) => element.addressType == AddressType.p2Wpkh)
-        .externalPubDescriptor);
-    if (fingerPrint == null) {
-      EnvoyReport().log("Accounts", "Invalid fingerprint $fingerPrint");
+    try {
+      final descriptors = await EnvoyBip39.deriveDescriptorFromSeed(
+          seedWords: seed, network: network, passphrase: passphrase);
+      final fingerPrint = getFingerprint(descriptors
+          .firstWhere((element) => element.addressType == AddressType.p2Wpkh)
+          .externalPubDescriptor);
+      if (fingerPrint == null) {
+        EnvoyReport().log("Accounts", "Invalid fingerprint $fingerPrint");
+        return false;
+      }
+      var dir = NgAccountManager.getAccountDirectory(
+          deviceSerial: "envoy",
+          network: network.toString(),
+          number: 0,
+          fingerprint: fingerPrint);
+      if (await dir.exists()) {
+        final files = dir.listSync();
+        bool hasP2tr = files
+            .any((file) => file.path.toLowerCase().endsWith('p2tr.sqlite'));
+        bool hasP2wpkh = files
+            .any((file) => file.path.toLowerCase().endsWith('p2wpkh.sqlite'));
+        if (hasP2tr || hasP2wpkh) {
+          return true;
+        }
+      }
+      return false;
+    } catch (e) {
+      EnvoyReport().log("Accounts", "Failed to check wallet existence: $e");
       return false;
     }
-    var dir = NgAccountManager.getAccountDirectory(
-        deviceSerial: "envoy",
-        network: network.toString(),
-        number: 0,
-        fingerprint: fingerPrint);
-    if (await dir.exists()) {
-      final files = dir.listSync();
-      bool hasP2tr =
-          files.any((file) => file.path.toLowerCase().endsWith('p2tr.sqlite'));
-      bool hasP2wpkh = files
-          .any((file) => file.path.toLowerCase().endsWith('p2wpkh.sqlite'));
-      if (hasP2tr || hasP2wpkh) {
-        return true;
-      }
-    }
-    return false;
   }
 
   Future<void> addAccount(
