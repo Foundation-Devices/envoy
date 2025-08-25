@@ -106,7 +106,8 @@ class EnvoyIcon extends StatelessWidget {
       "assets/components/icons/${icon.name}.svg",
       width: size.toDouble,
       height: size.toDouble,
-      color: color,
+      colorFilter:
+          color == null ? null : ColorFilter.mode(color!, BlendMode.srcIn),
     );
   }
 }
@@ -148,7 +149,9 @@ class NonMainnetIcon extends StatelessWidget {
         badgeAssetName,
         width: size.toDouble / 2,
         height: size.toDouble / 2,
-        color: badgeColor,
+        colorFilter: badgeColor != null
+            ? ColorFilter.mode(badgeColor!, BlendMode.srcIn)
+            : null,
       ),
       Padding(
         padding: EdgeInsets.only(
@@ -158,7 +161,9 @@ class NonMainnetIcon extends StatelessWidget {
           "assets/components/icons/${icon.name}.svg",
           width: size.toDouble,
           height: size.toDouble,
-          color: iconColor,
+          colorFilter: iconColor == null
+              ? null
+              : ColorFilter.mode(iconColor!, BlendMode.srcIn),
         ),
       ),
     ]);

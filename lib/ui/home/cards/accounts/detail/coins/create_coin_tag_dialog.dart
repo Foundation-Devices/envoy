@@ -83,7 +83,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
   final TextEditingController _tagController = TextEditingController();
   String value = '';
 
-  _tagWidget(BuildContext context) {
+  Consumer _tagWidget(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
         final tags = ref.watch(tagsProvider(widget.accountId)).toList()
@@ -278,7 +278,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
   }
 }
 
-Widget tagItem(context, String item, Function() onTap) {
+Widget tagItem(BuildContext context, String item, Function() onTap) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 4),
     child: InkWell(

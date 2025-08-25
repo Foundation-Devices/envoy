@@ -195,10 +195,7 @@ class SpendRequirementOverlayState
     final unitVelocity = unitsPerSecond.distance;
 
     SpringDescription spring = SpringDescription.withDampingRatio(
-      mass: 1.5,
-      stiffness: 300.0,
-      ratio: 0.4,
-    );
+        mass: 1, stiffness: 330, ratio: 0.700);
 
     final simulation = SpringSimulation(spring, 0, 1, -unitVelocity);
 
@@ -362,7 +359,7 @@ class SpendRequirementOverlayState
             child: Transform.scale(
               scale: 1.0,
               child: SizedBox(
-                  height: 230,
+                  height: 245,
                   width: MediaQuery.of(context).size.width,
                   child: Container(
                     decoration: BoxDecoration(
@@ -534,7 +531,7 @@ class SpendRequirementOverlayState
                                                 bottom: MediaQuery.of(context)
                                                         .padding
                                                         .bottom +
-                                                    4))
+                                                    EnvoySpacing.medium3))
                                       ],
                                     ),
                                   ),
@@ -659,7 +656,7 @@ class SpendRequirementOverlayState
     );
   }
 
-  cancel(BuildContext context) async {
+  Future<void> cancel(BuildContext context) async {
     /// if the user is in utxo details screen we need to wait animations to finish
     /// before we can pop back to home screen
     ProviderContainer container = ProviderScope.containerOf(context);
@@ -692,7 +689,6 @@ class SpendRequirementOverlayState
         ref.read(hideBottomNavProvider.notifier).state = false;
         ref.read(spendEditModeProvider.notifier).state =
             SpendOverlayContext.hidden;
-
         clearSpendState(container);
       }
     }
@@ -856,7 +852,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
   }
 }
 
-void hideCoinSnack(ref) {
+void hideCoinSnack(WidgetRef ref) {
   ref.read(spendEditModeProvider.notifier).state = SpendOverlayContext.hidden;
   ref.read(hideBottomNavProvider.notifier).state = false;
 }
@@ -892,7 +888,6 @@ class _SpendSelectionCancelWarningState
       },
       tertiaryButtonLabel: S().component_no,
       onTertiaryButtonTap: (context) {
-        hideCoinSnack(ref);
         Navigator.of(context).pop(false);
       },
       checkBoxText: S().component_dontShowAgain,

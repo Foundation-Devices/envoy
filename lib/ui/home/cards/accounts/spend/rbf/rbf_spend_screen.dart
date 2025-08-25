@@ -7,7 +7,6 @@ import 'dart:ui';
 import 'package:animations/animations.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
-import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -440,7 +439,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
   /// if the newly created RBF tx has more inputs
   /// than the original tx, show a warning
-  _checkInputsChanged() async {
+  Future<void> _checkInputsChanged() async {
     EnvoyAccount? account = ref.read(selectedAccountProvider);
     RBFSpendState? rbfSpendState = ref.read(rbfSpendStateProvider);
     if (account == null || rbfSpendState == null) {
@@ -496,7 +495,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     }
   }
 
-  _boostTx(BuildContext context) async {
+  Future<void> _boostTx(BuildContext context) async {
     EnvoyAccount? account = ref.read(selectedAccountProvider);
     RBFSpendState? rbfSpendState = ref.read(rbfSpendStateProvider);
     if (account == null || rbfSpendState == null) {
@@ -566,11 +565,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       _stateMachineController?.findInput<bool>("happy")?.change(false);
       _stateMachineController?.findInput<bool>("unhappy")?.change(false);
 
-      final server = SyncManager.getElectrumServer(account.network);
-      int? port = Settings().getPort(account.network);
-      if (port == -1) {
-        port = null;
-      }
+      final server = Settings().electrumAddress(account.network);
+      int? port = Settings().getTorPort(account.network, server);
 
       //update draft transaction with latest note and change output tag
       final draftTransaction = DraftTransaction(
@@ -773,7 +769,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
   //show edit coins screen,
   //if the user changed coin selection, recalculate the fee boundaries and rebuild the boosted tx
-  _editCoins(BuildContext context) async {
+  Future<void> _editCoins(BuildContext context) async {
     final selectedAccount = ref.read(selectedAccountProvider);
 
     final account = ref.read(selectedAccountProvider);

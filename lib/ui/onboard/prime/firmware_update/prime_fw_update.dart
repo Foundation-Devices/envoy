@@ -15,7 +15,7 @@ import 'package:envoy/ui/widgets/envoy_gradient_progress.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' hide Image;
 import 'package:envoy/ui/onboard/prime/onboard_prime_ble.dart';
 
 class OnboardPrimeFwUpdate extends ConsumerStatefulWidget {
@@ -145,7 +145,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     );
   }
 
-  initFWUpdate() async {
+  Future<void> initFWUpdate() async {
     final primeUpdateNotifier = ref.read(primeUpdateStateProvider.notifier);
     final fwDownloadNotifier = ref.read(fwDownloadStateProvider.notifier);
     final fwTransferStateNotifier = ref.read(fwTransferStateProvider.notifier);
@@ -311,7 +311,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
   }
 
   //TODO: add error screen
-  _updateErrorWidget(BuildContext context) {
+  SizedBox _updateErrorWidget(BuildContext context) {
     return const SizedBox.shrink();
   }
 }

@@ -18,7 +18,6 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class OnboardPrimeWelcome extends StatefulWidget {
   const OnboardPrimeWelcome({super.key});
@@ -41,11 +40,9 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
     BluetoothManager().getPermissions();
   }
 
-  _connectToPrime() async {
+  Future<void> _connectToPrime() async {
     // Check Bluetooth permissions
-    bool isDenied = await Permission.bluetooth.isDenied ||
-        await Permission.bluetoothConnect.isDenied ||
-        await Permission.bluetoothScan.isDenied;
+    bool isDenied = await BluetoothManager.isBluetoothDenied();
     String? bleId;
 
     if (mounted) {

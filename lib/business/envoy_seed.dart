@@ -6,6 +6,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:backup/backup.dart';
@@ -164,16 +165,9 @@ class EnvoySeed {
 
   Future addEnvoyAccount(String seed, Network network, String? passphrase,
       {bool requireScan = false}) async {
-    String newWalletDirectory = NgAccountManager.walletsDirectory;
-    Directory newAccountDir = Directory(
-        "${newWalletDirectory}envoy_${network.toString().toLowerCase()}_acc_0");
-
-    if (!(await newAccountDir.exists())) {
-      newAccountDir.create(recursive: true);
-    }
-
     final derivations = await EnvoyBip39.deriveDescriptorFromSeed(
         seedWords: seed, network: network, passphrase: passphrase);
+
     final descriptors = derivations
         .where((element) =>
             element.addressType == AddressType.p2Wpkh ||
@@ -185,6 +179,22 @@ class EnvoySeed {
             ))
         .toList();
 
+    final fingerprint = NgAccountManager.getFingerprint(
+        derivations.first.externalPubDescriptor);
+
+    if (fingerprint == null) {
+      throw Exception("Failed to get fingerprint");
+    }
+
+    Directory newAccountDir = NgAccountManager.getAccountDirectory(
+        deviceSerial: "envoy",
+        network: network.toString(),
+        number: 0,
+        fingerprint: fingerprint);
+    if (!(await newAccountDir.exists())) {
+      newAccountDir.create(recursive: true);
+    }
+    await Future.delayed(const Duration(milliseconds: 100));
     if (descriptors.isEmpty || descriptors.length != 2) {
       EnvoyReport().log("EnvoySeed",
           "Error creating account from descriptor: descriptors.length ${descriptors.length}");
@@ -257,10 +267,9 @@ class EnvoySeed {
 
     //add accounts
     backupData = await processBackupData(backupData, cloud);
-
     return Backup.perform(
             backupData, seed, Settings().envoyServerAddress, Tor.instance,
-            path: encryptedBackupFilePath, cloud: cloud)
+            path: encryptedBackupFilePath, cloud: false)
         .then((success) async {
       if (cloud && success) {
         // Only notify if we are doing an online backup
@@ -296,6 +305,9 @@ class EnvoySeed {
     // SFT-2447: flip cloud syncing to false if we're making an offline file
     if (isOnlineBackup) {
       try {
+        if (!keys.contains(Settings.SETTINGS_PREFS)) {
+          return backupData;
+        }
         var settings = values[keys.indexOf(Settings.SETTINGS_PREFS)];
         var jsonSettings = jsonDecode(settings);
         jsonSettings["syncToCloudSetting"] = false;
@@ -303,6 +315,7 @@ class EnvoySeed {
         json["stores"][indexOfPreferences]["values"]
             [keys.indexOf(Settings.SETTINGS_PREFS)] = settings;
       } catch (e, stack) {
+        debugPrintStack(stackTrace: stack);
         EnvoyReport()
             .log("EnvoySeed checking online", e.toString(), stackTrace: stack);
       }
@@ -311,11 +324,16 @@ class EnvoySeed {
     for (var accountHandler in NgAccountManager().handlers) {
       try {
         final state = await accountHandler.state();
+        final fingerprint = state.xfp;
+        if (fingerprint.isEmpty) {
+          throw Exception(
+              "Failed to get fingerprint for account ${state.name} ${state.descriptors.map((e) => "${e.external_} | ${e.internal}")}");
+        }
         final dirWithId = NgAccountManager.getAccountDirectory(
             deviceSerial: state.deviceSerial ?? "envoy",
             network: state.network.toString(),
             number: state.index,
-            accountId: state.id);
+            fingerprint: fingerprint);
         final jsonStr = await accountHandler.getAccountBackup();
         final json = jsonDecode(jsonStr);
         if (await dirWithId.exists()) {
@@ -443,6 +461,8 @@ class EnvoySeed {
       } catch (e) {
         EnvoyReport().log("EnvoySeed", "Error restoring database: $e");
       }
+      log("NgAccountManager.accountsPrefKey ${data.containsKey(NgAccountManager.accountsPrefKey)}");
+      log("EnvoyStorage.dbName ${data.containsKey(EnvoyStorage.dbName)}");
 
       // if the data does not contains v2 backup at root (NgAccountManager.accountsPrefKey) at root,
       // Data is from older backups,so we need to restore legacy wallets
@@ -490,7 +510,7 @@ class EnvoySeed {
         await LocalStorage()
             .prefs
             .setBool(MigrationManager.migratedToTestnet4, true);
-        await Settings().setShowTestnetAccounts(false);
+        Settings().setShowTestnetAccounts(false);
       }
       if (showSignet && isLegacy) {
         LocalStorage()
@@ -542,12 +562,11 @@ class EnvoySeed {
     List<LegacyUnifiedAccounts> legacy = MigrationManager.unify(
         legacyWallets.where((wallet) => !wallet.wallet.hot).toList());
 
-    final accountOrder =
-        LocalStorage().prefs.getString(NgAccountManager.ACCOUNT_ORDER);
-    List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
     try {
       List<EnvoyAccountHandler> accountHandler =
-          await MigrationManager().createAccounts(legacy, order);
+          await MigrationManager().createAccounts(
+        legacy,
+      );
 
       for (var handler in accountHandler) {
         final account = await handler.state();
@@ -576,7 +595,7 @@ class EnvoySeed {
     }
   }
 
-  _restoreSingletons() {
+  void _restoreSingletons() {
     Settings.restore(fromBackup: true);
     Settings().store();
     Devices().restore();
@@ -589,8 +608,14 @@ class EnvoySeed {
 
     List<dynamic> stores = json["stores"];
     var preferences = stores
-        .singleWhere((element) => element["name"] == preferencesStoreName);
+        .firstWhereOrNull((element) => element["name"] == preferencesStoreName);
 
+    if (preferences == null) {
+      return [];
+    }
+    if (preferences.isEmpty) {
+      return [];
+    }
     List<String> keys = List<String>.from(preferences["keys"]);
     List<dynamic> values = preferences["values"];
 
@@ -623,10 +648,11 @@ class EnvoySeed {
 
     try {
       FileSaver.instance.saveAs(
-          name: encryptedBackupFileName,
-          bytes: backupBytes,
-          ext: encryptedBackupFileExtension,
-          mimeType: MimeType.text);
+        name: encryptedBackupFileName,
+        bytes: backupBytes,
+        fileExtension: encryptedBackupFileExtension,
+        mimeType: MimeType.text,
+      );
     } catch (e) {
       kPrint(e);
     }
@@ -637,7 +663,6 @@ class EnvoySeed {
     String? nonSecure = await _getNonSecure();
 
     if (secure != null && nonSecure != null) {
-      EnvoyReport().log("QA", "Seed stored in both secure and regular storage");
       return secure;
 
       // TODO: show a warning to user
@@ -648,12 +673,10 @@ class EnvoySeed {
     }
 
     if (secure != null) {
-      EnvoyReport().log("QA", "Seed stored in secure storage");
       return secure;
     }
 
     if (nonSecure != null) {
-      EnvoyReport().log("QA", "Seed stored in regular storage");
       return nonSecure;
     }
 
@@ -690,18 +713,18 @@ class EnvoySeed {
     return await LocalStorage().readFile(name);
   }
 
-  showSettingsMenu() {
+  void showSettingsMenu() {
     _platform.invokeMethod('show_settings');
   }
 
   // When manual user decides to enable Auto-Backup
-  copySeedToNonSecure() {
+  void copySeedToNonSecure() {
     _getSecure().then((seed) {
       store(seed!);
     });
   }
 
-  removeSeedFromNonSecure() async {
+  Future<void> removeSeedFromNonSecure() async {
     await LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
     if (!Platform.isLinux) {
       _platform.invokeMethod('data_changed');
@@ -743,33 +766,58 @@ class EnvoySeed {
       await store(seed);
       List<dynamic> accounts =
           jsonDecode(data[NgAccountManager.accountsPrefKey]!);
-      //no accounts in backup ? so derive from seed
-      if (accounts.isEmpty) {
-        await deriveAndAddWallets(seed,
-            passphrase: passphrase, requireScan: true);
-        return;
-      }
+      List<NgAccountBackup> ngAccountBackups = [];
       for (var account in accounts) {
-        final config = EnvoyAccountHandler.getConfigFromBackup(
-            backupJson: jsonEncode(account));
+        try {
+          final backup = await EnvoyAccountHandler.deserializeBackup(
+              backupJson: jsonEncode(account));
+          ngAccountBackups.add(backup);
+        } catch (e, stack) {
+          EnvoyReport().log("EnvoySeed", "Error deserializing backup: $e",
+              stackTrace: stack);
+          rethrow;
+        }
+      }
+
+      for (var backup in ngAccountBackups) {
+        final config = backup.ngAccountConfig;
+        String fingerprint = backup.xfp;
+        if (config.descriptors.isEmpty &&
+            backup.publicDescriptors.isEmpty &&
+            fingerprint.isEmpty) {
+          //pre 2.0.1 wallets doesnt include xfp. also if descriptors are empty, derive from seed
+          await deriveAndAddWallets(seed,
+              passphrase: passphrase, requireScan: true);
+          continue;
+        }
+        if (fingerprint.isEmpty) {
+          String? descriptor;
+          if (backup.publicDescriptors.isNotEmpty) {
+            descriptor = backup.publicDescriptors.first.$2;
+          } else if (config.descriptors.isNotEmpty) {
+            descriptor = config.descriptors.first.internal;
+          } else {
+            continue;
+          }
+          try {
+            fingerprint = NgAccountManager.getFingerprint(descriptor) ?? "";
+          } catch (e) {
+            //ignore
+          }
+        }
+        if (fingerprint.isEmpty) {
+          continue;
+        }
         Directory dir = NgAccountManager.getAccountDirectory(
           deviceSerial: config.deviceSerial ?? "envoy",
           network: config.network.toString(),
           number: config.index,
+          fingerprint: fingerprint,
         );
-        //any account that are affected by SFT-5217 issue,these require unique path
-        if (account.containsKey("require_unique_path")) {
-          dir = NgAccountManager.getAccountDirectory(
-              deviceSerial: config.deviceSerial ?? "envoy",
-              network: config.network.toString(),
-              number: config.index,
-              accountId: config.id);
-        }
-
         if (await dir.exists()) {
           bool existInAccountManager = NgAccountManager()
               .accounts
-              .any((element) => element.walletPath == dir.path);
+              .any((element) => element.getWalletDir()?.path == dir.path);
           if (existInAccountManager) {
             continue;
           }
@@ -779,15 +827,22 @@ class EnvoySeed {
         //both hot and cold wallets are restored from backup,
         //hot wallet descriptors will be derived from seed.
         final handler = await EnvoyAccountHandler.restoreFromBackup(
-            backupJson: jsonEncode(account),
+            backup: backup,
             dbPath: dir.path,
             seed: seed,
             passphrase: passphrase);
         final state = await handler.state();
         await NgAccountManager().addAccount(state, handler);
       }
-    } catch (e) {
-      EnvoyReport().log("EnvoySeed", "Error restoring accounts: $e");
+
+      if (!NgAccountManager().hotAccountsExist()) {
+        //pre 2.0.1 wallets doesnt include xfp. also if descriptors are empty, derive from seed
+        await deriveAndAddWallets(seed,
+            passphrase: passphrase, requireScan: true);
+      }
+    } catch (e, stack) {
+      EnvoyReport()
+          .log("EnvoySeed", "Error restoring accounts: $e", stackTrace: stack);
     }
   }
 }

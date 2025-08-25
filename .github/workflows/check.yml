@@ -25,7 +25,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.27.1'
+          flutter-version: '3.35.1'
 
       - name: Install dependencies
         run: flutter pub get
@@ -41,6 +41,9 @@ jobs:
 
       - name: Verify Rust formatting
         run: cargo fmt --all -- --check
+
+      - name: Install dependencies
+        run: sudo apt install libdbus-1-dev pkg-config
 
       - name: Catch common Rust mistakes
         run: cargo clippy -- -Dwarnings -A clippy::missing_safety_doc

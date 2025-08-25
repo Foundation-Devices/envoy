@@ -31,7 +31,7 @@ class VideoCard extends ConsumerStatefulWidget {
 }
 
 class _VideoCardState extends ConsumerState<VideoCard> {
-  _playVimeoVideo(Video video) async {
+  Future<void> _playVimeoVideo(Video video) async {
     await Navigator.of(context, rootNavigator: true).push(
         PageRouteBuilder(pageBuilder: (context, animation, secondAnimation) {
       return FullScreenVideoPlayer(video);

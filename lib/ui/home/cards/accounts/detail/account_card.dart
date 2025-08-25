@@ -74,7 +74,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
   late EnvoyAccount account;
   late Animation<Alignment> animation;
 
-  _redraw() {
+  void _redraw() {
     setState(() {});
   }
 

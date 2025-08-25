@@ -127,7 +127,9 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                 ),
                 IconButton(
                     onPressed: () {
-                      Share.share("bitcoin:$address");
+                      SharePlus.instance.share(ShareParams(
+                        text: "bitcoin:$address",
+                      ));
                     },
                     icon: const EnvoyIcon(
                       EnvoyIcons.externalLink,

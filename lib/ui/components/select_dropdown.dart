@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:flutter/material.dart';
-import 'package:envoy/business/settings.dart';
 
 enum EnvoyDropdownOptionType { normal, sectionBreak }
 
@@ -53,7 +53,7 @@ class EnvoyDropdown extends StatefulWidget {
 class EnvoyDropdownState extends State<EnvoyDropdown> {
   int _selectedIndex = 0;
   EnvoyDropdownOption? _selectedOption;
-  bool _isTapped = true;
+  bool isFocused = true;
   late FocusNode _focusNode;
 
   EnvoyDropdownState() {
@@ -88,7 +88,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
       focusNode: _focusNode,
       onFocusChange: (hasFocus) {
         setState(() {
-          _isTapped = hasFocus;
+          isFocused = hasFocus;
         });
       },
       child: Container(
@@ -98,17 +98,21 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
               : EnvoyColors.surface2.applyOpacity(0.5),
           borderRadius: BorderRadius.circular(EnvoySpacing.small),
           border: Border.all(
-            color: (!_isTapped && widget.isDropdownActive)
+            color: (!isFocused && widget.isDropdownActive)
                 ? EnvoyColors.accentPrimary
                 : Colors.transparent,
             width: 1,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(EnvoySpacing.small),
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            focusColor: EnvoyColors.accentPrimary,
+          ),
           child: DropdownButton<EnvoyDropdownOption>(
             elevation: EnvoySpacing.xs.toInt(),
             borderRadius: BorderRadius.circular(EnvoySpacing.small),
+            padding:
+                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
             onChanged: widget.isDropdownActive
                 ? (EnvoyDropdownOption? newValue) {
                     if (newValue == null ||
@@ -153,52 +157,44 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
                     option.label == _selectedOption!.label;
                 return DropdownMenuItem<EnvoyDropdownOption>(
                   value: option,
-                  child: Container(
-                    color: isSelectedOption
-                        ? EnvoyColors.accentPrimary
-                        : Colors.transparent,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox.shrink(),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                          //size of the blue background
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                option.label,
-                                style: option.type ==
-                                        EnvoyDropdownOptionType.sectionBreak
-                                    ? EnvoyTypography.info.copyWith(
-                                        color: EnvoyColors.textTertiary,
-                                      )
-                                    : EnvoyTypography.body.copyWith(
-                                        color: isSelectedOption && _isTapped
-                                            ? EnvoyColors.textPrimaryInverse
-                                            : EnvoyColors.textPrimary,
-                                      ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              if (_isTapped)
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: EnvoySpacing.medium1),
-                                  child: EnvoyIcon(
-                                    EnvoyIcons.check,
+                  enabled: option.type != EnvoyDropdownOptionType.sectionBreak,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox.shrink(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            option.label,
+                            style: option.type ==
+                                    EnvoyDropdownOptionType.sectionBreak
+                                ? EnvoyTypography.info.copyWith(
+                                    color: EnvoyColors.textTertiary,
+                                  )
+                                : EnvoyTypography.body.copyWith(
                                     color: isSelectedOption
                                         ? EnvoyColors.textPrimaryInverse
-                                        : Colors.transparent,
+                                        : EnvoyColors.textPrimary,
                                   ),
-                                ),
-                            ],
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        const SizedBox.shrink(),
-                      ],
-                    ),
+                          if (isFocused)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: EnvoySpacing.medium1),
+                              child: EnvoyIcon(
+                                EnvoyIcons.check,
+                                color: isSelectedOption
+                                    ? EnvoyColors.textPrimaryInverse
+                                    : Colors.transparent,
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox.shrink(),
+                    ],
                   ),
                 );
               },

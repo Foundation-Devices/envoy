@@ -7,7 +7,7 @@ use bdk_wallet::bitcoin::Network;
 use bdk_wallet::miniscript::descriptor::DescriptorType;
 use bip39::{Language, Mnemonic};
 use log::info;
-use ngwallet::bip39::{get_descriptors, get_random_seed, Descriptors};
+use ngwallet::bip39::{get_descriptors, get_random_seed};
 use ngwallet::config::AddressType;
 
 pub struct Seed {
@@ -27,13 +27,14 @@ pub struct EnvoyBip39 {}
 
 impl EnvoyBip39 {
     pub fn validate_seed(seed_words: &str) -> bool {
-        return Mnemonic::parse(seed_words).is_ok();
+        Mnemonic::parse(seed_words).is_ok()
     }
 
     pub fn generate_seed() -> Result<String> {
         get_random_seed()
     }
 
+    #[allow(dead_code)]
     fn generate_mnemonic() -> (Mnemonic, String) {
         let mnemonic = Mnemonic::generate_in(Language::English, 12).unwrap();
         let mnemonic_string = mnemonic.to_string();

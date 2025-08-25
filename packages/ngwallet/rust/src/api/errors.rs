@@ -2,9 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use bdk_wallet::bitcoin::{OutPoint, Txid};
-use bdk_wallet::error::{BuildFeeBumpError, CreateTxError};
-use bdk_wallet::{bitcoin, AddForeignUtxoError, KeychainKind};
+use bdk_wallet::error::CreateTxError;
+use bdk_wallet::KeychainKind;
 use ngwallet::bdk_electrum::electrum_client::Error;
 use ngwallet::rbf::BumpFeeError;
 use ngwallet::send::TransactionComposeError;
@@ -121,13 +120,13 @@ impl From<Error> for BroadcastError {
                 BroadcastError::Message(format!("Error during the deserialization of a response from the server: {}", e.clone().take()))
             }
             Error::Message(e) => {
-                BroadcastError::Message(format!("{}", e))
+                BroadcastError::Message(e.to_string())
             }
             Error::InvalidDNSNameError(domain) => {
                 BroadcastError::Message(format!("Invalid domain name {} not matching SSL certificate", domain))
             }
             Error::MissingDomain => {
-                BroadcastError::Message(format!("Missing domain while it was explicitly asked to validate it"))
+                BroadcastError::Message("Missing domain while it was explicitly asked to validate it".to_string())
             }
             Error::AllAttemptsErrored(errors) => {
                 BroadcastError::Message(format!("Made one or multiple attempts, all errored: {:?}", errors))
@@ -143,9 +142,6 @@ impl From<Error> for BroadcastError {
             }
             Error::CouldNotCreateConnection(e) => {
                 BroadcastError::Message(format!("{}", e))
-            }
-            _ => {
-                BroadcastError::Message("Unknown error".to_string())
             }
         }
     }

@@ -5,7 +5,6 @@
 import 'dart:io';
 
 import 'package:envoy/main.dart';
-import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -16,6 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'util.dart';
 
 Future<void> main() async {
@@ -114,8 +114,9 @@ Future<void> main() async {
 
       await pressHamburgerMenu(tester);
       await goToAbout(tester);
-
-      final appVersion = find.text('2.0.2');
+      final version = await PackageInfo.fromPlatform();
+      final appVersion =
+          find.text("${version.version} (${version.buildNumber})");
       expect(appVersion, findsOneWidget);
 
       final showButton = find.text('Show');
@@ -582,8 +583,9 @@ Future<void> main() async {
 
       /// in Send
       await findAndPressTextButton(tester, 'Send');
-      // press the widget so it can circle to Sats
-      //   await findAndPressWidget<AmountDisplay>(tester);
+
+      /// Check if you are entering sats
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
@@ -627,8 +629,8 @@ Future<void> main() async {
       }
     });
     testWidgets('<Test send to all address types>', (tester) async {
-      await checkSync(tester);
       await goBackHome(tester);
+      await checkSync(tester);
       await disableAllNetworks(tester);
 
       final walletWithBalance = find.text("GH TEST ACC (#1)");
@@ -641,6 +643,9 @@ Future<void> main() async {
       expect(sendButtonFinder, findsWidgets);
       await tester.tap(sendButtonFinder.last);
       await tester.pump(Durations.long2);
+
+      /// Check if you are entering sats
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
 
       // enter amount
       await findAndPressTextButton(tester, '1');
@@ -662,9 +667,8 @@ Future<void> main() async {
       await trySendToAddress(tester, p2trAddress);
     });
     testWidgets('<BTC/sats in App>', (tester) async {
-      await checkSync(tester);
-
       await goBackHome(tester);
+      await checkSync(tester);
 
       String someValidSignetReceiveAddress =
           'tb1plhv9qthzz4trg5te27ulz6k8y46jd84azhe5fdmu6kehl9xwpp8qum6h3a';
@@ -684,7 +688,7 @@ Future<void> main() async {
       bool isSettingsViewSatsSwitchOn =
           await isSlideSwitchOn(tester, 'View Amount in Sats');
       if (isSettingsViewSatsSwitchOn) {
-        // find And Toggle DisplayFiat Switch
+        // turn it off
         await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
       }
 
@@ -733,14 +737,14 @@ Future<void> main() async {
       await findFirstTextButtonAndPress(tester, 'Signet');
       await findAndPressTextButton(tester, 'Send');
 
+      /// This is not important anymore because of the new sendUnit (depending on the last Send selection)?
       /// Make sure the first proposed unit is BTC
       // function is checking icons from top to bottom so the first icon in Send needs to be BTC
-      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
+      // await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       /// Tap the BTC number in the send screen until you get to fiat (you might need to enable fiat from settings first)
-      // press the widget two times so it can circle to BTC
-      await findAndPressWidget<AmountDisplay>(tester);
-      await findAndPressWidget<AmountDisplay>(tester);
+      // circle to BTC
+      await cycleToEnvoyIcon(tester, EnvoyIcons.btc);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
@@ -751,8 +755,7 @@ Future<void> main() async {
       await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       // switch to SATS for easy input
-      await findAndPressWidget<AmountDisplay>(tester);
-      await tester.pump(Durations.long2);
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
 
       /// With the unit in SATS, paste a valid address, enter a valid amount, tap continue
       await enterTextInField(
@@ -766,7 +769,7 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
 
       // switch back to BTC
-      await findAndPressWidget<AmountDisplay>(tester);
+      await cycleToEnvoyIcon(tester, EnvoyIcons.btc);
 
       // go to staging
       await waitForTealTextAndTap(tester, 'Confirm');
@@ -826,23 +829,25 @@ Future<void> main() async {
       await findFirstTextButtonAndPress(tester, 'Signet');
       await findAndPressTextButton(tester, 'Send');
 
-      /// Make sure the first proposed unit is sats
-      // function is checking icons from top to bottom so the first icon in Send needs to be sats
-      await checkForEnvoyIcon(tester, EnvoyIcons.sats);
+      /// Make sure the first proposed unit is BTC (last selected in send was BTC)
+      // function is checking icons from top to bottom so the first icon in Send needs to be BTC
+      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
         await findTextOnScreen(tester, "\$");
       }
 
-      ///  Check that the number below the fiat is displayed in sats
-      await checkForEnvoyIcon(tester, EnvoyIcons.sats);
+      ///  Check that the number below the fiat is displayed in btc
+      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
-      /// With the unit in sats, paste a valid address, enter a valid amount, tap continue
+      /// With the unit in BTC, paste a valid address, enter a valid amount, tap continue
       await enterTextInField(
           tester, find.byType(TextFormField), someValidSignetReceiveAddress);
 
       // enter amount in SATS
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
+
       // This can fail if the fee is too high (small total amount) !!!
       await findAndPressTextButton(tester, '5');
       await findAndPressTextButton(tester, '6');
@@ -1109,6 +1114,56 @@ Future<void> main() async {
       await tester.pump();
       signetTextAccount = find.text('Signet');
       expect(signetTextAccount, findsNothing);
+    });
+    testWidgets('<Node selection>', (tester) async {
+      await goBackHome(tester);
+
+      // Go to privacy
+      await findAndPressTextButton(tester, 'Privacy');
+      // Tap Foundation (default) to open dropdown
+      await findAndPressTextButton(tester, 'Foundation (Default)');
+      // Select Personal Node
+      await findAndPressTextButton(tester, 'Personal Node');
+
+      // Check that it gets selected and the field to enter the personal node shows up
+      await findTextOnScreen(tester, "Personal Node");
+      await findTextOnScreen(tester, "Enter your node address");
+
+      //Tap Personal Node to open dropdown
+      await findAndPressTextButton(tester, 'Personal Node');
+      await tester.pump(Durations.long2);
+
+      // Select Blockstream
+      await findAndPressTextButton(tester, 'Blockstream');
+      await tester.pump(Durations.long2);
+
+      // Check that it gets selected and a connection is attempted
+      await findTextOnScreen(tester, "Blockstream");
+      await tester.pump(Durations.long2);
+
+      //Tap Block Stream to open dropdown
+      await findAndPressTextButton(tester, 'Blockstream');
+      await tester.pump(Durations.long2);
+      // Select DIYnodes
+      await findAndPressTextButton(tester, 'DIYnodes');
+      await tester.pump(Durations.long2);
+
+      // Check that it gets selected and a connection is attempted
+      await findTextOnScreen(tester, "DIYnodes");
+      await tester.pump(Durations.long2);
+
+      //Tap DIYnodes to open dropdown
+      await findAndPressTextButton(tester, 'DIYnodes');
+      await tester.pump(Durations.long2);
+
+      // Check if a connection is attempted over Personal node
+      await findAndPressTextButton(tester, 'Personal Node');
+      await tester.pump(Durations.long2);
+      await tester.pumpUntilFound(
+        find.byType(CircularProgressIndicator),
+        tries: 10,
+        duration: Durations.long1,
+      );
     });
     testWidgets('<Enable tor and check top shield>', (tester) async {
       await goBackHome(tester);
@@ -1578,7 +1633,8 @@ Future<void> main() async {
       bool torIsConnected =
           await checkTorShieldIcon(tester, expectPrivacy: true);
 
-      expect(torIsConnected, isTrue);
+      expect(torIsConnected, isTrue,
+          reason: 'Tor should be connected, but it is not.');
 
       /// Open Envoy settings, enable fiat
       await pressHamburgerMenu(tester);

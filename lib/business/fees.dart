@@ -59,7 +59,7 @@ class Fees {
     return fees[network]?.mempoolHourRate ?? 1;
   }
 
-  static _defaultFees() {
+  static Map<Network, FeeRates> _defaultFees() {
     return {
       Network.bitcoin: FeeRates(),
       Network.testnet: FeeRates(),
@@ -67,7 +67,7 @@ class Fees {
     };
   }
 
-  static _feesToJson(Map<Network, FeeRates> fees) {
+  static Map<String, dynamic> _feesToJson(Map<Network, FeeRates> fees) {
     Map<String, dynamic> jsonMap = {};
     for (var entry in fees.entries) {
       jsonMap[entry.key.name] = entry.value.toJson();
@@ -76,7 +76,7 @@ class Fees {
     return jsonMap;
   }
 
-  static _feesFromJson(Map<String, dynamic> fees) {
+  static Map<Network, FeeRates> _feesFromJson(Map<String, dynamic> fees) {
     Map<Network, FeeRates> map = {};
     for (var entry in fees.entries) {
       map[Network.values.byName(entry.key)] = FeeRates.fromJson(entry.value);
@@ -145,21 +145,25 @@ class Fees {
     _getMempoolBlocksFees(Network.signet);
   }
 
-  static restore() {
+  static void restore() {
     if (_ls.prefs.containsKey(FEE_RATE_PREFS)) {
       var storedFees = jsonDecode(_ls.prefs.getString(FEE_RATE_PREFS)!);
-      Fees.fromJson(storedFees);
+      try {
+        Fees.fromJson(storedFees);
+      } catch (e) {
+        //ignore
+      }
     }
 
     Fees.init();
   }
 
-  _storeRates() {
+  void _storeRates() {
     String json = jsonEncode(this);
     _ls.prefs.setString(FEE_RATE_PREFS, json);
   }
 
-  _getMempoolRecommendedRates(Network network) {
+  void _getMempoolRecommendedRates(Network network) {
     HttpTor(Tor.instance, EnvoyScheduler().parallel)
         .get(_mempoolRecommendedFeesEndpoints[network]!)
         .then((response) {
@@ -182,7 +186,7 @@ class Fees {
     );
   }
 
-  _getMempoolBlocksFees(Network network) {
+  void _getMempoolBlocksFees(Network network) {
     HttpTor(Tor.instance, EnvoyScheduler().parallel)
         .get(_mempoolBlocksFeesEndpoints[network]!)
         .then((response) {

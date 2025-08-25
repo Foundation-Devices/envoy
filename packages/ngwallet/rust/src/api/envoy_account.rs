@@ -19,7 +19,6 @@ pub struct EnvoyAccount {
     pub index: u32,
     pub descriptors: Vec<NgDescriptor>,
     pub date_synced: Option<String>,
-    pub wallet_path: Option<String>,
     pub network: Network,
     pub id: String,
     pub next_address: Vec<(String, AddressType)>,
@@ -29,6 +28,7 @@ pub struct EnvoyAccount {
     pub transactions: Vec<BitcoinTransaction>,
     pub utxo: Vec<Output>,
     pub tags: Vec<String>,
+    pub xfp: String,
     pub external_public_descriptors: Vec<(AddressType, String)>,
 }
 
