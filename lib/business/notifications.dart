@@ -223,7 +223,8 @@ class Notifications {
     }
 
     if (newEnvoyVersionAvailable) {
-      var latestEnvoyVersion = await fetchLatestEnvoyVersionFromGit();
+      final result = await fetchLatestEnvoyVersionFromGit();
+      String latestEnvoyVersion = result.version;
       bool skip = false;
       for (var notification in notifications) {
         if (notification.type == EnvoyNotificationType.envoyUpdate) {
@@ -235,7 +236,7 @@ class Notifications {
       if (!skip) {
         add(EnvoyNotification(
             "App Update", // TODO: FIGMA
-            DateTime.now(),
+            result.publishedAt,
             EnvoyNotificationType.envoyUpdate,
             latestEnvoyVersion,
             EnvoyNotificationType.envoyUpdate.name,
@@ -334,7 +335,8 @@ class Notifications {
     });
   }
 
-  Future<String> fetchLatestEnvoyVersionFromGit() async {
+  Future<({String version, DateTime publishedAt})>
+      fetchLatestEnvoyVersionFromGit() async {
     HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
     final response = await http.get(
         'https://api.github.com/repos/Foundation-Devices/envoy/releases/latest',
@@ -342,9 +344,10 @@ class Notifications {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      if (data.containsKey('tag_name')) {
-        final version = data['tag_name'];
-        return version;
+      if (data.containsKey('tag_name') && data.containsKey('published_at')) {
+        final version = data['tag_name'] as String;
+        final publishedAt = DateTime.parse(data['published_at'] as String);
+        return (version: version, publishedAt: publishedAt);
       } else {
         EnvoyReport().log(
             "EnvoyGHVersionCheck", "Couldn't find tag_name in GitHub response");
@@ -364,7 +367,8 @@ class Notifications {
     String versionOnGitHub;
 
     try {
-      versionOnGitHub = await fetchLatestEnvoyVersionFromGit();
+      final result = await fetchLatestEnvoyVersionFromGit();
+      versionOnGitHub = result.version;
     } on Exception catch (_) {
       return false;
     }
