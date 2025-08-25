@@ -127,7 +127,7 @@ class BtcPayVoucher {
       "destination": address,
       "amount": amount,
       // it is possible to pay only part of the voucher amount
-      "paymentMethod": "BTC-OnChain"
+      "payoutMethodId": "BTC-CHAIN"
     };
     var requestBody = json.encode(data);
 
