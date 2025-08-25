@@ -921,12 +921,8 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
 }
 
 bool accountHasNoTaprootXpub(EnvoyAccount account) {
-  // Look for a taproot descriptor in this account
-  final taprootDescriptor = account.externalPublicDescriptors.firstWhere(
-    (pair) => pair.$1 == AddressType.p2Tr,
-    orElse: () => (AddressType.p2Tr, ''),
+  final hasTaproot = account.externalPublicDescriptors.any(
+    (pair) => pair.$1 == AddressType.p2Tr && pair.$2.isNotEmpty,
   );
-
-  // If the xpub (pair.$2) is empty, this account lacks a taproot xpub
-  return taprootDescriptor.$2.isEmpty;
+  return !hasTaproot;
 }
