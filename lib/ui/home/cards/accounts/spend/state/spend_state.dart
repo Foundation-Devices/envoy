@@ -262,6 +262,8 @@ void clearSpendState(ProviderContainer ref) {
       );
     }
 
+    ref.read(spendValidationErrorProvider.notifier).state =
+        null; // Fix: Clear validation error state
     ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
     ref.read(stagingTxNoteProvider.notifier).state = null;
     ref.read(spendFeeProcessing.notifier).state = false;
