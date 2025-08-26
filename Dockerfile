@@ -75,7 +75,7 @@ RUN git clone https://github.com/flutter/flutter.git
 ENV PATH "$PATH:/root/flutter/bin"
 
 ENV TAR_OPTIONS=--no-same-owner
-RUN flutter channel stable && cd flutter && git checkout 3.27.1 && flutter config --enable-linux-desktop
+RUN flutter channel stable && cd flutter && git checkout 3.35.1 && flutter config --enable-linux-desktop
 
 # Install Rust
 RUN curl https://sh.rustup.rs -sSf | \
