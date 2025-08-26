@@ -33,7 +33,7 @@ class DeviceCard extends ConsumerStatefulWidget {
 }
 
 class _DeviceCardState extends ConsumerState<DeviceCard> {
-  _redraw() {
+  void _redraw() {
     setState(() {});
   }
 

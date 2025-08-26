@@ -186,7 +186,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
     });
   }
 
-  createPuzzles() {
+  void createPuzzles() {
     Random random = Random();
     List<String> filteredSeed =
         seedEn.where((element) => !widget.seed.contains(element)).toList();

@@ -10,7 +10,7 @@ jobs:
     runs-on: [self-hosted, linux, x64]
     steps:
       - uses: extractions/setup-just@v1
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: just docker-beef
 
       - uses: actions/upload-artifact@v4

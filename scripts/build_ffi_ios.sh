@@ -7,6 +7,9 @@
 # Exit if anything fails
 set -e
 
+# Set up bindgen to find iOS SDK headers
+export BINDGEN_EXTRA_CLANG_ARGS="-isysroot $(xcrun --show-sdk-path --sdk iphoneos)"
+
 # iOS
 rustup target add aarch64-apple-ios
 cargo build --target=aarch64-apple-ios

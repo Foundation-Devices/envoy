@@ -22,7 +22,7 @@ class KeysManager {
     return singleton;
   }
 
-  _initAsync() async {
+  Future<void> _initAsync() async {
     keys = await EnvoyStorage().getApiKeys();
   }
 
@@ -44,7 +44,7 @@ class KeysManager {
     });
   }
 
-  _store(ApiKeys newKeys) async {
+  Future<void> _store(ApiKeys newKeys) async {
     if (keys == null ||
         keys!.mapsKey != newKeys.mapsKey ||
         keys!.rampKey != newKeys.rampKey) {

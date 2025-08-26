@@ -7,7 +7,7 @@ import 'dart:ui';
 import 'package:envoy/ui/envoy_colors.dart';
 
 extension ColorExtension on Color {
-  applyOpacity(double opacity) {
+  Color applyOpacity(double opacity) {
     return withAlpha((255.0 * opacity).round());
   }
 

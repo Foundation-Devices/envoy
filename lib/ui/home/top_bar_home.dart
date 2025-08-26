@@ -433,7 +433,7 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
     super.initState();
   }
 
-  _loadMenu() async {
+  Future<void> _loadMenu() async {
     ByteData menuRive = await rootBundle.load('assets/hamburger.riv');
     final file = RiveFile.import(menuRive);
     _menuController =

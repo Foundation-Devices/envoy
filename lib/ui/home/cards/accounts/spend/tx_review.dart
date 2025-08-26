@@ -128,7 +128,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
     super.dispose();
   }
 
-  _handleQRExchange(EnvoyAccount account, BuildContext rootContext,
+  Future<void> _handleQRExchange(EnvoyAccount account, BuildContext rootContext,
       ProviderContainer providerScope) async {
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
     Uint8List? psbt = transactionModel.draftTransaction?.psbt;
@@ -482,7 +482,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
     }
   }
 
-  _setAnimState(BroadcastProgress progress) {
+  void _setAnimState(BroadcastProgress progress) {
     bool happy = progress == BroadcastProgress.success;
     bool unhappy = progress == BroadcastProgress.failed;
     bool indeterminate = progress == BroadcastProgress.inProgress;

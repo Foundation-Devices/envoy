@@ -72,9 +72,29 @@ class AmountWidgetTestCases extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const fxRateFiat = 34743.76026697552;
+    final account = EnvoyAccount(
+        name: "name",
+        color: "color",
+        preferredAddressType: AddressType.p2Sh,
+        seedHasPassphrase: true,
+        index: 0,
+        descriptors: [
+          NgDescriptor(internal: "internal", addressType: AddressType.p2Sh)
+        ],
+        network: Network.bitcoin,
+        id: "id",
+        nextAddress: [("p2sh", AddressType.p2Sh)],
+        balance: BigInt.from(0),
+        unlockedBalance: BigInt.from(0),
+        isHot: true,
+        transactions: [],
+        utxo: [],
+        tags: [],
+        xfp: "xfp",
+        externalPublicDescriptors: [(AddressType.p2Sh, "p2sh")]);
 
-    return const Padding(
-      padding: EdgeInsets.all(EnvoySpacing.large1),
+    return Padding(
+      padding: const EdgeInsets.all(EnvoySpacing.large1),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -83,6 +103,7 @@ class AmountWidgetTestCases extends StatelessWidget {
             child: Column(
               children: [
                 AmountWidget(
+                  envoyAccount: account,
                   amountSats: 421,
                   primaryUnit: AmountDisplayUnit.btc,
                   secondaryUnit: AmountDisplayUnit.fiat,
@@ -92,8 +113,10 @@ class AmountWidgetTestCases extends StatelessWidget {
                   symbolFiat: "\$",
                   alignToEnd: false,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 AmountWidget(
+                  badgeColor: Colors.amber,
+                  envoyAccount: account,
                   amountSats: 421,
                   primaryUnit: AmountDisplayUnit.btc,
                   secondaryUnit: AmountDisplayUnit.fiat,
@@ -102,8 +125,10 @@ class AmountWidgetTestCases extends StatelessWidget {
                   fxRateFiat: fxRateFiat,
                   symbolFiat: "\$",
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 AmountWidget(
+                  badgeColor: Colors.amber,
+                  envoyAccount: account,
                   amountSats: 0,
                   primaryUnit: AmountDisplayUnit.btc,
                   secondaryUnit: AmountDisplayUnit.fiat,
@@ -112,8 +137,10 @@ class AmountWidgetTestCases extends StatelessWidget {
                   fxRateFiat: fxRateFiat,
                   symbolFiat: "\$",
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 AmountWidget(
+                  badgeColor: Colors.amber,
+                  envoyAccount: account,
                   amountSats: 0,
                   primaryUnit: AmountDisplayUnit.sat,
                   secondaryUnit: AmountDisplayUnit.fiat,
@@ -122,8 +149,10 @@ class AmountWidgetTestCases extends StatelessWidget {
                   fxRateFiat: fxRateFiat,
                   symbolFiat: "\$",
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 AmountWidget(
+                  badgeColor: Colors.amber,
+                  envoyAccount: account,
                   amountSats: -421,
                   primaryUnit: AmountDisplayUnit.btc,
                   secondaryUnit: AmountDisplayUnit.fiat,
@@ -132,8 +161,10 @@ class AmountWidgetTestCases extends StatelessWidget {
                   fxRateFiat: fxRateFiat,
                   symbolFiat: "\$",
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 AmountWidget(
+                  badgeColor: Colors.amber,
+                  envoyAccount: account,
                   amountSats: -421,
                   primaryUnit: AmountDisplayUnit.sat,
                   secondaryUnit: AmountDisplayUnit.fiat,
@@ -142,8 +173,10 @@ class AmountWidgetTestCases extends StatelessWidget {
                   fxRateFiat: fxRateFiat,
                   symbolFiat: "\$",
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 AmountWidget(
+                  badgeColor: Colors.amber,
+                  envoyAccount: account,
                   amountSats: 0,
                   primaryUnit: AmountDisplayUnit.fiat,
                   secondaryUnit: AmountDisplayUnit.btc,
@@ -153,6 +186,8 @@ class AmountWidgetTestCases extends StatelessWidget {
                   symbolFiat: "\$",
                 ),
                 AmountWidget(
+                  badgeColor: Colors.amber,
+                  envoyAccount: account,
                   amountSats: -421,
                   primaryUnit: AmountDisplayUnit.fiat,
                   secondaryUnit: AmountDisplayUnit.btc,
@@ -163,6 +198,8 @@ class AmountWidgetTestCases extends StatelessWidget {
                 ),
                 // Testing the cursed 6 digits sat amounts
                 AmountWidget(
+                  badgeColor: Colors.amber,
+                  envoyAccount: account,
                   amountSats: -421432,
                   primaryUnit: AmountDisplayUnit.sat,
                   secondaryUnit: AmountDisplayUnit.fiat,
@@ -179,6 +216,8 @@ class AmountWidgetTestCases extends StatelessWidget {
             //Column for BTC
             children: [
               AmountWidget(
+                badgeColor: Colors.amber,
+                envoyAccount: account,
                 amountSats: 421,
                 primaryUnit: AmountDisplayUnit.btc,
                 secondaryUnit: AmountDisplayUnit.fiat,
@@ -188,6 +227,8 @@ class AmountWidgetTestCases extends StatelessWidget {
                 symbolFiat: "\$",
               ),
               AmountWidget(
+                badgeColor: Colors.amber,
+                envoyAccount: account,
                 amountSats: 43421,
                 primaryUnit: AmountDisplayUnit.btc,
                 secondaryUnit: AmountDisplayUnit.fiat,
@@ -197,6 +238,8 @@ class AmountWidgetTestCases extends StatelessWidget {
                 symbolFiat: "\$",
               ),
               AmountWidget(
+                badgeColor: Colors.amber,
+                envoyAccount: account,
                 amountSats: 2343421,
                 primaryUnit: AmountDisplayUnit.btc,
                 secondaryUnit: AmountDisplayUnit.fiat,
@@ -206,6 +249,8 @@ class AmountWidgetTestCases extends StatelessWidget {
                 symbolFiat: "\$",
               ),
               AmountWidget(
+                badgeColor: Colors.amber,
+                envoyAccount: account,
                 amountSats: 122343421,
                 primaryUnit: AmountDisplayUnit.btc,
                 secondaryUnit: AmountDisplayUnit.fiat,
@@ -215,6 +260,8 @@ class AmountWidgetTestCases extends StatelessWidget {
                 symbolFiat: "\$",
               ),
               AmountWidget(
+                badgeColor: Colors.amber,
+                envoyAccount: account,
                 amountSats: 523722343000,
                 primaryUnit: AmountDisplayUnit.btc,
                 secondaryUnit: AmountDisplayUnit.fiat,
@@ -224,6 +271,8 @@ class AmountWidgetTestCases extends StatelessWidget {
                 symbolFiat: "\$",
               ),
               AmountWidget(
+                badgeColor: Colors.amber,
+                envoyAccount: account,
                 amountSats: 12523722300000,
                 primaryUnit: AmountDisplayUnit.btc,
                 secondaryUnit: AmountDisplayUnit.fiat,
@@ -233,6 +282,8 @@ class AmountWidgetTestCases extends StatelessWidget {
                 symbolFiat: "\$",
               ),
               AmountWidget(
+                badgeColor: Colors.amber,
+                envoyAccount: account,
                 amountSats: 512523722000000,
                 primaryUnit: AmountDisplayUnit.btc,
                 secondaryUnit: AmountDisplayUnit.fiat,
@@ -242,6 +293,8 @@ class AmountWidgetTestCases extends StatelessWidget {
                 symbolFiat: "\$",
               ),
               AmountWidget(
+                badgeColor: Colors.amber,
+                envoyAccount: account,
                 amountSats: 2012523720000000,
                 primaryUnit: AmountDisplayUnit.btc,
                 secondaryUnit: AmountDisplayUnit.fiat,
@@ -252,10 +305,12 @@ class AmountWidgetTestCases extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(width: 2),
+          const SizedBox(width: 2),
           Column(//Column for sats
               children: [
             AmountWidget(
+              badgeColor: Colors.amber,
+              envoyAccount: account,
               amountSats: 421,
               primaryUnit: AmountDisplayUnit.sat,
               secondaryUnit: AmountDisplayUnit.fiat,
@@ -265,6 +320,8 @@ class AmountWidgetTestCases extends StatelessWidget {
               symbolFiat: "\$",
             ),
             AmountWidget(
+              badgeColor: Colors.amber,
+              envoyAccount: account,
               amountSats: 43421,
               primaryUnit: AmountDisplayUnit.sat,
               secondaryUnit: AmountDisplayUnit.fiat,
@@ -274,6 +331,8 @@ class AmountWidgetTestCases extends StatelessWidget {
               symbolFiat: "\$",
             ),
             AmountWidget(
+              badgeColor: Colors.amber,
+              envoyAccount: account,
               amountSats: 2343421,
               primaryUnit: AmountDisplayUnit.sat,
               secondaryUnit: AmountDisplayUnit.fiat,
@@ -283,6 +342,8 @@ class AmountWidgetTestCases extends StatelessWidget {
               symbolFiat: "\$",
             ),
             AmountWidget(
+              badgeColor: Colors.amber,
+              envoyAccount: account,
               amountSats: 22343421,
               primaryUnit: AmountDisplayUnit.sat,
               secondaryUnit: AmountDisplayUnit.fiat,
@@ -291,10 +352,12 @@ class AmountWidgetTestCases extends StatelessWidget {
               fxRateFiat: fxRateFiat,
               symbolFiat: "\$",
             ),
-            SizedBox(height: 100),
+            const SizedBox(height: 100),
             // section for EU
 
             AmountWidget(
+              badgeColor: Colors.amber,
+              envoyAccount: account,
               amountSats: 512523722000,
               primaryUnit: AmountDisplayUnit.btc,
               secondaryUnit: AmountDisplayUnit.fiat,
@@ -304,6 +367,8 @@ class AmountWidgetTestCases extends StatelessWidget {
               symbolFiat: "\$",
             ),
             AmountWidget(
+              badgeColor: Colors.amber,
+              envoyAccount: account,
               amountSats: 2343421,
               primaryUnit: AmountDisplayUnit.sat,
               secondaryUnit: AmountDisplayUnit.fiat,
@@ -313,6 +378,8 @@ class AmountWidgetTestCases extends StatelessWidget {
               symbolFiat: "\$",
             ),
             AmountWidget(
+              badgeColor: Colors.amber,
+              envoyAccount: account,
               amountSats: 122343421,
               primaryUnit: AmountDisplayUnit.sat,
               secondaryUnit: AmountDisplayUnit.fiat,
@@ -322,10 +389,12 @@ class AmountWidgetTestCases extends StatelessWidget {
               symbolFiat: "\$",
             ),
           ]),
-          SizedBox(width: 2),
+          const SizedBox(width: 2),
           Column(// Column for fiat
               children: [
             AmountWidget(
+              badgeColor: Colors.amber,
+              envoyAccount: account,
               amountSats: 421,
               primaryUnit: AmountDisplayUnit.fiat,
               secondaryUnit: AmountDisplayUnit.btc,
@@ -335,6 +404,8 @@ class AmountWidgetTestCases extends StatelessWidget {
               symbolFiat: "\$",
             ),
             AmountWidget(
+              badgeColor: Colors.amber,
+              envoyAccount: account,
               amountSats: 43421,
               primaryUnit: AmountDisplayUnit.fiat,
               secondaryUnit: AmountDisplayUnit.btc,
@@ -344,6 +415,8 @@ class AmountWidgetTestCases extends StatelessWidget {
               symbolFiat: "\$",
             ),
             AmountWidget(
+              badgeColor: Colors.amber,
+              envoyAccount: account,
               amountSats: 22343421,
               primaryUnit: AmountDisplayUnit.fiat,
               secondaryUnit: AmountDisplayUnit.btc,
@@ -353,6 +426,8 @@ class AmountWidgetTestCases extends StatelessWidget {
               symbolFiat: "\$",
             ),
             AmountWidget(
+              badgeColor: Colors.amber,
+              envoyAccount: account,
               amountSats: 698197340,
               primaryUnit: AmountDisplayUnit.fiat,
               secondaryUnit: AmountDisplayUnit.btc,
@@ -362,6 +437,8 @@ class AmountWidgetTestCases extends StatelessWidget {
               symbolFiat: "\$",
             ),
             AmountWidget(
+              badgeColor: Colors.amber,
+              envoyAccount: account,
               amountSats: 523722343000,
               primaryUnit: AmountDisplayUnit.fiat,
               secondaryUnit: AmountDisplayUnit.btc,
@@ -371,6 +448,8 @@ class AmountWidgetTestCases extends StatelessWidget {
               symbolFiat: "\$",
             ),
             AmountWidget(
+              badgeColor: Colors.amber,
+              envoyAccount: account,
               amountSats: 512523722000000,
               primaryUnit: AmountDisplayUnit.fiat,
               secondaryUnit: AmountDisplayUnit.btc,
@@ -393,8 +472,28 @@ class AmountWidgetTestnetCases extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(EnvoySpacing.large1),
+    final account = EnvoyAccount(
+        name: "name",
+        color: "color",
+        preferredAddressType: AddressType.p2Sh,
+        seedHasPassphrase: true,
+        index: 0,
+        descriptors: [
+          NgDescriptor(internal: "internal", addressType: AddressType.p2Sh)
+        ],
+        network: Network.testnet4,
+        id: "id",
+        nextAddress: [("p2sh", AddressType.p2Sh)],
+        balance: BigInt.from(0),
+        unlockedBalance: BigInt.from(0),
+        isHot: true,
+        transactions: [],
+        utxo: [],
+        tags: [],
+        xfp: "xfp",
+        externalPublicDescriptors: [(AddressType.p2Sh, "p2sh")]);
+    return Padding(
+      padding: const EdgeInsets.all(EnvoySpacing.large1),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -403,38 +502,38 @@ class AmountWidgetTestnetCases extends StatelessWidget {
             child: Column(
               children: [
                 AmountWidget(
+                  envoyAccount: account,
                   amountSats: 421,
                   primaryUnit: AmountDisplayUnit.btc,
                   style: AmountWidgetStyle.normal,
                   locale: 'en_US',
                   badgeColor: Colors.blue,
-                  network: Network.Testnet,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 AmountWidget(
+                  envoyAccount: account,
                   amountSats: 421,
                   primaryUnit: AmountDisplayUnit.sat,
                   style: AmountWidgetStyle.normal,
                   locale: 'en_US',
                   badgeColor: Colors.blue,
-                  network: Network.Testnet,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 AmountWidget(
+                  envoyAccount: account,
                   amountSats: 421,
                   primaryUnit: AmountDisplayUnit.btc,
                   style: AmountWidgetStyle.singleLine,
                   locale: 'en_US',
                   badgeColor: Color(0xFFBF755F),
-                  network: Network.Testnet,
                 ),
                 AmountWidget(
+                  envoyAccount: account,
                   amountSats: 421,
                   primaryUnit: AmountDisplayUnit.sat,
                   style: AmountWidgetStyle.singleLine,
                   locale: 'en_US',
                   badgeColor: Color(0xFFBF755F),
-                  network: Network.Testnet,
                 ),
               ],
             ),

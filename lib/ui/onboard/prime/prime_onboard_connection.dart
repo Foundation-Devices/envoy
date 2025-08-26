@@ -70,7 +70,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
     });
   }
 
-  _connectBLE() async {
+  Future<void> _connectBLE() async {
     try {
       if (mounted) {
         setState(() {
@@ -100,7 +100,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
           S().onboarding_connectionIntro_checkingDeviceSecurity,
           EnvoyStepState.LOADING);
 
-      await BluetoothManager().sendChallengeMessage();
+      await BluetoothManager().sendSecurityChallengeRequest();
     } catch (e) {
       kPrint(e);
     }

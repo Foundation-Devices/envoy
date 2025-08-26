@@ -33,13 +33,13 @@ class SessionManager with WidgetsBindingObserver {
   SessionManager._internal();
 
   //bind to app lifecycle and navigator
-  bind(NavigatorState router) {
+  void bind(NavigatorState router) {
     _router = router;
     WidgetsBinding.instance.addObserver(this);
   }
 
   //removes app lifecycle observer and navigator
-  remove() {
+  void remove() {
     _router = null;
     _timer?.cancel();
     WidgetsBinding.instance.removeObserver(this);

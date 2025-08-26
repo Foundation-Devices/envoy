@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -54,7 +55,7 @@ void main() {
     var txs =
         await EnvoyStorage().getPendingTxs("account", TransactionType.azteco);
 
-    expect(txs[0].memo, "address");
+    expect(txs[0] is AztecoTransaction, true);
   });
 
   test("Test create voucher from new url format", () async {

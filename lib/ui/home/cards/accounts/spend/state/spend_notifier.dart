@@ -428,7 +428,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     }
   }
 
-  resetBroadcastState() {
+  void resetBroadcastState() {
     state = state.clone()..broadcastProgress = BroadcastProgress.staging;
   }
 
@@ -489,7 +489,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     }
   }
 
-  _updateWithPreparedTransaction(
+  void _updateWithPreparedTransaction(
       DraftTransaction draftTransaction, TransactionParams? params) {
     state = state.clone()
       ..loading = false

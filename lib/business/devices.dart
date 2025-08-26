@@ -4,6 +4,7 @@
 // ignore_for_file: constant_identifier_names
 import 'dart:ui';
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -25,10 +26,13 @@ enum DeviceType {
   const DeviceType(this.id);
 }
 
+enum DeviceColor { light, dark }
+
 @JsonSerializable()
 class Device {
   String name;
   final DeviceType type;
+  final DeviceColor deviceColor;
   final String serial;
   final DateTime datePaired;
   String firmwareVersion;
@@ -38,7 +42,8 @@ class Device {
   final Color color;
 
   Device(this.name, this.type, this.serial, this.datePaired,
-      this.firmwareVersion, this.color);
+      this.firmwareVersion, this.color,
+      {this.deviceColor = DeviceColor.light});
 
   // Serialisation
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);
@@ -77,7 +82,7 @@ class Devices extends ChangeNotifier {
     restore();
   }
 
-  add(Device device) {
+  void add(Device device) {
     for (var currentDevice in devices) {
       // Don't add if device with same serial already present
       if (currentDevice.serial == device.serial) {
@@ -94,16 +99,16 @@ class Devices extends ChangeNotifier {
   }
 
   //ignore:unused_element
-  _clearDevices() {
+  void _clearDevices() {
     _ls.prefs.remove(DEVICES_PREFS);
   }
 
-  storeDevices() {
+  void storeDevices() {
     String json = jsonEncode(devices);
     _ls.prefs.setString(DEVICES_PREFS, json);
   }
 
-  restore() {
+  void restore() {
     devices.clear();
 
     if (_ls.prefs.containsKey(DEVICES_PREFS)) {
@@ -114,13 +119,13 @@ class Devices extends ChangeNotifier {
     }
   }
 
-  renameDevice(Device device, String newName) {
+  void renameDevice(Device device, String newName) {
     device.name = newName;
     storeDevices();
     notifyListeners();
   }
 
-  markDeviceUpdated(int deviceId, String firmwareVersion) {
+  void markDeviceUpdated(int deviceId, String firmwareVersion) {
     for (var device in devices) {
       if (deviceId == device.type.index) {
         device.firmwareVersion = firmwareVersion;
@@ -131,16 +136,20 @@ class Devices extends ChangeNotifier {
     notifyListeners();
   }
 
-  deleteDevice(Device device) {
+  void deleteDevice(Device device) {
     // Delete connected accounts
     NgAccountManager().deleteDeviceAccounts(device);
 
     devices.remove(device);
     storeDevices();
     notifyListeners();
+
+    if (device.type == DeviceType.passportPrime) {
+      BluetoothManager().deleteAllDevices();
+    }
   }
 
-  getDeviceName(String serialNumber) {
+  String getDeviceName(String serialNumber) {
     if (serialNumber == "envoy") {
       return S().accounts_screen_walletType_Envoy;
     }

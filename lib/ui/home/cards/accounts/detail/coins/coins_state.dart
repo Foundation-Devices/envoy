@@ -57,21 +57,21 @@ final coinBlockStateStreamProvider =
 class CoinStateNotifier extends StateNotifier<Set<String>> {
   CoinStateNotifier(super.state);
 
-  add(String coinId) {
+  void add(String coinId) {
     //Creates new state from existing state,
     //this is required for state notifier to notify the state change
     final newState = {...state}..add(coinId);
     state = newState;
   }
 
-  addAll(List<String> coinIds) {
+  void addAll(List<String> coinIds) {
     //Creates new state from existing state,
     //this is required for state notifier to notify the state change
     final newState = {...state}..addAll(coinIds);
     state = newState;
   }
 
-  remove(String coinId) {
+  void remove(String coinId) {
     if (state.contains(coinId)) {
       final newState = {...state}..remove(coinId);
       state = newState;

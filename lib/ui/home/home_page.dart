@@ -297,7 +297,7 @@ class HomePageState extends ConsumerState<HomePage>
     }
   }
 
-  _notifyAboutNewAppVersion(String newVersion) {
+  void _notifyAboutNewAppVersion(String newVersion) {
     if (context.mounted) {
       EnvoyToast(
         backgroundColor: Colors.lightBlue,
@@ -326,7 +326,7 @@ class HomePageState extends ConsumerState<HomePage>
     }
   }
 
-  _notifyAboutTor() {
+  void _notifyAboutTor() {
     if (context.mounted) {
       EnvoyToast(
         backgroundColor: Colors.lightBlue,
@@ -345,7 +345,7 @@ class HomePageState extends ConsumerState<HomePage>
     }
   }
 
-  _notifyAboutFoundationServerDown() {
+  void _notifyAboutFoundationServerDown() {
     if (context.mounted) {
       EnvoyToast(
         backgroundColor: Colors.lightBlue,
@@ -364,7 +364,7 @@ class HomePageState extends ConsumerState<HomePage>
     }
   }
 
-  _displayBackupToast(bool success) {
+  void _displayBackupToast(bool success) {
     if (context.mounted) {
       EnvoyToast(
         backgroundColor: Colors.lightBlue,
@@ -417,7 +417,7 @@ class HomePageState extends ConsumerState<HomePage>
     }
   }
 
-  _notifyAboutHighBalance() {
+  void _notifyAboutHighBalance() {
     NgAccountManager().isAccountBalanceHigherThanUsd1000Stream.close();
     showSecurityDialog(context);
   }

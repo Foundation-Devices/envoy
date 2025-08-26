@@ -82,7 +82,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
                               borderRadius:
                                   BorderRadius.circular(borderRadius)),
                           child: Builder(
-                            builder: this.builder.build,
+                            builder: builder.build,
                           )),
                     ),
                   ),
@@ -101,7 +101,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
   Widget createOverlayBlur() {
     return GestureDetector(
       onTap: () {
-        if (this.dismissible && !this._controller.isAnimating) {
+        if (dismissible && !_controller.isAnimating) {
           navigator?.pop();
         }
       },

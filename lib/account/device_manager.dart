@@ -82,7 +82,7 @@ Future<NgAccountConfig> getPassportAccountFromJson(dynamic json) async {
   return accountConfig;
 }
 
-Device getDeviceFromJson(json) {
+Device getDeviceFromJson(Map<String, dynamic> json) {
   var fwVersion = json["fw_version"].toString();
   var serial = json["serial"].toString();
   String deviceName = json.containsKey("device_name") &&
@@ -106,7 +106,7 @@ Device getDeviceFromJson(json) {
   return device;
 }
 
-Future<NgDescriptor> getWalletFromJson(json) async {
+Future<NgDescriptor> getWalletFromJson(Map<String, dynamic> json) async {
   String scriptType = json["derivation"].contains("86") ? "tr" : "wpkh";
   String xfp = reverseXfpStringEndianness(json["xfp"].toRadixString(16));
   String derivation =

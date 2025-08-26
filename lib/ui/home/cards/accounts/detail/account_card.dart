@@ -27,6 +27,7 @@ import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
@@ -73,7 +74,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
   late EnvoyAccount account;
   late Animation<Alignment> animation;
 
-  _redraw() {
+  void _redraw() {
     setState(() {});
   }
 
@@ -251,7 +252,30 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     child: EnvoyTextButton(
                         label: S().receive_tx_list_receive,
                         onTap: () {
-                          context.go(ROUTE_ACCOUNT_RECEIVE, extra: account.id);
+                          if (accountHasNoTaprootXpub(account)) {
+                            showEnvoyPopUp(
+                              context,
+                              icon: EnvoyIcons.info,
+                              showCloseButton: true,
+                              title: S().taproot_passport_dialog_heading,
+                              S().taproot_passport_dialog_subheading,
+                              S().taproot_passport_dialog_reconnect,
+                              (BuildContext modalContext) {
+                                Navigator.pop(modalContext);
+                                scanForDevice(context);
+                              },
+                              secondaryButtonLabel:
+                                  S().taproot_passport_dialog_later,
+                              onSecondaryButtonTap: (BuildContext context) {
+                                Navigator.pop(context);
+                                context.go(ROUTE_ACCOUNT_RECEIVE,
+                                    extra: account.id);
+                              },
+                            );
+                          } else {
+                            context.go(ROUTE_ACCOUNT_RECEIVE,
+                                extra: account.id);
+                          }
                         }),
                   ),
                 ),
@@ -765,8 +789,31 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
             style: const TextStyle(color: Colors.white),
           ),
           onTap: () {
-            HomePageState.of(context)?.toggleOptions();
-            context.go(ROUTE_ACCOUNT_DESCRIPTOR, extra: widget.account.id);
+            if (accountHasNoTaprootXpub(widget.account)) {
+              showEnvoyPopUp(
+                context,
+                icon: EnvoyIcons.info,
+                showCloseButton: true,
+                title: S().taproot_passport_dialog_heading,
+                S().taproot_passport_dialog_subheading,
+                S().taproot_passport_dialog_reconnect,
+                (BuildContext modalContext) {
+                  Navigator.pop(modalContext);
+                  HomePageState.of(context)?.toggleOptions();
+                  scanForDevice(context);
+                },
+                secondaryButtonLabel: S().taproot_passport_dialog_later,
+                onSecondaryButtonTap: (BuildContext modalContext) {
+                  Navigator.pop(modalContext);
+                  HomePageState.of(context)?.toggleOptions();
+                  context.go(ROUTE_ACCOUNT_DESCRIPTOR,
+                      extra: widget.account.id);
+                },
+              );
+            } else {
+              HomePageState.of(context)?.toggleOptions();
+              context.go(ROUTE_ACCOUNT_DESCRIPTOR, extra: widget.account.id);
+            }
           },
         ),
         const SizedBox(
@@ -871,4 +918,11 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
       ],
     );
   }
+}
+
+bool accountHasNoTaprootXpub(EnvoyAccount account) {
+  final hasTaproot = account.externalPublicDescriptors.any(
+    (pair) => pair.$1 == AddressType.p2Tr && pair.$2.isNotEmpty,
+  );
+  return !hasTaproot;
 }
