@@ -257,15 +257,14 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: EnvoySpacing.large3),
+                  padding: const EdgeInsets.only(
+                      bottom: EnvoySpacing.medium1, top: EnvoySpacing.large2),
                   child: Container(
                     constraints:
-                        BoxConstraints.tight(const Size.fromHeight(150)),
+                        BoxConstraints.tight(const Size.fromHeight(184)),
                     child: Image.asset(
-                      "assets/exclamation_icon.png",
-                      height: 150,
-                      width: 150,
+                      "assets/images/onboarding_info.png",
+                      height: 184,
                     ),
                   ),
                 ),
