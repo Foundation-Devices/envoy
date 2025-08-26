@@ -59,9 +59,6 @@ final spendFeeRateProvider = StateProvider<num>((ref) {
   return Fees().slowRate(account.network);
 });
 
-final spendFeeRateBlockEstimationProvider =
-    StateProvider<num>((ref) => ref.read(spendFeeRateProvider));
-
 ///returns estimated block time for the transaction
 ///TODO: implement better mempool estimation
 final spendEstimatedBlockTimeProvider = Provider<String>((ref) {
