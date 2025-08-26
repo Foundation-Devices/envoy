@@ -3,8 +3,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
@@ -33,10 +35,23 @@ class AddressCard extends ConsumerStatefulWidget {
 class _AddressCardState extends ConsumerState<AddressCard> {
   @override
   Widget build(BuildContext context) {
-    final address = ref
-            .watch(accountStateProvider(widget.account.id))
-            ?.getPreferredAddress() ??
-        "";
+    final account = ref.watch(accountStateProvider(widget.account.id));
+    String address = "";
+    final isTaprootEnabled = Settings().enableTaprootSetting == true;
+    final noTaprootXpub = accountHasNoTaprootXpub(account!);
+
+    if (isTaprootEnabled && noTaprootXpub) {
+      final segwitAddressRecord = account.nextAddress.firstWhere(
+        (record) => record.$2 == AddressType.p2Wpkh, // native SegWit
+        orElse: () => ('', AddressType.p2Wpkh),
+      );
+
+      address = segwitAddressRecord.$1;
+    } else {
+      // Normal case: get preferred address
+      address = account.getPreferredAddress();
+    }
+
     return Padding(
       padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
       child:
