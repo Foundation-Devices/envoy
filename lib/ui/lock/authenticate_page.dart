@@ -118,30 +118,37 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
         ));
   }
 
-  void initiateAuth() async {
+  Future<void> initiateAuth() async {
     final LocalAuthentication auth = LocalAuthentication();
     final List<BiometricType> availableBiometrics =
         await auth.getAvailableBiometrics();
+
+    // extracted helper: handles what to do after successful authentication
+    Future<void> handlePostAuth({required bool stickyAuth}) async {
+      if (stickyAuth && Platform.isIOS) {
+        await Future.delayed(const Duration(milliseconds: 800));
+      }
+
+      if (widget.sessionAuthenticate &&
+          mainNavigatorKey.currentState?.mounted == true) {
+        mainNavigatorKey.currentState!.pop();
+      } else {
+        runApp(const EnvoyApp());
+      }
+    }
+
     if (availableBiometrics.isNotEmpty) {
       try {
         final bool didAuthenticate = await auth.authenticate(
-            options: const AuthenticationOptions(
-              biometricOnly: true,
-              stickyAuth: true,
-            ),
+          options: const AuthenticationOptions(
+            biometricOnly: true,
+            stickyAuth: true,
+          ),
+          localizedReason: 'Authenticate to Access Envoy',
+        );
 
-            ///TODO: localize this
-            localizedReason: 'Authenticate to Access Envoy');
         if (didAuthenticate) {
-          if (Platform.isIOS) {
-            await Future.delayed(const Duration(milliseconds: 800));
-          }
-          if (widget.sessionAuthenticate &&
-              mainNavigatorKey.currentState?.mounted) {
-            mainNavigatorKey.currentState?.pop();
-          } else {
-            runApp(const EnvoyApp());
-          }
+          await handlePostAuth(stickyAuth: true);
           return;
         } else {
           showAuthLockedOutDialog(
@@ -207,18 +214,15 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
     } else {
       ///Authenticate without biometrics
       final bool didAuthenticate = await auth.authenticate(
-          options: const AuthenticationOptions(
-            biometricOnly: false,
-            stickyAuth: true,
-          ),
-          localizedReason: 'Authenticate to Access Envoy');
+        options: const AuthenticationOptions(
+          biometricOnly: false,
+          stickyAuth: true,
+        ),
+        localizedReason: 'Authenticate to Access Envoy',
+      );
+
       if (didAuthenticate) {
-        if (widget.sessionAuthenticate &&
-            mainNavigatorKey.currentState?.mounted) {
-          mainNavigatorKey.currentState?.pop();
-        } else {
-          runApp(const EnvoyApp());
-        }
+        await handlePostAuth(stickyAuth: false);
         return;
       } else {
         showAuthLockedOutDialog(
