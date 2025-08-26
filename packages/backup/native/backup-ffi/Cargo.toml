@@ -19,7 +19,7 @@ reqwest = { version = "0.11.14", features = ["blocking", "json", "native-tls-ven
 effort = { git = "https://github.com/Foundation-Devices/effort", rev = "c6846ae8c31d2fd13b3733c0e76e9866dea9c35c" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-tokio = { version = "1.46", features = ["full"] }
+tokio = { version = "1", features = ["full"] }
 bdk = { version = "0.28.0", features = ["keys-bip39"] }
 log ="0.4.14"
 lazy_static = "1.4"
