@@ -14,6 +14,8 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:ngwallet/ngwallet.dart';
 
+const bool isTest = bool.fromEnvironment('IS_TEST', defaultValue: true);
+
 sealed class WalletProgress {}
 
 class Scanning extends WalletProgress {
@@ -70,7 +72,10 @@ class SyncManager {
         return;
       }
       _syncAll();
-      dumpProgress();
+
+      if (!isTest) {
+        dumpProgress();
+      }
     });
   }
 
