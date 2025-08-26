@@ -60,7 +60,7 @@ class FeedManager {
     );
   }
 
-  _addVideosFromVimeo() async {
+  Future<void> _addVideosFromVimeo() async {
     try {
       List<Video> currentVideos = [];
 
@@ -157,7 +157,7 @@ class FeedManager {
     return currentVideos;
   }
 
-  _addBlogPostsFromRssFeed(RssFeed feed) async {
+  Future<void> _addBlogPostsFromRssFeed(RssFeed feed) async {
     List<BlogPost> currentBlogPosts = [];
 
     for (RssItem item in feed.items!) {
@@ -195,15 +195,15 @@ class FeedManager {
     updateBlogPosts(currentBlogPosts);
   }
 
-  _dropVideos() {
+  void _dropVideos() {
     videos.clear();
   }
 
-  _dropBlogs() {
+  void _dropBlogs() {
     blogs.clear();
   }
 
-  _restoreVideos() async {
+  Future<void> _restoreVideos() async {
     _dropVideos();
 
     var storedVideos = await EnvoyStorage().getAllVideos();
@@ -212,7 +212,7 @@ class FeedManager {
     }
   }
 
-  _restoreBlogs() async {
+  Future<void> _restoreBlogs() async {
     _dropBlogs();
 
     var storedBlogs = await EnvoyStorage().getAllBlogPosts();
@@ -221,7 +221,7 @@ class FeedManager {
     }
   }
 
-  updateVideos(List<Video> currentVideos) async {
+  Future<void> updateVideos(List<Video> currentVideos) async {
     for (var video in currentVideos) {
       for (var storedVideo in videos) {
         if (video.url == storedVideo.url && storedVideo.watched != null) {
@@ -237,7 +237,7 @@ class FeedManager {
     storeVideos();
   }
 
-  updateBlogPosts(List<BlogPost> currentBlogPosts) async {
+  Future<void> updateBlogPosts(List<BlogPost> currentBlogPosts) async {
     for (var blog in currentBlogPosts) {
       for (var storedBlogPosts in blogs) {
         if (blog.url == storedBlogPosts.url && storedBlogPosts.read != null) {
@@ -254,13 +254,13 @@ class FeedManager {
     storeBlogPosts();
   }
 
-  storeVideos() {
+  void storeVideos() {
     for (var video in videos) {
       EnvoyStorage().insertVideo(video);
     }
   }
 
-  storeBlogPosts() {
+  void storeBlogPosts() {
     for (var blog in blogs) {
       EnvoyStorage().insertBlogPost(blog);
     }

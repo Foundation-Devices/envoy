@@ -194,7 +194,7 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                             .onboarding_welcome_setUpPassport,
                                         onTap: () {
                                           try {
-                                            _scanForDevice(context);
+                                            scanForDevice(context);
                                           } catch (e) {
                                             kPrint(e);
                                           }
@@ -220,43 +220,43 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
       ),
     );
   }
+}
 
-  void _scanForDevice(BuildContext context) {
-    showScannerDialog(
-        context: context,
-        onBackPressed: (context) {
-          Navigator.pop(context);
+void scanForDevice(BuildContext context) {
+  showScannerDialog(
+      context: context,
+      onBackPressed: (context) {
+        Navigator.pop(context);
+      },
+      decoder: DeviceDecoder(pairPayloadDecoder: PairPayloadDecoder(
+        onScan: (binary) {
+          addPassportAccount(binary, context);
         },
-        decoder: DeviceDecoder(pairPayloadDecoder: PairPayloadDecoder(
-          onScan: (binary) {
-            addPassportAccount(binary, context);
-          },
-        ), onScan: (String payload) {
-          Navigator.pop(context);
-          final uri = Uri.parse(payload);
-          final params = uri.queryParameters;
-          if (params.containsKey("p")) {
-            context.pushNamed(ONBOARD_PRIME, queryParameters: params);
-          } else if (params.containsKey("t")) {
-            context.goNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
-          } else {
-            EnvoyToast(
-              replaceExisting: true,
-              duration: const Duration(seconds: 6),
-              message: "Invalid QR code",
-              isDismissible: true,
-              onActionTap: () {
-                EnvoyToast.dismissPreviousToasts(context);
-              },
-              icon: const Icon(
-                Icons.info_outline,
-                color: EnvoyColors.accentPrimary,
-              ),
-            ).show(context);
-          }
-        }),
-        child: LegacyFirmwareAlert());
-  }
+      ), onScan: (String payload) {
+        Navigator.pop(context);
+        final uri = Uri.parse(payload);
+        final params = uri.queryParameters;
+        if (params.containsKey("p")) {
+          context.pushNamed(ONBOARD_PRIME, queryParameters: params);
+        } else if (params.containsKey("t")) {
+          context.goNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
+        } else {
+          EnvoyToast(
+            replaceExisting: true,
+            duration: const Duration(seconds: 6),
+            message: "Invalid QR code",
+            isDismissible: true,
+            onActionTap: () {
+              EnvoyToast.dismissPreviousToasts(context);
+            },
+            icon: const Icon(
+              Icons.info_outline,
+              color: EnvoyColors.accentPrimary,
+            ),
+          ).show(context);
+        }
+      }),
+      child: LegacyFirmwareAlert());
 }
 
 void addPassportAccount(Binary binary, BuildContext context) async {

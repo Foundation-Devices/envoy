@@ -5,7 +5,6 @@
 import 'dart:io';
 
 import 'package:envoy/main.dart';
-import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -16,6 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'util.dart';
 
 Future<void> main() async {
@@ -114,8 +114,9 @@ Future<void> main() async {
 
       await pressHamburgerMenu(tester);
       await goToAbout(tester);
-
-      final appVersion = find.text('2.0.2');
+      final version = await PackageInfo.fromPlatform();
+      final appVersion =
+          find.text("${version.version} (${version.buildNumber})");
       expect(appVersion, findsOneWidget);
 
       final showButton = find.text('Show');
@@ -582,8 +583,9 @@ Future<void> main() async {
 
       /// in Send
       await findAndPressTextButton(tester, 'Send');
-      // press the widget so it can circle to Sats
-      //   await findAndPressWidget<AmountDisplay>(tester);
+
+      /// Check if you are entering sats
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
@@ -627,8 +629,8 @@ Future<void> main() async {
       }
     });
     testWidgets('<Test send to all address types>', (tester) async {
-      await checkSync(tester);
       await goBackHome(tester);
+      await checkSync(tester);
       await disableAllNetworks(tester);
 
       final walletWithBalance = find.text("GH TEST ACC (#1)");
@@ -641,6 +643,9 @@ Future<void> main() async {
       expect(sendButtonFinder, findsWidgets);
       await tester.tap(sendButtonFinder.last);
       await tester.pump(Durations.long2);
+
+      /// Check if you are entering sats
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
 
       // enter amount
       await findAndPressTextButton(tester, '1');
@@ -662,9 +667,8 @@ Future<void> main() async {
       await trySendToAddress(tester, p2trAddress);
     });
     testWidgets('<BTC/sats in App>', (tester) async {
-      await checkSync(tester);
-
       await goBackHome(tester);
+      await checkSync(tester);
 
       String someValidSignetReceiveAddress =
           'tb1plhv9qthzz4trg5te27ulz6k8y46jd84azhe5fdmu6kehl9xwpp8qum6h3a';
@@ -684,7 +688,7 @@ Future<void> main() async {
       bool isSettingsViewSatsSwitchOn =
           await isSlideSwitchOn(tester, 'View Amount in Sats');
       if (isSettingsViewSatsSwitchOn) {
-        // find And Toggle DisplayFiat Switch
+        // turn it off
         await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
       }
 
@@ -733,14 +737,14 @@ Future<void> main() async {
       await findFirstTextButtonAndPress(tester, 'Signet');
       await findAndPressTextButton(tester, 'Send');
 
+      /// This is not important anymore because of the new sendUnit (depending on the last Send selection)?
       /// Make sure the first proposed unit is BTC
       // function is checking icons from top to bottom so the first icon in Send needs to be BTC
-      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
+      // await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       /// Tap the BTC number in the send screen until you get to fiat (you might need to enable fiat from settings first)
-      // press the widget two times so it can circle to BTC
-      await findAndPressWidget<AmountDisplay>(tester);
-      await findAndPressWidget<AmountDisplay>(tester);
+      // circle to BTC
+      await cycleToEnvoyIcon(tester, EnvoyIcons.btc);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
@@ -751,8 +755,7 @@ Future<void> main() async {
       await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       // switch to SATS for easy input
-      await findAndPressWidget<AmountDisplay>(tester);
-      await tester.pump(Durations.long2);
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
 
       /// With the unit in SATS, paste a valid address, enter a valid amount, tap continue
       await enterTextInField(
@@ -766,7 +769,7 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
 
       // switch back to BTC
-      await findAndPressWidget<AmountDisplay>(tester);
+      await cycleToEnvoyIcon(tester, EnvoyIcons.btc);
 
       // go to staging
       await waitForTealTextAndTap(tester, 'Confirm');
@@ -826,23 +829,25 @@ Future<void> main() async {
       await findFirstTextButtonAndPress(tester, 'Signet');
       await findAndPressTextButton(tester, 'Send');
 
-      /// Make sure the first proposed unit is sats
-      // function is checking icons from top to bottom so the first icon in Send needs to be sats
-      await checkForEnvoyIcon(tester, EnvoyIcons.sats);
+      /// Make sure the first proposed unit is BTC (last selected in send was BTC)
+      // function is checking icons from top to bottom so the first icon in Send needs to be BTC
+      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
         await findTextOnScreen(tester, "\$");
       }
 
-      ///  Check that the number below the fiat is displayed in sats
-      await checkForEnvoyIcon(tester, EnvoyIcons.sats);
+      ///  Check that the number below the fiat is displayed in btc
+      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
-      /// With the unit in sats, paste a valid address, enter a valid amount, tap continue
+      /// With the unit in BTC, paste a valid address, enter a valid amount, tap continue
       await enterTextInField(
           tester, find.byType(TextFormField), someValidSignetReceiveAddress);
 
       // enter amount in SATS
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
+
       // This can fail if the fee is too high (small total amount) !!!
       await findAndPressTextButton(tester, '5');
       await findAndPressTextButton(tester, '6');
@@ -942,43 +947,61 @@ Future<void> main() async {
       if (taprootAlreadyEnabled) {
         // Disable it
         await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
+        await tester.pump(Durations.extralong4);
+        await tester.pump();
         await findAndPressTextButton(tester, "Confirm");
+        await tester.pump(Durations.extralong4);
+        await tester.pump();
       }
-      await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
-      await tester.pump(Durations.long2);
-      final confirmTextFromDialog = find.text('Confirm');
+      await findAndToggleSettingsSwitch(
+          tester, "Receive to Taproot"); //enable it
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
 
+      final confirmTextFromDialog = find.text('Confirm');
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       // Check that a pop up comes up
       await tester.pumpUntilFound(confirmTextFromDialog,
-          duration: Durations.long1);
-
+          duration: Durations.extralong4);
+      await tester.pump();
       await tester.tap(confirmTextFromDialog);
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       // Check that a pop up closed
       expect(confirmTextFromDialog, findsNothing);
+
       await findAndToggleSettingsSwitch(
-          tester, "Receive to Taproot"); // Disable
+          tester, "Receive to Taproot"); // disable
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       await tester.tap(confirmTextFromDialog);
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+
       await findAndToggleSettingsSwitch(
-          tester, "Receive to Taproot"); // Enable again
+          tester, "Receive to Taproot"); // enable again
 
       // Check that a pop up comes up
       expect(confirmTextFromDialog, findsOneWidget);
       await tester.tap(confirmTextFromDialog);
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       // Check that a pop up closed
       expect(confirmTextFromDialog, findsNothing);
 
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
+
       await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
       await findAndPressTextButton(tester, "Receive");
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
 
       // copy Taproot address
       final address1 = await getAddressFromReceiveScreen(tester);
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       expect(address1.startsWith('bc1p'), isTrue,
           reason:
               'The first address should be a Taproot address starting with bc1p');
@@ -1001,7 +1024,8 @@ Future<void> main() async {
 
       // Grab the second address
       final address2 = await getAddressFromReceiveScreen(tester);
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       expect(address2.startsWith('bc1q'), isTrue,
           reason:
               'The second address should be a non-Taproot address starting with bc1q');
@@ -1609,7 +1633,8 @@ Future<void> main() async {
       bool torIsConnected =
           await checkTorShieldIcon(tester, expectPrivacy: true);
 
-      expect(torIsConnected, isTrue);
+      expect(torIsConnected, isTrue,
+          reason: 'Tor should be connected, but it is not.');
 
       /// Open Envoy settings, enable fiat
       await pressHamburgerMenu(tester);

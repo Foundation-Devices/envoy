@@ -146,7 +146,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     _stateMachineController?.findInput<bool>("unhappy")?.change(false);
   }
 
-  _onRiveInit(Artboard artBoard) {
+  Future<void> _onRiveInit(Artboard artBoard) async {
     _stateMachineController =
         StateMachineController.fromArtboard(artBoard, 'STM');
     artBoard.addController(_stateMachineController!);

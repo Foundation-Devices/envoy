@@ -6,7 +6,6 @@ use crate::frb_generated::StreamSink;
 use anyhow::Result;
 use btleplug::api::{Characteristic, ValueNotification, WriteType};
 use btleplug::{api::Peripheral as _, platform::PeripheralId};
-use flutter_rust_bridge::frb;
 use futures::Stream;
 use log::debug;
 use std::pin::Pin;
@@ -21,7 +20,7 @@ pub const APP_MTU: usize = 240;
 
 /// Wrapper struct around btleplug::platform::Peripheral that adds the last_seen variable.
 ///
-#[frb(ignore)]
+/// flutter_rust_bridge:ignore
 #[derive(Debug, Clone)]
 pub struct Device {
     pub peripheral: btleplug::platform::Peripheral,
@@ -31,7 +30,7 @@ pub struct Device {
 }
 
 impl Device {
-    #[frb(ignore)]
+    /// flutter_rust_bridge:ignore
     pub fn new(peripheral: btleplug::platform::Peripheral) -> Device {
         Self {
             peripheral,
@@ -40,7 +39,7 @@ impl Device {
         }
     }
 
-    #[frb(ignore)]
+    /// flutter_rust_bridge:ignore
     pub fn id(&self) -> PeripheralId {
         self.peripheral.id()
     }

@@ -8,6 +8,7 @@ import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/main.dart';
+import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/big_tab.dart';
@@ -28,6 +29,7 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
@@ -138,6 +140,44 @@ Future<void> setUpAppFromStart(WidgetTester tester) async {
       tries: 500, duration: Durations.long2);
 }
 
+/// Check if you are entering sats/btc/fiat over the given icon in Send
+Future<void> cycleToEnvoyIcon(
+  WidgetTester tester,
+  EnvoyIcons targetIcon, {
+  int maxAttempts = 20,
+}) async {
+  int attempt = 0;
+
+  while (true) {
+    await tester.pump(Durations.long2);
+    await tester.pump();
+
+    final iconFinder = await checkForEnvoyIcon(tester, targetIcon);
+    final iconCount = iconFinder.evaluate().length;
+
+    if (iconCount >= 2) {
+      // Successfully found at least 2 icons — break the loop
+      break;
+    }
+
+    if (attempt >= maxAttempts) {
+      throw Exception(
+        'Failed to find 2 instances of $targetIcon after $maxAttempts attempts.',
+      );
+    }
+
+    final amountFinder = find.byType(AmountDisplay);
+    if (amountFinder.evaluate().isEmpty) {
+      throw Exception('AmountDisplay widget not found on attempt $attempt.');
+    }
+
+    await tester.tap(amountFinder);
+    await tester.pump(Durations.long2);
+
+    attempt++;
+  }
+}
+
 /// Send money
 Future<void> sendFromBaseWallet(
   WidgetTester tester,
@@ -158,6 +198,9 @@ Future<void> sendFromBaseWallet(
 
   /// SEND some money to hot signet wallet
   await enterTextInField(tester, find.byType(TextFormField), hotSignetAddress);
+
+  /// Check if you are entering sats
+  await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
 
   // enter amount
   await findAndPressTextButton(tester, '5');
@@ -253,6 +296,9 @@ Future<String?> findSymbolOnScreen(
 }
 
 Future<void> pressHamburgerMenu(WidgetTester tester) async {
+  await tester.pump(Durations.extralong4);
+  await tester.pump();
+
   // check if the toast pop-up is there before pressing on to the tob bar
   await checkForToast(tester);
   // go with top bar hamburger button
@@ -260,7 +306,7 @@ Future<void> pressHamburgerMenu(WidgetTester tester) async {
   expect(hamburgerIcon, findsOneWidget);
 
   await tester.tap(hamburgerIcon, warnIfMissed: false);
-  await tester.pump(Durations.long2);
+  await tester.pump(Durations.extralong4);
 }
 
 Future<void> goToSettings(WidgetTester tester) async {
@@ -269,7 +315,8 @@ Future<void> goToSettings(WidgetTester tester) async {
   expect(settingsButton, findsOneWidget);
 
   await tester.tap(settingsButton);
-  await tester.pump(Durations.long2);
+  await tester.pump(Durations.extralong4);
+  await tester.pump();
 }
 
 Future<String?> findCurrentFiatInSettings(WidgetTester tester) async {
@@ -317,6 +364,8 @@ Future<void> findAndToggleSettingsSwitch(
   final switchFinder =
       find.descendant(of: listTileFinder, matching: find.byType(SettingToggle));
   expect(switchFinder, findsOneWidget);
+  await tester.pump(Durations.long2);
+  await tester.pump();
 
   // Tap the switch to toggle it
   await tester.tap(switchFinder);
@@ -548,20 +597,22 @@ Future<void> setUpWalletFromSeedViaBackupFile(
   await tester.pump(Durations.long2);
   expect(continueButtonFinder, findsOneWidget);
   await tester.tap(continueButtonFinder);
-  await tester.pump(Durations.long2);
-  await tester.pump(Durations.long2);
+  await tester.pump(Durations.extralong4);
 
   // testnet4, signet, unified address - modals
   if (find.text('Introducing testnet4').evaluate().isNotEmpty) {
     await findAndTapPopUpText(tester, 'Confirm');
+    await tester.pump(Durations.extralong4);
   }
 
   if (find.text('Global Signet').evaluate().isNotEmpty) {
     await findAndTapPopUpText(tester, 'Confirm');
+    await tester.pump(Durations.extralong4);
   }
 
   if (find.text('Unified Address Types').evaluate().isNotEmpty) {
     await findAndTapPopUpText(tester, 'Confirm');
+    await tester.pump(Durations.extralong4);
   }
 
   // Scroll down by 600 pixels
@@ -939,11 +990,27 @@ Future<void> findAndPressFirstEnvoyIcon(
 }
 
 Future<Finder> checkForEnvoyIcon(
-    WidgetTester tester, EnvoyIcons expectedIcon) async {
+  WidgetTester tester,
+  EnvoyIcons expectedIcon,
+) async {
+  /// This is for icons with a badge or icons buried in a stack !!!!
+  final assetPath = "assets/components/icons/${expectedIcon.name}.svg";
+
   final iconFinder = find.byWidgetPredicate(
-    (widget) => widget is EnvoyIcon && widget.icon == expectedIcon,
+    (widget) =>
+        widget is SvgPicture &&
+        widget.bytesLoader is SvgAssetLoader &&
+        (widget.bytesLoader as SvgAssetLoader).assetName == assetPath,
+    description: 'SvgPicture with asset $assetPath',
   );
-  await tester.pumpUntilFound(iconFinder, tries: 20, duration: Durations.long2);
+
+  await tester.pump();
+
+  await tester.pumpUntilFound(
+    iconFinder,
+    tries: 20,
+    duration: Durations.long2,
+  );
 
   return iconFinder;
 }
@@ -982,7 +1049,8 @@ Future<void> findAndPressTextButton(
 
 Future<void> findFirstTextButtonAndPress(
     WidgetTester tester, String buttonText) async {
-  await tester.pump(Durations.long2);
+  await tester.pump(Durations.extralong4);
+  await tester.pump();
 
   // Find all widgets that match the text
   final textButtons = find.text(buttonText);
@@ -992,7 +1060,8 @@ Future<void> findFirstTextButtonAndPress(
 
   // Tap the first widget that matches
   await tester.tap(textButtons.first);
-  await tester.pump(Durations.long2);
+  await tester.pump(Durations.extralong4);
+  await tester.pump();
 }
 
 Future<void> findAndPressWidget<T extends Widget>(
@@ -1032,6 +1101,8 @@ Future<String> getAddressFromReceiveScreen(WidgetTester tester) async {
 
   final textSpan = richTextWidget.text as TextSpan;
   final address = extractTextFromTextSpan(textSpan);
+  await tester.pump(Durations.extralong4);
+  await tester.pump();
 
   return address.trim();
 }
@@ -1269,7 +1340,8 @@ Future<void> openAdvancedMenu(WidgetTester tester) async {
   expect(advancedButton, findsOneWidget);
 
   await tester.tap(advancedButton);
-  await tester.pump(Durations.long2);
+  await tester.pump(Durations.extralong4);
+  await tester.pump();
 }
 
 Future<void> findAndTapCoinLockButton(WidgetTester tester) async {

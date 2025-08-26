@@ -316,34 +316,40 @@ class NgAccountManager extends ChangeNotifier {
 
   Future<bool> checkIfWalletFromSeedExists(String seed,
       {String? passphrase, required Network network}) async {
-    final descriptors = await EnvoyBip39.deriveDescriptorFromSeed(
-        seedWords: seed, network: network, passphrase: passphrase);
-    final fingerPrint = getFingerprint(descriptors
-        .firstWhere((element) => element.addressType == AddressType.p2Wpkh)
-        .externalPubDescriptor);
-    if (fingerPrint == null) {
-      EnvoyReport().log("Accounts", "Invalid fingerprint $fingerPrint");
+    try {
+      final descriptors = await EnvoyBip39.deriveDescriptorFromSeed(
+          seedWords: seed, network: network, passphrase: passphrase);
+      final fingerPrint = getFingerprint(descriptors
+          .firstWhere((element) => element.addressType == AddressType.p2Wpkh)
+          .externalPubDescriptor);
+      if (fingerPrint == null) {
+        EnvoyReport().log("Accounts", "Invalid fingerprint $fingerPrint");
+        return false;
+      }
+      var dir = NgAccountManager.getAccountDirectory(
+          deviceSerial: "envoy",
+          network: network.toString(),
+          number: 0,
+          fingerprint: fingerPrint);
+      if (await dir.exists()) {
+        final files = dir.listSync();
+        bool hasP2tr = files
+            .any((file) => file.path.toLowerCase().endsWith('p2tr.sqlite'));
+        bool hasP2wpkh = files
+            .any((file) => file.path.toLowerCase().endsWith('p2wpkh.sqlite'));
+        if (hasP2tr || hasP2wpkh) {
+          return true;
+        }
+      }
+      return false;
+    } catch (e) {
+      EnvoyReport().log("Accounts", "Failed to check wallet existence: $e");
       return false;
     }
-    var dir = NgAccountManager.getAccountDirectory(
-        deviceSerial: "envoy",
-        network: network.toString(),
-        number: 0,
-        fingerprint: fingerPrint);
-    if (await dir.exists()) {
-      final files = dir.listSync();
-      bool hasP2tr =
-          files.any((file) => file.path.toLowerCase().endsWith('p2tr.sqlite'));
-      bool hasP2wpkh = files
-          .any((file) => file.path.toLowerCase().endsWith('p2wpkh.sqlite'));
-      if (hasP2tr || hasP2wpkh) {
-        return true;
-      }
-    }
-    return false;
   }
 
-  addAccount(EnvoyAccount state, EnvoyAccountHandler handler) async {
+  Future<void> addAccount(
+      EnvoyAccount state, EnvoyAccountHandler handler) async {
     if (_accountsHandler.any((element) => element.$1.id == state.id)) {
       return;
     }
@@ -414,7 +420,7 @@ class NgAccountManager extends ChangeNotifier {
     }
   }
 
-  notifyIfAccountBalanceHigherThanUsd1000() {
+  void notifyIfAccountBalanceHigherThanUsd1000() {
     for (var account in accounts) {
       if (account.isHot && account.network == Network.bitcoin) {
         var amountUSD = ExchangeRate().getUsdValue(account.balance.toInt());
@@ -490,10 +496,10 @@ class NgAccountManager extends ChangeNotifier {
         customMimeType: 'application/jsonl',
         name: 'bip329_export',
         bytes: fileContentBytes,
-        ext: 'jsonl');
+        fileExtension: 'jsonl');
   }
 
-  EnvoyAccount? getHotWalletAccount({network = Network.bitcoin}) {
+  EnvoyAccount? getHotWalletAccount({Network network = Network.bitcoin}) {
     return accounts.firstWhereOrNull(
         (element) => element.isHot && element.network == network);
   }
@@ -612,10 +618,10 @@ class NgAccountManager extends ChangeNotifier {
   }
 }
 
-List<EnvoyAccount> sortByAccountOrder<EnvoyAccount>(
-  List<EnvoyAccount> list,
+List<T> sortByAccountOrder<T>(
+  List<T> list,
   List<String> order,
-  String Function(EnvoyAccount item) getId,
+  String Function(T item) getId,
 ) {
   list.sort((a, b) {
     final aIndex = order.indexOf(getId(a));

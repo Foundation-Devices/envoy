@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/util/console.dart';
@@ -11,6 +12,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/scheduler.dart';
+
+typedef PatchBinary = ({Uint8List binary, PrimePatch patch});
 
 class Server {
   HttpTor? http;
@@ -30,6 +33,62 @@ class Server {
     } else {
       throw Exception('Failed to find firmware');
     }
+  }
+
+  Future<List<PrimePatch>> fetchPrimePatches(String currentVersion) async {
+    final response = await http!
+        .get('$_serverAddress/prime/patches?version=$currentVersion');
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> json = jsonDecode(response.body);
+
+      if (json['patches'] == null) {
+        return [];
+      }
+
+      final List<dynamic> patches = json['patches'];
+
+      final List<PrimePatch> updates = [];
+      for (final patch in patches) {
+        updates.add(PrimePatch.fromJson(patch));
+      }
+
+      return updates;
+    } else {
+      throw Exception('Failed to fetch update chain');
+    }
+  }
+
+  Future<Uint8List> fetchPrimePatchBinary(PrimePatch patch) async {
+    final response = await http!.get(patch.url);
+    if (response.statusCode == 200) {
+      return Uint8List.fromList(response.bodyBytes);
+    } else {
+      throw Exception('Failed to fetch prime patch');
+    }
+  }
+
+  Future<List<PatchBinary>> fetchPrimePatchBinaries(
+      String currentVersion) async {
+    List<PatchBinary> result = [];
+
+    try {
+      final patches = await fetchPrimePatches(currentVersion);
+      for (final patch in patches) {
+        final response = await http!.get(patch.url);
+        if (response.statusCode == 200) {
+          PatchBinary patchBinary =
+              (binary: Uint8List.fromList(response.bodyBytes), patch: patch);
+          result.add(patchBinary);
+        } else {
+          throw Exception('Failed to fetch prime patch');
+        }
+      }
+    } catch (e) {
+      kPrint("Error fetching prime patches: $e");
+    }
+
+    return result;
   }
 
   Future<ApiKeys> fetchApiKeys() async {
@@ -70,6 +129,48 @@ class Server {
     } catch (e) {
       kPrint("Error checking for force update: $e");
     }
+  }
+}
+
+class PrimePatch {
+  final String version;
+  final String baseVersion;
+  final String signedSha256;
+  final String unsignedSha256;
+  final String updateFilename;
+  final String signatureFilename;
+  final String url;
+  final String changelog;
+  final String description;
+  final DateTime releaseDate;
+
+  PrimePatch({
+    required this.version,
+    required this.baseVersion,
+    required this.signedSha256,
+    required this.unsignedSha256,
+    required this.updateFilename,
+    required this.signatureFilename,
+    required this.url,
+    required this.changelog,
+    required this.description,
+    required this.releaseDate,
+  });
+
+  factory PrimePatch.fromJson(Map<String, dynamic> json) {
+    return PrimePatch(
+        version: json['version'],
+        baseVersion: json['base_version'],
+        signedSha256: json['signed_sha256'],
+        unsignedSha256: json['unsigned_sha256'],
+        updateFilename: json['update_filename'],
+        signatureFilename: json['signature_filename'],
+        url: json['url'],
+        changelog: json['changelog'],
+        description: json['description'],
+        releaseDate: DateTime.parse(
+          (json['release_date']),
+        ));
   }
 }
 

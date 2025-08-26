@@ -120,13 +120,13 @@ impl From<Error> for BroadcastError {
                 BroadcastError::Message(format!("Error during the deserialization of a response from the server: {}", e.clone().take()))
             }
             Error::Message(e) => {
-                BroadcastError::Message(format!("{}", e))
+                BroadcastError::Message(e.to_string())
             }
             Error::InvalidDNSNameError(domain) => {
                 BroadcastError::Message(format!("Invalid domain name {} not matching SSL certificate", domain))
             }
             Error::MissingDomain => {
-                BroadcastError::Message(format!("Missing domain while it was explicitly asked to validate it"))
+                BroadcastError::Message("Missing domain while it was explicitly asked to validate it".to_string())
             }
             Error::AllAttemptsErrored(errors) => {
                 BroadcastError::Message(format!("Made one or multiple attempts, all errored: {:?}", errors))

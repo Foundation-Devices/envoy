@@ -15,6 +15,8 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:ngwallet/ngwallet.dart';
 
+const bool isTest = bool.fromEnvironment('IS_TEST', defaultValue: true);
+
 sealed class WalletProgress {}
 
 class Scanning extends WalletProgress {
@@ -63,7 +65,7 @@ class SyncManager {
     return _instance;
   }
 
-  startSync() {
+  void startSync() {
     kPrint("SyncManager: Starting sync");
     _syncTimer =
         Timer.periodic(const Duration(seconds: _syncInterval), (timer) {
@@ -71,7 +73,10 @@ class SyncManager {
         return;
       }
       _syncAll();
-      dumpProgress();
+
+      if (!isTest) {
+        dumpProgress();
+      }
     });
   }
 
@@ -366,7 +371,7 @@ class SyncManager {
     }
   }
 
-  dispose() {
+  void dispose() {
     kPrint("SyncManager: Disposing and cancelling timer");
     _syncTimer.cancel();
     _currentLoading.close();

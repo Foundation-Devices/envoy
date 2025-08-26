@@ -26,7 +26,7 @@ class EnvoyReport extends ChangeNotifier {
   final StoreRef<int, Map<String, Object?>> _logsStore =
       intMapStoreFactory.store("logs");
 
-  init() async {
+  Future<void> init() async {
     DatabaseFactory dbFactory = databaseFactoryIo;
     final appDocumentDir = await getApplicationDocumentsDirectory();
     _db = await dbFactory.openDatabase(join(appDocumentDir.path, "logs.db"),
@@ -48,7 +48,7 @@ class EnvoyReport extends ChangeNotifier {
     }
   }
 
-  writeReport(FlutterErrorDetails? details) async {
+  Future<void> writeReport(FlutterErrorDetails? details) async {
     await _ensureDbInitialized();
 
     Map<String, String?> report = {};

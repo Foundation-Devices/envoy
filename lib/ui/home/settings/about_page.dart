@@ -41,7 +41,7 @@ class _AboutPageState extends State<AboutPage> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return AboutText(
-                        snapshot.data!.version,
+                        "${snapshot.data!.version} (${snapshot.data!.buildNumber})",
                         dark: true,
                       );
                     } else {

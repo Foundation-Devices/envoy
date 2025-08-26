@@ -232,7 +232,7 @@ class WidgetSizeState extends State<WidgetSize> {
     );
   }
 
-  void _postFrameCallback(_) {
+  void _postFrameCallback(Duration _) {
     final context = _widgetKey.currentContext;
     if (context == null) return;
 

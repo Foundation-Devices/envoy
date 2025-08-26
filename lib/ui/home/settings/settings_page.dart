@@ -11,6 +11,8 @@ import 'package:envoy/ui/home/settings/fiat/settings_fiat_chooser.dart';
 import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
+import 'package:envoy/ui/home/setup_overlay.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/util/bug_report_helper.dart';
@@ -21,11 +23,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:ngwallet/ngwallet.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/ui/state/app_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/region_manager.dart';
@@ -40,7 +43,7 @@ class SettingsPage extends ConsumerStatefulWidget {
 class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _animationsDuration = const Duration(milliseconds: 200);
   bool _advancedVisible = false;
-  bool canBuy = true;
+
   bool buyDisabledByCountry = true;
 
   final LocalAuthentication auth = LocalAuthentication();
@@ -51,25 +54,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _checkCanBuy();
       buyDisabledByCountry = await AllowedRegions.checkBuyDisabled();
     });
-  }
-
-  Future<void> _checkCanBuy() async {
-    var region = await EnvoyStorage().getCountry();
-
-    if (region != null) {
-      bool newRegionCanBuy =
-          await AllowedRegions.isRegionAllowed(region.code, region.division);
-      setState(() {
-        canBuy = newRegionCanBuy;
-      });
-    } else {
-      setState(() {
-        canBuy = true;
-      });
-    }
   }
 
   @override
@@ -94,7 +80,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 setState(() {
                   s.setDisplayFiat(enabled ? "USD" : null); // TODO: FIGMA
                   if (!enabled) {
-                    ref.read(sendScreenUnitProvider.notifier).state =
+                    ref.read(appUnitProvider.notifier).state =
                         s.displayUnitSat()
                             ? AmountDisplayUnit.sat
                             : AmountDisplayUnit.btc;
@@ -279,6 +265,26 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         (BuildContext context) {
                           s.enableTaprootSetting = true;
                           Navigator.pop(context);
+
+                          if (hasAccountWithoutTaprootXpub()) {
+                            showEnvoyPopUp(
+                              context,
+                              icon: EnvoyIcons.info,
+                              showCloseButton: true,
+                              title: S().taproot_passport_dialog_heading,
+                              S().taproot_passport_dialog_subheading,
+                              S().taproot_passport_dialog_reconnect,
+                              (BuildContext modalContext) {
+                                Navigator.pop(modalContext);
+                                scanForDevice(context);
+                              },
+                              secondaryButtonLabel:
+                                  S().taproot_passport_dialog_later,
+                              onSecondaryButtonTap: (BuildContext context) {
+                                Navigator.pop(context);
+                              },
+                            );
+                          }
                         },
                       );
                     }
@@ -301,7 +307,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   },
                 ),
               ),
-              canBuy && !buyDisabledByCountry
+              !buyDisabledByCountry
                   ? ListTile(
                       dense: true,
                       contentPadding: const EdgeInsets.all(0),
@@ -340,6 +346,21 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         ],
       ),
     );
+  }
+
+  bool hasAccountWithoutTaprootXpub() {
+    final accounts = ref.read(accountsProvider);
+
+    return accounts.any((account) {
+      // Look for a taproot descriptor in this account
+      final taprootDescriptor = account.externalPublicDescriptors.firstWhere(
+        (pair) => pair.$1 == AddressType.p2Tr,
+        orElse: () => (AddressType.p2Tr, ''),
+      );
+
+      // If the xpub (pair.$2) is empty, this account lacks a taproot xpub
+      return taprootDescriptor.$2.isEmpty;
+    });
   }
 }
 

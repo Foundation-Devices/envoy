@@ -11,6 +11,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -117,30 +118,37 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
         ));
   }
 
-  void initiateAuth() async {
-    final navigator = Navigator.of(context);
+  Future<void> initiateAuth() async {
     final LocalAuthentication auth = LocalAuthentication();
     final List<BiometricType> availableBiometrics =
         await auth.getAvailableBiometrics();
+
+    // extracted helper: handles what to do after successful authentication
+    Future<void> handlePostAuth({required bool stickyAuth}) async {
+      if (stickyAuth && Platform.isIOS) {
+        await Future.delayed(const Duration(milliseconds: 800));
+      }
+
+      if (widget.sessionAuthenticate &&
+          mainNavigatorKey.currentState?.mounted == true) {
+        mainNavigatorKey.currentState!.pop();
+      } else {
+        runApp(const EnvoyApp());
+      }
+    }
+
     if (availableBiometrics.isNotEmpty) {
       try {
         final bool didAuthenticate = await auth.authenticate(
-            options: const AuthenticationOptions(
-              biometricOnly: true,
-              stickyAuth: true,
-            ),
+          options: const AuthenticationOptions(
+            biometricOnly: true,
+            stickyAuth: true,
+          ),
+          localizedReason: 'Authenticate to Access Envoy',
+        );
 
-            ///TODO: localize this
-            localizedReason: 'Authenticate to Access Envoy');
         if (didAuthenticate) {
-          if (Platform.isIOS) {
-            await Future.delayed(const Duration(milliseconds: 800));
-          }
-          if (widget.sessionAuthenticate && navigator.mounted) {
-            navigator.pop();
-          } else {
-            runApp(const EnvoyApp());
-          }
+          await handlePostAuth(stickyAuth: true);
           return;
         } else {
           showAuthLockedOutDialog(
@@ -206,17 +214,15 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
     } else {
       ///Authenticate without biometrics
       final bool didAuthenticate = await auth.authenticate(
-          options: const AuthenticationOptions(
-            biometricOnly: false,
-            stickyAuth: true,
-          ),
-          localizedReason: 'Authenticate to Access Envoy');
+        options: const AuthenticationOptions(
+          biometricOnly: false,
+          stickyAuth: true,
+        ),
+        localizedReason: 'Authenticate to Access Envoy',
+      );
+
       if (didAuthenticate) {
-        if (widget.sessionAuthenticate && navigator.mounted) {
-          navigator.pop();
-        } else {
-          runApp(const EnvoyApp());
-        }
+        await handlePostAuth(stickyAuth: false);
         return;
       } else {
         showAuthLockedOutDialog(

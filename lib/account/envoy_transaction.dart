@@ -155,7 +155,7 @@ class PendingTransaction extends BitcoinTransaction {
     required super.vsize,
   });
 
-  static copyFrom(BitcoinTransaction tx) {
+  static EnvoyTransaction copyFrom(BitcoinTransaction tx) {
     return EnvoyTransaction(
       txId: tx.txId,
       blockHeight: tx.blockHeight,

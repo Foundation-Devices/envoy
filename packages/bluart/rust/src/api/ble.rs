@@ -21,7 +21,6 @@ pub mod device;
 pub mod peripheral;
 
 use crate::frb_generated::StreamSink;
-use flutter_rust_bridge::frb;
 
 pub use device::*;
 pub use peripheral::*;
@@ -109,7 +108,7 @@ fn ble_state() -> &'static BleState {
     BLE_STATE.get().expect("BleState not initialized")
 }
 
-fn init_logging(level: log::LevelFilter) {
+fn init_logging(_level: log::LevelFilter) {
     //  #[cfg(target_os = "android")]
     //        let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
 
@@ -157,13 +156,13 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
         let mut events = central.events().await.unwrap();
         debug!("Subscribed to events!");
 
-        //central.start_scan(ScanFilter::default()).await.unwrap();
+        central.start_scan(ScanFilter::default()).await.unwrap();
 
         while let Some(event) = events.next().await {
             debug!("{:?}", event);
             match event {
                 CentralEvent::DeviceDiscovered(id) => {
-                    debug!("{}", format!("DeviceDiscovered: {:?}", &id));
+                    debug!("DeviceDiscovered: {:?}", &id);
                     let peripheral = central.peripheral(&id).await.unwrap();
                     let peripheral = Device::new(peripheral);
                     let mut devices = ble_state().devices.lock().await;
@@ -176,7 +175,7 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
                     }
                 }
                 CentralEvent::DeviceConnected(id) => {
-                    debug!("{}", format!("DeviceConnected: {:?}", id));
+                    debug!("DeviceConnected: {:?}", id);
                     let mut devices = ble_state().devices.lock().await;
                     if let Some(device) = devices.get_mut(&id.to_string()) {
                         device.is_connected = true;
@@ -184,7 +183,7 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
                     }
                 }
                 CentralEvent::DeviceDisconnected(id) => {
-                    debug!("{}", format!("DeviceDisconnected: {:?}", id));
+                    debug!("DeviceDisconnected: {:?}", id);
                     let mut devices = ble_state().devices.lock().await;
                     if let Some(device) = devices.get_mut(&id.to_string()) {
                         device.is_connected = false;
@@ -300,7 +299,7 @@ pub fn read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
     command::send(Command::Read { id, sink })
 }
 
-#[frb(ignore)]
+/// flutter_rust_bridge:ignore
 mod command {
     use anyhow::Context;
 
@@ -427,7 +426,7 @@ mod command {
                     sink.add(result as u64).unwrap();
                 }
                 Err(e) => {
-                    error!("{}", format!("Benchmark failed: {e}"));
+                    error!("Benchmark failed: {e}");
                     break;
                 }
             }
@@ -454,7 +453,7 @@ mod command {
                 });
             }
             Err(e) => {
-                debug!("{}", format!("Got error: {:?}", e));
+                debug!("Got error: {:?}", e);
             }
         }
 
