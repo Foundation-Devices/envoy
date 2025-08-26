@@ -77,6 +77,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
       switch (message.message) {
         case QuantumLinkMessage_PairingResponse(field0: final response):
+
           kPrint("Got a pairing response!");
           final deviceColor = response.passportColor == PassportColor.dark
               ? DeviceColor.dark
@@ -107,11 +108,12 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           switch (check) {
             case SecurityCheck_ChallengeResponse(field0: final proofResult):
               switch (proofResult) {
+
                 case ChallengeResponseResult_Success(data: final proofData):
                   bool isVerified =
                       await ScvServer().isProofVerified(proofData);
 
-                  kPrint("challenge res {isVerififed}");
+                  kPrint("challenge res $isVerified");
 
                   if (isVerified) {
                     await ref.read(deviceSecurityProvider.notifier).updateStep(
