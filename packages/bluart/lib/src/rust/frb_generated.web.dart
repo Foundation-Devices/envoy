@@ -62,6 +62,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
+  BleDevice dco_decode_box_autoadd_ble_device(dynamic raw);
+
+  @protected
   Event dco_decode_event(dynamic raw);
 
   @protected
@@ -131,6 +134,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
+  BleDevice sse_decode_box_autoadd_ble_device(SseDeserializer deserializer);
 
   @protected
   Event sse_decode_event(SseDeserializer deserializer);
@@ -207,6 +213,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_ble_device(
+      BleDevice self, SseSerializer serializer);
 
   @protected
   void sse_encode_event(Event self, SseSerializer serializer);

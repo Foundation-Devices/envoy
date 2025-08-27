@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime_ble.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update.dart';

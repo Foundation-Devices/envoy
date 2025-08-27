@@ -457,6 +457,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BleDevice dco_decode_box_autoadd_ble_device(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_ble_device(raw);
+  }
+
+  @protected
   Event dco_decode_event(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     switch (raw[0]) {
@@ -465,9 +471,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_list_ble_device(raw[1]),
         );
       case 1:
-        return const Event_DeviceDisconnected();
+        return Event_DeviceDisconnected();
       case 2:
-        return const Event_DeviceConnected();
+        return Event_DeviceConnected(
+          dco_decode_box_autoadd_ble_device(raw[1]),
+        );
       default:
         throw Exception("unreachable");
     }
@@ -609,6 +617,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BleDevice sse_decode_box_autoadd_ble_device(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_ble_device(deserializer));
+  }
+
+  @protected
   Event sse_decode_event(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -618,9 +632,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_list_ble_device(deserializer);
         return Event_ScanResult(var_field0);
       case 1:
-        return const Event_DeviceDisconnected();
+        return Event_DeviceDisconnected();
       case 2:
-        return const Event_DeviceConnected();
+        var var_field0 = sse_decode_box_autoadd_ble_device(deserializer);
+        return Event_DeviceConnected(var_field0);
       default:
         throw UnimplementedError('');
     }
@@ -810,6 +825,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_ble_device(
+      BleDevice self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_ble_device(self, serializer);
+  }
+
+  @protected
   void sse_encode_event(Event self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     switch (self) {
@@ -818,8 +840,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_list_ble_device(field0, serializer);
       case Event_DeviceDisconnected():
         sse_encode_i_32(1, serializer);
-      case Event_DeviceConnected():
+      case Event_DeviceConnected(field0: final field0):
         sse_encode_i_32(2, serializer);
+        sse_encode_box_autoadd_ble_device(field0, serializer);
     }
   }
 

@@ -16,6 +16,7 @@ Device _$DeviceFromJson(Map<String, dynamic> json) => Device(
       deviceColor:
           $enumDecodeNullable(_$DeviceColorEnumMap, json['deviceColor']) ??
               DeviceColor.light,
+      bleId: json['bleId'] as String? ?? '',
     )..pairedAccountIds = (json['pairedAccountIds'] as List<dynamic>?)
         ?.map((e) => e as String)
         .toList();
@@ -25,6 +26,7 @@ Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
       'type': _$DeviceTypeEnumMap[instance.type]!,
       'deviceColor': _$DeviceColorEnumMap[instance.deviceColor]!,
       'serial': instance.serial,
+      'bleId': instance.bleId,
       'datePaired': instance.datePaired.toIso8601String(),
       'firmwareVersion': instance.firmwareVersion,
       'pairedAccountIds': instance.pairedAccountIds,
