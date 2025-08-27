@@ -3,10 +3,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/business/bluetooth_manager.dart' show BluetoothManager;
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/glow.dart';
+import 'package:envoy/ui/onboard/passport_scanner_screen.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -18,14 +21,13 @@ import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/device_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/pair_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:envoy/util/console.dart';
-import 'package:envoy/ui/onboard/passport_scanner_screen.dart';
-import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 
 double cardButtonHeight = 125;
 
@@ -72,8 +74,9 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
   void _closeOverlay() {
     _controller.reverse().then((_) async {
       if (mounted) {
-        Navigator.of(context).pop();
-
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
         await Future.delayed(const Duration(milliseconds: 100));
       }
     });
@@ -222,7 +225,8 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
   }
 }
 
-void scanForDevice(BuildContext context) {
+void scanForDevice(BuildContext context) async {
+  BluetoothManager().checkDeviceStates();
   showScannerDialog(
       context: context,
       onBackPressed: (context) {
@@ -239,7 +243,7 @@ void scanForDevice(BuildContext context) {
         if (params.containsKey("p")) {
           context.pushNamed(ONBOARD_PRIME, queryParameters: params);
         } else if (params.containsKey("t")) {
-          context.goNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
+          context.pushNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
         } else {
           EnvoyToast(
             replaceExisting: true,
