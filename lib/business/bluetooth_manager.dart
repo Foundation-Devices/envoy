@@ -116,7 +116,9 @@ class BluetoothManager {
       }
 
       if (event is bluart.Event_ScanResult) {
-        kPrint("Scan result received, count ${event.field0.length}");
+        if (event.field0.isEmpty) {
+          kPrint("received empty scan result");
+        }
         if (bleId.isEmpty) {
           return;
         }
