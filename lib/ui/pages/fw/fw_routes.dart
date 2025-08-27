@@ -17,7 +17,6 @@ const PASSPORT_UPDATE_PASSPORT = 'passport_update_passport';
 const PASSPORT_UPDATE_SD_CARD = 'passport_sd';
 const PASSPORT_UPDATE_ANDROID = 'passport_android';
 const PASSPORT_UPDATE_ANDROID_INSTRUCTION = 'passport_android_instructions';
-const PASSPORT_UPDATE_IOS = 'passport_ios';
 const PASSPORT_UPDATE_IOS_INSTRUCTION = 'passport_ios_instructions';
 const PASSPORT_UPDATE_IOS_SUCCESS = 'passport_ios_success';
 
