@@ -251,12 +251,6 @@ class BluetoothManager {
   }
 
   Future scan() async {
-    kPrint(
-        "Scanning bluetoothScan... ${await Permission.bluetoothScan.isGranted}");
-    kPrint("Scanning bluetooth... ${await Permission.bluetooth.isGranted}");
-    kPrint(
-        "Scanning bluetoothConnect... ${Platform.isLinux} ${await Permission.bluetoothConnect.isGranted}");
-
     if (Platform.isLinux || await Permission.bluetoothScan.isGranted) {
       kPrint("Scanning...");
       await bluart.scan(filter: [""]);

@@ -6,7 +6,6 @@
 import 'dart:async';
 
 import 'package:envoy/business/bluetooth_manager.dart';
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime_ble.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update.dart';

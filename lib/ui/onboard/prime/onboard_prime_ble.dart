@@ -78,7 +78,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
       switch (message.message) {
         case QuantumLinkMessage_PairingResponse(field0: final response):
-        // pairingResponse = response;
+          pairingResponse = response;
+
+        // adding device moved to QuantumLinkMessage_AccountUpdate
         // if (pairingResponse != null) {
         //   final deviceColor =
         //       pairingResponse!.passportColor == PassportColor.dark
@@ -118,7 +120,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             kPrint("Got a pairing AccountUpdate device!");
             break;
           }
-
           // AccountUpdate is handled in BluetoothManager; no action needed here
           break;
 

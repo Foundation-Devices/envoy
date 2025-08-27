@@ -26,3 +26,4 @@ pqcrypto-mlkem = { git = "https://github.com/icota/pqcrypto", branch = "aarch64-
 lto = true
 codegen-units = 1
 debug = true
+incremental = true

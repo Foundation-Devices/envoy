@@ -5,7 +5,6 @@
 
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
