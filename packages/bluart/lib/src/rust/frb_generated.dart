@@ -471,7 +471,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_list_ble_device(raw[1]),
         );
       case 1:
-        return Event_DeviceDisconnected();
+        return Event_DeviceDisconnected(
+          dco_decode_box_autoadd_ble_device(raw[1]),
+        );
       case 2:
         return Event_DeviceConnected(
           dco_decode_box_autoadd_ble_device(raw[1]),
@@ -632,7 +634,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_list_ble_device(deserializer);
         return Event_ScanResult(var_field0);
       case 1:
-        return Event_DeviceDisconnected();
+        var var_field0 = sse_decode_box_autoadd_ble_device(deserializer);
+        return Event_DeviceDisconnected(var_field0);
       case 2:
         var var_field0 = sse_decode_box_autoadd_ble_device(deserializer);
         return Event_DeviceConnected(var_field0);
@@ -838,8 +841,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case Event_ScanResult(field0: final field0):
         sse_encode_i_32(0, serializer);
         sse_encode_list_ble_device(field0, serializer);
-      case Event_DeviceDisconnected():
+      case Event_DeviceDisconnected(field0: final field0):
         sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_ble_device(field0, serializer);
       case Event_DeviceConnected(field0: final field0):
         sse_encode_i_32(2, serializer);
         sse_encode_box_autoadd_ble_device(field0, serializer);
