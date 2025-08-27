@@ -257,6 +257,7 @@ class ExchangeRate extends ChangeNotifier {
         ConnectivityManager().nguSuccess();
         return rate.toDouble();
       } else {
+        ConnectivityManager().nguFailure();
         throw Exception("Couldn't get exchange rate");
       }
     } catch (e) {
