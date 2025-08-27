@@ -166,7 +166,6 @@ class HomePageState extends ConsumerState<HomePage>
   @override
   void didUpdateWidget(covariant HomePage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    unawaited(BluetoothManager().checkDeviceStates());
   }
 
   @override
