@@ -67,33 +67,6 @@ Future<void> main() async {
 }
 
 Future<void> initSingletons({bool integrationTestsRunning = false}) async {
-
-
-  try {
-    const String primeSecurityCheckUrl = "https://security-check.foundation.xyz";
-    final uri = '$primeSecurityCheckUrl/verify';
-
-    final dio = Dio();
-    final payload = Uint8List.fromList([34, 46, 255, 159, 62, 135, 22, 218, 60, 18, 36, 167, 228, 64, 92, 83, 254, 239, 116, 66, 128, 0, 60, 36, 38, 109, 86, 221, 55, 12, 42, 73, 193, 115, 172, 104, 0, 0, 0, 0, 3, 158, 20, 33, 225, 189, 154, 206, 158, 172, 44, 192, 120, 185, 187, 95, 249, 38, 22, 154, 37, 120, 101, 91, 211, 152, 244, 47, 214, 218, 29, 195, 78, 21, 73, 199, 199, 113, 85, 34, 232, 92, 238, 51, 233, 56, 108, 95, 26, 121, 185, 204, 28, 86, 205, 230, 157, 0, 38, 116, 201, 204, 38, 196, 34, 48, 46, 49, 46, 49, 32, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 48, 23, 25, 127, 1, 77, 246, 89, 8, 64, 130, 41, 163, 145, 255, 24, 66, 56, 22, 128, 86, 65, 145, 109, 118, 84, 11, 48, 155, 174, 234, 96, 160, 136, 93, 19, 130, 23, 150, 33, 46, 74, 116, 189, 254, 97, 114, 251, 58, 54, 192, 203, 210, 183, 107, 151, 17, 251, 37, 98, 146, 201, 152, 229]);
-
-    print("SCV verify");
-    final response = await dio.post(
-        uri,
-        data: payload,
-        options: Options(
-          headers: {'Content-Type': 'binary/octet-stream'},
-          responseType: ResponseType.bytes,
-        ),
-      );
-    print("SCV verify: response ${response.data}");
-    print("SCV verify: response length ${response.data.length}");
-    print("SCV verify: index 32 ${response.data[32]}");
-  } catch (e) {
-    print(e);
-  }
-
-
-
   await EnvoyStorage().init();
 
   if (!integrationTestsRunning) {
