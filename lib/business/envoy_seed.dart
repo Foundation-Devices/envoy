@@ -294,10 +294,26 @@ class EnvoySeed {
     var json = jsonDecode(backupData[EnvoyStorage.dbName]!) as Map;
 
     List<dynamic> stores = json["stores"];
-    var preferences = stores
-        .singleWhere((element) => element["name"] == preferencesStoreName);
+    var preferencesStores = stores
+        .where((element) => element["name"] == preferencesStoreName)
+        .toList();
+
+    // If no preferences store exists, return backup data as-is
+    if (preferencesStores.isEmpty) {
+      return backupData;
+    }
+
+    var preferences = preferencesStores.first;
+
     int indexOfPreferences =
         stores.indexWhere((element) => element["name"] == preferencesStoreName);
+
+    // Safety check - if indexOfPreferences is -1, we have a data inconsistency
+    if (indexOfPreferences == -1) {
+      EnvoyReport().log("EnvoySeed processBackupData",
+          "Data inconsistency: preferences store found by singleWhere but not by indexWhere");
+      return backupData;
+    }
 
     List<String> keys = List<String>.from(preferences["keys"]);
     List<dynamic> values = preferences["values"];

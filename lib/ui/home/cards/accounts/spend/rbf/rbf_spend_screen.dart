@@ -950,4 +950,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         opaque: false,
         fullscreenDialog: true));
   }
+
+  @override
+  void dispose() {
+    _stateMachineController?.dispose();
+    super.dispose();
+  }
 }

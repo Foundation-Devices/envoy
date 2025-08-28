@@ -48,11 +48,14 @@ class AllowedRegions {
     if (_isAllowed != null) {
       return _isAllowed!;
     }
-    if (!(await InAppPurchase.instance.isAvailable())) {
-      return false;
-    }
+
     try {
-      String? countryCode = await InAppPurchase.instance.countryCode();
+      // Cache the connection to prevent repeated instantiations
+      final connection = InAppPurchase.instance;
+      if (!(await connection.isAvailable())) {
+        return false;
+      }
+      String? countryCode = await connection.countryCode();
       _isAllowed = buyDisabled.contains(countryCode);
     } catch (e) {
       _isAllowed = false;

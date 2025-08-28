@@ -67,6 +67,7 @@ class _QrScannerState extends State<QrScanner> {
   double _progress = 0.0;
 
   bool _viewReady = false;
+  bool _cameraInitializing = false; // Prevent duplicate camera initializations
 
   @override
   void initState() {
@@ -182,11 +183,21 @@ class _QrScannerState extends State<QrScanner> {
   }
 
   void _onQRViewCreated(QRViewController controller, BuildContext context) {
+    // Prevent duplicate camera initializations
+    if (_cameraInitializing || _controller != null) {
+      return;
+    }
+
+    _cameraInitializing = true;
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         setState(() {
           _controller = controller;
+          _cameraInitializing = false; // Reset flag when done
         });
+      } else {
+        _cameraInitializing = false; // Reset flag if not mounted
       }
     });
     final navigator = Navigator.of(context);
