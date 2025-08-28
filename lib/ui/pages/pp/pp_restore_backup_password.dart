@@ -15,6 +15,7 @@ class PpRestoreBackupPasswordPage extends StatelessWidget {
     return OnboardingPage(
       key: const Key("pp_restore_backup_password"),
       clipArt: Image.asset("assets/pp_backup_code.png"),
+      rightFunction: null,
       text: [
         OnboardingText(
             header: S().envoy_pp_restore_backup_password_heading,
