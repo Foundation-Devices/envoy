@@ -59,10 +59,11 @@ class FwIosInstructionsPage extends ConsumerWidget {
                 await uploader.upload();
                 Devices()
                     .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
-                goRouter.goNamed(PASSPORT_UPDATE_IOS_SUCCESS,
+                goRouter.pushNamed(PASSPORT_UPDATE_IOS_SUCCESS,
                     extra: fwPagePayload);
               } else {
-                goRouter.goNamed(PASSPORT_UPDATE_SD_CARD, extra: fwPagePayload);
+                goRouter.pushNamed(PASSPORT_UPDATE_SD_CARD,
+                    extra: fwPagePayload);
               }
             }),
       ],

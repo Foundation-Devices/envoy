@@ -141,11 +141,11 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
               label: done! ? S().component_continue : S().component_tryAgain,
               onTap: () {
                 if (done!) {
-                  context.goNamed(PASSPORT_UPDATE_PASSPORT,
+                  context.pushNamed(PASSPORT_UPDATE_PASSPORT,
                       extra: widget.payload);
                   return;
                 } else {
-                  context.goNamed(PASSPORT_UPDATE, extra: widget.payload);
+                  context.pushNamed(PASSPORT_UPDATE, extra: widget.payload);
                 }
               })
       ],

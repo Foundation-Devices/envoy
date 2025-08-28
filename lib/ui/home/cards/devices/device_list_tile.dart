@@ -194,7 +194,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                     if (!fwAvailable) {
                                                       return;
                                                     }
-                                                    context.goNamed(
+                                                    context.pushNamed(
                                                         PASSPORT_UPDATE,
                                                         extra: FwPagePayload(
                                                           onboarding: false,
