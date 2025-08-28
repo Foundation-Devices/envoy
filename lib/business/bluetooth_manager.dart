@@ -535,7 +535,7 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   Future<void> sendFirmwarePayload(List<Uint8List> patches) async {
     for (final (patchIndex, patch) in patches.indexed) {
-      kPrint("sending patch ${patchIndex} of size ${patch.length} bytes");
+      kPrint("sending patch $patchIndex of size ${patch.length} bytes");
       final chunks = await api.splitFwUpdateIntoChunks(
           patchIndex: patchIndex,
           totalPatches: patches.length,
@@ -544,7 +544,7 @@ class BluetoothManager extends WidgetsBindingObserver {
       kPrint("split patch into ${chunks.length} chunks");
 
       for (final (chunkIndex, chunk) in chunks.indexed) {
-        kPrint("sending chunk ${chunkIndex} of patch ${patchIndex}");
+        kPrint("sending chunk $chunkIndex of patch $patchIndex");
         await writeMessage(chunk);
       }
     }
