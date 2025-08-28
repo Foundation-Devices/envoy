@@ -395,6 +395,7 @@ class BluetoothManager {
   }
 
   Future<void> sendSecurityChallengeRequest() async {
+    kPrint("sending security challenge");
     api.ChallengeRequest? challenge = await ScvServer().getPrimeChallenge();
 
     if (challenge == null) {
@@ -404,7 +405,9 @@ class BluetoothManager {
     }
 
     final request = api.SecurityCheck.challengeRequest(challenge);
+    kPrint("writing security challenge");
     await writeMessage(api.QuantumLinkMessage.securityCheck(request));
+    kPrint("successfully wrote security challenge");
   }
 
   Future<void> sendSecurityChallengeVerificationResult(
@@ -497,14 +500,17 @@ class BluetoothManager {
   }
 
   Future<void> sendFirmwarePayload(List<Uint8List> patches) async {
-    for (final (index, patch) in patches.indexed) {
+    for (final (patchIndex, patch) in patches.indexed) {
+      kPrint("sending patch ${patchIndex} of size ${patch.length} bytes");
       final chunks = await api.splitFwUpdateIntoChunks(
-          patchIndex: index,
+          patchIndex: patchIndex,
           totalPatches: patches.length,
           patchBytes: patch,
           chunkSize: BigInt.from(10000));
+      kPrint("split patch into ${chunks.length} chunks");
 
-      for (final chunk in chunks) {
+      for (final (chunkIndex, chunk) in chunks.indexed) {
+        kPrint("sending chunk ${chunkIndex} of patch ${patchIndex}");
         await writeMessage(chunk);
       }
     }

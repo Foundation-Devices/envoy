@@ -7,6 +7,7 @@ import 'dart:typed_data';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/util/console.dart';
+import 'package:flutter/services.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
@@ -36,36 +37,25 @@ class Server {
   }
 
   Future<List<PrimePatch>> fetchPrimePatches(String currentVersion) async {
-    final response = await http!
-        .get('$_serverAddress/prime/patches?version=$currentVersion');
+    final staticPatch = PrimePatch(
+      version: "1.0.0",
+      baseVersion: currentVersion,
+      signedSha256: "static_signed_hash",
+      unsignedSha256: "static_unsigned_hash",
+      updateFilename: "release-bin.tar",
+      signatureFilename: "release-bin.sig",
+      url: "assets/prime/release-bin.tar",
+      changelog: "Static firmware update from assets",
+      description: "Embedded release-bin.tar firmware binary",
+      releaseDate: DateTime.now(),
+    );
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> json = jsonDecode(response.body);
-
-      if (json['patches'] == null) {
-        return [];
-      }
-
-      final List<dynamic> patches = json['patches'];
-
-      final List<PrimePatch> updates = [];
-      for (final patch in patches) {
-        updates.add(PrimePatch.fromJson(patch));
-      }
-
-      return updates;
-    } else {
-      throw Exception('Failed to fetch update chain');
-    }
+    return [staticPatch];
   }
 
   Future<Uint8List> fetchPrimePatchBinary(PrimePatch patch) async {
-    final response = await http!.get(patch.url);
-    if (response.statusCode == 200) {
-      return Uint8List.fromList(response.bodyBytes);
-    } else {
-      throw Exception('Failed to fetch prime patch');
-    }
+    final ByteData data = await rootBundle.load("assets/prime/release.tar");
+    return data.buffer.asUint8List();
   }
 
   Future<List<PatchBinary>> fetchPrimePatchBinaries(
