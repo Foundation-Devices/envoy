@@ -77,7 +77,8 @@ class IndicatorShieldState extends State<IndicatorShield>
       // No shield
       return const SizedBox.shrink(key: ValueKey("shield-none"));
     } else {
-      if (!ConnectivityManager().electrumConnected) {
+      if (!ConnectivityManager().electrumConnected ||
+          !ConnectivityManager().nguConnected) {
         return Image.asset(
           "assets/indicator_shield_red.png",
           key: const ValueKey("shield-red"),

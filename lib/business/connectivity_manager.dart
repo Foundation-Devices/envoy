@@ -17,6 +17,7 @@ enum ConnectivityManagerEvent {
   electrumUnreachable,
   electrumReachable,
   foundationServerDown,
+  nguStatusChanged,
 }
 
 enum PublicServer {
@@ -53,7 +54,7 @@ class ConnectivityManager {
   int failedFoundationServerAttempts = 0;
 
   bool electrumConnected = true;
-  bool nguConnected = false;
+  bool nguConnected = true;
 
   DateTime? torTemporarilyDisabledTimeStamp;
 
@@ -115,18 +116,21 @@ class ConnectivityManager {
 
   void nguSuccess() {
     nguConnected = true;
+    events.add(ConnectivityManagerEvent.nguStatusChanged);
     checkTor();
   }
 
   void nguFailure() {
     nguConnected = false;
+    events.add(ConnectivityManagerEvent.nguStatusChanged);
     checkTor();
   }
 
   void checkTor() {
-    if (torEnabled && !nguConnected && !electrumConnected) {
+    if (torEnabled && (!nguConnected || !electrumConnected)) {
       restartTor();
-      EnvoyReport().log("tor", "Both Electrum and NGU unreachable through Tor");
+      EnvoyReport().log("tor",
+          "Unreachable via Tor -> NGU: ${nguConnected ? 'ok' : 'fail'}, Electrum: ${electrumConnected ? 'ok' : 'fail'}");
       events.add(ConnectivityManagerEvent.torConnectedDoesntWork);
     }
   }

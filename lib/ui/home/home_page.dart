@@ -186,16 +186,8 @@ class HomePageState extends ConsumerState<HomePage>
     // Home is there for the lifetime of the app so no need to dispose stream
     final connectivitySub = ConnectivityManager().events.stream.listen((event) {
       // If Tor is broken surface a warning
-      if (event == ConnectivityManagerEvent.torConnectedDoesntWork) {
-        if (_torWarningDisplayedMoreThan5minAgo &&
-            Settings().usingTor &&
-            mounted) {
-          _notifyAboutTor();
-          _torWarningDisplayedMoreThan5minAgo = false;
-        }
-      }
-      // Also show warning when electrum becomes unreachable while using Tor
-      if (event == ConnectivityManagerEvent.electrumUnreachable) {
+      if (event == ConnectivityManagerEvent.torConnectedDoesntWork ||
+          event == ConnectivityManagerEvent.foundationServerDown) {
         if (_torWarningDisplayedMoreThan5minAgo &&
             Settings().usingTor &&
             ConnectivityManager().torEnabled &&
@@ -204,6 +196,7 @@ class HomePageState extends ConsumerState<HomePage>
           _torWarningDisplayedMoreThan5minAgo = false;
         }
       }
+
       if (event == ConnectivityManagerEvent.foundationServerDown &&
           _serverDownWarningDisplayedMoreThan5minAgo &&
           mounted) {
