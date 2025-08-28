@@ -152,7 +152,7 @@ class ScvServer {
 
       kPrint("response status code: ${response.statusCode}");
       if (response.statusCode == 200) {
-        List<int> rawVerificationMessage = response.data as Uint8List;
+        List<int> rawVerificationMessage = response.bodyBytes as Uint8List;
         kPrint("response status data 32: ${rawVerificationMessage[32]}");
         kPrint("rawVerificationMessage {rawVerificationMessage}");
         // Error code is the 33rd byte in the response
