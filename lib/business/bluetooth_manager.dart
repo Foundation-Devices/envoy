@@ -125,7 +125,11 @@ class BluetoothManager extends WidgetsBindingObserver {
       kPrint("Bluetooth already initialized");
       return;
     }
+
     events = bluart.init().asBroadcastStream();
+
+    // Add a small delay to ensure Rust library is fully initialized
+    await Future.delayed(const Duration(milliseconds: 300));
 
     events?.listen((bluart.Event event) async {
       if (event is bluart.Event_DeviceConnected) {
