@@ -20,6 +20,7 @@ class PpRestoreSeedPage extends StatelessWidget {
             header: S().envoy_pp_restore_seed_heading,
             text: S().envoy_pp_restore_seed_subheading),
       ],
+      rightFunction: null,
       navigationDots: 3,
       navigationDotsIndex: 0,
       buttons: [

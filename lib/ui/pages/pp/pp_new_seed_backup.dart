@@ -20,6 +20,7 @@ class PpNewSeedBackupPage extends StatelessWidget {
           height: 120,
         ),
       ),
+      rightFunction: null,
       text: [
         OnboardingText(
             header: S().envoy_pp_new_seed_backup_heading,

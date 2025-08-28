@@ -22,6 +22,7 @@ class PpNewSeedPage extends StatelessWidget {
       ],
       navigationDots: 3,
       navigationDotsIndex: 0,
+      rightFunction: null,
       buttons: [
         OnboardingButton(
             label: S().component_continue,

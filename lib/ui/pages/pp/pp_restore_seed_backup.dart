@@ -27,6 +27,7 @@ class PpRestoreSeedBackupPage extends StatelessWidget {
       ],
       navigationDots: 3,
       navigationDotsIndex: 1,
+      rightFunction: null,
       buttons: [
         OnboardingButton(
             label: S().component_continue,
