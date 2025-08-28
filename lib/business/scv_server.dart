@@ -5,7 +5,6 @@
 
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:dio/dio.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:http_tor/http_tor.dart';
@@ -131,7 +130,7 @@ class ScvServer {
       final data = Uint8List.fromList(response.bodyBytes);
 
       final dataStr = data.map((d) => d.toString()).join(",");
-      kPrint("security challenge payload ${dataStr}");
+      kPrint("security challenge payload $dataStr");
 
       return ChallengeRequest(data: data);
     } catch (e) {
@@ -144,19 +143,14 @@ class ScvServer {
     final dataStr = data.map((d) => d.toString()).join(",");
 
     try {
-      kPrint("isProofVerified payload ${dataStr}");
-      final dio = Dio();
-      final response = await dio.post(
+      kPrint("isProofVerified payload $dataStr");
+      final response = await http.post(
         uri,
-        data: data,
-        options: Options(
-          headers: {'Content-Type': 'application/octet-stream'},
-          responseType: ResponseType.bytes,
-        ),
+        body: data.toList().toString(),
+        headers: {'Content-Type': 'application/octet-stream'},
       );
 
       kPrint("response status code: ${response.statusCode}");
-      kPrint("response status data: ${response.data}");
       if (response.statusCode == 200) {
         List<int> rawVerificationMessage = response.data as Uint8List;
         kPrint("response status data 32: ${rawVerificationMessage[32]}");

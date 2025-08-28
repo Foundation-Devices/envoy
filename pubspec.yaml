@@ -32,7 +32,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.2
-  dio: 5.9.0
   # Rust FFI libraries
   ur:
     path: packages/ur

@@ -78,7 +78,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
       switch (message.message) {
         case QuantumLinkMessage_PairingResponse(field0: final response):
-        // pairingResponse = response;
+          pairingResponse = response;
+        // uncomment this to add prime to devices list, to test ble reconnect.
         // if (pairingResponse != null) {
         //   final deviceColor =
         //       pairingResponse!.passportColor == PassportColor.dark
@@ -92,6 +93,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         //   kPrint("Got a pairing AccountUpdate device!");
         //   break;
         // }
+
         //  final response = message.message as QuantumLinkMessage_PairingResponse;
         // Create the thing that I'm gonna reveal later
         // await AccountNg().restore(response.field0.descriptor);
@@ -118,7 +120,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             kPrint("Got a pairing AccountUpdate device!");
             break;
           }
-
           // AccountUpdate is handled in BluetoothManager; no action needed here
           break;
 

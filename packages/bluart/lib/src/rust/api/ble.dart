@@ -52,7 +52,9 @@ sealed class Event with _$Event {
   const factory Event.scanResult(
     List<BleDevice> field0,
   ) = Event_ScanResult;
-  const factory Event.deviceDisconnected() = Event_DeviceDisconnected;
+  const factory Event.deviceDisconnected(
+    BleDevice field0,
+  ) = Event_DeviceDisconnected;
   const factory Event.deviceConnected(
     BleDevice field0,
   ) = Event_DeviceConnected;

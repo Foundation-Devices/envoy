@@ -4,7 +4,6 @@
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/bluetooth_manager.dart' show BluetoothManager;
-import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';

@@ -16,6 +16,7 @@ import 'package:envoy/business/server.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/ntp.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
@@ -33,11 +34,29 @@ final sendProgressProvider =
 );
 
 final remainingTimeProvider = StateProvider<Duration>((ref) => Duration.zero);
+final connectedDevicesProvider = StreamProvider<Set<bluart.BleDevice>>((ref) {
+  return BluetoothManager().connectedDevicesStream;
+});
 
-class BluetoothManager {
+final isPrimeConnectedProvider = Provider.family<bool, String>((ref, bleId) {
+  final devices = ref.watch(connectedDevicesProvider).valueOrNull ?? {};
+  kPrint("Connected devices: $devices");
+  return devices.any((d) => d.id == bleId);
+});
+
+class BluetoothManager extends WidgetsBindingObserver {
   StreamSubscription? _subscription;
   StreamSubscription? _writeProgressSubscription;
-  Set<bluart.BleDevice> connectedDevices = {};
+  final Set<bluart.BleDevice> _connectedDevices = {};
+
+  final StreamController<Set<bluart.BleDevice>> _connectedDevicesStream =
+      StreamController<Set<bluart.BleDevice>>();
+
+  Set<bluart.BleDevice> get connectedDevices => _connectedDevices;
+
+  Stream<Set<bluart.BleDevice>> get connectedDevicesStream =>
+      _connectedDevicesStream.stream.asBroadcastStream();
+
   static final BluetoothManager _instance = BluetoothManager._internal();
   UuidValue rxCharacteristic =
       UuidValue.fromString("6E400002B5A3F393E0A9E50E24DCCA9E");
@@ -86,7 +105,6 @@ class BluetoothManager {
 
   BluetoothManager._internal() {
     _init();
-
     kPrint("Instance of BluetoothManager created!");
   }
 
@@ -103,25 +121,20 @@ class BluetoothManager {
   }
 
   Future<void> initBluetooth() async {
-    bool denied = await isBluetoothDenied();
-    if (bleId != "" && _qlIdentity != null && denied) {
-      await getPermissions();
-    }
-
     if (events != null) {
       kPrint("Bluetooth already initialized");
       return;
     }
-    kPrint("Initializing bluetooth...");
     events = bluart.init().asBroadcastStream();
 
-    kPrint("Events: $events");
     events?.listen((bluart.Event event) async {
       if (event is bluart.Event_DeviceConnected) {
+        _updateConnectionStatus(event.field0);
         connected = true;
       }
 
       if (event is bluart.Event_DeviceDisconnected) {
+        _updateConnectionStatus(event.field0);
         connected = false;
       }
 
@@ -131,13 +144,7 @@ class BluetoothManager {
         }
 
         for (final device in event.field0) {
-          if (device.connected) {
-            connectedDevices.add(device);
-          } else {
-            if (connectedDevices.any((d) => d.id == device.id)) {
-              connectedDevices.removeWhere((d) => d.id == device.id);
-            }
-          }
+          _updateConnectionStatus(device);
           //kPrint("Paired device found: ${device.id}");
           if (bleId.isNotEmpty && device.id == bleId && !connected) {
             await connect(id: device.id);
@@ -154,6 +161,18 @@ class BluetoothManager {
     await scan();
     _listenForAccountUpdate();
     _listenToWriteProgress();
+  }
+
+  void _updateConnectionStatus(bluart.BleDevice device) {
+    if (device.connected) {
+      kPrint("Event Device connected: ${device.id} ${device.name}");
+      _connectedDevices.add(device);
+    } else {
+      if (_connectedDevices.any((d) => d.id == device.id)) {
+        _connectedDevices.removeWhere((d) => d.id == device.id);
+      }
+    }
+    _connectedDevicesStream.sink.add(_connectedDevices);
   }
 
   void _listenToWriteProgress() {
@@ -204,9 +223,29 @@ class BluetoothManager {
       // Envoy will be getting the BT addresses via QR
       await Permission.bluetoothScan.request();
       kPrint("Scanning...");
-      await initBluetooth();
+      bool denied = await isBluetoothDenied();
+      if (!denied) {
+        await initBluetooth();
+      }
     } catch (e, stack) {
       kPrint("Error getting permissions: $e", stackTrace: stack);
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        Devices().connect();
+        break;
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.paused:
+        break;
+      case AppLifecycleState.detached:
+        break;
+      case AppLifecycleState.hidden:
+        throw UnimplementedError();
     }
   }
 
@@ -251,13 +290,8 @@ class BluetoothManager {
   }
 
   Future scan() async {
-    kPrint(
-        "Scanning bluetoothScan... ${await Permission.bluetoothScan.isGranted}");
-    kPrint("Scanning bluetooth... ${await Permission.bluetooth.isGranted}");
-    kPrint(
-        "Scanning bluetoothConnect... ${Platform.isLinux} ${await Permission.bluetoothConnect.isGranted}");
-
-    if (Platform.isLinux || await Permission.bluetoothScan.isGranted) {
+    bool isDenied = await isBluetoothDenied();
+    if (Platform.isLinux || !isDenied) {
       kPrint("Scanning...");
       await bluart.scan(filter: [""]);
     }

@@ -5,7 +5,6 @@
 
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
@@ -133,8 +132,25 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   ConnectivityManager.init();
 }
 
-class EnvoyApp extends StatelessWidget {
+class EnvoyApp extends StatefulWidget {
   const EnvoyApp({super.key});
+
+  @override
+  State<EnvoyApp> createState() => _EnvoyAppState();
+}
+
+class _EnvoyAppState extends State<EnvoyApp> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(BluetoothManager());
+  }
+
+  @override
+  dispose() {
+    WidgetsBinding.instance.removeObserver(BluetoothManager());
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
