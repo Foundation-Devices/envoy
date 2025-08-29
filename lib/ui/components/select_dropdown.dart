@@ -108,7 +108,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
           data: Theme.of(context).copyWith(
             focusColor: EnvoyColors.accentPrimary,
           ),
-          child: DropdownButton<EnvoyDropdownOption>(
+          child: _FastDropdownButton<EnvoyDropdownOption>(
             elevation: EnvoySpacing.xs.toInt(),
             borderRadius: BorderRadius.circular(EnvoySpacing.small),
             padding:
@@ -210,6 +210,184 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
         ),
       ),
     );
+  }
+}
+
+class _FastDropdownButton<T> extends StatelessWidget {
+  final List<DropdownMenuItem<T>>? items;
+  final T? value;
+  final ValueChanged<T?>? onChanged;
+  final List<Widget> Function(BuildContext)? selectedItemBuilder;
+  final Widget? icon;
+  final Widget? underline;
+  final bool isExpanded;
+  final int elevation;
+  final BorderRadius borderRadius;
+  final EdgeInsetsGeometry? padding;
+
+  const _FastDropdownButton({
+    this.items,
+    this.value,
+    this.onChanged,
+    this.selectedItemBuilder,
+    this.icon,
+    this.underline,
+    this.isExpanded = false,
+    this.elevation = 8,
+    this.borderRadius = BorderRadius.zero,
+    this.padding,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: items == null || items!.isEmpty
+          ? null
+          : () async {
+              final RenderBox button = context.findRenderObject() as RenderBox;
+              final RenderBox overlay =
+                  Overlay.of(context).context.findRenderObject() as RenderBox;
+
+              final position = RelativeRect.fromRect(
+                Rect.fromPoints(
+                  button.localToGlobal(Offset.zero, ancestor: overlay),
+                  button.localToGlobal(button.size.bottomRight(Offset.zero),
+                      ancestor: overlay),
+                ),
+                Offset.zero & overlay.size,
+              );
+
+              final selected = await Navigator.push(
+                context,
+                _FastDropdownRoute<T>(
+                  items: items!,
+                  buttonRect: position.toRect(Offset.zero & overlay.size),
+                  elevation: elevation,
+                  borderRadius: borderRadius,
+                  selected: value,
+                  padding: padding,
+                ),
+              );
+
+              if (selected != null && onChanged != null) {
+                onChanged!(selected);
+              }
+            },
+      child: DefaultTextStyle(
+        style: Theme.of(context).textTheme.bodyMedium!,
+        child: Padding(
+          padding: padding ?? EdgeInsets.zero,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Expanded(
+                child: selectedItemBuilder == null
+                    ? (value != null
+                        ? items!.firstWhere((item) => item.value == value).child
+                        : const SizedBox())
+                    : selectedItemBuilder!(context)[
+                        items!.indexWhere((item) => item.value == value)],
+              ),
+              icon ?? const Icon(Icons.arrow_drop_down),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FastDropdownRoute<T> extends PopupRoute<T> {
+  final List<DropdownMenuItem<T>> items;
+  final Rect buttonRect;
+  final int elevation;
+  final BorderRadius borderRadius;
+  final T? selected;
+  final EdgeInsetsGeometry? padding;
+
+  _FastDropdownRoute({
+    required this.items,
+    required this.buttonRect,
+    required this.elevation,
+    required this.borderRadius,
+    required this.selected,
+    this.padding,
+  });
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 150);
+
+  @override
+  bool get barrierDismissible => true;
+
+  @override
+  Color get barrierColor => Colors.transparent;
+
+  @override
+  String? get barrierLabel => null;
+
+  @override
+  Widget buildPage(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation) {
+    return CustomSingleChildLayout(
+      delegate: _DropdownRouteLayout(
+        RelativeRect.fromRect(
+            buttonRect, Offset.zero & MediaQuery.of(context).size),
+        buttonRect.height,
+      ),
+      child: FadeTransition(
+        opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+        child: Material(
+          elevation: elevation.toDouble(),
+          borderRadius: borderRadius,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 300, maxWidth: 340),
+            child: ListView(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              children: items.map((item) {
+                final bool isSelected = item.value == selected;
+                return InkWell(
+                  onTap: () {
+                    Navigator.pop(context, item.value);
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    color: isSelected ? EnvoyColors.accentPrimary : null,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 12),
+                    child: item.child,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DropdownRouteLayout extends SingleChildLayoutDelegate {
+  final RelativeRect position;
+  final double buttonHeight;
+
+  _DropdownRouteLayout(this.position, this.buttonHeight);
+
+  @override
+  BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
+    return constraints.loosen();
+  }
+
+  @override
+  Offset getPositionForChild(Size size, Size childSize) {
+    return Offset(position.left, position.top + buttonHeight);
+  }
+
+  @override
+  bool shouldRelayout(_DropdownRouteLayout oldDelegate) {
+    return position != oldDelegate.position ||
+        buttonHeight != oldDelegate.buttonHeight;
   }
 }
 
