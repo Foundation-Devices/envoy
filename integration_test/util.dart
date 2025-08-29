@@ -369,7 +369,7 @@ Future<void> findAndToggleSettingsSwitch(
   await tester.pump();
 
   // Tap the switch to toggle it
-  await tester.tap(switchFinder);
+  await tester.tap(switchFinder, warnIfMissed: false);
   await tester.pump(Durations.long2);
 }
 
@@ -778,7 +778,7 @@ Future<void> findAndPressBuyOptions(WidgetTester tester) async {
   expect(gestureDetectorFinder, findsOneWidget);
 
   // Tap the button
-  await tester.tap(gestureDetectorFinder);
+  await tester.tap(gestureDetectorFinder, warnIfMissed: false);
   await tester.pump(Durations.long2);
 }
 

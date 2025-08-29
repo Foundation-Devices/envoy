@@ -19,6 +19,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'util.dart';
 
 Future<void> main() async {
+  // Start the global timer
+  final Stopwatch stopwatch = Stopwatch()..start();
+
   final FlutterExceptionHandler? originalOnError = FlutterError.onError;
   FlutterError.onError = (FlutterErrorDetails details) {
     kPrint('FlutterError caught: ${details.exceptionAsString()}');
@@ -1993,4 +1996,10 @@ Future<void> main() async {
       );
     });
   });
+
+  // Stop the timer and print the elapsed time
+  stopwatch.stop();
+  debugPrint(
+    '⏱ Beefqa tests took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+  );
 }
