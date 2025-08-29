@@ -111,8 +111,9 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
           child: _FastDropdownButton<EnvoyDropdownOption>(
             elevation: EnvoySpacing.xs.toInt(),
             borderRadius: BorderRadius.circular(EnvoySpacing.small),
-            padding:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+            padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.medium1,
+                vertical: EnvoySpacing.medium1),
             onChanged: widget.isDropdownActive
                 ? (EnvoyDropdownOption? newValue) {
                     if (newValue == null ||
@@ -341,7 +342,10 @@ class _FastDropdownRoute<T> extends PopupRoute<T> {
           elevation: elevation.toDouble(),
           borderRadius: borderRadius,
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 300, maxWidth: 340),
+            constraints: BoxConstraints(
+              minWidth: buttonRect.width + 1, // +1 for border
+              maxWidth: buttonRect.width + 1,
+            ),
             child: ListView(
               padding: EdgeInsets.zero,
               shrinkWrap: true,
