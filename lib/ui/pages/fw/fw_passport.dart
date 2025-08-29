@@ -55,7 +55,7 @@ class FwPassportPage extends StatelessWidget {
               if (!onboarding) {
                 context.go("/");
               } else {
-                context.goNamed(PASSPORT_INTRO);
+                context.pushNamed(PASSPORT_INTRO);
               }
             }),
       ],

@@ -51,7 +51,7 @@ class FwAndroidInstructionsPage extends StatelessWidget {
               UpdatesManager().getStoredFirmware(deviceId).then((File file) {
                 FwUploader(file).getDirectoryContentPermission();
               }).then((value) {
-                router.goNamed(PASSPORT_UPDATE_SD_CARD, extra: fwPagePayload);
+                router.pushNamed(PASSPORT_UPDATE_SD_CARD, extra: fwPagePayload);
               }, onError: (ex) {
                 if (context.mounted) {
                   EnvoyToast(

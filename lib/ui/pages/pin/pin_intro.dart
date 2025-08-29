@@ -31,10 +31,10 @@ class PinIntroPage extends StatelessWidget {
             label: S().component_continue,
             onTap: () {
               if (mustUpdateFirmware) {
-                context.goNamed(PASSPORT_UPDATE,
+                context.pushNamed(PASSPORT_UPDATE,
                     extra: FwPagePayload(onboarding: true));
               } else {
-                context.goNamed(PASSPORT_INTRO);
+                context.pushNamed(PASSPORT_INTRO);
               }
             }),
       ],
