@@ -4,11 +4,22 @@
 
 import 'package:flutter/foundation.dart';
 
-const bool isTest = bool.fromEnvironment('IS_TEST', defaultValue: true);
-
 // A debug printing utility that prints the given message and optional stack trace in debug mode.
 void kPrint(Object? message, {StackTrace? stackTrace}) {
-  if (isTest) return; // silence all prints during integration tests
+  _kPrintImpl(message, stackTrace: stackTrace, silenceInTests: false);
+}
+
+// A debug printing utility that prints the given message except in the integration tests
+void kPrintTestSilent(Object? message, {StackTrace? stackTrace}) {
+  _kPrintImpl(message, stackTrace: stackTrace, silenceInTests: true);
+}
+
+// Internal implementation
+void _kPrintImpl(Object? message,
+    {StackTrace? stackTrace, required bool silenceInTests}) {
+  const bool isTest = bool.fromEnvironment('IS_TEST', defaultValue: false);
+
+  if (isTest && silenceInTests) return; // silence if requested during tests
 
   if (!kReleaseMode || !kProfileMode) {
     // ignore: avoid_print

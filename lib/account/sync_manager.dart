@@ -65,7 +65,7 @@ class SyncManager {
   }
 
   void startSync() {
-    kPrint("SyncManager: Starting sync");
+    kPrintTestSilent("SyncManager: Starting sync");
     _syncTimer =
         Timer.periodic(const Duration(seconds: _syncInterval), (timer) {
       if (NgAccountManager().accounts.isEmpty || _pauseSync) {
@@ -81,7 +81,7 @@ class SyncManager {
 
   // Expose sync for integration tests
   Future<void> sync() async {
-    kPrint("SyncManager: Manual sync() called");
+    kPrintTestSilent("SyncManager: Manual sync() called");
     await _syncAll();
   }
 
@@ -91,21 +91,22 @@ class SyncManager {
     int? port = Settings().getTorPort(account.network, server);
     try {
       if (account.handler != null) {
-        kPrint("SyncManager: Syncing single account ${account.name}");
+        kPrintTestSilent("SyncManager: Syncing single account ${account.name}");
         final futures = <Future>[];
         for (var descriptor in account.descriptors) {
           final request = await account.handler!
               .syncRequest(addressType: descriptor.addressType);
           futures.add(_performWalletSync(
               account, server, request, port, descriptor.addressType));
-          kPrint(
+          kPrintTestSilent(
               "SyncManager: added sync future for ${descriptor.addressType}");
         }
         await Future.wait(futures);
-        kPrint("SyncManager: Single Account Sync Finished ${account.name}");
+        kPrintTestSilent(
+            "SyncManager: Single Account Sync Finished ${account.name}");
       }
     } catch (e) {
-      kPrint("SyncManager: single error $e");
+      kPrintTestSilent("SyncManager: single error $e");
     }
   }
 
@@ -123,7 +124,8 @@ class SyncManager {
       if ((!syncTestnet && account.network == Network.testnet4) ||
           (!syncTestnet && account.network == Network.testnet) ||
           (!syncSignet && account.network == Network.signet)) {
-        kPrint("Skipping account ${account.name} | ${account.network}");
+        kPrintTestSilent(
+            "Skipping account ${account.name} | ${account.network}");
         continue;
       }
 
@@ -251,7 +253,7 @@ class SyncManager {
             await performFullScan(account.handler!, type, fullScanRequest);
           } catch (e, stack) {
             debugPrintStack(stackTrace: stack);
-            kPrint(
+            kPrintTestSilent(
                 "Error fullScan account ${account.name} | ${account.network}: $e");
             EnvoyReport().log(
                 "Error fullScan account ${account.name} | ${account.network}",
@@ -280,13 +282,13 @@ class SyncManager {
     final server = Settings().electrumAddress(account.network);
     int? port = Settings().getTorPort(account.network, server);
 
-    kPrint(
+    kPrintTestSilent(
         "🔍 PerformFullScan $addressType - ${account.name} | ${account.network} | $server | Tor: ${port != null} | request_disposed:${fullScanRequest.isDisposed}");
     _currentLoading.sink.add(Scanning(account.id));
 
     if (fullScanRequest.isDisposed) {
       _currentLoading.sink.add(None());
-      kPrint("FullScanRequest is disposed");
+      kPrintTestSilent("FullScanRequest is disposed");
       return;
     }
 
@@ -302,11 +304,11 @@ class SyncManager {
             .setAccountScanStatus(account.id, addressType, true);
       }
 
-      kPrint(
+      kPrintTestSilent(
           "✨Finished FullScan $addressType - ${account.name} | ${account.network} | $server | Tor: ${port != null}");
     } catch (e, stack) {
       debugPrintStack(stackTrace: stack);
-      kPrint(
+      kPrintTestSilent(
           "Error fullScan: $addressType - ${account.name} | ${account.network} | $server | Tor: $port $e");
       EnvoyReport().log(
           "Error fullScan: $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
@@ -322,7 +324,7 @@ class SyncManager {
     try {
       _currentLoading.sink.add(Syncing(account.id));
       DateTime time = DateTime.now();
-      kPrint(
+      kPrintTestSilent(
           "⏳Syncing account $addressType - ${account.name}| ${account.network} | $server  |Tor : $port");
       // Use the scheduler to run this task in the background
       final WalletUpdate update = await EnvoyAccountHandler.syncWallet(
@@ -337,14 +339,14 @@ class SyncManager {
         await account.handler!
             .applyUpdate(update: update, addressType: addressType);
 
-        kPrint(
+        kPrintTestSilent(
             "✨Finished Sync ${addressType.toString().split(".").last} - ${account.name} | ${account.network} | $server | Tor: ${port != null} | Time: ${duration.inMilliseconds / 1000} seconds");
       } else {
-        kPrint("Sync failed because account handler is null");
+        kPrintTestSilent("Sync failed because account handler is null");
       }
     } catch (e, stack) {
       debugPrintStack(stackTrace: stack);
-      kPrint(
+      kPrintTestSilent(
           "Error syncing $addressType - ${account.name} | ${account.network} | $server | Tor: $port $e");
       EnvoyReport().log(
           "Error applying sync $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
@@ -355,18 +357,18 @@ class SyncManager {
   }
 
   void dispose() {
-    kPrint("SyncManager: Disposing and cancelling timer");
+    kPrintTestSilent("SyncManager: Disposing and cancelling timer");
     _syncTimer.cancel();
     _currentLoading.close();
   }
 
   void pauseSync() {
-    kPrint("SyncManager: Pausing sync");
+    kPrintTestSilent("SyncManager: Pausing sync");
     _pauseSync = true;
   }
 
   void resumeSync() {
-    kPrint("SyncManager: Resuming sync");
+    kPrintTestSilent("SyncManager: Resuming sync");
     _pauseSync = false;
   }
 
@@ -407,7 +409,7 @@ class SyncManager {
     }
 
     final String result = buffer.toString();
-    kPrint(result);
+    kPrintTestSilent(result);
     return result;
   }
 }
