@@ -52,7 +52,7 @@ class AztecoVoucher {
   Future<AztecoVoucherRedeemResult> redeem(String address) async {
     String url = getRedeemUrl(address);
 
-    HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+    HttpTor http = HttpTor();
 
     Response? response;
 

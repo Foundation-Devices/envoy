@@ -111,8 +111,7 @@ out geom;
 ''';
 
     try {
-      final response =
-          await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+      final response = await HttpTor().get(
         overpassUrl,
         body: 'data=$query',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},

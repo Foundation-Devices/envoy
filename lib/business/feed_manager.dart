@@ -39,9 +39,7 @@ class FeedManager {
 
     _addVideosFromVimeo();
 
-    HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get("https://foundation.xyz/feed")
-        .then((response) {
+    HttpTor().get("https://foundation.xyz/feed").then((response) {
       RssFeed feed = RssFeed.parse(response.body);
       _addBlogPostsFromRssFeed(feed);
     }).catchError((error) {
@@ -54,7 +52,7 @@ class FeedManager {
     String videoPerPageString = "?per_page=$videosPerPage";
     String pageString = "&page=$page";
 
-    return await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+    return await HttpTor().get(
       "https://api.vimeo.com/users/$vimeoAccountId/videos$videoPerPageString$pageString",
       headers: {'authorization': "bearer $vimeoToken"},
     );

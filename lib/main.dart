@@ -35,9 +35,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http_tor/http_tor.dart';
 import 'package:rive/rive.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:tor/tor.dart';
+import 'package:http_tor/http_tor.dart';
 
 import 'business/feed_manager.dart';
 import 'business/fees.dart';
@@ -91,7 +93,7 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
     await NgAccountManager().restore();
   }
   await NTPUtil.init();
-  EnvoyScheduler.init();
+  await EnvoyScheduler.init();
   await KeysManager.init();
   await Settings.restore();
   await ExchangeRate.init();
@@ -105,7 +107,8 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   }
 
   EnvoyReport().init();
-  Tor.init(enabled: Settings().torEnabled());
+  await Tor.init(enabled: Settings().torEnabled());
+  await HttpTor.init(Tor.instance, EnvoyScheduler().parallel);
   UpdatesManager.init();
   ScvServer.init();
   await EnvoySeed.init();

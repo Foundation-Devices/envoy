@@ -337,7 +337,7 @@ class Notifications {
 
   Future<({String version, DateTime publishedAt})>
       fetchLatestEnvoyVersionFromGit() async {
-    HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+    HttpTor http = HttpTor();
     final response = await http.get(
         'https://api.github.com/repos/Foundation-Devices/envoy/releases/latest',
         headers: {'User-Agent': 'request'});

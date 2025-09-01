@@ -96,15 +96,14 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
     getApplicationDocumentsDirectory().then((dir) {
       streamFile = File("${dir.path}/stream.mp4");
-      HttpTor(Tor.instance, EnvoyScheduler().parallel)
-          .getFile(streamFile.path, _getDownloadLink())
-          .then((download) {
+      HttpTor().getFile(streamFile.path, _getDownloadLink()).then((download) {
         _cancelDownload = download.cancel;
-        _downloadProgressSubscription = download.progress.listen((progress) {
+        _downloadProgressSubscription =
+            download.progress.stream.listen((progress) {
           setState(() {
             _downloadProgress = progress.downloaded / progress.total;
           });
-          if (progress.downloaded > _playThreshold ||
+          if (progress.downloaded.toInt() > _playThreshold ||
               progress.downloaded >= progress.total) {
             if (_controller == null) {
               _controller = VlcPlayerController.file(streamFile,
@@ -126,7 +125,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
           } else {
             // Update the loading circle
             setState(() {
-              _downloaded = progress.downloaded;
+              _downloaded = progress.downloaded.toInt();
             });
           }
         });

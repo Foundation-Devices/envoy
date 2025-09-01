@@ -172,8 +172,7 @@ class BlogPostCardState extends State<BlogPostCard> {
                   future: Future(() async {
                     final document = html_parser.parse(widget.blog.description);
                     final imageTags = document.getElementsByTagName('img');
-                    final torClient =
-                        HttpTor(Tor.instance, EnvoyScheduler().parallel);
+                    final torClient = HttpTor();
 
                     for (final imgTag in imageTags) {
                       imgTag.attributes['width'] = 'auto';

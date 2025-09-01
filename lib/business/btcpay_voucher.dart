@@ -82,7 +82,7 @@ class BtcPayVoucher {
   Future<BtcPayVoucherRedeemResult> getinfo() async {
     String url = "https://$uri/api/v1/pull-payments/$pullPaymentId";
 
-    HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+    HttpTor http = HttpTor();
 
     Response? response;
 
@@ -120,7 +120,7 @@ class BtcPayVoucher {
   Future<BtcPayVoucherRedeemResult> createPayout(String address) async {
     String url = "https://$uri/api/v1/pull-payments/$pullPaymentId/payouts";
 
-    HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+    HttpTor http = HttpTor();
 
     Response? response;
     Map<String, dynamic> data = {
@@ -215,7 +215,7 @@ DateTime? convertUnixTimestampToDateTime(int? unixTimestamp) {
 
 Future<String?> checkPayoutStatus(
     String uri, String pullPaymentId, String payoutId) async {
-  var response = await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+  var response = await HttpTor().get(
     "https://$uri/api/v1/pull-payments/$pullPaymentId/payouts/$payoutId",
   );
   var data = jsonDecode(response.body);

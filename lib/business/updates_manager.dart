@@ -57,8 +57,7 @@ class UpdatesManager {
       return;
     }
 
-    final response =
-        await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(fw.url);
+    final response = await HttpTor().get(fw.url);
     final bytes = response.bodyBytes;
 
     _verifyChecksum(bytes, fw.md5, () => md5, 'MD5');

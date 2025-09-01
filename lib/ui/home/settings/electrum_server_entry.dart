@@ -259,8 +259,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
 
   Future<void> _checkEsploraServer(String address) async {
     try {
-      final response = await HttpTor(Tor.instance, EnvoyScheduler().parallel)
-          .get(('$address/blocks/tip/height'));
+      final response = await HttpTor().get(('$address/blocks/tip/height'));
       if (response.statusCode == 200) {
         final responseBody = response.body;
         final blockHeight = int.tryParse(responseBody);

@@ -23,7 +23,7 @@ Future<bool> getSatsForSignetAccount(int sats, Account account) async {
 
 Future<bool> getSatsFromSignetFaucet(int sats, String address) async {
   String url = 'https://faucet.mutinynet.com/api/onchain';
-  HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+  HttpTor http = HttpTor();
   Map<String, dynamic> data = {
     "sats": sats,
     "address": address,

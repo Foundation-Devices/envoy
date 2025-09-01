@@ -104,7 +104,7 @@ class RampWidget {
 }
 
 Future<String?> checkPurchase(String id, String purchaseViewToken) async {
-  var response = await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+  var response = await HttpTor().get(
     "https://api.ramp.network/api/host-api/purchase/$id?secret=$purchaseViewToken",
   );
   var data = jsonDecode(response.body);

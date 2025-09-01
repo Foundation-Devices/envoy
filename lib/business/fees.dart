@@ -164,9 +164,7 @@ class Fees {
   }
 
   void _getMempoolRecommendedRates(Network network) {
-    HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get(_mempoolRecommendedFeesEndpoints[network]!)
-        .then((response) {
+    HttpTor().get(_mempoolRecommendedFeesEndpoints[network]!).then((response) {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
 
@@ -187,9 +185,7 @@ class Fees {
   }
 
   void _getMempoolBlocksFees(Network network) {
-    HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get(_mempoolBlocksFeesEndpoints[network]!)
-        .then((response) {
+    HttpTor().get(_mempoolBlocksFeesEndpoints[network]!).then((response) {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         for (final block in json) {

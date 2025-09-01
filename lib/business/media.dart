@@ -45,9 +45,7 @@ class Media {
   }
 
   Future<void> _fetchThumbnail() async {
-    HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get(thumbnailUrl!)
-        .then((response) async {
+    HttpTor().get(thumbnailUrl!).then((response) async {
       await LocalStorage().saveFileBytes(
           "$thumbnailsFolder/${thumbnailHash!}", response.bodyBytes);
     });

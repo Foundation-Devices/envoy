@@ -96,7 +96,7 @@ class ExchangeRate extends ChangeNotifier {
   double? get usdRate => _usdRate;
   FiatCurrency? _selectedCurrency;
 
-  final HttpTor _http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+  final HttpTor _http = HttpTor();
   final String _serverAddress = Settings().nguServerAddress;
 
   static final ExchangeRate _instance = ExchangeRate._internal();
