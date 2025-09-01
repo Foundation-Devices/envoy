@@ -365,7 +365,9 @@ class Settings extends ChangeNotifier {
     store();
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   bool nodeChangedInAdvanced = false;
+  @JsonKey(includeFromJson: false, includeToJson: false)
   bool torChangedInAdvanced = false;
 
   // ENV-989: Trigger settings to show all restored accounts.
