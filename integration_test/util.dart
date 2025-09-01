@@ -74,7 +74,8 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester,
 
   if (selectFirstCountryAvailable) {
     final dropdownItems = find.byType(DropdownMenuItem<EnvoyDropdownOption>);
-    await tester.tap(dropdownItems.at(1)); // Tap at first state
+    await tester.tap(dropdownItems.at(1),
+        warnIfMissed: false); // Tap at first state
   }
 
   if (!selectFirstCountryAvailable) {
@@ -368,7 +369,7 @@ Future<void> findAndToggleSettingsSwitch(
   await tester.pump();
 
   // Tap the switch to toggle it
-  await tester.tap(switchFinder);
+  await tester.tap(switchFinder, warnIfMissed: false);
   await tester.pump(Durations.long2);
 }
 
@@ -777,7 +778,7 @@ Future<void> findAndPressBuyOptions(WidgetTester tester) async {
   expect(gestureDetectorFinder, findsOneWidget);
 
   // Tap the button
-  await tester.tap(gestureDetectorFinder);
+  await tester.tap(gestureDetectorFinder, warnIfMissed: false);
   await tester.pump(Durations.long2);
 }
 
@@ -827,7 +828,7 @@ Future<void> checkForToast(WidgetTester tester) async {
           offset.dx <= 400 &&
           offset.dy <= 800) {
         await tester.pump(Durations.long2);
-        await tester.tap(closeToastButton.last);
+        await tester.tap(closeToastButton.last, warnIfMissed: false);
         await tester.pump(Durations.long2);
       } else {
         kPrint('The close button is off-screen and cannot be tapped.');
@@ -1074,10 +1075,10 @@ Future<void> findAndPressWidget<T extends Widget>(
 
   if (findFirst) {
     expect(finder, findsWidgets); // allows multiple widgets
-    await tester.tap(finder.first);
+    await tester.tap(finder.first, warnIfMissed: false);
   } else {
     expect(finder, findsOneWidget); // only one widget expected
-    await tester.tap(finder);
+    await tester.tap(finder, warnIfMissed: false);
   }
 
   await tester.pump(Durations.long2);
