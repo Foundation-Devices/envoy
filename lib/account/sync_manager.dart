@@ -309,7 +309,7 @@ class SyncManager {
       }
 
       kPrint(
-          "✨Finished FullScan $addressType - ${account.name} | ${account.network} | $server | Tor: ${port != null}"),
+          "✨Finished FullScan $addressType - ${account.name} | ${account.network} | $server | Tor: ${port != null}",
           silenceInTests: true);
       // Let ConnectivityManager know that we've successfully synced
       if (account.network == Network.bitcoin) {
@@ -355,7 +355,7 @@ class SyncManager {
             .applyUpdate(update: update, addressType: addressType);
 
         kPrint(
-            "✨Finished Sync ${addressType.toString().split(".").last} - ${account.name} | ${account.network} | $server | Tor: ${port != null} | Time: ${duration.inMilliseconds / 1000} seconds"),
+            "✨Finished Sync ${addressType.toString().split(".").last} - ${account.name} | ${account.network} | $server | Tor: ${port != null} | Time: ${duration.inMilliseconds / 1000} seconds",
             silenceInTests: true);
         // Let ConnectivityManager know that we've successfully synced
         if (account.network == Network.bitcoin) {
