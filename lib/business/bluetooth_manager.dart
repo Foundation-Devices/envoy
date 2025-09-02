@@ -188,6 +188,10 @@ class BluetoothManager {
   }
 
   static Future<bool> isBluetoothDenied() async {
+    if (Platform.isLinux) {
+      return false;
+    }
+
     bool isDenied = true;
     if (Platform.isAndroid) {
       isDenied = await Permission.bluetooth.isDenied ||

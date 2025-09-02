@@ -15,6 +15,7 @@ PACKAGES=(
     "packages/ngwallet"
     "packages/bluart"
     "packages/shards"
+    "packages/http_tor"
 )
 
 for PACKAGE_DIR in "${PACKAGES[@]}"; do
