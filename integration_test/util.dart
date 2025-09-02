@@ -75,9 +75,9 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester,
   await tester.pump(Durations.long2);
 
   if (selectFirstCountryAvailable) {
-    final dropdownItems = find.byType(DropdownMenuItem<EnvoyDropdownOption>);
-    await tester.tap(dropdownItems.at(1),
-        warnIfMissed: false); // Tap at first state
+    final selectStateFinder = find.text('Alaska');
+    expect(selectStateFinder, findsOneWidget);
+    await tester.tap(selectStateFinder);
   }
 
   if (!selectFirstCountryAvailable) {
