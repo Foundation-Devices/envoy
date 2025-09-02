@@ -194,6 +194,7 @@ class _AdvancedSettingsOptionsState
                                             icon: EnvoyIcons.performance,
                                             isActive: _betterPerformance,
                                             onSelect: (isActive) {
+                                              Settings().torChangedInAdvanced;
                                               setState(() {
                                                 _betterPerformance = true;
                                               });
@@ -211,6 +212,7 @@ class _AdvancedSettingsOptionsState
                                             icon: EnvoyIcons.privacy,
                                             isActive: !_betterPerformance,
                                             onSelect: (isActive) {
+                                              Settings().torChangedInAdvanced;
                                               setState(() {
                                                 _betterPerformance = false;
                                               });
@@ -335,6 +337,8 @@ class _AdvancedSettingsOptionsState
     if (newOption.value == "break") {
       return;
     }
+
+    Settings().nodeChangedInAdvanced = true;
     LocalStorage().prefs.setString("electrumServerType", newOption.value);
     if (newOption.value == "foundation") {
       Settings().useDefaultElectrumServer(true);
