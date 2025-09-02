@@ -269,7 +269,7 @@ class EnvoySeed {
     backupData = await processBackupData(backupData, cloud);
     return Backup.perform(
             backupData, seed, Settings().envoyServerAddress, Tor.instance,
-            path: encryptedBackupFilePath, cloud: false)
+            path: encryptedBackupFilePath, cloud: cloud)
         .then((success) async {
       if (cloud && success) {
         // Only notify if we are doing an online backup
