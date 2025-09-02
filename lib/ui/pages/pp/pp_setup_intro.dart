@@ -12,7 +12,6 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class PpSetupIntroPage extends StatelessWidget {
   const PpSetupIntroPage({super.key});
@@ -43,16 +42,6 @@ class PpSetupIntroPage extends StatelessWidget {
           ),
         ),
         automaticallyImplyLeading: false,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(EnvoySpacing.medium1),
-            child: GestureDetector(
-                onTap: () {
-                  context.go("/");
-                },
-                child: const Icon(Icons.close_rounded)),
-          )
-        ],
       ),
       shield: Padding(
           padding: const EdgeInsets.symmetric(

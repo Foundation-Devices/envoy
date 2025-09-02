@@ -58,14 +58,14 @@ class FwMicrosdPage extends ConsumerWidget {
                 await FwUploader(firmwareFile).upload();
 
                 if (Platform.isIOS && context.mounted) {
-                  context.goNamed(PASSPORT_UPDATE_IOS_SUCCESS,
+                  context.pushNamed(PASSPORT_UPDATE_IOS_SUCCESS,
                       extra: fwPagePayload);
                 }
 
                 if (Platform.isAndroid) {
                   await Future.delayed(const Duration(milliseconds: 500));
                   if (context.mounted) {
-                    context.goNamed(PASSPORT_UPDATE_ANDROID,
+                    context.pushNamed(PASSPORT_UPDATE_ANDROID,
                         extra: fwPagePayload);
                   }
                 }
@@ -76,10 +76,10 @@ class FwMicrosdPage extends ConsumerWidget {
                 if (Platform.isIOS &&
                     context.mounted) // TODO: this needs to be smarter
                   // ignore: curly_braces_in_flow_control_structures
-                  context.goNamed(PASSPORT_UPDATE_IOS_INSTRUCTION,
+                  context.pushNamed(PASSPORT_UPDATE_IOS_INSTRUCTION,
                       extra: fwPagePayload);
                 if (Platform.isAndroid && context.mounted) {
-                  context.goNamed(PASSPORT_UPDATE_ANDROID_INSTRUCTION,
+                  context.pushNamed(PASSPORT_UPDATE_ANDROID_INSTRUCTION,
                       extra: fwPagePayload);
                 }
               }

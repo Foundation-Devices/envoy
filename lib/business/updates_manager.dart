@@ -8,7 +8,6 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/server.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -17,7 +16,6 @@ import 'package:http_tor/http_tor.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pub_semver/pub_semver.dart';
-import 'package:tor/tor.dart';
 
 class UpdatesManager {
   static final UpdatesManager _instance = UpdatesManager._internal();
@@ -57,8 +55,7 @@ class UpdatesManager {
       return;
     }
 
-    final response =
-        await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(fw.url);
+    final response = await HttpTor().get(fw.url);
     final bytes = response.bodyBytes;
 
     _verifyChecksum(bytes, fw.md5, () => md5, 'MD5');

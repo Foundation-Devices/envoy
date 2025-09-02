@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:envoy/ui/components/envoy_scaffold.dart';
 
 class AdvancedSettingsOptions extends ConsumerStatefulWidget {
   const AdvancedSettingsOptions({super.key});
@@ -50,21 +51,25 @@ class _AdvancedSettingsOptionsState
       context: context,
       child: Material(
         color: Colors.transparent,
-        child: Scaffold(
-            resizeToAvoidBottomInset: true,
-            appBar: AppBar(
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              leading: CupertinoNavigationBarBackButton(
-                color: Colors.white,
-                onPressed: context.pop,
-              ),
-              flexibleSpace: SafeArea(
+        child: EnvoyScaffold(
+            hasScrollBody: true,
+            extendBody: true,
+            extendBodyBehindAppBar: false,
+            removeAppBarPadding: false,
+            resizeToAvoidBottomInset: false,
+            topBarLeading: CupertinoNavigationBarBackButton(
+              color: Colors.white,
+              onPressed: context.pop,
+            ),
+            topBarActions: [const SizedBox(width: 56)],
+            topBarTitle: Align(
+              alignment: Alignment.center,
+              child: SafeArea(
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
                     const SizedBox(
-                      height: 100,
+                      height: 50,
                       child: IndicatorShield(),
                     ),
                     Text(
@@ -80,248 +85,244 @@ class _AdvancedSettingsOptionsState
                 ),
               ),
             ),
-            body: background(
-                context: context,
-                child: Hero(
-                    tag: "shield",
-                    child: Shield(
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: EnvoySpacing.medium1),
-                          child: FadingEdgeScrollView.fromSingleChildScrollView(
-                              gradientFractionOnStart: 0.03,
-                              gradientFractionOnEnd: 0.06,
-                              child: SingleChildScrollView(
-                                reverse: true,
-                                controller: _scrollController,
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(
-                                        EnvoySpacing.medium1),
-                                    child: Column(
+            child: Stack(children: [
+              AppBackground(
+                showRadialGradient: true,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: EnvoySpacing.small,
+                    left: EnvoySpacing.xs,
+                    right: EnvoySpacing.xs,
+                    bottom: EnvoySpacing.large1),
+                child: Shield(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                      child: FadingEdgeScrollView.fromSingleChildScrollView(
+                          gradientFractionOnStart: 0.03,
+                          gradientFractionOnEnd: 0.06,
+                          child: SingleChildScrollView(
+                            reverse: true,
+                            controller: _scrollController,
+                            child: Material(
+                              color: Colors.transparent,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.all(EnvoySpacing.medium1),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: EnvoySpacing.medium1),
+                                      child: SettingsHeader(
+                                        //TODO: copy update
+                                        title: "Magic Backups",
+                                        linkText: S().component_learnMore,
+                                        onTap: () {
+                                          launchUrl(
+                                              Uri.parse(
+                                                  "https://docs.foundation.xyz/backups/envoy/"
+                                                  ""),
+                                              mode: LaunchMode
+                                                  .externalApplication);
+                                        },
+                                        icon: EnvoyIcons.shield,
+                                      ),
+                                    ),
+                                    Column(
                                       children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: EnvoySpacing.medium1),
-                                          child: SettingsHeader(
-                                            //TODO: copy update
-                                            title: "Magic Backups",
-                                            linkText: S().component_learnMore,
-                                            onTap: () {
-                                              launchUrl(
-                                                  Uri.parse(
-                                                      "https://docs.foundation.xyz/backups/envoy/"
-                                                      ""),
-                                                  mode: LaunchMode
-                                                      .externalApplication);
-                                            },
-                                            icon: EnvoyIcons.shield,
-                                          ),
-                                        ),
-                                        Column(
-                                          children: [
-                                            ListTile(
-                                              leading: Text(
-                                                S().onboarding_advanced_magicBackupSwitchText,
-                                                style: EnvoyTypography.info
-                                                    .copyWith(
-                                                  color:
-                                                      EnvoyColors.textPrimary,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                              trailing: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 2),
-                                                child: EnvoyToggle(
-                                                  value: Settings().syncToCloud,
-                                                  onChanged:
-                                                      (bool value) async {
-                                                    setState(() {
-                                                      Settings().setSyncToCloud(
-                                                          value);
-                                                    });
-                                                  },
-                                                ),
-                                              ),
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: EnvoySpacing.medium1,
-                                              ),
+                                        ListTile(
+                                          leading: Text(
+                                            S().onboarding_advanced_magicBackupSwitchText,
+                                            style:
+                                                EnvoyTypography.info.copyWith(
+                                              color: EnvoyColors.textPrimary,
+                                              fontWeight: FontWeight.w600,
                                             ),
-                                            Text(
-                                                S()
-                                                    .onboarding_advanced_magicBackupsContent,
-                                                style: EnvoyTypography.info
-                                                    .copyWith(
-                                                  color:
-                                                      EnvoyColors.textSecondary,
-                                                ))
-                                          ],
-                                        ),
-                                        buildDivider(),
-                                        SettingsHeader(
-                                          title: S().privacy_privacyMode_title,
-                                          linkText: S().component_learnMore,
-                                          onTap: () {
-                                            launchUrl(
-                                                Uri.parse(
-                                                    "https://docs.foundation.xyz/envoy/envoy-menu/privacy/#privacy-mode"),
-                                                mode: LaunchMode
-                                                    .externalApplication);
-                                          },
-                                          icon: EnvoyIcons.privacy,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: EnvoySpacing.medium2),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              BigTab(
-                                                label: S()
-                                                    .privacy_privacyMode_betterPerformance,
-                                                icon: EnvoyIcons.performance,
-                                                isActive: _betterPerformance,
-                                                onSelect: (isActive) {
-                                                  setState(() {
-                                                    _betterPerformance = true;
-                                                  });
-                                                  ref
-                                                          .read(
-                                                              torEnabledProvider
-                                                                  .notifier)
-                                                          .state =
-                                                      !_betterPerformance;
-                                                  Settings().setTorEnabled(
-                                                      !_betterPerformance);
-                                                },
-                                              ),
-                                              BigTab(
-                                                label: S()
-                                                    .privacy_privacyMode_improvedPrivacy,
-                                                icon: EnvoyIcons.privacy,
-                                                isActive: !_betterPerformance,
-                                                onSelect: (isActive) {
-                                                  setState(() {
-                                                    _betterPerformance = false;
-                                                  });
-                                                  ref
-                                                          .read(
-                                                              torEnabledProvider
-                                                                  .notifier)
-                                                          .state =
-                                                      !_betterPerformance;
-                                                  Settings().setTorEnabled(
-                                                      !_betterPerformance);
-                                                },
-                                              ),
-                                            ],
                                           ),
-                                        ),
-                                        LinkText(
-                                            textAlign: TextAlign.start,
-                                            text: _betterPerformance
-                                                ? S()
-                                                    .privacy_privacyMode_torSuggestionOff
-                                                : S()
-                                                    .privacy_privacyMode_torSuggestionOn,
-                                            textStyle: EnvoyTypography.info
-                                                .copyWith(
-                                                    color: EnvoyColors
-                                                        .textSecondary),
-                                            linkStyle: EnvoyTypography.info
-                                                .copyWith(
-                                                    color:
-                                                        _betterPerformance
-                                                            ? EnvoyColors
-                                                                .accentSecondary
-                                                            : EnvoyColors
-                                                                .accentPrimary)),
-                                        buildDivider(),
-                                        SettingsHeader(
-                                          title: S().privacy_node_title,
-                                          linkText: S().component_learnMore,
-                                          onTap: () {
-                                            launchUrl(
-                                                Uri.parse(
-                                                    "https://docs.foundation.xyz/envoy/envoy-menu/privacy/#node"),
-                                                mode: LaunchMode
-                                                    .externalApplication);
-                                          },
-                                          icon: EnvoyIcons.node,
-                                        ),
-                                        const SizedBox(
-                                            height: EnvoySpacing.medium2),
-                                        Material(
-                                            color: Colors.transparent,
-                                            child: EnvoyDropdown(
-                                              initialIndex:
-                                                  getInitialElectrumDropdownIndex(),
-                                              options: [
-                                                EnvoyDropdownOption(
-                                                    label: S()
-                                                        .privacy_node_nodeType_foundation,
-                                                    value: "foundation"),
-                                                EnvoyDropdownOption(
-                                                    label: S()
-                                                        .privacy_node_nodeType_personal,
-                                                    value: "personalNode"),
-                                                EnvoyDropdownOption(
-                                                    label: S()
-                                                        .privacy_node_nodeType_publicServers,
-                                                    value: "break",
-                                                    type:
-                                                        EnvoyDropdownOptionType
-                                                            .sectionBreak),
-                                                EnvoyDropdownOption(
-                                                    label: PublicServer
-                                                        .blockstream.label,
-                                                    value: "blockStream"),
-                                                EnvoyDropdownOption(
-                                                    label: PublicServer
-                                                        .diyNodes.label,
-                                                    value: "diyNodes"),
-                                              ],
-                                              onOptionChanged:
-                                                  (selectedOption) {
-                                                if (selectedOption != null) {
-                                                  _handleDropdownChange(
-                                                      selectedOption);
-                                                }
-                                              },
-                                            )),
-                                        if (_showPersonalNodeTextField)
-                                          Padding(
+                                          trailing: Padding(
                                             padding: const EdgeInsets.only(
-                                                top: EnvoySpacing.medium1),
-                                            child: SingleChildScrollView(
-                                                child: ElectrumServerEntry(
-                                                    s.customElectrumAddress,
-                                                    s.setCustomElectrumAddress)),
+                                                bottom: 2),
+                                            child: EnvoyToggle(
+                                              value: Settings().syncToCloud,
+                                              onChanged: (bool value) async {
+                                                setState(() {
+                                                  Settings()
+                                                      .setSyncToCloud(value);
+                                                });
+                                              },
+                                            ),
                                           ),
-                                        if (keyboardHeight != 0.0 &&
-                                            bottomPadding > 0)
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                bottom: bottomPadding),
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                            vertical: EnvoySpacing.medium1,
                                           ),
-                                        Container(
-                                          height: 40,
-                                          color: Colors.transparent,
-                                        )
+                                        ),
+                                        Text(
+                                            S().onboarding_advanced_magicBackupsContent,
+                                            style: EnvoyTypography.info.copyWith(
+                                              color: EnvoyColors.textSecondary,
+                                            ))
                                       ],
                                     ),
-                                  ),
+                                    buildDivider(),
+                                    SettingsHeader(
+                                      title: S().privacy_privacyMode_title,
+                                      linkText: S().component_learnMore,
+                                      onTap: () {
+                                        launchUrl(
+                                            Uri.parse(
+                                                "https://docs.foundation.xyz/envoy/envoy-menu/privacy/#privacy-mode"),
+                                            mode:
+                                                LaunchMode.externalApplication);
+                                      },
+                                      icon: EnvoyIcons.privacy,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: EnvoySpacing.medium2),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          BigTab(
+                                            label: S()
+                                                .privacy_privacyMode_betterPerformance,
+                                            icon: EnvoyIcons.performance,
+                                            isActive: _betterPerformance,
+                                            onSelect: (isActive) {
+                                              setState(() {
+                                                _betterPerformance = true;
+                                              });
+                                              ref
+                                                  .read(torEnabledProvider
+                                                      .notifier)
+                                                  .state = !_betterPerformance;
+                                              Settings().setTorEnabled(
+                                                  !_betterPerformance);
+                                            },
+                                          ),
+                                          BigTab(
+                                            label: S()
+                                                .privacy_privacyMode_improvedPrivacy,
+                                            icon: EnvoyIcons.privacy,
+                                            isActive: !_betterPerformance,
+                                            onSelect: (isActive) {
+                                              setState(() {
+                                                _betterPerformance = false;
+                                              });
+                                              ref
+                                                  .read(torEnabledProvider
+                                                      .notifier)
+                                                  .state = !_betterPerformance;
+                                              Settings().setTorEnabled(
+                                                  !_betterPerformance);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    LinkText(
+                                        textAlign: TextAlign.start,
+                                        text: _betterPerformance
+                                            ? S()
+                                                .privacy_privacyMode_torSuggestionOff
+                                            : S()
+                                                .privacy_privacyMode_torSuggestionOn,
+                                        textStyle: EnvoyTypography.info
+                                            .copyWith(
+                                                color: EnvoyColors
+                                                    .textSecondary),
+                                        linkStyle: EnvoyTypography.info
+                                            .copyWith(
+                                                color: _betterPerformance
+                                                    ? EnvoyColors
+                                                        .accentSecondary
+                                                    : EnvoyColors
+                                                        .accentPrimary)),
+                                    buildDivider(),
+                                    SettingsHeader(
+                                      title: S().privacy_node_title,
+                                      linkText: S().component_learnMore,
+                                      onTap: () {
+                                        launchUrl(
+                                            Uri.parse(
+                                                "https://docs.foundation.xyz/envoy/envoy-menu/privacy/#node"),
+                                            mode:
+                                                LaunchMode.externalApplication);
+                                      },
+                                      icon: EnvoyIcons.node,
+                                    ),
+                                    const SizedBox(
+                                        height: EnvoySpacing.medium2),
+                                    Material(
+                                        color: Colors.transparent,
+                                        child: EnvoyDropdown(
+                                          initialIndex:
+                                              getInitialElectrumDropdownIndex(),
+                                          options: [
+                                            EnvoyDropdownOption(
+                                                label: S()
+                                                    .privacy_node_nodeType_foundation,
+                                                value: "foundation"),
+                                            EnvoyDropdownOption(
+                                                label: S()
+                                                    .privacy_node_nodeType_personal,
+                                                value: "personalNode"),
+                                            EnvoyDropdownOption(
+                                                label: S()
+                                                    .privacy_node_nodeType_publicServers,
+                                                value: "break",
+                                                type: EnvoyDropdownOptionType
+                                                    .sectionBreak),
+                                            EnvoyDropdownOption(
+                                                label: PublicServer
+                                                    .blockstream.label,
+                                                value: "blockStream"),
+                                            EnvoyDropdownOption(
+                                                label:
+                                                    PublicServer.diyNodes.label,
+                                                value: "diyNodes"),
+                                          ],
+                                          onOptionChanged: (selectedOption) {
+                                            if (selectedOption != null) {
+                                              _handleDropdownChange(
+                                                  selectedOption);
+                                            }
+                                          },
+                                        )),
+                                    if (_showPersonalNodeTextField)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: EnvoySpacing.medium1),
+                                        child: SingleChildScrollView(
+                                            child: ElectrumServerEntry(
+                                                s.customElectrumAddress,
+                                                s.setCustomElectrumAddress)),
+                                      ),
+                                    if (keyboardHeight != 0.0 &&
+                                        bottomPadding > 0)
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom: bottomPadding),
+                                      ),
+                                    Container(
+                                      height: keyboardHeight != 0.0 ? 180 : 0,
+                                      color: Colors.transparent,
+                                    )
+                                  ],
                                 ),
-                              )),
-                        ),
-                      ),
-                    )))),
+                              ),
+                            ),
+                          )),
+                    ),
+                  ),
+                ),
+              ),
+            ])),
       ),
     );
   }

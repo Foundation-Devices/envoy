@@ -9,16 +9,14 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:tor/tor.dart';
 import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:foundation_api/foundation_api.dart';
 
 // Generated
 part 'scv_server.g.dart';
 
 class ScvServer {
-  static HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+  static HttpTor http = HttpTor();
   static String serverAddress = "https://validate.foundation.xyz";
   static String primeSecurityCheckUrl = "https://security-check.foundation.xyz";
 
@@ -84,7 +82,7 @@ class ScvServer {
       return challenge;
     } else {
       EnvoyReport().log("scv",
-          "Failed to get challenge,status: ${response.code},body: ${response.body}");
+          "Failed to get challenge,status: ${response.statusCode},body: ${response.body}");
       throw Exception('Failed to get challenge');
     }
   }
@@ -114,7 +112,7 @@ class ScvServer {
       return json['isValidated'] == true;
     } else {
       EnvoyReport().log("scv",
-          "Failed to validate challenge,status: ${response.code},body: ${response.body}");
+          "Failed to validate challenge,status: ${response.statusCode},body: ${response.body}");
       return false;
     }
   }
