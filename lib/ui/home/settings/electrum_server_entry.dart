@@ -6,7 +6,6 @@ import 'dart:async';
 
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/node_url.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/text_field.dart';

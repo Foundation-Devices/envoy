@@ -4,9 +4,7 @@
 
 import 'package:envoy/business/local_storage.dart';
 import 'package:crypto/crypto.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:http_tor/http_tor.dart';
-import 'package:tor/tor.dart';
 
 class Media {
   final String title;

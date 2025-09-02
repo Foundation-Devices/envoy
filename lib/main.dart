@@ -39,7 +39,6 @@ import 'package:http_tor/http_tor.dart';
 import 'package:rive/rive.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:tor/tor.dart';
-import 'package:http_tor/http_tor.dart';
 
 import 'business/feed_manager.dart';
 import 'business/fees.dart';

@@ -9,9 +9,7 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:tor/tor.dart';
 import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:foundation_api/foundation_api.dart';
 
 // Generated

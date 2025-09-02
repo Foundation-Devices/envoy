@@ -13,11 +13,9 @@ import 'package:ramp_flutter/offramp_sale.dart';
 import 'package:ramp_flutter/onramp_purchase.dart';
 import 'package:ramp_flutter/ramp_flutter.dart';
 import 'package:ramp_flutter/send_crypto_payload.dart';
-import 'package:tor/tor.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/home/cards/purchase_completed.dart';
 import 'package:envoy/ui/shield.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class RampWidget {

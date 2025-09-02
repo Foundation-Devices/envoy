@@ -10,8 +10,6 @@ import 'package:envoy/util/console.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
-import 'package:tor/tor.dart';
-import 'package:envoy/business/scheduler.dart';
 
 typedef PatchBinary = ({Uint8List binary, PrimePatch patch});
 

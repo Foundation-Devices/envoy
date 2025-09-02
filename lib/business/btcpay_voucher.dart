@@ -8,8 +8,6 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:tor/tor.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'dart:async';
 import 'package:envoy/util/envoy_storage.dart';
 

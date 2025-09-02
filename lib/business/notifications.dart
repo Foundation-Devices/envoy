@@ -17,10 +17,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
-import 'package:tor/tor.dart';
 import 'dart:convert';
 import 'package:envoy/business/account.dart';
-import 'package:envoy/business/scheduler.dart';
 
 part 'notifications.g.dart';
 

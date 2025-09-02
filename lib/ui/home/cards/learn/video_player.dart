@@ -8,13 +8,11 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http_tor/http_tor.dart';
-import 'package:tor/tor.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:envoy/business/video.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class FullScreenVideoPlayer extends StatefulWidget {

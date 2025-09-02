@@ -15,9 +15,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:flutter/services.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:intl/intl.dart';
-import 'package:tor/tor.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/locale.dart';
 
 class FiatCurrency {
