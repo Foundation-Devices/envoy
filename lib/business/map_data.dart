@@ -9,9 +9,7 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:tor/tor.dart';
 import 'package:http_tor/http_tor.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'dart:core';
 
 class MapData {
@@ -111,8 +109,7 @@ out geom;
 ''';
 
     try {
-      final response =
-          await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+      final response = await HttpTor().get(
         overpassUrl,
         body: 'data=$query',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},

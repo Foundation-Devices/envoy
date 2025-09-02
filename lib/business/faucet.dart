@@ -5,9 +5,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/business/account.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:http_tor/http_tor.dart';
-import 'package:tor/tor.dart';
 import 'package:envoy/util/console.dart';
 
 Future<bool> getSatsForSignetAccount(int sats, Account account) async {
@@ -23,7 +21,7 @@ Future<bool> getSatsForSignetAccount(int sats, Account account) async {
 
 Future<bool> getSatsFromSignetFaucet(int sats, String address) async {
   String url = 'https://faucet.mutinynet.com/api/onchain';
-  HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+  HttpTor http = HttpTor();
   Map<String, dynamic> data = {
     "sats": sats,
     "address": address,

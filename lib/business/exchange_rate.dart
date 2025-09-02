@@ -15,9 +15,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:flutter/services.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:intl/intl.dart';
-import 'package:tor/tor.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/locale.dart';
 
 class FiatCurrency {
@@ -96,7 +94,7 @@ class ExchangeRate extends ChangeNotifier {
   double? get usdRate => _usdRate;
   FiatCurrency? _selectedCurrency;
 
-  final HttpTor _http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+  final HttpTor _http = HttpTor();
   final String _serverAddress = Settings().nguServerAddress;
 
   static final ExchangeRate _instance = ExchangeRate._internal();
@@ -257,6 +255,7 @@ class ExchangeRate extends ChangeNotifier {
         ConnectivityManager().nguSuccess();
         return rate.toDouble();
       } else {
+        ConnectivityManager().nguFailure();
         throw Exception("Couldn't get exchange rate");
       }
     } catch (e) {

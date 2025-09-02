@@ -8,11 +8,9 @@ import 'package:envoy/business/video.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:tor/tor.dart';
 import 'package:webfeed/webfeed.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/blog_post.dart';
-import 'package:envoy/business/scheduler.dart';
 
 class FeedManager {
   static const vimeoToken = "141c53cdd50a0285e03885dc6f444f9a";
@@ -39,9 +37,7 @@ class FeedManager {
 
     _addVideosFromVimeo();
 
-    HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get("https://foundation.xyz/feed")
-        .then((response) {
+    HttpTor().get("https://foundation.xyz/feed").then((response) {
       RssFeed feed = RssFeed.parse(response.body);
       _addBlogPostsFromRssFeed(feed);
     }).catchError((error) {
@@ -54,7 +50,7 @@ class FeedManager {
     String videoPerPageString = "?per_page=$videosPerPage";
     String pageString = "&page=$page";
 
-    return await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+    return await HttpTor().get(
       "https://api.vimeo.com/users/$vimeoAccountId/videos$videoPerPageString$pageString",
       headers: {'authorization': "bearer $vimeoToken"},
     );

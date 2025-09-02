@@ -5,6 +5,7 @@
 import 'dart:async';
 
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
@@ -299,6 +300,10 @@ class SyncManager {
       kPrint(
           "✨Finished FullScan $addressType - ${account.name} | ${account.network} | $server | Tor: ${port != null}",
           silenceInTests: true);
+      // Let ConnectivityManager know that we've successfully synced
+      if (account.network == Network.bitcoin) {
+        ConnectivityManager().electrumSuccess();
+      }
     } catch (e, stack) {
       debugPrintStack(stackTrace: stack);
       kPrint(
@@ -307,6 +312,10 @@ class SyncManager {
       EnvoyReport().log(
           "Error fullScan: $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
           e.toString());
+      // Let ConnectivityManager know that we can't reach Electrum
+      if (account.network == Network.bitcoin) {
+        ConnectivityManager().electrumFailure();
+      }
     } finally {
       _currentLoading.sink.add(None());
       _activeFullScanOperations.remove((account.id, addressType));
@@ -342,6 +351,10 @@ class SyncManager {
         kPrint(
             "✨Finished Sync ${addressType.toString().split(".").last} - ${account.name} | ${account.network} | $server | Tor: ${port != null} | Time: ${duration.inMilliseconds / 1000} seconds",
             silenceInTests: true);
+        // Let ConnectivityManager know that we've successfully synced
+        if (account.network == Network.bitcoin) {
+          ConnectivityManager().electrumSuccess();
+        }
       } else {
         kPrint("Sync failed because account handler is null",
             silenceInTests: true);
@@ -354,6 +367,10 @@ class SyncManager {
       EnvoyReport().log(
           "Error applying sync $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
           e.toString());
+      // Let ConnectivityManager know that we can't reach Electrum
+      if (account.network == Network.bitcoin) {
+        ConnectivityManager().electrumFailure();
+      }
     } finally {
       _currentLoading.sink.add(None());
     }

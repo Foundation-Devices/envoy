@@ -45,6 +45,7 @@ class IndicatorShieldState extends State<IndicatorShield>
         _circuitEstablishingAnimationController.forward();
       }
     });
+    _updateShield();
 
     _connectivityStream = ConnectivityManager().events.stream.listen((_) {
       // Update UI on connectivity changes
@@ -74,18 +75,19 @@ class IndicatorShieldState extends State<IndicatorShield>
     if (!ConnectivityManager().torEnabled ||
         ConnectivityManager().torTemporarilyDisabled) {
       // No shield
-      return SizedBox.shrink(key: UniqueKey());
+      return const SizedBox.shrink(key: ValueKey("shield-none"));
     } else {
-      if (!ConnectivityManager().electrumConnected) {
+      if (!ConnectivityManager().electrumConnected ||
+          !ConnectivityManager().nguConnected) {
         return Image.asset(
           "assets/indicator_shield_red.png",
-          key: UniqueKey(),
+          key: const ValueKey("shield-red"),
         );
       }
 
       return Image.asset(
         "assets/indicator_shield_teal.png",
-        key: UniqueKey(),
+        key: const ValueKey("shield-teal"),
       );
     }
   }

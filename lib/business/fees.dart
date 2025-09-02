@@ -13,10 +13,8 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:tor/tor.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/business/fee_rates.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/util/tuple.dart';
 
 // Generated
@@ -164,9 +162,7 @@ class Fees {
   }
 
   void _getMempoolRecommendedRates(Network network) {
-    HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get(_mempoolRecommendedFeesEndpoints[network]!)
-        .then((response) {
+    HttpTor().get(_mempoolRecommendedFeesEndpoints[network]!).then((response) {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
 
@@ -187,9 +183,7 @@ class Fees {
   }
 
   void _getMempoolBlocksFees(Network network) {
-    HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get(_mempoolBlocksFeesEndpoints[network]!)
-        .then((response) {
+    HttpTor().get(_mempoolBlocksFeesEndpoints[network]!).then((response) {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         for (final block in json) {
