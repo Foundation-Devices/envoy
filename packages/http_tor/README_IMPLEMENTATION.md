@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
+
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 # HTTP Tor Implementation
 
 This document describes the implementation of the HTTP Tor package using Flutter Rust Bridge.
