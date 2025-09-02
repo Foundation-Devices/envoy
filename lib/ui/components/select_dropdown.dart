@@ -32,6 +32,7 @@ class EnvoyDropdown extends StatefulWidget {
   final GlobalKey<EnvoyDropdownState>? dropdownKey;
   final double dropdownMaxHeight;
   final bool showCheckIcon;
+  final bool openAbove;
 
   const EnvoyDropdown(
       {super.key,
@@ -41,7 +42,8 @@ class EnvoyDropdown extends StatefulWidget {
       this.initialIndex = 0,
       this.dropdownKey,
       this.dropdownMaxHeight = 300,
-      this.showCheckIcon = true});
+      this.showCheckIcon = true,
+      this.openAbove = false});
 
   @override
   EnvoyDropdownState createState() => EnvoyDropdownState();
@@ -112,6 +114,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
             focusColor: EnvoyColors.accentPrimary,
           ),
           child: _EnvoyDropdownButton<EnvoyDropdownOption>(
+            openAbove: widget.openAbove,
             dropdownMaxHeight: widget.dropdownMaxHeight,
             elevation: EnvoySpacing.xs.toInt(),
             borderRadius: BorderRadius.circular(EnvoySpacing.small),
@@ -226,6 +229,7 @@ class _EnvoyDropdownButton<T> extends StatefulWidget {
   final BorderRadius borderRadius;
   final EdgeInsetsGeometry? padding;
   final double dropdownMaxHeight;
+  final bool openAbove;
 
   const _EnvoyDropdownButton({
     this.items,
@@ -238,6 +242,7 @@ class _EnvoyDropdownButton<T> extends StatefulWidget {
         const BorderRadius.all(Radius.circular(EnvoySpacing.small)),
     this.padding,
     this.dropdownMaxHeight = 300,
+    this.openAbove = false,
   });
 
   @override
@@ -281,6 +286,10 @@ class _EnvoyDropdownButtonState<T> extends State<_EnvoyDropdownButton<T>> {
       Offset.zero & overlay.size,
     );
 
+    final double topPosition = widget.openAbove
+        ? position.top - widget.dropdownMaxHeight + button.size.height
+        : position.top + button.size.height;
+
     _overlayEntry = OverlayEntry(
       builder: (context) {
         return Stack(
@@ -294,7 +303,7 @@ class _EnvoyDropdownButtonState<T> extends State<_EnvoyDropdownButton<T>> {
             ),
             Positioned(
               left: position.left,
-              top: position.top + button.size.height,
+              top: topPosition,
               width: button.size.width,
               child: Material(
                 elevation: widget.elevation.toDouble(),

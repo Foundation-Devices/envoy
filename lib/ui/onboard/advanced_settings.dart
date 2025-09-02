@@ -261,6 +261,7 @@ class _AdvancedSettingsOptionsState
                                     Material(
                                         color: Colors.transparent,
                                         child: EnvoyDropdown(
+                                          openAbove: true,
                                           initialIndex:
                                               getInitialElectrumDropdownIndex(),
                                           options: [
