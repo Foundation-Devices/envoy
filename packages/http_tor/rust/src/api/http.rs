@@ -72,7 +72,7 @@ pub async fn get_file(
 ) -> Download {
     let rt = RUNTIME.as_ref().unwrap();
     let sink_clone = progress_stream.0.clone();
-    let handle = rt.spawn((async move || {
+    let handle = rt.spawn(async move {
         let client: reqwest::Client = if tor_port > 0 {
             let proxy = reqwest::Proxy::all(format!("socks5://127.0.0.1:{}", tor_port))?;
             reqwest::Client::builder().proxy(proxy).build()?
@@ -108,7 +108,7 @@ pub async fn get_file(
         }
 
         Ok(())
-    })());
+    });
 
     Download {
         progress: sink_clone,
