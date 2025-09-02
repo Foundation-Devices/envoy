@@ -30,15 +30,18 @@ class EnvoyDropdown extends StatefulWidget {
   final Function(EnvoyDropdownOption?)? onOptionChanged;
   final int initialIndex;
   final GlobalKey<EnvoyDropdownState>? dropdownKey;
+  final double dropdownMaxHeight;
+  final bool showCheckIcon;
 
-  const EnvoyDropdown({
-    super.key,
-    required this.options,
-    this.isDropdownActive = true,
-    this.onOptionChanged,
-    this.initialIndex = 0,
-    this.dropdownKey,
-  });
+  const EnvoyDropdown(
+      {super.key,
+      required this.options,
+      this.isDropdownActive = true,
+      this.onOptionChanged,
+      this.initialIndex = 0,
+      this.dropdownKey,
+      this.dropdownMaxHeight = 300,
+      this.showCheckIcon = true});
 
   @override
   EnvoyDropdownState createState() => EnvoyDropdownState();
@@ -109,6 +112,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
             focusColor: EnvoyColors.accentPrimary,
           ),
           child: _EnvoyDropdownButton<EnvoyDropdownOption>(
+            dropdownMaxHeight: widget.dropdownMaxHeight,
             elevation: EnvoySpacing.xs.toInt(),
             borderRadius: BorderRadius.circular(EnvoySpacing.small),
             padding: const EdgeInsets.symmetric(
@@ -185,7 +189,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
                                   left: EnvoySpacing.medium1),
                               child: EnvoyIcon(
                                 EnvoyIcons.check,
-                                color: isSelectedOption
+                                color: isSelectedOption && widget.showCheckIcon
                                     ? EnvoyColors.textPrimaryInverse
                                     : Colors.transparent,
                               ),
@@ -221,6 +225,7 @@ class _EnvoyDropdownButton<T> extends StatefulWidget {
   final int elevation;
   final BorderRadius borderRadius;
   final EdgeInsetsGeometry? padding;
+  final double dropdownMaxHeight;
 
   const _EnvoyDropdownButton({
     this.items,
@@ -232,18 +237,34 @@ class _EnvoyDropdownButton<T> extends StatefulWidget {
     this.borderRadius =
         const BorderRadius.all(Radius.circular(EnvoySpacing.small)),
     this.padding,
+    this.dropdownMaxHeight = 300,
   });
 
   @override
-  State<_EnvoyDropdownButton<T>> createState() => _FastDropdownButtonState<T>();
+  State<_EnvoyDropdownButton<T>> createState() =>
+      _EnvoyDropdownButtonState<T>();
 }
 
-class _FastDropdownButtonState<T> extends State<_EnvoyDropdownButton<T>> {
+class _EnvoyDropdownButtonState<T> extends State<_EnvoyDropdownButton<T>> {
   OverlayEntry? _overlayEntry;
   bool _isDropdownOpen = false;
+  final ScrollController _scrollController = ScrollController();
 
-  void _showDropdown() {
-    if (_isDropdownOpen) return;
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _toggleDropdown() {
+    if (_isDropdownOpen) {
+      _removeDropdown();
+    } else {
+      _showDropdownInternal();
+    }
+  }
+
+  void _showDropdownInternal() {
     if (widget.items == null || widget.items!.isEmpty) return;
 
     final RenderBox button = context.findRenderObject() as RenderBox;
@@ -262,44 +283,65 @@ class _FastDropdownButtonState<T> extends State<_EnvoyDropdownButton<T>> {
 
     _overlayEntry = OverlayEntry(
       builder: (context) {
-        return Positioned(
-          left: position.left,
-          top: position.top + button.size.height,
-          width: button.size.width,
-          child: Material(
-            elevation: widget.elevation.toDouble(),
-            borderRadius: widget.borderRadius,
-            child: ClipRRect(
-              borderRadius: widget.borderRadius,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 300,
-                  minWidth: button.size.width + 1, // +1 for border
-                  maxWidth: button.size.width + 1,
-                ),
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  children: widget.items!.map((item) {
-                    final bool isSelected = item.value == widget.selectedItem;
-                    return InkWell(
-                      onTap: () {
-                        _removeDropdown();
-                        widget.onChanged?.call(item.value);
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        color: isSelected ? EnvoyColors.accentPrimary : null,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 12),
-                        child: item.child,
+        return Stack(
+          children: [
+            // Tap anywhere outside closes the dropdown
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: _removeDropdown,
+                behavior: HitTestBehavior.translucent,
+              ),
+            ),
+            Positioned(
+              left: position.left,
+              top: position.top + button.size.height,
+              width: button.size.width,
+              child: Material(
+                elevation: widget.elevation.toDouble(),
+                borderRadius: widget.borderRadius,
+                child: ClipRRect(
+                  borderRadius: widget.borderRadius,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: widget.dropdownMaxHeight,
+                      minWidth: button.size.width + 1, // +1 pixel to border
+                      maxWidth: button.size.width + 1,
+                    ),
+                    child: Scrollbar(
+                      controller: _scrollController,
+                      thumbVisibility: true,
+                      thickness: 3,
+                      radius: Radius.circular(EnvoySpacing.small),
+                      child: ListView(
+                        controller: _scrollController,
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        children: widget.items!.map((item) {
+                          final bool isSelected =
+                              item.value == widget.selectedItem;
+                          return InkWell(
+                            onTap: () {
+                              _removeDropdown();
+                              widget.onChanged?.call(item.value);
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              color: isSelected
+                                  ? EnvoyColors.accentPrimary
+                                  : null, // highlight
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 12),
+                              child: item.child,
+                            ),
+                          );
+                        }).toList(),
                       ),
-                    );
-                  }).toList(),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         );
       },
     );
@@ -309,36 +351,46 @@ class _FastDropdownButtonState<T> extends State<_EnvoyDropdownButton<T>> {
   }
 
   void _removeDropdown() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-    _isDropdownOpen = false;
+    if (_isDropdownOpen) {
+      _overlayEntry?.remove();
+      _overlayEntry = null;
+      _isDropdownOpen = false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: _showDropdown,
-      child: DefaultTextStyle(
-        style: Theme.of(context).textTheme.bodyMedium!,
-        child: Padding(
-          padding: widget.padding ?? EdgeInsets.zero,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                child: widget.selectedItemBuilder == null
-                    ? (widget.selectedItem != null
-                        ? widget.items!
-                            .firstWhere(
-                                (item) => item.value == widget.selectedItem)
-                            .child
-                        : const SizedBox())
-                    : widget.selectedItemBuilder!(context)[widget.items!
-                        .indexWhere(
-                            (item) => item.value == widget.selectedItem)],
-              ),
-              widget.icon ?? const Icon(Icons.arrow_drop_down),
-            ],
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, _) {
+        if (_isDropdownOpen) {
+          _removeDropdown(); // Close dropdown if open
+        }
+      },
+      child: InkWell(
+        onTap: _toggleDropdown,
+        child: DefaultTextStyle(
+          style: Theme.of(context).textTheme.bodyMedium!,
+          child: Padding(
+            padding: widget.padding ?? EdgeInsets.zero,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: widget.selectedItemBuilder == null
+                      ? (widget.selectedItem != null
+                          ? widget.items!
+                              .firstWhere(
+                                  (item) => item.value == widget.selectedItem)
+                              .child
+                          : const SizedBox())
+                      : widget.selectedItemBuilder!(context)[widget.items!
+                          .indexWhere(
+                              (item) => item.value == widget.selectedItem)],
+                ),
+                widget.icon ?? const Icon(Icons.arrow_drop_down),
+              ],
+            ),
           ),
         ),
       ),

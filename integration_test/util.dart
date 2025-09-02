@@ -60,8 +60,10 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester,
     expect(selectCountryDropDown, findsOneWidget);
     await tester.tap(selectCountryDropDown);
     await tester.pump(Durations.long2);
+
     await scrollUntilVisible(tester, "Spain",
-        scrollableWidgetType: ListView, scrollIncrement: 100);
+        scrollableWidgetType: ListView, scrollIncrement: -100, maxScrolls: 200);
+    await scrollHome(tester, -100, scrollableWidgetType: ListView);
     final countryFinder = find.text('Spain');
     expect(countryFinder, findsOneWidget);
     await tester.tap(countryFinder);
@@ -78,7 +80,8 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester,
   }
 
   if (!selectFirstCountryAvailable) {
-    await scrollUntilVisible(tester, "Granada", scrollableWidgetType: ListView);
+    await scrollUntilVisible(tester, "Granada",
+        scrollableWidgetType: ListView, scrollIncrement: -50, maxScrolls: 200);
     await scrollHome(tester, -100, scrollableWidgetType: ListView);
     final granada = find.text('Granada');
     expect(granada, findsOneWidget);
@@ -663,7 +666,6 @@ Future<void> scrollUntilVisible(WidgetTester tester, String text,
         scrollableWidgetType: scrollableWidgetType);
   }
 
-  // Optionally, you could throw an exception if the widget isn't found after maxScrolls
   throw Exception(
       'Widget with text "$text" not found after scrolling $maxScrolls times.');
 }
