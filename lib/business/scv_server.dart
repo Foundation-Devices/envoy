@@ -150,23 +150,21 @@ class ScvServer {
         headers: {'Content-Type': 'application/octet-stream'},
       );
 
-      return true;
-      // kPrint("response status code: ${response.statusCode}");
-      // if (response.statusCode == 200) {
-      //   // List<int> rawVerificationMessage = response.bodyBytes as Uint8List;
-      //   // kPrint("response status data 32: ${rawVerificationMessage[32]}");
-      //   // kPrint("rawVerificationMessage {rawVerificationMessage}");
-      //   // // Error code is the 33rd byte in the response
-      //   // final errorCode = rawVerificationMessage.length > 32
-      //   //     ? rawVerificationMessage[32]
-      //   //     : -1;
-      //   // kPrint('Error code: $errorCode');
-      //   // return errorCode == 0; // 0 means `ErrorCode::Ok`
-      //   return true;
-      // } else {
-      //   kPrint('Error: ${response.statusCode}');
-      //   return false;
-      // }
+      kPrint("response status code: ${response.statusCode}");
+      if (response.statusCode == 200) {
+        List<int> rawVerificationMessage = response.bodyBytes as Uint8List;
+        kPrint("response status data 32: ${rawVerificationMessage[32]}");
+        kPrint("rawVerificationMessage {rawVerificationMessage}");
+        // Error code is the 33rd byte in the response
+        final errorCode = rawVerificationMessage.length > 32
+            ? rawVerificationMessage[32]
+            : -1;
+        kPrint('Error code: $errorCode');
+        return errorCode == 0; // 0 means `ErrorCode::Ok`
+      } else {
+        kPrint('Error: ${response.statusCode}');
+        return false;
+      }
     } catch (e) {
       kPrint("failed to verify proof {$e}");
       return false;
