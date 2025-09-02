@@ -12,7 +12,6 @@ import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/big_tab.dart';
-import 'package:envoy/ui/components/select_dropdown.dart';
 import 'package:envoy/ui/components/toggle.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
