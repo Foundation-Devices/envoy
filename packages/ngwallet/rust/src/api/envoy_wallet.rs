@@ -269,6 +269,7 @@ impl EnvoyAccountHandler {
                     ng_account: Arc::new(Mutex::new(ng_account)),
                     directory_path: db_path.clone(),
                 };
+
                 Ok(account)
             }
             Err(e) => Err(anyhow!("Failed to open account: {}", e)),
@@ -299,7 +300,7 @@ impl EnvoyAccountHandler {
     }
 
     pub fn state(&mut self) -> Result<EnvoyAccount, Error> {
-        return match self.ng_account.lock() {
+        match self.ng_account.lock() {
             Ok(mut account) => {
                 let config = account.config.clone();
                 let balance = account.balance().unwrap_or_default().total().to_sat();
@@ -359,7 +360,7 @@ impl EnvoyAccountHandler {
                 })
             }
             Err(error) => Err(anyhow!("Failed to lock account: {}", error)),
-        };
+        }
     }
 
     pub fn next_address(&mut self) -> Vec<(String, AddressType)> {
@@ -428,7 +429,7 @@ impl EnvoyAccountHandler {
     }
 
     #[allow(clippy::type_complexity)]
-    pub fn sync_request(
+    pub async fn sync_request(
         &mut self,
         address_type: AddressType,
     ) -> Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>> {
@@ -484,7 +485,7 @@ impl EnvoyAccountHandler {
         }
     }
 
-    pub fn apply_update(&mut self, update: Arc<Mutex<Update>>, address_type: AddressType) {
+    pub async fn apply_update(&mut self, update: Arc<Mutex<Update>>, address_type: AddressType) {
         let scan_request_guard = update.lock().unwrap();
         {
             let mut account = self.ng_account.lock().unwrap();
@@ -504,6 +505,7 @@ impl EnvoyAccountHandler {
             sink.add(self.state().unwrap()).unwrap();
         };
     }
+
     #[frb(sync)]
     pub fn balance(&mut self) -> u64 {
         self.ng_account
