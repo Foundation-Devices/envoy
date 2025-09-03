@@ -330,10 +330,7 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                         Padding(
                           padding: EdgeInsets.only(bottom: bottomPadding),
                         ),
-                      Container(
-                        height: 40,
-                        color: Colors.transparent,
-                      )
+                      SizedBox(height: 40)
                     ],
                   ),
                 ),
