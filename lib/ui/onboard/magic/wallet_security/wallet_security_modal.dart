@@ -32,13 +32,14 @@ class WalletSecurityModal extends StatefulWidget {
 
 class _WalletSecurityModalState extends State<WalletSecurityModal> {
   final PageController _pageController = PageController();
+  int _currentPage = 0;
 
   List<Widget> stepIllustration = [
     Image.asset(
       Platform.isAndroid
           ? "assets/data_secured_1_android.png"
           : "assets/data_secured_1_ios.png",
-      height: 180,
+      height: 110,
     ),
     Image.asset(
       "assets/data_secured_2.png",
@@ -49,7 +50,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
       Platform.isAndroid
           ? "assets/data_secured_3_android.png"
           : "assets/data_secured_3_ios.png",
-      height: 180,
+      height: 110,
     ),
     Column(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -57,17 +58,17 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
       children: [
         Image.asset(
           "assets/exclamation_icon.png",
-          height: 120,
+          height: 64,
         ),
       ],
     ),
   ];
 
   List<String> stepHeadings = [
-    S().wallet_security_modal_HowYourWalletIsSecured,
-    S().wallet_security_modal_HowYourWalletIsSecured,
-    S().wallet_security_modal_4_4_heading,
-    S().wallet_security_modal_4_4_heading,
+    S().wallet_security_modal_HowYourSeedIsSecured,
+    S().wallet_security_modal_HowYourDatatIsSecured,
+    S().wallet_security_modal_HowToRecoverYourWallet,
+    S().wallet_security_modal_WantToOptOut,
   ];
 
   late List<String> stepSubHeadings;
@@ -75,6 +76,15 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
   @override
   void initState() {
     super.initState();
+
+    _pageController.addListener(() {
+      final newPage = _pageController.page?.round() ?? 0;
+      if (newPage != _currentPage) {
+        setState(() {
+          _currentPage = newPage;
+        });
+      }
+    });
 
     stepSubHeadings = [
       Platform.isAndroid
@@ -91,45 +101,41 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.85,
-      height: 600,
-      child: PageView(
-        controller: _pageController,
-        children: [
-          ...stepHeadings.mapIndexed((i, _) {
-            return Padding(
-              padding: const EdgeInsets.only(
-                  left: EnvoySpacing.medium3,
-                  right: EnvoySpacing.medium3,
-                  top: EnvoySpacing.medium3,
-                  bottom: EnvoySpacing.medium2),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                mainAxisSize: MainAxisSize.max,
+      width: MediaQuery.of(context).size.width * 0.9,
+      height: 520,
+      child: Padding(
+        padding: const EdgeInsets.all(EnvoySpacing.medium2),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
+            Flexible(
+              child: PageView(
+                controller: _pageController,
                 children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ),
-                  Center(
-                      child: SizedBox(
-                    height: 150,
-                    child: stepIllustration[i],
-                  )),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Column(
+                  ...stepHeadings.mapIndexed((i, _) {
+                    return SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                          SizedBox(height: EnvoySpacing.xs),
+                          Center(
+                              child: SizedBox(
+                            height: 110,
+                            child: stepIllustration[i],
+                          )),
+                          SizedBox(height: EnvoySpacing.medium3),
                           Text(stepHeadings[i],
                               textAlign: TextAlign.center,
                               style: EnvoyTypography.heading),
-                          const SizedBox(height: EnvoySpacing.medium2),
+                          const SizedBox(height: EnvoySpacing.medium1),
                           LinkText(
                             text: stepSubHeadings[i],
                             linkStyle: EnvoyTypography.button.copyWith(
@@ -143,48 +149,37 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: EnvoySpacing.medium2),
-                          DotsIndicator(
-                            totalPages: stepHeadings.length,
-                            pageController: _pageController,
-                          ),
-                          const SizedBox(height: EnvoySpacing.medium2),
-                          AnimatedCrossFade(
-                            firstChild: EnvoyButton(
-                              (_pageController.hasClients
-                                          ? _pageController.page?.toInt()
-                                          : 0) ==
-                                      stepHeadings.length
-                                  ? S()
-                                      .manual_setup_create_and_store_backup_modal_CTA
-                                  : S().component_continue,
-                              type: EnvoyButtonTypes.primaryModal,
-                              onTap: () {
-                                int currentPage =
-                                    _pageController.page?.toInt() ?? 0;
-                                if (stepHeadings.length == currentPage + 1) {
-                                  widget.onLastStep();
-                                } else {
-                                  _pageController.nextPage(
-                                    duration: const Duration(milliseconds: 600),
-                                    curve: Curves.easeInOut,
-                                  );
-                                }
-                              },
-                            ),
-                            secondChild: const SizedBox(),
-                            crossFadeState: CrossFadeState.showFirst,
-                            duration: const Duration(milliseconds: 400),
-                          ),
+                          const SizedBox(height: EnvoySpacing.medium3)
                         ],
                       ),
-                    ],
-                  )
+                    );
+                  }),
                 ],
               ),
-            );
-          }),
-        ],
+            ),
+            DotsIndicator(
+              totalPages: stepHeadings.length,
+              pageController: _pageController,
+            ),
+            const SizedBox(height: EnvoySpacing.medium3),
+            EnvoyButton(
+              _currentPage == stepHeadings.length - 1
+                  ? S().component_continue
+                  : S().component_next,
+              type: EnvoyButtonTypes.primaryModal,
+              onTap: () {
+                if (_currentPage == stepHeadings.length - 1) {
+                  widget.onLastStep();
+                } else {
+                  _pageController.nextPage(
+                    duration: const Duration(milliseconds: 600),
+                    curve: Curves.easeInOut,
+                  );
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
