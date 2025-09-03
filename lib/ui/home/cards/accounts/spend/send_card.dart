@@ -69,6 +69,8 @@ class _SendCardState extends ConsumerState<SendCard>
       ref.read(homePageTitleProvider.notifier).state =
           S().receive_tx_list_send.toUpperCase();
       account = ref.read(selectedAccountProvider);
+      // Ensure validation error state is cleared on initialization
+      ref.read(spendValidationErrorProvider.notifier).state = null;
       if (ref.read(spendAmountProvider) != 0) {
         setAmount(ref.read(spendAmountProvider));
       }
