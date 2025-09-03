@@ -12,7 +12,6 @@ import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/big_tab.dart';
-import 'package:envoy/ui/components/select_dropdown.dart';
 import 'package:envoy/ui/components/toggle.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
@@ -60,8 +59,10 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester,
     expect(selectCountryDropDown, findsOneWidget);
     await tester.tap(selectCountryDropDown);
     await tester.pump(Durations.long2);
+
     await scrollUntilVisible(tester, "Spain",
-        scrollableWidgetType: ListView, scrollIncrement: 100);
+        scrollableWidgetType: ListView, scrollIncrement: -100, maxScrolls: 200);
+    await scrollHome(tester, -100, scrollableWidgetType: ListView);
     final countryFinder = find.text('Spain');
     expect(countryFinder, findsOneWidget);
     await tester.tap(countryFinder);
@@ -73,13 +74,14 @@ Future<void> fromHomeToBuyOptions(WidgetTester tester,
   await tester.pump(Durations.long2);
 
   if (selectFirstCountryAvailable) {
-    final dropdownItems = find.byType(DropdownMenuItem<EnvoyDropdownOption>);
-    await tester.tap(dropdownItems.at(1),
-        warnIfMissed: false); // Tap at first state
+    final selectStateFinder = find.text('Alaska');
+    expect(selectStateFinder, findsOneWidget);
+    await tester.tap(selectStateFinder);
   }
 
   if (!selectFirstCountryAvailable) {
-    await scrollUntilVisible(tester, "Granada", scrollableWidgetType: ListView);
+    await scrollUntilVisible(tester, "Granada",
+        scrollableWidgetType: ListView, scrollIncrement: -50, maxScrolls: 200);
     await scrollHome(tester, -100, scrollableWidgetType: ListView);
     final granada = find.text('Granada');
     expect(granada, findsOneWidget);
@@ -664,7 +666,6 @@ Future<void> scrollUntilVisible(WidgetTester tester, String text,
         scrollableWidgetType: scrollableWidgetType);
   }
 
-  // Optionally, you could throw an exception if the widget isn't found after maxScrolls
   throw Exception(
       'Widget with text "$text" not found after scrolling $maxScrolls times.');
 }

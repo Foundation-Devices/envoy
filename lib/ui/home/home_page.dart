@@ -9,6 +9,7 @@ import 'dart:ui';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
@@ -162,8 +163,14 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   @override
+  void didUpdateWidget(covariant HomePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   void initState() {
     super.initState();
+    Devices().connect();
     MigrationManager().resetMigrationPrefs();
     _resetTorWarningTimer();
     _resetServerDownWarningTimer();

@@ -8,7 +8,9 @@ import 'dart:typed_data';
 import 'package:animations/animations.dart';
 import 'package:bluart/bluart.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/scv_server.dart';
+import 'package:envoy/business/server.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -16,6 +18,7 @@ import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
+import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
@@ -37,9 +40,6 @@ import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:envoy/business/devices.dart';
-import 'package:envoy/business/server.dart';
-import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 
 // TODO: remove this, store somewhere else
 final primeDeviceVersionProvider = StateProvider<String>((ref) => '');
@@ -56,6 +56,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     with SingleTickerProviderStateMixin {
   final s = Settings();
   bool scanForPayload = false;
+  PairingResponse? pairingResponse;
 
   Completer<QuantumLinkMessage_BroadcastTransaction>? _completer;
 
@@ -77,12 +78,21 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
       switch (message.message) {
         case QuantumLinkMessage_PairingResponse(field0: final response):
-          kPrint("Got a pairing response!");
-          final deviceColor = response.passportColor == PassportColor.dark
-              ? DeviceColor.dark
-              : DeviceColor.light;
-          BluetoothManager().addDevice(response.passportSerial.field0,
-              response.passportFirmwareVersion.field0, deviceColor);
+          pairingResponse = response;
+        // uncomment this to add prime to devices list, to test ble reconnect.
+        // if (pairingResponse != null) {
+        //   final deviceColor =
+        //       pairingResponse!.passportColor == PassportColor.dark
+        //           ? DeviceColor.dark
+        //           : DeviceColor.light;
+        //   BluetoothManager().addDevice(
+        //       pairingResponse!.passportSerial.field0,
+        //       pairingResponse!.passportFirmwareVersion.field0,
+        //       BluetoothManager().bleId,
+        //       deviceColor);
+        //   kPrint("Got a pairing AccountUpdate device!");
+        //   break;
+        // }
 
         //  final response = message.message as QuantumLinkMessage_PairingResponse;
         // Create the thing that I'm gonna reveal later
@@ -94,7 +104,22 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         //           child: NGWalletUi(),
         //         )));
 
+        //add to prime to devices list
         case QuantumLinkMessage_AccountUpdate():
+          kPrint("Got a pairing response!");
+          if (pairingResponse != null) {
+            final deviceColor =
+                pairingResponse!.passportColor == PassportColor.dark
+                    ? DeviceColor.dark
+                    : DeviceColor.light;
+            BluetoothManager().addDevice(
+                pairingResponse!.passportSerial.field0,
+                pairingResponse!.passportFirmwareVersion.field0,
+                BluetoothManager().bleId,
+                deviceColor);
+            kPrint("Got a pairing AccountUpdate device!");
+            break;
+          }
           // AccountUpdate is handled in BluetoothManager; no action needed here
           break;
 
@@ -111,7 +136,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                   bool isVerified =
                       await ScvServer().isProofVerified(proofData);
 
-                  kPrint("challenge res {isVerififed}");
+                  kPrint("challenge res $isVerified");
 
                   if (isVerified) {
                     await ref.read(deviceSecurityProvider.notifier).updateStep(

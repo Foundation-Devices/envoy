@@ -373,7 +373,7 @@ class _DotsIndicatorState extends State<DotsIndicator> {
   void initState() {
     super.initState();
     widget.pageController.addListener(() {
-      int value = widget.pageController.page?.ceil() ?? 0;
+      int value = widget.pageController.page?.round() ?? 0;
       if (value != page && mounted) {
         setState(() {
           page = value;

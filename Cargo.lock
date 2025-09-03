@@ -3857,6 +3857,7 @@ dependencies = [
  "flutter_rust_bridge",
  "lazy_static",
  "log",
+ "openssl",
  "reqwest 0.12.23",
  "tokio",
 ]

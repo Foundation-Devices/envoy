@@ -17,6 +17,7 @@ tokio = { version = "1", features = ["full"] }
 lazy_static = "1.4"
 anyhow = "1.0"
 log = "0.4.27"
+openssl = { version = "0.10", features = ["vendored"] }
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
