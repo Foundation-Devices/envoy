@@ -91,8 +91,8 @@ impl std::fmt::Debug for Command {
 #[derive(Clone)]
 pub enum Event {
     ScanResult(Vec<BleDevice>),
-    DeviceDisconnected,
-    DeviceConnected,
+    DeviceDisconnected(BleDevice),
+    DeviceConnected(BleDevice),
 }
 
 #[derive(Clone)]
@@ -179,7 +179,10 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
                     let mut devices = ble_state().devices.lock().await;
                     if let Some(device) = devices.get_mut(&id.to_string()) {
                         device.is_connected = true;
-                        sink.add(Event::DeviceConnected).unwrap();
+                        sink.add(Event::DeviceConnected(
+                            BleDevice::from_peripheral(device).await,
+                        ))
+                        .unwrap();
                     }
                 }
                 CentralEvent::DeviceDisconnected(id) => {
@@ -187,7 +190,10 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
                     let mut devices = ble_state().devices.lock().await;
                     if let Some(device) = devices.get_mut(&id.to_string()) {
                         device.is_connected = false;
-                        sink.add(Event::DeviceDisconnected).unwrap();
+                        sink.add(Event::DeviceDisconnected(
+                            BleDevice::from_peripheral(device).await,
+                        ))
+                        .unwrap();
                     }
                 }
                 CentralEvent::ManufacturerDataAdvertisement {
@@ -203,6 +209,7 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
                     id: _,
                     service_data: _,
                 } => {
+
                     // tracing::debug!("{}",format!(
                     //     "ServiceDataAdvertisement: {:?}, {:?}",
                     //     id, service_data

@@ -32,7 +32,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.2
-
   # Rust FFI libraries
   ur:
     path: packages/ur
@@ -163,6 +162,7 @@ flutter:
     - assets/anim/
     - assets/images/
     - assets/components/icons/
+    - assets/prime/
 
   fonts:
     - family: EnvoyIcons

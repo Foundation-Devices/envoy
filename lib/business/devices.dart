@@ -34,6 +34,8 @@ class Device {
   final DeviceType type;
   final DeviceColor deviceColor;
   final String serial;
+  @JsonKey(defaultValue: "")
+  final String bleId;
   final DateTime datePaired;
   String firmwareVersion;
   List<String>? pairedAccountIds;
@@ -43,7 +45,7 @@ class Device {
 
   Device(this.name, this.type, this.serial, this.datePaired,
       this.firmwareVersion, this.color,
-      {this.deviceColor = DeviceColor.light});
+      {this.deviceColor = DeviceColor.light, this.bleId = ""});
 
   // Serialisation
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);
@@ -69,6 +71,25 @@ class Devices extends ChangeNotifier {
 
   factory Devices() {
     return _instance;
+  }
+
+  //reconnect to all paired primes
+  //TODO: fix simultaneous connections
+  Future<void> connect() async {
+    kPrint("Connecting to primes...");
+    if (getPrimeDevices.isEmpty) {
+      return;
+    }
+    await BluetoothManager().getPermissions();
+    //wait for the bluetooth manager to initialize
+    await Future.delayed(const Duration(seconds: 2));
+    kPrint("Connecting to ${getPrimeDevices.length} primes");
+    for (var device in getPrimeDevices) {
+      if (device.bleId.isNotEmpty) {
+        kPrint("Connecting to ${device.bleId}");
+        await BluetoothManager().connect(id: device.bleId);
+      }
+    }
   }
 
   static Future<Devices> init() async {
@@ -145,7 +166,7 @@ class Devices extends ChangeNotifier {
     notifyListeners();
 
     if (device.type == DeviceType.passportPrime) {
-      BluetoothManager().deleteAllDevices();
+      BluetoothManager().removeConnectedDevice();
     }
   }
 
