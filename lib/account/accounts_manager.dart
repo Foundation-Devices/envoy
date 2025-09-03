@@ -269,8 +269,9 @@ class NgAccountManager extends ChangeNotifier {
   }
 
   EnvoyAccountHandler? getHandler(EnvoyAccount envoyAccount) {
-    return handlers
-        .firstWhereOrNull((element) => element.id() == envoyAccount.id);
+    final index =
+        _accountsHandler.indexWhere((e) => e.$1.id == envoyAccount.id);
+    return index != -1 ? _accountsHandler[index].$2 : null;
   }
 
   bool hotAccountsExist() {
