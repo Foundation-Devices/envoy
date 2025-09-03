@@ -8,6 +8,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/big_tab.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/components/select_dropdown.dart';
 import 'package:envoy/ui/components/settings_header.dart';
 import 'package:envoy/ui/components/toggle.dart';
@@ -26,6 +27,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/onboard/magic/wallet_security/wallet_security_modal.dart';
 
 class AdvancedSettingsOptions extends ConsumerStatefulWidget {
   const AdvancedSettingsOptions({super.key});
@@ -61,7 +64,25 @@ class _AdvancedSettingsOptionsState
               color: Colors.white,
               onPressed: context.pop,
             ),
-            topBarActions: [const SizedBox(width: 56)],
+            topBarActions: [
+              GestureDetector(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: EnvoySpacing.small),
+                  child: EnvoyIcon(EnvoyIcons.info,
+                      size: EnvoyIconSize.normal,
+                      color: EnvoyColors.solidWhite),
+                ),
+                onTap: () {
+                  showEnvoyDialog(
+                      context: context,
+                      dialog: WalletSecurityModal(
+                        onLastStep: () {
+                          Navigator.pop(context);
+                        },
+                      ));
+                },
+              )
+            ],
             topBarTitle: Align(
               alignment: Alignment.center,
               child: SafeArea(
@@ -149,10 +170,37 @@ class _AdvancedSettingsOptionsState
                                             child: EnvoyToggle(
                                               value: Settings().syncToCloud,
                                               onChanged: (bool value) async {
-                                                setState(() {
-                                                  Settings()
-                                                      .setSyncToCloud(value);
-                                                });
+                                                if (value) {
+                                                  showEnvoyPopUp(
+                                                      context,
+                                                      S()
+                                                          .onboarding_advancedModal_content,
+                                                      S().component_back,
+                                                      (context) {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      title: S()
+                                                          .onboarding_advancedModal_header,
+                                                      typeOfMessage:
+                                                          PopUpState.warning,
+                                                      icon: EnvoyIcons.alert,
+                                                      secondaryButtonLabel: S()
+                                                          .component_continue,
+                                                      onSecondaryButtonTap:
+                                                          (_) {
+                                                        setState(() {
+                                                          Settings()
+                                                              .setSyncToCloud(
+                                                                  value);
+                                                        });
+                                                        Navigator.pop(context);
+                                                      });
+                                                } else {
+                                                  setState(() {
+                                                    Settings()
+                                                        .setSyncToCloud(value);
+                                                  });
+                                                }
                                               },
                                             ),
                                           ),
