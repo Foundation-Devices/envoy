@@ -333,6 +333,13 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
   bool _isDeleted = false;
 
   @override
+  void dispose() {
+    // Properly dispose Rive controller to free GPU resources
+    _stateMachineController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PopScope(
         canPop: !_deleteInProgress,
