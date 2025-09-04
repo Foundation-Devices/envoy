@@ -118,13 +118,6 @@ class NgAccountManager extends ChangeNotifier {
 
   Future restore() async {
     kPrint("Restoring accounts");
-
-    // Cancel existing subscriptions to prevent memory leaks
-    for (var subscription in _syncSubscription) {
-      subscription?.cancel();
-    }
-    _syncSubscription.clear();
-
     if (_accountsHandler.isNotEmpty) {
       for (var accountHandler in _accountsHandler) {
         accountHandler.$2.dispose();
@@ -166,17 +159,6 @@ class NgAccountManager extends ChangeNotifier {
     SyncManager().startSync();
 
     notifyListeners();
-    _refreshSubscriptions();
-  }
-
-  void _refreshSubscriptions() {
-    // Cancel existing subscriptions
-    for (var subscription in _syncSubscription) {
-      subscription?.cancel();
-    }
-    _syncSubscription.clear();
-
-    // Add new subscriptions for current accounts
     for (var stream in streams) {
       _syncSubscription.add(stream.listen((_) {
         notifyIfAccountBalanceHigherThanUsd1000();
@@ -486,12 +468,7 @@ class NgAccountManager extends ChangeNotifier {
     }
     _accountsOrder.sink.add(order);
     await Future.delayed(const Duration(milliseconds: 50));
-
     _accountsHandler.removeWhere((e) => e.$1.id == account.id);
-
-    // Refresh subscriptions after account removal
-    _refreshSubscriptions();
-
     notifyListeners();
   }
 
