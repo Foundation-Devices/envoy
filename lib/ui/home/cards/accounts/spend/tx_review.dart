@@ -61,8 +61,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
   void initState() {
     super.initState();
     //load rive animation with cache to avoid repeated allocations
-    _artBoard = RiveCache.loadArtboard('assets/envoy_loader.riv', stateMachine: 'STM');
-    _stateMachineController = _artBoard.controllers.whereType<rive.StateMachineController>().firstOrNull;
+    _artBoard =
+        RiveCache.loadArtboard('assets/envoy_loader.riv', stateMachine: 'STM');
+    _stateMachineController = _artBoard.controllers
+        .whereType<rive.StateMachineController>()
+        .firstOrNull;
   }
 
   @override
