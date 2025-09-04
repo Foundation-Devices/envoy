@@ -207,8 +207,8 @@ pub unsafe extern "C" fn backup_get(
         err_ret
     });
 
-    let response =
-        rt.block_on(async move { get_backup_async(server_url, proxy_port, hash.to_string()).await });
+    let response = rt
+        .block_on(async move { get_backup_async(server_url, proxy_port, hash.to_string()).await });
 
     let payload = unwrap_or_return!(response, err_ret);
     let parsed: Vec<u8> = unwrap_or_return!(FromHex::from_hex(&payload.backup), err_ret);
