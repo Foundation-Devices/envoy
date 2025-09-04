@@ -35,7 +35,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart';
-import 'package:envoy/util/rive_cache.dart';
 
 class MagicRecoverWallet extends ConsumerStatefulWidget {
   const MagicRecoverWallet({super.key});

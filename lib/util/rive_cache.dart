@@ -18,18 +18,44 @@ class RiveCache {
 
   /// Returns an independent [Artboard] instance for [assetPath].  If
   /// [stateMachine] is provided, the corresponding controller is added to
-  /// the artboard automatically and returned to the caller.
-  static Artboard loadArtboard(
+  /// the artboard automatically.
+  static Future<Artboard> loadArtboard(
     String assetPath, {
     String? artboardName,
     String? stateMachine,
-  }) {
+  }) async {
     // Reuse previously imported file if available.
     final file = _fileCache.putIfAbsent(assetPath, () {
-      final data = rootBundle.loadSync(assetPath);
-      return RiveFile.import(data);
+      // Note: This is a sync operation using the cached file
+      throw UnsupportedError('File not cached - use loadArtboardAsync');
     });
 
+    final original =
+        file.artboardByName(artboardName ?? file.mainArtboard.name) ??
+            file.mainArtboard;
+    final artboard = original.instance();
+
+    if (stateMachine != null) {
+      final controller =
+          StateMachineController.fromArtboard(artboard, stateMachine);
+      if (controller != null) artboard.addController(controller);
+    }
+    return artboard;
+  }
+
+  /// Async version that loads the file if not cached
+  static Future<Artboard> loadArtboardAsync(
+    String assetPath, {
+    String? artboardName,
+    String? stateMachine,
+  }) async {
+    // Load file if not cached
+    if (!_fileCache.containsKey(assetPath)) {
+      final data = await rootBundle.load(assetPath);
+      _fileCache[assetPath] = RiveFile.import(data);
+    }
+
+    final file = _fileCache[assetPath]!;
     final original =
         file.artboardByName(artboardName ?? file.mainArtboard.name) ??
             file.mainArtboard;

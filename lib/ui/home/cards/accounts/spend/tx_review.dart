@@ -42,7 +42,6 @@ import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:envoy/util/rive_cache.dart';
 
 //ignore: must_be_immutable
 class TxReview extends ConsumerStatefulWidget {
@@ -61,11 +60,23 @@ class _TxReviewState extends ConsumerState<TxReview> {
   void initState() {
     super.initState();
     //load rive animation with cache to avoid repeated allocations
-    _artBoard =
-        RiveCache.loadArtboard('assets/envoy_loader.riv', stateMachine: 'STM');
-    _stateMachineController = _artBoard.controllers
-        .whereType<rive.StateMachineController>()
-        .firstOrNull;
+    _loadRiveAnimation();
+  }
+
+  void _loadRiveAnimation() async {
+    //load rive animation for better performance
+    rootBundle.load('assets/envoy_loader.riv').then((data) {
+      final file = rive.RiveFile.import(data);
+      final artboard = file.mainArtboard;
+      _stateMachineController =
+          rive.StateMachineController.fromArtboard(artboard, 'STM');
+      if (_stateMachineController != null) {
+        artboard.addController(_stateMachineController!);
+      }
+      if (mounted) {
+        setState(() => _artBoard = artboard);
+      }
+    });
   }
 
   @override
