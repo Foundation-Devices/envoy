@@ -228,7 +228,7 @@ class _TransactionsDetailsWidgetState
     final tx = widget.tx;
 
     String note = ref.watch(getTransactionProvider(tx.txId).select(
-      (value) => value?.note ?? "",
+      (value) => value?.note ?? tx.note ?? "",
     ));
 
     if (!tx.isConfirmed && tx is RampTransaction) {
