@@ -707,8 +707,11 @@ class _TransactionsDetailsWidgetState
     return EnvoyInfoCardListItem(
       title: feeTitle,
       icon: icon,
-      trailing: hideBalance
-          ? const LoaderGhost(width: 74, animate: false, height: 16)
+      trailing: hideBalance || tx.fee.toInt() == FEE_UNKNOWN
+          ? Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: const LoaderGhost(width: 74, animate: false, height: 16),
+            )
           : Row(
               mainAxisSize: MainAxisSize.min,
               children: [
