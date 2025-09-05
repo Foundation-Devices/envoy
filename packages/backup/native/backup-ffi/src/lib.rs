@@ -9,7 +9,6 @@ extern crate log;
 
 use bdk::bitcoin;
 use bdk::bitcoin::hashes::hex::FromHex;
-use bdk::bitcoin::hashes::hex::ToHex;
 use bdk::keys::bip39;
 use serde::{Deserialize, Serialize};
 use std::ffi::{CStr, CString};
@@ -122,7 +121,7 @@ pub unsafe extern "C" fn backup_perform(
             proxy_port,
             challenge,
             solution,
-            hash.to_hex(),
+            hash.to_string(),
             encrypted,
         )
         .await
@@ -208,8 +207,8 @@ pub unsafe extern "C" fn backup_get(
         err_ret
     });
 
-    let response =
-        rt.block_on(async move { get_backup_async(server_url, proxy_port, hash.to_hex()).await });
+    let response = rt
+        .block_on(async move { get_backup_async(server_url, proxy_port, hash.to_string()).await });
 
     let payload = unwrap_or_return!(response, err_ret);
     let parsed: Vec<u8> = unwrap_or_return!(FromHex::from_hex(&payload.backup), err_ret);
@@ -327,7 +326,7 @@ pub unsafe extern "C" fn backup_delete(
 
     let response = unwrap_or_return!(
         rt.block_on(
-            async move { delete_backup_async(server_url, proxy_port, hash.to_hex()).await }
+            async move { delete_backup_async(server_url, proxy_port, hash.to_string()).await }
         ),
         {
             error::update_last_error(std::io::Error::other("Async delete backup failed"));
@@ -414,7 +413,7 @@ async fn post_backup_async(
             timestamp: server_response.timestamp,
             signature: server_response.signature,
             hash: hash.parse().unwrap(),
-            backup: payload.to_hex(),
+            backup: hex::encode(&payload),
         })
         .send()
         .await
@@ -516,7 +515,7 @@ mod tests {
     fn test_create_hash_from_seed() {
         let seed_words =
             "copper december enlist body dove discover cross help evidence fall rich clean";
-        let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes()).to_hex();
+        let hash = bitcoin::hashes::sha256::Hash::hash(seed_words.as_bytes()).to_string();
 
         assert_eq!(
             hash,

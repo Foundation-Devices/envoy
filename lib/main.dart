@@ -93,7 +93,6 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   }
   await NTPUtil.init();
   await EnvoyScheduler.init();
-  await KeysManager.init();
   await Settings.restore();
   await ExchangeRate.init();
 
@@ -110,6 +109,7 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   await HttpTor.init(Tor.instance, EnvoyScheduler().parallel);
   UpdatesManager.init();
   ScvServer.init();
+  await KeysManager.init();
   await EnvoySeed.init();
   await PrimeShard.init();
   await FMTCObjectBoxBackend().initialise();
