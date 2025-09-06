@@ -256,10 +256,9 @@ final rbfTxStateProvider = StreamProvider.family<RBFState?, String>(
 
 final isTxBoostedProvider = Provider.family<bool?, String>(
   (ref, txId) {
-    final selectedAccount = ref.watch(selectedAccountProvider);
     return ref.watch(rbfTxStateProvider(txId)).when(
           data: (data) {
-            if (data != null && data.accountId == selectedAccount?.id) {
+            if (data != null) {
               if (data.newTxId == txId || data.originalTxId == txId) {
                 return true;
               } else {
