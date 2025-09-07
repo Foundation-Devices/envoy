@@ -37,6 +37,14 @@
             # Development tools
             which
             bash
+            clang
+            
+            # D-Bus and related libraries
+            dbus
+            pkg-config
+
+            # Necessary for secure storage on Linux
+            libsecret
           ];
 
           shellHook = ''
