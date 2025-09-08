@@ -38,6 +38,9 @@
             which
             bash
             clang
+            cmake
+            openssl
+            llvm
             
             # D-Bus and related libraries
             dbus
@@ -45,6 +48,18 @@
 
             # Necessary for secure storage on Linux
             libsecret
+            libsecret.dev
+
+            # Linux GUI
+            glib
+            gtk3
+            libsysprof-capture
+
+            # Linux QR scanning
+            zbar
+
+            # Linux storage
+            xdg-user-dirs
           ];
 
           shellHook = ''
