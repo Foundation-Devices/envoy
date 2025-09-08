@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use shards::api::shard::ShardBackUp;
+use rust_lib_shards::api::shard::ShardBackUp;
 use std::fs;
 
 #[test]
