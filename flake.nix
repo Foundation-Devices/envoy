@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 {
   description = "Rust + Flutter development environment";
 
@@ -41,6 +45,7 @@
             cmake
             openssl
             llvm
+            reuse
             
             # D-Bus and related libraries
             dbus
