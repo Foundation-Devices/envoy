@@ -619,18 +619,28 @@ class EnvoySeed {
     List<String> keys = List<String>.from(preferences["keys"]);
     List<dynamic> values = preferences["values"];
 
-    var accounts = values[keys.indexOf(NgAccountManager.v1AccountsPrefKey)];
-    var jsonAccounts = jsonDecode(accounts);
-    List<LegacyAccount> legacyWallets = [];
-    for (var e in jsonAccounts) {
-      try {
-        final account = LegacyAccount.fromJson(e);
-        legacyWallets.add(account);
-      } catch (e, stack) {
-        debugPrintStack(stackTrace: stack);
+    try {
+      int accountsIndex = keys.indexOf(NgAccountManager.v1AccountsPrefKey);
+      if (accountsIndex == -1 || accountsIndex >= values.length) {
+        return [];
       }
+      var accounts = values[accountsIndex];
+      var jsonAccounts = jsonDecode(accounts);
+      List<LegacyAccount> legacyWallets = [];
+      for (var e in jsonAccounts) {
+        try {
+          final account = LegacyAccount.fromJson(e);
+          legacyWallets.add(account);
+        } catch (e, stack) {
+          debugPrintStack(stackTrace: stack);
+        }
+      }
+      return legacyWallets;
+    } catch (e, stack) {
+      EnvoyReport().log("EnvoySeed", "Error getting legacy wallets: $e",
+          stackTrace: stack);
+      return [];
     }
-    return legacyWallets;
   }
 
   DateTime? getLastBackupTime() {
