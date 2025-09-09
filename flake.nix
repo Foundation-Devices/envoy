@@ -35,6 +35,7 @@
             dart
             android-studio
             android-tools
+            flutter_rust_bridge_codegen
 
             # Development tools
             which
@@ -44,6 +45,7 @@
             openssl
             llvm
             reuse
+            jdk17
 
             # D-Bus and related libraries
             dbus
@@ -73,7 +75,7 @@
             echo "Dart: $(dart --version)"
 
             # Set JAVA_HOME explicitly
-            export JAVA_HOME="${pkgs.android-studio.unwrapped}/jbr"
+            export JAVA_HOME="${pkgs.jdk17}"
             export ANDROID_JAVA_HOME="$JAVA_HOME"
             echo "Java: $(java --version)"
 
@@ -87,7 +89,7 @@
             export ANDROID_NDK_ROOT="$ANDROID_HOME/ndk/24.0.8215888"
 
             # Configure Flutter to use our chosen JDK
-            flutter config --jdk-dir="${pkgs.android-studio.unwrapped}/jbr"
+            flutter config --jdk-dir="${pkgs.jdk17}"
 
             # Set LLVM path for ffigen
             export LLVM_PATH="${pkgs.libclang.lib}/lib/libclang.so"
