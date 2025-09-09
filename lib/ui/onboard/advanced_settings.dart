@@ -351,8 +351,8 @@ class _AdvancedSettingsOptionsState
                                             top: EnvoySpacing.medium1),
                                         child: SingleChildScrollView(
                                             child: ElectrumServerEntry(
-                                                s.customElectrumAddress,
-                                                s.setCustomElectrumAddress)),
+                                                s.getPersonalElectrumAddress,
+                                                s.setPersonalElectrumAddress)),
                                       ),
                                     if (keyboardHeight != 0.0 &&
                                         bottomPadding > 0)
@@ -395,6 +395,11 @@ class _AdvancedSettingsOptionsState
     }
     if (newOption.value == "personalNode") {
       Settings().useDefaultElectrumServer(false);
+
+      final personalNode = Settings().getPersonalElectrumAddress();
+      if (personalNode.isNotEmpty) {
+        Settings().setCustomElectrumAddress(personalNode);
+      }
       return;
     }
     if (newOption.value == "blockStream") {

@@ -7,6 +7,7 @@ part of 'settings.dart';
 // **************************************************************************
 
 Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
+  ..personalElectrumAddress = json['personalElectrumAddress'] as String? ?? ''
   ..displayUnit = $enumDecode(_$DisplayUnitEnumMap, json['displayUnit'])
   ..selectedFiat = json['selectedFiat'] as String?
   ..sendUnit = $enumDecodeNullable(_$AmountDisplayUnitEnumMap, json['sendUnit'])
@@ -25,6 +26,7 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
   ..allowBuyInEnvoy = json['allowBuyInEnvoy'] as bool? ?? true;
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
+      'personalElectrumAddress': instance.personalElectrumAddress,
       'displayUnit': _$DisplayUnitEnumMap[instance.displayUnit]!,
       'selectedFiat': instance.selectedFiat,
       if (_$AmountDisplayUnitEnumMap[instance.sendUnit] case final value?)

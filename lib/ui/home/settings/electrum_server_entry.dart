@@ -44,9 +44,13 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
   void initState() {
     super.initState();
     _controller.text = widget.getter();
+
     if (_controller.text.isNotEmpty) {
-      _onAddressChanged(_controller.text);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _onAddressChanged(_controller.text);
+      });
     }
+
     Future.delayed(Duration.zero).then((value) {
       if (ref.read(torEnabledProvider)) {
         updateControllerTextIfNeeded();

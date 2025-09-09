@@ -215,6 +215,19 @@ class Settings extends ChangeNotifier {
     return !usingDefaultElectrumServer;
   }
 
+  @JsonKey(defaultValue: "")
+  String personalElectrumAddress = "";
+
+  String getPersonalElectrumAddress() {
+    return personalElectrumAddress;
+  }
+
+  void setPersonalElectrumAddress(String address) {
+    personalElectrumAddress = address;
+    notifyListeners();
+    store();
+  }
+
   bool usingTor = false;
 
   bool torEnabled() {
@@ -412,19 +425,24 @@ class Settings extends ChangeNotifier {
   static Future<void> restore({bool fromBackup = false}) async {
     if (ls.prefs.containsKey(SETTINGS_PREFS)) {
       var json = jsonDecode(ls.prefs.getString(SETTINGS_PREFS)!);
+
       if (fromBackup) {
         if (Settings().torChangedInAdvanced) {
           json["usingTor"] = Settings().usingTor;
         }
-
         if (Settings().nodeChangedInAdvanced) {
           json["usingDefaultElectrumServer"] =
               Settings().usingDefaultElectrumServer;
           json["selectedElectrumAddress"] = Settings().selectedElectrumAddress;
         }
       }
-      Settings.fromJson(json);
+
+      // Deserialize all settings, including personalElectrumAddress
+      var restored = Settings.fromJson(json);
+      // copy personal node into singleton
+      Settings().personalElectrumAddress = restored.personalElectrumAddress;
     }
+
     await Settings.init();
   }
 
