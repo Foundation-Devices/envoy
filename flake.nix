@@ -35,8 +35,6 @@
             dart
             android-studio
             android-tools
-            sdkmanager
-            openjdk11
 
             # Development tools
             which
@@ -46,7 +44,7 @@
             openssl
             llvm
             reuse
-            
+
             # D-Bus and related libraries
             dbus
             pkg-config
@@ -55,15 +53,15 @@
             libsecret
             libsecret.dev
 
-            # Linux GUI
+            # Linux build GUI
             glib
             gtk3
             libsysprof-capture
 
-            # Linux QR scanning
+            # Linux build QR scanning
             zbar
 
-            # Linux storage
+            # Linux build storage
             xdg-user-dirs
           ];
 
@@ -74,13 +72,25 @@
             echo "Flutter: $(flutter --version | head -1)"
             echo "Dart: $(dart --version)"
 
+            # Set JAVA_HOME explicitly
+            export JAVA_HOME="${pkgs.android-studio.unwrapped}/jbr"
+            export ANDROID_JAVA_HOME="$JAVA_HOME"
+            echo "Java: $(java --version)"
+
             # Flutter setup
             export FLUTTER_ROOT="${pkgs.flutter}"
             export PATH="$FLUTTER_ROOT/bin:$PATH"
 
             # Android setup
             export ANDROID_HOME="$HOME/Android/Sdk"
-            export PATH="$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH"
+            export ANDROID_SDK_ROOT="$ANDROID_HOME"
+            export ANDROID_NDK_ROOT="$ANDROID_HOME/ndk/24.0.8215888"
+
+            # Configure Flutter to use our chosen JDK
+            flutter config --jdk-dir="${pkgs.android-studio.unwrapped}/jbr"
+
+            # Set LLVM path for ffigen
+            export LLVM_PATH="${pkgs.libclang.lib}/lib/libclang.so"
 
             echo ""
             echo "💡 Run 'flutter doctor' to check setup"
