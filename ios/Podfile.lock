@@ -43,6 +43,8 @@ PODS:
     - Flutter
   - rust_lib_foundation_api (0.0.1):
     - Flutter
+  - rust_lib_http_tor (0.0.1):
+    - Flutter
   - rust_lib_ngwallet (0.0.1):
     - Flutter
   - rust_lib_shards (0.0.1):
@@ -81,6 +83,7 @@ DEPENDENCIES:
   - ramp_flutter (from `.symlinks/plugins/ramp_flutter/ios`)
   - rive_common (from `.symlinks/plugins/rive_common/ios`)
   - rust_lib_foundation_api (from `.symlinks/plugins/rust_lib_foundation_api/ios`)
+  - rust_lib_http_tor (from `.symlinks/plugins/rust_lib_http_tor/ios`)
   - rust_lib_ngwallet (from `.symlinks/plugins/rust_lib_ngwallet/ios`)
   - rust_lib_shards (from `.symlinks/plugins/rust_lib_shards/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
@@ -134,6 +137,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/rive_common/ios"
   rust_lib_foundation_api:
     :path: ".symlinks/plugins/rust_lib_foundation_api/ios"
+  rust_lib_http_tor:
+    :path: ".symlinks/plugins/rust_lib_http_tor/ios"
   rust_lib_ngwallet:
     :path: ".symlinks/plugins/rust_lib_ngwallet/ios"
   rust_lib_shards:
@@ -178,8 +183,9 @@ SPEC CHECKSUMS:
   ramp_flutter: 7c2b108417cd4899c0f4aae2040a646e82b8f660
   rive_common: 4743dbfd2911c99066547a3c6454681e0fa907df
   rust_lib_foundation_api: b926bd066994ff2c0354873b5335f7287ac62945
+  rust_lib_http_tor: 0fcda57f1a6c6046f5f62488ef5bce90aa30694a
   rust_lib_ngwallet: 3a8d019b362008e31221ba4b2263988fcc0bf802
-  rust_lib_shards: 0a99a0f8b65e2b84f9a1f89de97f2ed753fb0502
+  rust_lib_shards: 8e23064d2ebd38e6a70dc5a2fd05747544c14005
   share_plus: 8b6f8b3447e494cca5317c8c3073de39b3600d1f
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
