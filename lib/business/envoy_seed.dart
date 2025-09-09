@@ -6,7 +6,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:backup/backup.dart';
@@ -419,7 +418,8 @@ class EnvoySeed {
       try {
         return Backup.restore(seed, Settings().envoyServerAddress, Tor.instance)
             .then((data) async {
-          bool status = await processRecoveryData(seed!, data, passphrase);
+          bool status = await processRecoveryData(seed!, data, passphrase,
+              isMagicBackup: true);
           return status;
         }).catchError((e, st) {
           debugPrintStack(stackTrace: st);
@@ -442,7 +442,8 @@ class EnvoySeed {
   }
 
   Future<bool> processRecoveryData(
-      String seed, Map<String, String>? data, String? passphrase) async {
+      String seed, Map<String, String>? data, String? passphrase,
+      {bool isMagicBackup = false}) async {
     bool success = data != null;
     bool isLegacy = false;
     if (success) {
@@ -464,8 +465,7 @@ class EnvoySeed {
       } catch (e) {
         EnvoyReport().log("EnvoySeed", "Error restoring database: $e");
       }
-      log("NgAccountManager.accountsPrefKey ${data.containsKey(NgAccountManager.accountsPrefKey)}");
-      log("EnvoyStorage.dbName ${data.containsKey(EnvoyStorage.dbName)}");
+      Settings().setSyncToCloud(isMagicBackup);
 
       // if the data does not contains v2 backup at root (NgAccountManager.accountsPrefKey) at root,
       // Data is from older backups,so we need to restore legacy wallets
