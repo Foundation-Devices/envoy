@@ -20,6 +20,8 @@ import 'package:envoy/util/tuple.dart';
 // Generated
 part 'fees.g.dart';
 
+const int FEE_UNKNOWN = 0x7FFFFFFFFFFFFFFF; // i64::MAX from rust
+
 final mempoolBlocksMedianFeeRateProvider =
     Provider.family<List<double>, Network>((ref, network) {
   return Fees().fees[network]?.mempoolBlocksMedianFeeRate ?? [];
