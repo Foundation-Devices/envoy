@@ -250,6 +250,9 @@ class EnvoySeed {
   }
 
   Future<void> backupData({bool cloud = true}) async {
+    if (!NgAccountManager().hotAccountsExist()) {
+      return;
+    }
     // Make sure we don't accidentally backup to Cloud
     if (Settings().syncToCloud == false) {
       cloud = false;
