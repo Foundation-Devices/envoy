@@ -434,13 +434,10 @@ class Settings extends ChangeNotifier {
           json["usingDefaultElectrumServer"] =
               Settings().usingDefaultElectrumServer;
           json["selectedElectrumAddress"] = Settings().selectedElectrumAddress;
+          json["personalElectrumAddress"] = Settings().personalElectrumAddress;
         }
       }
-
-      // Deserialize all settings, including personalElectrumAddress
-      var restored = Settings.fromJson(json);
-      // copy personal node into singleton
-      Settings().personalElectrumAddress = restored.personalElectrumAddress;
+      Settings.fromJson(json);
     }
 
     await Settings.init();
