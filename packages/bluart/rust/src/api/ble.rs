@@ -108,12 +108,12 @@ fn ble_state() -> &'static BleState {
     BLE_STATE.get().expect("BleState not initialized")
 }
 
-fn init_logging(_level: log::LevelFilter) {
-    //  #[cfg(target_os = "android")]
-    //        let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
+fn init_logging(level: log::LevelFilter) {
+    #[cfg(target_os = "android")]
+    let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
 
-    //      #[cfg(any(target_os = "ios", target_os = "macos"))]
-    //    let _ = oslog::OsLogger::new("frb_user").level_filter(level).init();
+    #[cfg(any(target_os = "ios", target_os = "macos"))]
+    let _ = oslog::OsLogger::new("frb_user").level_filter(level).init();
 }
 
 /// The init() function must be called before anything else.
@@ -373,10 +373,14 @@ mod command {
         debug!("inner scan");
         let central = ble_state().central.lock().await;
 
-        let services = filter
+        let services: Vec<Uuid> = filter
             .into_iter()
             .filter_map(|f| Uuid::parse_str(f.as_str()).ok())
             .collect();
+
+        if services.is_empty() {
+            debug!("Warning: empty list of services to filter for");
+        }
 
         central.start_scan(ScanFilter { services }).await?;
         Ok(())

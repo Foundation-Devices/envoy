@@ -149,8 +149,9 @@ class BluetoothManager extends WidgetsBindingObserver {
 
         for (final device in event.field0) {
           _updateConnectionStatus(device);
-          //kPrint("Paired device found: ${device.id}");
+          // TODO: don't autoconnect in onboarding
           if (bleId.isNotEmpty && device.id == bleId && !connected) {
+            kPrint("Autoconnecting to: ${device.id}");
             await connect(id: device.id);
             await listen(id: bleId);
           }
