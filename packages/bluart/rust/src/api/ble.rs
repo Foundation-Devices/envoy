@@ -108,6 +108,7 @@ fn ble_state() -> &'static BleState {
     BLE_STATE.get().expect("BleState not initialized")
 }
 
+#[allow(unused_variables)]
 fn init_logging(level: log::LevelFilter) {
     #[cfg(target_os = "android")]
     let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
