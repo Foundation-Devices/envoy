@@ -108,12 +108,13 @@ fn ble_state() -> &'static BleState {
     BLE_STATE.get().expect("BleState not initialized")
 }
 
-fn init_logging(_level: log::LevelFilter) {
-    //  #[cfg(target_os = "android")]
-    //        let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
+#[allow(unused_variables)]
+fn init_logging(level: log::LevelFilter) {
+    #[cfg(target_os = "android")]
+    let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
 
-    //      #[cfg(any(target_os = "ios", target_os = "macos"))]
-    //    let _ = oslog::OsLogger::new("frb_user").level_filter(level).init();
+    #[cfg(any(target_os = "ios", target_os = "macos"))]
+    let _ = oslog::OsLogger::new("frb_user").level_filter(level).init();
 }
 
 /// The init() function must be called before anything else.
@@ -155,8 +156,6 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
     runtime.spawn(async move {
         let mut events = central.events().await.unwrap();
         debug!("Subscribed to events!");
-
-        central.start_scan(ScanFilter::default()).await.unwrap();
 
         while let Some(event) = events.next().await {
             debug!("{:?}", event);
@@ -308,9 +307,9 @@ pub fn read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
 
 /// flutter_rust_bridge:ignore
 mod command {
-    use anyhow::Context;
-
     use super::*;
+    use anyhow::Context;
+    use uuid::Uuid;
 
     pub fn init(runtime: &tokio::runtime::Runtime, mut rx: mpsc::UnboundedReceiver<Command>) {
         runtime.spawn(async move {
@@ -371,11 +370,20 @@ mod command {
         });
     }
 
-    async fn inner_scan(_filter: Vec<String>) -> Result<()> {
+    async fn inner_scan(filter: Vec<String>) -> Result<()> {
         debug!("inner scan");
         let central = ble_state().central.lock().await;
-        central.start_scan(ScanFilter::default()).await?;
-        // tracing::debug!("Scan finished");
+
+        let services: Vec<Uuid> = filter
+            .into_iter()
+            .filter_map(|f| Uuid::parse_str(f.as_str()).ok())
+            .collect();
+
+        if services.is_empty() {
+            debug!("Warning: empty list of services to filter for");
+        }
+
+        central.start_scan(ScanFilter { services }).await?;
         Ok(())
     }
 
