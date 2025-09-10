@@ -94,7 +94,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
       }
       setState(() => _artBoard = artboard);
     });
-    _resetPrimeProviderStates(); // check this
+    Future.microtask(() => _resetPrimeProviderStates());
   }
 
   @override
@@ -729,11 +729,12 @@ class _TransactionReviewScreenState
                                   top: EnvoySpacing.medium1),
                               child: feeOverSpendWarning(feePercentage),
                             ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: EnvoySpacing.medium1),
-                            child: transactionPrimeStatus(context),
-                          ),
+                          if (isPrime)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: EnvoySpacing.medium1),
+                              child: transactionPrimeStatus(context),
+                            ),
                           if (isTest)
                             const SizedBox(height: EnvoySpacing.medium1)
                         ]),
@@ -803,32 +804,26 @@ class _TransactionReviewScreenState
     }
   }
 
-  Align transactionPrimeStatus(BuildContext context) {
-    return Align(
-      alignment: Alignment.center,
-      child: ConstrainedBox(
-        constraints:
-            BoxConstraints(maxWidth: 0.7 * MediaQuery.widthOf(context)),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            EnvoyStepItem(
-                step: ref.watch(primeConnectedStateProvider), highlight: false),
-            SizedBox(
-              height: EnvoySpacing.medium1,
-            ),
-            EnvoyStepItem(
-                step: ref.watch(transferTransactionStateProvider),
-                highlight: false),
-            SizedBox(
-              height: EnvoySpacing.medium1,
-            ),
-            EnvoyStepItem(
-                step: ref.watch(signTransactionStateProvider),
-                highlight: false),
-          ],
+  Column transactionPrimeStatus(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        EnvoyStepItem(
+            step: ref.watch(primeConnectedStateProvider), highlight: false),
+        SizedBox(
+          height: EnvoySpacing.medium1,
         ),
-      ),
+        EnvoyStepItem(
+            step: ref.watch(transferTransactionStateProvider),
+            highlight: false),
+        SizedBox(
+          height: EnvoySpacing.medium1,
+        ),
+        EnvoyStepItem(
+            step: ref.watch(signTransactionStateProvider), highlight: false),
+      ],
     );
   }
 

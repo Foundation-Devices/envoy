@@ -342,57 +342,61 @@ class _PrimeFwDownloadProgressState
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Expanded(
-              child: Padding(
-            padding: const EdgeInsets.only(
-              left: EnvoySpacing.medium1,
-            ),
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              direction: Axis.horizontal,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              runSpacing: EnvoySpacing.medium1,
-              children: [
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                EnvoyStepItem(
-                    step: ref.watch(fwDownloadStateProvider), highlight: false),
-                EnvoyStepItem(
-                    step: ref.watch(fwTransferStateProvider), highlight: false),
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                Consumer(builder: (context, ref, child) {
-                  final progress = ref.watch(sendProgressProvider);
-                  var timeRemaining = ref.watch(remainingTimeProvider);
+              child: Wrap(
+            alignment: WrapAlignment.center,
+            direction: Axis.horizontal,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            runSpacing: EnvoySpacing.medium1,
+            children: [
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  EnvoyStepItem(
+                      step: ref.watch(fwDownloadStateProvider),
+                      highlight: false),
+                  SizedBox(
+                    height: EnvoySpacing.medium1,
+                  ),
+                  EnvoyStepItem(
+                      step: ref.watch(fwTransferStateProvider),
+                      highlight: false),
+                ],
+              ),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+              Consumer(builder: (context, ref, child) {
+                final progress = ref.watch(sendProgressProvider);
+                var timeRemaining = ref.watch(remainingTimeProvider);
 
-                  String formatDuration(Duration d) {
-                    final totalSeconds = d.inSeconds;
+                String formatDuration(Duration d) {
+                  final totalSeconds = d.inSeconds;
 
-                    if (totalSeconds < 60) {
-                      return " ${totalSeconds}s";
-                    } else {
-                      final minutes = (totalSeconds / 60).round();
-                      return " ~${minutes}min";
-                    }
+                  if (totalSeconds < 60) {
+                    return " ${totalSeconds}s";
+                  } else {
+                    final minutes = (totalSeconds / 60).round();
+                    return " ~${minutes}min";
                   }
+                }
 
-                  return Column(
-                    children: [
-                      EnvoyGradientProgress(
-                        progress: progress,
+                return Column(
+                  children: [
+                    EnvoyGradientProgress(
+                      progress: progress,
+                    ),
+                    const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                    if (ref.watch(fwDownloadStateProvider).state ==
+                        EnvoyStepState.FINISHED)
+                      Text(
+                        S().firmware_downloadingUpdate_timeRemaining(
+                            formatDuration(timeRemaining)), //
+                        style: EnvoyTypography.explainer.copyWith(fontSize: 14),
                       ),
-                      const Padding(
-                          padding: EdgeInsets.all(EnvoySpacing.small)),
-                      if (ref.watch(fwDownloadStateProvider).state ==
-                          EnvoyStepState.FINISHED)
-                        Text(
-                          S().firmware_downloadingUpdate_timeRemaining(
-                              formatDuration(timeRemaining)), //
-                          style:
-                              EnvoyTypography.explainer.copyWith(fontSize: 14),
-                        ),
-                    ],
-                  );
-                })
-              ],
-            ),
+                  ],
+                );
+              })
+            ],
           ))
         ],
       ),
@@ -424,29 +428,36 @@ class _PrimeFwFlashProgressState extends ConsumerState<PrimeFwFlashProgress> {
             style: EnvoyTypography.explainer.copyWith(fontSize: 14),
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Padding(
-            padding: const EdgeInsets.only(
-              left: EnvoySpacing.medium2,
-            ),
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              direction: Axis.horizontal,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              runSpacing: EnvoySpacing.medium1,
-              children: [
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                EnvoyStepItem(
-                    step: ref.watch(primeFwSigVerifyStateProvider),
-                    highlight: false),
-                EnvoyStepItem(
-                    step: ref.watch(primeFwInstallStateProvider),
-                    highlight: false),
-                EnvoyStepItem(
-                    step: ref.watch(primeFwRebootStateProvider),
-                    highlight: false),
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-              ],
-            ),
+          Wrap(
+            alignment: WrapAlignment.center,
+            direction: Axis.horizontal,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            runSpacing: EnvoySpacing.medium1,
+            children: [
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  EnvoyStepItem(
+                      step: ref.watch(primeFwSigVerifyStateProvider),
+                      highlight: false),
+                  SizedBox(
+                    height: EnvoySpacing.medium1,
+                  ),
+                  EnvoyStepItem(
+                      step: ref.watch(primeFwInstallStateProvider),
+                      highlight: false),
+                  SizedBox(
+                    height: EnvoySpacing.medium1,
+                  ),
+                  EnvoyStepItem(
+                      step: ref.watch(primeFwRebootStateProvider),
+                      highlight: false),
+                ],
+              ),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+            ],
           ),
           Consumer(builder: (context, ref, child) {
             final progress = ref.watch(primeFwRebootStateProvider);
