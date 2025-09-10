@@ -7,6 +7,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 //TODO: add more concrete states based on bluetooth implementation
 enum EnvoyStepState { LOADING, FINISHED, ERROR, IDLE, HIDDEN }
@@ -53,11 +54,11 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
       opacity: step.state == EnvoyStepState.LOADING ? 1 : .6,
       duration: const Duration(milliseconds: 320),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center, // center the row
-        mainAxisSize: MainAxisSize.min, // shrink to fit content
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           leading,
-          const SizedBox(width: 8), // space between icon and text
+          const SizedBox(width: EnvoySpacing.small),
           Flexible(
             child: Text(
               step.stepName,
