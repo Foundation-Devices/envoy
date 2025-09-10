@@ -156,8 +156,6 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
         let mut events = central.events().await.unwrap();
         debug!("Subscribed to events!");
 
-        central.start_scan(ScanFilter::default()).await.unwrap();
-
         while let Some(event) = events.next().await {
             debug!("{:?}", event);
             match event {
@@ -308,9 +306,9 @@ pub fn read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
 
 /// flutter_rust_bridge:ignore
 mod command {
-    use anyhow::Context;
-
     use super::*;
+    use anyhow::Context;
+    use uuid::Uuid;
 
     pub fn init(runtime: &tokio::runtime::Runtime, mut rx: mpsc::UnboundedReceiver<Command>) {
         runtime.spawn(async move {
@@ -371,11 +369,16 @@ mod command {
         });
     }
 
-    async fn inner_scan(_filter: Vec<String>) -> Result<()> {
+    async fn inner_scan(filter: Vec<String>) -> Result<()> {
         debug!("inner scan");
         let central = ble_state().central.lock().await;
-        central.start_scan(ScanFilter::default()).await?;
-        // tracing::debug!("Scan finished");
+
+        let services = filter
+            .into_iter()
+            .filter_map(|f| Uuid::parse_str(f.as_str()).ok())
+            .collect();
+
+        central.start_scan(ScanFilter { services }).await?;
         Ok(())
     }
 
