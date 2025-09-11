@@ -6,7 +6,6 @@ import 'dart:async';
 
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/node_url.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/text_field.dart';
@@ -45,9 +44,13 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
   void initState() {
     super.initState();
     _controller.text = widget.getter();
+
     if (_controller.text.isNotEmpty) {
-      _onAddressChanged(_controller.text);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _onAddressChanged(_controller.text);
+      });
     }
+
     Future.delayed(Duration.zero).then((value) {
       if (ref.read(torEnabledProvider)) {
         updateControllerTextIfNeeded();
@@ -259,8 +262,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
 
   Future<void> _checkEsploraServer(String address) async {
     try {
-      final response = await HttpTor(Tor.instance, EnvoyScheduler().parallel)
-          .get(('$address/blocks/tip/height'));
+      final response = await HttpTor().get(('$address/blocks/tip/height'));
       if (response.statusCode == 200) {
         final responseBody = response.body;
         final blockHeight = int.tryParse(responseBody);

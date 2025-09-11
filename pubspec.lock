@@ -765,7 +765,7 @@ packages:
       path: "packages/http_tor"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "1.0.0+1"
   in_app_purchase:
     dependency: "direct main"
     description:
@@ -1359,6 +1359,13 @@ packages:
     dependency: transitive
     description:
       path: "packages/foundation_api/rust_builder"
+      relative: true
+    source: path
+    version: "0.0.1"
+  rust_lib_http_tor:
+    dependency: transitive
+    description:
+      path: "packages/http_tor/rust_builder"
       relative: true
     source: path
     version: "0.0.1"
@@ -1975,5 +1982,5 @@ packages:
     source: hosted
     version: "3.1.3"
 sdks:
-  dart: ">=3.8.0 <4.0.0"
+  dart: ">=3.9.0 <4.0.0"
   flutter: ">=3.32.0"

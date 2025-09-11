@@ -30,6 +30,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 
 class EnvoyListTile extends StatelessWidget {
   const EnvoyListTile({
@@ -286,6 +287,8 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
       BuildContext context, EnvoyTransaction transaction) {
     final accountId = widget.notification.accountId;
     final account = NgAccountManager().getAccountById(accountId!);
+
+    ref.read(selectedAccountProvider.notifier).state = account;
 
     return TransactionsDetailsWidget(
       account: account!,

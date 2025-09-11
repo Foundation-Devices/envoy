@@ -275,8 +275,11 @@ class MarkersPageState extends State<MarkersPage> {
                       });
                     }
                   },
-                  //TODO: migrate deprecated api
-                  tileProvider: const FMTCStore('mapStore').getTileProvider(),
+                  tileProvider: FMTCTileProvider(
+                    stores: const {
+                      'mapStore': BrowseStoreStrategy.readUpdateCreate
+                    },
+                  ),
                 ),
                 MarkerLayer(markers: showLocalMarkers()),
               ],

@@ -29,7 +29,6 @@ class _FwIntroPageState extends State<FwIntroPage> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (didPop, result) => context.go("/"),
       child: OnboardingPage(
         key: const Key("fw_intro"),
         rightFunction: null,
@@ -98,7 +97,7 @@ class _FwIntroPageState extends State<FwIntroPage> {
                   });
 
                   if (context.mounted) {
-                    context.goNamed(PASSPORT_UPDATE_SD_CARD,
+                    context.pushNamed(PASSPORT_UPDATE_SD_CARD,
                         extra: widget.fwPagePayload);
                   }
                 }),

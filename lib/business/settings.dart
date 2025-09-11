@@ -107,6 +107,7 @@ class Settings extends ChangeNotifier {
 
     return fullPaths;
   }
+
   // FD testnet4 server
 
   static const String TESTNET4_ELECTRUM_SERVER =
@@ -212,6 +213,19 @@ class Settings extends ChangeNotifier {
 
   bool customElectrumEnabled() {
     return !usingDefaultElectrumServer;
+  }
+
+  @JsonKey(defaultValue: "")
+  String personalElectrumAddress = "";
+
+  String getPersonalElectrumAddress() {
+    return personalElectrumAddress;
+  }
+
+  void setPersonalElectrumAddress(String address) {
+    personalElectrumAddress = address;
+    notifyListeners();
+    store();
   }
 
   bool usingTor = false;
@@ -364,6 +378,11 @@ class Settings extends ChangeNotifier {
     store();
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool nodeChangedInAdvanced = false;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool torChangedInAdvanced = false;
+
   // ENV-989: Trigger settings to show all restored accounts.
   void updateAccountsViewSettings() {
     setShowTestnetAccounts(showTestnetAccountsSetting);
@@ -406,11 +425,21 @@ class Settings extends ChangeNotifier {
   static Future<void> restore({bool fromBackup = false}) async {
     if (ls.prefs.containsKey(SETTINGS_PREFS)) {
       var json = jsonDecode(ls.prefs.getString(SETTINGS_PREFS)!);
+
       if (fromBackup) {
-        json["usingTor"] = Settings().usingTor;
+        if (Settings().torChangedInAdvanced) {
+          json["usingTor"] = Settings().usingTor;
+        }
+        if (Settings().nodeChangedInAdvanced) {
+          json["usingDefaultElectrumServer"] =
+              Settings().usingDefaultElectrumServer;
+          json["selectedElectrumAddress"] = Settings().selectedElectrumAddress;
+          json["personalElectrumAddress"] = Settings().personalElectrumAddress;
+        }
       }
       Settings.fromJson(json);
     }
+
     await Settings.init();
   }
 

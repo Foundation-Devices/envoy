@@ -217,7 +217,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
         }
       });
 
-      NgAccountManager().updateAccountOrder(_accountsOrder);
+      Future.microtask(
+          () => NgAccountManager().updateAccountOrder(_accountsOrder));
 
       if (previous!.length < next.length) {
         if (_scrollController.hasClients) {
@@ -301,7 +302,9 @@ class _AccountsListState extends ConsumerState<AccountsList> {
               }
             }
             _accountsOrder = toReorder;
-            NgAccountManager().updateAccountOrder(toReorder);
+
+            Future.microtask(
+                () => NgAccountManager().updateAccountOrder(toReorder));
           });
           await EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
         },

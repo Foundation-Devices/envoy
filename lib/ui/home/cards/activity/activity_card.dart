@@ -54,7 +54,6 @@ class ActivityCardState extends State<ActivityCard> {
   }
 }
 
-//ignore: must_be_immutable
 class TopLevelActivityCard extends ConsumerStatefulWidget {
   const TopLevelActivityCard({super.key});
 
@@ -123,6 +122,9 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
                 const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
             child: CustomScrollView(
               slivers: [
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: EnvoySpacing.medium1),
+                ),
                 envoyNotification.isEmpty
                     ? SliverFillRemaining(
                         child: Column(
@@ -146,46 +148,39 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
                           ],
                         ),
                       )
-                    : SliverToBoxAdapter(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            ListView.builder(
-                              padding: const EdgeInsets.only(top: 15.0),
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: envoyNotification.length,
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    if (index == 0 ||
-                                        (index > 0 &&
-                                            showHeader(envoyNotification[index],
-                                                envoyNotification[index - 1])))
-                                      Column(
-                                        children: [
-                                          if (index != 0)
-                                            const SizedBox(
-                                                height: EnvoySpacing.medium2),
-                                          if (index == 0)
-                                            const SizedBox(
-                                                height: EnvoySpacing.small),
-                                          ListHeader(
-                                            title: getTransactionDateString(
-                                                envoyNotification[index]),
-                                          ),
-                                        ],
+                    : SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            return Column(
+                              children: [
+                                if (index == 0 ||
+                                    (index > 0 &&
+                                        showHeader(envoyNotification[index],
+                                            envoyNotification[index - 1])))
+                                  Column(
+                                    children: [
+                                      if (index != 0)
+                                        const SizedBox(
+                                            height: EnvoySpacing.medium2),
+                                      if (index == 0)
+                                        const SizedBox(
+                                            height: EnvoySpacing.small),
+                                      ListHeader(
+                                        title: getTransactionDateString(
+                                            envoyNotification[index]),
                                       ),
-                                    ActivityListTile(envoyNotification[index]),
-                                  ],
-                                );
-                              },
-                            ),
-                            const SizedBox(height: EnvoySpacing.large2),
-                          ],
+                                    ],
+                                  ),
+                                ActivityListTile(envoyNotification[index]),
+                              ],
+                            );
+                          },
+                          childCount: envoyNotification.length,
                         ),
                       ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: EnvoySpacing.large2),
+                ),
               ],
             ),
           ),

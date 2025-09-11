@@ -7,10 +7,10 @@ part of 'settings.dart';
 // **************************************************************************
 
 Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
+  ..personalElectrumAddress = json['personalElectrumAddress'] as String? ?? ''
   ..displayUnit = $enumDecode(_$DisplayUnitEnumMap, json['displayUnit'])
   ..selectedFiat = json['selectedFiat'] as String?
-  ..sendUnit =
-      $enumDecodeNullable(_$AmountDisplayUnitEnumMap, json['sendScreenUnit'])
+  ..sendUnit = $enumDecodeNullable(_$AmountDisplayUnitEnumMap, json['sendUnit'])
   ..environment = $enumDecode(_$EnvironmentEnumMap, json['environment'])
   ..selectedElectrumAddress = json['selectedElectrumAddress'] as String
   ..usingDefaultElectrumServer =
@@ -26,10 +26,11 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
   ..allowBuyInEnvoy = json['allowBuyInEnvoy'] as bool? ?? true;
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
+      'personalElectrumAddress': instance.personalElectrumAddress,
       'displayUnit': _$DisplayUnitEnumMap[instance.displayUnit]!,
       'selectedFiat': instance.selectedFiat,
       if (_$AmountDisplayUnitEnumMap[instance.sendUnit] case final value?)
-        'sendScreenUnit': value,
+        'sendUnit': value,
       'environment': _$EnvironmentEnumMap[instance.environment]!,
       'selectedElectrumAddress': instance.selectedElectrumAddress,
       'usingDefaultElectrumServer': instance.usingDefaultElectrumServer,

@@ -327,41 +327,43 @@ class _TxCancelDialogState extends ConsumerState<TxCancelDialog> {
                 padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          S().replaceByFee_cancel_overlay_modal_cancelationFees,
-                          style: EnvoyTypography.body,
-                        ),
-                        EnvoyAmount(
-                            account: account,
-                            amountSats: _totalFeeAmount,
-                            amountWidgetStyle: AmountWidgetStyle.normal),
-                      ],
+                    SizedBox(
+                      width: double.infinity,
+                      child: Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            S().replaceByFee_cancel_overlay_modal_cancelationFees,
+                            style: EnvoyTypography.body,
+                          ),
+                          EnvoyAmount(
+                              account: account,
+                              amountSats: _totalFeeAmount,
+                              amountWidgetStyle: AmountWidgetStyle.normal),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: EnvoySpacing.medium1),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          S().replaceByFee_cancel_overlay_modal_receivingAmount,
-                          style: EnvoyTypography.body,
-                        ),
-                        _totalReturnAmount.isNegative
-                            ? Text(S().replaceByFee_cancelAmountNone_None,
-                                style: EnvoyTypography.body
-                                    .copyWith(color: EnvoyColors.danger))
-                            : EnvoyAmount(
-                                account: account,
-                                amountSats: _totalReturnAmount,
-                                amountWidgetStyle: AmountWidgetStyle.normal,
-                              )
-                      ],
+                    SizedBox(
+                      width: double.infinity,
+                      child: Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            S().replaceByFee_cancel_overlay_modal_receivingAmount,
+                            style: EnvoyTypography.body,
+                          ),
+                          _totalReturnAmount.isNegative
+                              ? Text(S().replaceByFee_cancelAmountNone_None,
+                                  style: EnvoyTypography.body
+                                      .copyWith(color: EnvoyColors.danger))
+                              : EnvoyAmount(
+                                  account: account,
+                                  amountSats: _totalReturnAmount,
+                                  amountWidgetStyle: AmountWidgetStyle.normal,
+                                )
+                        ],
+                      ),
                     ),
                     const SizedBox(height: EnvoySpacing.medium1),
                   ],

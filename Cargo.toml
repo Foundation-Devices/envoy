@@ -5,7 +5,7 @@
 [workspace]
 resolver = "2"
 members = [
-    "packages/http_tor/native/*",
+    "packages/http_tor/rust",
     "packages/ur/native/*",
     "packages/backup/native/*",
     "packages/bluart/rust",
@@ -26,3 +26,4 @@ pqcrypto-mlkem = { git = "https://github.com/icota/pqcrypto", branch = "aarch64-
 lto = true
 codegen-units = 1
 debug = true
+incremental = true

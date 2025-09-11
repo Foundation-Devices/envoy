@@ -104,6 +104,12 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
     }
     if (newOption.value == "personalNode") {
       Settings().useDefaultElectrumServer(false);
+
+      final personalNode = Settings().getPersonalElectrumAddress();
+
+      if (personalNode.isNotEmpty) {
+        Settings().setCustomElectrumAddress(personalNode);
+      }
       return;
     }
     if (newOption.value == "blockStream") {
@@ -245,8 +251,8 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                               const EdgeInsets.only(top: EnvoySpacing.medium1),
                           child: SingleChildScrollView(
                               child: ElectrumServerEntry(
-                                  Settings().customElectrumAddress,
-                                  Settings().setCustomElectrumAddress)),
+                                  Settings().getPersonalElectrumAddress,
+                                  Settings().setPersonalElectrumAddress)),
                         ),
                       if (!Platform.isLinux)
                         FutureBuilder<bool>(
@@ -330,10 +336,7 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                         Padding(
                           padding: EdgeInsets.only(bottom: bottomPadding),
                         ),
-                      Container(
-                        height: 40,
-                        color: Colors.transparent,
-                      )
+                      SizedBox(height: 40)
                     ],
                   ),
                 ),

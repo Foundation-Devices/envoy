@@ -6,7 +6,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:backup/backup.dart';
@@ -250,6 +249,9 @@ class EnvoySeed {
   }
 
   Future<void> backupData({bool cloud = true}) async {
+    if (!NgAccountManager().hotAccountsExist()) {
+      return;
+    }
     // Make sure we don't accidentally backup to Cloud
     if (Settings().syncToCloud == false) {
       cloud = false;
@@ -269,7 +271,7 @@ class EnvoySeed {
     backupData = await processBackupData(backupData, cloud);
     return Backup.perform(
             backupData, seed, Settings().envoyServerAddress, Tor.instance,
-            path: encryptedBackupFilePath, cloud: false)
+            path: encryptedBackupFilePath, cloud: cloud)
         .then((success) async {
       if (cloud && success) {
         // Only notify if we are doing an online backup
@@ -432,7 +434,8 @@ class EnvoySeed {
       try {
         return Backup.restore(seed, Settings().envoyServerAddress, Tor.instance)
             .then((data) async {
-          bool status = await processRecoveryData(seed!, data, passphrase);
+          bool status = await processRecoveryData(seed!, data, passphrase,
+              isMagicBackup: true);
           return status;
         }).catchError((e, st) {
           debugPrintStack(stackTrace: st);
@@ -455,7 +458,8 @@ class EnvoySeed {
   }
 
   Future<bool> processRecoveryData(
-      String seed, Map<String, String>? data, String? passphrase) async {
+      String seed, Map<String, String>? data, String? passphrase,
+      {bool isMagicBackup = false}) async {
     bool success = data != null;
     bool isLegacy = false;
     if (success) {
@@ -477,8 +481,7 @@ class EnvoySeed {
       } catch (e) {
         EnvoyReport().log("EnvoySeed", "Error restoring database: $e");
       }
-      log("NgAccountManager.accountsPrefKey ${data.containsKey(NgAccountManager.accountsPrefKey)}");
-      log("EnvoyStorage.dbName ${data.containsKey(EnvoyStorage.dbName)}");
+      Settings().setSyncToCloud(isMagicBackup);
 
       // if the data does not contains v2 backup at root (NgAccountManager.accountsPrefKey) at root,
       // Data is from older backups,so we need to restore legacy wallets
@@ -635,18 +638,28 @@ class EnvoySeed {
     List<String> keys = List<String>.from(preferences["keys"]);
     List<dynamic> values = preferences["values"];
 
-    var accounts = values[keys.indexOf(NgAccountManager.v1AccountsPrefKey)];
-    var jsonAccounts = jsonDecode(accounts);
-    List<LegacyAccount> legacyWallets = [];
-    for (var e in jsonAccounts) {
-      try {
-        final account = LegacyAccount.fromJson(e);
-        legacyWallets.add(account);
-      } catch (e, stack) {
-        debugPrintStack(stackTrace: stack);
+    try {
+      int accountsIndex = keys.indexOf(NgAccountManager.v1AccountsPrefKey);
+      if (accountsIndex == -1 || accountsIndex >= values.length) {
+        return [];
       }
+      var accounts = values[accountsIndex];
+      var jsonAccounts = jsonDecode(accounts);
+      List<LegacyAccount> legacyWallets = [];
+      for (var e in jsonAccounts) {
+        try {
+          final account = LegacyAccount.fromJson(e);
+          legacyWallets.add(account);
+        } catch (e, stack) {
+          debugPrintStack(stackTrace: stack);
+        }
+      }
+      return legacyWallets;
+    } catch (e, stack) {
+      EnvoyReport().log("EnvoySeed", "Error getting legacy wallets: $e",
+          stackTrace: stack);
+      return [];
     }
-    return legacyWallets;
   }
 
   DateTime? getLastBackupTime() {

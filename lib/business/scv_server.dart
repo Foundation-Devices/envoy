@@ -9,16 +9,14 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:tor/tor.dart';
 import 'package:envoy/business/local_storage.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:foundation_api/foundation_api.dart';
 
 // Generated
 part 'scv_server.g.dart';
 
 class ScvServer {
-  static HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+  static HttpTor http = HttpTor();
   static String serverAddress = "https://validate.foundation.xyz";
   static String primeSecurityCheckUrl = "https://security-check.foundation.xyz";
 
@@ -84,7 +82,7 @@ class ScvServer {
       return challenge;
     } else {
       EnvoyReport().log("scv",
-          "Failed to get challenge,status: ${response.code},body: ${response.body}");
+          "Failed to get challenge,status: ${response.statusCode},body: ${response.body}");
       throw Exception('Failed to get challenge');
     }
   }
@@ -114,7 +112,7 @@ class ScvServer {
       return json['isValidated'] == true;
     } else {
       EnvoyReport().log("scv",
-          "Failed to validate challenge,status: ${response.code},body: ${response.body}");
+          "Failed to validate challenge,status: ${response.statusCode},body: ${response.body}");
       return false;
     }
   }
@@ -127,8 +125,12 @@ class ScvServer {
       if (response.statusCode != 200) {
         return null;
       }
+      final data = Uint8List.fromList(response.bodyBytes);
 
-      return ChallengeRequest(data: Uint8List.fromList(response.bodyBytes));
+      final dataStr = data.map((d) => d.toString()).join(",");
+      kPrint("security challenge payload $dataStr");
+
+      return ChallengeRequest(data: data);
     } catch (e) {
       return null;
     }
@@ -136,30 +138,33 @@ class ScvServer {
 
   Future<bool> isProofVerified(Uint8List data) async {
     final uri = '$primeSecurityCheckUrl/verify';
+    final dataStr = data.map((d) => d.toString()).join(",");
 
     try {
+      kPrint("isProofVerified payload $dataStr");
       final response = await http.post(
         uri,
         body: data.toList().toString(),
         headers: {'Content-Type': 'application/octet-stream'},
       );
 
+      kPrint("response status code: ${response.statusCode}");
       if (response.statusCode == 200) {
         List<int> rawVerificationMessage = response.bodyBytes;
-
+        kPrint("response status data 32: ${rawVerificationMessage[32]}");
+        kPrint("rawVerificationMessage {rawVerificationMessage}");
         // Error code is the 33rd byte in the response
         final errorCode = rawVerificationMessage.length > 32
             ? rawVerificationMessage[32]
             : -1;
         kPrint('Error code: $errorCode');
-
         return errorCode == 0; // 0 means `ErrorCode::Ok`
       } else {
         kPrint('Error: ${response.statusCode}');
         return false;
       }
     } catch (e) {
-      kPrint("failed to verify proof {e}");
+      kPrint("failed to verify proof {$e}");
       return false;
     }
   }

@@ -9,6 +9,7 @@ import 'dart:ui';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
@@ -162,8 +163,14 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   @override
+  void didUpdateWidget(covariant HomePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   void initState() {
     super.initState();
+    Devices().connect();
     MigrationManager().resetMigrationPrefs();
     _resetTorWarningTimer();
     _resetServerDownWarningTimer();
@@ -186,14 +193,17 @@ class HomePageState extends ConsumerState<HomePage>
     // Home is there for the lifetime of the app so no need to dispose stream
     final connectivitySub = ConnectivityManager().events.stream.listen((event) {
       // If Tor is broken surface a warning
-      if (event == ConnectivityManagerEvent.torConnectedDoesntWork) {
+      if (event == ConnectivityManagerEvent.torConnectedDoesntWork ||
+          event == ConnectivityManagerEvent.foundationServerDown) {
         if (_torWarningDisplayedMoreThan5minAgo &&
             Settings().usingTor &&
+            ConnectivityManager().torEnabled &&
             mounted) {
           _notifyAboutTor();
           _torWarningDisplayedMoreThan5minAgo = false;
         }
       }
+
       if (event == ConnectivityManagerEvent.foundationServerDown &&
           _serverDownWarningDisplayedMoreThan5minAgo &&
           mounted) {

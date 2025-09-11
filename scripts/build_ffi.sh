@@ -27,7 +27,7 @@ rustup target add x86_64-unknown-linux-gnu
 # Compile for desktop
 cargo build
 
-frb_packages=("bluart" "foundation_api" "ngwallet")
+frb_packages=("bluart" "foundation_api" "ngwallet" "http_tor" "shards")
 
 # Generate Dart FFI for each package
 cd packages
@@ -46,7 +46,6 @@ cd ..
 
 # Compile for Android
 ./scripts/build_ffi_android.sh
-./scripts/build_ffi_android_x86.sh
 
 # Use gradle to build against the NDK for now, see how it works out
 # cargo build --target=aarch64-linux-android
