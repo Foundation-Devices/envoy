@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// ignore_for_file: depend_on_referenced_packages
 import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:ngwallet/ngwallet.dart';
