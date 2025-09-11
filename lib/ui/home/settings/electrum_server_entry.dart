@@ -177,7 +177,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
     }
   }
 
-  void _checkElectrumServer(String address, {int retryCount = 0}) async {
+  void _checkElectrumServer(String address) async {
     bool useTor = !Settings().onTorWhitelist(address);
     Tor tor = Tor.instance;
 
@@ -185,20 +185,15 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
       try {
         await tor.isReady();
       } catch (_) {
-        if (retryCount <= 3) {
-          Future.delayed(const Duration(seconds: 1), () {
-            _checkElectrumServer(address, retryCount: retryCount + 1);
+        if (mounted) {
+          setState(() {
+            _state = ElectrumServerEntryState.invalid;
+            _isError = true;
+            _textBelow = "Tor network not accessible."; // TODO: Figma
           });
-        } else {
-          if (mounted) {
-            setState(() {
-              _state = ElectrumServerEntryState.invalid;
-              _isError = true;
-              _textBelow = "Tor network not accessible."; // TODO: Figma
-            });
-          }
-          ConnectivityManager().electrumFailure();
         }
+        ConnectivityManager().electrumFailure();
+
         return;
       }
     }
