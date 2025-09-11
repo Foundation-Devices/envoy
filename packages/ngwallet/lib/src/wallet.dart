@@ -32,7 +32,8 @@ enum TransactionType { normal, azteco, pending, btcPay, ramp }
 enum WalletType { witnessPublicKeyHash, taproot, superWallet }
 
 @JsonSerializable()
-class Transaction {
+class Transaction implements Comparable<Transaction>
+{
   final String memo;
   final String txId;
   final DateTime date;
@@ -97,7 +98,7 @@ class Transaction {
 
   Map<String, dynamic> toJson() => _$TransactionToJson(this);
 
-  int compareTo(other) {
+  int compareTo(Transaction other) {
     // 1. if both are in mempool
     if ((date.isBefore(DateTime(2008)) &&
         other.date.isBefore(DateTime(2008)))) {
