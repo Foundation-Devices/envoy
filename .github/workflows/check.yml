@@ -58,6 +58,5 @@ jobs:
       - name: Build Rust libs
         run: cargo build
 
-# TODO: fix and reenable
-#      - name: Run Dart tests
-#        run: flutter test
+      - name: Run Dart tests
+        run: flutter test

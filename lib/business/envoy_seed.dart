@@ -538,7 +538,7 @@ class EnvoySeed {
   static void migrateFromSharedPreferences(Map<String, String> data) {
     List<String> preferencesKeysFormerlyBackedUp = [
       Settings.SETTINGS_PREFS,
-      NgAccountManager.accountsPrefKey,
+      NgAccountManager.v1AccountsPrefKey,
       Devices.DEVICES_PREFS,
     ];
 
