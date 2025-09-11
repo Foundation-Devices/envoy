@@ -181,16 +181,14 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
     }
   }
 
-  void _checkElectrumServer(String address, {int retryCount = 0}) {
+  void _checkElectrumServer(String address) async {
     bool useTor = !Settings().onTorWhitelist(address);
-    int port = useTor ? Tor.instance.port : -1;
-    if (useTor && port == -1) {
-      if (retryCount <= 3) {
-        Future.delayed(const Duration(seconds: 1), () {
-          _checkElectrumServer(address, retryCount: retryCount + 1);
-        });
-      } else {
-        // Handle the case where the port is still -1 after retries
+    Tor tor = Tor.instance;
+
+    if (useTor && !tor.bootstrapped) {
+      try {
+        await tor.isReady();
+      } catch (_) {
         if (mounted) {
           setState(() {
             _state = ElectrumServerEntryState.invalid;
@@ -199,8 +197,9 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
           });
         }
         ConnectivityManager().electrumFailure();
+
+        return;
       }
-      return;
     }
 
     _tryGetServerFeatures(address, useTor);
