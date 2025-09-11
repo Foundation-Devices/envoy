@@ -411,20 +411,19 @@ int getInitialElectrumDropdownIndex() {
   final String? savedElectrumServerType =
       LocalStorage().prefs.getString("electrumServerType");
 
-  bool isPersonalNode = savedElectrumServerType == "personalNode" ||
-      (savedElectrumServerType == null &&
-          !Settings().usingDefaultElectrumServer);
-
-  if (Settings().usingDefaultElectrumServer ||
-      savedElectrumServerType == "foundation") {
-    return 0;
-  } else if (isPersonalNode) {
-    return 1;
-  } else if (savedElectrumServerType == "blockStream") {
-    return 3;
-  } else if (savedElectrumServerType == "diyNodes") {
-    return 4;
+  switch (savedElectrumServerType) {
+    case "foundation":
+      return 0;
+    case "personalNode":
+      return 1;
+    case "blockStream":
+      return 3;
+    case "diyNodes":
+      return 4;
+    default:
+      // Fallback to foundation
+      LocalStorage().prefs.setString("electrumServerType", "foundation");
+      Settings().useDefaultElectrumServer(true);
+      return 0;
   }
-
-  return 0; // Default to foundation as a safe fallback
 }
