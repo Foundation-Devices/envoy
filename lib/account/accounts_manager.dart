@@ -438,11 +438,7 @@ class NgAccountManager extends ChangeNotifier {
     final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
     final hotWallets = accounts.where((element) => element.isHot).toList();
-    for (var element in hotWallets) {
-      _accountsHandler.removeWhere((e) => e.$1.id == element.id);
-      order.remove(element.id);
-    }
-    await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(order));
+
     _accountsOrder.sink.add(order);
     for (var account in hotWallets) {
       try {
@@ -451,6 +447,11 @@ class NgAccountManager extends ChangeNotifier {
         EnvoyReport().log("Error deleting account", e.toString());
       }
     }
+    for (var element in hotWallets) {
+      _accountsHandler.removeWhere((e) => e.$1.id == element.id);
+      order.remove(element.id);
+    }
+    await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(order));
     notifyListeners();
   }
 
