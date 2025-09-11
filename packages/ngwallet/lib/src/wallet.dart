@@ -32,8 +32,7 @@ enum TransactionType { normal, azteco, pending, btcPay, ramp }
 enum WalletType { witnessPublicKeyHash, taproot, superWallet }
 
 @JsonSerializable()
-class Transaction implements Comparable<Transaction>
-{
+class Transaction implements Comparable<Transaction> {
   final String memo;
   final String txId;
   final DateTime date;
