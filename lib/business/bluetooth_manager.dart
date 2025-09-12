@@ -250,7 +250,6 @@ class BluetoothManager extends WidgetsBindingObserver {
       case AppLifecycleState.detached:
         break;
       case AppLifecycleState.hidden:
-        throw UnimplementedError();
     }
   }
 

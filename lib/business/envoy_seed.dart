@@ -60,8 +60,11 @@ class EnvoySeed {
     // the keychain may still retain the seed for a brief period.
     // To ensure the seed is fully removed, set the flag during the erase flow
     // to delete the seed upon the next installation.
+    // if hot wallets exist, don't clear the seed
     try {
-      if (await LocalStorage().readSecure(SEED_CLEAR_FLAG) == "1") {
+      final hotWalletsExist = NgAccountManager().hotAccountsExist();
+      if (await LocalStorage().readSecure(SEED_CLEAR_FLAG) == "1" &&
+          !hotWalletsExist) {
         try {
           await LocalStorage().deleteSecure(SEED_KEY);
           await LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
