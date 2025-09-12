@@ -378,8 +378,6 @@ class EnvoySeed {
 
     await NgAccountManager().deleteHotWalletAccounts();
 
-    Settings().syncToCloud = false;
-
     try {
       await removeSeedFromNonSecure();
       EnvoyReport().log("QA", "Removed seed from regular storage!");
