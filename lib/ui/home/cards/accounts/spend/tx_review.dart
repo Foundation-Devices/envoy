@@ -59,6 +59,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
   @override
   void initState() {
     super.initState();
+    //load rive animation with cache to avoid repeated allocations
+    _loadRiveAnimation();
+  }
+
+  void _loadRiveAnimation() async {
     //load rive animation for better performance
     rootBundle.load('assets/envoy_loader.riv').then((data) {
       final file = rive.RiveFile.import(data);
@@ -68,7 +73,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
       if (_stateMachineController != null) {
         artboard.addController(_stateMachineController!);
       }
-      setState(() => _artBoard = artboard);
+      if (mounted) {
+        setState(() => _artBoard = artboard);
+      }
     });
   }
 
@@ -125,6 +132,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
   @override
   dispose() {
     _passportMessageSubscription?.cancel();
+    _stateMachineController?.dispose();
     super.dispose();
   }
 
