@@ -253,26 +253,32 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
         child: Material(
             color: Colors.transparent,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      bottom: EnvoySpacing.medium1, top: EnvoySpacing.large2),
-                  child: Container(
-                    constraints:
-                        BoxConstraints.tight(const Size.fromHeight(184)),
-                    child: Image.asset(
-                      "assets/images/onboarding_info.png",
-                      height: 184,
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          bottom: EnvoySpacing.medium3,
+                          top: EnvoySpacing.large2),
+                      child: Container(
+                        constraints:
+                            BoxConstraints.tight(const Size.fromHeight(184)),
+                        child: Image.asset(
+                          "assets/images/onboarding_info.png",
+                          height: 184,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                Flexible(
-                  child: SingleChildScrollView(
-                      child: isAndroid
-                          ? _androidBackUPInfo(context)
-                          : _recoverStepsInfo(context)),
+                    Flexible(
+                      child: SingleChildScrollView(
+                          child: isAndroid
+                              ? _androidBackUPInfo(context)
+                              : _recoverStepsInfo(context)),
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
