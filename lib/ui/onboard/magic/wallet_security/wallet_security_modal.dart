@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -109,10 +110,14 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Align(
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.of(context).pop(),
+              alignment: Alignment.topRight,
+              child: GestureDetector(
+                child: EnvoyIcon(
+                  EnvoyIcons.close,
+                ),
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
               ),
             ),
             Flexible(
