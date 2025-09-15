@@ -581,7 +581,7 @@ class _AndroidBackupWarningState extends State<AndroidBackupWarning> {
                         Consumer(
                           builder: (context, ref, child) {
                             return OnboardingButton(
-                              type: EnvoyButtonTypes.tertiary,
+                              type: EnvoyButtonTypes.secondary,
                               label: S().component_skip,
                               onTap: () async {
                                 if (widget.skipSuccess) {
