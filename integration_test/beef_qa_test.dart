@@ -350,18 +350,18 @@ Future<void> main() async {
 
       // Wallet for BEEFQA: this seed has magic recovery enabled on the Foundation server
       const List<String> seed = [
-        "vault",
-        "dust",
-        "appear",
-        "acoustic",
-        "evolve",
-        "monster",
-        "arena",
-        "injury",
-        "tourist",
-        "grab",
-        "pair",
-        "harvest"
+        "minor",
+        "inspire",
+        "domain",
+        "sport",
+        "radio",
+        "put",
+        "museum",
+        "sure",
+        "dose",
+        "peanut",
+        "home",
+        "comfort"
       ];
 
       await tester.pumpWidget(const EnvoyApp());
@@ -786,7 +786,7 @@ Future<void> main() async {
       await checkSync(tester);
 
       String someValidSignetReceiveAddress =
-          'tb1plhv9qthzz4trg5te27ulz6k8y46jd84azhe5fdmu6kehl9xwpp8qum6h3a';
+          'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql';
 
       /// Go to setting and enable fiat, we will need this later
       await pressHamburgerMenu(tester);
@@ -1348,12 +1348,12 @@ Future<void> main() async {
       await disableAllNetworks(tester);
 
       //const hotSignetReceiveAddress =
-      //    'tb1paj3dzfa392fp44hadwj3mnryqqurtp6qel6svyfzgelfs6j42x3q6xw9jg';
+      //    'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql';
       // TODO: fill this wallet if there is no money from here https://signet257.bublina.eu.org/
       // TODO: when getting more coins you need to wait for the transaction confirmation before running the tests!!!
 
       const hotSignetSendAddress =
-          'tb1pddwvqpcv5s4a738cs2av3x4kq3lr3kqt4w2flmpyha3srenxxseq9mlz5h'; // send coins to this address from base wallet
+          'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql'; // send coins to this address from base wallet
 
       await tester.pump(Durations.long2);
 
@@ -1492,7 +1492,7 @@ Future<void> main() async {
       await disableAllNetworks(tester);
 
       const hotSignetSendAddress =
-          'tb1pddwvqpcv5s4a738cs2av3x4kq3lr3kqt4w2flmpyha3srenxxseq9mlz5h'; // send coins to this address from base wallet
+          'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql'; // send coins to this address from base wallet
 
       await tester.pump(Durations.long2);
 
@@ -1633,12 +1633,12 @@ Future<void> main() async {
       await disableAllNetworks(tester);
 
       //const testnetReceiveAddress =
-      //    'tb1qe78y9rk4nwh9xuwmug7unpldfvpgkcqlufmgct';
+      //    'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql';
       // TODO: fill this wallet if there is no money from here https://coinfaucet.eu/en/btc-testnet4/
       // TODO: when getting more coins you need to wait for the transaction confirmation before running the tests!!!
 
       const testnetSendAddress =
-          'tb1qrjfqkufhvxexvkvss5e0ng2j5v3u0jhurcrlyk'; // send coins to this address from base wallet
+          'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql'; // send coins to this address from base wallet
 
       const testWallet = "Mobile Wallet";
 
