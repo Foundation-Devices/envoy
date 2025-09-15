@@ -86,12 +86,14 @@ class _TransactionsDetailsWidgetState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await Future.delayed(const Duration(milliseconds: 50));
+
       _checkForRBF();
     });
   }
 
   Future _checkForRBF() async {
-    if (widget.tx.confirmations == 0) {
+    // don't check boost/cancel on received tx's ˇˇˇˇˇ
+    if (widget.tx.confirmations == 0 && !(widget.tx.amount > 0)) {
       try {
         await _checkBoost();
       } catch (e) {
