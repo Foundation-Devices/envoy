@@ -6,7 +6,6 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/string_utils.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -196,11 +195,7 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
           } else {
             return Padding(
                 padding: EdgeInsets.only(
-                    bottom: s.displayFiat() == null ||
-                            (kDebugMode &&
-                                transactionAccount.network != Network.bitcoin)
-                        ? EnvoySpacing.medium2
-                        : EnvoySpacing.small),
+                    bottom: s.displayFiat() == null ? EnvoySpacing.medium1 : 0),
                 child: FittedBox(
                   child: EnvoyAmount(
                     account: transactionAccount,
