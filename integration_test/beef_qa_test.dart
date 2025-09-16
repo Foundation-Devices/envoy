@@ -1175,6 +1175,75 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
+    testWidgets('<Taproot address test>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
+      await goBackHome(tester);
+
+      await pressHamburgerMenu(tester);
+      await goToSettings(tester);
+      await openAdvancedMenu(tester);
+      bool taprootAlreadyEnabled =
+          await isSlideSwitchOn(tester, "Receive to Taproot");
+      if (taprootAlreadyEnabled) {
+        // Disable it
+        await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
+      }
+
+      await pressHamburgerMenu(tester); // back to settings menu
+      await pressHamburgerMenu(tester); // back to home
+      await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
+      await findAndPressTextButton(tester, "Receive");
+
+      await findTextOnScreen(tester, "bc1q");
+
+      // back to account
+      //await pressHamburgerMenu(tester);
+
+      // open menu
+      await findAndPressIcon(tester, Icons.more_horiz_outlined);
+
+      await findAndPressTextButton(tester, "SHOW DESCRIPTOR");
+
+      await findTextOnScreen(tester, "Segwit");
+
+      // back to home
+      //await pressHamburgerMenu(tester);
+      //await pressHamburgerMenu(tester);
+      // settings
+      await pressHamburgerMenu(tester);
+      await goToSettings(tester);
+      await openAdvancedMenu(tester);
+      await findAndToggleSettingsSwitch(tester, "Receive to Taproot"); // Enable
+      await findFirstTextButtonAndPress(tester, "Confirm");
+
+      await pressHamburgerMenu(tester); // back to settings menu
+      await pressHamburgerMenu(tester); // back to home
+
+      await findLastTextButtonAndPress(tester, "Accounts");
+
+      /// this way because nav is broken in tests
+
+      await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
+      await findAndPressTextButton(tester, "Receive");
+
+      await findTextOnScreen(tester, "bc1p");
+
+      // back to account
+      //await pressHamburgerMenu(tester);
+
+      // open menu
+      await findAndPressIcon(tester, Icons.more_horiz_outlined);
+
+      await findAndPressTextButton(tester, "SHOW DESCRIPTOR");
+
+      await findTextOnScreen(tester, "Taproot");
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
     testWidgets('<Check Signet in App>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
