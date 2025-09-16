@@ -156,8 +156,14 @@ final allTxProvider = Provider<List<EnvoyTransaction>>((ref) {
     allTransactions.addAll(transactions);
   }
 
-  allTransactions.sort();
-  return allTransactions.reversed.toList();
+  allTransactions.sort((a, b) {
+    if (a.date == null && b.date == null) return 0;
+    if (a.date == null) return -1;
+    if (b.date == null) return 1;
+    return b.date!.compareTo(a.date!);
+  });
+
+  return allTransactions;
 });
 
 final combinedNotificationsProvider = Provider<List<EnvoyNotification>>((ref) {
