@@ -427,6 +427,29 @@ class HomePageState extends ConsumerState<HomePage>
     }
   }
 
+  Future<bool> handleBackgroundBackPressed() async {
+    final currentState = ref.read(homePageBackgroundProvider);
+
+    switch (currentState) {
+      case HomePageBackgroundState.settings:
+      case HomePageBackgroundState.backups:
+      case HomePageBackgroundState.support:
+      case HomePageBackgroundState.about:
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.menu;
+        ref.read(backupPageProvider.notifier).state = false;
+        return false;
+
+      case HomePageBackgroundState.menu:
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.hidden;
+        return false;
+
+      case HomePageBackgroundState.hidden:
+        return false;
+    }
+  }
+
   void _notifyAboutHighBalance() {
     NgAccountManager().isAccountBalanceHigherThanUsd1000Stream.close();
     showSecurityDialog(context);
@@ -593,7 +616,13 @@ class HomePageState extends ConsumerState<HomePage>
                 child: AnimatedSwitcher(
                     duration: _animationsDuration,
                     child: Container(
-                      child: _backgroundShown ? background : Container(),
+                      child: _backgroundShown
+                          ? BackButtonListener(
+                              onBackButtonPressed: () {
+                                return handleBackgroundBackPressed();
+                              },
+                              child: background)
+                          : Container(),
                     )),
               ),
               // Tab bar
