@@ -109,10 +109,10 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.medium1,
-                      horizontal: EnvoySpacing.xs,
-                    ),
+                    padding: const EdgeInsets.only(
+                        top: EnvoySpacing.medium1,
+                        left: EnvoySpacing.xs,
+                        right: EnvoySpacing.xs),
                     child: EnvoyDropdown(
                       options: options,
                       initialIndex: selectedIndex,
@@ -132,7 +132,7 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
           //TODO: add dropdown to switch between descriptors
 
           Padding(
-            padding: const EdgeInsets.only(bottom: EnvoySpacing.xl),
+            padding: const EdgeInsets.only(bottom: EnvoySpacing.large1),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
