@@ -86,19 +86,28 @@ class _TransactionsDetailsWidgetState
   void initState() {
     super.initState();
 
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await Future.delayed(const Duration(milliseconds: 50));
+      _fetchFee();
+      _checkForRBF();
+    });
+  }
+
+  Future<void> _fetchFee() async {
     if (widget.tx.fee.toInt() == FEE_UNKNOWN) {
       final server = Settings().electrumAddress(widget.account.network);
       int? port = Settings().getTorPort(widget.account.network, server);
-
-      widget.account.handler!.fetchElectrumFee(
-          txid: widget.tx.txId, electrumServer: server, torPort: port);
+      try {
+        final fee = await EnvoyAccountHandler.fetchElectrumFee(
+            txid: widget.tx.txId, electrumServer: server, torPort: port);
+        if (fee != null) {
+          await widget.account.handler
+              ?.updateTxFee(transaction: widget.tx, fee: fee);
+        }
+      } catch (e) {
+        EnvoyReport().log("FetchFee", "RBF check failed : $e");
+      }
     }
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await Future.delayed(const Duration(milliseconds: 50));
-
-      _checkForRBF();
-    });
   }
 
   Future _checkForRBF() async {
@@ -237,7 +246,7 @@ class _TransactionsDetailsWidgetState
   @override
   Widget build(BuildContext context) {
     ///watch transaction changes to get real time updates
-    final tx = widget.tx;
+    final tx = ref.watch(getTransactionProvider(widget.tx.txId)) ?? widget.tx;
 
     String note = ref.watch(getTransactionProvider(tx.txId).select(
       (value) => value?.note ?? tx.note ?? "",

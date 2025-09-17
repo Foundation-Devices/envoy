@@ -8,7 +8,7 @@ use std::str::FromStr;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use anyhow::{anyhow, Error, Result};
+use anyhow::{anyhow, bail, Error, Result};
 use bdk_wallet::bitcoin::Address;
 pub use bdk_wallet::bitcoin::{Network, Psbt, ScriptBuf};
 use bdk_wallet::chain::spk_client::{FullScanRequest, SyncRequest};
@@ -22,7 +22,7 @@ use ngwallet::bdk_electrum::electrum_client::{Client, ConfigBuilder, ElectrumApi
 use ngwallet::config::{
     AddressType, NgAccountBackup, NgAccountBuilder, NgAccountConfig, NgDescriptor,
 };
-use ngwallet::ngwallet::NgWallet;
+use ngwallet::ngwallet::{NgWallet, FEE_UNKNOWN};
 use ngwallet::send::{DraftTransaction, TransactionFeeResult, TransactionParams};
 use ngwallet::transaction::{BitcoinTransaction, Output};
 
@@ -442,15 +442,31 @@ impl EnvoyAccountHandler {
 
     #[allow(clippy::type_complexity)]
     pub async fn fetch_electrum_fee(
-        &mut self,
         txid: &str,
         electrum_server: &str,
         tor_port: Option<u16>,
     ) -> Option<u64> {
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_deref();
-        let account = self.ng_account.lock().unwrap();
-        account.fetch_fee_from_electrum(&txid, &electrum_server, socks_proxy)
+        NgAccount::<Connection>::fetch_fee_from_electrum(txid, electrum_server, socks_proxy)
+    }
+
+    pub fn update_tx_fee(
+        &mut self,
+        transaction: BitcoinTransaction,
+        fee: u64,
+    ) -> Result<()> {
+
+        {
+            let mut account = self
+                .ng_account
+                .lock()
+                .expect("Unable to lock account,failed to update tx fee");
+            account.update_fee(&transaction.tx_id, fee)?;
+            account.persist()?;
+        }
+        self.send_update();
+        Ok(())
     }
 
     #[allow(clippy::type_complexity)]
