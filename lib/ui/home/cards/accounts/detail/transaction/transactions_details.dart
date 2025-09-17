@@ -8,6 +8,7 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/locale.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -84,6 +85,15 @@ class _TransactionsDetailsWidgetState
   @override
   void initState() {
     super.initState();
+
+    if (widget.tx.fee.toInt() == FEE_UNKNOWN) {
+      final server = Settings().electrumAddress(widget.account.network);
+      int? port = Settings().getTorPort(widget.account.network, server);
+
+      widget.account.handler!.fetchElectrumFee(
+          txid: widget.tx.txId, electrumServer: server, torPort: port);
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await Future.delayed(const Duration(milliseconds: 50));
 

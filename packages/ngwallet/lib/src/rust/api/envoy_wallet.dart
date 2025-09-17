@@ -92,6 +92,9 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   Future<List<String>> exportBip329Data();
 
+  Future<BigInt?> fetchElectrumFee(
+      {required String txid, required String electrumServer, int? torPort});
+
   static Future<EnvoyAccountHandler> fromConfig(
           {required String dbPath, required NgAccountConfig config}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerFromConfig(
