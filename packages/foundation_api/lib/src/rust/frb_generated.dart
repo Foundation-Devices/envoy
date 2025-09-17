@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'frb_generated.dart';
 import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
+import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'third_party/bc_xid.dart';
 import 'third_party/foundation_api/api/backup.dart';
@@ -1427,9 +1428,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RestoreShardRequest dco_decode_restore_shard_request(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 0)
-      throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
-    return RestoreShardRequest();
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return RestoreShardRequest(
+      seedFingerprint: dco_decode_u_8_array_32(arr[0]),
+    );
   }
 
   @protected
@@ -1442,6 +1445,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         );
       case 1:
         return RestoreShardResponse_Error(
+          dco_decode_String(raw[1]),
+        );
+      case 2:
+        return RestoreShardResponse_NotFound(
           dco_decode_String(raw[1]),
         );
       default:
@@ -1509,6 +1516,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int dco_decode_u_8(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
+  }
+
+  @protected
+  U8Array32 dco_decode_u_8_array_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return U8Array32(dco_decode_list_prim_u_8_strict(raw));
   }
 
   @protected
@@ -2357,7 +2370,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RestoreShardRequest sse_decode_restore_shard_request(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return RestoreShardRequest();
+    var var_seedFingerprint = sse_decode_u_8_array_32(deserializer);
+    return RestoreShardRequest(seedFingerprint: var_seedFingerprint);
   }
 
   @protected
@@ -2373,6 +2387,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 1:
         var var_field0 = sse_decode_String(deserializer);
         return RestoreShardResponse_Error(var_field0);
+      case 2:
+        var var_field0 = sse_decode_String(deserializer);
+        return RestoreShardResponse_NotFound(var_field0);
       default:
         throw UnimplementedError('');
     }
@@ -2431,6 +2448,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int sse_decode_u_8(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8();
+  }
+
+  @protected
+  U8Array32 sse_decode_u_8_array_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_list_prim_u_8_strict(deserializer);
+    return U8Array32(inner);
   }
 
   @protected
@@ -3219,6 +3243,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_restore_shard_request(
       RestoreShardRequest self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_8_array_32(self.seedFingerprint, serializer);
   }
 
   @protected
@@ -3231,6 +3256,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_shard(field0, serializer);
       case RestoreShardResponse_Error(field0: final field0):
         sse_encode_i_32(1, serializer);
+        sse_encode_String(field0, serializer);
+      case RestoreShardResponse_NotFound(field0: final field0):
+        sse_encode_i_32(2, serializer);
         sse_encode_String(field0, serializer);
     }
   }
@@ -3280,6 +3308,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_u_8(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self);
+  }
+
+  @protected
+  void sse_encode_u_8_array_32(U8Array32 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.inner, serializer);
   }
 
   @protected

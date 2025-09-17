@@ -21,7 +21,7 @@ fn test_shard_backup_encode_decode() {
     let decoded = ShardBackUp::from_bytes(&encoded).expect("Failed to decode");
 
     assert_eq!(decoded.device_serial, backup.device_serial);
-    assert_eq!(decoded.shard_identifier, backup.shard_identifier);
+    assert_eq!(decoded.fingerprint, backup.fingerprint);
     assert_eq!(decoded.timestamp, backup.timestamp);
     assert_eq!(decoded.shard, backup.shard);
 }
@@ -63,7 +63,7 @@ fn test_adding_shard() {
         "Device serial mismatch"
     );
     assert_eq!(
-        retrieved_shard.shard_identifier, original_shard_identifier,
+        retrieved_shard.fingerprint, original_shard_identifier,
         "Shard identifier mismatch"
     );
     assert_eq!(
@@ -111,7 +111,7 @@ fn add_multiple_shards() {
             "Device serial mismatch"
         );
         assert_eq!(
-            shard.shard_identifier,
+            shard.fingerprint,
             format!("{}-{}", original_shard_identifier, index),
             "Shard identifier mismatch"
         );

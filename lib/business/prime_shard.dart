@@ -49,15 +49,10 @@ class PrimeShard {
     );
   }
 
-  //TODO: use secure storage too ?
   Future addShard({
     required List<int> shard,
-    required String shardIdentifier,
-    required String deviceSerial,
   }) async {
     await ShardBackUp.addNewShard(
-      deviceSerial: deviceSerial,
-      shardIdentifier: shardIdentifier,
       shard: shard,
       filePath: getPrimeSecretPath(),
     );
@@ -66,20 +61,9 @@ class PrimeShard {
     }
   }
 
-  // Future<String?> _restoreNonSecure(String name) async {
-  //   if (!await LocalStorage().fileExists(name)) {
-  //     return null;
-  //   }
-  //   return await LocalStorage().readFile(name);
-  // }
-
   void showSettingsMenu() {
     _platform.invokeMethod('show_settings');
   }
-
-  // Future<String?> _getNonSecure() async {
-  //   return await _restoreNonSecure(PRIME_SECRET);
-  // }
 
   Future<DateTime?> getNonSecureLastBackupTimestamp() async {
     if (!await LocalStorage()

@@ -294,6 +294,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "backup-shard"
+version = "0.1.0"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.1.1#a83b3f2b09c2ae9c957fdbe9a2f79a36a2ded212"
+dependencies = [
+ "minicbor 0.24.4",
+ "zeroize",
+]
+
+[[package]]
 name = "base16ct"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -855,7 +864,7 @@ dependencies = [
 [[package]]
 name = "btp"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=2.9.1#6c593b9a9b95f3f028ad854f9254d390201504df"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.1.1#a83b3f2b09c2ae9c957fdbe9a2f79a36a2ded212"
 dependencies = [
  "bytemuck",
  "consts",
@@ -1676,7 +1685,7 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "2.0.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=2.9.1#6c593b9a9b95f3f028ad854f9254d390201504df"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.1.1#a83b3f2b09c2ae9c957fdbe9a2f79a36a2ded212"
 dependencies = [
  "anyhow",
  "bc-components",
@@ -3432,7 +3441,7 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=2.9.1#6c593b9a9b95f3f028ad854f9254d390201504df"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.1.1#a83b3f2b09c2ae9c957fdbe9a2f79a36a2ded212"
 dependencies = [
  "quote",
  "syn 2.0.106",
@@ -3739,6 +3748,7 @@ dependencies = [
 name = "rust_lib_shards"
 version = "0.1.0"
 dependencies = [
+ "backup-shard",
  "flutter_rust_bridge",
  "minicbor 1.1.0",
  "minicbor-derive 0.17.0",
@@ -3784,7 +3794,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.4.15",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -3942,7 +3952,7 @@ version = "0.29.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9465315bc9d4566e1724f0fffcbcc446268cb522e60f9a27bcded6b19c108113"
 dependencies = [
- "bitcoin_hashes 0.14.0",
+ "bitcoin_hashes 0.13.0",
  "rand",
  "secp256k1-sys 0.10.1",
  "serde",

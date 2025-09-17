@@ -76,7 +76,8 @@ class TxReview extends ConsumerStatefulWidget {
 }
 
 class _TxReviewState extends ConsumerState<TxReview> {
-  StreamSubscription<PassportMessage>? _passportMessageSubscription;
+  StreamSubscription<QuantumLinkMessage_BroadcastTransaction>?
+      _primeTransactionsSubscription;
   late final rive.Artboard _artBoard;
   rive.StateMachineController? _stateMachineController;
 
@@ -156,7 +157,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
 
   @override
   dispose() {
-    _passportMessageSubscription?.cancel();
+    _primeTransactionsSubscription?.cancel();
     _stateMachineController?.dispose();
     super.dispose();
   }
@@ -202,33 +203,25 @@ class _TxReviewState extends ConsumerState<TxReview> {
           );
 
       try {
-        _passportMessageSubscription = BluetoothManager()
+        _primeTransactionsSubscription = BluetoothManager()
             .transactionStream
-            .listen((PassportMessage message) async {
-          kPrint(
-              "Got the Passport Message : ${message.message} :::  ${message.message.runtimeType}");
-          if (message.message is QuantumLinkMessage_BroadcastTransaction) {
-            kPrint("Got the Broadcast Transaction");
-            try {
-              final signedPsbt =
-                  (message.message as QuantumLinkMessage_BroadcastTransaction)
-                      .field0;
-              kPrint("Signed Psbt $signedPsbt");
-              kPrint("Signed Psbt $signedPsbt");
+            .listen((QuantumLinkMessage_BroadcastTransaction message) async {
+          try {
+            final signedPsbt = message.field0;
+            kPrint("Signed Psbt $signedPsbt");
 
-              //TODO: fix quantum link with Uint8List psbt
-              await ref
-                  .read(spendTransactionProvider.notifier)
-                  .decodePrimePsbt(providerScope, signedPsbt.psbt);
+            //TODO: fix quantum link with Uint8List psbt
+            await ref
+                .read(spendTransactionProvider.notifier)
+                .decodePrimePsbt(providerScope, signedPsbt.psbt);
 
-              ref.read(signTransactionStateProvider.notifier).updateStep(
-                    "Transaction ready", //TODO: localazy
-                    EnvoyStepState.FINISHED,
-                  );
-            } catch (e, stack) {
-              debugPrintStack(stackTrace: stack);
-              kPrint(e);
-            }
+            ref.read(signTransactionStateProvider.notifier).updateStep(
+                  "Transaction ready", //TODO: localazy
+                  EnvoyStepState.FINISHED,
+                );
+          } catch (e, stack) {
+            debugPrintStack(stackTrace: stack);
+            kPrint(e);
           }
         });
 

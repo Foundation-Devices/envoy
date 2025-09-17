@@ -382,16 +382,16 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     ref.read(fwDownloadStateProvider.notifier).updateStep(
         S().firmware_updatingDownload_downloading, EnvoyStepState.LOADING);
 
-    List<PrimePatch> patches;
+    List<PrimePatch> patches = [];
 
-    try {
-      patches = await Server().fetchPrimePatches(currentVersion);
-    } catch (e) {
-      kPrint("failed to fetch patches: $e");
-      await _handleFirmwareError(
-          S().firmware_updateError_downloadFailed, fwDownloadStateProvider);
-      return;
-    }
+    // try {
+    //   patches = await Server().fetchPrimePatches(currentVersion);
+    // } catch (e) {
+    //   kPrint("failed to fetch patches: $e");
+    //   await _handleFirmwareError(
+    //       S().firmware_updateError_downloadFailed, fwDownloadStateProvider);
+    //   return;
+    // }
 
     if (patches.isEmpty) {
       await BluetoothManager()

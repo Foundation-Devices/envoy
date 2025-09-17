@@ -990,12 +990,16 @@ const _: fn() = || {
     }
     {
         let RestoreShardRequest = None::<foundation_api::api::backup::RestoreShardRequest>.unwrap();
+        let _: [u8; 32] = RestoreShardRequest.seed_fingerprint;
     }
     match None::<foundation_api::api::backup::RestoreShardResponse>.unwrap() {
         foundation_api::api::backup::RestoreShardResponse::Success(field0) => {
             let _: foundation_api::api::backup::Shard = field0;
         }
         foundation_api::api::backup::RestoreShardResponse::Error(field0) => {
+            let _: String = field0;
+        }
+        foundation_api::api::backup::RestoreShardResponse::NotFound(field0) => {
             let _: String = field0;
         }
     }
@@ -1822,7 +1826,10 @@ impl SseDecode for foundation_api::api::raw::RawData {
 impl SseDecode for foundation_api::api::backup::RestoreShardRequest {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        return foundation_api::api::backup::RestoreShardRequest {};
+        let mut var_seedFingerprint = <[u8; 32]>::sse_decode(deserializer);
+        return foundation_api::api::backup::RestoreShardRequest {
+            seed_fingerprint: var_seedFingerprint,
+        };
     }
 }
 
@@ -1838,6 +1845,10 @@ impl SseDecode for foundation_api::api::backup::RestoreShardResponse {
             1 => {
                 let mut var_field0 = <String>::sse_decode(deserializer);
                 return foundation_api::api::backup::RestoreShardResponse::Error(var_field0);
+            }
+            2 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return foundation_api::api::backup::RestoreShardResponse::NotFound(var_field0);
             }
             _ => {
                 unimplemented!("");
@@ -1913,6 +1924,14 @@ impl SseDecode for u8 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_u8().unwrap()
+    }
+}
+
+impl SseDecode for [u8; 32] {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <Vec<u8>>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::from_vec_to_array(inner);
     }
 }
 
@@ -2883,7 +2902,7 @@ impl flutter_rust_bridge::IntoDart
     for FrbWrapper<foundation_api::api::backup::RestoreShardRequest>
 {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        Vec::<u8>::new().into_dart()
+        [self.0.seed_fingerprint.into_into_dart().into_dart()].into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
@@ -2908,6 +2927,9 @@ impl flutter_rust_bridge::IntoDart
             }
             foundation_api::api::backup::RestoreShardResponse::Error(field0) => {
                 [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::backup::RestoreShardResponse::NotFound(field0) => {
+                [2.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
             _ => {
                 unimplemented!("");
@@ -3683,7 +3705,9 @@ impl SseEncode for foundation_api::api::raw::RawData {
 
 impl SseEncode for foundation_api::api::backup::RestoreShardRequest {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <[u8; 32]>::sse_encode(self.seed_fingerprint, serializer);
+    }
 }
 
 impl SseEncode for foundation_api::api::backup::RestoreShardResponse {
@@ -3696,6 +3720,10 @@ impl SseEncode for foundation_api::api::backup::RestoreShardResponse {
             }
             foundation_api::api::backup::RestoreShardResponse::Error(field0) => {
                 <i32>::sse_encode(1, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::backup::RestoreShardResponse::NotFound(field0) => {
+                <i32>::sse_encode(2, serializer);
                 <String>::sse_encode(field0, serializer);
             }
             _ => {
@@ -3761,6 +3789,19 @@ impl SseEncode for u8 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_u8(self).unwrap();
+    }
+}
+
+impl SseEncode for [u8; 32] {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<u8>>::sse_encode(
+            {
+                let boxed: Box<[_]> = Box::new(self);
+                boxed.into_vec()
+            },
+            serializer,
+        );
     }
 }
 
