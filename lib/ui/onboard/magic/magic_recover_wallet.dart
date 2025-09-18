@@ -225,26 +225,26 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                         ),
                       ),
                     ),
-                  ],
-                ),
-                Flexible(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: isThereBottomButtons
-                                  ? 0
-                                  : EnvoySpacing.large3),
-                          child: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 800),
-                              child: getMainWidget()),
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: isThereBottomButtons
+                                      ? 0
+                                      : EnvoySpacing.large3),
+                              child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 800),
+                                  child: getMainWidget()),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
                 getBottomButtons() ?? const SizedBox(),
               ],
@@ -708,7 +708,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
             style: EnvoyTypography.heading,
           ),
         ),
-        const Padding(padding: EdgeInsets.all(EnvoySpacing.medium2)),
+        const SizedBox(height: EnvoySpacing.medium3),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
           child: Text(
