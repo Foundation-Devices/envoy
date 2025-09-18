@@ -170,7 +170,7 @@ class _AdvancedSettingsOptionsState
                                             child: EnvoyToggle(
                                               value: Settings().syncToCloud,
                                               onChanged: (bool value) async {
-                                                if (value) {
+                                                if (!value) {
                                                   showEnvoyPopUp(
                                                       context,
                                                       S()
