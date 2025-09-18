@@ -37,6 +37,36 @@ sealed class BackupShardResponse with _$BackupShardResponse {
   ) = BackupShardResponse_Error;
 }
 
+class MagicBackupEnabledRequest {
+  const MagicBackupEnabledRequest();
+
+  @override
+  int get hashCode => 0;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MagicBackupEnabledRequest && runtimeType == other.runtimeType;
+}
+
+class MagicBackupEnabledResponse {
+  final bool enabled;
+
+  const MagicBackupEnabledResponse({
+    required this.enabled,
+  });
+
+  @override
+  int get hashCode => enabled.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MagicBackupEnabledResponse &&
+          runtimeType == other.runtimeType &&
+          enabled == other.enabled;
+}
+
 class RestoreShardRequest {
   final U8Array32 seedFingerprint;
 

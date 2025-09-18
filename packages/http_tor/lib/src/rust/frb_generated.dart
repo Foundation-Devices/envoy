@@ -1182,9 +1182,6 @@ class DownloadImpl extends RustOpaque implements Download {
   set handle(ArcJoinHandleResultError handle) => RustLib.instance.api
       .crateApiHttpDownloadAutoAccessorSetHandle(that: this, handle: handle);
 
-  set progress() => RustLib.instance.api
-      .crateApiHttpDownloadAutoAccessorSetProgress(that: this);
-
   Future<void> cancel() =>
       RustLib.instance.api.crateApiHttpDownloadCancel(that: this);
 }

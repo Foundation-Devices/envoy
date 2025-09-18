@@ -65,8 +65,6 @@ abstract class Download implements RustOpaqueInterface {
 
   set handle(ArcJoinHandleResultError handle);
 
-  set progress();
-
   Future<void> cancel();
 }
 

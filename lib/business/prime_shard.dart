@@ -11,6 +11,8 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/services.dart';
 import 'package:shards/shards.dart';
 
+import 'package:envoy/util/bug_report_helper.dart';
+
 const String LAST_BACKUP_PREFS = "last_backup_prime";
 const String PRIME_SECRET = "prime.secret";
 const String PRIME_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME =
@@ -24,9 +26,9 @@ class PrimeShard {
 
   static Future<void> init() async {
     try {
-      // await RustLib.init();
+      await RustLib.init();
     } catch (e) {
-      // EnvoyReport().log("PrimeShard", "Error initializing ShardsLib: $e");
+      EnvoyReport().log("PrimeShard", "Error initializing ShardsLib: $e");
     }
   }
 

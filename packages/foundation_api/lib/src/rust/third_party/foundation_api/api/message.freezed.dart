@@ -36,6 +36,10 @@ mixin _$QuantumLinkMessage {
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -62,6 +66,10 @@ mixin _$QuantumLinkMessage {
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -88,6 +96,10 @@ mixin _$QuantumLinkMessage {
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -128,6 +140,12 @@ mixin _$QuantumLinkMessage {
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -164,6 +182,10 @@ mixin _$QuantumLinkMessage {
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -198,6 +220,10 @@ mixin _$QuantumLinkMessage {
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -324,6 +350,10 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -353,6 +383,10 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -382,6 +416,10 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -428,6 +466,12 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -467,6 +511,10 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -504,6 +552,10 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -635,6 +687,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -664,6 +720,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -693,6 +753,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -739,6 +803,12 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -778,6 +848,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -815,6 +889,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -960,6 +1038,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -989,6 +1071,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -1018,6 +1104,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -1064,6 +1154,12 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -1103,6 +1199,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -1140,6 +1240,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -1268,6 +1372,10 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -1297,6 +1405,10 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -1326,6 +1438,10 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -1372,6 +1488,12 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -1411,6 +1533,10 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -1448,6 +1574,10 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -1587,6 +1717,10 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -1616,6 +1750,10 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -1645,6 +1783,10 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -1691,6 +1833,12 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -1730,6 +1878,10 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -1767,6 +1919,10 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -1907,6 +2063,10 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -1936,6 +2096,10 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -1965,6 +2129,10 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -2011,6 +2179,12 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -2050,6 +2224,10 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -2087,6 +2265,10 @@ class _$QuantumLinkMessage_FirmwareUpdateResultImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -2214,6 +2396,10 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -2243,6 +2429,10 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -2272,6 +2462,10 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -2318,6 +2512,12 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -2357,6 +2557,10 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -2394,6 +2598,10 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -2519,6 +2727,10 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -2548,6 +2760,10 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -2577,6 +2793,10 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -2623,6 +2843,12 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -2662,6 +2888,10 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -2699,6 +2929,10 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -2824,6 +3058,10 @@ class _$QuantumLinkMessage_PairingRequestImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -2853,6 +3091,10 @@ class _$QuantumLinkMessage_PairingRequestImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -2882,6 +3124,10 @@ class _$QuantumLinkMessage_PairingRequestImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -2928,6 +3174,12 @@ class _$QuantumLinkMessage_PairingRequestImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -2967,6 +3219,10 @@ class _$QuantumLinkMessage_PairingRequestImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -3004,6 +3260,10 @@ class _$QuantumLinkMessage_PairingRequestImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -3129,6 +3389,10 @@ class _$QuantumLinkMessage_PairingResponseImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -3158,6 +3422,10 @@ class _$QuantumLinkMessage_PairingResponseImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -3187,6 +3455,10 @@ class _$QuantumLinkMessage_PairingResponseImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -3233,6 +3505,12 @@ class _$QuantumLinkMessage_PairingResponseImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -3272,6 +3550,10 @@ class _$QuantumLinkMessage_PairingResponseImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -3309,6 +3591,10 @@ class _$QuantumLinkMessage_PairingResponseImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -3434,6 +3720,10 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -3463,6 +3753,10 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -3492,6 +3786,10 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -3538,6 +3836,12 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -3577,6 +3881,10 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -3614,6 +3922,10 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -3737,6 +4049,10 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -3766,6 +4082,10 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -3795,6 +4115,10 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -3841,6 +4165,12 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -3880,6 +4210,10 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -3917,6 +4251,10 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -4042,6 +4380,10 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -4071,6 +4413,10 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -4100,6 +4446,10 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -4146,6 +4496,12 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -4185,6 +4541,10 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -4222,6 +4582,10 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -4349,6 +4713,10 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -4378,6 +4746,10 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -4407,6 +4779,10 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -4453,6 +4829,12 @@ class _$QuantumLinkMessage_AccountUpdateImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -4492,6 +4874,10 @@ class _$QuantumLinkMessage_AccountUpdateImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -4529,6 +4915,10 @@ class _$QuantumLinkMessage_AccountUpdateImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -4666,6 +5056,10 @@ class _$QuantumLinkMessage_SecurityCheckImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -4695,6 +5089,10 @@ class _$QuantumLinkMessage_SecurityCheckImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -4724,6 +5122,10 @@ class _$QuantumLinkMessage_SecurityCheckImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -4770,6 +5172,12 @@ class _$QuantumLinkMessage_SecurityCheckImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -4809,6 +5217,10 @@ class _$QuantumLinkMessage_SecurityCheckImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -4846,6 +5258,10 @@ class _$QuantumLinkMessage_SecurityCheckImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -4877,6 +5293,684 @@ abstract class QuantumLinkMessage_SecurityCheck extends QuantumLinkMessage {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$QuantumLinkMessage_SecurityCheckImplCopyWith<
           _$QuantumLinkMessage_SecurityCheckImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$QuantumLinkMessage_MagicBackupEnabledRequestImplCopyWith<
+    $Res> {
+  factory _$$QuantumLinkMessage_MagicBackupEnabledRequestImplCopyWith(
+          _$QuantumLinkMessage_MagicBackupEnabledRequestImpl value,
+          $Res Function(_$QuantumLinkMessage_MagicBackupEnabledRequestImpl)
+              then) =
+      __$$QuantumLinkMessage_MagicBackupEnabledRequestImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({MagicBackupEnabledRequest field0});
+}
+
+/// @nodoc
+class __$$QuantumLinkMessage_MagicBackupEnabledRequestImplCopyWithImpl<$Res>
+    extends _$QuantumLinkMessageCopyWithImpl<$Res,
+        _$QuantumLinkMessage_MagicBackupEnabledRequestImpl>
+    implements
+        _$$QuantumLinkMessage_MagicBackupEnabledRequestImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_MagicBackupEnabledRequestImplCopyWithImpl(
+      _$QuantumLinkMessage_MagicBackupEnabledRequestImpl _value,
+      $Res Function(_$QuantumLinkMessage_MagicBackupEnabledRequestImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$QuantumLinkMessage_MagicBackupEnabledRequestImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as MagicBackupEnabledRequest,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$QuantumLinkMessage_MagicBackupEnabledRequestImpl
+    extends QuantumLinkMessage_MagicBackupEnabledRequest {
+  const _$QuantumLinkMessage_MagicBackupEnabledRequestImpl(this.field0)
+      : super._();
+
+  @override
+  final MagicBackupEnabledRequest field0;
+
+  @override
+  String toString() {
+    return 'QuantumLinkMessage.magicBackupEnabledRequest(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$QuantumLinkMessage_MagicBackupEnabledRequestImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$QuantumLinkMessage_MagicBackupEnabledRequestImplCopyWith<
+          _$QuantumLinkMessage_MagicBackupEnabledRequestImpl>
+      get copyWith =>
+          __$$QuantumLinkMessage_MagicBackupEnabledRequestImplCopyWithImpl<
+                  _$QuantumLinkMessage_MagicBackupEnabledRequestImpl>(
+              this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(ExchangeRate field0) exchangeRate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
+    required TResult Function(DeviceStatus field0) deviceStatus,
+    required TResult Function(EnvoyStatus field0) envoyStatus,
+    required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
+    required TResult Function(OnboardingState field0) onboardingState,
+    required TResult Function(SignPsbt field0) signPsbt,
+    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
+    required TResult Function(RawData field0) rawData,
+  }) {
+    return magicBackupEnabledRequest(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ExchangeRate field0)? exchangeRate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult? Function(DeviceStatus field0)? deviceStatus,
+    TResult? Function(EnvoyStatus field0)? envoyStatus,
+    TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
+    TResult? Function(OnboardingState field0)? onboardingState,
+    TResult? Function(SignPsbt field0)? signPsbt,
+    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult? Function(RawData field0)? rawData,
+  }) {
+    return magicBackupEnabledRequest?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ExchangeRate field0)? exchangeRate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult Function(DeviceStatus field0)? deviceStatus,
+    TResult Function(EnvoyStatus field0)? envoyStatus,
+    TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
+    TResult Function(OnboardingState field0)? onboardingState,
+    TResult Function(SignPsbt field0)? signPsbt,
+    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult Function(RawData field0)? rawData,
+    required TResult orElse(),
+  }) {
+    if (magicBackupEnabledRequest != null) {
+      return magicBackupEnabledRequest(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(QuantumLinkMessage_ExchangeRate value)
+        exchangeRate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
+    required TResult Function(QuantumLinkMessage_DeviceStatus value)
+        deviceStatus,
+    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
+    required TResult Function(QuantumLinkMessage_PairingRequest value)
+        pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
+    required TResult Function(QuantumLinkMessage_OnboardingState value)
+        onboardingState,
+    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
+    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
+        broadcastTransaction,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
+    required TResult Function(QuantumLinkMessage_RawData value) rawData,
+  }) {
+    return magicBackupEnabledRequest(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult? Function(QuantumLinkMessage_PairingResponse value)?
+        pairingResponse,
+    TResult? Function(QuantumLinkMessage_OnboardingState value)?
+        onboardingState,
+    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult? Function(QuantumLinkMessage_RawData value)? rawData,
+  }) {
+    return magicBackupEnabledRequest?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
+    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
+    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult Function(QuantumLinkMessage_RawData value)? rawData,
+    required TResult orElse(),
+  }) {
+    if (magicBackupEnabledRequest != null) {
+      return magicBackupEnabledRequest(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class QuantumLinkMessage_MagicBackupEnabledRequest
+    extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_MagicBackupEnabledRequest(
+          final MagicBackupEnabledRequest field0) =
+      _$QuantumLinkMessage_MagicBackupEnabledRequestImpl;
+  const QuantumLinkMessage_MagicBackupEnabledRequest._() : super._();
+
+  @override
+  MagicBackupEnabledRequest get field0;
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$QuantumLinkMessage_MagicBackupEnabledRequestImplCopyWith<
+          _$QuantumLinkMessage_MagicBackupEnabledRequestImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$QuantumLinkMessage_MagicBackupEnabledResponseImplCopyWith<
+    $Res> {
+  factory _$$QuantumLinkMessage_MagicBackupEnabledResponseImplCopyWith(
+          _$QuantumLinkMessage_MagicBackupEnabledResponseImpl value,
+          $Res Function(_$QuantumLinkMessage_MagicBackupEnabledResponseImpl)
+              then) =
+      __$$QuantumLinkMessage_MagicBackupEnabledResponseImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({MagicBackupEnabledResponse field0});
+}
+
+/// @nodoc
+class __$$QuantumLinkMessage_MagicBackupEnabledResponseImplCopyWithImpl<$Res>
+    extends _$QuantumLinkMessageCopyWithImpl<$Res,
+        _$QuantumLinkMessage_MagicBackupEnabledResponseImpl>
+    implements
+        _$$QuantumLinkMessage_MagicBackupEnabledResponseImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_MagicBackupEnabledResponseImplCopyWithImpl(
+      _$QuantumLinkMessage_MagicBackupEnabledResponseImpl _value,
+      $Res Function(_$QuantumLinkMessage_MagicBackupEnabledResponseImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$QuantumLinkMessage_MagicBackupEnabledResponseImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as MagicBackupEnabledResponse,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$QuantumLinkMessage_MagicBackupEnabledResponseImpl
+    extends QuantumLinkMessage_MagicBackupEnabledResponse {
+  const _$QuantumLinkMessage_MagicBackupEnabledResponseImpl(this.field0)
+      : super._();
+
+  @override
+  final MagicBackupEnabledResponse field0;
+
+  @override
+  String toString() {
+    return 'QuantumLinkMessage.magicBackupEnabledResponse(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$QuantumLinkMessage_MagicBackupEnabledResponseImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$QuantumLinkMessage_MagicBackupEnabledResponseImplCopyWith<
+          _$QuantumLinkMessage_MagicBackupEnabledResponseImpl>
+      get copyWith =>
+          __$$QuantumLinkMessage_MagicBackupEnabledResponseImplCopyWithImpl<
+                  _$QuantumLinkMessage_MagicBackupEnabledResponseImpl>(
+              this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(ExchangeRate field0) exchangeRate,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareUpdateResult field0) firmwareUpdateResult,
+    required TResult Function(DeviceStatus field0) deviceStatus,
+    required TResult Function(EnvoyStatus field0) envoyStatus,
+    required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
+    required TResult Function(OnboardingState field0) onboardingState,
+    required TResult Function(SignPsbt field0) signPsbt,
+    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
+    required TResult Function(RawData field0) rawData,
+  }) {
+    return magicBackupEnabledResponse(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ExchangeRate field0)? exchangeRate,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult? Function(DeviceStatus field0)? deviceStatus,
+    TResult? Function(EnvoyStatus field0)? envoyStatus,
+    TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
+    TResult? Function(OnboardingState field0)? onboardingState,
+    TResult? Function(SignPsbt field0)? signPsbt,
+    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult? Function(RawData field0)? rawData,
+  }) {
+    return magicBackupEnabledResponse?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ExchangeRate field0)? exchangeRate,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareUpdateResult field0)? firmwareUpdateResult,
+    TResult Function(DeviceStatus field0)? deviceStatus,
+    TResult Function(EnvoyStatus field0)? envoyStatus,
+    TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
+    TResult Function(OnboardingState field0)? onboardingState,
+    TResult Function(SignPsbt field0)? signPsbt,
+    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult Function(RawData field0)? rawData,
+    required TResult orElse(),
+  }) {
+    if (magicBackupEnabledResponse != null) {
+      return magicBackupEnabledResponse(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(QuantumLinkMessage_ExchangeRate value)
+        exchangeRate,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)
+        firmwareUpdateResult,
+    required TResult Function(QuantumLinkMessage_DeviceStatus value)
+        deviceStatus,
+    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
+    required TResult Function(QuantumLinkMessage_PairingRequest value)
+        pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
+    required TResult Function(QuantumLinkMessage_OnboardingState value)
+        onboardingState,
+    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
+    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
+        broadcastTransaction,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
+    required TResult Function(QuantumLinkMessage_RawData value) rawData,
+  }) {
+    return magicBackupEnabledResponse(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult? Function(QuantumLinkMessage_PairingResponse value)?
+        pairingResponse,
+    TResult? Function(QuantumLinkMessage_OnboardingState value)?
+        onboardingState,
+    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult? Function(QuantumLinkMessage_RawData value)? rawData,
+  }) {
+    return magicBackupEnabledResponse?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateResult value)?
+        firmwareUpdateResult,
+    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
+    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
+    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult Function(QuantumLinkMessage_RawData value)? rawData,
+    required TResult orElse(),
+  }) {
+    if (magicBackupEnabledResponse != null) {
+      return magicBackupEnabledResponse(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class QuantumLinkMessage_MagicBackupEnabledResponse
+    extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_MagicBackupEnabledResponse(
+          final MagicBackupEnabledResponse field0) =
+      _$QuantumLinkMessage_MagicBackupEnabledResponseImpl;
+  const QuantumLinkMessage_MagicBackupEnabledResponse._() : super._();
+
+  @override
+  MagicBackupEnabledResponse get field0;
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$QuantumLinkMessage_MagicBackupEnabledResponseImplCopyWith<
+          _$QuantumLinkMessage_MagicBackupEnabledResponseImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -4971,6 +6065,10 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -5000,6 +6098,10 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -5029,6 +6131,10 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -5075,6 +6181,12 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -5114,6 +6226,10 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -5151,6 +6267,10 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -5291,6 +6411,10 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -5320,6 +6444,10 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -5349,6 +6477,10 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -5395,6 +6527,12 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -5434,6 +6572,10 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -5471,6 +6613,10 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -5599,6 +6745,10 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -5628,6 +6778,10 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -5657,6 +6811,10 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -5703,6 +6861,12 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -5742,6 +6906,10 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -5779,6 +6947,10 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -5919,6 +7091,10 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -5948,6 +7124,10 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -5977,6 +7157,10 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -6023,6 +7207,12 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -6062,6 +7252,10 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -6099,6 +7293,10 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -6224,6 +7422,10 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
     required TResult Function(BroadcastTransaction field0) broadcastTransaction,
     required TResult Function(AccountUpdate field0) accountUpdate,
     required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(MagicBackupEnabledRequest field0)
+        magicBackupEnabledRequest,
+    required TResult Function(MagicBackupEnabledResponse field0)
+        magicBackupEnabledResponse,
     required TResult Function(BackupShardRequest field0) backupShardRequest,
     required TResult Function(BackupShardResponse field0) backupShardResponse,
     required TResult Function(RestoreShardRequest field0) restoreShardRequest,
@@ -6253,6 +7455,10 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
     TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult? Function(AccountUpdate field0)? accountUpdate,
     TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult? Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult? Function(BackupShardRequest field0)? backupShardRequest,
     TResult? Function(BackupShardResponse field0)? backupShardResponse,
     TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -6282,6 +7488,10 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
     TResult Function(BroadcastTransaction field0)? broadcastTransaction,
     TResult Function(AccountUpdate field0)? accountUpdate,
     TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(MagicBackupEnabledRequest field0)?
+        magicBackupEnabledRequest,
+    TResult Function(MagicBackupEnabledResponse field0)?
+        magicBackupEnabledResponse,
     TResult Function(BackupShardRequest field0)? backupShardRequest,
     TResult Function(BackupShardResponse field0)? backupShardResponse,
     TResult Function(RestoreShardRequest field0)? restoreShardRequest,
@@ -6328,6 +7538,12 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
         accountUpdate,
     required TResult Function(QuantumLinkMessage_SecurityCheck value)
         securityCheck,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledRequest value)
+        magicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_MagicBackupEnabledResponse value)
+        magicBackupEnabledResponse,
     required TResult Function(QuantumLinkMessage_BackupShardRequest value)
         backupShardRequest,
     required TResult Function(QuantumLinkMessage_BackupShardResponse value)
@@ -6367,6 +7583,10 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
         broadcastTransaction,
     TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
@@ -6404,6 +7624,10 @@ class _$QuantumLinkMessage_RawDataImpl extends QuantumLinkMessage_RawData {
         broadcastTransaction,
     TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
     TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledRequest value)?
+        magicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_MagicBackupEnabledResponse value)?
+        magicBackupEnabledResponse,
     TResult Function(QuantumLinkMessage_BackupShardRequest value)?
         backupShardRequest,
     TResult Function(QuantumLinkMessage_BackupShardResponse value)?

@@ -66,7 +66,8 @@ class BluetoothManager extends WidgetsBindingObserver {
   final StreamController<api.PassportMessage> _passportMessageStream =
       StreamController<api.PassportMessage>();
 
-  final StreamController<api.QuantumLinkMessage_BroadcastTransaction> _transactionStream =
+  final StreamController<api.QuantumLinkMessage_BroadcastTransaction>
+      _transactionStream =
       StreamController<api.QuantumLinkMessage_BroadcastTransaction>();
 
   api.EnvoyMasterDechunker? _decoder;
@@ -150,11 +151,12 @@ class BluetoothManager extends WidgetsBindingObserver {
         for (final device in event.field0) {
           _updateConnectionStatus(device);
           // TODO: don't autoconnect in onboarding
-          if (bleId.isNotEmpty && device.id == bleId && !connected) {
-            kPrint("Autoconnecting to: ${device.id}");
-            await connect(id: device.id);
-            await listen(id: bleId);
-          }
+          // TODO: need some way to know if we're in OB
+          // if (bleId.isNotEmpty && device.id == bleId && !connected) {
+          //   kPrint("Autoconnecting to: ${device.id}");
+          //   await connect(id: device.id);
+          //   await listen(id: bleId);
+          // }
         }
       }
     });
@@ -165,12 +167,13 @@ class BluetoothManager extends WidgetsBindingObserver {
 
     await scan();
     _listenForAccountUpdate();
+    _listenForShardMessages();
     _listenToWriteProgress();
   }
 
   void _updateConnectionStatus(bluart.BleDevice device) {
     if (device.connected) {
-      kPrint("Event Device connected: ${device.id} ${device.name}");
+      //kPrint("Event Device connected: ${device.id} ${device.name}");
       _connectedDevices.add(device);
     } else {
       if (_connectedDevices.any((d) => d.id == device.id)) {
@@ -188,7 +191,8 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   void _listenForAccountUpdate() {
     passportMessageStream.listen((api.PassportMessage message) async {
-      if (message.message case api.QuantumLinkMessage_AccountUpdate accountUpdate) {
+      if (message.message
+          case api.QuantumLinkMessage_AccountUpdate accountUpdate) {
         kPrint("Got account update!");
         final payload = accountUpdate.field0.update;
         kPrint("Got payload! ${payload.length}");
@@ -219,14 +223,30 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   void _listenForShardMessages() {
     passportMessageStream.listen((api.PassportMessage message) async {
-      if (message.message is api.QuantumLinkMessage_BackupShardRequest) {
+      if (message.message
+          is api.QuantumLinkMessage_MagicBackupEnabledRequest) {
+        kPrint("Got magic backup enabled request!");
+        writeMessage(api.QuantumLinkMessage.magicBackupEnabledResponse(
+            api.MagicBackupEnabledResponse(enabled: true)));
+      }
+
+      if (message.message
+          case api.QuantumLinkMessage_BackupShardRequest request) {
         kPrint("Got shard backup request!");
-        final shard = (message.message as api.QuantumLinkMessage_BackupShardRequest).field0.field0;
+        final shard = request.field0.field0;
 
         // TODO: add shard ids to API
-        PrimeShard().addShard(shard: shard.payload);
-
-        kPrint("Shard backed up!");
+        try {
+          await PrimeShard().addShard(shard: shard.payload);
+          writeMessage(api.QuantumLinkMessage.backupShardResponse(
+              api.BackupShardResponse_Success()));
+          kPrint("Shard backed up!");
+        }
+        catch (e, _) {
+          kPrint("Shard backup failure: $e");
+          writeMessage(api.QuantumLinkMessage.backupShardResponse(
+              api.BackupShardResponse_Success()));
+        }
       }
     });
   }
@@ -421,7 +441,8 @@ class BluetoothManager extends WidgetsBindingObserver {
           _passportMessageStream.add(value);
           kPrint(
               "Got Passport message type: ${value.message.runtimeType} ${value.message}");
-          if (value case api.QuantumLinkMessage_BroadcastTransaction transaction) {
+          if (value
+              case api.QuantumLinkMessage_BroadcastTransaction transaction) {
             kPrint("Got the Broadcast Transaction");
             _transactionStream.add(transaction);
           }

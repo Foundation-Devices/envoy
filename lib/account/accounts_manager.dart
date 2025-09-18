@@ -156,7 +156,7 @@ class NgAccountManager extends ChangeNotifier {
 
     _accountsOrder.sink.add(order);
 
-    SyncManager().startSync();
+    //SyncManager().startSync();
 
     notifyListeners();
     for (var stream in streams) {

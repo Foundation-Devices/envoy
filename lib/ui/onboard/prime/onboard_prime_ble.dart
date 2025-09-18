@@ -59,9 +59,11 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   PairingResponse? pairingResponse;
 
   Completer<QuantumLinkMessage_BroadcastTransaction>? _completer;
-
   Completer<QuantumLinkMessage_BroadcastTransaction>? get completer =>
       _completer;
+
+  StreamSubscription<PassportMessage>? _passportMessagesSubscription;
+
 
   @override
   void initState() {
@@ -70,8 +72,15 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     _startBluetoothDisconnectionListener(context);
   }
 
+  @override
+  void dispose() {
+    _passportMessagesSubscription?.cancel();
+    _connectionMonitorSubscription?.cancel();
+    super.dispose();
+  }
+
   void _listenForPassportMessages() {
-    BluetoothManager()
+    _passportMessagesSubscription = BluetoothManager()
         .passportMessageStream
         .listen((PassportMessage message) async {
       kPrint("Got the Passport Message : ${message.message}");
@@ -184,7 +193,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               S().onboarding_connectionChecking_forUpdates,
               EnvoyStepState.LOADING);
 
-          final patches = await Server().fetchPrimePatches(currentVersion);
+          //final patches = await Server().fetchPrimePatches(currentVersion);
+          List<PrimePatch> patches = [];
 
           await BluetoothManager().sendFirmwareUpdateInfo(patches);
 

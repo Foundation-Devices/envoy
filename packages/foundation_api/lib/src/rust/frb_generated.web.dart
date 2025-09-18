@@ -127,6 +127,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BackupShardResponse dco_decode_backup_shard_response(dynamic raw);
 
   @protected
+  bool dco_decode_bool(dynamic raw);
+
+  @protected
   XidDocument
       dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           dynamic raw);
@@ -188,6 +191,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   FirmwareUpdateResult dco_decode_box_autoadd_firmware_update_result(
       dynamic raw);
+
+  @protected
+  MagicBackupEnabledRequest dco_decode_box_autoadd_magic_backup_enabled_request(
+      dynamic raw);
+
+  @protected
+  MagicBackupEnabledResponse
+      dco_decode_box_autoadd_magic_backup_enabled_response(dynamic raw);
 
   @protected
   PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw);
@@ -296,6 +307,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw);
+
+  @protected
+  MagicBackupEnabledRequest dco_decode_magic_backup_enabled_request(
+      dynamic raw);
+
+  @protected
+  MagicBackupEnabledResponse dco_decode_magic_backup_enabled_response(
+      dynamic raw);
 
   @protected
   OnboardingState dco_decode_onboarding_state(dynamic raw);
@@ -452,6 +471,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
   XidDocument
       sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           SseDeserializer deserializer);
@@ -524,6 +546,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   FirmwareUpdateResult sse_decode_box_autoadd_firmware_update_result(
       SseDeserializer deserializer);
+
+  @protected
+  MagicBackupEnabledRequest sse_decode_box_autoadd_magic_backup_enabled_request(
+      SseDeserializer deserializer);
+
+  @protected
+  MagicBackupEnabledResponse
+      sse_decode_box_autoadd_magic_backup_enabled_response(
+          SseDeserializer deserializer);
 
   @protected
   PairingRequest sse_decode_box_autoadd_pairing_request(
@@ -648,6 +679,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  MagicBackupEnabledRequest sse_decode_magic_backup_enabled_request(
+      SseDeserializer deserializer);
+
+  @protected
+  MagicBackupEnabledResponse sse_decode_magic_backup_enabled_response(
+      SseDeserializer deserializer);
+
+  @protected
   OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer);
 
   @protected
@@ -731,9 +770,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer);
-
-  @protected
   void sse_encode_AnyhowException(
       AnyhowException self, SseSerializer serializer);
 
@@ -812,6 +848,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       BackupShardResponse self, SseSerializer serializer);
 
   @protected
+  void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
   void
       sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           XidDocument self, SseSerializer serializer);
@@ -883,6 +922,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_firmware_update_result(
       FirmwareUpdateResult self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_magic_backup_enabled_request(
+      MagicBackupEnabledRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_magic_backup_enabled_response(
+      MagicBackupEnabledResponse self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_pairing_request(
@@ -1010,6 +1057,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<QuantumLinkMessage> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_magic_backup_enabled_request(
+      MagicBackupEnabledRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_magic_backup_enabled_response(
+      MagicBackupEnabledResponse self, SseSerializer serializer);
+
+  @protected
   void sse_encode_onboarding_state(
       OnboardingState self, SseSerializer serializer);
 
@@ -1097,9 +1152,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_verification_result(
       VerificationResult self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer);
 }
 
 // Section: wire_class

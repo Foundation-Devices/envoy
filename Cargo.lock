@@ -296,7 +296,7 @@ dependencies = [
 [[package]]
 name = "backup-shard"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.1.1#a83b3f2b09c2ae9c957fdbe9a2f79a36a2ded212"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.2.2#f6c20729abd6793a183a837c123030e46a3dc5e4"
 dependencies = [
  "minicbor 0.24.4",
  "zeroize",
@@ -864,7 +864,7 @@ dependencies = [
 [[package]]
 name = "btp"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.1.1#a83b3f2b09c2ae9c957fdbe9a2f79a36a2ded212"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.2.2#f6c20729abd6793a183a837c123030e46a3dc5e4"
 dependencies = [
  "bytemuck",
  "consts",
@@ -1685,7 +1685,7 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "2.0.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.1.1#a83b3f2b09c2ae9c957fdbe9a2f79a36a2ded212"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.2.2#f6c20729abd6793a183a837c123030e46a3dc5e4"
 dependencies = [
  "anyhow",
  "bc-components",
@@ -3441,7 +3441,7 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.1.1#a83b3f2b09c2ae9c957fdbe9a2f79a36a2ded212"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.2.2#f6c20729abd6793a183a837c123030e46a3dc5e4"
 dependencies = [
  "quote",
  "syn 2.0.106",
