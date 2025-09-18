@@ -451,12 +451,7 @@ impl EnvoyAccountHandler {
         NgAccount::<Connection>::fetch_fee_from_electrum(txid, electrum_server, socks_proxy)
     }
 
-    pub fn update_tx_fee(
-        &mut self,
-        transaction: BitcoinTransaction,
-        fee: u64,
-    ) -> Result<()> {
-
+    pub fn update_tx_fee(&mut self, transaction: BitcoinTransaction, fee: u64) -> Result<()> {
         {
             let mut account = self
                 .ng_account
