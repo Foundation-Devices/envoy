@@ -50,7 +50,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -750466637;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1002919085;
 
 // Section: executor
 
@@ -907,6 +907,51 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_export_bip329_data_impl(
                             )?;
                         Ok(output_ok)
                     })(),
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_fetch_electrum_fee_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "EnvoyAccountHandler_fetch_electrum_fee",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_txid = <String>::sse_decode(&mut deserializer);
+            let api_electrum_server = <String>::sse_decode(&mut deserializer);
+            let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, ()>(
+                    (move || async move {
+                        let output_ok = Result::<_, ()>::Ok(
+                            crate::api::envoy_wallet::EnvoyAccountHandler::fetch_electrum_fee(
+                                &api_txid,
+                                &api_electrum_server,
+                                api_tor_port,
+                            )
+                            .await,
+                        )?;
+                        Ok(output_ok)
+                    })()
+                    .await,
                 )
             }
         },
@@ -2581,6 +2626,65 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_update_broadcast_state_im
         },
     )
 }
+fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_update_tx_fee_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "EnvoyAccountHandler_update_tx_fee",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
+            >>::sse_decode(&mut deserializer);
+            let api_transaction =
+                <ngwallet::transaction::BitcoinTransaction>::sse_decode(&mut deserializer);
+            let api_fee = <u64>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, true,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                                _ => unreachable!(),
+                            }
+                        }
+                        let mut api_that_guard = api_that_guard.unwrap();
+                        let output_ok =
+                            crate::api::envoy_wallet::EnvoyAccountHandler::update_tx_fee(
+                                &mut *api_that_guard,
+                                api_transaction,
+                                api_fee,
+                            )?;
+                        Ok(output_ok)
+                    })(),
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_utxo_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -4178,218 +4282,230 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        18 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_from_config_impl(
+        18 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_fetch_electrum_fee_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        19 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_get_account_backup_impl(
+        19 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_from_config_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        21 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_get_config_from_remote_impl(
+        20 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_get_account_backup_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        23 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_get_max_bump_fee_rates_impl(
+        22 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_get_config_from_remote_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        24 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_get_max_fee_impl(
+        24 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_get_max_bump_fee_rates_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        27 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_migrate_impl(
+        25 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_get_max_fee_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        28 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_migrate_meta_impl(
+        28 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_migrate_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        29 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_new_from_descriptor_impl(
+        29 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_migrate_meta_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        30 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_next_address_impl(
+        30 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_new_from_descriptor_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        31 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_open_account_impl(
+        31 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_next_address_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        32 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_rename_account_impl(
+        32 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_open_account_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        33 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_rename_tag_impl(
+        33 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_rename_account_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        34 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_request_full_scan_impl(
+        34 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_rename_tag_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        35 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_restore_from_backup_impl(
+        35 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_request_full_scan_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        36 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_scan_wallet_impl(
+        36 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_restore_from_backup_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        37 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_send_update_impl(
+        37 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_scan_wallet_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        38 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_do_not_spend_impl(
+        38 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_send_update_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        39 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_do_not_spend_multiple_impl(
+        39 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_do_not_spend_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        40 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_note_impl(
+        40 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_do_not_spend_multiple_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        41 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_preferred_address_type_impl(
+        41 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_note_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        42 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_tag_impl(
+        42 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_preferred_address_type_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        43 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_tag_multiple_impl(
+        43 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_tag_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        44 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_tags_impl(
+        44 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_tag_multiple_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        45 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_state_impl(
+        45 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_tags_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        46 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_stream_impl(
+        46 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_state_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        47 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_sync_request_impl(
+        47 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_stream_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        48 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_sync_wallet_impl(
+        48 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_sync_request_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        49 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_transactions_impl(
+        49 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_sync_wallet_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        50 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_update_broadcast_state_impl(
+        50 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_transactions_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        51 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_utxo_impl(
+        51 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_update_broadcast_state_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        52 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_validate_address_impl(
+        52 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_update_tx_fee_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        53 => wire__crate__api__bip39__envoy_bip_39_derive_descriptor_from_seed_impl(
+        53 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_utxo_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        54 => wire__crate__api__bip39__envoy_bip_39_generate_seed_impl(
+        54 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_validate_address_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        55 => wire__crate__api__bip39__envoy_bip_39_validate_seed_impl(
+        55 => wire__crate__api__bip39__envoy_bip_39_derive_descriptor_from_seed_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        56 => wire__crate__api__envoy_wallet__get_server_features_impl(
+        56 => wire__crate__api__bip39__envoy_bip_39_generate_seed_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        57 => wire__crate__api__envoy_wallet__init_app_impl(port, ptr, rust_vec_len, data_len),
-        59 => wire__crate__api__errors__tx_compose_error_map_err_impl(
+        57 => wire__crate__api__bip39__envoy_bip_39_validate_seed_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        58 => wire__crate__api__envoy_wallet__get_server_features_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        59 => wire__crate__api__envoy_wallet__init_app_impl(port, ptr, rust_vec_len, data_len),
+        61 => wire__crate__api__errors__tx_compose_error_map_err_impl(
             port,
             ptr,
             rust_vec_len,
@@ -4441,25 +4557,25 @@ fn pde_ffi_dispatcher_sync_impl(
             rust_vec_len,
             data_len,
         ),
-        20 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_get_config_from_backup_impl(
+        21 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_get_config_from_backup_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        22 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_get_directory_path_impl(
+        23 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_get_directory_path_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        25 => {
+        26 => {
             wire__crate__api__envoy_wallet__EnvoyAccountHandler_id_impl(ptr, rust_vec_len, data_len)
         }
-        26 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_is_hot_impl(
+        27 => wire__crate__api__envoy_wallet__EnvoyAccountHandler_is_hot_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        58 => wire__ngwallet__transaction__output_get_id_impl(ptr, rust_vec_len, data_len),
+        60 => wire__ngwallet__transaction__output_get_id_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }

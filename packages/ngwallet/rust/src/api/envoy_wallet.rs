@@ -441,6 +441,30 @@ impl EnvoyAccountHandler {
     }
 
     #[allow(clippy::type_complexity)]
+    pub async fn fetch_electrum_fee(
+        txid: &str,
+        electrum_server: &str,
+        tor_port: Option<u16>,
+    ) -> Option<u64> {
+        let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
+        let socks_proxy = socks_proxy.as_deref();
+        NgAccount::<Connection>::fetch_fee_from_electrum(txid, electrum_server, socks_proxy)
+    }
+
+    pub fn update_tx_fee(&mut self, transaction: BitcoinTransaction, fee: u64) -> Result<()> {
+        {
+            let mut account = self
+                .ng_account
+                .lock()
+                .expect("Unable to lock account,failed to update tx fee");
+            account.update_fee(&transaction.tx_id, fee)?;
+            account.persist()?;
+        }
+        self.send_update();
+        Ok(())
+    }
+
+    #[allow(clippy::type_complexity)]
     pub async fn sync_wallet(
         sync_request: Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
         electrum_server: &str,
