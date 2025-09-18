@@ -22,7 +22,7 @@ use ngwallet::bdk_electrum::electrum_client::{Client, ConfigBuilder, ElectrumApi
 use ngwallet::config::{
     AddressType, NgAccountBackup, NgAccountBuilder, NgAccountConfig, NgDescriptor,
 };
-use ngwallet::ngwallet::{NgWallet};
+use ngwallet::ngwallet::NgWallet;
 use ngwallet::send::{DraftTransaction, TransactionFeeResult, TransactionParams};
 use ngwallet::transaction::{BitcoinTransaction, Output};
 
