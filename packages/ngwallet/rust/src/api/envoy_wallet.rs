@@ -8,7 +8,7 @@ use std::str::FromStr;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use anyhow::{anyhow, bail, Error, Result};
+use anyhow::{anyhow, Error, Result};
 use bdk_wallet::bitcoin::Address;
 pub use bdk_wallet::bitcoin::{Network, Psbt, ScriptBuf};
 use bdk_wallet::chain::spk_client::{FullScanRequest, SyncRequest};
@@ -22,7 +22,7 @@ use ngwallet::bdk_electrum::electrum_client::{Client, ConfigBuilder, ElectrumApi
 use ngwallet::config::{
     AddressType, NgAccountBackup, NgAccountBuilder, NgAccountConfig, NgDescriptor,
 };
-use ngwallet::ngwallet::{NgWallet, FEE_UNKNOWN};
+use ngwallet::ngwallet::{NgWallet};
 use ngwallet::send::{DraftTransaction, TransactionFeeResult, TransactionParams};
 use ngwallet::transaction::{BitcoinTransaction, Output};
 
