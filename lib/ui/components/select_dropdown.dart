@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -408,22 +408,24 @@ class _EnvoyDropdownButtonState<T> extends State<_EnvoyDropdownButton<T>> {
 }
 
 int getInitialElectrumDropdownIndex() {
-  final String? savedElectrumServerType =
-      LocalStorage().prefs.getString("electrumServerType");
+  bool isDiyNodes =
+      Settings().selectedElectrumAddress == PublicServer.diyNodes.address ||
+          Settings().personalElectrumAddress == PublicServer.diyNodes.address;
 
-  switch (savedElectrumServerType) {
-    case "foundation":
-      return 0;
-    case "personalNode":
-      return 1;
-    case "blockStream":
-      return 3;
-    case "diyNodes":
-      return 4;
-    default:
-      // Fallback to foundation
-      LocalStorage().prefs.setString("electrumServerType", "foundation");
-      Settings().useDefaultElectrumServer(true);
-      return 0;
+  bool isBlockstream = Settings().selectedElectrumAddress ==
+          PublicServer.blockstream.address ||
+      Settings().personalElectrumAddress == PublicServer.blockstream.address;
+
+  if (Settings().usingDefaultElectrumServer) {
+    return 0;
+  } else if (!Settings().usingDefaultElectrumServer &&
+      !isDiyNodes &&
+      !isBlockstream) {
+    return 1;
+  } else if (isBlockstream) {
+    return 3;
+  } else if (isDiyNodes) {
+    return 4;
   }
+  return 0;
 }
