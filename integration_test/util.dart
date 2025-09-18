@@ -753,6 +753,13 @@ Future<void> disableTorOnboarding(WidgetTester tester,
   if (disableMagicBackup) {
     await findAndToggleEnvoySwitch(
         tester, "Simple, secure backup and recovery");
+    //if modal shows up, tap continue
+    await tester.pump(Durations.long1);
+    final continueButtonFinder = find.text('Continue');
+    if (continueButtonFinder.hasFound) {
+      tester.tap(continueButtonFinder);
+      await tester.pump(Durations.long2);
+    }
   }
 
   Finder backButtonFinder = find.byType(CupertinoNavigationBarBackButton);
