@@ -37,100 +37,104 @@ class SeedIntroScreen extends StatelessWidget {
         child: Material(
             color: Colors.transparent,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
                   mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: GestureDetector(
-                          onTap: () {
-                            context.pop();
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.all(EnvoySpacing.medium1),
-                            child: Icon(Icons.arrow_back_ios_rounded,
-                                size: EnvoySpacing.medium2),
-                          )),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: GestureDetector(
+                              onTap: () {
+                                context.pop();
+                              },
+                              child: const Padding(
+                                padding: EdgeInsets.all(EnvoySpacing.medium1),
+                                child: Icon(Icons.arrow_back_ios_rounded,
+                                    size: EnvoySpacing.medium2),
+                              )),
+                        ),
+                        Container(
+                          child: mode == SeedIntroScreenType.generate ||
+                                  mode == SeedIntroScreenType.verify
+                              ? Image.asset(
+                                  "assets/shield_inspect.png",
+                                  width: 190,
+                                  height: 190,
+                                )
+                              : Image.asset(
+                                  "assets/fw_download.png",
+                                  width: 150,
+                                  height: 150,
+                                ),
+                        ),
+                      ],
                     ),
-                    Container(
-                      child: mode == SeedIntroScreenType.generate ||
-                              mode == SeedIntroScreenType.verify
-                          ? Image.asset(
-                              "assets/shield_inspect.png",
-                              width: 190,
-                              height: 190,
-                            )
-                          : Image.asset(
-                              "assets/fw_download.png",
-                              width: 150,
-                              height: 150,
-                            ),
-                    ),
-                  ],
-                ),
-                Flexible(
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium2),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            mode == SeedIntroScreenType.generate ||
-                                    mode == SeedIntroScreenType.verify
-                                ? S().manual_setup_generate_seed_heading
-                                : S().manual_setup_import_seed_heading,
-                            textAlign: TextAlign.center,
-                            style: EnvoyTypography.heading,
-                          ),
-                          const SizedBox(
-                            height: EnvoySpacing.medium2,
-                          ),
-                          Text(
-                            mode == SeedIntroScreenType.generate ||
-                                    mode == SeedIntroScreenType.verify
-                                ? S().manual_setup_generate_seed_subheading
-                                : S().manual_setup_import_seed_subheading,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall!
-                                .copyWith(fontSize: 13),
-                          ),
-                          const SizedBox(
-                            height: EnvoySpacing.medium2,
-                          ),
-                          if (mode == SeedIntroScreenType.import)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: EnvoySpacing.medium2,
-                              ),
-                              child: Text(
-                                S().manual_setup_import_seed_passport_warning,
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.medium3,
+                              vertical: EnvoySpacing.medium3),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                mode == SeedIntroScreenType.generate ||
+                                        mode == SeedIntroScreenType.verify
+                                    ? S().manual_setup_generate_seed_heading
+                                    : S().manual_setup_import_seed_heading,
                                 textAlign: TextAlign.center,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(
-                                        fontSize: 13,
-                                        color: EnvoyColors.accentSecondary,
-                                        fontWeight: FontWeight.w700),
+                                style: EnvoyTypography.heading,
                               ),
-                            ),
-                        ],
+                              const SizedBox(
+                                height: EnvoySpacing.large2,
+                              ),
+                              Text(
+                                mode == SeedIntroScreenType.generate ||
+                                        mode == SeedIntroScreenType.verify
+                                    ? S().manual_setup_generate_seed_subheading
+                                    : S().manual_setup_import_seed_subheading,
+                                textAlign: TextAlign.center,
+                                style: EnvoyTypography.info
+                                    .copyWith(color: EnvoyColors.textTertiary),
+                              ),
+                              const SizedBox(
+                                height: EnvoySpacing.medium2,
+                              ),
+                              if (mode == SeedIntroScreenType.import)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: EnvoySpacing.medium2,
+                                  ),
+                                  child: Text(
+                                    S().manual_setup_import_seed_passport_warning,
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(
+                                            fontSize: 13,
+                                            color: EnvoyColors.accentSecondary,
+                                            fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: EnvoySpacing.xs,
-                      vertical: EnvoySpacing.medium2 + EnvoySpacing.xs),
+                      vertical: EnvoySpacing.medium2),
                   child: mode == SeedIntroScreenType.generate ||
                           mode == SeedIntroScreenType.verify
                       ? OnboardingButton(

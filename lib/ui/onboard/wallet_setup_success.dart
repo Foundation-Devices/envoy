@@ -75,7 +75,10 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
               ),
               if (!widget.isPrimeWallet)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                  padding: const EdgeInsets.only(
+                      bottom: EnvoySpacing.medium3,
+                      left: EnvoySpacing.medium1,
+                      right: EnvoySpacing.medium1),
                   child: EnvoyButton(
                     label: S().component_continue,
                     type: ButtonType.primary,

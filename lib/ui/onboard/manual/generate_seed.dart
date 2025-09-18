@@ -340,66 +340,66 @@ class _SeedScreenState extends State<SeedScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.chevron_left,
-                      color: Colors.black, size: EnvoySpacing.medium3),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.chevron_left,
+                          color: Colors.black, size: EnvoySpacing.medium3),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close,
+                          color: Colors.black, size: EnvoySpacing.medium2),
+                      onPressed: () {
+                        // Tap on "x" should exit the flow, so pop twice to navigate back two levels
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
                 ),
-                IconButton(
-                  icon: const Icon(Icons.close,
-                      color: Colors.black, size: EnvoySpacing.medium2),
-                  onPressed: () {
-                    // Tap on "x" should exit the flow, so pop twice to navigate back two levels
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  },
+                Image.asset(
+                  "assets/shield_ok.png",
+                  height: 250,
+                  width: 250,
                 ),
               ],
             ),
-            Image.asset(
-              "assets/shield_ok.png",
-              height: 250,
-              width: 250,
+            const SizedBox(height: EnvoySpacing.medium1),
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text(S().manual_setup_generate_seed_verify_seed_heading,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.heading
+                            .copyWith(color: EnvoyColors.textPrimary)),
+                    const SizedBox(height: EnvoySpacing.medium3),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium2),
+                      child: Text(
+                        S().manual_setup_generate_seed_verify_seed_subheading,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.info
+                            .copyWith(color: EnvoyColors.textTertiary),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
-        ),
-        const SizedBox(
-          height: EnvoySpacing.medium2,
-        ),
-        Flexible(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Text(S().manual_setup_generate_seed_verify_seed_heading,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.heading
-                        .copyWith(color: EnvoyColors.textPrimary)),
-                Padding(
-                  padding: const EdgeInsets.all(EnvoySpacing.medium2),
-                  child: Text(
-                    S().manual_setup_generate_seed_verify_seed_subheading,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall!
-                        .copyWith(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: EnvoySpacing.large2,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(

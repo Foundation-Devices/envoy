@@ -36,41 +36,44 @@ class _ManualSetupCreateAndStoreBackupState
         child: Material(
       color: Colors.transparent,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const SizedBox(height: EnvoySpacing.small),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-            child: Image.asset("assets/onboarding_lock_icon.png"),
-          ),
-          const SizedBox(height: EnvoySpacing.medium1),
-          Flexible(
-            child: SingleChildScrollView(
-              child: Padding(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: EnvoySpacing.xl),
+              Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium3),
-                child: Column(
-                  children: [
-                    Text(S().manual_setup_create_and_store_backup_heading,
-                        textAlign: TextAlign.center,
-                        style: EnvoyTypography.heading),
-                    const SizedBox(height: EnvoySpacing.medium1),
-                    Text(
-                      S().manual_setup_create_and_store_backup_subheading,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .copyWith(fontSize: 13),
+                    horizontal: EnvoySpacing.medium1),
+                child: Image.asset("assets/onboarding_lock_icon.png"),
+              ),
+              const SizedBox(height: EnvoySpacing.medium3),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium3),
+                    child: Column(
+                      children: [
+                        Text(S().manual_setup_create_and_store_backup_heading,
+                            textAlign: TextAlign.center,
+                            style: EnvoyTypography.heading),
+                        const SizedBox(height: EnvoySpacing.medium3),
+                        Text(
+                          S().manual_setup_create_and_store_backup_subheading,
+                          textAlign: TextAlign.center,
+                          style: EnvoyTypography.info
+                              .copyWith(color: EnvoyColors.textTertiary),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-          const SizedBox(height: EnvoySpacing.medium1),
           Padding(
             padding: const EdgeInsets.only(
                 left: EnvoySpacing.xs,

@@ -434,17 +434,20 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      S().android_backup_info_heading,
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.heading,
-                    ),
-                    const Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.medium3)),
+                    const SizedBox(height: EnvoySpacing.medium3),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium1),
+                          horizontal: EnvoySpacing.medium2),
+                      child: Text(
+                        S().android_backup_info_heading,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.heading,
+                      ),
+                    ),
+                    const SizedBox(height: EnvoySpacing.medium3),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium2),
                       child: LinkText(
                         text: S().android_backup_info_subheading,
                         onTap: () {
