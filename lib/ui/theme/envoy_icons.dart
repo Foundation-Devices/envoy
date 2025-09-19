@@ -90,6 +90,7 @@ enum EnvoyIcons {
   phone,
   prime,
   passphrase_shield,
+  quantum,
 }
 
 class EnvoyIcon extends StatelessWidget {
