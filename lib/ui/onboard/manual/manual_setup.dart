@@ -59,7 +59,7 @@ class SeedIntroScreen extends StatelessWidget {
                                     size: EnvoySpacing.medium2),
                               )),
                         ),
-                        const SizedBox(height: EnvoySpacing.small),
+                        const SizedBox(height: EnvoySpacing.xs),
                         Container(
                           child: mode == SeedIntroScreenType.generate ||
                                   mode == SeedIntroScreenType.verify

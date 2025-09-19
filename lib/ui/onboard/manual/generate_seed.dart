@@ -24,7 +24,7 @@ import 'package:ngwallet/ngwallet.dart';
 class SeedScreen extends StatefulWidget {
   final bool generate;
 
-  const SeedScreen({super.key, this.generate = true});
+  const SeedScreen({super.key, required this.generate});
 
   @override
   State<SeedScreen> createState() => _SeedScreenState();
@@ -71,7 +71,7 @@ class _SeedScreenState extends State<SeedScreen> {
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            _buildMnemonicGrid(context),
+            _buildMnemonicGrid(context, widget.generate),
             _buildSeedVerification(context),
             VerifySeedPuzzleWidget(
                 seed: seedList,
@@ -151,7 +151,7 @@ class _SeedScreenState extends State<SeedScreen> {
   //   );
   // }
 
-  Widget _buildMnemonicGrid(BuildContext context) {
+  Widget _buildMnemonicGrid(BuildContext context, bool generate) {
     if (seedList.isEmpty) {
       return Container();
     }
@@ -162,12 +162,15 @@ class _SeedScreenState extends State<SeedScreen> {
           alignment: Alignment.centerLeft,
           child: Padding(
             padding: const EdgeInsets.all(EnvoySpacing.medium1),
-            child: GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: const Icon(Icons.arrow_back_ios_rounded,
-                    size: EnvoySpacing.medium2)),
+            child:
+                !generate // ENV-2299 no back so no re-shuffle / re-gen of words
+                    ? GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Icon(Icons.arrow_back_ios_rounded,
+                            size: EnvoySpacing.medium2))
+                    : const SizedBox(height: EnvoySpacing.medium2),
           ),
         ),
         Expanded(
@@ -360,7 +363,7 @@ class _SeedScreenState extends State<SeedScreen> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+                  padding: const EdgeInsets.only(top: EnvoySpacing.xs),
                   child: Image.asset(
                     "assets/shield_ok.png",
                     height: 184,
