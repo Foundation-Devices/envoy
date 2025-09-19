@@ -9,7 +9,7 @@ on: [ workflow_dispatch ]
 jobs:
   build-android:
     if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
-    runs-on: [ no-cloud, Linux, X64 ]
+    runs-on: [ self-hosted, Linux, X64 ]
 
     steps:
       - uses: extractions/setup-just@v1
