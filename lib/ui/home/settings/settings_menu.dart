@@ -56,6 +56,9 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
   @override
   Widget build(BuildContext context) {
     ref.listen<HomePageBackgroundState>(homePageBackgroundProvider, (_, next) {
+      if (!context.mounted) {
+        return;
+      }
       selectPage(next, context);
     });
 
@@ -81,6 +84,9 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
 
   void selectPage(HomePageBackgroundState state, BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) {
+        return;
+      }
       switch (state) {
         case HomePageBackgroundState.menu:
           setState(() {
