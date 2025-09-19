@@ -192,17 +192,13 @@ class _SeedScreenState extends State<SeedScreen> {
               ),
               const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.medium2),
-                  child: PageView(
-                      controller: _seedDisplayPageController,
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: [
-                        _buildTwoMnemonicColumns(0),
-                        if (seedList.length > 12) _buildTwoMnemonicColumns(12),
-                      ]),
-                ),
+                child: PageView(
+                    controller: _seedDisplayPageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      _buildTwoMnemonicColumns(0),
+                      if (seedList.length > 12) _buildTwoMnemonicColumns(12),
+                    ]),
               ),
               if (seedList.length > 12)
                 Padding(
@@ -290,20 +286,20 @@ class _SeedScreenState extends State<SeedScreen> {
   }
 
   Widget _buildMnemonicColumn(List<Tuple<int, String>> list) {
-    const TextStyle textTheme = TextStyle(
-        fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold);
-    double margin = MediaQuery.of(context).devicePixelRatio < 2.5 ? 4 : 14;
+    TextStyle textTheme =
+        EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary);
+    double margin = MediaQuery.of(context).devicePixelRatio < 2.5 ? 12 : 16;
 
     return Column(
       children: list.map((word) {
         return Container(
-          height: 40,
-          margin: EdgeInsets.symmetric(vertical: margin, horizontal: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          height: 52,
+          margin: EdgeInsets.symmetric(vertical: margin, horizontal: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           constraints:
-              const BoxConstraints(maxWidth: 220, minWidth: 160, maxHeight: 40),
+              const BoxConstraints(maxWidth: 220, minWidth: 160, maxHeight: 52),
           decoration: BoxDecoration(
-              color: Colors.grey[300], borderRadius: BorderRadius.circular(8)),
+              color: Colors.grey[300], borderRadius: BorderRadius.circular(16)),
           child: Row(
             children: [
               Text("${word.item1}. ", style: textTheme),
@@ -350,17 +346,17 @@ class _SeedScreenState extends State<SeedScreen> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.chevron_left,
-                          color: Colors.black, size: EnvoySpacing.medium3),
-                      onPressed: () {
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: GestureDetector(
+                      onTap: () {
                         Navigator.pop(context);
                       },
-                    ),
-                  ],
+                      child: const Padding(
+                        padding: EdgeInsets.all(EnvoySpacing.medium1),
+                        child: Icon(Icons.arrow_back_ios_rounded,
+                            size: EnvoySpacing.medium2),
+                      )),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: EnvoySpacing.xs),
