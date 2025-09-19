@@ -348,7 +348,7 @@ class _SeedScreenState extends State<SeedScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     IconButton(
                       icon: const Icon(Icons.chevron_left,
@@ -357,25 +357,18 @@ class _SeedScreenState extends State<SeedScreen> {
                         Navigator.pop(context);
                       },
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.close,
-                          color: Colors.black, size: EnvoySpacing.medium2),
-                      onPressed: () {
-                        // Tap on "x" should exit the flow, so pop twice to navigate back two levels
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      },
-                    ),
                   ],
                 ),
-                Image.asset(
-                  "assets/shield_ok.png",
-                  height: 250,
-                  width: 250,
+                Padding(
+                  padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+                  child: Image.asset(
+                    "assets/shield_ok.png",
+                    height: 184,
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: EnvoySpacing.medium1),
+            const SizedBox(height: EnvoySpacing.medium3),
             Flexible(
               child: SingleChildScrollView(
                 child: Column(
@@ -387,7 +380,7 @@ class _SeedScreenState extends State<SeedScreen> {
                     const SizedBox(height: EnvoySpacing.medium3),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium2),
+                          horizontal: EnvoySpacing.medium1),
                       child: Text(
                         S().manual_setup_generate_seed_verify_seed_subheading,
                         textAlign: TextAlign.center,

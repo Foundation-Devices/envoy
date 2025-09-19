@@ -47,7 +47,8 @@ class _ManualSetupCreateAndStoreBackupState
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: EnvoySpacing.medium1),
-                child: Image.asset("assets/onboarding_lock_icon.png"),
+                child:
+                    Image.asset("assets/onboarding_lock_icon.png", height: 184),
               ),
               const SizedBox(height: EnvoySpacing.medium3),
               Flexible(

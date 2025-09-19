@@ -287,8 +287,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(
-                          bottom: EnvoySpacing.medium3,
-                          top: EnvoySpacing.large2),
+                          bottom: EnvoySpacing.medium3, top: EnvoySpacing.xl),
                       child: Container(
                         constraints:
                             BoxConstraints.tight(const Size.fromHeight(184)),

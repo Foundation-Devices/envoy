@@ -59,13 +59,13 @@ class SeedIntroScreen extends StatelessWidget {
                                     size: EnvoySpacing.medium2),
                               )),
                         ),
+                        const SizedBox(height: EnvoySpacing.small),
                         Container(
                           child: mode == SeedIntroScreenType.generate ||
                                   mode == SeedIntroScreenType.verify
                               ? Image.asset(
                                   "assets/shield_inspect.png",
-                                  width: 190,
-                                  height: 190,
+                                  width: 184,
                                 )
                               : Image.asset(
                                   "assets/fw_download.png",
@@ -79,7 +79,7 @@ class SeedIntroScreen extends StatelessWidget {
                       child: SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.medium3,
+                              horizontal: EnvoySpacing.medium1,
                               vertical: EnvoySpacing.medium3),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -93,7 +93,7 @@ class SeedIntroScreen extends StatelessWidget {
                                 style: EnvoyTypography.heading,
                               ),
                               const SizedBox(
-                                height: EnvoySpacing.large2,
+                                height: EnvoySpacing.medium3,
                               ),
                               Text(
                                 mode == SeedIntroScreenType.generate ||
