@@ -70,7 +70,6 @@
             openssl
             llvm
             reuse
-            jdk17
             go
 
             # Build tools - Essential for CMake
@@ -114,13 +113,9 @@
             echo "Rust: $(rustc --version)"
             echo "Flutter: $(flutter --version | head -1)"
             echo "Dart: $(dart --version)"
-
-            # Set JAVA_HOME explicitly
-            export JAVA_HOME="${pkgs.jdk17}"
-            export ANDROID_JAVA_HOME="$JAVA_HOME"
             echo "Java: $(java --version)"
 
-            # Flutter setup - use Flutter from the PR
+            # Flutter setup
             export FLUTTER_ROOT="${pkgs.flutter}"
             export PATH="$FLUTTER_ROOT/bin:$PATH"
 
@@ -141,7 +136,7 @@
 
             echo "Android SDK: $ANDROID_SDK_ROOT"
             echo "Android NDK: $ANDROID_NDK_ROOT"
-            echo "CMake Make Program: $CMAKE_MAKE_PROGRAM"
+            echo "CMake: $(which cmake)"
 
             echo ""
             echo "💡 Run 'flutter doctor' to check setup"
