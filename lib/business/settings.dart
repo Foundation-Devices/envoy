@@ -427,10 +427,9 @@ class Settings extends ChangeNotifier {
       var json = jsonDecode(ls.prefs.getString(SETTINGS_PREFS)!);
 
       if (fromBackup) {
-        if (Settings().torChangedInAdvanced) {
+        if (Settings().nodeChangedInAdvanced ||
+            Settings().torChangedInAdvanced) {
           json["usingTor"] = Settings().usingTor;
-        }
-        if (Settings().nodeChangedInAdvanced) {
           json["usingDefaultElectrumServer"] =
               Settings().usingDefaultElectrumServer;
           json["selectedElectrumAddress"] = Settings().selectedElectrumAddress;
