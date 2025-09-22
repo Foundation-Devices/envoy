@@ -20,6 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
+import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
 
 class HomeAppBar extends ConsumerStatefulWidget {
   final bool backGroundShown;
@@ -164,6 +165,15 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                 ref.read(homePageTitleProvider.notifier).state =
                     S().menu_heading.toUpperCase();
               } else if (state == HamburgerState.back) {
+                if (path == ROUTE_SELECT_ACCOUNT) {
+                  showBuyBitcoinOptions(ref);
+                  context.go(ROUTE_BUY_BITCOIN);
+                }
+                if (path == ROUTE_PEER_TO_PEER) {
+                  showBuyBitcoinOptions(ref);
+                  context.go(ROUTE_BUY_BITCOIN);
+                }
+
                 if (path == ROUTE_SELECT_REGION &&
                     await EnvoyStorage().getCountry() != null) {
                   if (context.mounted) {
