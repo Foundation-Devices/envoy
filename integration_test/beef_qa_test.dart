@@ -1175,6 +1175,75 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
+    testWidgets('<Taproot address test>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
+      await goBackHome(tester);
+
+      await pressHamburgerMenu(tester);
+      await goToSettings(tester);
+      await openAdvancedMenu(tester);
+      bool taprootAlreadyEnabled =
+          await isSlideSwitchOn(tester, "Receive to Taproot");
+      if (taprootAlreadyEnabled) {
+        // Disable it
+        await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
+      }
+
+      await pressHamburgerMenu(tester); // back to settings menu
+      await pressHamburgerMenu(tester); // back to home
+      await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
+      await findAndPressTextButton(tester, "Receive");
+
+      await findTextOnScreen(tester, "bc1q");
+
+      // back to account
+      //await pressHamburgerMenu(tester);
+
+      // open menu
+      await findAndPressIcon(tester, Icons.more_horiz_outlined);
+
+      await findAndPressTextButton(tester, "SHOW DESCRIPTOR");
+
+      await findTextOnScreen(tester, "Segwit");
+
+      // back to home
+      //await pressHamburgerMenu(tester);
+      //await pressHamburgerMenu(tester);
+      // settings
+      await pressHamburgerMenu(tester);
+      await goToSettings(tester);
+      await openAdvancedMenu(tester);
+      await findAndToggleSettingsSwitch(tester, "Receive to Taproot"); // Enable
+      await findFirstTextButtonAndPress(tester, "Confirm");
+
+      await pressHamburgerMenu(tester); // back to settings menu
+      await pressHamburgerMenu(tester); // back to home
+
+      await findLastTextButtonAndPress(tester, "Accounts");
+
+      /// this way because nav is broken in tests
+
+      await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
+      await findAndPressTextButton(tester, "Receive");
+
+      await findTextOnScreen(tester, "bc1p");
+
+      // back to account
+      //await pressHamburgerMenu(tester);
+
+      // open menu
+      await findAndPressIcon(tester, Icons.more_horiz_outlined);
+
+      await findAndPressTextButton(tester, "SHOW DESCRIPTOR");
+
+      await findTextOnScreen(tester, "Taproot");
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
     testWidgets('<Check Signet in App>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
@@ -1259,6 +1328,8 @@ Future<void> main() async {
     testWidgets('<Node selection>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
+      final personalNode = "ssl://mainnet-0.foundation.xyz:50002";
+
       await goBackHome(tester);
 
       // Go to privacy
@@ -1271,6 +1342,14 @@ Future<void> main() async {
       // Check that it gets selected and the field to enter the personal node shows up
       await findTextOnScreen(tester, "Personal Node");
       await findTextOnScreen(tester, "Enter your node address");
+
+      // paste node
+      await enterTextInField(tester, find.byType(TextFormField), personalNode);
+
+      // check if it connects
+      final textConnectFinder = find.text("Connected");
+      await tester.pumpUntilFound(textConnectFinder,
+          tries: 50, duration: Durations.long2);
 
       //Tap Personal Node to open dropdown
       await findAndPressTextButton(tester, 'Personal Node');
@@ -1299,14 +1378,41 @@ Future<void> main() async {
       await findAndPressTextButton(tester, 'DIYnodes');
       await tester.pump(Durations.long2);
 
+      // Change back to Personal Node, and check the pasted node was
+      // NOT overwritten, and it connects to that one
+
       // Check if a connection is attempted over Personal node
       await findAndPressTextButton(tester, 'Personal Node');
-      await tester.pump(Durations.long2);
       await tester.pumpUntilFound(
         find.byType(CircularProgressIndicator),
-        tries: 10,
+        tries: 20,
         duration: Durations.long1,
       );
+
+      // check if it connects
+      await tester.pumpUntilFound(textConnectFinder,
+          tries: 50, duration: Durations.long2);
+
+      // Grab the text currently inside the TextFormField
+      final textField =
+          tester.widget<TextFormField>(find.byType(TextFormField));
+      final currentController = textField.controller;
+      expect(currentController, isNotNull,
+          reason: "TextFormField should have a controller");
+
+      final currentNode = currentController!.text;
+
+      // Compare with the originally entered node
+      expect(currentNode, equals(personalNode),
+          reason:
+              "The Personal Node value should persist after switching back");
+
+      // change back to Foundation default
+      await findAndPressTextButton(tester, 'Personal Node');
+      await tester.pump(Durations.long2);
+
+      await findAndPressTextButton(tester, 'Foundation (Default)');
+      await tester.pump(Durations.long2);
 
       stopwatch.stop();
       debugPrint(

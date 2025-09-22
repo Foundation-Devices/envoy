@@ -28,7 +28,7 @@ class _FwIntroPageState extends State<FwIntroPage> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      canPop: true,
       child: OnboardingPage(
         key: const Key("fw_intro"),
         rightFunction: null,

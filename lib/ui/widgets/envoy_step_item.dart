@@ -7,6 +7,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 //TODO: add more concrete states based on bluetooth implementation
 enum EnvoyStepState { LOADING, FINISHED, ERROR, IDLE, HIDDEN }
@@ -52,25 +53,27 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
     return AnimatedOpacity(
       opacity: step.state == EnvoyStepState.LOADING ? 1 : .6,
       duration: const Duration(milliseconds: 320),
-      child: ListTile(
-        leading: leading,
-        title: Text(
-          step.stepName,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: EnvoyTypography.body.copyWith(
-            fontWeight: widget.highlight ? FontWeight.w800 : null,
-            color: step.state == EnvoyStepState.ERROR
-                ? EnvoyColors.copper500
-                : null,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          leading,
+          const SizedBox(width: EnvoySpacing.small),
+          Flexible(
+            child: Text(
+              step.stepName,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center, // center text itself
+              style: EnvoyTypography.body.copyWith(
+                fontWeight: widget.highlight ? FontWeight.w800 : null,
+                color: step.state == EnvoyStepState.ERROR
+                    ? EnvoyColors.copper500
+                    : null,
+              ),
+            ),
           ),
-        ),
-        contentPadding: EdgeInsets.zero,
-        dense: true,
-        minLeadingWidth: 24,
-        minTileHeight: 12,
-        minVerticalPadding: 0,
-        visualDensity: VisualDensity.compact,
+        ],
       ),
     );
   }
