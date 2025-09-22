@@ -351,7 +351,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                 EnvoyIcons.alert,
                 color: EnvoyColors.accentSecondary,
               ),
-              const Padding(padding: EdgeInsets.all(4)),
+              const SizedBox(height: EnvoySpacing.small),
               Text(
                 S().manual_setup_generate_seed_verify_seed_quiz_fail_invalid,
                 style: Theme.of(context)
