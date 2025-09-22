@@ -242,7 +242,8 @@ class _AdvancedSettingsOptionsState
                                             icon: EnvoyIcons.performance,
                                             isActive: _betterPerformance,
                                             onSelect: (isActive) {
-                                              Settings().torChangedInAdvanced;
+                                              Settings().torChangedInAdvanced =
+                                                  true;
                                               setState(() {
                                                 _betterPerformance = true;
                                               });
@@ -260,7 +261,8 @@ class _AdvancedSettingsOptionsState
                                             icon: EnvoyIcons.privacy,
                                             isActive: !_betterPerformance,
                                             onSelect: (isActive) {
-                                              Settings().torChangedInAdvanced;
+                                              Settings().torChangedInAdvanced =
+                                                  true;
                                               setState(() {
                                                 _betterPerformance = false;
                                               });
