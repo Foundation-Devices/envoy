@@ -442,9 +442,9 @@ class Settings extends ChangeNotifier {
     await Settings.init();
   }
 
-  void store() {
+  Future store() async {
     String json = jsonEncode(this);
-    ls.prefs.setString(SETTINGS_PREFS, json);
+    await ls.prefs.setString(SETTINGS_PREFS, json);
   }
 
 // Generated
