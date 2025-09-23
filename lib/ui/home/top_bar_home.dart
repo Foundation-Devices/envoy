@@ -165,11 +165,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                 ref.read(homePageTitleProvider.notifier).state =
                     S().menu_heading.toUpperCase();
               } else if (state == HamburgerState.back) {
-                if (path == ROUTE_SELECT_ACCOUNT) {
-                  showBuyBitcoinOptions(ref);
-                  context.go(ROUTE_BUY_BITCOIN);
-                }
-                if (path == ROUTE_PEER_TO_PEER) {
+                if (path == ROUTE_SELECT_ACCOUNT ||
+                    path == ROUTE_PEER_TO_PEER) {
                   showBuyBitcoinOptions(ref);
                   context.go(ROUTE_BUY_BITCOIN);
                 }
