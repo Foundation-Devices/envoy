@@ -478,7 +478,17 @@ class EnvoySeed {
           await EnvoyStorage().insertMediaItems(blogs);
         }
 
-        _restoreSingletons();
+        await _restoreSingletons();
+        if (Settings().usingTor) {
+          try {
+            if (!Tor.instance.started) {
+              await Tor.instance.start();
+            }
+            await Tor.instance.enable();
+          } catch (e) {
+            EnvoyReport().log("EnvoySeed", "Unable to start Tor: $e");
+          }
+        }
       } catch (e) {
         EnvoyReport().log("EnvoySeed", "Error restoring database: $e");
       }
@@ -615,9 +625,9 @@ class EnvoySeed {
     }
   }
 
-  void _restoreSingletons() {
-    Settings.restore(fromBackup: true);
-    Settings().store();
+  Future _restoreSingletons() async {
+    await Settings.restore(fromBackup: true);
+    await Settings().store();
     Devices().restore();
     ExchangeRate().restore();
     Notifications().restoreNotifications();
