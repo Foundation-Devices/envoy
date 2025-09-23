@@ -5,8 +5,11 @@
 name: BeefQA
 
 on:
-  pull_request:
   workflow_dispatch:
+  workflow_run:
+    workflows: [ 'Check' ]
+    types:
+      - completed
 
 jobs:
   beef-qa:
