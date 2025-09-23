@@ -312,13 +312,19 @@ Future<void> pressHamburgerMenu(WidgetTester tester) async {
   await tester.pump(Durations.extralong4);
 }
 
-Future<void> goToSettings(WidgetTester tester) async {
+Future<void> tapSettingsButton(
+  WidgetTester tester, {
+  String buttonText = "SETTINGS",
+  Duration wait = Durations.extralong4,
+}) async {
   await tester.pump();
-  final settingsButton = find.text('SETTINGS');
-  expect(settingsButton, findsOneWidget);
 
-  await tester.tap(settingsButton);
-  await tester.pump(Durations.extralong4);
+  final buttonFinder = find.text(buttonText);
+  expect(buttonFinder, findsOneWidget,
+      reason: 'Button with text "$buttonText" not found in Settings');
+
+  await tester.tap(buttonFinder);
+  await tester.pump(wait);
   await tester.pump();
 }
 
@@ -1488,7 +1494,7 @@ Future<void> findAndTapFirstAccText(
 
 Future<void> fromHomeToAdvancedMenu(WidgetTester tester) async {
   await pressHamburgerMenu(tester);
-  await goToSettings(tester);
+  await tapSettingsButton(tester);
   await openAdvancedMenu(tester);
 }
 
@@ -1737,7 +1743,7 @@ Future<void> disableAllNetworks(WidgetTester tester) async {
 
 Future<void> clearPromptStates(WidgetTester tester) async {
   await pressHamburgerMenu(tester);
-  await goToSettings(tester);
+  await tapSettingsButton(tester);
 
   final devOptions = find.text('Dev options');
   expect(devOptions, findsOneWidget);
