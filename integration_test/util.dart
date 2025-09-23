@@ -1500,6 +1500,17 @@ Future<void> findAndTapPopUpText(WidgetTester tester, String tapText) async {
   await tester.pump(Durations.long2);
 }
 
+Future<void> findAndTapPopUpIcon(WidgetTester tester, IconData icon) async {
+  final iconFinder = find.byIcon(icon);
+
+  // Wait until the icon appears on screen
+  await tester.pumpUntilFound(iconFinder, tries: 10, duration: Durations.long1);
+
+  // Tap the last instance (useful if multiple are on screen)
+  await tester.tap(iconFinder);
+  await tester.pump(Durations.long2);
+}
+
 Future<void> findPopUpText(WidgetTester tester, String tapText) async {
   final tapButtonText = find.text(tapText);
   await tester.pumpUntilFound(tapButtonText,

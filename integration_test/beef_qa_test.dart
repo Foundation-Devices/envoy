@@ -1285,6 +1285,41 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
+    testWidgets('<Select coin, cancel selection, check buttons>',
+        (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
+      await goBackHome(tester);
+      await checkSync(tester);
+
+      // go to acc
+      await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
+
+      // go to tags
+      await findAndTapActivitySlideButton(tester);
+
+      final Finder lastSwitchFinder = find.byType(CoinTagSwitch).last;
+      await tester.tap(lastSwitchFinder);
+
+      await findAndTapPopUpIcon(tester, Icons.close);
+
+      await findAndTapPopUpText(tester, "No");
+
+      // make sure the snack is still open
+      await findTextOnScreen(tester, "Selected Amount");
+
+      await findAndPressIcon(tester, Icons.close);
+
+      await findAndTapPopUpText(tester, "Yes");
+
+      // make sure the snack bar closes and you can see Receive button
+      await findTextOnScreen(tester, "Receive");
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
     testWidgets('<Taproot address test>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
