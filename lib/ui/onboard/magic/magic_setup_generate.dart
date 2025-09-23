@@ -161,49 +161,75 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {},
-      child: OnboardingPage(
-        rightFunction: null,
-        leftFunction: null,
-        clipArt: Container(
-          alignment: Alignment.topCenter,
-          height: 280,
-          width: 280,
-          child: RiveAnimation.asset(
-            'assets/envoy_magic_setup.riv',
-            stateMachines: const ["STM"],
-            onInit: _onRiveInit,
-            fit: BoxFit.contain,
-            alignment: Alignment.center,
-          ),
-        ),
-        text: [
-          ExpandablePageView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: _pageController,
-            children: List.generate(stepsHeadings.length, (index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: EnvoySpacing.xs,
-                  horizontal: EnvoySpacing.small,
-                ),
-                child: Column(
+      child: OnboardPageBackground(
+        child: Material(
+            color: Colors.transparent,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
                   mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Flexible(
-                      child: SingleChildScrollView(
-                        child: OnboardingText(
-                          header: stepsHeadings[index],
-                          text: stepSubHeadings[index],
-                          key: ValueKey<String>(stepSubHeadings[index]),
-                        ),
+                    Container(
+                      alignment: Alignment.topCenter,
+                      height: 280,
+                      width: 280,
+                      child: RiveAnimation.asset(
+                        'assets/envoy_magic_setup.riv',
+                        stateMachines: const ["STM"],
+                        onInit: _onRiveInit,
+                        fit: BoxFit.contain,
+                        alignment: Alignment.center,
+                      ),
+                    ),
+                    ExpandablePageView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      controller: _pageController,
+                      children: List.generate(
+                        stepsHeadings.length,
+                        (index) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Flexible(
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        stepsHeadings[index],
+                                        textAlign: TextAlign.center,
+                                        style: EnvoyTypography.heading,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: EnvoySpacing.medium3,
+                                        ),
+                                        child: Text(
+                                          stepSubHeadings[index],
+                                          textAlign: TextAlign.center,
+                                          style: EnvoyTypography.info.copyWith(
+                                            height: 1.2,
+                                            color: EnvoyColors.textSecondary,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ),
                   ],
                 ),
-              );
-            }),
-          ),
-        ],
+                const SizedBox.shrink(),
+              ],
+            )),
       ),
     );
   }
@@ -261,8 +287,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(
-                          bottom: EnvoySpacing.medium3,
-                          top: EnvoySpacing.large2),
+                          bottom: EnvoySpacing.medium3, top: EnvoySpacing.xl),
                       child: Container(
                         constraints:
                             BoxConstraints.tight(const Size.fromHeight(184)),
@@ -434,17 +459,20 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      S().android_backup_info_heading,
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.heading,
-                    ),
-                    const Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.medium3)),
+                    const SizedBox(height: EnvoySpacing.medium3),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium1),
+                          horizontal: EnvoySpacing.medium2),
+                      child: Text(
+                        S().android_backup_info_heading,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.heading,
+                      ),
+                    ),
+                    const SizedBox(height: EnvoySpacing.medium3),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium2),
                       child: LinkText(
                         text: S().android_backup_info_subheading,
                         onTap: () {

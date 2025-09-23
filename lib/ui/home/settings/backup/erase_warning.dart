@@ -386,7 +386,8 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
                               : S().delete_wallet_for_good_error_title;
                         }
                         return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.medium1),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             spacing: EnvoySpacing.large3,
@@ -531,51 +532,51 @@ class _AndroidBackupWarningState extends State<AndroidBackupWarning> {
           child: Material(
               color: Colors.transparent,
               child: Column(
-                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
-                    height: iphoneSE ? 220 : 250,
-                    child: Image.asset(
-                      "assets/exclamation_icon.png",
-                      height: 180,
-                      width: 180,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          S().android_backup_info_heading,
-                          textAlign: TextAlign.center,
-                          style: EnvoyTypography.heading,
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(height: EnvoySpacing.large3),
+                      SizedBox(
+                        height: iphoneSE ? 220 : 250,
+                        child: Image.asset(
+                          "assets/images/onboarding_info.png",
+                          height: 184,
                         ),
-                        const Padding(padding: EdgeInsets.all(12)),
-                        LinkText(
-                          text: S()
-                              .delete_wallet_for_good_instant_android_subheading,
-                          onTap: () {
-                            openAndroidSettings();
-                          },
-                          linkStyle: EnvoyTypography.button
-                              .copyWith(color: EnvoyColors.accentPrimary),
-                          textStyle: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(fontSize: 14),
-                        ),
-                      ],
-                    ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: EnvoySpacing.medium3),
+                          Text(
+                            S().android_backup_info_heading,
+                            textAlign: TextAlign.center,
+                            style: EnvoyTypography.heading,
+                          ),
+                          const SizedBox(height: EnvoySpacing.medium3),
+                          LinkText(
+                            text: S()
+                                .delete_wallet_for_good_instant_android_subheading,
+                            onTap: () {
+                              openAndroidSettings();
+                            },
+                            linkStyle: EnvoyTypography.button
+                                .copyWith(color: EnvoyColors.accentPrimary),
+                            textStyle: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        right: EnvoySpacing.medium2,
-                        left: EnvoySpacing.medium2,
-                        bottom: EnvoySpacing.medium2),
+                    padding:
+                        const EdgeInsets.only(bottom: EnvoySpacing.medium2),
                     child: Column(
                       children: [
                         Consumer(
