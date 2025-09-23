@@ -74,7 +74,8 @@ class _MagicBackupDeactivatedState
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-            child: Image.asset("assets/exclamation_icon.png"),
+            child:
+                Image.asset("assets/images/onboarding_info.png", height: 184),
           ),
           Flexible(
             child: SingleChildScrollView(
