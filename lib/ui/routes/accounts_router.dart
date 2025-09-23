@@ -314,6 +314,7 @@ final accountsRouter = StatefulShellBranch(
                         ),
                         GoRoute(
                           path: _SELECT_ACCOUNT,
+                          name: ROUTE_SELECT_ACCOUNT,
                           pageBuilder: (context, state) {
                             return wrapWithEnvoyPageAnimation(
                                 child: const SelectAccount());
