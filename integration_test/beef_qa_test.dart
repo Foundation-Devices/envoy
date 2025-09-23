@@ -734,6 +734,116 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
+    testWidgets('<User unit preference in Send>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
+      String mainetReceiveAddress =
+          'bc1qcjwyecualcytzgud5ruwrj642fng4tvp8nsgr2';
+
+      await goBackHome(tester);
+      await checkSync(tester);
+
+      /// 1) Go to settings
+      await pressHamburgerMenu(tester);
+      await goToSettings(tester);
+
+      /// 2) Check that the fiat toggle exists
+      bool isSettingsFiatSwitchOn =
+          await isSlideSwitchOn(tester, 'Display Fiat Values');
+
+      /// 3) Check that it can toggle just fine, leave it enabled (leave default fiat value)
+      if (!isSettingsFiatSwitchOn) {
+        // find And Toggle DisplayFiat Switch
+        await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
+      }
+
+      await pressHamburgerMenu(tester); // back to settings
+      await pressHamburgerMenu(tester); // back to home
+
+      await scrollFindAndTapText(
+          tester, "GH TEST ACC (#1)"); // tap first mainet acc with money
+
+      await findAndPressTextButton(tester, "Send");
+
+      /// change to sats
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
+
+      /// check if the unit is SATS (there should be 2 SATS icons on the screen)
+      final satsFinder = await checkForEnvoyIcon(tester, EnvoyIcons.sats);
+      expect(satsFinder, findsNWidgets(2));
+
+      // go back
+      //await pressHamburgerMenu(tester);
+      await findAndPressTextButton(tester, "Accounts");
+      await findAndPressTextButton(tester, "GH TEST ACC (#1)");
+      await tester.pump(Durations.long1);
+
+      await findAndPressTextButton(tester, "Send");
+
+      /// check if the unit is SATS (there should be 2 SATS icons on the screen)
+      expect(satsFinder, findsNWidgets(2));
+
+      /// change to fiat
+      await findAndPressTextButton(tester, "\$");
+
+      // go back
+      //await pressHamburgerMenu(tester);
+      await findAndPressTextButton(tester, "Accounts");
+      await findAndPressTextButton(tester, "GH TEST ACC (#1)");
+      await tester.pump(Durations.long1);
+
+      await findAndPressTextButton(tester, "Send");
+
+      // check if you are entering dollars
+      final dollarFinder = find.text("\$");
+      expect(dollarFinder, findsNWidgets(2));
+
+      /// change to btc
+      await cycleToEnvoyIcon(tester, EnvoyIcons.btc);
+
+      // go back
+      //await pressHamburgerMenu(tester);
+      await findAndPressTextButton(tester, "Accounts");
+      await findAndPressTextButton(tester, "GH TEST ACC (#1)");
+      await tester.pump(Durations.long1);
+
+      await findAndPressTextButton(tester, "Send");
+
+      /// check if the unit is BTC (there should be 2 BTC icons on the screen)
+      final btcFinder = await checkForEnvoyIcon(tester, EnvoyIcons.btc);
+      expect(btcFinder, findsNWidgets(2));
+
+      /// With the unit in btc, paste a valid address, enter a valid amount, tap Confirm
+      await enterTextInField(
+          tester, find.byType(TextFormField), mainetReceiveAddress);
+
+      /// change to sats so you can enter with test
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
+
+      // enter amount
+      await findAndPressTextButton(tester, '5');
+      await findAndPressTextButton(tester, '6');
+      await findAndPressTextButton(tester, '7');
+
+      /// change to btc
+      await cycleToEnvoyIcon(tester, EnvoyIcons.btc);
+
+      // go to staging
+      await waitForTealTextAndTap(tester, 'Confirm');
+
+      // now wait for it to go to staging
+      final textFinder = find.text("Fee");
+      await tester.pumpUntilFound(textFinder,
+          tries: 20, duration: Durations.long2);
+
+      // check if the unit in the Staging is BTC
+      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
     testWidgets('<Test send to all address types>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
