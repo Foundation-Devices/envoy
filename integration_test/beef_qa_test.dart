@@ -303,7 +303,7 @@ Future<void> main() async {
       await goBackHome(tester);
 
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
 
       bool isSettingsViewSatsSwitchOn =
           await isSlideSwitchOn(tester, 'View Amount in Sats');
@@ -664,6 +664,50 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
+    testWidgets('<Android native back>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
+      await goBackHome(tester);
+
+      await pressHamburgerMenu(tester);
+
+      // simulated native back
+      await tester.binding.handlePopRoute();
+
+      // confirm you are back to home
+      await findTextOnScreen(tester, "Accounts");
+
+      await pressHamburgerMenu(tester);
+
+      await tapSettingsButton(tester);
+      // simulated native back
+      await tester.binding.handlePopRoute();
+      // confirm that you are back to ENVOY
+      await findTextOnScreen(tester, "ENVOY");
+
+      await tapSettingsButton(tester, buttonText: "BACKUPS");
+      // simulated native back
+      await tester.binding.handlePopRoute();
+      // confirm that you are back to ENVOY
+      await findTextOnScreen(tester, "ENVOY");
+
+      await tapSettingsButton(tester, buttonText: "SUPPORT");
+      // simulated native back
+      await tester.binding.handlePopRoute();
+      // confirm that you are back to ENVOY
+      await findTextOnScreen(tester, "ENVOY");
+
+      await tapSettingsButton(tester, buttonText: "ABOUT");
+      // simulated native back
+      await tester.binding.handlePopRoute();
+      // confirm that you are back to ENVOY
+      await findTextOnScreen(tester, "ENVOY");
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
     testWidgets('<Edit Passport account name>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
@@ -750,7 +794,7 @@ Future<void> main() async {
 
       /// 1) Go to settings
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
 
       /// 2) Check that the fiat toggle exists
       bool isSettingsFiatSwitchOn =
@@ -899,7 +943,7 @@ Future<void> main() async {
 
       /// 1) Go to settings
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
 
       /// 2) Check that the fiat toggle exists
       bool isSettingsFiatSwitchOn =
@@ -1054,7 +1098,7 @@ Future<void> main() async {
 
       /// Go to setting and enable fiat, we will need this later
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
 
       bool isSettingsFiatSwitchOn =
           await isSlideSwitchOn(tester, 'Display Fiat Values');
@@ -1179,7 +1223,7 @@ Future<void> main() async {
       await findAndPressTextButton(tester,
           'Accounts'); // TODO: Since Send is f***ed I must go back like this
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
 
       // turn SATS view ON
       isSettingsViewSatsSwitchOn =
@@ -1333,7 +1377,7 @@ Future<void> main() async {
       await goBackHome(tester);
 
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
       await openAdvancedMenu(tester);
       bool taprootAlreadyEnabled =
           await isSlideSwitchOn(tester, "Receive to Taproot");
@@ -1404,7 +1448,7 @@ Future<void> main() async {
       await pressHamburgerMenu(tester);
       // settings
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
       await openAdvancedMenu(tester);
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // Disable
@@ -1429,10 +1473,45 @@ Future<void> main() async {
       await pressHamburgerMenu(tester);
       // settings
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
       await openAdvancedMenu(tester);
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // Enable again
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
+    testWidgets('<Select coin, cancel selection, check buttons>',
+        (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
+      await goBackHome(tester);
+      await checkSync(tester);
+
+      // go to acc
+      await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
+
+      // go to tags
+      await findAndTapActivitySlideButton(tester);
+
+      final Finder lastSwitchFinder = find.byType(CoinTagSwitch).last;
+      await tester.tap(lastSwitchFinder);
+
+      await findAndTapPopUpIcon(tester, Icons.close);
+
+      await findAndTapPopUpText(tester, "No");
+
+      // make sure the snack is still open
+      await findTextOnScreen(tester, "Selected Amount");
+
+      await findAndPressIcon(tester, Icons.close);
+
+      await findAndTapPopUpText(tester, "Yes");
+
+      // make sure the snack bar closes and you can see Receive button
+      await findTextOnScreen(tester, "Receive");
 
       stopwatch.stop();
       debugPrint(
@@ -1445,7 +1524,7 @@ Future<void> main() async {
       await goBackHome(tester);
 
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
       await openAdvancedMenu(tester);
       bool taprootAlreadyEnabled =
           await isSlideSwitchOn(tester, "Receive to Taproot");
@@ -1476,7 +1555,7 @@ Future<void> main() async {
       //await pressHamburgerMenu(tester);
       // settings
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
       await openAdvancedMenu(tester);
       await findAndToggleSettingsSwitch(tester, "Receive to Taproot"); // Enable
       await findFirstTextButtonAndPress(tester, "Confirm");
@@ -2096,7 +2175,7 @@ Future<void> main() async {
 
       // go to settings
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
 
       // Check Fiat and set it to USD before testing
       bool textIsOnScreen = await findTextOnScreen(tester, 'USD');
@@ -2142,7 +2221,7 @@ Future<void> main() async {
 
       ///Go back to settings, change from USD to JPY, for example
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
 
       await fromSettingsToFiatBottomSheet(tester);
       await findAndPressTextButton(tester, 'JPY');
@@ -2186,7 +2265,7 @@ Future<void> main() async {
 
       /// Open Envoy settings, enable fiat
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
 
       // Check Fiat and set it to USD before testing
       await fromSettingsToFiatBottomSheet(tester,
@@ -2223,7 +2302,7 @@ Future<void> main() async {
 
       ///Go back to settings, change from USD to JPY, for example
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
 
       await fromSettingsToFiatBottomSheet(tester);
       await findAndPressTextButton(tester, 'JPY');
