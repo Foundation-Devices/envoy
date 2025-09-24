@@ -248,6 +248,28 @@ class BluetoothManager extends WidgetsBindingObserver {
               api.BackupShardResponse_Success()));
         }
       }
+
+      if (message.message
+      case api.QuantumLinkMessage_RestoreShardRequest request) {
+        kPrint("Got shard restore request!");
+        final fingerprint = request.field0.seedFingerprint;
+
+        try {
+          final shard = await PrimeShard().getShard(fingerprint: Uint8List.fromList(fingerprint));
+          if (shard == null) {
+            throw Exception("Shard not found!");
+          }
+
+          writeMessage(api.QuantumLinkMessage.restoreShardResponse(
+              api.RestoreShardResponse_Success(api.Shard(payload: shard.shard))));
+          kPrint("Shard restored!");
+        }
+        catch (e, _) {
+          kPrint("Shard restore failure: $e");
+          writeMessage(api.QuantumLinkMessage.backupShardResponse(
+              api.BackupShardResponse_Error(e.toString())));
+        }
+      }
     });
   }
 
