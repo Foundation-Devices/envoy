@@ -388,7 +388,7 @@ Future<void> main() async {
 
       // make sure it is disabled
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
       await openAdvancedMenu(tester);
       bool taprootAlreadyEnabled =
           await isSlideSwitchOn(tester, "Receive to Taproot");
@@ -442,7 +442,7 @@ Future<void> main() async {
       //await pressHamburgerMenu(tester);
       await findAndPressTextButton(tester, "Accounts");
       await pressHamburgerMenu(tester);
-      await goToSettings(tester);
+      await tapSettingsButton(tester);
       await openAdvancedMenu(tester);
 
       // Enable it
