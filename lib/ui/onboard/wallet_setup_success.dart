@@ -77,7 +77,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
               if (!widget.isPrimeWallet)
                 Padding(
                   padding: const EdgeInsets.only(
-                      bottom: EnvoySpacing.medium3,
+                      bottom: EnvoySpacing.medium2,
                       left: EnvoySpacing.xs,
                       right: EnvoySpacing.xs),
                   child: OnboardingButton(
