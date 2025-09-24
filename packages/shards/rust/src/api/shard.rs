@@ -41,16 +41,16 @@ impl ShardBackUp {
 
         if shards
             .iter()
-            .any(|s| s.fingerprint == shard.seed_fingerprint)
+            .any(|s| s.fingerprint == *shard.seed_fingerprint())
         {
             anyhow::bail!(
                 "Shard with identifier '{:?}' already exists",
-                shard.seed_fingerprint
+                shard.seed_fingerprint()
             );
         }
         // Add new shard
         let new_shard = ShardBackUp::new(
-            shard.seed_fingerprint,
+            *shard.seed_fingerprint(),
             shard.encode(),
         );
 

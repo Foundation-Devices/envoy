@@ -14,7 +14,7 @@ crate-type = ["cdylib", "staticlib","rlib"]
 flutter_rust_bridge = "=2.11.1"
 minicbor = { version = "1.0.0", features = ["alloc"] }
 minicbor-derive = "0.17.0"
-backup-shard = { git = "https://github.com/Foundation-Devices/foundation-api", tag = "3.2.2" }
+backup-shard = { git = "https://github.com/Foundation-Devices/foundation-api", tag = "3.3.0" }
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
