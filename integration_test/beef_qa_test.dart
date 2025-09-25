@@ -92,45 +92,45 @@ Future<void> main() async {
       debugPrint(
           '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s');
     });
-    // testWidgets('<Buy button>', (tester) async {
-    //   final stopwatch = Stopwatch()..start(); // Start timer
-    //   await goBackHome(tester);
-    //
-    //   await findAndPressBuyOptions(tester);
-    //   await checkBuyOptionAndTitle(tester);
-    //
-    //   stopwatch.stop();
-    //   debugPrint(
-    //     '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
-    //   );
-    // });
-    // testWidgets('<Buy button - enable from Settings>', (tester) async {
-    //   final stopwatch = Stopwatch()..start(); // Start timer
-    //
-    //   await goBackHome(tester);
-    //
-    //   // Find the Buy button (enabled in Settings by default)
-    //   final buyButtonFinder = find.descendant(
-    //     of: find.byType(GestureDetector),
-    //     matching: find.text('Buy'),
-    //   );
-    //   expect(buyButtonFinder, findsOneWidget);
-    //
-    //   // now turn it off from settings
-    //   await fromHomeToAdvancedMenu(tester);
-    //   await findAndToggleSettingsSwitch(tester, "Buy in Envoy");
-    //
-    //   // back to Accounts
-    //   await pressHamburgerMenu(tester);
-    //   await pressHamburgerMenu(tester);
-    //
-    //   expect(buyButtonFinder, findsNothing);
-    //
-    //   stopwatch.stop();
-    //   debugPrint(
-    //     '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
-    //   );
-    // });
+    testWidgets('<Buy button>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+      await goBackHome(tester);
+
+      await findAndPressBuyOptions(tester);
+      await checkBuyOptionAndTitle(tester);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
+    testWidgets('<Buy button - enable from Settings>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
+      await goBackHome(tester);
+
+      // Find the Buy button (enabled in Settings by default)
+      final buyButtonFinder = find.descendant(
+        of: find.byType(GestureDetector),
+        matching: find.text('Buy'),
+      );
+      expect(buyButtonFinder, findsOneWidget);
+
+      // now turn it off from settings
+      await fromHomeToAdvancedMenu(tester);
+      await findAndToggleSettingsSwitch(tester, "Buy in Envoy");
+
+      // back to Accounts
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+
+      expect(buyButtonFinder, findsNothing);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
     testWidgets('<About>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
