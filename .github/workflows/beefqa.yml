@@ -5,16 +5,26 @@
 name: BeefQA
 
 on:
-  pull_request:
-  workflow_dispatch:
+  workflow_run:
+    workflows: [ "Check" ]
+    types:
+      - completed
 
 jobs:
   beef-qa:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: [ self-hosted, macOS, ARM64 ]
 
     steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          # Grab the PR repo + branch that triggered "Check"
+          repository: ${{ github.event.workflow_run.head_repository.full_name }}
+          ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 0
+
       - uses: extractions/setup-just@v1
-      - uses: actions/checkout@v4
 
       - name: Install bindgen-cli (for aws-lc-sys)
         run: cargo install --force --locked bindgen-cli
