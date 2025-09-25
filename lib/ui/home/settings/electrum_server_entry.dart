@@ -16,8 +16,8 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
-import 'package:tor/tor.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:tor/tor.dart';
 
 enum ElectrumServerEntryState { pending, valid, invalid }
 
@@ -150,7 +150,9 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
                     Navigator.pop(context);
                   },
                   decoder: GenericQrDecoder(onScan: (result) {
-                    Navigator.of(context, rootNavigator: true).pop();
+                    if (context.mounted) {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
                     var parsedUrl = parseNodeUrl(result);
                     _controller.text = parsedUrl;
                     _onAddressChanged(parsedUrl);
