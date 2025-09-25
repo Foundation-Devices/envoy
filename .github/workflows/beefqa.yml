@@ -19,9 +19,9 @@ jobs:
       - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
-          # Grab the PR repo + branch that triggered "Check"
+          # Grab the specific PR commit SHA that triggered the "Check" workflow
           repository: ${{ github.event.workflow_run.head_repository.full_name }}
-          ref: ${{ github.event.workflow_run.head_branch }}
+          ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
 
       - uses: extractions/setup-just@v1
