@@ -194,8 +194,8 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
             );
           } else {
             return Padding(
-                padding: EdgeInsets.only(
-                    bottom: s.displayFiat() == null ? EnvoySpacing.medium1 : 0),
+                padding:
+                    EdgeInsets.only(bottom: s.displayFiat() == null ? 26 : 6),
                 child: FittedBox(
                   child: EnvoyAmount(
                     account: transactionAccount,
