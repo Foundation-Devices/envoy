@@ -266,6 +266,7 @@ class _QrScannerState extends State<QrScanner> {
   @override
   void dispose() {
     _qrStreamSubscription?.cancel();
+    _userInteractionTimer.cancel();
     _controller?.dispose();
     super.dispose();
   }
