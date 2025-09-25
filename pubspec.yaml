@@ -96,7 +96,7 @@ dependencies:
   flutter_riverpod: ^2.3.6
   cupertino_icons: ^1.0.5
   rive: ^0.13.20
-  local_auth: ^2.1.6
+  local_auth: ^2.3.0
   file_saver: ^0.3.1
   file_picker: ^10.3.1
   intl_utils: ^2.8.2
