@@ -141,7 +141,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
       try {
         final bool didAuthenticate = await auth.authenticate(
           options: const AuthenticationOptions(
-            biometricOnly: true,
+            biometricOnly: false,
             stickyAuth: true,
           ),
           localizedReason: 'Authenticate to Access Envoy',
@@ -195,7 +195,10 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
         } else {
           showAuthLockedOutDialog(
             ctaButtonTitle: S().launch_screen_faceID_fail_CTA,
-            ctaTapCallback: null,
+            ctaTapCallback: () {
+              Navigator.pop(context);
+              initiateAuth();
+            },
             title: S().launch_screen_faceID_fail_heading,
             subtitle: S().launch_screen_faceID_fail_subheading,
             icon: EnvoyIcons.info,
