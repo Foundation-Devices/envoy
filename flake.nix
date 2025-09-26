@@ -33,7 +33,7 @@
           includeSources = false;
           includeSystemImages = false;
           systemImageTypes = [ "google_apis_playstore" ];
-          abiVersions = [ "armeabi-v7a" "arm64-v8a" ];
+          abiVersions = [ "arm64-v8a" ]; # Only 64-bit ARM
           cmakeVersions = [ "3.10.2" "3.18.1" "3.22.1" ];
           includeNDK = true;
           ndkVersions = [ "25.1.8937393" "27.0.12077973" ];
@@ -72,21 +72,26 @@
             reuse
             go
 
-            # Build tools - Essential for CMake
+            # Build tools - multiStdenv provides better cross-compilation support
             gnumake
-            gcc
-            binutils
+            pkg-config
 
-            # 32-bit development headers for gnu/stubs-32.h
+            # Essential C/C++ development libraries and headers
+            glibc
             glibc.dev
-            glibc_multi.dev
+            glibc.static
+            multiStdenv.cc.cc.lib
+            libcxx
+
+            # Add 32-bit libraries for cross-compilation support
+            pkgsi686Linux.glibc
+            pkgsi686Linux.glibc.dev
 
             # pthread and threading support
             libpthread-stubs
 
             # D-Bus and related libraries
             dbus
-            pkg-config
 
             # Necessary for secure storage on Linux
             libsecret
@@ -103,7 +108,51 @@
             # Linux build storage
             xdg-user-dirs
 
-            # Android SDK and NDK
+            # Text processing and internationalization libraries
+            libthai
+            libthai.dev
+            libdatrie
+            libdatrie.dev
+
+            # Cryptographic libraries
+            libgcrypt
+            libgcrypt.dev
+            libgpg-error
+            libgpg-error.dev
+
+            # X11 libraries for GUI support
+            xorg.libXdmcp
+            xorg.libXdmcp.dev
+
+            # Add xkbcommon for keyboard input handling
+            libxkbcommon
+            libxkbcommon.dev
+
+            # Compression libraries
+            libdeflate
+            lerc
+            lerc.dev
+            xz
+            xz.dev
+            zstd
+            zstd.dev
+
+            # System utilities
+            util-linux
+            util-linux.dev
+            libselinux
+            libselinux.dev
+            libsepol
+            libsepol.dev
+            libwebp
+
+            # Add SQLite and PCRE2 for Rust dependencies
+            sqlite
+            sqlite.dev
+            pcre2
+            pcre2.dev
+
+            # Android SDK and NDK (for when you do need Android builds)
             androidComposition.androidsdk
           ];
 
@@ -119,8 +168,6 @@
             export FLUTTER_ROOT="${pkgs.flutter}"
             export PATH="$FLUTTER_ROOT/bin:$PATH"
 
-            # Set LLVM path for ffigen
-            export LLVM_PATH="${pkgs.libclang.lib}/lib/libclang.so"
 
             # Android SDK and NDK configuration
             export ANDROID_SDK_ROOT="${androidComposition.androidsdk}/libexec/android-sdk"
@@ -130,16 +177,6 @@
             
             # Add Android tools to PATH
             export PATH="$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH"
-            
-            # Set CMAKE_MAKE_PROGRAM to fix the build program issue
-            #export CMAKE_MAKE_PROGRAM="${pkgs.gnumake}/bin/make"
-
-            echo "Android SDK: $ANDROID_SDK_ROOT"
-            echo "Android NDK: $ANDROID_NDK_ROOT"
-            echo "CMake: $(which cmake)"
-
-            echo ""
-            echo "💡 Run 'flutter doctor' to check setup"
           '';
         };
       }
