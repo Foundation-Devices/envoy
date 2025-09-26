@@ -173,6 +173,7 @@ class EnvoyStorage {
   //do not include in backup
   StoreRef<String, bool> accountFullsScanStateStore =
       StoreRef<String, bool>(accountFullsScanStateStoreName);
+
   //do not include in backup
   StoreRef<String, dynamic> noBackUpPrefsStore =
       StoreRef<String, dynamic>(noBackUpPrefsStoreName);
@@ -341,6 +342,7 @@ class EnvoyStorage {
     String? btcPayVoucherUri,
     String? rampId,
     int? rampFee,
+    String? note,
   }) async {
     await pendingTxStore.record(key).put(_db, {
       'account': accountId,
@@ -357,6 +359,7 @@ class EnvoyStorage {
       'btcPayVoucherUri': btcPayVoucherUri,
       'rampId': rampId,
       'rampFee': rampFee,
+      'note': note,
     });
     return true;
   }
@@ -403,34 +406,34 @@ class EnvoyStorage {
         }
         if (type == wallet.TransactionType.btcPay) {
           return BtcPayTransaction(
-            txId: e.key as String,
-            accountId: e["account"] as String,
-            vsize: BigInt.zero,
-            feeRate: BigInt.zero,
-            timestamp:
-                DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
-            fee: BigInt.from((e["fee"] as int? ?? 0)),
-            amount: 0,
-            address: e["address"] as String,
-            pullPaymentId: e['pullPaymentId'] as String?,
-            currency: e['currency'] as String?,
-            currencyAmount: e['currencyAmount'] as String?,
-            payoutId: e['payoutId'] as String?,
-            btcPayVoucherUri: e['btcPayVoucherUri'] as String?,
-          );
+              txId: e.key as String,
+              accountId: e["account"] as String,
+              vsize: BigInt.zero,
+              feeRate: BigInt.zero,
+              timestamp:
+                  DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
+              fee: BigInt.from((e["fee"] as int? ?? 0)),
+              amount: 0,
+              address: e["address"] as String,
+              pullPaymentId: e['pullPaymentId'] as String?,
+              currency: e['currency'] as String?,
+              currencyAmount: e['currencyAmount'] as String?,
+              payoutId: e['payoutId'] as String?,
+              btcPayVoucherUri: e['btcPayVoucherUri'] as String?,
+              note: e['note'] as String?);
         }
         if (type == wallet.TransactionType.azteco) {
           return AztecoTransaction(
-            txId: e.key as String,
-            amount: 0,
-            timestamp:
-                DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
-            accountId: e["account"] as String,
-            fee: BigInt.from((e["fee"] as int? ?? 0)),
-            address: e["address"] as String,
-            vsize: BigInt.zero,
-            feeRate: BigInt.zero,
-          );
+              txId: e.key as String,
+              amount: 0,
+              timestamp:
+                  DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
+              accountId: e["account"] as String,
+              fee: BigInt.from((e["fee"] as int? ?? 0)),
+              address: e["address"] as String,
+              vsize: BigInt.zero,
+              feeRate: BigInt.zero,
+              note: e['note'] as String?);
         }
         return EnvoyTransaction(
             txId: e.key as String,
@@ -444,7 +447,7 @@ class EnvoyStorage {
             vsize: BigInt.zero,
             feeRate: BigInt.zero,
             isConfirmed: false,
-            note: null,
+            note: e['note'] as String?,
             accountId: e["account"] as String,
             date: BigInt.zero);
       },
@@ -467,6 +470,7 @@ class EnvoyStorage {
     String? btcPayVoucherUri,
     String? rampId,
     int? rampFee,
+    String? note,
   }) async {
     // Retrieve the existing record
     final existingRecord = await pendingTxStore.record(key).get(_db);
@@ -500,6 +504,9 @@ class EnvoyStorage {
     }
     if (rampFee != null) {
       updateData['rampFee'] = rampFee;
+    }
+    if (note != null) {
+      updateData['note'] = note;
     }
 
     // Update the record with the new data
