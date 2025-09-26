@@ -8,7 +8,6 @@ import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
-import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/ramp_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
@@ -20,6 +19,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 final pendingTransactionsProvider =
     Provider.family<List<EnvoyTransaction>, String?>((ref, String? accountId) {
@@ -329,7 +329,13 @@ Future prunePendingTransactions(
             tx.outputs.any((output) => output.address == pendingTx.address))
         .forEach((actualAztecoTx) {
       kPrint("Pruning Azteco tx: ${actualAztecoTx.txId}");
-      EnvoyStorage().addTxNote(note: S().azteco_note, key: actualAztecoTx.txId);
+      EnvoyAccount? account =
+          NgAccountManager().getAccountById(actualAztecoTx.accountId);
+
+      account?.handler?.setNote(
+        note: pendingTx.note ?? "",
+        txId: actualAztecoTx.txId,
+      );
       EnvoyStorage().deleteTxNote(pendingTx.address);
       EnvoyStorage().deletePendingTx(pendingTx.address);
     });
@@ -351,10 +357,16 @@ Future prunePendingTransactions(
             tx.outputs.any((output) => output.address == pendingTx.address))
         .forEach((actualBtcPayTx) {
       kPrint("Pruning BtcPay tx: ${actualBtcPayTx.txId}");
-      EnvoyStorage().addTxNote(note: S().btcpay_note, key: actualBtcPayTx.txId);
+      EnvoyAccount? account =
+          NgAccountManager().getAccountById(actualBtcPayTx.accountId);
+
+      account?.handler?.setNote(
+        note: pendingTx.note ?? "",
+        txId: actualBtcPayTx.txId,
+      );
+
       //TODO: add pull payment id to the note
       // actualBtcPayTx.setPullPaymentId(pendingTx.pullPaymentId);
-      EnvoyStorage().deleteTxNote(pendingTx.pullPaymentId!);
       EnvoyStorage().deletePendingTx(pendingTx.txId);
     });
 
@@ -393,7 +405,13 @@ Future prunePendingTransactions(
       //TODO: fix ramp for ngWallet
       // actualRampTx.setRampFee(pendingTx.rampFee);
       // actualRampTx.setRampId(pendingTx.rampId);
-      EnvoyStorage().addTxNote(note: S().ramp_note, key: actualRampTx.txId);
+      EnvoyAccount? account =
+          NgAccountManager().getAccountById(actualRampTx.accountId);
+
+      account?.handler?.setNote(
+        note: pendingTx.note ?? "",
+        txId: actualRampTx.txId,
+      );
       EnvoyStorage().deleteTxNote(pendingTx.address);
       EnvoyStorage().deletePendingTx(pendingTx.txId);
     });
