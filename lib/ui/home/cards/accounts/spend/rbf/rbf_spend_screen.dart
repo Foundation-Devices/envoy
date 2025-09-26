@@ -301,7 +301,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     );
   }
 
-  rive.StateMachineController? _stateMachineController;
+  rive.RiveWidgetController? _controller;
 
   Widget _buildBroadcastProgress() {
     return Padding(
@@ -358,12 +358,14 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                           style: EnvoyTypography.heading,
                         ),
                         const Padding(padding: EdgeInsets.all(18)),
-                        Text(subTitle,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(fontWeight: FontWeight.w500)),
+                        Text(
+                          subTitle,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(fontWeight: FontWeight.w500),
+                        ),
                       ],
                     ),
                   );
@@ -371,12 +373,13 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
               ),
             ),
             SliverFillRemaining(
-                hasScrollBody: false,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 18, vertical: 44),
-                  child: _ctaButtons(context),
-                ))
+              hasScrollBody: false,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 44),
+                child: _ctaButtons(context),
+              ),
+            ),
           ],
         ),
       ),

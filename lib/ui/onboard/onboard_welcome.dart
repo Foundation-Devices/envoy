@@ -218,6 +218,11 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     bool promptDismissed = await EnvoyStorage()
         .checkPromptDismissed(DismissiblePrompt.scanToConnect);
 
+    rive.File file = (await rive.File.asset(
+        Platform.isIOS ? "ios_scan" : "android_scan",
+        riveFactory: rive.Factory.rive))!;
+    rive.RiveWidgetController? controller = rive.RiveWidgetController(file);
+
     if (!promptDismissed && context.mounted) {
       showEnvoyDialog(
           context: context,
@@ -241,12 +246,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       children: [
                         SizedBox(
                           height: 200,
-                          child: rive.RiveAnimation.asset(
-                            "assets/anim/animated_qr_scanner.riv",
-                            animations: [
-                              Platform.isIOS ? "ios_scan" : "android_scan"
-                            ],
-                            fit: BoxFit.contain,
+                          child: rive.RiveWidget(
+                            controller: controller,
+                            fit: rive.Fit.contain,
                           ),
                         ),
                         //TODO: add more context instead of dismissible

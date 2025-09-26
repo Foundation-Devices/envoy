@@ -25,9 +25,20 @@ class PurchaseComplete extends ConsumerStatefulWidget {
 }
 
 class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
+  File? file;
+  RiveWidgetController? controller;
+
   @override
   void initState() {
     super.initState();
+    initRive();
+  }
+
+  void initRive() async {
+    file =
+        await File.asset('assets/envoy_loader.riv', riveFactory: Factory.rive);
+    controller = RiveWidgetController(file!);
+    controller!.stateMachine.trigger("happy");
   }
 
   @override
@@ -53,10 +64,9 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
                   child: Container(
                     constraints:
                         BoxConstraints.tight(const Size.fromHeight(280)),
-                    child: const RiveAnimation.asset(
-                      "assets/envoy_loader.riv",
-                      fit: BoxFit.contain,
-                      animations: ["happy"],
+                    child: RiveWidget(
+                      controller: controller!,
+                      fit: Fit.cover,
                     ),
                   ),
                 ),

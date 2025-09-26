@@ -7,7 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_secure_storage_linux
   objectbox_flutter_libs
   qr_code_scanner
-  rive_common
+  rive_native
   url_launcher_linux
 )
 

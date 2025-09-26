@@ -9,10 +9,31 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
 
-class FwIosSuccessPage extends StatelessWidget {
+class FwIosSuccessPage extends StatefulWidget {
   final FwPagePayload fwPagePayload;
 
   const FwIosSuccessPage({super.key, required this.fwPagePayload});
+
+  @override
+  State<FwIosSuccessPage> createState() => _FwIosSuccessPageState();
+}
+
+class _FwIosSuccessPageState extends State<FwIosSuccessPage> {
+  File? file;
+  RiveWidgetController? controller;
+
+  @override
+  void initState() {
+    super.initState();
+    initRive();
+  }
+
+  void initRive() async {
+    file = (await File.asset('assets/envoy_loader.riv',
+        riveFactory: Factory.rive))!;
+    controller = RiveWidgetController(file!);
+    controller?.artboard.animationNamed("happy");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +58,9 @@ class FwIosSuccessPage extends StatelessWidget {
           ],
         ),
       ],
-      clipArt: const RiveAnimation.asset(
-        "assets/envoy_loader.riv",
-        fit: BoxFit.contain,
-        animations: ["happy"],
+      clipArt: RiveWidget(
+        controller: controller!,
+        fit: Fit.contain,
       ),
       navigationDots: 6,
       navigationDotsIndex: 4,
@@ -48,7 +68,8 @@ class FwIosSuccessPage extends StatelessWidget {
         OnboardingButton(
             label: S().component_continue,
             onTap: () {
-              context.pushNamed(PASSPORT_UPDATE_PASSPORT, extra: fwPagePayload);
+              context.pushNamed(PASSPORT_UPDATE_PASSPORT,
+                  extra: widget.fwPagePayload);
               return;
             })
       ],
