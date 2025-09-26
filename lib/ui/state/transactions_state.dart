@@ -52,10 +52,9 @@ final filteredTransactionsProvider =
       ref.watch(transactionsProvider(accountId));
 
   List<EnvoyTransaction> pendingTransactions =
-      walletTransactions.where((element) => element.confirmations < 3).toList();
-  List<EnvoyTransaction> confirmedTransactions = walletTransactions
-      .where((element) => element.confirmations >= 3)
-      .toList();
+      walletTransactions.where((e) => e.confirmations < 3).toList();
+  List<EnvoyTransaction> confirmedTransactions =
+      walletTransactions.where((e) => e.confirmations >= 3).toList();
 
   List<EnvoyTransaction> transactions = [];
 
@@ -64,57 +63,42 @@ final filteredTransactionsProvider =
 
   if (txFilterState.contains(TransactionFilters.sent) &&
       txFilterState.contains(TransactionFilters.received)) {
-    //do nothing
+    // do nothing
   } else {
     if (txFilterState.contains(TransactionFilters.sent)) {
-      transactions =
-          transactions.where((element) => element.amount < 0).toList();
+      transactions = transactions.where((e) => e.amount < 0).toList();
     } else if (txFilterState.contains(TransactionFilters.received)) {
-      transactions =
-          transactions.where((element) => element.amount > 0).toList();
+      transactions = transactions.where((e) => e.amount > 0).toList();
     } else {
-      transactions.sort(
-        (a, b) => a.date!.toInt().compareTo(b.date!.toInt()),
-      );
+      // use custom compareTx through compareTo
+      transactions.sort((a, b) => a.compareTo(b));
     }
   }
 
   switch (txSortState) {
     case TransactionSortTypes.newestFirst:
-      {
-        transactions = transactions.reversed.toList();
-        break;
-      }
+      transactions = transactions.reversed.toList();
+      break;
+
     case TransactionSortTypes.oldestFirst:
-      confirmedTransactions.sort(
-        (a, b) {
-          return compareTimestamps(b.date, a.date);
-        },
-      );
-      pendingTransactions.sort(
-        (a, b) {
-          return compareTimestamps(b.date, a.date);
-        },
-      );
+      confirmedTransactions.sort((a, b) => a.compareTo(b));
+      pendingTransactions.sort((a, b) => a.compareTo(b));
       transactions.clear();
       transactions.addAll(confirmedTransactions.reversed);
       transactions.addAll(pendingTransactions.reversed);
       break;
+
     case TransactionSortTypes.amountLowToHigh:
-      transactions.sort(
-        (a, b) {
-          return a.amount.abs().toInt().compareTo(b.amount.abs());
-        },
-      );
+      transactions
+          .sort((a, b) => a.amount.abs().toInt().compareTo(b.amount.abs()));
       break;
+
     case TransactionSortTypes.amountHighToLow:
-      transactions.sort(
-        (a, b) {
-          return b.amount.abs().toInt().compareTo(a.amount.abs());
-        },
-      );
+      transactions
+          .sort((a, b) => b.amount.abs().toInt().compareTo(a.amount.abs()));
       break;
   }
+
   if (txFilterState.isEmpty) {
     transactions = [];
   }
