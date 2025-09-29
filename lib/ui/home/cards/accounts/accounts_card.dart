@@ -312,7 +312,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
       ),
     );
 
-    return accounts.isEmpty && _accountsOrder.isEmpty
+    return accounts.isEmpty
         ? Padding(
             padding: const EdgeInsets.all(EnvoySpacing.medium2),
             child: EmptyAccountsCard(),
