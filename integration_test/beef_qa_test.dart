@@ -1608,6 +1608,121 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
+    testWidgets('<Check prefix & suffixes for nodes>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
+      await goBackHome(tester);
+
+      final personalNodeNoPrefix1 = "mainnet-0.foundation.xyz:50001";
+      final personalNodeNoPrefix2 = "mainnet-0.foundation.xyz:50002";
+
+      // Go to privacy
+      await findAndPressTextButton(tester, 'Privacy');
+      // Tap Foundation (default) to open dropdown
+      await findAndPressTextButton(tester, 'Foundation (Default)');
+      // Select Personal Node
+      await findAndPressTextButton(tester, 'Personal Node');
+
+      // Check that it gets selected and the field to enter the personal node shows up
+      await findTextOnScreen(tester, "Personal Node");
+      await findTextOnScreen(tester, "Enter your node address");
+
+      /// check for 50002
+      // paste node
+      await enterTextInField(
+          tester, find.byType(TextFormField), personalNodeNoPrefix2);
+
+      // check if it connects
+      final textConnectFinder = find.text("Connected");
+      await tester.pumpUntilFound(textConnectFinder,
+          tries: 50, duration: Durations.long2);
+
+      // Get the TextFormField widget
+      var textFormField =
+          tester.widget<TextFormField>(find.byType(TextFormField));
+
+      // Extract the text from its controller
+      var currentValue = textFormField.controller?.text ?? "";
+
+      // Assert that the prefix was auto-added
+      expect(currentValue.startsWith("ssl://"), isTrue,
+          reason: "TextFormField value should start with ssl://");
+
+      /// check for 50001
+
+      // paste node
+      await enterTextInField(
+          tester, find.byType(TextFormField), personalNodeNoPrefix1);
+
+      // check if it connects
+      await tester.pumpUntilFound(textConnectFinder,
+          tries: 50, duration: Durations.long2);
+
+      // Get the TextFormField widget
+      textFormField = tester.widget<TextFormField>(find.byType(TextFormField));
+
+      // Extract the text from its controller
+      currentValue = textFormField.controller?.text ?? "";
+
+      // Assert that the prefix was auto-added
+      expect(currentValue.startsWith("tcp://"), isTrue,
+          reason: "TextFormField value should start with tcp://");
+
+      // TODO: local node addresses too (192.168.xxx.xxx) - ENV-2263
+
+      /// Now do all the tests again if there is a :t at the end ///////////////////
+
+      final personalNodeNoPrefix1T = "mainnet-0.foundation.xyz:50001:t";
+      final personalNodeNoPrefix2T = "mainnet-0.foundation.xyz:50002:t";
+
+      /// check for 50002:t
+      // paste node
+      await enterTextInField(
+          tester, find.byType(TextFormField), personalNodeNoPrefix2T);
+
+      final noConnection = find.text("Couldn't reach node.");
+
+      // check if it does not connect
+      await tester.pumpUntilFound(noConnection,
+          tries: 50, duration: Durations.long2);
+
+      // Get the TextFormField widget
+      textFormField = tester.widget<TextFormField>(find.byType(TextFormField));
+
+      // Extract the text from its controller
+      currentValue = textFormField.controller?.text ?? "";
+
+      // Assert that the prefix was auto-added
+      expect(currentValue.startsWith("tcp://"), isTrue,
+          reason: "TextFormField value should start with tcp://");
+
+      /// check for 50001:t
+
+      // paste node
+      await enterTextInField(
+          tester, find.byType(TextFormField), personalNodeNoPrefix1T);
+
+      // check if it connects
+      await tester.pumpUntilFound(textConnectFinder,
+          tries: 50, duration: Durations.long2);
+
+      // Get the TextFormField widget
+      textFormField = tester.widget<TextFormField>(find.byType(TextFormField));
+
+      // Extract the text from its controller
+      currentValue = textFormField.controller?.text ?? "";
+
+      // Assert that the prefix was auto-added
+      expect(currentValue.startsWith("tcp://"), isTrue,
+          reason: "TextFormField value should start with tcp://");
+
+      // TODO: local node addresses too (192.168.xxx.xxx) - ENV-2263
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
     testWidgets('<Enable tor and check top shield>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
