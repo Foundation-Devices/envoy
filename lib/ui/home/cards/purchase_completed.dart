@@ -9,7 +9,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' as rive;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'accounts/accounts_state.dart';
@@ -25,8 +25,9 @@ class PurchaseComplete extends ConsumerStatefulWidget {
 }
 
 class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
-  File? file;
-  RiveWidgetController? controller;
+  rive.File? file;
+  rive.RiveWidgetController? controller;
+  bool _isInitialized = false;
 
   @override
   void initState() {
@@ -35,10 +36,25 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
   }
 
   void initRive() async {
-    file =
-        await File.asset('assets/envoy_loader.riv', riveFactory: Factory.rive);
-    controller = RiveWidgetController(file!);
-    controller!.stateMachine.trigger("happy");
+    file = await rive.File.asset(
+      'assets/envoy_loader.riv',
+      riveFactory: rive.Factory.rive,
+    );
+
+    controller = rive.RiveWidgetController(
+      file!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
+    controller?.stateMachine.boolean('happy')?.value = true;
+
+    setState(() => _isInitialized = true);
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    file?.dispose();
+    super.dispose();
   }
 
   @override
@@ -64,10 +80,12 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
                   child: Container(
                     constraints:
                         BoxConstraints.tight(const Size.fromHeight(280)),
-                    child: RiveWidget(
-                      controller: controller!,
-                      fit: Fit.cover,
-                    ),
+                    child: _isInitialized && controller != null
+                        ? rive.RiveWidget(
+                            controller: controller!,
+                            fit: rive.Fit.contain,
+                          )
+                        : const SizedBox(),
                   ),
                 ),
                 Padding(

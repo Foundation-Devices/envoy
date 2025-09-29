@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' as rive;
 
 class FwIosSuccessPage extends StatefulWidget {
   final FwPagePayload fwPagePayload;
@@ -19,8 +19,9 @@ class FwIosSuccessPage extends StatefulWidget {
 }
 
 class _FwIosSuccessPageState extends State<FwIosSuccessPage> {
-  File? file;
-  RiveWidgetController? controller;
+  rive.File? file;
+  rive.RiveWidgetController? controller;
+  bool _isInitialized = false;
 
   @override
   void initState() {
@@ -29,10 +30,22 @@ class _FwIosSuccessPageState extends State<FwIosSuccessPage> {
   }
 
   void initRive() async {
-    file = (await File.asset('assets/envoy_loader.riv',
-        riveFactory: Factory.rive))!;
-    controller = RiveWidgetController(file!);
-    controller?.artboard.animationNamed("happy");
+    file = await rive.File.asset('assets/envoy_loader.riv',
+        riveFactory: rive.Factory.rive);
+    controller = rive.RiveWidgetController(
+      file!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
+
+    controller?.stateMachine.boolean("happy")?.value = true;
+    setState(() => _isInitialized = true);
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    file?.dispose();
+    super.dispose();
   }
 
   @override
@@ -58,10 +71,12 @@ class _FwIosSuccessPageState extends State<FwIosSuccessPage> {
           ],
         ),
       ],
-      clipArt: RiveWidget(
-        controller: controller!,
-        fit: Fit.contain,
-      ),
+      clipArt: _isInitialized && controller != null
+          ? rive.RiveWidget(
+              controller: controller!,
+              fit: rive.Fit.contain,
+            )
+          : const SizedBox(height: 200),
       navigationDots: 6,
       navigationDotsIndex: 4,
       buttons: [
