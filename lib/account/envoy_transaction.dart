@@ -50,10 +50,6 @@ class EnvoyTransaction extends BitcoinTransaction
 
   @override
   int compareTo(EnvoyTransaction other) {
-    return compareTx(other);
-  }
-
-  int compareTx(EnvoyTransaction other) {
     // define cutoff (2008-01-01). Adjust if your BigInt is in ms instead of sec
     final cutoff = BigInt.from(1230768000); // seconds since epoch
 
