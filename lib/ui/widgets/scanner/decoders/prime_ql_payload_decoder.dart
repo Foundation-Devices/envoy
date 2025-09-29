@@ -5,7 +5,7 @@
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
 import 'package:envoy/util/console.dart';
 import 'package:foundation_api/foundation_api.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class PrimeQlPayloadDecoder extends ScannerDecoder {
   final Function(XidDocument binary) onScan;

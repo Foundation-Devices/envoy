@@ -198,8 +198,8 @@ void addPendingTx(
       currency: currency,
       currencyAmount: currencyAmount,
       payoutId: payoutId,
-      btcPayVoucherUri: btcPayVoucherUri);
-  EnvoyStorage().addTxNote(note: S().btcpay_note, key: pullPaymentId);
+      btcPayVoucherUri: btcPayVoucherUri,
+      note: S().btcpay_note);
 }
 
 DateTime? convertUnixTimestampToDateTime(int? unixTimestamp) {

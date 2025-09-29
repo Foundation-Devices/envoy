@@ -5,6 +5,7 @@
 import 'dart:core';
 
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 
 class EnvoyTransaction extends BitcoinTransaction
     implements Comparable<EnvoyTransaction> {
@@ -49,7 +50,45 @@ class EnvoyTransaction extends BitcoinTransaction
 
   @override
   int compareTo(EnvoyTransaction other) {
-    return other.txId.compareTo(txId);
+    // define cutoff (2008-01-01). Adjust if your BigInt is in ms instead of sec
+    final cutoff = BigInt.from(1230768000); // seconds since epoch
+
+    final thisDate = date;
+    final otherDate = other.date;
+
+    final thisInMempool = thisDate == null || thisDate < cutoff;
+    final otherInMempool = otherDate == null || otherDate < cutoff;
+
+    // 1. if both are in mempool (unconfirmed)
+    if (thisInMempool && otherInMempool) {
+      if (other.inputs.isEmpty) {
+        return 1; // If inputs missing for other, it goes on top
+      }
+      if (inputs.isEmpty) return -1; // If our inputs missing, we go on top
+
+      if (other.inputs.any((i) => i.txId == txId)) {
+        return 1; // Our txId is input of other
+      }
+      if (inputs.any((i) => i.txId == other.txId)) {
+        return -1; // Other's txId is input of ours
+      }
+
+      return other.txId.compareTo(txId); // fallback: alphabetical
+    }
+
+    // 2. if other is mempool → it goes on top
+    if (otherInMempool) return 1;
+
+    // 3. if this is mempool → it goes on top
+    if (thisInMempool) return -1;
+
+    // 4. both confirmed → compare by date using helper
+    final dateComparison = compareTimestamps(otherDate, thisDate);
+    if (dateComparison == 0) {
+      return other.txId.compareTo(txId);
+    } else {
+      return dateComparison;
+    }
   }
 }
 

@@ -21,6 +21,13 @@ class GetFileRequest {
   GetFileRequest(this.path, this.uri, this.torPort);
 }
 
+class FileDownload {
+  final Stream<http.Progress> progress;
+  final void Function() cancel;
+
+  FileDownload({required this.progress, required this.cancel});
+}
+
 class HttpTor {
   late final Tor tor;
   late final ParallelScheduler scheduler;
@@ -67,7 +74,7 @@ class HttpTor {
     return http.getIp(torPort: tor.port);
   }
 
-  Future<http.Download> getFile(String path, String uri) async {
+  Future<FileDownload> getFile(String path, String uri) async {
     final file = File(path);
     if (file.existsSync()) {
       file.deleteSync();
@@ -77,11 +84,16 @@ class HttpTor {
 
     final progressStream = http.ProgressStream(field0: RustStreamSink());
 
-    return http.getFile(
+    final download = await http.getFile(
       path: path,
       url: uri,
       torPort: tor.port,
       progressStream: progressStream,
+    );
+
+    return FileDownload(
+      progress: progressStream.field0.stream,
+      cancel: download.cancel,
     );
   }
 

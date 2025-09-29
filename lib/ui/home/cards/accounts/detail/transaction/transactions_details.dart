@@ -616,9 +616,12 @@ class _TransactionsDetailsWidgetState
                             noteHintText: S().add_note_modal_ie_text_field,
                             noteSubTitle: S().add_note_modal_subheading,
                             onAdd: (note) async {
-                              if (!tx.isConfirmed && tx is RampTransaction) {
-                                await EnvoyStorage()
-                                    .addTxNote(key: tx.txId, note: note);
+                              if (!tx.isConfirmed &&
+                                  (tx is RampTransaction ||
+                                      tx is BtcPayTransaction ||
+                                      tx is AztecoTransaction)) {
+                                EnvoyStorage()
+                                    .updatePendingTx(tx.txId, note: note);
                               } else {
                                 widget.account.handler?.setNote(
                                   note: note,
