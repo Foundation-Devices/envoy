@@ -90,6 +90,7 @@ class _QrScannerState extends State<QrScanner>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       extendBody: true,
       primary: false,

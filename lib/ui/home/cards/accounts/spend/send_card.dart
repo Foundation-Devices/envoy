@@ -65,6 +65,9 @@ class _SendCardState extends ConsumerState<SendCard>
       account: ref.read(selectedAccountProvider),
     );
     Future.delayed(const Duration(milliseconds: 10)).then((_) {
+      if (!ref.context.mounted) {
+        return;
+      }
       ref.read(homeShellOptionsProvider.notifier).state = null;
       ref.read(homePageTitleProvider.notifier).state =
           S().receive_tx_list_send.toUpperCase();

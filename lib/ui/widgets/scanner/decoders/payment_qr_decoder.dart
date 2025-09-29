@@ -61,7 +61,7 @@ class PaymentQrDecoder extends ScannerDecoder {
       message = bip21.message;
       // BIP-21 amounts are in BTC
       amount = (bip21.amount * 100000000.0).toInt();
-    } catch (e, s) {
+    } catch (e) {
       // kPrint(e, stackTrace: s);
     }
     // Remove bitcoin: prefix in case BIP-21 parsing failed
