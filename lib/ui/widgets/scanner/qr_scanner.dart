@@ -14,7 +14,7 @@ import 'package:envoy/util/rive_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:rive/rive.dart' as rive;
 
 bool _isScanDialogOpen = false;
@@ -56,7 +56,8 @@ class QrScanner extends StatefulWidget {
   State<QrScanner> createState() => _QrScannerState();
 }
 
-class _QrScannerState extends State<QrScanner> {
+class _QrScannerState extends State<QrScanner>
+    with AutomaticKeepAliveClientMixin {
   final GlobalKey qrViewKey = GlobalKey(debugLabel: "qr_view");
   late Timer _userInteractionTimer;
   QRViewController? _controller;
@@ -89,6 +90,7 @@ class _QrScannerState extends State<QrScanner> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       extendBody: true,
       primary: false,
@@ -267,9 +269,11 @@ class _QrScannerState extends State<QrScanner> {
   void dispose() {
     _qrStreamSubscription?.cancel();
     _userInteractionTimer.cancel();
-    _controller?.dispose();
     super.dispose();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class ViewFinder extends StatelessWidget {

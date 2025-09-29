@@ -91,6 +91,9 @@ class _AccountCardState extends ConsumerState<AccountCard>
                 parent: animationController, curve: Curves.easeInOut));
 
     Future.delayed(const Duration()).then((value) {
+      if (!ref.context.mounted) {
+        return;
+      }
       account =
           ref.read(selectedAccountProvider) ?? NgAccountManager().accounts[0];
       ref.read(homePageTitleProvider.notifier).state = "";
@@ -315,8 +318,15 @@ class _AccountCardState extends ConsumerState<AccountCard>
                                       useRootNavigator: true,
                                       dialog: BtcPayDialog(voucher, account));
                                 },
-                                onAddressValidated: (address, amount, message) {
+                                onAddressValidated:
+                                    (address, amount, message) async {
                                   navigator.pop();
+                                  //wait for the dialog to close
+                                  await Future.delayed(
+                                      const Duration(milliseconds: 200));
+                                  if (!ref.context.mounted) {
+                                    return;
+                                  }
                                   ref
                                       .read(spendAddressProvider.notifier)
                                       .state = address;
@@ -326,7 +336,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
                                       .read(stagingTxNoteProvider.notifier)
                                       .state = message;
                                   goRouter.go(ROUTE_ACCOUNT_SEND, extra: {
-                                    "account": account,
                                     "address": address,
                                     "amount": amount
                                   });
