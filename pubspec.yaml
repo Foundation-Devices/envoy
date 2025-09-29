@@ -49,11 +49,11 @@ dependencies:
     path: packages/shards
 
 
-  # qr_code_scanner fork
-  qr_code_scanner:
+  #  # qr_code_scanner fork
+  qr_code_scanner_plus:
     git:
       url: https://github.com/foundation-devices/qr_code_scanner.git
-      ref: 5af7a54f9af712e9512382093d6928ed0f766379
+      ref: 1bf7ecb41e62d490578ccfd0b5d59d39cba05725
 
   # flutter_vlc_player fork
   flutter_vlc_player:
@@ -63,9 +63,9 @@ dependencies:
       path: flutter_vlc_player
 
   tor:
-   git:
-     url: https://github.com/Foundation-Devices/tor.git
-     ref: c089d8bc1dc459c609a9f75303c4243d21eb4724
+    git:
+      url: https://github.com/Foundation-Devices/tor.git
+      ref: c089d8bc1dc459c609a9f75303c4243d21eb4724
   qr_flutter: ^4.1.0
   dots_indicator: ^4.0.1
   flutter_secure_storage: ^9.2.2

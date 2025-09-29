@@ -4,7 +4,7 @@
 
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class ScvDecoder extends ScannerDecoder {
   final Function(CryptoResponse cryptoResponse) onScan;
