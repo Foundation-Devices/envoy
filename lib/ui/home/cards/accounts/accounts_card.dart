@@ -87,9 +87,14 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
           child: FutureBuilder(
               future: AllowedRegions.checkBuyDisabled(),
               builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const SizedBox.shrink();
+                }
                 bool countryRestricted =
                     snapshot.data != null && snapshot.data!;
-                bool disabled = mainNetAccounts.isEmpty;
+                //if there are no mainnet accounts or the future is still loading, disable the button
+                bool disabled = mainNetAccounts.isEmpty ||
+                    snapshot.connectionState == ConnectionState.waiting;
 
                 if (countryRestricted || !allowBuyInEnvoy) {
                   return const SizedBox.shrink();
