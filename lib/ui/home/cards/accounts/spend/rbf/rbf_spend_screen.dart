@@ -64,9 +64,14 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   bool _warningShown = false;
   bool _inputsChanged = false;
 
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _controller;
+  bool _isInitialized = false;
+
   @override
   void initState() {
     super.initState();
+    _initRive();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final rbfSpendState = ref.read(rbfSpendStateProvider);
       if (rbfSpendState == null) {
@@ -74,6 +79,32 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       }
       _checkInputsChanged();
     });
+  }
+
+  void _initRive() async {
+    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
+        riveFactory: rive.Factory.rive);
+    _controller = rive.RiveWidgetController(
+      _riveFile!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
+
+    _controller?.stateMachine.boolean("indeterminate")?.value = true;
+
+    setState(() => _isInitialized = true);
+  }
+
+  void _setAnimState(BroadcastProgress progress) {
+    if (_controller?.stateMachine == null) return;
+
+    bool happy = progress == BroadcastProgress.success;
+    bool unhappy = progress == BroadcastProgress.failed;
+    bool indeterminate = progress == BroadcastProgress.inProgress;
+
+    final stateMachine = _controller!.stateMachine;
+    stateMachine.boolean("indeterminate")?.value = indeterminate;
+    stateMachine.boolean("happy")?.value = happy;
+    stateMachine.boolean("unhappy")?.value = unhappy;
   }
 
   @override
@@ -301,8 +332,6 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     );
   }
 
-  rive.StateMachineController? _stateMachineController;
-
   Widget _buildBroadcastProgress() {
     return Padding(
       key: const Key("progress"),
@@ -314,19 +343,12 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
             SliverToBoxAdapter(
               child: SizedBox(
                 height: 260,
-                child: rive.RiveAnimation.asset(
-                  "assets/envoy_loader.riv",
-                  fit: BoxFit.contain,
-                  onInit: (artboard) {
-                    _stateMachineController =
-                        rive.StateMachineController.fromArtboard(
-                            artboard, 'STM');
-                    artboard.addController(_stateMachineController!);
-                    _stateMachineController
-                        ?.findInput<bool>("indeterminate")
-                        ?.change(true);
-                  },
-                ),
+                child: _isInitialized && _controller != null
+                    ? rive.RiveWidget(
+                        controller: _controller!,
+                        fit: rive.Fit.contain,
+                      )
+                    : const SizedBox(),
               ),
             ),
             const SliverPadding(padding: EdgeInsets.all(28)),
@@ -358,12 +380,14 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                           style: EnvoyTypography.heading,
                         ),
                         const Padding(padding: EdgeInsets.all(18)),
-                        Text(subTitle,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(fontWeight: FontWeight.w500)),
+                        Text(
+                          subTitle,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(fontWeight: FontWeight.w500),
+                        ),
                       ],
                     ),
                   );
@@ -371,12 +395,13 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
               ),
             ),
             SliverFillRemaining(
-                hasScrollBody: false,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 18, vertical: 44),
-                  child: _ctaButtons(context),
-                ))
+              hasScrollBody: false,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 44),
+                child: _ctaButtons(context),
+              ),
+            ),
           ],
         ),
       ),
@@ -561,9 +586,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         ).show(context);
         return;
       }
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
-      _stateMachineController?.findInput<bool>("happy")?.change(false);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      _setAnimState(BroadcastProgress.inProgress);
 
       final server = Settings().electrumAddress(account.network);
       int? port = Settings().getTorPort(account.network, server);
@@ -610,10 +633,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       if (context.mounted) {
         clearSpendState(ProviderScope.containerOf(context));
       }
-
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
-      _stateMachineController?.findInput<bool>("happy")?.change(true);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      _setAnimState(BroadcastProgress.success);
       addHapticFeedback();
       await Future.delayed(const Duration(milliseconds: 300));
       setState(() {
@@ -621,9 +641,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       });
     } catch (e) {
       EnvoyReport().log("RBF Boost", " $e");
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
-      _stateMachineController?.findInput<bool>("happy")?.change(false);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(true);
+      _setAnimState(BroadcastProgress.failed);
       await Future.delayed(const Duration(milliseconds: 800));
       setState(() {
         _broadcastProgress = BroadcastProgress.failed;
@@ -953,7 +971,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
   @override
   void dispose() {
-    _stateMachineController?.dispose();
+    _controller?.dispose();
+    _riveFile?.dispose();
     super.dispose();
   }
 }

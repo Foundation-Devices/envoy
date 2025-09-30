@@ -18,34 +18,70 @@ class IconLoader extends StatefulWidget {
 }
 
 class _IconLoaderState extends State<IconLoader> {
-  rive.StateMachineController? _stateMachineController;
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _controller;
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initRive();
+  }
+
+  void _initRive() async {
+    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
+        riveFactory: rive.Factory.rive);
+    _controller = rive.RiveWidgetController(
+      _riveFile!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
+
+    // Set initial state
+    _updateStateMachineInputs();
+
+    setState(() => _isInitialized = true);
+  }
+
+  void _updateStateMachineInputs() {
+    if (_controller?.stateMachine == null) return;
+
+    final stateMachine = _controller!.stateMachine;
+
+    // Reset all inputs first
+    stateMachine.boolean('Indeterminate')?.value = false;
+    stateMachine.boolean('no_icon_state')?.value = false;
+    stateMachine.boolean('happy')?.value = false;
+    stateMachine.boolean('unhappy')?.value = false;
+
+    // Set the appropriate input based on current state
+    switch (widget.state) {
+      case IconLoaderState.indeterminate:
+        stateMachine.boolean('Indeterminate')?.value = true;
+        break;
+      case IconLoaderState.noIcon:
+        stateMachine.boolean('no_icon_state')?.value = true;
+        break;
+      case IconLoaderState.success:
+        stateMachine.boolean('happy')?.value = true;
+        break;
+      case IconLoaderState.error:
+        stateMachine.boolean('unhappy')?.value = true;
+    }
+  }
 
   @override
   void didUpdateWidget(covariant IconLoader oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.state != oldWidget.state) {
-      _stateMachineController?.findInput<bool>("Indeterminate")?.change(false);
-      _stateMachineController?.findInput<bool>("no_icon_state")?.change(false);
-      _stateMachineController?.findInput<bool>("happy")?.change(false);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
-      switch (widget.state) {
-        case IconLoaderState.indeterminate:
-          _stateMachineController
-              ?.findInput<bool>("Indeterminate")
-              ?.change(true);
-          break;
-        case IconLoaderState.noIcon:
-          _stateMachineController
-              ?.findInput<bool>("no_icon_state")
-              ?.change(true);
-          break;
-        case IconLoaderState.success:
-          _stateMachineController?.findInput<bool>("happy")?.change(true);
-          break;
-        case IconLoaderState.error:
-          _stateMachineController?.findInput<bool>("unhappy")?.change(true);
-      }
+      _updateStateMachineInputs();
     }
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _riveFile?.dispose();
+    super.dispose();
   }
 
   @override
@@ -59,18 +95,12 @@ class _IconLoaderState extends State<IconLoader> {
             scale: 1.2,
             child: SizedBox(
               height: 260,
-              child: rive.RiveAnimation.asset(
-                "assets/envoy_loader.riv",
-                fit: BoxFit.contain,
-                onInit: (artboard) async {
-                  _stateMachineController =
-                      rive.StateMachineController.fromArtboard(artboard, 'STM');
-                  artboard.addController(_stateMachineController!);
-                  _stateMachineController
-                      ?.findInput<bool>("indeterminate")
-                      ?.change(true);
-                },
-              ),
+              child: _isInitialized && _controller != null
+                  ? rive.RiveWidget(
+                      controller: _controller!,
+                      fit: rive.Fit.contain,
+                    )
+                  : const SizedBox(),
             ),
           ),
         ),
