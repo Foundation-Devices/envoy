@@ -7,12 +7,46 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' as rive;
 
-class FwIosSuccessPage extends StatelessWidget {
+class FwIosSuccessPage extends StatefulWidget {
   final FwPagePayload fwPagePayload;
 
   const FwIosSuccessPage({super.key, required this.fwPagePayload});
+
+  @override
+  State<FwIosSuccessPage> createState() => _FwIosSuccessPageState();
+}
+
+class _FwIosSuccessPageState extends State<FwIosSuccessPage> {
+  rive.File? file;
+  rive.RiveWidgetController? controller;
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    initRive();
+  }
+
+  void initRive() async {
+    file = await rive.File.asset('assets/envoy_loader.riv',
+        riveFactory: rive.Factory.rive);
+    controller = rive.RiveWidgetController(
+      file!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
+
+    controller?.stateMachine.boolean("happy")?.value = true;
+    setState(() => _isInitialized = true);
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    file?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,18 +71,20 @@ class FwIosSuccessPage extends StatelessWidget {
           ],
         ),
       ],
-      clipArt: const RiveAnimation.asset(
-        "assets/envoy_loader.riv",
-        fit: BoxFit.contain,
-        animations: ["happy"],
-      ),
+      clipArt: _isInitialized && controller != null
+          ? rive.RiveWidget(
+              controller: controller!,
+              fit: rive.Fit.contain,
+            )
+          : const SizedBox(height: 200),
       navigationDots: 6,
       navigationDotsIndex: 4,
       buttons: [
         OnboardingButton(
             label: S().component_continue,
             onTap: () {
-              context.pushNamed(PASSPORT_UPDATE_PASSPORT, extra: fwPagePayload);
+              context.pushNamed(PASSPORT_UPDATE_PASSPORT,
+                  extra: widget.fwPagePayload);
               return;
             })
       ],

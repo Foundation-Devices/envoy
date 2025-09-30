@@ -482,16 +482,39 @@ class CancelTransactionProgress extends ConsumerStatefulWidget {
 
 class _CancelTransactionProgressState
     extends ConsumerState<CancelTransactionProgress> {
-  rive.StateMachineController? _stateMachineController;
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _controller;
+  bool _isInitialized = false;
   BroadcastProgress broadcastProgress = BroadcastProgress.staging;
 
   @override
   void initState() {
     super.initState();
+    _initRive();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await Future.delayed(const Duration(milliseconds: 100));
       _broadcastTx();
     });
+  }
+
+  void _initRive() async {
+    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
+        riveFactory: rive.Factory.rive);
+    _controller = rive.RiveWidgetController(
+      _riveFile!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
+
+    _controller?.stateMachine.boolean("indeterminate")?.value = true;
+
+    setState(() => _isInitialized = true);
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _riveFile?.dispose();
+    super.dispose();
   }
 
   Future<void> _broadcastTx() async {
@@ -501,9 +524,8 @@ class _CancelTransactionProgressState
     setState(() {
       broadcastProgress = BroadcastProgress.inProgress;
     });
-    _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
-    _stateMachineController?.findInput<bool>("happy")?.change(false);
-    _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+    _setStateMachineInputs(indeterminate: true, happy: false, unhappy: false);
+
     final account = ref.read(selectedAccountProvider);
     final handler = account?.handler;
     if (handler == null || account == null) {
@@ -559,9 +581,7 @@ class _CancelTransactionProgressState
         ...ref.read(rbfBroadCastedTxProvider),
         widget.originalTx.txId
       ];
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
-      _stateMachineController?.findInput<bool>("happy")?.change(true);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+      _setStateMachineInputs(indeterminate: false, happy: true, unhappy: false);
       await Future.delayed(const Duration(milliseconds: 500));
       setState(() {
         broadcastProgress = BroadcastProgress.success;
@@ -569,15 +589,24 @@ class _CancelTransactionProgressState
     } catch (e) {
       kPrint("RBF:Cancel: $e");
       EnvoyReport().log("RBF:Cancel", e.toString());
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
-      _stateMachineController?.findInput<bool>("happy")?.change(false);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(true);
+      _setStateMachineInputs(indeterminate: false, happy: false, unhappy: true);
       await Future.delayed(const Duration(milliseconds: 500));
       setState(() {
         broadcastProgress = BroadcastProgress.failed;
       });
       kPrint(e);
     }
+  }
+
+  void _setStateMachineInputs(
+      {required bool indeterminate,
+      required bool happy,
+      required bool unhappy}) {
+    if (_controller?.stateMachine == null) return;
+    final stateMachine = _controller!.stateMachine;
+    stateMachine.boolean("indeterminate")?.value = indeterminate;
+    stateMachine.boolean("happy")?.value = happy;
+    stateMachine.boolean("unhappy")?.value = unhappy;
   }
 
   @override
@@ -604,19 +633,12 @@ class _CancelTransactionProgressState
                     SliverToBoxAdapter(
                       child: SizedBox(
                         height: 260,
-                        child: rive.RiveAnimation.asset(
-                          "assets/envoy_loader.riv",
-                          fit: BoxFit.contain,
-                          onInit: (artboard) {
-                            _stateMachineController =
-                                rive.StateMachineController.fromArtboard(
-                                    artboard, 'STM');
-                            artboard.addController(_stateMachineController!);
-                            _stateMachineController
-                                ?.findInput<bool>("indeterminate")
-                                ?.change(true);
-                          },
-                        ),
+                        child: _isInitialized && _controller != null
+                            ? rive.RiveWidget(
+                                controller: _controller!,
+                                fit: rive.Fit.contain,
+                              )
+                            : const SizedBox(),
                       ),
                     ),
                     const SliverPadding(padding: EdgeInsets.all(28)),
