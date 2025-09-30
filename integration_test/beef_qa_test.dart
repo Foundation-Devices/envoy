@@ -1615,6 +1615,8 @@ Future<void> main() async {
 
       final personalNodeNoPrefix1 = "mainnet-0.foundation.xyz:50001";
       final personalNodeNoPrefix2 = "mainnet-0.foundation.xyz:50002";
+      final localNode1 = "192.168.xxx.xxx:50001";
+      final localNode2 = "192.168.xxx.xxx:50002";
 
       // Go to privacy
       await findAndPressTextButton(tester, 'Privacy');
@@ -1628,95 +1630,39 @@ Future<void> main() async {
       await findTextOnScreen(tester, "Enter your node address");
 
       /// check for 50002
-      // paste node
-      await enterTextInField(
-          tester, find.byType(TextFormField), personalNodeNoPrefix2);
 
-      // check if it connects
-      final textConnectFinder = find.text("Connected");
-      await tester.pumpUntilFound(textConnectFinder,
-          tries: 50, duration: Durations.long2);
-
-      // Get the TextFormField widget
-      var textFormField =
-          tester.widget<TextFormField>(find.byType(TextFormField));
-
-      // Extract the text from its controller
-      var currentValue = textFormField.controller?.text ?? "";
-
-      // Assert that the prefix was auto-added
-      expect(currentValue.startsWith("ssl://"), isTrue,
-          reason: "TextFormField value should start with ssl://");
+      await testNodeEntry(tester,
+          node: personalNodeNoPrefix2, expectedPrefix: 'ssl://');
+      await testNodeEntry(tester,
+          node: localNode2, expectedPrefix: 'ssl://', checkIfConnects: false);
 
       /// check for 50001
+      await testNodeEntry(tester,
+          node: personalNodeNoPrefix1, expectedPrefix: 'tcp://');
+      await testNodeEntry(tester,
+          node: localNode1, expectedPrefix: 'tcp://', checkIfConnects: false);
 
-      // paste node
-      await enterTextInField(
-          tester, find.byType(TextFormField), personalNodeNoPrefix1);
-
-      // check if it connects
-      await tester.pumpUntilFound(textConnectFinder,
-          tries: 50, duration: Durations.long2);
-
-      // Get the TextFormField widget
-      textFormField = tester.widget<TextFormField>(find.byType(TextFormField));
-
-      // Extract the text from its controller
-      currentValue = textFormField.controller?.text ?? "";
-
-      // Assert that the prefix was auto-added
-      expect(currentValue.startsWith("tcp://"), isTrue,
-          reason: "TextFormField value should start with tcp://");
-
-      // TODO: local node addresses too (192.168.xxx.xxx) - ENV-2263
-
-      /// Now do all the tests again if there is a :t at the end ///////////////////
+      /// Now do all the tests again if there is a :t / :s at the end ///////////////////
 
       final personalNodeNoPrefix1T = "mainnet-0.foundation.xyz:50001:t";
-      final personalNodeNoPrefix2T = "mainnet-0.foundation.xyz:50002:t";
+      final personalNodeNoPrefix2T = "mainnet-0.foundation.xyz:50002:s";
+      final localNode1T = "192.168.xxx.xxx:50001:t";
+      final localNode2T = "192.168.xxx.xxx:50002:s";
 
       /// check for 50002:t
       // paste node
-      await enterTextInField(
-          tester, find.byType(TextFormField), personalNodeNoPrefix2T);
+      await testNodeEntry(tester,
+          node: personalNodeNoPrefix2T, expectedPrefix: 'ssl://');
 
-      final noConnection = find.text("Couldn't reach node.");
-
-      // check if it does not connect
-      await tester.pumpUntilFound(noConnection,
-          tries: 50, duration: Durations.long2);
-
-      // Get the TextFormField widget
-      textFormField = tester.widget<TextFormField>(find.byType(TextFormField));
-
-      // Extract the text from its controller
-      currentValue = textFormField.controller?.text ?? "";
-
-      // Assert that the prefix was auto-added
-      expect(currentValue.startsWith("tcp://"), isTrue,
-          reason: "TextFormField value should start with tcp://");
+      await testNodeEntry(tester,
+          node: localNode2T, expectedPrefix: 'ssl://', checkIfConnects: false);
 
       /// check for 50001:t
 
-      // paste node
-      await enterTextInField(
-          tester, find.byType(TextFormField), personalNodeNoPrefix1T);
-
-      // check if it connects
-      await tester.pumpUntilFound(textConnectFinder,
-          tries: 50, duration: Durations.long2);
-
-      // Get the TextFormField widget
-      textFormField = tester.widget<TextFormField>(find.byType(TextFormField));
-
-      // Extract the text from its controller
-      currentValue = textFormField.controller?.text ?? "";
-
-      // Assert that the prefix was auto-added
-      expect(currentValue.startsWith("tcp://"), isTrue,
-          reason: "TextFormField value should start with tcp://");
-
-      // TODO: local node addresses too (192.168.xxx.xxx) - ENV-2263
+      await testNodeEntry(tester,
+          node: personalNodeNoPrefix1T, expectedPrefix: 'tcp://');
+      await testNodeEntry(tester,
+          node: localNode1T, expectedPrefix: 'tcp://', checkIfConnects: false);
 
       stopwatch.stop();
       debugPrint(
