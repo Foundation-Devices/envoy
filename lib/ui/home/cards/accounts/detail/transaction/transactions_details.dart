@@ -827,7 +827,7 @@ String? getBaseUrlForNetwork(Network network) {
     case Network.testnet4:
       return Fees.testnet4MempoolFoundationInstance;
     case Network.testnet:
-      return Fees.testnetMempoolFoundationInstance;
+      return Fees.testnet4MempoolFoundationInstance;
     case Network.regtest:
       return null;
   }
