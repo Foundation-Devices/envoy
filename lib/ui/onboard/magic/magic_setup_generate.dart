@@ -260,21 +260,6 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
     bool isAndroid = Platform.isAndroid;
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (_, __) async {
-        if (_androidBackupInfoPage != 0) {
-          setState(() {
-            _androidBackupInfoPage = 0;
-          });
-        }
-        if (widget.onContinue != null) {
-          widget.onContinue!.call();
-        }
-        if (widget.skipSuccessScreen) {
-          context.go("/");
-        } else {
-          context.pushNamed(ONBOARD_ENVOY_MAGIC_WALLET_READY);
-        }
-      },
       child: OnboardPageBackground(
         child: Material(
             color: Colors.transparent,
