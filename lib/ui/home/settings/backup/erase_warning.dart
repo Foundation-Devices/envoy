@@ -327,16 +327,50 @@ class EraseProgress extends ConsumerStatefulWidget {
 }
 
 class _EraseProgressState extends ConsumerState<EraseProgress> {
-  rive.StateMachineController? _stateMachineController;
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _controller;
+  bool _isInitialized = false;
 
   bool _deleteInProgress = true;
   bool _isDeleted = false;
 
   @override
+  void initState() {
+    super.initState();
+    _initRive();
+  }
+
+  void _initRive() async {
+    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
+        riveFactory: rive.Factory.rive);
+    _controller = rive.RiveWidgetController(
+      _riveFile!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
+
+    _controller?.stateMachine.boolean("indeterminate")?.value = true;
+
+    setState(() => _isInitialized = true);
+
+    _onInit();
+  }
+
+  @override
   void dispose() {
-    // Properly dispose Rive controller to free GPU resources
-    _stateMachineController?.dispose();
+    _controller?.dispose();
+    _riveFile?.dispose();
     super.dispose();
+  }
+
+  void _setAnimationState(
+      {required bool indeterminate,
+      required bool happy,
+      required bool unhappy}) {
+    if (_controller?.stateMachine == null) return;
+    final stateMachine = _controller!.stateMachine;
+    stateMachine.boolean("indeterminate")?.value = indeterminate;
+    stateMachine.boolean("happy")?.value = happy;
+    stateMachine.boolean("unhappy")?.value = unhappy;
   }
 
   @override
@@ -360,21 +394,14 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
                   children: [
                     SizedBox(
                       height: 260,
-                      child: rive.RiveAnimation.asset(
-                        "assets/envoy_loader.riv",
-                        fit: BoxFit.contain,
-                        onInit: (artboard) {
-                          _stateMachineController =
-                              rive.StateMachineController.fromArtboard(
-                                  artboard, 'STM');
-                          artboard.addController(_stateMachineController!);
-                          _stateMachineController
-                              ?.findInput<bool>("indeterminate")
-                              ?.change(true);
-                          _onInit();
-                        },
-                      ),
+                      child: _isInitialized && _controller != null
+                          ? rive.RiveWidget(
+                              controller: _controller!,
+                              fit: rive.Fit.contain,
+                            )
+                          : const SizedBox(),
                     ),
+
                     //const Padding(padding: EdgeInsets.all(28)),
                     Builder(
                       builder: (context) {
@@ -444,9 +471,9 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       setState(() {
         _deleteInProgress = true;
       });
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
-      _stateMachineController?.findInput<bool>("happy")?.change(false);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+
+      _setAnimationState(indeterminate: true, happy: false, unhappy: false);
+
       //wait for animation
       await Future.delayed(const Duration(seconds: 1));
 
@@ -456,18 +483,9 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       });
 
       if (_isDeleted) {
-        _stateMachineController
-            ?.findInput<bool>("indeterminate")
-            ?.change(false);
-        _stateMachineController?.findInput<bool>("happy")?.change(true);
-        _stateMachineController?.findInput<bool>("unhappy")?.change(false);
-      }
-      if (!_isDeleted) {
-        _stateMachineController
-            ?.findInput<bool>("indeterminate")
-            ?.change(false);
-        _stateMachineController?.findInput<bool>("happy")?.change(false);
-        _stateMachineController?.findInput<bool>("unhappy")?.change(true);
+        _setAnimationState(indeterminate: false, happy: true, unhappy: false);
+      } else {
+        _setAnimationState(indeterminate: false, happy: false, unhappy: true);
       }
 
       setState(() {

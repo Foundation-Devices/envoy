@@ -84,7 +84,7 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   // kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
   //
   await LocalStorage.init();
-  unawaited(RiveFile.initialize());
+  await RiveNative.init();
   NgAccountManager.init();
 
   if (!(await MigrationManager().isMigrationRequired())) {

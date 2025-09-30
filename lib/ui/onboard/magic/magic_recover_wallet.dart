@@ -34,7 +34,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' as rive;
 
 class MagicRecoverWallet extends ConsumerStatefulWidget {
   const MagicRecoverWallet({super.key});
@@ -56,7 +56,9 @@ enum MagicRecoveryWalletState {
 }
 
 class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
-  StateMachineController? _stateMachineController;
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _controller;
+  bool _isInitialized = false;
 
   MagicRecoveryWalletState _magicRecoverWalletState =
       MagicRecoveryWalletState.recovering;
@@ -65,6 +67,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
 
   @override
   void initState() {
+    super.initState();
+    _initRive();
+
     Future.delayed(const Duration(milliseconds: 100)).then((_) {
       if (!ref.read(triedAutomaticRecovery) &&
           !ref.read(successfulManualRecovery) &&
@@ -72,13 +77,26 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         _tryAutomaticRecovery();
       }
     });
+  }
 
-    super.initState();
+  void _initRive() async {
+    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
+        riveFactory: rive.Factory.rive);
+    _controller = rive.RiveWidgetController(
+      _riveFile!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
+
+    // Set initial indeterminate state
+    _controller?.stateMachine.boolean("indeterminate")?.value = true;
+
+    setState(() => _isInitialized = true);
   }
 
   @override
   void dispose() {
-    _stateMachineController?.dispose();
+    _controller?.dispose();
+    _riveFile?.dispose();
     super.dispose();
   }
 
@@ -135,22 +153,19 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   }
 
   void _setUnhappyState() {
-    _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
-    _stateMachineController?.findInput<bool>("happy")?.change(false);
-    _stateMachineController?.findInput<bool>("unhappy")?.change(true);
+    if (_controller?.stateMachine == null) return;
+    final stateMachine = _controller!.stateMachine;
+    stateMachine.boolean("indeterminate")?.value = false;
+    stateMachine.boolean("happy")?.value = false;
+    stateMachine.boolean("unhappy")?.value = true;
   }
 
   void _setHappyState() {
-    _stateMachineController?.findInput<bool>("indeterminate")?.change(false);
-    _stateMachineController?.findInput<bool>("happy")?.change(true);
-    _stateMachineController?.findInput<bool>("unhappy")?.change(false);
-  }
-
-  Future<void> _onRiveInit(Artboard artBoard) async {
-    _stateMachineController =
-        StateMachineController.fromArtboard(artBoard, 'STM');
-    artBoard.addController(_stateMachineController!);
-    _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
+    if (_controller?.stateMachine == null) return;
+    final stateMachine = _controller!.stateMachine;
+    stateMachine.boolean("indeterminate")?.value = false;
+    stateMachine.boolean("happy")?.value = true;
+    stateMachine.boolean("unhappy")?.value = false;
   }
 
   Future<bool> _handleBackPress() async {
@@ -218,11 +233,12 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                           BoxConstraints.tight(const Size.fromHeight(240)),
                       child: Transform.scale(
                         scale: 1.2,
-                        child: RiveAnimation.asset(
-                          "assets/envoy_loader.riv",
-                          fit: BoxFit.contain,
-                          onInit: _onRiveInit,
-                        ),
+                        child: _isInitialized && _controller != null
+                            ? rive.RiveWidget(
+                                controller: _controller!,
+                                fit: rive.Fit.contain,
+                              )
+                            : const SizedBox(),
                       ),
                     ),
                     Flexible(
@@ -725,9 +741,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   }
 
   void _setIndeterminateState() {
-    _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
-    _stateMachineController?.findInput<bool>("happy")?.change(false);
-    _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+    _controller?.stateMachine.boolean("indeterminate")?.value = true;
+    _controller?.stateMachine.boolean("happy")?.value = false;
+    _controller?.stateMachine.boolean("unhappy")?.value = false;
   }
 
   Future<void> _openExternalBackUpFile(
