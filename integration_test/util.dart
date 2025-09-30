@@ -546,7 +546,7 @@ Future<void> setUpWalletFromSeedViaMagicRecover(
   expect(restoreButtonFromDialog, findsOneWidget);
   await tester.tap(restoreButtonFromDialog);
   await tester.pump(Durations.long2);
-  await tester.pumpAndSettle();
+  await pumpRepeatedly(tester, times: 30);
 
   final successMessage = find.text("Your Mobile Wallet Is Ready");
   final continueButtonFinder = find.text('Continue');
@@ -576,7 +576,7 @@ Future<void> setUpWalletFromSeedViaMagicRecover(
 
   // Ensure at least one instance of the text is found
   expect(passportAccount, findsWidgets);
-  await tester.pumpAndSettle();
+  await pumpRepeatedly(tester, times: 20);
 }
 
 Future<void> setUpWalletFromSeedViaBackupFile(
@@ -633,7 +633,7 @@ Future<void> setUpWalletFromSeedViaBackupFile(
 
   // Ensure at least one instance of the text is found
   expect(passportAccount, findsWidgets);
-  await tester.pumpAndSettle();
+  await pumpRepeatedly(tester, times: 30);
 }
 
 Future<void> enterSeedWords(
@@ -700,7 +700,7 @@ Future<void> scrollFindAndTapText(WidgetTester tester, String text,
     if (finder.evaluate().isNotEmpty) {
       // Widget found, tap on the first instance
       await tester.tap(finder);
-      await tester.pumpAndSettle(); // Ensure the tap action is completed
+      await pumpRepeatedly(tester); // Ensure the tap action is completed
       return;
     }
 
@@ -745,7 +745,7 @@ Future<void> onboardingAndEnterSeed(
   }
 
 // Wait before continuing
-  await tester.pumpAndSettle(Durations.extralong4);
+  await pumpRepeatedly(tester, times: 30);
 
 // Enter remaining 12 words (mnemonicInput goes from 0 to 11 !!!)
   for (int i = 0; i < 12; i++) {
@@ -953,7 +953,7 @@ Future<void> findAndTapActivitySlideButton(WidgetTester tester) async {
 
 Future<String> extractFiatAmountFromAccount(
     WidgetTester tester, String accountText) async {
-  await tester.pumpAndSettle(); // Ensure the widget tree is settled
+  await pumpRepeatedly(tester); // Ensure the widget tree is settled
 
   // Find the AccountListTile containing the specified accountText
   final accountListTileFinder =
@@ -1018,7 +1018,7 @@ String extractTextFromTextSpan(TextSpan textSpan) {
 
 Future<void> checkAndWaitLoaderGhostInAccount(
     WidgetTester tester, String accountText) async {
-  await tester.pumpAndSettle(); // Ensure the widget tree is settled
+  await pumpRepeatedly(tester); // Ensure the widget tree is settled
 
   // Find the AccountListTile containing the specified accountText
   final accountListTileFinder =
@@ -1266,7 +1266,7 @@ Future<void> findAndTapBigTab(WidgetTester tester, String label) async {
       if (textWidget.data != null && textWidget.data!.contains(label)) {
         // Tap the BigTab widget containing the label
         await tester.tap(find.byWidget(tab));
-        await tester.pumpAndSettle();
+        await pumpRepeatedly(tester);
         return; // Exit after tap
       }
     }
@@ -1283,7 +1283,7 @@ Future<void> enablePerformance(WidgetTester tester) async {
 
 Future<bool> checkTorShieldIcon(WidgetTester tester,
     {required bool expectPrivacy}) async {
-  await tester.pumpAndSettle(); // Ensure the screen updates after interactions
+  await pumpRepeatedly(tester); // Ensure the screen updates after interactions
 
   // Find all Image widgets on the screen
   final imageFinder = find.byType(Image);
@@ -1329,7 +1329,7 @@ Future<bool> checkTorShieldIcon(WidgetTester tester,
 Future<bool> isAccountTestnetTaproot(
     WidgetTester tester, Finder accountListTile,
     {bool isHotWallet = true}) async {
-  await tester.pumpAndSettle();
+  await pumpRepeatedly(tester);
 
   // Check for the presence of 'Testnet' and 'Taproot' texts within the Account List.
   bool containsTestnet = find
@@ -1366,7 +1366,7 @@ Future<bool> isAccountTestnetTaproot(
 
 Future<bool> isAccountTestnet(WidgetTester tester, Finder accountListTile,
     {bool isHotWallet = true}) async {
-  await tester.pumpAndSettle();
+  await pumpRepeatedly(tester);
 
   // Check for the presence of 'Testnet' text within the Account List.
   bool containsTestnet = find
@@ -1395,7 +1395,7 @@ Future<bool> isAccountTestnet(WidgetTester tester, Finder accountListTile,
 // Hot wallets only!
 Future<bool> isAccountTaproot(
     WidgetTester tester, Finder accountListTile) async {
-  await tester.pumpAndSettle();
+  await pumpRepeatedly(tester);
 
   // Check for the presence of 'Taproot', and 'Envoy' texts within the Account List.
   bool containsTaproot = find
@@ -1610,6 +1610,16 @@ Future<void> openMenuAndPressDeleteDevice(WidgetTester tester) async {
 
   await tester.tap(editNameButton);
   await tester.pump(Durations.long2);
+}
+
+Future<void> pumpRepeatedly(
+  WidgetTester tester, {
+  Duration duration = Durations.long2,
+  int times = 10,
+}) async {
+  for (var i = 0; i < times; i++) {
+    await tester.pump(duration);
+  }
 }
 
 extension PumpUntilFound on WidgetTester {
