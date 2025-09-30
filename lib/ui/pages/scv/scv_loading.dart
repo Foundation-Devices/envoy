@@ -8,7 +8,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' as rive;
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/business/updates_manager.dart';
@@ -24,10 +24,35 @@ class ScvLoadingPage extends StatefulWidget {
 }
 
 class _ScvLoadingPageState extends State<ScvLoadingPage> {
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _controller;
+  bool _isInitialized = false;
+
   @override
   initState() {
     super.initState();
+    _initRive();
     _validateScvData(widget.scvData);
+  }
+
+  void _initRive() async {
+    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
+        riveFactory: rive.Factory.rive);
+    _controller = rive.RiveWidgetController(
+      _riveFile!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
+
+    _controller?.stateMachine.boolean("indeterminate")?.value = true;
+
+    setState(() => _isInitialized = true);
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _riveFile?.dispose();
+    super.dispose();
   }
 
   void _validateScvData(Object? object) {
@@ -87,18 +112,12 @@ class _ScvLoadingPageState extends State<ScvLoadingPage> {
         child: SizedBox(
           width: 300,
           height: 300,
-          child: RiveAnimation.asset(
-            "assets/envoy_loader.riv",
-            fit: BoxFit.contain,
-            onInit: (artboard) {
-              var stateMachineController =
-                  StateMachineController.fromArtboard(artboard, 'STM');
-              artboard.addController(stateMachineController!);
-              stateMachineController
-                  .findInput<bool>("indeterminate")
-                  ?.change(true);
-            },
-          ),
+          child: _isInitialized && _controller != null
+              ? rive.RiveWidget(
+                  controller: _controller!,
+                  fit: rive.Fit.contain,
+                )
+              : const SizedBox(),
         ),
       ),
     );
