@@ -502,7 +502,11 @@ class _CoinLockButtonState extends State<CoinLockButton> {
       rive.File? riveFile = ref.watch(coinLockRiveProvider);
 
       if (riveFile != null && !_isInitialized) {
-        _initRive(riveFile);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _initRive(riveFile);
+          }
+        });
       }
 
       return GestureDetector(
