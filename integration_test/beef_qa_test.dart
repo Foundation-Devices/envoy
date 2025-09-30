@@ -5,6 +5,7 @@
 import 'dart:io';
 
 import 'package:envoy/main.dart';
+import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -927,6 +928,66 @@ Future<void> main() async {
       String p2trAddress =
           "bc1pgqnxzknhzyypgslhcevt96cnry4jkarv5gqp560a95uv6mzf4x7s0r67mm";
       await trySendToAddress(tester, p2trAddress);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
+    testWidgets('<Send to River all caps address>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
+      await goBackHome(tester);
+      await checkSync(tester);
+      await disableAllNetworks(tester);
+
+      final walletWithBalance = find.text("Passport");
+      expect(walletWithBalance, findsAny);
+      final firstWallet = walletWithBalance.first;
+      // Tap the first one
+      await tester.tap(firstWallet);
+      await tester.pump(Durations.long2);
+      await tester.pumpAndSettle();
+
+      final sendButtonFinder = find.text("Send");
+      expect(sendButtonFinder, findsWidgets);
+      await tester.tap(sendButtonFinder.last);
+      await tester.pump(Durations.long2);
+
+      /// Check if you are entering sats
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
+
+      // enter amount
+      await findAndPressTextButton(tester, '5');
+      await findAndPressTextButton(tester, '6');
+      await findAndPressTextButton(tester, '7');
+
+      String testAddress = "BC1Q4ZE0W0A0MUVXS6NYYF6QE4JNF008KS8U0RH4KQ";
+
+      /// Try to send
+      await enterTextInField(tester, find.byType(TextFormField), testAddress);
+
+      // go to staging
+      await waitForTealTextAndTap(tester, 'Confirm');
+      await tester.pump(Durations.long2);
+
+      final textFeeFinder = find.text("Fee");
+      await tester.pumpUntilFound(textFeeFinder,
+          tries: 100, duration: Durations.long2);
+
+      // Find all AmountWidgets
+      final amountFinder = find.byType(AmountWidget);
+
+      // Get the first one
+      final firstAmountWidget = tester.widget<AmountWidget>(amountFinder.first);
+
+      final firstAmountValue = firstAmountWidget.amountSats;
+
+      // Check it’s not zero
+      expect(firstAmountValue > 0, isTrue,
+          reason: "First amount should not be zero, but got $firstAmountValue");
+
+      await tester.pump(Durations.long2);
 
       stopwatch.stop();
       debugPrint(
