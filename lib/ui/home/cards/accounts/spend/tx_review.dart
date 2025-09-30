@@ -77,31 +77,41 @@ class TxReview extends ConsumerStatefulWidget {
 
 class _TxReviewState extends ConsumerState<TxReview> {
   StreamSubscription<PassportMessage>? _passportMessageSubscription;
-  late final rive.Artboard _artBoard;
-  rive.StateMachineController? _stateMachineController;
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _controller;
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    //load rive animation with cache to avoid repeated allocations
     _loadRiveAnimation();
   }
 
   void _loadRiveAnimation() async {
-    //load rive animation for better performance
-    rootBundle.load('assets/envoy_loader.riv').then((data) {
-      final file = rive.RiveFile.import(data);
-      final artboard = file.mainArtboard;
-      _stateMachineController =
-          rive.StateMachineController.fromArtboard(artboard, 'STM');
-      if (_stateMachineController != null) {
-        artboard.addController(_stateMachineController!);
-      }
+    try {
+      _riveFile = await rive.File.asset('assets/envoy_loader.riv',
+          riveFactory: rive.Factory.rive);
+      _controller = rive.RiveWidgetController(
+        _riveFile!,
+        stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+      );
+
       if (mounted) {
-        setState(() => _artBoard = artboard);
+        setState(() => _isInitialized = true);
       }
-    });
+    } catch (e) {
+      kPrint('Error loading Rive file: $e');
+    }
+
     Future.microtask(() => _resetPrimeProviderStates());
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _riveFile?.dispose();
+    _passportMessageSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -152,13 +162,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
             )
           : _buildBroadcastProgress(),
     );
-  }
-
-  @override
-  dispose() {
-    _passportMessageSubscription?.cancel();
-    _stateMachineController?.dispose();
-    super.dispose();
   }
 
   void _resetPrimeProviderStates() {
@@ -332,10 +335,12 @@ class _TxReviewState extends ConsumerState<TxReview> {
               SliverToBoxAdapter(
                 child: SizedBox(
                   height: 260,
-                  child: rive.Rive(
-                    artboard: _artBoard,
-                    fit: BoxFit.contain,
-                  ),
+                  child: _isInitialized && _controller != null
+                      ? rive.RiveWidget(
+                          controller: _controller!,
+                          fit: rive.Fit.contain,
+                        )
+                      : const SizedBox(),
                 ),
               ),
               const SliverPadding(padding: EdgeInsets.all(28)),
@@ -526,14 +531,16 @@ class _TxReviewState extends ConsumerState<TxReview> {
   }
 
   void _setAnimState(BroadcastProgress progress) {
+    if (_controller?.stateMachine == null) return;
+
     bool happy = progress == BroadcastProgress.success;
     bool unhappy = progress == BroadcastProgress.failed;
     bool indeterminate = progress == BroadcastProgress.inProgress;
-    _stateMachineController
-        ?.findInput<bool>("indeterminate")
-        ?.change(indeterminate);
-    _stateMachineController?.findInput<bool>("happy")?.change(happy);
-    _stateMachineController?.findInput<bool>("unhappy")?.change(unhappy);
+
+    final stateMachine = _controller!.stateMachine;
+    stateMachine.boolean("indeterminate")?.value = indeterminate;
+    stateMachine.boolean("happy")?.value = happy;
+    stateMachine.boolean("unhappy")?.value = unhappy;
   }
 
   bool hapticCalled = false;

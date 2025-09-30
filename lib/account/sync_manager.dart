@@ -340,20 +340,26 @@ class SyncManager {
       final duration = finish.difference(time);
 
       if (account.handler != null) {
-        await Future.microtask(() async {
-          account.handler!
+        try {
+          await account.handler!
               .applyUpdate(update: update, addressType: addressType);
-        });
-        await Future.delayed(const Duration(milliseconds: 300));
-        await Future.microtask(() async {
+
           await account.handler!.sendUpdate();
-        });
-        kPrint(
-            "✨Finished Sync ${addressType.toString().split(".").last} - ${account.name} | ${account.network} | $server | Tor: ${port != null} | Time: ${duration.inMilliseconds / 1000} seconds",
-            silenceInTests: true);
-        // Let ConnectivityManager know that we've successfully synced
-        if (account.network == Network.bitcoin) {
-          ConnectivityManager().electrumSuccess();
+
+          kPrint(
+            "✨Finished Sync ${addressType.toString().split('.').last} - ${account.name} | ${account.network} | $server | Tor: ${port != null} | Time: ${duration.inMilliseconds / 1000} seconds",
+            silenceInTests: true,
+          );
+
+          if (account.network == Network.bitcoin) {
+            ConnectivityManager().electrumSuccess();
+          }
+        } catch (e, stack) {
+          debugPrintStack(stackTrace: stack);
+          kPrint("❌ Error applying update: $e", silenceInTests: true);
+          if (account.network == Network.bitcoin) {
+            ConnectivityManager().electrumFailure();
+          }
         }
       } else {
         kPrint("Sync failed because account handler is null",
