@@ -16,7 +16,7 @@ import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' as rive;
 import 'package:go_router/go_router.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as new_color_scheme;
 import 'package:envoy/ui/components/address_widget.dart';
@@ -95,20 +95,7 @@ class OnboardingPage extends StatelessWidget {
                   : Center(
                       child: SizedBox(
                         height: 260,
-                        child: RiveAnimation.asset(
-                          "assets/envoy_loader.riv",
-                          fit: BoxFit.contain,
-                          animations: const ["indeterminate"],
-                          onInit: (artboard) {
-                            var stateMachineController =
-                                StateMachineController.fromArtboard(
-                                    artboard, 'STM');
-                            artboard.addController(stateMachineController!);
-                            stateMachineController
-                                .findInput<bool>("indeterminate")
-                                ?.change(true);
-                          },
-                        ),
+                        child: _LoadingRiveWidget(),
                       ),
                     ),
             );
@@ -243,6 +230,53 @@ class OnboardingPage extends StatelessWidget {
         ],
       ),
     ));
+  }
+}
+
+class _LoadingRiveWidget extends StatefulWidget {
+  @override
+  State<_LoadingRiveWidget> createState() => _LoadingRiveWidgetState();
+}
+
+class _LoadingRiveWidgetState extends State<_LoadingRiveWidget> {
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _controller;
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initRive();
+  }
+
+  void _initRive() async {
+    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
+        riveFactory: rive.Factory.rive);
+    _controller = rive.RiveWidgetController(
+      _riveFile!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
+
+    _controller?.stateMachine.boolean("indeterminate")?.value = true;
+
+    setState(() => _isInitialized = true);
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _riveFile?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _isInitialized && _controller != null
+        ? rive.RiveWidget(
+            controller: _controller!,
+            fit: rive.Fit.contain,
+          )
+        : const SizedBox();
   }
 }
 

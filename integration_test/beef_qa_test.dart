@@ -64,7 +64,9 @@ Future<void> main() async {
       final continueButtonFinder = find.text('Continue');
       expect(continueButtonFinder, findsOneWidget);
       await tester.tap(continueButtonFinder);
-      await tester.pumpAndSettle();
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
 
       final iconFinder = find.byWidgetPredicate(
         (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.plus,
@@ -146,7 +148,9 @@ Future<void> main() async {
       final showButton = find.text('Show');
       expect(showButton, findsExactly(3));
       await tester.tap(showButton.first);
-      await tester.pumpAndSettle();
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
 
       final licensePage = find.text('Licenses');
       expect(licensePage, findsOneWidget);
@@ -324,7 +328,7 @@ Future<void> main() async {
           tries: 10, duration: Durations.long1);
       await tester.tap(sendButtonText.last);
       await tester.pump(Durations.long2);
-      await tester.pumpAndSettle();
+      await tester.pump(Durations.long2);
       await tester.pump(Durations.long2);
 
       await tester.drag(find.byType(Scrollable).first, const Offset(0, -200));
@@ -476,7 +480,9 @@ Future<void> main() async {
 
       final devicesButton = find.text('Devices');
       await tester.tap(devicesButton);
-      await tester.pumpAndSettle();
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
 
       // Input text without tapping Save
       await openDeviceCard(tester, "Passport");
@@ -899,7 +905,8 @@ Future<void> main() async {
       expect(walletWithBalance, findsAny);
       await tester.tap(walletWithBalance);
       await tester.pump(Durations.long2);
-      await tester.pumpAndSettle();
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
 
       final sendButtonFinder = find.text("Send");
       expect(sendButtonFinder, findsWidgets);
@@ -2215,7 +2222,9 @@ Future<void> main() async {
 
       final devicesButton = find.text('Devices');
       await tester.tap(devicesButton);
-      await tester.pumpAndSettle();
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
 
       await openDeviceCard(tester, deviceName);
       await openMenuAndPressDeleteDevice(tester);

@@ -16,7 +16,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rive/rive.dart' hide Image;
+import 'package:rive/rive.dart' as rive;
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
@@ -31,7 +31,10 @@ class MagicSetupGenerate extends StatefulWidget {
 class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   final walletGenerated = EnvoySeed().walletDerived();
 
-  StateMachineController? stateMachineController;
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _controller;
+  bool _isInitialized = false;
+
   final PageController _pageController = PageController();
   late int step;
 
@@ -59,46 +62,40 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
           S().magic_setup_send_backup_to_envoy_server_subheading,
         ];
 
-  bool isRiveInitialized = false;
-
   @override
   void initState() {
     super.initState();
     step = 0;
+    _initRive();
   }
 
-  Future<void> _onRiveInit(Artboard artboard) async {
-    final controller = StateMachineController.fromArtboard(artboard, 'STM');
-    if (controller == null) {
-      return;
-    }
+  void _initRive() async {
+    _riveFile = await rive.File.asset('assets/envoy_magic_setup.riv',
+        riveFactory: rive.Factory.rive);
+    _controller = rive.RiveWidgetController(
+      _riveFile!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
 
-    // Find inputs first
-    final showKeyInput = controller.findInput<bool>('ShowKey');
-    final showLockInput = controller.findInput<bool>('showLock');
-    final showShieldInput = controller.findInput<bool>('showShield');
-
-    // Set inputs to correct initial values BEFORE adding controller
+    // Set initial state based on wallet generation status
+    final stateMachine = _controller!.stateMachine;
     if (walletGenerated) {
-      showKeyInput?.change(false);
-      showLockInput?.change(true);
-      showShieldInput?.change(false);
+      stateMachine.boolean('ShowKey')?.value = false;
+      stateMachine.boolean('showLock')?.value = true;
+      stateMachine.boolean('showShield')?.value = false;
     } else {
-      showKeyInput?.change(true);
-      showLockInput?.change(false);
-      showShieldInput?.change(false);
+      stateMachine.boolean('ShowKey')?.value = true;
+      stateMachine.boolean('showLock')?.value = false;
+      stateMachine.boolean('showShield')?.value = false;
     }
 
-    // Now add controller
-    artboard.addController(controller);
-    stateMachineController = controller;
+    setState(() => _isInitialized = true);
 
-    // Delay showing Rive to avoid flashing wrong frame
+    // Delay to avoid flashing wrong frame
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (!isRiveInitialized) {
+    if (_isInitialized) {
       _initiateWalletCreate();
-      isRiveInitialized = true;
     }
   }
 
@@ -138,15 +135,19 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   }
 
   void _updateProgress() async {
+    if (_controller?.stateMachine == null) return;
+
+    final stateMachine = _controller!.stateMachine;
+
     if (walletGenerated) {
       // Only 2 steps: Lock (0), Shield (1)
-      stateMachineController?.findInput<bool>('showLock')?.change(step == 0);
-      stateMachineController?.findInput<bool>('showShield')?.change(step == 1);
+      stateMachine.boolean('showLock')?.value = step == 0;
+      stateMachine.boolean('showShield')?.value = step == 1;
     } else {
       // All 3 steps: Key (0), Lock (1), Shield (2)
-      stateMachineController?.findInput<bool>('ShowKey')?.change(step == 0);
-      stateMachineController?.findInput<bool>('showLock')?.change(step == 1);
-      stateMachineController?.findInput<bool>('showShield')?.change(step == 2);
+      stateMachine.boolean('ShowKey')?.value = step == 0;
+      stateMachine.boolean('showLock')?.value = step == 1;
+      stateMachine.boolean('showShield')?.value = step == 2;
     }
 
     _pageController.animateToPage(
@@ -176,13 +177,13 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                       alignment: Alignment.topCenter,
                       height: 280,
                       width: 280,
-                      child: RiveAnimation.asset(
-                        'assets/envoy_magic_setup.riv',
-                        stateMachines: const ["STM"],
-                        onInit: _onRiveInit,
-                        fit: BoxFit.contain,
-                        alignment: Alignment.center,
-                      ),
+                      child: _isInitialized && _controller != null
+                          ? rive.RiveWidget(
+                              controller: _controller!,
+                              fit: rive.Fit.contain,
+                              alignment: Alignment.center,
+                            )
+                          : const SizedBox(),
                     ),
                     ExpandablePageView(
                       physics: const NeverScrollableScrollPhysics(),
@@ -236,7 +237,8 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
 
   @override
   void dispose() {
-    stateMachineController?.dispose();
+    _controller?.dispose();
+    _riveFile?.dispose();
     super.dispose();
   }
 }
