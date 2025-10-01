@@ -64,7 +64,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
   StreamSubscription<PassportMessage>? _passportMessagesSubscription;
 
-
   @override
   void initState() {
     super.initState();

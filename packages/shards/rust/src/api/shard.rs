@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #[flutter_rust_bridge::frb(sync)] // Synchronous mode for simplicity of the demo
-
 use backup_shard::Shard;
 use flutter_rust_bridge::for_generated::anyhow;
 use flutter_rust_bridge::for_generated::anyhow::{anyhow, Context};
@@ -49,16 +48,12 @@ impl ShardBackUp {
             );
         }
         // Add new shard
-        let new_shard = ShardBackUp::new(
-            *shard.seed_fingerprint(),
-            shard.encode(),
-        );
+        let new_shard = ShardBackUp::new(*shard.seed_fingerprint(), shard.encode());
 
         shards.push(new_shard);
 
         // Encode and write back
-        let encoded_data =
-            minicbor::to_vec(&shards).context("Failed to encode shard data")?;
+        let encoded_data = minicbor::to_vec(&shards).context("Failed to encode shard data")?;
 
         std::fs::write(&file_path, encoded_data).context("Failed to write file")?;
 

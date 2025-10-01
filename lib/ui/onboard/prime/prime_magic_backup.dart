@@ -17,7 +17,8 @@ class PrimeMagicBackup extends ConsumerStatefulWidget {
   const PrimeMagicBackup({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _PrimeMagicBackupState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _PrimeMagicBackupState();
 }
 
 class _PrimeMagicBackupState extends ConsumerState<PrimeMagicBackup> {

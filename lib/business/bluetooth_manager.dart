@@ -223,8 +223,7 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   void _listenForShardMessages() {
     passportMessageStream.listen((api.PassportMessage message) async {
-      if (message.message
-          is api.QuantumLinkMessage_MagicBackupEnabledRequest) {
+      if (message.message is api.QuantumLinkMessage_MagicBackupEnabledRequest) {
         kPrint("Got magic backup enabled request!");
         writeMessage(api.QuantumLinkMessage.magicBackupEnabledResponse(
             api.MagicBackupEnabledResponse(enabled: true)));
@@ -241,8 +240,7 @@ class BluetoothManager extends WidgetsBindingObserver {
           writeMessage(api.QuantumLinkMessage.backupShardResponse(
               api.BackupShardResponse_Success()));
           kPrint("Shard backed up!");
-        }
-        catch (e, _) {
+        } catch (e, _) {
           kPrint("Shard backup failure: $e");
           writeMessage(api.QuantumLinkMessage.backupShardResponse(
               api.BackupShardResponse_Success()));
@@ -250,21 +248,22 @@ class BluetoothManager extends WidgetsBindingObserver {
       }
 
       if (message.message
-      case api.QuantumLinkMessage_RestoreShardRequest request) {
+          case api.QuantumLinkMessage_RestoreShardRequest request) {
         kPrint("Got shard restore request!");
         final fingerprint = request.field0.seedFingerprint;
 
         try {
-          final shard = await PrimeShard().getShard(fingerprint: Uint8List.fromList(fingerprint));
+          final shard = await PrimeShard()
+              .getShard(fingerprint: Uint8List.fromList(fingerprint));
           if (shard == null) {
             throw Exception("Shard not found!");
           }
 
           writeMessage(api.QuantumLinkMessage.restoreShardResponse(
-              api.RestoreShardResponse_Success(api.Shard(payload: shard.shard))));
+              api.RestoreShardResponse_Success(
+                  api.Shard(payload: shard.shard))));
           kPrint("Shard restored!");
-        }
-        catch (e, _) {
+        } catch (e, _) {
           kPrint("Shard restore failure: $e");
           writeMessage(api.QuantumLinkMessage.backupShardResponse(
               api.BackupShardResponse_Error(e.toString())));
