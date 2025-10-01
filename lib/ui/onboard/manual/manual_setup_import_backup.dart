@@ -19,7 +19,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart' hide Image;
+import 'package:rive/rive.dart' as rive;
 import 'package:tor/tor.dart';
 
 class ManualSetupImportBackup extends StatefulWidget {
@@ -31,28 +31,39 @@ class ManualSetupImportBackup extends StatefulWidget {
 }
 
 class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
-  StateMachineController? _stateMachineController;
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _controller;
+  bool _isInitialized = false;
   bool _isRecoveryInProgress = false;
   late final bool isTest;
-
-  @override
-  void dispose() {
-    _stateMachineController?.dispose();
-    super.dispose();
-  }
 
   @override
   void initState() {
     super.initState();
     // IS_TEST flag from run_integration_tests.sh
     isTest = const bool.fromEnvironment('IS_TEST', defaultValue: true);
+    _initRive();
   }
 
-  void _onRiveInit(Artboard artBoard) {
-    _stateMachineController =
-        StateMachineController.fromArtboard(artBoard, 'STM');
-    artBoard.addController(_stateMachineController!);
-    _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
+  void _initRive() async {
+    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
+        riveFactory: rive.Factory.rive);
+    _controller = rive.RiveWidgetController(
+      _riveFile!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
+
+    // Set initial indeterminate state
+    _controller?.stateMachine.boolean("indeterminate")?.value = true;
+
+    setState(() => _isInitialized = true);
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _riveFile?.dispose();
+    super.dispose();
   }
 
   Widget _recoveryInProgress(BuildContext context) {
@@ -65,11 +76,12 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
             constraints: BoxConstraints.tight(const Size.fromHeight(240)),
             child: Transform.scale(
               scale: 1.2,
-              child: RiveAnimation.asset(
-                "assets/envoy_loader.riv",
-                fit: BoxFit.contain,
-                onInit: _onRiveInit,
-              ),
+              child: _isInitialized && _controller != null
+                  ? rive.RiveWidget(
+                      controller: _controller!,
+                      fit: rive.Fit.contain,
+                    )
+                  : const SizedBox(),
             ),
           ),
           const SizedBox(
@@ -312,7 +324,8 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
 Future<void> tryMagicRecover(List<String> seedList, String seed,
     Map<String, String>? data, BuildContext context) async {
   final navigator = Navigator.of(context);
-  bool success = await EnvoySeed().processRecoveryData(seed, data, null);
+  bool success = await EnvoySeed()
+      .processRecoveryData(seed, data, null, isMagicBackup: true);
 
   if (success) {
     Settings().setSyncToCloud(true);

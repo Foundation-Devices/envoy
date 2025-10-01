@@ -71,6 +71,7 @@
             llvm
             reuse
             go
+            unzip
 
             # Build tools - multiStdenv provides better cross-compilation support
             gnumake

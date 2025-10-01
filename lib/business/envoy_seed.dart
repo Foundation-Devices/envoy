@@ -6,7 +6,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:backup/backup.dart';
@@ -61,8 +60,11 @@ class EnvoySeed {
     // the keychain may still retain the seed for a brief period.
     // To ensure the seed is fully removed, set the flag during the erase flow
     // to delete the seed upon the next installation.
+    // if hot wallets exist, don't clear the seed
     try {
-      if (await LocalStorage().readSecure(SEED_CLEAR_FLAG) == "1") {
+      final hotWalletsExist = NgAccountManager().hotAccountsExist();
+      if (await LocalStorage().readSecure(SEED_CLEAR_FLAG) == "1" &&
+          !hotWalletsExist) {
         try {
           await LocalStorage().deleteSecure(SEED_KEY);
           await LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
@@ -250,6 +252,9 @@ class EnvoySeed {
   }
 
   Future<void> backupData({bool cloud = true}) async {
+    if (!NgAccountManager().hotAccountsExist()) {
+      return;
+    }
     // Make sure we don't accidentally backup to Cloud
     if (Settings().syncToCloud == false) {
       cloud = false;
@@ -294,10 +299,26 @@ class EnvoySeed {
     var json = jsonDecode(backupData[EnvoyStorage.dbName]!) as Map;
 
     List<dynamic> stores = json["stores"];
-    var preferences = stores
-        .singleWhere((element) => element["name"] == preferencesStoreName);
+    var preferencesStores = stores
+        .where((element) => element["name"] == preferencesStoreName)
+        .toList();
+
+    // If no preferences store exists, return backup data as-is
+    if (preferencesStores.isEmpty) {
+      return backupData;
+    }
+
+    var preferences = preferencesStores.first;
+
     int indexOfPreferences =
         stores.indexWhere((element) => element["name"] == preferencesStoreName);
+
+    // Safety check - if indexOfPreferences is -1, we have a data inconsistency
+    if (indexOfPreferences == -1) {
+      EnvoyReport().log("EnvoySeed processBackupData",
+          "Data inconsistency: preferences store found by singleWhere but not by indexWhere");
+      return backupData;
+    }
 
     List<String> keys = List<String>.from(preferences["keys"]);
     List<dynamic> values = preferences["values"];
@@ -373,8 +394,6 @@ class EnvoySeed {
 
     await NgAccountManager().deleteHotWalletAccounts();
 
-    Settings().syncToCloud = false;
-
     try {
       await removeSeedFromNonSecure();
       EnvoyReport().log("QA", "Removed seed from regular storage!");
@@ -416,7 +435,8 @@ class EnvoySeed {
       try {
         return Backup.restore(seed, Settings().envoyServerAddress, Tor.instance)
             .then((data) async {
-          bool status = await processRecoveryData(seed!, data, passphrase);
+          bool status = await processRecoveryData(seed!, data, passphrase,
+              isMagicBackup: true);
           return status;
         }).catchError((e, st) {
           debugPrintStack(stackTrace: st);
@@ -439,7 +459,8 @@ class EnvoySeed {
   }
 
   Future<bool> processRecoveryData(
-      String seed, Map<String, String>? data, String? passphrase) async {
+      String seed, Map<String, String>? data, String? passphrase,
+      {bool isMagicBackup = false}) async {
     bool success = data != null;
     bool isLegacy = false;
     if (success) {
@@ -461,8 +482,7 @@ class EnvoySeed {
       } catch (e) {
         EnvoyReport().log("EnvoySeed", "Error restoring database: $e");
       }
-      log("NgAccountManager.accountsPrefKey ${data.containsKey(NgAccountManager.accountsPrefKey)}");
-      log("EnvoyStorage.dbName ${data.containsKey(EnvoyStorage.dbName)}");
+      Settings().setSyncToCloud(isMagicBackup);
 
       // if the data does not contains v2 backup at root (NgAccountManager.accountsPrefKey) at root,
       // Data is from older backups,so we need to restore legacy wallets
@@ -535,7 +555,7 @@ class EnvoySeed {
   static void migrateFromSharedPreferences(Map<String, String> data) {
     List<String> preferencesKeysFormerlyBackedUp = [
       Settings.SETTINGS_PREFS,
-      NgAccountManager.accountsPrefKey,
+      NgAccountManager.v1AccountsPrefKey,
       Devices.DEVICES_PREFS,
     ];
 
@@ -619,18 +639,28 @@ class EnvoySeed {
     List<String> keys = List<String>.from(preferences["keys"]);
     List<dynamic> values = preferences["values"];
 
-    var accounts = values[keys.indexOf(NgAccountManager.v1AccountsPrefKey)];
-    var jsonAccounts = jsonDecode(accounts);
-    List<LegacyAccount> legacyWallets = [];
-    for (var e in jsonAccounts) {
-      try {
-        final account = LegacyAccount.fromJson(e);
-        legacyWallets.add(account);
-      } catch (e, stack) {
-        debugPrintStack(stackTrace: stack);
+    try {
+      int accountsIndex = keys.indexOf(NgAccountManager.v1AccountsPrefKey);
+      if (accountsIndex == -1 || accountsIndex >= values.length) {
+        return [];
       }
+      var accounts = values[accountsIndex];
+      var jsonAccounts = jsonDecode(accounts);
+      List<LegacyAccount> legacyWallets = [];
+      for (var e in jsonAccounts) {
+        try {
+          final account = LegacyAccount.fromJson(e);
+          legacyWallets.add(account);
+        } catch (e, stack) {
+          debugPrintStack(stackTrace: stack);
+        }
+      }
+      return legacyWallets;
+    } catch (e, stack) {
+      EnvoyReport().log("EnvoySeed", "Error getting legacy wallets: $e",
+          stackTrace: stack);
+      return [];
     }
-    return legacyWallets;
   }
 
   DateTime? getLastBackupTime() {

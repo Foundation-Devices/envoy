@@ -200,4 +200,8 @@ class Devices extends ChangeNotifier {
         .where((device) => device.type == DeviceType.passportPrime)
         .toList();
   }
+
+  Device? getDeviceBySerial(String serialNumber) {
+    return devices.firstWhereOrNull((device) => device.serial == serialNumber);
+  }
 }

@@ -149,8 +149,9 @@ class BluetoothManager extends WidgetsBindingObserver {
 
         for (final device in event.field0) {
           _updateConnectionStatus(device);
-          //kPrint("Paired device found: ${device.id}");
+          // TODO: don't autoconnect in onboarding
           if (bleId.isNotEmpty && device.id == bleId && !connected) {
+            kPrint("Autoconnecting to: ${device.id}");
             await connect(id: device.id);
             await listen(id: bleId);
           }
@@ -249,7 +250,6 @@ class BluetoothManager extends WidgetsBindingObserver {
       case AppLifecycleState.detached:
         break;
       case AppLifecycleState.hidden:
-        throw UnimplementedError();
     }
   }
 
@@ -301,7 +301,7 @@ class BluetoothManager extends WidgetsBindingObserver {
     bool isDenied = await isBluetoothDenied();
     if (Platform.isLinux || !isDenied) {
       kPrint("Scanning...");
-      await bluart.scan(filter: [""]);
+      await bluart.scan(filter: ["6E400001-B5A3-F393-E0A9-E50E24DCCA9E"]);
     }
   }
 

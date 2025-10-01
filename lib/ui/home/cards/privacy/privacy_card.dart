@@ -33,7 +33,7 @@ class PrivacyCard extends ConsumerStatefulWidget {
 }
 
 class PrivacyCardState extends ConsumerState<PrivacyCard> {
-  bool _showPersonalNodeTextField = false;
+  bool _showPersonalNodeTextField = getInitialElectrumDropdownIndex() == 1;
   bool _betterPerformance = !Settings().torEnabled();
 
   bool? _useLocalAuth = false;
@@ -52,51 +52,16 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
           _useLocalAuth = useLocalAuthValue;
         });
       }
-
-      // Retrieve the saved persisted Electrum server type
-      String? savedElectrumServerType =
-          LocalStorage().prefs.getString("electrumServerType");
-
-      const validOptions = [
-        "foundation",
-        "personalNode",
-        "blockStream",
-        "diyNodes"
-      ];
-
-      if (!validOptions.contains(savedElectrumServerType)) {
-        // Reset to default
-        LocalStorage().prefs.setString("electrumServerType", "foundation");
-        Settings().useDefaultElectrumServer(true);
-        savedElectrumServerType =
-            LocalStorage().prefs.getString("electrumServerType");
-      }
-
-      bool showPersonalNodeTextField =
-          savedElectrumServerType == "personalNode" ||
-              (savedElectrumServerType == null &&
-                  !Settings().usingDefaultElectrumServer);
-
-      // If missing but we want personalNode, set prefs accordingly
-      if (savedElectrumServerType == null && showPersonalNodeTextField) {
-        LocalStorage().prefs.setString("electrumServerType", "personalNode");
-      }
-
-      setState(() {
-        _showPersonalNodeTextField = showPersonalNodeTextField;
-      });
     });
   }
 
   void _handleDropdownChange(EnvoyDropdownOption newOption) {
-    setState(() {
-      _showPersonalNodeTextField = newOption.value == "personalNode";
-    });
-
     if (newOption.value == "break") {
       return;
     }
-    LocalStorage().prefs.setString("electrumServerType", newOption.value);
+    setState(() {
+      _showPersonalNodeTextField = newOption.value == "personalNode";
+    });
 
     if (newOption.value == "foundation") {
       Settings().useDefaultElectrumServer(true);
@@ -104,6 +69,12 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
     }
     if (newOption.value == "personalNode") {
       Settings().useDefaultElectrumServer(false);
+
+      final personalNode = Settings().getPersonalElectrumAddress();
+
+      if (personalNode.isNotEmpty) {
+        Settings().setCustomElectrumAddress(personalNode);
+      }
       return;
     }
     if (newOption.value == "blockStream") {
@@ -245,8 +216,8 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                               const EdgeInsets.only(top: EnvoySpacing.medium1),
                           child: SingleChildScrollView(
                               child: ElectrumServerEntry(
-                                  Settings().customElectrumAddress,
-                                  Settings().setCustomElectrumAddress)),
+                                  Settings().getPersonalElectrumAddress,
+                                  Settings().setPersonalElectrumAddress)),
                         ),
                       if (!Platform.isLinux)
                         FutureBuilder<bool>(

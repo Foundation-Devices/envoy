@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/connectivity_manager.dart';
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
@@ -42,7 +41,7 @@ class _AdvancedSettingsOptionsState
     extends ConsumerState<AdvancedSettingsOptions> {
   final ScrollController _scrollController = ScrollController();
   bool _betterPerformance = !Settings().torEnabled();
-  bool _showPersonalNodeTextField = false;
+  bool _showPersonalNodeTextField = getInitialElectrumDropdownIndex() == 1;
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +169,7 @@ class _AdvancedSettingsOptionsState
                                             child: EnvoyToggle(
                                               value: Settings().syncToCloud,
                                               onChanged: (bool value) async {
-                                                if (value) {
+                                                if (!value) {
                                                   showEnvoyPopUp(
                                                       context,
                                                       S()
@@ -242,7 +241,8 @@ class _AdvancedSettingsOptionsState
                                             icon: EnvoyIcons.performance,
                                             isActive: _betterPerformance,
                                             onSelect: (isActive) {
-                                              Settings().torChangedInAdvanced;
+                                              Settings().torChangedInAdvanced =
+                                                  true;
                                               setState(() {
                                                 _betterPerformance = true;
                                               });
@@ -260,7 +260,8 @@ class _AdvancedSettingsOptionsState
                                             icon: EnvoyIcons.privacy,
                                             isActive: !_betterPerformance,
                                             onSelect: (isActive) {
-                                              Settings().torChangedInAdvanced;
+                                              Settings().torChangedInAdvanced =
+                                                  true;
                                               setState(() {
                                                 _betterPerformance = false;
                                               });
@@ -351,8 +352,8 @@ class _AdvancedSettingsOptionsState
                                             top: EnvoySpacing.medium1),
                                         child: SingleChildScrollView(
                                             child: ElectrumServerEntry(
-                                                s.customElectrumAddress,
-                                                s.setCustomElectrumAddress)),
+                                                s.getPersonalElectrumAddress,
+                                                s.setPersonalElectrumAddress)),
                                       ),
                                     if (keyboardHeight != 0.0 &&
                                         bottomPadding > 0)
@@ -378,7 +379,7 @@ class _AdvancedSettingsOptionsState
     );
   }
 
-  void _handleDropdownChange(EnvoyDropdownOption newOption) {
+  Future<void> _handleDropdownChange(EnvoyDropdownOption newOption) async {
     setState(() {
       _showPersonalNodeTextField = newOption.value == "personalNode";
     });
@@ -388,13 +389,17 @@ class _AdvancedSettingsOptionsState
     }
 
     Settings().nodeChangedInAdvanced = true;
-    LocalStorage().prefs.setString("electrumServerType", newOption.value);
     if (newOption.value == "foundation") {
       Settings().useDefaultElectrumServer(true);
       return;
     }
     if (newOption.value == "personalNode") {
       Settings().useDefaultElectrumServer(false);
+
+      final personalNode = Settings().getPersonalElectrumAddress();
+      if (personalNode.isNotEmpty) {
+        Settings().setCustomElectrumAddress(personalNode);
+      }
       return;
     }
     if (newOption.value == "blockStream") {

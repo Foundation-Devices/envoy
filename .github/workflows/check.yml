@@ -2,11 +2,11 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-name: Check
+name: Checks
 
 on:
   pull_request:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   check:
@@ -58,6 +58,23 @@ jobs:
       - name: Build Rust libs
         run: cargo build
 
-# TODO: fix and reenable
-#      - name: Run Dart tests
-#        run: flutter test
+      - name: Run Dart tests
+        run: flutter test
+
+  beef-qa:
+    needs: check
+    runs-on: [ self-hosted, macOS, ARM64 ]
+
+    steps:
+      - uses: extractions/setup-just@v1
+      - uses: actions/checkout@v4
+
+
+      - name: Install bindgen-cli (for aws-lc-sys)
+        run: cargo install --force --locked bindgen-cli
+
+      - name: Build ffi
+        run: ./scripts/build_ffi_ios.sh
+
+      - name: Run BeefQA Tests
+        run: just qa

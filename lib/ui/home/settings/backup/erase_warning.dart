@@ -327,10 +327,51 @@ class EraseProgress extends ConsumerStatefulWidget {
 }
 
 class _EraseProgressState extends ConsumerState<EraseProgress> {
-  rive.StateMachineController? _stateMachineController;
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _controller;
+  bool _isInitialized = false;
 
   bool _deleteInProgress = true;
   bool _isDeleted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initRive();
+  }
+
+  void _initRive() async {
+    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
+        riveFactory: rive.Factory.rive);
+    _controller = rive.RiveWidgetController(
+      _riveFile!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
+
+    _controller?.stateMachine.boolean("indeterminate")?.value = true;
+
+    setState(() => _isInitialized = true);
+
+    _onInit();
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _riveFile?.dispose();
+    super.dispose();
+  }
+
+  void _setAnimationState(
+      {required bool indeterminate,
+      required bool happy,
+      required bool unhappy}) {
+    if (_controller?.stateMachine == null) return;
+    final stateMachine = _controller!.stateMachine;
+    stateMachine.boolean("indeterminate")?.value = indeterminate;
+    stateMachine.boolean("happy")?.value = happy;
+    stateMachine.boolean("unhappy")?.value = unhappy;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -353,21 +394,14 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
                   children: [
                     SizedBox(
                       height: 260,
-                      child: rive.RiveAnimation.asset(
-                        "assets/envoy_loader.riv",
-                        fit: BoxFit.contain,
-                        onInit: (artboard) {
-                          _stateMachineController =
-                              rive.StateMachineController.fromArtboard(
-                                  artboard, 'STM');
-                          artboard.addController(_stateMachineController!);
-                          _stateMachineController
-                              ?.findInput<bool>("indeterminate")
-                              ?.change(true);
-                          _onInit();
-                        },
-                      ),
+                      child: _isInitialized && _controller != null
+                          ? rive.RiveWidget(
+                              controller: _controller!,
+                              fit: rive.Fit.contain,
+                            )
+                          : const SizedBox(),
                     ),
+
                     //const Padding(padding: EdgeInsets.all(28)),
                     Builder(
                       builder: (context) {
@@ -379,7 +413,8 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
                               : S().delete_wallet_for_good_error_title;
                         }
                         return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.medium1),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             spacing: EnvoySpacing.large3,
@@ -436,9 +471,9 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       setState(() {
         _deleteInProgress = true;
       });
-      _stateMachineController?.findInput<bool>("indeterminate")?.change(true);
-      _stateMachineController?.findInput<bool>("happy")?.change(false);
-      _stateMachineController?.findInput<bool>("unhappy")?.change(false);
+
+      _setAnimationState(indeterminate: true, happy: false, unhappy: false);
+
       //wait for animation
       await Future.delayed(const Duration(seconds: 1));
 
@@ -448,18 +483,9 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       });
 
       if (_isDeleted) {
-        _stateMachineController
-            ?.findInput<bool>("indeterminate")
-            ?.change(false);
-        _stateMachineController?.findInput<bool>("happy")?.change(true);
-        _stateMachineController?.findInput<bool>("unhappy")?.change(false);
-      }
-      if (!_isDeleted) {
-        _stateMachineController
-            ?.findInput<bool>("indeterminate")
-            ?.change(false);
-        _stateMachineController?.findInput<bool>("happy")?.change(false);
-        _stateMachineController?.findInput<bool>("unhappy")?.change(true);
+        _setAnimationState(indeterminate: false, happy: true, unhappy: false);
+      } else {
+        _setAnimationState(indeterminate: false, happy: false, unhappy: true);
       }
 
       setState(() {
@@ -524,57 +550,57 @@ class _AndroidBackupWarningState extends State<AndroidBackupWarning> {
           child: Material(
               color: Colors.transparent,
               child: Column(
-                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
-                    height: iphoneSE ? 220 : 250,
-                    child: Image.asset(
-                      "assets/exclamation_icon.png",
-                      height: 180,
-                      width: 180,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          S().android_backup_info_heading,
-                          textAlign: TextAlign.center,
-                          style: EnvoyTypography.heading,
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(height: EnvoySpacing.large3),
+                      SizedBox(
+                        height: iphoneSE ? 220 : 250,
+                        child: Image.asset(
+                          "assets/images/onboarding_info.png",
+                          height: 184,
                         ),
-                        const Padding(padding: EdgeInsets.all(12)),
-                        LinkText(
-                          text: S()
-                              .delete_wallet_for_good_instant_android_subheading,
-                          onTap: () {
-                            openAndroidSettings();
-                          },
-                          linkStyle: EnvoyTypography.button
-                              .copyWith(color: EnvoyColors.accentPrimary),
-                          textStyle: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(fontSize: 14),
-                        ),
-                      ],
-                    ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: EnvoySpacing.medium3),
+                          Text(
+                            S().android_backup_info_heading,
+                            textAlign: TextAlign.center,
+                            style: EnvoyTypography.heading,
+                          ),
+                          const SizedBox(height: EnvoySpacing.medium3),
+                          LinkText(
+                            text: S()
+                                .delete_wallet_for_good_instant_android_subheading,
+                            onTap: () {
+                              openAndroidSettings();
+                            },
+                            linkStyle: EnvoyTypography.button
+                                .copyWith(color: EnvoyColors.accentPrimary),
+                            textStyle: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        right: EnvoySpacing.medium2,
-                        left: EnvoySpacing.medium2,
-                        bottom: EnvoySpacing.medium2),
+                    padding:
+                        const EdgeInsets.only(bottom: EnvoySpacing.medium2),
                     child: Column(
                       children: [
                         Consumer(
                           builder: (context, ref, child) {
                             return OnboardingButton(
-                              type: EnvoyButtonTypes.tertiary,
+                              type: EnvoyButtonTypes.secondary,
                               label: S().component_skip,
                               onTap: () async {
                                 if (widget.skipSuccess) {

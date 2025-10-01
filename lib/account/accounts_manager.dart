@@ -164,6 +164,7 @@ class NgAccountManager extends ChangeNotifier {
         notifyIfAccountBalanceHigherThanUsd1000();
       }));
     }
+    removeDuplicateHotWallets();
   }
 
   Future deriveMissingTypes() async {
@@ -438,11 +439,7 @@ class NgAccountManager extends ChangeNotifier {
     final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
     final hotWallets = accounts.where((element) => element.isHot).toList();
-    for (var element in hotWallets) {
-      _accountsHandler.removeWhere((e) => e.$1.id == element.id);
-      order.remove(element.id);
-    }
-    await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(order));
+
     _accountsOrder.sink.add(order);
     for (var account in hotWallets) {
       try {
@@ -451,6 +448,10 @@ class NgAccountManager extends ChangeNotifier {
         EnvoyReport().log("Error deleting account", e.toString());
       }
     }
+    for (var element in hotWallets) {
+      order.remove(element.id);
+    }
+    await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(order));
     notifyListeners();
   }
 
@@ -615,6 +616,37 @@ class NgAccountManager extends ChangeNotifier {
       EnvoyReport().log("AccountManager", "Error Adding account: $e");
       kPrint("Error creating account directory: $e");
       return (DeviceAccountResult.ERROR, null);
+    }
+  }
+
+  //due to ENV-2272, there is a user might have duplicated accounts
+  //any hot wallets that doesn't match the seed fingerprint and has 0 balance
+  //should be removed
+  void removeDuplicateHotWallets() async {
+    try {
+      final seed = await EnvoySeed().get();
+      if (seed == null) {
+        return;
+      }
+      final derivations = await EnvoyBip39.deriveDescriptorFromSeed(
+          seedWords: seed, network: Network.bitcoin);
+      final fingerprint = NgAccountManager.getFingerprint(
+          derivations.first.externalPubDescriptor);
+
+      for (var account in accounts) {
+        if (account.isHot) {
+          if (account.xfp != fingerprint && account.balance.toInt() == 0) {
+            EnvoyReport().log("AccountManager",
+                "Deleting duplicated account ${account.name} ${account.xfp}");
+            await deleteAccount(account);
+            _accountsHandler.removeWhere((e) => e.$1.id == account.id);
+          }
+        }
+      }
+    } catch (e, stacktrace) {
+      EnvoyReport().log(
+          "AccountManager", "Error checking duplicated accounts: $e",
+          stackTrace: stacktrace);
     }
   }
 }

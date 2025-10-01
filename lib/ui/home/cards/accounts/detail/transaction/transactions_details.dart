@@ -8,6 +8,7 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/locale.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -84,14 +85,34 @@ class _TransactionsDetailsWidgetState
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await Future.delayed(const Duration(milliseconds: 50));
+      _fetchFee();
       _checkForRBF();
     });
   }
 
+  Future<void> _fetchFee() async {
+    if (widget.tx.fee.toInt() == FEE_UNKNOWN) {
+      final server = Settings().electrumAddress(widget.account.network);
+      int? port = Settings().getTorPort(widget.account.network, server);
+      try {
+        final fee = await EnvoyAccountHandler.fetchElectrumFee(
+            txid: widget.tx.txId, electrumServer: server, torPort: port);
+        if (fee != null) {
+          await widget.account.handler
+              ?.updateTxFee(transaction: widget.tx, fee: fee);
+        }
+      } catch (e) {
+        EnvoyReport().log("FetchFee", "RBF check failed : $e");
+      }
+    }
+  }
+
   Future _checkForRBF() async {
-    if (widget.tx.confirmations == 0) {
+    // don't check boost/cancel on received tx's ˇˇˇˇˇ
+    if (widget.tx.confirmations == 0 && !(widget.tx.amount > 0)) {
       try {
         await _checkBoost();
       } catch (e) {
@@ -225,7 +246,7 @@ class _TransactionsDetailsWidgetState
   @override
   Widget build(BuildContext context) {
     ///watch transaction changes to get real time updates
-    final tx = widget.tx;
+    final tx = ref.watch(getTransactionProvider(widget.tx.txId)) ?? widget.tx;
 
     String note = ref.watch(getTransactionProvider(tx.txId).select(
       (value) => value?.note ?? tx.note ?? "",
@@ -806,7 +827,7 @@ String? getBaseUrlForNetwork(Network network) {
     case Network.testnet4:
       return Fees.testnet4MempoolFoundationInstance;
     case Network.testnet:
-      return Fees.testnetMempoolFoundationInstance;
+      return Fees.testnet4MempoolFoundationInstance;
     case Network.regtest:
       return null;
   }

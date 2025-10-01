@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -408,23 +408,24 @@ class _EnvoyDropdownButtonState<T> extends State<_EnvoyDropdownButton<T>> {
 }
 
 int getInitialElectrumDropdownIndex() {
-  final String? savedElectrumServerType =
-      LocalStorage().prefs.getString("electrumServerType");
+  bool isDiyNodes =
+      Settings().selectedElectrumAddress == PublicServer.diyNodes.address ||
+          Settings().personalElectrumAddress == PublicServer.diyNodes.address;
 
-  bool isPersonalNode = savedElectrumServerType == "personalNode" ||
-      (savedElectrumServerType == null &&
-          !Settings().usingDefaultElectrumServer);
+  bool isBlockstream = Settings().selectedElectrumAddress ==
+          PublicServer.blockstream.address ||
+      Settings().personalElectrumAddress == PublicServer.blockstream.address;
 
-  if (Settings().usingDefaultElectrumServer ||
-      savedElectrumServerType == "foundation") {
+  if (Settings().usingDefaultElectrumServer) {
     return 0;
-  } else if (isPersonalNode) {
+  } else if (!Settings().usingDefaultElectrumServer &&
+      !isDiyNodes &&
+      !isBlockstream) {
     return 1;
-  } else if (savedElectrumServerType == "blockStream") {
+  } else if (isBlockstream) {
     return 3;
-  } else if (savedElectrumServerType == "diyNodes") {
+  } else if (isDiyNodes) {
     return 4;
   }
-
-  return 0; // Default to foundation as a safe fallback
+  return 0;
 }

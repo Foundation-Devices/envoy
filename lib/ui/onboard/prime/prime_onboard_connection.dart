@@ -173,11 +173,23 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 runSpacing: EnvoySpacing.medium1,
                 children: [
-                  EnvoyStepItem(step: bleStep),
-                  EnvoyStepItem(step: deviceCheck),
-                  if (deviceCheck.state != EnvoyStepState.ERROR)
-                    EnvoyStepItem(
-                        step: firmWareCheck, highlight: updateAvailable),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      EnvoyStepItem(step: bleStep),
+                      SizedBox(
+                        height: EnvoySpacing.medium1,
+                      ),
+                      EnvoyStepItem(step: deviceCheck),
+                      SizedBox(
+                        height: EnvoySpacing.medium1,
+                      ),
+                      if (deviceCheck.state != EnvoyStepState.ERROR)
+                        EnvoyStepItem(
+                            step: firmWareCheck, highlight: updateAvailable),
+                    ],
+                  ),
                 ],
               ),
             );
@@ -188,8 +200,9 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
               children: [
                 Text(
                   S().onboarding_connectionIntroError_content,
-                  style: EnvoyTypography.body
-                      .copyWith(color: EnvoyColors.textTertiary),
+                  style: EnvoyTypography.body.copyWith(
+                    color: EnvoyColors.copperLight500,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 Padding(

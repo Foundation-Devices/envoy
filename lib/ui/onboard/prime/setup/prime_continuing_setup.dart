@@ -86,12 +86,27 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeContinuingSetup> {
                           crossAxisAlignment: WrapCrossAlignment.center,
                           runSpacing: EnvoySpacing.medium1,
                           children: [
-                            EnvoyStepItem(step: pinStep),
-                            EnvoyStepItem(step: setUpMasterKey),
-                            EnvoyStepItem(step: backUpMasterKey),
-                            EnvoyStepItem(
-                              step: connectAccount,
-                            )
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                EnvoyStepItem(step: pinStep),
+                                SizedBox(
+                                  height: EnvoySpacing.medium1,
+                                ),
+                                EnvoyStepItem(step: setUpMasterKey),
+                                SizedBox(
+                                  height: EnvoySpacing.medium1,
+                                ),
+                                EnvoyStepItem(step: backUpMasterKey),
+                                SizedBox(
+                                  height: EnvoySpacing.medium1,
+                                ),
+                                EnvoyStepItem(
+                                  step: connectAccount,
+                                )
+                              ],
+                            ),
                           ],
                         ),
                       );
