@@ -41,9 +41,6 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (_, __) async {
-        context.go("/");
-      },
       child: OnboardPageBackground(
         child: Material(
           color: Colors.transparent,
