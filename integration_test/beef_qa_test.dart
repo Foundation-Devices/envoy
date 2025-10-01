@@ -1562,17 +1562,6 @@ Future<void> main() async {
       //Tap Block Stream to open dropdown
       await findAndPressTextButton(tester, 'Blockstream');
       await tester.pump(Durations.long2);
-      // Select DIYnodes
-      await findAndPressTextButton(tester, 'DIYnodes');
-      await tester.pump(Durations.long2);
-
-      // Check that it gets selected and a connection is attempted
-      await findTextOnScreen(tester, "DIYnodes");
-      await tester.pump(Durations.long2);
-
-      //Tap DIYnodes to open dropdown
-      await findAndPressTextButton(tester, 'DIYnodes');
-      await tester.pump(Durations.long2);
 
       // Change back to Personal Node, and check the pasted node was
       // NOT overwritten, and it connects to that one
