@@ -104,15 +104,15 @@ pub async fn decode(
     let msg_id = chunk.header.message_id;
 
     debug!("receiving data id: {msg_id} {m}/{n}");
-    debug!("DECHUNKER: {:?}", decoder.inner);
+    //debug!("DECHUNKER: {:?}", decoder.inner);
 
     match decoder.inner.insert_chunk(chunk) {
         None => {
             let dechunker = decoder.inner.get_dechunker(msg_id).unwrap();
             let progress = dechunker.progress() as f64;
 
-            debug!("DECHUNKER: {dechunker:?}");
-            debug!("MASTER DECHUNKER: {:?}", decoder.inner);
+            //debug!("DECHUNKER: {dechunker:?}");
+            //debug!("MASTER DECHUNKER: {:?}", decoder.inner);
 
             Ok(DecoderStatus {
                 progress,

@@ -8,9 +8,12 @@ use std::fs;
 #[test]
 fn test_shard_backup_encode_decode() {
     let backup = ShardBackUp::new(
-        "test_device".to_string(),
-        "test_shard".to_string(),
-        vec![0x41, 0x42, 0x43],
+        [
+            0x41, 0x42, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43,
+            0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43, 0x43,
+            0x43, 0x43, 0x43, 0x43,
+        ],
+        vec![0xDE, 0xAD, 0xBE, 0xEF],
     );
 
     // Test encoding
@@ -20,7 +23,6 @@ fn test_shard_backup_encode_decode() {
     // Test decoding
     let decoded = ShardBackUp::from_bytes(&encoded).expect("Failed to decode");
 
-    assert_eq!(decoded.device_serial, backup.device_serial);
     assert_eq!(decoded.fingerprint, backup.fingerprint);
     assert_eq!(decoded.timestamp, backup.timestamp);
     assert_eq!(decoded.shard, backup.shard);
@@ -36,12 +38,7 @@ fn test_adding_shard() {
     let original_shard_data = vec![0xDE, 0xAD, 0xBE, 0xEF, 0x01, 0x02, 0x03];
 
     // Add the shard
-    let add_result = ShardBackUp::add_new_shard(
-        original_shard_data.clone(),
-        &original_shard_identifier,
-        &original_device_serial.clone(),
-        file_path.to_string(),
-    );
+    let add_result = ShardBackUp::add_new_shard(original_shard_data.clone(), file_path.to_string());
 
     assert!(add_result.is_ok(), "Failed to add shard: {:?}", add_result);
 
@@ -59,14 +56,6 @@ fn test_adding_shard() {
 
     // Verify all fields match exactly
     assert_eq!(
-        retrieved_shard.device_serial, original_device_serial,
-        "Device serial mismatch"
-    );
-    assert_eq!(
-        retrieved_shard.fingerprint, original_shard_identifier,
-        "Shard identifier mismatch"
-    );
-    assert_eq!(
         retrieved_shard.shard, original_shard_data,
         "Shard data mismatch"
     );
@@ -80,18 +69,10 @@ fn test_adding_shard() {
 fn add_multiple_shards() {
     let file_path = "multiple_test.cbor";
 
-    // Test data
-    let original_device_serial = "prim_123".to_string();
-    let original_shard_identifier = "unique_shard_abc123".to_string();
-
     for index in 0..5 {
         // Add the shard
-        let add_result = ShardBackUp::add_new_shard(
-            index.to_string().into_bytes(),
-            &format!("{}-{}", original_shard_identifier, index),
-            &original_device_serial,
-            file_path.to_string(),
-        );
+        let add_result =
+            ShardBackUp::add_new_shard(index.to_string().into_bytes(), file_path.to_string());
         assert!(add_result.is_ok(), "Failed to add shard: {:?}", add_result);
     }
 
@@ -106,15 +87,6 @@ fn add_multiple_shards() {
 
     // Verify all fields match exactly
     for (index, shard) in retrieved_shards.iter().enumerate() {
-        assert_eq!(
-            shard.device_serial, original_device_serial,
-            "Device serial mismatch"
-        );
-        assert_eq!(
-            shard.fingerprint,
-            format!("{}-{}", original_shard_identifier, index),
-            "Shard identifier mismatch"
-        );
         assert_eq!(
             shard.shard,
             index.to_string().into_bytes(),
