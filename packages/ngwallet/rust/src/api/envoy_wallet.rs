@@ -8,6 +8,11 @@ use std::str::FromStr;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
+use crate::api::bip39::EnvoyBip39;
+use crate::api::envoy_account::EnvoyAccount;
+use crate::api::errors::{BroadcastError, RBFBumpFeeError, TxComposeError};
+use crate::api::migration::get_last_used_index;
+use crate::frb_generated::StreamSink;
 use anyhow::{anyhow, Error, Result};
 use bdk_wallet::bitcoin::Address;
 pub use bdk_wallet::bitcoin::{Network, Psbt, ScriptBuf};
@@ -25,11 +30,6 @@ use ngwallet::config::{
 use ngwallet::ngwallet::NgWallet;
 use ngwallet::send::{DraftTransaction, TransactionFeeResult, TransactionParams};
 use ngwallet::transaction;
-use crate::api::bip39::EnvoyBip39;
-use crate::api::envoy_account::EnvoyAccount;
-use crate::api::errors::{BroadcastError, RBFBumpFeeError, TxComposeError};
-use crate::api::migration::get_last_used_index;
-use crate::frb_generated::StreamSink;
 
 #[frb(init)]
 pub fn init_app() {
@@ -450,7 +450,11 @@ impl EnvoyAccountHandler {
         NgAccount::<Connection>::fetch_fee_from_electrum(txid, electrum_server, socks_proxy)
     }
 
-    pub fn update_tx_fee(&mut self, transaction: transaction::BitcoinTransaction, fee: u64) -> Result<()> {
+    pub fn update_tx_fee(
+        &mut self,
+        transaction: transaction::BitcoinTransaction,
+        fee: u64,
+    ) -> Result<()> {
         {
             let account = self
                 .ng_account
@@ -565,7 +569,11 @@ impl EnvoyAccountHandler {
         self.send_update();
         Ok(true)
     }
-    pub fn set_do_not_spend(&mut self, utxo: &transaction::Output, do_not_spend: bool) -> Result<()> {
+    pub fn set_do_not_spend(
+        &mut self,
+        utxo: &transaction::Output,
+        do_not_spend: bool,
+    ) -> Result<()> {
         let result = self
             .ng_account
             .lock()
@@ -631,7 +639,13 @@ impl EnvoyAccountHandler {
     }
     #[frb(sync)]
     pub fn config(&self) -> NgAccountConfig {
-        self.ng_account.lock().unwrap().config.read().unwrap().clone()
+        self.ng_account
+            .lock()
+            .unwrap()
+            .config
+            .read()
+            .unwrap()
+            .clone()
     }
     #[frb(sync)]
     pub fn id(&self) -> String {
