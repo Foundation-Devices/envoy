@@ -2093,7 +2093,7 @@ Future<void> main() async {
 
       await findAndPressTextButton(tester, 'Save');
       await tester.pump(Durations.long2);
-      await tester.pumpAndSettle();
+      await pumpRepeatedly(tester);
 
       await slowSearchAndToggleText(tester, 'Continue');
       await tester.pump(Durations.long2);
