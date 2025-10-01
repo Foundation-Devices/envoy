@@ -198,7 +198,21 @@ class _AccountsListState extends ConsumerState<AccountsList> {
     });
 
     if (_accountsOrder.isEmpty) {
-      _accountsOrder = ref.read(accountOrderStream);
+      final allIds = ref.read(accountOrderStream);
+      final currentIds = accounts.map((e) => e.id).toSet();
+
+      // Only keep IDs that exist in current accounts
+      final filteredOrder =
+          allIds.where((id) => currentIds.contains(id)).toList();
+
+      _accountsOrder = filteredOrder;
+
+      // Persist the cleaned order, so stale IDs are removed from storage
+      if (allIds.length != filteredOrder.length) {
+        Future.microtask(
+          () => NgAccountManager().updateAccountOrder(filteredOrder),
+        );
+      }
     }
 
     ref.listen(accountsProvider,
@@ -312,7 +326,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
       ),
     );
 
-    return accounts.isEmpty
+    return accounts.isEmpty && _accountsOrder.isEmpty
         ? Padding(
             padding: const EdgeInsets.all(EnvoySpacing.medium2),
             child: EmptyAccountsCard(),
