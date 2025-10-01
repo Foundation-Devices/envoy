@@ -1463,6 +1463,7 @@ Future<void> main() async {
 
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // enable again
+      await tester.pump(Durations.extralong4);
 
       // Check that a pop up comes up
       expect(confirmTextFromDialog, findsOneWidget);
