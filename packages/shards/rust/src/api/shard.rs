@@ -34,7 +34,7 @@ impl ShardBackUp {
         }
 
         // Parse the shard from CBOR
-        let shard = Shard::decode(&*shard).context("Failed to decode shard")?;
+        let shard = Shard::decode(&shard).context("Failed to decode shard")?;
 
         let mut shards: Vec<ShardBackUp> = Self::get_all_shards(file_path.clone());
 
