@@ -566,6 +566,7 @@ Future<void> main() async {
       Finder swipeBalancePromptFinder = find.text(swipeBalancePrompt);
       expect(swipeBalancePromptFinder, findsOneWidget);
 
+      await scrollHome(tester, -600);
       // check Dismiss button functionality
       final dismissButton = find.text('Dismiss');
       await tester.tap(dismissButton);
@@ -640,7 +641,10 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
 
       // Input text without tapping Save
-      await openDeviceCard(tester, "Passport");
+      final firstPassport = find.text("Passport").first;
+      await tester.tap(firstPassport);
+      await tester.pump(Durations.long2);
+
       await openDotsMenu(tester);
       await openEditDevice(tester);
 
@@ -1444,6 +1448,11 @@ Future<void> main() async {
       // Check that a pop up closed
       expect(confirmTextFromDialog, findsNothing);
 
+      /// Tap Do it later
+      await findAndPressTextButton(tester, "Do It Later");
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // disable
       await tester.pump(Durations.extralong4);
@@ -1462,6 +1471,11 @@ Future<void> main() async {
       await tester.pump();
       // Check that a pop up closed
       expect(confirmTextFromDialog, findsNothing);
+
+      /// Tap Do it later
+      await findAndPressTextButton(tester, "Do It Later");
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
 
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
@@ -2398,18 +2412,22 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
       await tester.pump(Durations.long2);
 
-      await openDeviceCard(tester, deviceName);
+      // get the first device with matching name
+      final deviceFinder = find.text(deviceName).first;
+      expect(deviceFinder, findsOneWidget);
+      await tester.tap(deviceFinder);
+      await tester.pumpAndSettle(Durations.long2);
+
       await openMenuAndPressDeleteDevice(tester);
 
-      final popUpText = find.text(
-        'Are you sure',
-      );
+      final popUpText = find.text('Are you sure');
       // Check that a pop up comes up
       await tester.pumpUntilFound(popUpText, duration: Durations.long1);
       final closeDialogButton = find.byIcon(Icons.close);
       await tester.tap(closeDialogButton.last);
       await tester.pump(Durations.long2);
       await tester.pump(Durations.long2);
+
       // Check that a pop up close on 'x'
       expect(popUpText, findsNothing);
 
@@ -2420,7 +2438,6 @@ Future<void> main() async {
       expect(deleteButtonFromDialog, findsOneWidget);
       await tester.tap(deleteButtonFromDialog);
       await tester.pump(Durations.long2);
-
       await tester.pump(Durations.long2);
 
       // Make sure device is removed
@@ -2431,17 +2448,18 @@ Future<void> main() async {
       // Verify that deleting the device also removes its associated accounts
       await findAndPressTextButton(tester, 'Accounts');
       await tester.pump(Durations.long2);
-      final passportAccount = find.text(
-        deviceName,
-      );
 
-      expect(passportAccount, findsNothing);
+      // check that only one remains
+      final remainingDevices = find.text(deviceName);
+      expect(remainingDevices,
+          findsNWidgets(2)); // second device have 2 "Passport" texts inside
 
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
+
     testWidgets('<Logs freeze>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
