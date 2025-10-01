@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
@@ -5,7 +7,6 @@
 # Exit if anything fails
 set -e
 
-NDK_VERSION="24.0.8215888"
 API_LEVEL=30
 
  UNAME=$(uname)
