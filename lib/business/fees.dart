@@ -93,14 +93,15 @@ class Fees {
   static final Fees _instance = Fees._internal();
 
   static const mempoolFoundationInstance = "https://mempool.foundation.xyz";
-  static const testnetMempoolFoundationInstance =
-      "https://testnet-mempool.foundation.xyz";
+
   static const testnet4MempoolFoundationInstance =
       "https://mempool.foundation.xyz/testnet4";
   static const _mempoolRecommendedFeesEndpoints = {
     Network.bitcoin: "$mempoolFoundationInstance/api/v1/fees/recommended",
     Network.testnet:
-        "$testnetMempoolFoundationInstance/api/v1/fees/recommended",
+        "$testnet4MempoolFoundationInstance/api/v1/fees/recommended",
+    Network.testnet4:
+        "$testnet4MempoolFoundationInstance/api/v1/fees/recommended",
     Network.signet: "$signetMempoolFoundationInstance/api/v1/fees/recommended"
   };
   static const signetMempoolFoundationInstance =
@@ -109,7 +110,7 @@ class Fees {
   static const _mempoolBlocksFeesEndpoints = {
     Network.bitcoin: "$mempoolFoundationInstance/api/v1/fees/mempool-blocks",
     Network.testnet:
-        "$testnetMempoolFoundationInstance/api/v1/fees/mempool-blocks",
+        "$testnet4MempoolFoundationInstance/api/v1/fees/mempool-blocks",
     Network.signet:
         "$signetMempoolFoundationInstance/api/v1/fees/mempool-blocks"
   };

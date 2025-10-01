@@ -16,7 +16,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rive/rive.dart' hide Image;
+import 'package:rive/rive.dart' as rive;
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
@@ -31,7 +31,10 @@ class MagicSetupGenerate extends StatefulWidget {
 class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   final walletGenerated = EnvoySeed().walletDerived();
 
-  StateMachineController? stateMachineController;
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _controller;
+  bool _isInitialized = false;
+
   final PageController _pageController = PageController();
   late int step;
 
@@ -59,46 +62,40 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
           S().magic_setup_send_backup_to_envoy_server_subheading,
         ];
 
-  bool isRiveInitialized = false;
-
   @override
   void initState() {
     super.initState();
     step = 0;
+    _initRive();
   }
 
-  Future<void> _onRiveInit(Artboard artboard) async {
-    final controller = StateMachineController.fromArtboard(artboard, 'STM');
-    if (controller == null) {
-      return;
-    }
+  void _initRive() async {
+    _riveFile = await rive.File.asset('assets/envoy_magic_setup.riv',
+        riveFactory: rive.Factory.rive);
+    _controller = rive.RiveWidgetController(
+      _riveFile!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
 
-    // Find inputs first
-    final showKeyInput = controller.findInput<bool>('ShowKey');
-    final showLockInput = controller.findInput<bool>('showLock');
-    final showShieldInput = controller.findInput<bool>('showShield');
-
-    // Set inputs to correct initial values BEFORE adding controller
+    // Set initial state based on wallet generation status
+    final stateMachine = _controller!.stateMachine;
     if (walletGenerated) {
-      showKeyInput?.change(false);
-      showLockInput?.change(true);
-      showShieldInput?.change(false);
+      stateMachine.boolean('ShowKey')?.value = false;
+      stateMachine.boolean('showLock')?.value = true;
+      stateMachine.boolean('showShield')?.value = false;
     } else {
-      showKeyInput?.change(true);
-      showLockInput?.change(false);
-      showShieldInput?.change(false);
+      stateMachine.boolean('ShowKey')?.value = true;
+      stateMachine.boolean('showLock')?.value = false;
+      stateMachine.boolean('showShield')?.value = false;
     }
 
-    // Now add controller
-    artboard.addController(controller);
-    stateMachineController = controller;
+    setState(() => _isInitialized = true);
 
-    // Delay showing Rive to avoid flashing wrong frame
+    // Delay to avoid flashing wrong frame
     await Future.delayed(const Duration(milliseconds: 200));
 
-    if (!isRiveInitialized) {
+    if (_isInitialized) {
       _initiateWalletCreate();
-      isRiveInitialized = true;
     }
   }
 
@@ -138,15 +135,19 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   }
 
   void _updateProgress() async {
+    if (_controller?.stateMachine == null) return;
+
+    final stateMachine = _controller!.stateMachine;
+
     if (walletGenerated) {
       // Only 2 steps: Lock (0), Shield (1)
-      stateMachineController?.findInput<bool>('showLock')?.change(step == 0);
-      stateMachineController?.findInput<bool>('showShield')?.change(step == 1);
+      stateMachine.boolean('showLock')?.value = step == 0;
+      stateMachine.boolean('showShield')?.value = step == 1;
     } else {
       // All 3 steps: Key (0), Lock (1), Shield (2)
-      stateMachineController?.findInput<bool>('ShowKey')?.change(step == 0);
-      stateMachineController?.findInput<bool>('showLock')?.change(step == 1);
-      stateMachineController?.findInput<bool>('showShield')?.change(step == 2);
+      stateMachine.boolean('ShowKey')?.value = step == 0;
+      stateMachine.boolean('showLock')?.value = step == 1;
+      stateMachine.boolean('showShield')?.value = step == 2;
     }
 
     _pageController.animateToPage(
@@ -161,56 +162,83 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {},
-      child: OnboardingPage(
-        rightFunction: null,
-        leftFunction: null,
-        clipArt: Container(
-          alignment: Alignment.topCenter,
-          height: 280,
-          width: 280,
-          child: RiveAnimation.asset(
-            'assets/envoy_magic_setup.riv',
-            stateMachines: const ["STM"],
-            onInit: _onRiveInit,
-            fit: BoxFit.contain,
-            alignment: Alignment.center,
-          ),
-        ),
-        text: [
-          ExpandablePageView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: _pageController,
-            children: List.generate(stepsHeadings.length, (index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: EnvoySpacing.xs,
-                  horizontal: EnvoySpacing.small,
-                ),
-                child: Column(
+      child: OnboardPageBackground(
+        child: Material(
+            color: Colors.transparent,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
                   mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Flexible(
-                      child: SingleChildScrollView(
-                        child: OnboardingText(
-                          header: stepsHeadings[index],
-                          text: stepSubHeadings[index],
-                          key: ValueKey<String>(stepSubHeadings[index]),
-                        ),
+                    Container(
+                      alignment: Alignment.topCenter,
+                      height: 280,
+                      width: 280,
+                      child: _isInitialized && _controller != null
+                          ? rive.RiveWidget(
+                              controller: _controller!,
+                              fit: rive.Fit.contain,
+                              alignment: Alignment.center,
+                            )
+                          : const SizedBox(),
+                    ),
+                    ExpandablePageView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      controller: _pageController,
+                      children: List.generate(
+                        stepsHeadings.length,
+                        (index) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Flexible(
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        stepsHeadings[index],
+                                        textAlign: TextAlign.center,
+                                        style: EnvoyTypography.heading,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: EnvoySpacing.medium3,
+                                        ),
+                                        child: Text(
+                                          stepSubHeadings[index],
+                                          textAlign: TextAlign.center,
+                                          style: EnvoyTypography.info.copyWith(
+                                            height: 1.2,
+                                            color: EnvoyColors.textSecondary,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ),
                   ],
                 ),
-              );
-            }),
-          ),
-        ],
+                const SizedBox.shrink(),
+              ],
+            )),
       ),
     );
   }
 
   @override
   void dispose() {
-    stateMachineController?.dispose();
+    _controller?.dispose();
+    _riveFile?.dispose();
     super.dispose();
   }
 }
@@ -234,21 +262,6 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
     bool isAndroid = Platform.isAndroid;
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (_, __) async {
-        if (_androidBackupInfoPage != 0) {
-          setState(() {
-            _androidBackupInfoPage = 0;
-          });
-        }
-        if (widget.onContinue != null) {
-          widget.onContinue!.call();
-        }
-        if (widget.skipSuccessScreen) {
-          context.go("/");
-        } else {
-          context.pushNamed(ONBOARD_ENVOY_MAGIC_WALLET_READY);
-        }
-      },
       child: OnboardPageBackground(
         child: Material(
             color: Colors.transparent,
@@ -261,8 +274,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(
-                          bottom: EnvoySpacing.medium3,
-                          top: EnvoySpacing.large2),
+                          bottom: EnvoySpacing.medium3, top: EnvoySpacing.xl),
                       child: Container(
                         constraints:
                             BoxConstraints.tight(const Size.fromHeight(184)),
@@ -434,17 +446,20 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      S().android_backup_info_heading,
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.heading,
-                    ),
-                    const Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.medium3)),
+                    const SizedBox(height: EnvoySpacing.medium3),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium1),
+                          horizontal: EnvoySpacing.medium2),
+                      child: Text(
+                        S().android_backup_info_heading,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.heading,
+                      ),
+                    ),
+                    const SizedBox(height: EnvoySpacing.medium3),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium2),
                       child: LinkText(
                         text: S().android_backup_info_subheading,
                         onTap: () {

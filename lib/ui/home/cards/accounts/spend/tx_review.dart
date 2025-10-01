@@ -78,31 +78,41 @@ class TxReview extends ConsumerStatefulWidget {
 class _TxReviewState extends ConsumerState<TxReview> {
   StreamSubscription<QuantumLinkMessage_BroadcastTransaction>?
       _primeTransactionsSubscription;
-  late final rive.Artboard _artBoard;
-  rive.StateMachineController? _stateMachineController;
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _controller;
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    //load rive animation with cache to avoid repeated allocations
     _loadRiveAnimation();
   }
 
   void _loadRiveAnimation() async {
-    //load rive animation for better performance
-    rootBundle.load('assets/envoy_loader.riv').then((data) {
-      final file = rive.RiveFile.import(data);
-      final artboard = file.mainArtboard;
-      _stateMachineController =
-          rive.StateMachineController.fromArtboard(artboard, 'STM');
-      if (_stateMachineController != null) {
-        artboard.addController(_stateMachineController!);
-      }
+    try {
+      _riveFile = await rive.File.asset('assets/envoy_loader.riv',
+          riveFactory: rive.Factory.rive);
+      _controller = rive.RiveWidgetController(
+        _riveFile!,
+        stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+      );
+
       if (mounted) {
-        setState(() => _artBoard = artboard);
+        setState(() => _isInitialized = true);
       }
-    });
+    } catch (e) {
+      kPrint('Error loading Rive file: $e');
+    }
+
     Future.microtask(() => _resetPrimeProviderStates());
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _riveFile?.dispose();
+    _passportMessageSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -155,13 +165,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
     );
   }
 
-  @override
-  dispose() {
-    _primeTransactionsSubscription?.cancel();
-    _stateMachineController?.dispose();
-    super.dispose();
-  }
-
   void _resetPrimeProviderStates() {
     ref.read(primeConnectedStateProvider.notifier).updateStep(
           S().onboarding_connectionIntro_connectedToPrime,
@@ -203,25 +206,33 @@ class _TxReviewState extends ConsumerState<TxReview> {
           );
 
       try {
-        _primeTransactionsSubscription = BluetoothManager()
+        _passportMessageSubscription = BluetoothManager()
             .transactionStream
-            .listen((QuantumLinkMessage_BroadcastTransaction message) async {
-          try {
-            final signedPsbt = message.field0;
-            kPrint("Signed Psbt $signedPsbt");
+            .listen((PassportMessage message) async {
+          kPrint(
+              "Got the Passport Message : ${message.message} :::  ${message.message.runtimeType}");
+          if (message.message is QuantumLinkMessage_BroadcastTransaction) {
+            kPrint("Got the Broadcast Transaction");
+            try {
+              final signedPsbt =
+                  (message.message as QuantumLinkMessage_BroadcastTransaction)
+                      .field0;
+              kPrint("Signed Psbt $signedPsbt");
+              kPrint("Signed Psbt $signedPsbt");
 
-            //TODO: fix quantum link with Uint8List psbt
-            await ref
-                .read(spendTransactionProvider.notifier)
-                .decodePrimePsbt(providerScope, signedPsbt.psbt);
+              //TODO: fix quantum link with Uint8List psbt
+              await ref
+                  .read(spendTransactionProvider.notifier)
+                  .decodePrimePsbt(providerScope, signedPsbt.psbt);
 
-            ref.read(signTransactionStateProvider.notifier).updateStep(
-                  "Transaction ready", //TODO: localazy
-                  EnvoyStepState.FINISHED,
-                );
-          } catch (e, stack) {
-            debugPrintStack(stackTrace: stack);
-            kPrint(e);
+              ref.read(signTransactionStateProvider.notifier).updateStep(
+                    "Transaction ready", //TODO: localazy
+                    EnvoyStepState.FINISHED,
+                  );
+            } catch (e, stack) {
+              debugPrintStack(stackTrace: stack);
+              kPrint(e);
+            }
           }
         });
 
@@ -325,10 +336,12 @@ class _TxReviewState extends ConsumerState<TxReview> {
               SliverToBoxAdapter(
                 child: SizedBox(
                   height: 260,
-                  child: rive.Rive(
-                    artboard: _artBoard,
-                    fit: BoxFit.contain,
-                  ),
+                  child: _isInitialized && _controller != null
+                      ? rive.RiveWidget(
+                          controller: _controller!,
+                          fit: rive.Fit.contain,
+                        )
+                      : const SizedBox(),
                 ),
               ),
               const SliverPadding(padding: EdgeInsets.all(28)),
@@ -519,14 +532,16 @@ class _TxReviewState extends ConsumerState<TxReview> {
   }
 
   void _setAnimState(BroadcastProgress progress) {
+    if (_controller?.stateMachine == null) return;
+
     bool happy = progress == BroadcastProgress.success;
     bool unhappy = progress == BroadcastProgress.failed;
     bool indeterminate = progress == BroadcastProgress.inProgress;
-    _stateMachineController
-        ?.findInput<bool>("indeterminate")
-        ?.change(indeterminate);
-    _stateMachineController?.findInput<bool>("happy")?.change(happy);
-    _stateMachineController?.findInput<bool>("unhappy")?.change(unhappy);
+
+    final stateMachine = _controller!.stateMachine;
+    stateMachine.boolean("indeterminate")?.value = indeterminate;
+    stateMachine.boolean("happy")?.value = happy;
+    stateMachine.boolean("unhappy")?.value = unhappy;
   }
 
   bool hapticCalled = false;

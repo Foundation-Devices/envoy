@@ -5,7 +5,6 @@
 import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -44,23 +43,34 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
-          child: Container(
+          child: Align(
             alignment: Alignment.centerLeft,
-            child: IconButton(
-              icon: const Icon(Icons.chevron_left, color: Colors.black),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
+            child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: const Padding(
+                  padding: EdgeInsets.all(EnvoySpacing.medium1),
+                  child: Icon(Icons.arrow_back_ios_rounded,
+                      size: EnvoySpacing.medium2),
+                )),
           ),
         ),
+        const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
         SliverToBoxAdapter(
           child: Text(
               S().manual_setup_generate_seed_verify_seed_quiz_1_4_heading,
               style: EnvoyTypography.heading,
               textAlign: TextAlign.center),
         ),
-        const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
+        const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
+        SliverToBoxAdapter(
+          child: Text("${_pageIndex + 1} of 4",
+              style: EnvoyTypography.body
+                  .copyWith(color: EnvoyColors.textTertiary),
+              textAlign: TextAlign.center),
+        ),
+        const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
         SliverToBoxAdapter(
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
@@ -77,12 +87,11 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                 key: ValueKey(
                   "${_puzzleOptions[_pageIndex].seedIndex}",
                 ),
-                style: EnvoyTypography.info
-                    .copyWith(color: EnvoyColors.textTertiary),
+                style: EnvoyTypography.body
+                    .copyWith(color: EnvoyColors.textSecondary),
                 textAlign: TextAlign.center),
           ),
         ),
-        const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
         SliverToBoxAdapter(
           child: SizedBox(
             height: isSmallScreen ? 280 : 400,
@@ -98,10 +107,9 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                     padEnds: true,
                     children: _puzzleOptions.mapIndexed((index, e) {
                       return Padding(
-                        padding: const EdgeInsets.only(
-                            top: EnvoySpacing.medium1,
-                            right: EnvoySpacing.medium2,
-                            left: EnvoySpacing.medium2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium2,
+                        ),
                         child: PuzzleWidget(
                           puzzle: e,
                           onCorrectAnswer: () async {
@@ -133,11 +141,6 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                     }).toList(),
                   ),
                 ),
-                Padding(
-                    padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
-                    child: DotsIndicator(
-                        pageController: _pageController,
-                        totalPages: _puzzleOptions.length)),
               ],
             ),
           ),
@@ -151,7 +154,7 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
               !_finishedAnswers
                   ? Padding(
                       padding:
-                          const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                          const EdgeInsets.only(bottom: EnvoySpacing.large1),
                       child: Text(
                         S().manual_setup_generate_seed_verify_seed_again_quiz_infotext,
                         style: EnvoyTypography.button.copyWith(
@@ -249,18 +252,19 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SizedBox(
-          height: 100,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _answerField(context),
-              if (chosenAnswer != null)
-                _buildAnswerStatus(chosenAnswer == widget.puzzle.answerString),
-            ],
-          ),
+        const SizedBox(height: EnvoySpacing.medium3),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            _answerField(context),
+            const SizedBox(height: EnvoySpacing.medium3),
+            chosenAnswer != null
+                ? _buildAnswerStatus(chosenAnswer == widget.puzzle.answerString)
+                : const SizedBox(height: 20),
+          ],
         ),
+        const SizedBox(height: EnvoySpacing.medium1),
         Flexible(
           child: GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
@@ -270,10 +274,8 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                 crossAxisSpacing: 20.0,
               ),
               itemBuilder: (context, index) {
-                const TextStyle textTheme = TextStyle(
-                    fontSize: 15,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.bold);
+                TextStyle textTheme = EnvoyTypography.button
+                    .copyWith(color: EnvoyColors.textPrimary);
                 return GestureDetector(
                   onTap: () {
                     setState(() {
@@ -298,7 +300,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                             const BoxConstraints(maxWidth: 300, maxHeight: 40),
                         decoration: BoxDecoration(
                             color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(4)),
+                            borderRadius: BorderRadius.circular(16)),
                         child: Text(options[index],
                             overflow: TextOverflow.fade,
                             textScaler: MediaQuery.of(context)
@@ -349,7 +351,7 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                 EnvoyIcons.alert,
                 color: EnvoyColors.accentSecondary,
               ),
-              const Padding(padding: EdgeInsets.all(4)),
+              const SizedBox(height: EnvoySpacing.small),
               Text(
                 S().manual_setup_generate_seed_verify_seed_quiz_fail_invalid,
                 style: Theme.of(context)
@@ -362,7 +364,6 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
   }
 
   Widget _answerField(BuildContext context) {
-    Color textColor = Colors.black;
     Color borderColor = Colors.transparent;
     if (chosenAnswer == null) {
       borderColor = Colors.transparent;
@@ -374,16 +375,18 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
       }
     }
 
-    final TextStyle textTheme = TextStyle(color: textColor, fontSize: 16);
+    final TextStyle textTheme =
+        EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary);
     return Container(
-      height: 40,
-      margin: const EdgeInsets.symmetric(vertical: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      constraints: const BoxConstraints(maxWidth: 140, maxHeight: 38),
+      height: 52,
+      margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      constraints:
+          const BoxConstraints(maxWidth: 200, minWidth: 160, maxHeight: 52),
       decoration: BoxDecoration(
           color: Colors.grey[300],
           border: Border.all(width: 1, color: borderColor),
-          borderRadius: BorderRadius.circular(8)),
+          borderRadius: BorderRadius.circular(16)),
       child: Row(
         children: [
           Text(" ${widget.puzzle.seedIndex + 1}. ",
@@ -400,15 +403,6 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
                         .textScaler
                         .clamp(maxScaleFactor: 1.2, minScaleFactor: .8),
                     style: textTheme),
-                Container(
-                  margin: const EdgeInsets.only(top: 14),
-                  child: Divider(
-                    thickness: 1,
-                    color: chosenAnswer == null
-                        ? Colors.black54
-                        : Colors.transparent,
-                  ),
-                )
               ],
             ),
           ),

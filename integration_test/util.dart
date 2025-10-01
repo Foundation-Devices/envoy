@@ -312,13 +312,19 @@ Future<void> pressHamburgerMenu(WidgetTester tester) async {
   await tester.pump(Durations.extralong4);
 }
 
-Future<void> goToSettings(WidgetTester tester) async {
+Future<void> tapSettingsButton(
+  WidgetTester tester, {
+  String buttonText = "SETTINGS",
+  Duration wait = Durations.extralong4,
+}) async {
   await tester.pump();
-  final settingsButton = find.text('SETTINGS');
-  expect(settingsButton, findsOneWidget);
 
-  await tester.tap(settingsButton);
-  await tester.pump(Durations.extralong4);
+  final buttonFinder = find.text(buttonText);
+  expect(buttonFinder, findsOneWidget,
+      reason: 'Button with text "$buttonText" not found in Settings');
+
+  await tester.tap(buttonFinder);
+  await tester.pump(wait);
   await tester.pump();
 }
 
@@ -540,7 +546,7 @@ Future<void> setUpWalletFromSeedViaMagicRecover(
   expect(restoreButtonFromDialog, findsOneWidget);
   await tester.tap(restoreButtonFromDialog);
   await tester.pump(Durations.long2);
-  await tester.pumpAndSettle();
+  await pumpRepeatedly(tester, times: 30);
 
   final successMessage = find.text("Your Mobile Wallet Is Ready");
   final continueButtonFinder = find.text('Continue');
@@ -570,7 +576,7 @@ Future<void> setUpWalletFromSeedViaMagicRecover(
 
   // Ensure at least one instance of the text is found
   expect(passportAccount, findsWidgets);
-  await tester.pumpAndSettle();
+  await pumpRepeatedly(tester, times: 20);
 }
 
 Future<void> setUpWalletFromSeedViaBackupFile(
@@ -627,7 +633,7 @@ Future<void> setUpWalletFromSeedViaBackupFile(
 
   // Ensure at least one instance of the text is found
   expect(passportAccount, findsWidgets);
-  await tester.pumpAndSettle();
+  await pumpRepeatedly(tester, times: 30);
 }
 
 Future<void> enterSeedWords(
@@ -694,7 +700,7 @@ Future<void> scrollFindAndTapText(WidgetTester tester, String text,
     if (finder.evaluate().isNotEmpty) {
       // Widget found, tap on the first instance
       await tester.tap(finder);
-      await tester.pumpAndSettle(); // Ensure the tap action is completed
+      await pumpRepeatedly(tester); // Ensure the tap action is completed
       return;
     }
 
@@ -723,25 +729,94 @@ Future<void> onboardingAndEnterSeed(
   await tester.tap(manuallyConfigureSeedWords);
   await tester.pump(const Duration(milliseconds: 1000));
 
-  final import12SeedButton = find.text('12 Word Seed');
-  expect(import12SeedButton, findsOneWidget);
-  await tester.tap(import12SeedButton);
-  await tester.pump(const Duration(milliseconds: 1500));
+  /// 24 word err test ENV-2315 ////////////////////////////////////////////////////
+
+  await findAndPressTextButton(tester, '24 Word Seed');
 
   final mnemonicInput = find.byType(MnemonicInput);
+
+// Enter first 12 words
+  for (int i = 0; i < 12; i++) {
+    await tester.tap(mnemonicInput.at(i), warnIfMissed: false);
+    await tester.pump(Durations.long2);
+
+    await tester.enterText(mnemonicInput.at(i), "bacon");
+    await tester.pump(Durations.long2);
+  }
+
+// Wait before continuing
+  await pumpRepeatedly(tester, times: 30);
+
+// Enter remaining 12 words (mnemonicInput goes from 0 to 11 !!!)
+  for (int i = 0; i < 12; i++) {
+    await tester.tap(mnemonicInput.at(i), warnIfMissed: false);
+    await tester.pump(Durations.long2);
+
+    final word = (i == 11) ? "hour" : "bacon";
+    await tester.enterText(mnemonicInput.at(i), word);
+    await tester.pump(Durations.long2);
+  }
+
+  // just tap somewhere on screen after entering seed
+  await findAndPressTextButton(tester, 'Enter Your Seed');
+  await tester.pump(const Duration(milliseconds: 1500));
+
+  await findAndPressTextButton(tester, 'Done');
+  await tester.pump(const Duration(milliseconds: 500));
+
+  await findPopUpText(tester,
+      "That seed appears to be invalid. Please check the words entered, including the order they are in and try again.");
+
+  await findAndTapPopUpText(tester, "Back");
+
+  await findAndPressIcon(tester, Icons.arrow_back_ios_rounded);
+
+  /// ///////////////////////////////////////////////////////////////////////////////
+
+  ///   /// 12 word err test ENV-2315 ////////////////////////////////////////////////////
+
+  await findAndPressTextButton(tester, '12 Word Seed');
+
+  for (int i = 0; i < 12; i++) {
+    await tester.tap(mnemonicInput.at(i), warnIfMissed: false);
+    await tester.pump(Durations.long2);
+
+    final word =
+        (i == 11) ? "hour" : "bacon"; // first 23 "bacon", last is "hour"
+    await tester.enterText(mnemonicInput.at(i), word);
+
+    await tester.pump(Durations.long2);
+  }
+
+  // just tap somewhere on screen after entering seed
+  await findAndPressTextButton(tester, 'Enter Your Seed');
+  await tester.pump(const Duration(milliseconds: 1500));
+
+  await findAndPressTextButton(tester, 'Done');
+  await tester.pump(const Duration(milliseconds: 500));
+
+  await findPopUpText(tester,
+      "That seed appears to be invalid. Please check the words entered, including the order they are in and try again.");
+
+  await findAndTapPopUpText(tester, "Back");
+
+  await findAndPressIcon(tester, Icons.arrow_back_ios_rounded);
+
+  /// ///////////////////////////////////////////////////////////////////////////////
+
+  /// continue with Magic ˇ
+  await findAndPressTextButton(tester, '12 Word Seed');
+  await tester.pump(const Duration(milliseconds: 1500));
+
   expect(mnemonicInput, findsExactly(12));
 
   await enterSeedWords(seed, tester, mnemonicInput);
 
   // just tap somewhere on screen after entering seed
-  final title = find.text('Enter Your Seed');
-  expect(title, findsOneWidget);
-  await tester.tap(title);
+  await findAndPressTextButton(tester, 'Enter Your Seed');
   await tester.pump(const Duration(milliseconds: 1500));
 
-  final doneButton = find.text('Done');
-  expect(doneButton, findsOneWidget);
-  await tester.tap(doneButton);
+  await findAndPressTextButton(tester, 'Done');
   await tester.pump(const Duration(milliseconds: 500));
 }
 
@@ -753,6 +828,15 @@ Future<void> disableTorOnboarding(WidgetTester tester,
   if (disableMagicBackup) {
     await findAndToggleEnvoySwitch(
         tester, "Simple, secure backup and recovery");
+    //if modal shows up, tap continue
+    await tester.pump(Durations.long1);
+    final continueButtonFinder = find.text('Continue');
+    await tester.pumpUntilFound(continueButtonFinder,
+        duration: Durations.long1, tries: 100);
+    expect(continueButtonFinder, findsOneWidget);
+    await tester.pump(Durations.long2);
+    await tester.tap(continueButtonFinder);
+    await tester.pump(Durations.long2);
   }
 
   Finder backButtonFinder = find.byType(CupertinoNavigationBarBackButton);
@@ -869,7 +953,7 @@ Future<void> findAndTapActivitySlideButton(WidgetTester tester) async {
 
 Future<String> extractFiatAmountFromAccount(
     WidgetTester tester, String accountText) async {
-  await tester.pumpAndSettle(); // Ensure the widget tree is settled
+  await pumpRepeatedly(tester); // Ensure the widget tree is settled
 
   // Find the AccountListTile containing the specified accountText
   final accountListTileFinder =
@@ -934,7 +1018,7 @@ String extractTextFromTextSpan(TextSpan textSpan) {
 
 Future<void> checkAndWaitLoaderGhostInAccount(
     WidgetTester tester, String accountText) async {
-  await tester.pumpAndSettle(); // Ensure the widget tree is settled
+  await pumpRepeatedly(tester); // Ensure the widget tree is settled
 
   // Find the AccountListTile containing the specified accountText
   final accountListTileFinder =
@@ -1182,7 +1266,7 @@ Future<void> findAndTapBigTab(WidgetTester tester, String label) async {
       if (textWidget.data != null && textWidget.data!.contains(label)) {
         // Tap the BigTab widget containing the label
         await tester.tap(find.byWidget(tab));
-        await tester.pumpAndSettle();
+        await pumpRepeatedly(tester);
         return; // Exit after tap
       }
     }
@@ -1199,7 +1283,7 @@ Future<void> enablePerformance(WidgetTester tester) async {
 
 Future<bool> checkTorShieldIcon(WidgetTester tester,
     {required bool expectPrivacy}) async {
-  await tester.pumpAndSettle(); // Ensure the screen updates after interactions
+  await pumpRepeatedly(tester); // Ensure the screen updates after interactions
 
   // Find all Image widgets on the screen
   final imageFinder = find.byType(Image);
@@ -1245,7 +1329,7 @@ Future<bool> checkTorShieldIcon(WidgetTester tester,
 Future<bool> isAccountTestnetTaproot(
     WidgetTester tester, Finder accountListTile,
     {bool isHotWallet = true}) async {
-  await tester.pumpAndSettle();
+  await pumpRepeatedly(tester);
 
   // Check for the presence of 'Testnet' and 'Taproot' texts within the Account List.
   bool containsTestnet = find
@@ -1282,7 +1366,7 @@ Future<bool> isAccountTestnetTaproot(
 
 Future<bool> isAccountTestnet(WidgetTester tester, Finder accountListTile,
     {bool isHotWallet = true}) async {
-  await tester.pumpAndSettle();
+  await pumpRepeatedly(tester);
 
   // Check for the presence of 'Testnet' text within the Account List.
   bool containsTestnet = find
@@ -1311,7 +1395,7 @@ Future<bool> isAccountTestnet(WidgetTester tester, Finder accountListTile,
 // Hot wallets only!
 Future<bool> isAccountTaproot(
     WidgetTester tester, Finder accountListTile) async {
-  await tester.pumpAndSettle();
+  await pumpRepeatedly(tester);
 
   // Check for the presence of 'Taproot', and 'Envoy' texts within the Account List.
   bool containsTaproot = find
@@ -1410,7 +1494,7 @@ Future<void> findAndTapFirstAccText(
 
 Future<void> fromHomeToAdvancedMenu(WidgetTester tester) async {
   await pressHamburgerMenu(tester);
-  await goToSettings(tester);
+  await tapSettingsButton(tester);
   await openAdvancedMenu(tester);
 }
 
@@ -1420,6 +1504,23 @@ Future<void> findAndTapPopUpText(WidgetTester tester, String tapText) async {
       tries: 10, duration: Durations.long1);
   await tester.tap(tapButtonText.last);
   await tester.pump(Durations.long2);
+}
+
+Future<void> findAndTapPopUpIcon(WidgetTester tester, IconData icon) async {
+  final iconFinder = find.byIcon(icon);
+
+  // Wait until the icon appears on screen
+  await tester.pumpUntilFound(iconFinder, tries: 10, duration: Durations.long1);
+
+  // Tap the last instance (useful if multiple are on screen)
+  await tester.tap(iconFinder);
+  await tester.pump(Durations.long2);
+}
+
+Future<void> findPopUpText(WidgetTester tester, String tapText) async {
+  final tapButtonText = find.text(tapText);
+  await tester.pumpUntilFound(tapButtonText,
+      tries: 10, duration: Durations.long1);
 }
 
 Future<void> waitForTealTextAndTap(
@@ -1509,6 +1610,16 @@ Future<void> openMenuAndPressDeleteDevice(WidgetTester tester) async {
 
   await tester.tap(editNameButton);
   await tester.pump(Durations.long2);
+}
+
+Future<void> pumpRepeatedly(
+  WidgetTester tester, {
+  Duration duration = Durations.long2,
+  int times = 10,
+}) async {
+  for (var i = 0; i < times; i++) {
+    await tester.pump(duration);
+  }
 }
 
 extension PumpUntilFound on WidgetTester {
@@ -1653,7 +1764,7 @@ Future<void> disableAllNetworks(WidgetTester tester) async {
 
 Future<void> clearPromptStates(WidgetTester tester) async {
   await pressHamburgerMenu(tester);
-  await goToSettings(tester);
+  await tapSettingsButton(tester);
 
   final devOptions = find.text('Dev options');
   expect(devOptions, findsOneWidget);

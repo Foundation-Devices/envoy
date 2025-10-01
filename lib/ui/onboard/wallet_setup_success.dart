@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +15,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/routes/routes.dart';
+import 'onboarding_page.dart';
 
 class WalletSetupSuccess extends ConsumerStatefulWidget {
   final bool isPrimeWallet;
@@ -40,9 +41,6 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (_, __) async {
-        context.go("/");
-      },
       child: OnboardPageBackground(
         child: Material(
           color: Colors.transparent,
@@ -75,10 +73,13 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
               ),
               if (!widget.isPrimeWallet)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
-                  child: EnvoyButton(
+                  padding: const EdgeInsets.only(
+                      bottom: EnvoySpacing.medium3,
+                      left: EnvoySpacing.xs,
+                      right: EnvoySpacing.xs),
+                  child: OnboardingButton(
                     label: S().component_continue,
-                    type: ButtonType.primary,
+                    type: EnvoyButtonTypes.primary,
                     onTap: () {
                       Settings().updateAccountsViewSettings();
                       if (mounted) {

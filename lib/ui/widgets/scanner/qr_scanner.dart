@@ -408,6 +408,14 @@ class ScanInfoAnimDialog extends StatefulWidget {
 }
 
 class _ScanInfoAnimDialogState extends State<ScanInfoAnimDialog> {
+  rive.RiveWidgetController? _controller;
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -418,13 +426,24 @@ class _ScanInfoAnimDialogState extends State<ScanInfoAnimDialog> {
       child: Center(
         child: Consumer(builder: (context, ref, child) {
           final riveFile = ref.watch(animatedQrScannerRiveProvider);
+          if (riveFile != null && _controller == null) {
+            _controller = rive.RiveWidgetController(
+              riveFile,
+              // If you have a specific state machine, use:
+              // stateMachineSelector: rive.StateMachineSelector.byName('YourStateMachineName'),
+              // Or if you want to play a specific animation, use:
+              // animationSelector: rive.AnimationSelector.byName(Platform.isIOS ? "ios_scan" : "android_scan"),
+            );
+          }
+
           return SizedBox(
             height: 340,
-            child: rive.RiveAnimation.direct(
-              riveFile!,
-              //animations: [Platform.isIOS ? "ios_scan" : "android_scan"], // TODO make separate animations
-              fit: BoxFit.contain,
-            ),
+            child: riveFile != null && _controller != null
+                ? rive.RiveWidget(
+                    controller: _controller!,
+                    fit: rive.Fit.contain,
+                  )
+                : const SizedBox(),
           );
         }),
       ),

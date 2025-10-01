@@ -45,7 +45,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
     Image.asset(
       "assets/data_secured_2.png",
       height: 82,
-      width: 230,
+      width: 167,
     ),
     Image.asset(
       Platform.isAndroid
@@ -106,82 +106,85 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
       height: 520,
       child: Padding(
         padding: const EdgeInsets.all(EnvoySpacing.medium2),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        child: Stack(
           children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: GestureDetector(
-                child: EnvoyIcon(
-                  EnvoyIcons.close,
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: PageView(
+                    controller: _pageController,
+                    children: [
+                      ...stepHeadings.mapIndexed((i, _) {
+                        return SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(height: EnvoySpacing.xs),
+                              Center(
+                                  child: SizedBox(
+                                height: 110,
+                                child: stepIllustration[i],
+                              )),
+                              SizedBox(height: EnvoySpacing.medium3),
+                              Text(stepHeadings[i],
+                                  textAlign: TextAlign.center,
+                                  style: EnvoyTypography.heading),
+                              const SizedBox(height: EnvoySpacing.medium1),
+                              LinkText(
+                                text: stepSubHeadings[i],
+                                linkStyle: EnvoyTypography.button.copyWith(
+                                  color: EnvoyColors.accentPrimary,
+                                ),
+                                onTap: () => launchUrl(
+                                  Uri.parse(
+                                    Platform.isAndroid
+                                        ? "https://developer.android.com/guide/topics/data/autobackup"
+                                        : "https://support.apple.com/en-us/HT202303",
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: EnvoySpacing.medium3)
+                            ],
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
                 ),
+                DotsIndicator(
+                  totalPages: stepHeadings.length,
+                  pageController: _pageController,
+                ),
+                const SizedBox(height: EnvoySpacing.medium3),
+                EnvoyButton(
+                  _currentPage == stepHeadings.length - 1
+                      ? S().component_continue
+                      : S().component_next,
+                  type: EnvoyButtonTypes.primaryModal,
+                  onTap: () {
+                    if (_currentPage == stepHeadings.length - 1) {
+                      widget.onLastStep();
+                    } else {
+                      _pageController.nextPage(
+                        duration: const Duration(milliseconds: 600),
+                        curve: Curves.easeInOut,
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: GestureDetector(
+                child: EnvoyIcon(EnvoyIcons.close),
                 onTap: () {
                   Navigator.of(context).pop();
                 },
               ),
-            ),
-            Flexible(
-              child: PageView(
-                controller: _pageController,
-                children: [
-                  ...stepHeadings.mapIndexed((i, _) {
-                    return SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(height: EnvoySpacing.xs),
-                          Center(
-                              child: SizedBox(
-                            height: 110,
-                            child: stepIllustration[i],
-                          )),
-                          SizedBox(height: EnvoySpacing.medium3),
-                          Text(stepHeadings[i],
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.heading),
-                          const SizedBox(height: EnvoySpacing.medium1),
-                          LinkText(
-                            text: stepSubHeadings[i],
-                            linkStyle: EnvoyTypography.button.copyWith(
-                              color: EnvoyColors.accentPrimary,
-                            ),
-                            onTap: () => launchUrl(
-                              Uri.parse(
-                                Platform.isAndroid
-                                    ? "https://developer.android.com/guide/topics/data/autobackup"
-                                    : "https://support.apple.com/en-us/HT202303",
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: EnvoySpacing.medium3)
-                        ],
-                      ),
-                    );
-                  }),
-                ],
-              ),
-            ),
-            DotsIndicator(
-              totalPages: stepHeadings.length,
-              pageController: _pageController,
-            ),
-            const SizedBox(height: EnvoySpacing.medium3),
-            EnvoyButton(
-              _currentPage == stepHeadings.length - 1
-                  ? S().component_continue
-                  : S().component_next,
-              type: EnvoyButtonTypes.primaryModal,
-              onTap: () {
-                if (_currentPage == stepHeadings.length - 1) {
-                  widget.onLastStep();
-                } else {
-                  _pageController.nextPage(
-                    duration: const Duration(milliseconds: 600),
-                    curve: Curves.easeInOut,
-                  );
-                }
-              },
             ),
           ],
         ),

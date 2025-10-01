@@ -16,10 +16,10 @@ import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' as rive;
+import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
 
 class HomeAppBar extends ConsumerStatefulWidget {
   final bool backGroundShown;
@@ -164,6 +164,12 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                 ref.read(homePageTitleProvider.notifier).state =
                     S().menu_heading.toUpperCase();
               } else if (state == HamburgerState.back) {
+                if (path == ROUTE_SELECT_ACCOUNT ||
+                    path == ROUTE_PEER_TO_PEER) {
+                  showBuyBitcoinOptions(ref);
+                  context.go(ROUTE_BUY_BITCOIN);
+                }
+
                 if (path == ROUTE_SELECT_REGION &&
                     await EnvoyStorage().getCountry() != null) {
                   if (context.mounted) {
@@ -424,57 +430,65 @@ class HamburgerMenu extends ConsumerStatefulWidget {
 }
 
 class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
-  Artboard? _menuArtBoard;
-  StateMachineController? _menuController;
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _controller;
+  bool _isInitialized = false;
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) => _loadMenu());
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) => _loadMenu());
   }
 
   Future<void> _loadMenu() async {
-    ByteData menuRive = await rootBundle.load('assets/hamburger.riv');
-    final file = RiveFile.import(menuRive);
-    _menuController =
-        StateMachineController.fromArtboard(file.mainArtboard, 'statemachine');
-    setState(() => _menuArtBoard = file.mainArtboard);
-    _menuArtBoard?.addController(_menuController!);
+    _riveFile = await rive.File.asset('assets/hamburger.riv',
+        riveFactory: rive.Factory.rive);
+    _controller = rive.RiveWidgetController(
+      _riveFile!,
+      stateMachineSelector: rive.StateMachineSelector.byName('statemachine'),
+    );
+
+    setState(() => _isInitialized = true);
     updateAnimationState(null);
   }
 
   @override
   void dispose() {
-    _menuController?.dispose();
+    _controller?.dispose();
+    _riveFile?.dispose();
     super.dispose();
   }
 
   void updateAnimationState(HamburgerMenu? oldWidget) async {
     if (oldWidget?.iconState == widget.iconState) return;
-    final pos = _menuController?.findInput<double>("state_pos")?.value;
+    if (_controller?.stateMachine == null) return;
+
+    final stateMachine = _controller!.stateMachine;
+    final pos = stateMachine.number("state_pos")?.value;
+
     switch (widget.iconState) {
       case HamburgerState.idle:
         //there is no direct animation path from 2.0 to 0
         //just a work around to mitigate this path.
         if (pos == 2.0) {
-          _menuController?.findInput<double>("state_pos")?.change(1);
+          stateMachine.number("state_pos")?.value = 1;
           await Future.delayed(Duration(milliseconds: 200));
-          _menuController?.findInput<double>("state_pos")?.change(0);
+          stateMachine.number("state_pos")?.value = 0;
         } else {
-          _menuController?.findInput<double>("state_pos")?.change(0.0);
+          stateMachine.number("state_pos")?.value = 0.0;
         }
         break;
       case HamburgerState.upward:
-        _menuController?.findInput<double>("state_pos")?.change(1);
+        stateMachine.number("state_pos")?.value = 1;
         break;
       case HamburgerState.back:
         if (oldWidget == null) {
-          _menuController?.findInput<double>("state_pos")?.change(0.0);
+          stateMachine.number("state_pos")?.value = 0.0;
           break;
         } else if (oldWidget.iconState == HamburgerState.upward) {
-          _menuController?.findInput<double>("state_pos")?.change(2);
+          stateMachine.number("state_pos")?.value = 2;
         } else {
-          _menuController?.findInput<double>("state_pos")?.change(-1);
+          stateMachine.number("state_pos")?.value = -1;
         }
         break;
     }
@@ -505,10 +519,10 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
               child: Center(
                 child: SizedBox.fromSize(
                   size: const Size.square(24),
-                  child: _menuArtBoard != null
-                      ? Rive(
-                          artboard: _menuArtBoard!,
-                          fit: BoxFit.contain,
+                  child: _isInitialized && _controller != null
+                      ? rive.RiveWidget(
+                          controller: _controller!,
+                          fit: rive.Fit.contain,
                         )
                       : const SizedBox.square(),
                 ),
