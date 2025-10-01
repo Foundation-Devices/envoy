@@ -537,6 +537,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "bip85"
+version = "0.2.0"
+source = "git+https://github.com/Foundation-Devices/rust-bip85?rev=cea22d90fcbca6d142aa26a48581511575d0dfae#cea22d90fcbca6d142aa26a48581511575d0dfae"
+dependencies = [
+ "bip39",
+ "bitcoin 0.32.7",
+]
+
+[[package]]
 name = "bitcoin"
 version = "0.30.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2696,13 +2705,14 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?rev=272d4214180c782606187e6855c181f5da649579#272d4214180c782606187e6855c181f5da649579"
+source = "git+https://github.com/Foundation-Devices/ngwallet?tag=2.4.0#04b2ba8b9a565e1c5a6cfa4bab7f4d671d864f88"
 dependencies = [
  "anyhow",
  "bdk_core",
  "bdk_electrum",
  "bdk_wallet",
  "bip39",
+ "bip85",
  "log",
  "minicbor-serde",
  "redb",
@@ -2710,6 +2720,7 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror 2.0.16",
+ "zeroize",
 ]
 
 [[package]]
