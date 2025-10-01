@@ -187,33 +187,29 @@ class _AccountsListState extends ConsumerState<AccountsList> {
       accounts = primePassphraseAccounts;
     }
     final listContentHeight = accounts.length * _accountHeight;
-    //update order if and only if new accounts are added
+
+    // Keep _accountsOrder in sync with accountOrderStream
     ref.listen(accountOrderStream,
         (List<String>? previous, List<String>? next) {
-      if (previous?.length != next?.length) {
-        setState(() {
-          _accountsOrder = next!;
-        });
-      }
-    });
+      if (next == null) return;
 
-    if (_accountsOrder.isEmpty) {
-      final allIds = ref.read(accountOrderStream);
       final currentIds = accounts.map((e) => e.id).toSet();
 
       // Only keep IDs that exist in current accounts
       final filteredOrder =
-          allIds.where((id) => currentIds.contains(id)).toList();
+          next.where((id) => currentIds.contains(id)).toList();
 
-      _accountsOrder = filteredOrder;
+      setState(() {
+        _accountsOrder = filteredOrder;
+      });
 
-      // Persist the cleaned order, so stale IDs are removed from storage
-      if (allIds.length != filteredOrder.length) {
+      // Persist the cleaned order if stale IDs were removed
+      if (next.length != filteredOrder.length) {
         Future.microtask(
           () => NgAccountManager().updateAccountOrder(filteredOrder),
         );
       }
-    }
+    });
 
     ref.listen(accountsProvider,
         (List<EnvoyAccount>? previous, List<EnvoyAccount> next) {
