@@ -255,7 +255,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
       }
     }
     if (context.mounted) {
-      await _showNotesDialog(context);
+      //for non hot wallets,note dialog already before finalizing the tx
+      await _showNotesDialog(context, account);
+
       if (account.isHot) {
         ref
             .read(spendTransactionProvider.notifier)
@@ -410,6 +412,12 @@ class _TxReviewState extends ConsumerState<TxReview> {
   Future<bool> _showTagDialog(BuildContext context, EnvoyAccount account,
       BuildContext rootContext, TransactionModel transactionModel) async {
     final completer = Completer<bool>();
+    if (!account.isHot && transactionModel.isFinalized) {
+      //tags already added before finalizing the tx
+
+      completer.complete(true);
+      return completer.future;
+    }
     await showEnvoyDialog(
         useRootNavigator: true,
         context: context,
@@ -439,9 +447,14 @@ class _TxReviewState extends ConsumerState<TxReview> {
     return completer.future;
   }
 
-  Future _showNotesDialog(BuildContext context) async {
+  Future _showNotesDialog(BuildContext context, EnvoyAccount account) async {
     final completer = Completer();
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
+    if (!account.isHot && transactionModel.isFinalized) {
+      //notes already added before finalizing the tx
+      completer.complete();
+      return completer.future;
+    }
     final notes = ref.read(stagingTxNoteProvider) ?? "";
     final notesParam = transactionModel.transactionParams?.note ?? "";
     if (notesParam.isEmpty && notes.isEmpty) {
