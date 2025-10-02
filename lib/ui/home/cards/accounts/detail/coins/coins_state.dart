@@ -125,7 +125,13 @@ final outputProvider = Provider.family<Output?, String>((ref, coinId) {
 final tagProvider = Provider.family<Tag?, String>((ref, name) {
   final selectedAccount = ref.watch(selectedAccountProvider);
   final tags = ref.watch(tagsProvider(selectedAccount?.id ?? ""));
-  return tags.firstWhereOrNull((element) => element.name.toLowerCase() == name);
+  return tags.firstWhereOrNull((element) {
+    if (element.untagged) {
+      return name.toLowerCase() ==
+          S().account_details_untagged_card.toLowerCase();
+    }
+    return element.name.toLowerCase() == name.toLowerCase();
+  });
 });
 
 /// Provider for watching a list of [Tag] objects that belongs to a specific account

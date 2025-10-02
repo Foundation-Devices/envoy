@@ -57,13 +57,9 @@ class BalanceWidget extends ConsumerWidget {
     List<Widget> rowItems = [];
     if (showLock) {
       rowItems.add(FittedBox(
-        child: StatefulBuilder(
-          builder: (context, setState) {
-            return CoinLockButton(
-              locked: locked,
-              gestureTapCallback: () => onLockTap?.call(),
-            );
-          },
+        child: CoinLockButton(
+          locked: locked,
+          gestureTapCallback: () => onLockTap?.call(),
         ),
       ));
     }
@@ -267,6 +263,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tag = ref.watch(tagProvider(coinTag.name)) ?? coinTag;
+
     bool isRbfChangeOutput = false;
     final rbfChangeOutput = ref.watch(rbfChangeOutputProvider);
     if (ref.read(spendEditModeProvider) == SpendOverlayContext.rbfSelection &&
@@ -472,7 +469,6 @@ class _CoinLockButtonState extends State<CoinLockButton> {
 
   @override
   Widget build(BuildContext context) {
-    _controller?.findInput<bool>("Lock")?.change(widget.locked);
     return Consumer(builder: (context, ref, child) {
       RiveFile? riveFile = ref.watch(coinLockRiveProvider);
       return GestureDetector(
@@ -495,8 +491,11 @@ class _CoinLockButtonState extends State<CoinLockButton> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void didUpdateWidget(covariant CoinLockButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_controller != null && oldWidget.locked != widget.locked) {
+      _controller?.findInput<bool>("Lock")?.change(widget.locked);
+    }
   }
 }
 
