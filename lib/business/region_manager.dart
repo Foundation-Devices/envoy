@@ -55,14 +55,11 @@ class AllowedRegions {
       }
       try {
         String? countryCode = await InAppPurchase.instance.countryCode();
-        EnvoyReport().log("RegionManager", "Region :  $countryCode");
         _isAllowed = buyDisabled.contains(countryCode.toUpperCase());
       } catch (e) {
-        EnvoyReport().log("RegionManager", "Error checking region: $e");
         _isAllowed = false;
       }
     } catch (e) {
-      EnvoyReport().log("RegionManager", "Error checking region: $e");
       rethrow;
     }
     return _isAllowed!;

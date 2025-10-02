@@ -70,15 +70,13 @@ class PaymentQrDecoder extends ScannerDecoder {
     final valid = await EnvoyAccountHandler.validateAddress(
         address: address, network: account.network);
     final after = DateTime.now().millisecondsSinceEpoch;
-    kPrint("Address validation took ${after - time}ms");
-    kPrint("address scanned $address $valid");
     if (valid) {
       // Convert the address to lowercase for consistent display in Envoy
       if (address.startsWith('bc') || address.startsWith("tb")) {
         address = address.toLowerCase();
       }
-      onAddressValidated!(address, amount, message);
       _scanned = true;
+      onAddressValidated!(address, amount, message);
     } else {
       throw InvalidAddressException();
     }
