@@ -4,7 +4,6 @@
 
 import 'dart:convert';
 
-import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/services.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
@@ -55,14 +54,11 @@ class AllowedRegions {
       }
       try {
         String? countryCode = await InAppPurchase.instance.countryCode();
-        EnvoyReport().log("RegionManager", "Region :  $countryCode");
         _isAllowed = buyDisabled.contains(countryCode.toUpperCase());
       } catch (e) {
-        EnvoyReport().log("RegionManager", "Error checking region: $e");
         _isAllowed = false;
       }
     } catch (e) {
-      EnvoyReport().log("RegionManager", "Error checking region: $e");
       rethrow;
     }
     return _isAllowed!;

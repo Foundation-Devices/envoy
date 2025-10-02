@@ -6,7 +6,6 @@ import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
-import 'package:envoy/util/console.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
@@ -66,19 +65,15 @@ class PaymentQrDecoder extends ScannerDecoder {
     }
     // Remove bitcoin: prefix in case BIP-21 parsing failed
     address = address.replaceFirst("bitcoin:", "").trim();
-    final time = DateTime.now().millisecondsSinceEpoch;
     final valid = await EnvoyAccountHandler.validateAddress(
         address: address, network: account.network);
-    final after = DateTime.now().millisecondsSinceEpoch;
-    kPrint("Address validation took ${after - time}ms");
-    kPrint("address scanned $address $valid");
     if (valid) {
       // Convert the address to lowercase for consistent display in Envoy
       if (address.startsWith('bc') || address.startsWith("tb")) {
         address = address.toLowerCase();
       }
-      onAddressValidated!(address, amount, message);
       _scanned = true;
+      onAddressValidated!(address, amount, message);
     } else {
       throw InvalidAddressException();
     }
