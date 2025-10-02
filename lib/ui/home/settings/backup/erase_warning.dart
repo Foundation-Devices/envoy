@@ -558,7 +558,7 @@ class _AndroidBackupWarningState extends State<AndroidBackupWarning> {
                     children: [
                       const SizedBox(height: EnvoySpacing.large3),
                       SizedBox(
-                        height: iphoneSE ? 220 : 250,
+                        height: iphoneSE ? 220 : 184,
                         child: Image.asset(
                           "assets/images/onboarding_info.png",
                           height: 184,
