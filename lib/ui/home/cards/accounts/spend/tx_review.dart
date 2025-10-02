@@ -418,7 +418,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
             accountId: account.id,
             onEditTransaction: () {
               Navigator.pop(context);
-              completer.complete(true);
+              //exit broadcast flow and move to review screen
+              completer.complete(false);
               editTransaction(context, ref);
             },
             hasMultipleTagsInput: true,
