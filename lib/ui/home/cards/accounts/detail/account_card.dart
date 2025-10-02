@@ -320,7 +320,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                                 },
                                 onAddressValidated:
                                     (address, amount, message) async {
-                                  if(navigator.canPop()){
+                                  if (navigator.canPop()) {
                                     navigator.pop();
                                   }
                                   //wait for the dialog to close,200ms based on material bottom_sheet.dart
