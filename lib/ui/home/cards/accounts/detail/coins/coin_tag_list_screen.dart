@@ -89,6 +89,9 @@ class CoinItemWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Watch for updates to this specific tag
+    final tag = ref.watch(tagProvider(this.tag.name)) ?? this.tag;
+
     TextStyle textStyleWallet =
         Theme.of(context).textTheme.titleMedium!.copyWith(
               color: Colors.white,
