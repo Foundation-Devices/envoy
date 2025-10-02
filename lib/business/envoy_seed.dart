@@ -799,8 +799,13 @@ class EnvoySeed {
       List<NgAccountBackup> ngAccountBackups = [];
       for (var account in accounts) {
         try {
+          final config = account["ng_account_config"] as Map<String, dynamic>?;
+          if (config != null && !config.containsKey("archived")) {
+            config["archived"] = false;
+          }
           final backup = await EnvoyAccountHandler.deserializeBackup(
-              backupJson: jsonEncode(account));
+            backupJson: jsonEncode(account),
+          );
           ngAccountBackups.add(backup);
         } catch (e, stack) {
           EnvoyReport().log("EnvoySeed", "Error deserializing backup: $e",
