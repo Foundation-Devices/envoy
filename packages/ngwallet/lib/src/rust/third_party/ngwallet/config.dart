@@ -91,6 +91,7 @@ class NgAccountConfig {
   final Network network;
   final String id;
   final MultiSigDetails? multisig;
+  final bool archived;
 
   const NgAccountConfig({
     required this.name,
@@ -105,6 +106,7 @@ class NgAccountConfig {
     required this.network,
     required this.id,
     this.multisig,
+    required this.archived,
   });
 
   @override
@@ -120,7 +122,8 @@ class NgAccountConfig {
       dateSynced.hashCode ^
       network.hashCode ^
       id.hashCode ^
-      multisig.hashCode;
+      multisig.hashCode ^
+      archived.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -138,7 +141,8 @@ class NgAccountConfig {
           dateSynced == other.dateSynced &&
           network == other.network &&
           id == other.id &&
-          multisig == other.multisig;
+          multisig == other.multisig &&
+          archived == other.archived;
 }
 
 class NgDescriptor {
