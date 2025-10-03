@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'frb_generated.dart';
 import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
+import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 /// Main entrypoint of the Rust API
@@ -70,7 +71,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -1465126880;
+  int get rustContentHash => 1072168649;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -81,15 +82,10 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  String crateApiShardGreet({required String name});
-
   Future<void> crateApiShardInitApp();
 
   Future<void> crateApiShardShardBackUpAddNewShard(
-      {required List<int> shard,
-      required String shardIdentifier,
-      required String deviceSerial,
-      required String filePath});
+      {required List<int> shard, required String filePath});
 
   Future<ShardBackUp> crateApiShardShardBackUpFromBytes(
       {required List<int> data});
@@ -98,9 +94,7 @@ abstract class RustLibApi extends BaseApi {
       {required String filePath});
 
   Future<ShardBackUp> crateApiShardShardBackUpNew(
-      {required String deviceSerial,
-      required String shardIdentifier,
-      required List<int> shard});
+      {required U8Array32 fingerprint, required List<int> shard});
 
   Future<Uint8List> crateApiShardShardBackUpToBytes(
       {required ShardBackUp that});
@@ -115,35 +109,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  String crateApiShardGreet({required String name}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiShardGreetConstMeta,
-      argValues: [name],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiShardGreetConstMeta => const TaskConstMeta(
-        debugName: "greet",
-        argNames: ["name"],
-      );
-
-  @override
   Future<void> crateApiShardInitApp() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 2, port: port_);
+            funcId: 1, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -162,26 +133,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<void> crateApiShardShardBackUpAddNewShard(
-      {required List<int> shard,
-      required String shardIdentifier,
-      required String deviceSerial,
-      required String filePath}) {
+      {required List<int> shard, required String filePath}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_prim_u_8_loose(shard, serializer);
-        sse_encode_String(shardIdentifier, serializer);
-        sse_encode_String(deviceSerial, serializer);
         sse_encode_String(filePath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 3, port: port_);
+            funcId: 2, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
-        decodeErrorData: sse_decode_String,
+        decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiShardShardBackUpAddNewShardConstMeta,
-      argValues: [shard, shardIdentifier, deviceSerial, filePath],
+      argValues: [shard, filePath],
       apiImpl: this,
     ));
   }
@@ -189,7 +155,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiShardShardBackUpAddNewShardConstMeta =>
       const TaskConstMeta(
         debugName: "shard_back_up_add_new_shard",
-        argNames: ["shard", "shardIdentifier", "deviceSerial", "filePath"],
+        argNames: ["shard", "filePath"],
       );
 
   @override
@@ -200,7 +166,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_prim_u_8_loose(data, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
+            funcId: 3, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_shard_back_up,
@@ -226,7 +192,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(filePath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 5, port: port_);
+            funcId: 4, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_shard_back_up,
@@ -246,24 +212,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<ShardBackUp> crateApiShardShardBackUpNew(
-      {required String deviceSerial,
-      required String shardIdentifier,
-      required List<int> shard}) {
+      {required U8Array32 fingerprint, required List<int> shard}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(deviceSerial, serializer);
-        sse_encode_String(shardIdentifier, serializer);
+        sse_encode_u_8_array_32(fingerprint, serializer);
         sse_encode_list_prim_u_8_loose(shard, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 5, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_shard_back_up,
         decodeErrorData: null,
       ),
       constMeta: kCrateApiShardShardBackUpNewConstMeta,
-      argValues: [deviceSerial, shardIdentifier, shard],
+      argValues: [fingerprint, shard],
       apiImpl: this,
     ));
   }
@@ -271,7 +234,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiShardShardBackUpNewConstMeta =>
       const TaskConstMeta(
         debugName: "shard_back_up_new",
-        argNames: ["deviceSerial", "shardIdentifier", "shard"],
+        argNames: ["fingerprint", "shard"],
       );
 
   @override
@@ -282,7 +245,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_shard_back_up(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 7, port: port_);
+            funcId: 6, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -340,13 +303,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ShardBackUp dco_decode_shard_back_up(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 4)
-      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
     return ShardBackUp(
-      deviceSerial: dco_decode_String(arr[0]),
-      shardIdentifier: dco_decode_String(arr[1]),
-      timestamp: dco_decode_u_64(arr[2]),
-      shard: dco_decode_list_prim_u_8_strict(arr[3]),
+      fingerprint: dco_decode_u_8_array_32(arr[0]),
+      timestamp: dco_decode_u_64(arr[1]),
+      shard: dco_decode_list_prim_u_8_strict(arr[2]),
     );
   }
 
@@ -360,6 +322,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int dco_decode_u_8(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
+  }
+
+  @protected
+  U8Array32 dco_decode_u_8_array_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return U8Array32(dco_decode_list_prim_u_8_strict(raw));
   }
 
   @protected
@@ -419,13 +387,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   ShardBackUp sse_decode_shard_back_up(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_deviceSerial = sse_decode_String(deserializer);
-    var var_shardIdentifier = sse_decode_String(deserializer);
+    var var_fingerprint = sse_decode_u_8_array_32(deserializer);
     var var_timestamp = sse_decode_u_64(deserializer);
     var var_shard = sse_decode_list_prim_u_8_strict(deserializer);
     return ShardBackUp(
-        deviceSerial: var_deviceSerial,
-        shardIdentifier: var_shardIdentifier,
+        fingerprint: var_fingerprint,
         timestamp: var_timestamp,
         shard: var_shard);
   }
@@ -440,6 +406,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int sse_decode_u_8(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8();
+  }
+
+  @protected
+  U8Array32 sse_decode_u_8_array_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_list_prim_u_8_strict(deserializer);
+    return U8Array32(inner);
   }
 
   @protected
@@ -509,8 +482,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_shard_back_up(ShardBackUp self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_String(self.deviceSerial, serializer);
-    sse_encode_String(self.shardIdentifier, serializer);
+    sse_encode_u_8_array_32(self.fingerprint, serializer);
     sse_encode_u_64(self.timestamp, serializer);
     sse_encode_list_prim_u_8_strict(self.shard, serializer);
   }
@@ -525,6 +497,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_u_8(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self);
+  }
+
+  @protected
+  void sse_encode_u_8_array_32(U8Array32 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_u_8_strict(self.inner, serializer);
   }
 
   @protected

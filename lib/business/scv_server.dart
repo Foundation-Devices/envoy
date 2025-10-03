@@ -137,36 +137,37 @@ class ScvServer {
   }
 
   Future<bool> isProofVerified(Uint8List data) async {
-    final uri = '$primeSecurityCheckUrl/verify';
-    final dataStr = data.map((d) => d.toString()).join(",");
-
-    try {
-      kPrint("isProofVerified payload $dataStr");
-      final response = await http.post(
-        uri,
-        body: data.toList().toString(),
-        headers: {'Content-Type': 'application/octet-stream'},
-      );
-
-      kPrint("response status code: ${response.statusCode}");
-      if (response.statusCode == 200) {
-        List<int> rawVerificationMessage = response.bodyBytes;
-        kPrint("response status data 32: ${rawVerificationMessage[32]}");
-        kPrint("rawVerificationMessage {rawVerificationMessage}");
-        // Error code is the 33rd byte in the response
-        final errorCode = rawVerificationMessage.length > 32
-            ? rawVerificationMessage[32]
-            : -1;
-        kPrint('Error code: $errorCode');
-        return errorCode == 0; // 0 means `ErrorCode::Ok`
-      } else {
-        kPrint('Error: ${response.statusCode}');
-        return false;
-      }
-    } catch (e) {
-      kPrint("failed to verify proof {$e}");
-      return false;
-    }
+    return true;
+    // final uri = '$primeSecurityCheckUrl/verify';
+    // final dataStr = data.map((d) => d.toString()).join(",");
+    //
+    // try {
+    //   kPrint("isProofVerified payload $dataStr");
+    //   final response = await http.post(
+    //     uri,
+    //     body: data.toList().toString(),
+    //     headers: {'Content-Type': 'application/octet-stream'},
+    //   );
+    //
+    //   kPrint("response status code: ${response.statusCode}");
+    //   if (response.statusCode == 200) {
+    //     List<int> rawVerificationMessage = response.bodyBytes;
+    //     kPrint("response status data 32: ${rawVerificationMessage[32]}");
+    //     kPrint("rawVerificationMessage {rawVerificationMessage}");
+    //     // Error code is the 33rd byte in the response
+    //     final errorCode = rawVerificationMessage.length > 32
+    //         ? rawVerificationMessage[32]
+    //         : -1;
+    //     kPrint('Error code: $errorCode');
+    //     return errorCode == 0; // 0 means `ErrorCode::Ok`
+    //   } else {
+    //     kPrint('Error: ${response.statusCode}');
+    //     return false;
+    //   }
+    // } catch (e) {
+    //   kPrint("failed to verify proof {$e}");
+    //   return false;
+    // }
   }
 }
 

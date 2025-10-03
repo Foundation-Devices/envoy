@@ -11,6 +11,7 @@ import 'package:bluart/bluart.dart' as bluart;
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
+import 'package:envoy/business/prime_shard.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/server.dart';
 import 'package:envoy/util/console.dart';
@@ -24,9 +25,8 @@ import 'package:ngwallet/ngwallet.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
-
-import '../ui/envoy_colors.dart';
-import 'devices.dart';
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/business/devices.dart';
 
 final sendProgressProvider =
     StateNotifierProvider<SendProgressNotifier, double>(
@@ -66,8 +66,9 @@ class BluetoothManager extends WidgetsBindingObserver {
   final StreamController<api.PassportMessage> _passportMessageStream =
       StreamController<api.PassportMessage>();
 
-  final StreamController<api.PassportMessage> _transactionStream =
-      StreamController<api.PassportMessage>();
+  final StreamController<api.QuantumLinkMessage_BroadcastTransaction>
+      _transactionStream =
+      StreamController<api.QuantumLinkMessage_BroadcastTransaction>();
 
   api.EnvoyMasterDechunker? _decoder;
   api.XidDocument? _recipientXid;
@@ -86,7 +87,7 @@ class BluetoothManager extends WidgetsBindingObserver {
   Stream<api.PassportMessage> get passportMessageStream =>
       _broadcastPassportStream;
 
-  Stream<api.PassportMessage> get transactionStream =>
+  Stream<api.QuantumLinkMessage_BroadcastTransaction> get transactionStream =>
       _transactionStream.stream.asBroadcastStream();
 
   final StreamController<double> _writeProgressController =
@@ -150,11 +151,12 @@ class BluetoothManager extends WidgetsBindingObserver {
         for (final device in event.field0) {
           _updateConnectionStatus(device);
           // TODO: don't autoconnect in onboarding
-          if (bleId.isNotEmpty && device.id == bleId && !connected) {
-            kPrint("Autoconnecting to: ${device.id}");
-            await connect(id: device.id);
-            await listen(id: bleId);
-          }
+          // TODO: need some way to know if we're in OB
+          // if (bleId.isNotEmpty && device.id == bleId && !connected) {
+          //   kPrint("Autoconnecting to: ${device.id}");
+          //   await connect(id: device.id);
+          //   await listen(id: bleId);
+          // }
         }
       }
     });
@@ -165,12 +167,13 @@ class BluetoothManager extends WidgetsBindingObserver {
 
     await scan();
     _listenForAccountUpdate();
+    _listenForShardMessages();
     _listenToWriteProgress();
   }
 
   void _updateConnectionStatus(bluart.BleDevice device) {
     if (device.connected) {
-      kPrint("Event Device connected: ${device.id} ${device.name}");
+      //kPrint("Event Device connected: ${device.id} ${device.name}");
       _connectedDevices.add(device);
     } else {
       if (_connectedDevices.any((d) => d.id == device.id)) {
@@ -188,10 +191,9 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   void _listenForAccountUpdate() {
     passportMessageStream.listen((api.PassportMessage message) async {
-      if (message.message is api.QuantumLinkMessage_AccountUpdate) {
+      if (message.message
+          case api.QuantumLinkMessage_AccountUpdate accountUpdate) {
         kPrint("Got account update!");
-        final accountUpdate =
-            message.message as api.QuantumLinkMessage_AccountUpdate;
         final payload = accountUpdate.field0.update;
         kPrint("Got payload! ${payload.length}");
         final config = await EnvoyAccountHandler.getConfigFromRemote(
@@ -215,6 +217,57 @@ class BluetoothManager extends WidgetsBindingObserver {
         await NgAccountManager()
             .addAccount(await accountHandler.state(), accountHandler);
         kPrint("Account added!");
+      }
+    });
+  }
+
+  void _listenForShardMessages() {
+    passportMessageStream.listen((api.PassportMessage message) async {
+      if (message.message is api.QuantumLinkMessage_MagicBackupEnabledRequest) {
+        kPrint("Got magic backup enabled request!");
+        writeMessage(api.QuantumLinkMessage.magicBackupEnabledResponse(
+            api.MagicBackupEnabledResponse(enabled: true)));
+      }
+
+      if (message.message
+          case api.QuantumLinkMessage_BackupShardRequest request) {
+        kPrint("Got shard backup request!");
+        final shard = request.field0.field0;
+
+        // TODO: add shard ids to API
+        try {
+          await PrimeShard().addShard(shard: shard.payload);
+          writeMessage(api.QuantumLinkMessage.backupShardResponse(
+              api.BackupShardResponse_Success()));
+          kPrint("Shard backed up!");
+        } catch (e, _) {
+          kPrint("Shard backup failure: $e");
+          writeMessage(api.QuantumLinkMessage.backupShardResponse(
+              api.BackupShardResponse_Success()));
+        }
+      }
+
+      if (message.message
+          case api.QuantumLinkMessage_RestoreShardRequest request) {
+        kPrint("Got shard restore request!");
+        final fingerprint = request.field0.seedFingerprint;
+
+        try {
+          final shard = await PrimeShard()
+              .getShard(fingerprint: Uint8List.fromList(fingerprint));
+          if (shard == null) {
+            throw Exception("Shard not found!");
+          }
+
+          writeMessage(api.QuantumLinkMessage.restoreShardResponse(
+              api.RestoreShardResponse_Success(
+                  api.Shard(payload: shard.shard))));
+          kPrint("Shard restored!");
+        } catch (e, _) {
+          kPrint("Shard restore failure: $e");
+          writeMessage(api.QuantumLinkMessage.backupShardResponse(
+              api.BackupShardResponse_Error(e.toString())));
+        }
       }
     });
   }
@@ -405,12 +458,15 @@ class BluetoothManager extends WidgetsBindingObserver {
     _decoder = await api.getDecoder();
     _subscription = bluart.read(id: id).listen((bleData) {
       decode(bleData).then((value) {
-        //kPrint("Dechunked: {$value}");
         if (value != null) {
           _passportMessageStream.add(value);
           kPrint(
               "Got Passport message type: ${value.message.runtimeType} ${value.message}");
-          _transactionStream.add(value);
+          if (value
+              case api.QuantumLinkMessage_BroadcastTransaction transaction) {
+            kPrint("Got the Broadcast Transaction");
+            _transactionStream.add(transaction);
+          }
         }
       }, onError: (e) {
         kPrint("Error decoding: $e");

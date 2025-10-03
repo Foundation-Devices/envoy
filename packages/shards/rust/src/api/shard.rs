@@ -3,16 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #[flutter_rust_bridge::frb(sync)] // Synchronous mode for simplicity of the demo
-pub fn greet(name: String) -> String {
-    format!("Hello, {name}!")
-}
-
+use backup_shard::Shard;
 use flutter_rust_bridge::for_generated::anyhow;
-use flutter_rust_bridge::for_generated::anyhow::anyhow;
+use flutter_rust_bridge::for_generated::anyhow::{anyhow, Context};
 use minicbor::decode;
-use std::fs::File;
-
 use minicbor_derive::{Decode, Encode};
+use std::fs::File;
 
 #[flutter_rust_bridge::frb(init)]
 pub fn init_app() {
@@ -24,54 +20,42 @@ pub fn init_app() {
 #[cbor(map)] // You need to specify encoding format
 pub struct ShardBackUp {
     #[n(0)]
-    pub device_serial: String,
+    pub fingerprint: [u8; 32],
     #[n(1)]
-    pub shard_identifier: String,
-    #[n(2)]
     pub timestamp: u64,
-    #[n(3)]
+    #[n(2)]
     pub shard: Vec<u8>,
 }
 
 impl ShardBackUp {
-    pub fn add_new_shard(
-        shard: Vec<u8>,
-        shard_identifier: &str,
-        device_serial: &str,
-        file_path: String,
-    ) -> Result<(), String> {
+    pub fn add_new_shard(shard: Vec<u8>, file_path: String) -> anyhow::Result<()> {
         if !std::path::Path::new(&file_path).exists() {
-            File::create(file_path.clone())
-                .map_err(|e| format!("Failed to create file: {:?}", e))?;
+            File::create(file_path.clone()).context("Failed to create file")?;
         }
+
+        // Parse the shard from CBOR
+        let shard = Shard::decode(&shard).context("Failed to decode shard")?;
 
         let mut shards: Vec<ShardBackUp> = Self::get_all_shards(file_path.clone());
 
         if shards
             .iter()
-            .any(|s| s.shard_identifier == shard_identifier)
+            .any(|s| s.fingerprint == *shard.seed_fingerprint())
         {
-            return Err(format!(
-                "Shard with identifier '{}' already exists",
-                shard_identifier
-            ));
+            anyhow::bail!(
+                "Shard with identifier '{:?}' already exists",
+                shard.seed_fingerprint()
+            );
         }
         // Add new shard
-        let new_shard = ShardBackUp::new(
-            device_serial.to_string(), // You need to provide device_serial
-            shard_identifier.to_string(),
-            shard,
-        );
+        let new_shard = ShardBackUp::new(*shard.seed_fingerprint(), shard.encode());
 
         shards.push(new_shard);
 
         // Encode and write back
-        let encoded_data =
-            minicbor::to_vec(&shards) // Use to_vec instead of encode
-                .map_err(|e| format!("Failed to encode shard data: {:?}", e))?;
+        let encoded_data = minicbor::to_vec(&shards).context("Failed to encode shard data")?;
 
-        std::fs::write(&file_path, encoded_data)
-            .map_err(|e| format!("Failed to write file: {:?}", e))?;
+        std::fs::write(&file_path, encoded_data).context("Failed to write file")?;
 
         Ok(())
     }
@@ -88,10 +72,9 @@ impl ShardBackUp {
         }
     }
 
-    pub fn new(device_serial: String, shard_identifier: String, shard: Vec<u8>) -> Self {
+    pub fn new(fingerprint: [u8; 32], shard: Vec<u8>) -> Self {
         Self {
-            device_serial,
-            shard_identifier,
+            fingerprint,
             timestamp: std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .unwrap()
