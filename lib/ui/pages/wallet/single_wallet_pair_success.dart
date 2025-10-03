@@ -23,48 +23,52 @@ class SingleWalletPairSuccessPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     EnvoyStorage().setBool(PREFS_ONBOARDED, true);
-    return OnboardingPage(
-      key: const Key("single_wallet_pair_success"),
-      clipArt: Padding(
-        padding: const EdgeInsets.only(top: 50.0),
-        child: Image.asset(
-          "assets/circle_ok.png",
-          height: 150,
-        ),
-      ),
-      leftFunction: null,
-      rightFunction: null,
-      text: [
-        Align(
-          alignment: Alignment.center,
-          child: SingleChildScrollView(
-            child: OnboardingText(
-                header: S().pair_new_device_success_heading,
-                text: S().pair_new_device_success_subheading),
+    return PopScope(
+      canPop: false,
+      child: OnboardingPage(
+        key: const Key("single_wallet_pair_success"),
+        clipArt: Padding(
+          padding: const EdgeInsets.only(top: 50.0),
+          child: Image.asset(
+            "assets/circle_ok.png",
+            height: 150,
           ),
         ),
-      ],
-      buttons: [
-        OnboardingButton(
-            type: EnvoyButtonTypes.secondary,
-            label: S().pair_new_device_success_cta2,
-            onTap: () {
-              ProviderScope.containerOf(context)
-                  .read(homePageBackgroundProvider.notifier)
-                  .state = HomePageBackgroundState.hidden;
-              ProviderScope.containerOf(context)
-                  .read(homePageTitleProvider.notifier)
-                  .state = "";
-              context.go("/");
-            }),
-        OnboardingButton(
-            label: S().pair_new_device_success_cta1,
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return SingleWalletAddressVerifyPage(pairedWallet);
-              }));
-            }),
-      ],
+        leftFunction: null,
+        rightFunction: null,
+        text: [
+          Align(
+            alignment: Alignment.center,
+            child: SingleChildScrollView(
+              child: OnboardingText(
+                  header: S().pair_new_device_success_heading,
+                  text: S().pair_new_device_success_subheading),
+            ),
+          ),
+        ],
+        buttons: [
+          OnboardingButton(
+              type: EnvoyButtonTypes.secondary,
+              label: S().pair_new_device_success_cta2,
+              onTap: () {
+                ProviderScope.containerOf(context)
+                    .read(homePageBackgroundProvider.notifier)
+                    .state = HomePageBackgroundState.hidden;
+                ProviderScope.containerOf(context)
+                    .read(homePageTitleProvider.notifier)
+                    .state = "";
+                context.go("/");
+              }),
+          OnboardingButton(
+              label: S().pair_new_device_success_cta1,
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return SingleWalletAddressVerifyPage(pairedWallet);
+                }));
+              }),
+        ],
+      ),
     );
   }
 }

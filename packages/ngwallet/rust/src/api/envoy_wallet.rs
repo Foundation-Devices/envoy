@@ -8,6 +8,11 @@ use std::str::FromStr;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
+use crate::api::bip39::EnvoyBip39;
+use crate::api::envoy_account::EnvoyAccount;
+use crate::api::errors::{BroadcastError, RBFBumpFeeError, TxComposeError};
+use crate::api::migration::get_last_used_index;
+use crate::frb_generated::StreamSink;
 use anyhow::{anyhow, Error, Result};
 use bdk_wallet::bitcoin::Address;
 pub use bdk_wallet::bitcoin::{Network, Psbt, ScriptBuf};
@@ -24,13 +29,7 @@ use ngwallet::config::{
 };
 use ngwallet::ngwallet::NgWallet;
 use ngwallet::send::{DraftTransaction, TransactionFeeResult, TransactionParams};
-use ngwallet::transaction::{BitcoinTransaction, Output};
-
-use crate::api::bip39::EnvoyBip39;
-use crate::api::envoy_account::EnvoyAccount;
-use crate::api::errors::{BroadcastError, RBFBumpFeeError, TxComposeError};
-use crate::api::migration::get_last_used_index;
-use crate::frb_generated::StreamSink;
+use ngwallet::transaction;
 
 #[frb(init)]
 pub fn init_app() {
@@ -42,14 +41,14 @@ pub struct EnvoyAccountHandler {
     pub stream_sink: Option<StreamSink<EnvoyAccount>>,
     pub ng_account: Arc<Mutex<NgAccount<Connection>>>,
     //temporary list of transactions,which are not yet in the wallet yet
-    mempool_txs: Vec<BitcoinTransaction>,
+    mempool_txs: Vec<transaction::BitcoinTransaction>,
     //account to access handler, lifting id from ng_account
     id: String,
     directory_path: String,
 }
 
 #[frb(external)]
-impl Output {
+impl transaction::Output {
     #[frb(sync)]
     pub fn get_id(&self) -> String {}
 }
@@ -122,7 +121,7 @@ impl EnvoyAccountHandler {
             .seed_has_passphrase(seed_has_passphrase)
             .build_from_file(Some(db_path.clone()));
         match ng_account {
-            Ok(mut ng_account) => match ng_account.persist() {
+            Ok(ng_account) => match ng_account.persist() {
                 Ok(_) => Ok(EnvoyAccountHandler {
                     stream_sink: None,
                     mempool_txs: vec![],
@@ -184,8 +183,8 @@ impl EnvoyAccountHandler {
                         sled_db_path.clone().display(),
                         indexes.clone()
                     );
-                    let mut account = account.ng_account.lock().unwrap();
-                    let ngwallet = &mut account.wallets[index];
+                    let account = account.ng_account.lock().unwrap();
+                    let ngwallet = &mut account.wallets.write().unwrap()[index];
                     match ngwallet.reveal_addresses_up_to(
                         KeychainKind::Internal,
                         *indexes.get(&KeychainKind::Internal).unwrap_or(&0),
@@ -222,7 +221,7 @@ impl EnvoyAccountHandler {
     }
 
     pub fn open_account(db_path: String) -> Result<EnvoyAccountHandler> {
-        let config = NgAccount::<Connection>::read_config_from_file(Some(db_path.clone()));
+        let config = NgAccountConfig::from_file(Some(db_path.clone()));
         let Some(config) = config else {
             return Err(anyhow!("Failed to read config"));
         };
@@ -265,7 +264,7 @@ impl EnvoyAccountHandler {
                 let account = EnvoyAccountHandler {
                     stream_sink: None,
                     mempool_txs: vec![],
-                    id: ng_account.config.clone().id,
+                    id: ng_account.config.clone().read().unwrap().clone().id,
                     ng_account: Arc::new(Mutex::new(ng_account)),
                     directory_path: db_path.clone(),
                 };
@@ -278,7 +277,7 @@ impl EnvoyAccountHandler {
 
     pub fn rename_account(&mut self, name: &str) -> Result<()> {
         {
-            let mut account = self.ng_account.lock().unwrap();
+            let account = self.ng_account.lock().unwrap();
             account.rename(name).unwrap();
         }
         self.send_update();
@@ -292,7 +291,7 @@ impl EnvoyAccountHandler {
 
     pub fn set_preferred_address_type(&mut self, address_type: AddressType) -> Result<()> {
         {
-            let mut account = self.ng_account.lock().unwrap();
+            let account = self.ng_account.lock().unwrap();
             account.set_preferred_address_type(address_type).unwrap();
         }
         self.send_update();
@@ -301,8 +300,8 @@ impl EnvoyAccountHandler {
 
     pub fn state(&mut self) -> Result<EnvoyAccount, Error> {
         match self.ng_account.lock() {
-            Ok(mut account) => {
-                let config = account.config.clone();
+            Ok(account) => {
+                let config = account.config.read().unwrap().clone();
                 let balance = account.balance().unwrap_or_default().total().to_sat();
                 let wallet_transactions = account.transactions().unwrap_or_default();
                 let utxo = account.utxos().unwrap_or_default();
@@ -392,7 +391,7 @@ impl EnvoyAccountHandler {
     pub fn update_broadcast_state(&mut self, draft_transaction: DraftTransaction) {
         let tx = draft_transaction.transaction.clone();
         {
-            let mut account = self.ng_account.lock().unwrap();
+            let account = self.ng_account.lock().unwrap();
             if tx.note.is_some() {
                 account
                     .set_note_unchecked(&tx.tx_id.to_string(), &tx.note.unwrap())
@@ -411,7 +410,7 @@ impl EnvoyAccountHandler {
             .map_err(|er| anyhow::anyhow!("Failed to deserialize PSBT: {}", er))
             .unwrap();
         {
-            let mut account = self.ng_account.lock().unwrap();
+            let account = self.ng_account.lock().unwrap();
             let std_time = SystemTime::now()
                 .duration_since(UNIX_EPOCH)
                 .unwrap_or(Duration::from_secs(0))
@@ -451,9 +450,13 @@ impl EnvoyAccountHandler {
         NgAccount::<Connection>::fetch_fee_from_electrum(txid, electrum_server, socks_proxy)
     }
 
-    pub fn update_tx_fee(&mut self, transaction: BitcoinTransaction, fee: u64) -> Result<()> {
+    pub fn update_tx_fee(
+        &mut self,
+        transaction: transaction::BitcoinTransaction,
+        fee: u64,
+    ) -> Result<()> {
         {
-            let mut account = self
+            let account = self
                 .ng_account
                 .lock()
                 .expect("Unable to lock account,failed to update tx fee");
@@ -512,11 +515,11 @@ impl EnvoyAccountHandler {
     pub async fn apply_update(&mut self, update: Arc<Mutex<Update>>, address_type: AddressType) {
         let scan_request_guard = update.lock().unwrap();
         {
-            let mut account = self.ng_account.lock().unwrap();
+            let account = self.ng_account.lock().unwrap();
             account
                 .apply((address_type, scan_request_guard.to_owned()))
                 .unwrap();
-            account.config.date_synced = Some(format!("{:?}", Utc::now()));
+            account.config.write().unwrap().date_synced = Some(format!("{:?}", Utc::now()));
             account
                 .persist()
                 .expect("Failed to persist account after scan");
@@ -540,13 +543,13 @@ impl EnvoyAccountHandler {
             .total()
             .to_sat()
     }
-    pub fn utxo(&mut self) -> Vec<Output> {
+    pub fn utxo(&mut self) -> Vec<transaction::Output> {
         self.ng_account.lock().unwrap().utxos().unwrap_or_default()
     }
-    pub fn transactions(&mut self) -> Vec<BitcoinTransaction> {
+    pub fn transactions(&mut self) -> Vec<transaction::BitcoinTransaction> {
         self.ng_account.lock().unwrap().transactions().unwrap()
     }
-    pub fn set_tag(&mut self, utxo: &Output, tag: &str) -> Result<bool> {
+    pub fn set_tag(&mut self, utxo: &transaction::Output, tag: &str) -> Result<bool> {
         let status = self
             .ng_account
             .lock()
@@ -555,7 +558,7 @@ impl EnvoyAccountHandler {
         self.send_update();
         status
     }
-    pub fn set_tags(&mut self, utxo: Vec<Output>, tag: &str) -> Result<bool> {
+    pub fn set_tags(&mut self, utxo: Vec<transaction::Output>, tag: &str) -> Result<bool> {
         utxo.iter().for_each(|utxo| {
             self.ng_account
                 .lock()
@@ -566,7 +569,11 @@ impl EnvoyAccountHandler {
         self.send_update();
         Ok(true)
     }
-    pub fn set_do_not_spend(&mut self, utxo: &Output, do_not_spend: bool) -> Result<()> {
+    pub fn set_do_not_spend(
+        &mut self,
+        utxo: &transaction::Output,
+        do_not_spend: bool,
+    ) -> Result<()> {
         let result = self
             .ng_account
             .lock()
@@ -632,7 +639,13 @@ impl EnvoyAccountHandler {
     }
     #[frb(sync)]
     pub fn config(&self) -> NgAccountConfig {
-        self.ng_account.lock().unwrap().config.clone()
+        self.ng_account
+            .lock()
+            .unwrap()
+            .config
+            .read()
+            .unwrap()
+            .clone()
     }
     #[frb(sync)]
     pub fn id(&self) -> String {
@@ -663,7 +676,7 @@ impl EnvoyAccountHandler {
 
     pub fn compose_cancellation_tx(
         &mut self,
-        bitcoin_transaction: BitcoinTransaction,
+        bitcoin_transaction: transaction::BitcoinTransaction,
     ) -> Result<DraftTransaction, RBFBumpFeeError> {
         self.ng_account
             .lock()
@@ -674,8 +687,8 @@ impl EnvoyAccountHandler {
 
     pub fn get_max_bump_fee_rates(
         &mut self,
-        selected_outputs: Vec<Output>,
-        bitcoin_transaction: BitcoinTransaction,
+        selected_outputs: Vec<transaction::Output>,
+        bitcoin_transaction: transaction::BitcoinTransaction,
     ) -> Result<TransactionFeeResult, RBFBumpFeeError> {
         self.ng_account
             .lock()
@@ -686,9 +699,9 @@ impl EnvoyAccountHandler {
 
     pub fn compose_rbf_psbt(
         &mut self,
-        selected_outputs: Vec<Output>,
+        selected_outputs: Vec<transaction::Output>,
         fee_rate: u64,
-        bitcoin_transaction: BitcoinTransaction,
+        bitcoin_transaction: transaction::BitcoinTransaction,
         note: Option<String>,
         tag: Option<String>,
     ) -> Result<DraftTransaction, RBFBumpFeeError> {
@@ -737,13 +750,13 @@ impl EnvoyAccountHandler {
 
     pub fn add_descriptor(&mut self, ng_descriptor: NgDescriptor) -> Result<()> {
         let result = {
-            let mut account = self.ng_account.lock().unwrap_or_else(|poisoned| {
+            let account = self.ng_account.lock().unwrap_or_else(|poisoned| {
                 log::warn!("Mutex was poisoned, recovering...");
                 poisoned.into_inner()
             });
             let path = Self::bdk_db_path(
                 &self.directory_path,
-                account.config.descriptors.len(),
+                account.config.read().unwrap().descriptors.len(),
                 &ng_descriptor,
             );
             if path.exists() {
@@ -864,9 +877,9 @@ impl EnvoyAccountHandler {
             .build_from_file(Some(db_path.clone()));
 
         match ng_account {
-            Ok(mut account) => {
+            Ok(account) => {
                 // Reveal addresses up to the last used index
-                for wallet in &mut account.wallets {
+                for wallet in &mut *account.wallets.write().unwrap() {
                     let address_type = wallet.address_type;
                     for index in &indexes {
                         if index.0 == address_type {
@@ -968,7 +981,7 @@ impl EnvoyAccountHandler {
             .build_from_file(Some(db_path.clone()));
 
         match ng_account {
-            Ok(mut account) => match account.persist() {
+            Ok(account) => match account.persist() {
                 Ok(_) => Ok(EnvoyAccountHandler {
                     stream_sink: None,
                     mempool_txs: vec![],

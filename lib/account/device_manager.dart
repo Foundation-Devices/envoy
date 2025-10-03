@@ -78,7 +78,8 @@ Future<NgAccountConfig> getPassportAccountFromJson(dynamic json) async {
       descriptors: descriptors,
       dateSynced: null,
       id: Uuid().v4(),
-      network: network);
+      network: network,
+      archived: false);
   return accountConfig;
 }
 

@@ -2199,6 +2199,105 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
+    testWidgets('<Save note from popup>', (tester) async {
+      await goBackHome(tester);
+      await checkSync(tester);
+
+      await disableAllNetworks(tester);
+
+      const hotSignetSelfAddress =
+          'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql';
+
+      await tester.pump(Durations.long2);
+
+      await fromHomeToAdvancedMenu(tester);
+
+      bool isSettingsSignetSwitchOn = await isSlideSwitchOn(tester, 'Signet');
+      bool isSettingsTaprootSwitchOn =
+          await isSlideSwitchOn(tester, 'Receive to Taproot');
+      bool isSettingsViewSatsSwitchOn =
+          await isSlideSwitchOn(tester, 'View Amount in Sats');
+
+      if (!isSettingsViewSatsSwitchOn) {
+        // find And Toggle DisplayFiat Switch
+        await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
+      }
+
+      if (!isSettingsSignetSwitchOn) {
+        // find And Toggle Signet Switch
+        await findAndToggleSettingsSwitch(tester, 'Signet');
+        final closeDialogButton = find.byIcon(Icons.close);
+        await tester.tap(closeDialogButton.last);
+        await tester.pump(Durations.long2);
+      }
+
+      if (!isSettingsTaprootSwitchOn) {
+        // find And Toggle Taproot Switch
+        await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
+        final closeDialogButton = find.byIcon(Icons.close);
+        await tester.tap(closeDialogButton.last, warnIfMissed: false);
+        await tester.pump(Durations.long2);
+      }
+
+      // go back to accounts
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+
+      await checkSync(tester, waitAccSync: "Signet");
+      await tester.pump(Durations.long2);
+
+      final baseWalletFinder = find.text("Signet");
+      expect(baseWalletFinder, findsWidgets);
+      await tester.tap(baseWalletFinder.first);
+      await tester.pump(Durations.long2);
+
+      final sendButtonFinder = find.text("Send");
+      expect(sendButtonFinder, findsWidgets);
+      await tester.tap(sendButtonFinder.last);
+      await tester.pump(Durations.long2);
+
+      /// SEND some money to hot signet wallet
+      await enterTextInField(
+          tester, find.byType(TextFormField), hotSignetSelfAddress);
+
+      // enter amount
+      await findAndPressTextButton(tester, '5');
+      await findAndPressTextButton(tester, '6');
+      await findAndPressTextButton(tester, '7');
+
+      // go to staging
+      await waitForTealTextAndTap(tester, 'Confirm');
+      await tester.pump(Durations.long2);
+
+      // now wait for it to go to staging
+      final textFeeFinder = find.text("Fee");
+      await tester.pumpUntilFound(textFeeFinder,
+          tries: 100, duration: Durations.long2);
+
+      await findAndPressTextButton(tester, 'Send Transaction');
+
+      await enterTextInField(tester, find.byType(TextFormField), "This Note");
+
+      await findAndPressTextButton(tester, 'Save');
+      await tester.pump(Durations.long2);
+      await pumpRepeatedly(tester);
+
+      await slowSearchAndToggleText(tester, 'Continue');
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+
+      final textTxFinder = find.text("Awaiting confirmation");
+      await tester.pumpUntilFound(textTxFinder,
+          tries: 100, duration: Durations.long2);
+      await tester.pump(Durations.long2);
+
+      await findFirstTextButtonAndPress(tester, 'Sent');
+      await tester.pump(Durations.long2);
+
+      final textNoteFinder = find.text("This Note");
+      await tester.pumpUntilFound(textNoteFinder,
+          tries: 100, duration: Durations.long2);
+    });
     testWidgets('<Switching Fiat in App>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
