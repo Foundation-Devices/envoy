@@ -27,6 +27,7 @@ import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -521,7 +522,7 @@ class SpendRequirementOverlayState
                                             padding: EdgeInsets.all(
                                                 EnvoySpacing.xs)),
                                         inTagSelectionMode
-                                            ? CoinSelectionButton(
+                                            ? coinSelectionButton(
                                                 valid: valid,
                                                 inTagSelectionMode:
                                                     inTagSelectionMode)
@@ -547,6 +548,138 @@ class SpendRequirementOverlayState
           ),
         ),
       ),
+    );
+  }
+
+  bool dialogOpen = false;
+
+  Widget coinSelectionButton(
+      {required bool inTagSelectionMode, required bool valid}) {
+    EnvoyAccount? selectedAccount = ref.read(selectedAccountProvider);
+    Set<String> selection = ref.watch(coinSelectionStateProvider);
+    String buttonText = S().component_cancel;
+    if (inTagSelectionMode) {
+      List<Tag> tags = ref.read(tagsProvider(selectedAccount?.id ?? "")) ?? [];
+      bool isCoinsOnlyPartOfUntagged = false;
+      Tag? untagged = tags.firstWhereOrNull((element) => element.untagged);
+      if (untagged == null) {
+        isCoinsOnlyPartOfUntagged = false;
+      } else {
+        isCoinsOnlyPartOfUntagged = true;
+
+        /// check if selected coins are only part of untagged coins
+        selection.toList().forEach((selectionId) {
+          if (!untagged.utxo.map((e) => e.getId()).contains(selectionId)) {
+            isCoinsOnlyPartOfUntagged = false;
+          }
+        });
+      }
+
+      buttonText = isCoinsOnlyPartOfUntagged
+          ? S().tagged_tagDetails_sheet_cta2
+          : S().tagged_tagDetails_sheet_retag_cta2;
+    }
+    return EnvoyButton(
+      enabled: valid,
+      type: EnvoyButtonTypes.secondary,
+      buttonText,
+      onTap: () async {
+        if (dialogOpen) return; // Prevent opening multiple dialogs
+        NavigatorState navigator = Navigator.of(context, rootNavigator: true);
+        if (!inTagSelectionMode) {
+          SpendRequirementOverlayState().cancel(context);
+          return;
+        }
+        if (selectedAccount == null) {
+          return;
+        }
+        bool dismissed = await EnvoyStorage()
+            .checkPromptDismissed(DismissiblePrompt.createCoinTagWarning);
+        setState(() {
+          _hideOverlay = true;
+        });
+        if (dismissed && mounted) {
+          dialogOpen = true;
+          await showEnvoyDialog(
+            context: context,
+            useRootNavigator: true,
+            onDispose: () {
+              dialogOpen = false;
+            },
+            builder: Builder(
+              builder: (context) => CreateCoinTag(
+                accountId: selectedAccount.id,
+                onTagUpdate: () async {
+                  ref.read(coinSelectionStateProvider.notifier).reset();
+                  await Future.delayed(const Duration(milliseconds: 100));
+                  Haptics.lightImpact();
+                  navigator.popUntil((route) {
+                    return route.settings is MaterialPage;
+                  });
+                },
+              ),
+            ),
+            alignment: const Alignment(0.0, -.6),
+          );
+        } else if (mounted) {
+          setState(() {
+            dialogOpen = true;
+          });
+          await showEnvoyDialog(
+            useRootNavigator: true,
+            context: context,
+            onDispose: () {
+              setState(() {
+                dialogOpen = false;
+              });
+            },
+            builder: Builder(
+              builder: (context) {
+                return CreateCoinTagWarning(onContinue: () async {
+                  Navigator.pop(context); // Close warning dialog
+
+                  Future.delayed(const Duration(milliseconds: 500), () {
+                    setState(() {
+                      dialogOpen = true;
+                    });
+                  });
+
+                  await showEnvoyDialog(
+                    context: context,
+                    useRootNavigator: true,
+                    onDispose: () {
+                      if (mounted) {
+                        setState(() {
+                          dialogOpen = false;
+                        });
+                      }
+                    },
+                    builder: Builder(
+                      builder: (context) => CreateCoinTag(
+                        accountId: selectedAccount.id,
+                        onTagUpdate: () async {
+                          Haptics.lightImpact();
+                          ref.read(coinSelectionStateProvider.notifier).reset();
+                          NavigatorState navigator =
+                              Navigator.of(context, rootNavigator: true);
+                          await Future.delayed(
+                              const Duration(milliseconds: 100));
+                          navigator.popUntil((route) {
+                            return route.settings is MaterialPage;
+                          });
+                        },
+                      ),
+                    ),
+                    alignment: const Alignment(0.0, -.6),
+                  );
+                });
+              },
+            ),
+            alignment: const Alignment(0.0, -.6),
+          );
+        }
+        ref.read(coinSelectionStateProvider.notifier).reset();
+      },
     );
   }
 
@@ -692,163 +825,6 @@ class SpendRequirementOverlayState
         clearSpendState(container);
       }
     }
-  }
-}
-
-class CoinSelectionButton extends StatefulWidget {
-  final bool valid;
-  final bool inTagSelectionMode;
-
-  const CoinSelectionButton({
-    super.key,
-    required this.valid,
-    required this.inTagSelectionMode,
-  });
-
-  @override
-  State<CoinSelectionButton> createState() => _CoinSelectionButtonState();
-}
-
-class _CoinSelectionButtonState extends State<CoinSelectionButton> {
-  bool dialogOpen = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer(
-      builder: (_, ref, child) {
-        EnvoyAccount? selectedAccount = ref.read(selectedAccountProvider);
-        Set<String> selection = ref.watch(coinSelectionStateProvider);
-
-        String buttonText = S().component_cancel;
-        if (widget.inTagSelectionMode) {
-          List<Tag> tags =
-              ref.read(tagsProvider(selectedAccount?.id ?? "")) ?? [];
-          bool isCoinsOnlyPartOfUntagged = false;
-          Tag? untagged = tags.firstWhereOrNull((element) => element.untagged);
-          if (untagged == null) {
-            isCoinsOnlyPartOfUntagged = false;
-          } else {
-            isCoinsOnlyPartOfUntagged = true;
-
-            /// check if selected coins are only part of untagged coins
-            selection.toList().forEach((selectionId) {
-              if (!untagged.utxo.map((e) => e.getId()).contains(selectionId)) {
-                isCoinsOnlyPartOfUntagged = false;
-              }
-            });
-          }
-
-          buttonText = isCoinsOnlyPartOfUntagged
-              ? S().tagged_tagDetails_sheet_cta2
-              : S().tagged_tagDetails_sheet_retag_cta2;
-        }
-
-        return EnvoyButton(
-          enabled: widget.valid,
-          type: EnvoyButtonTypes.secondary,
-          buttonText,
-          onTap: () async {
-            if (dialogOpen) return; // Prevent opening multiple dialogs
-
-            NavigatorState navigator =
-                Navigator.of(context, rootNavigator: true);
-            if (!widget.inTagSelectionMode) {
-              SpendRequirementOverlayState().cancel(context);
-              return;
-            }
-            if (selectedAccount == null) {
-              return;
-            }
-            bool dismissed = await EnvoyStorage()
-                .checkPromptDismissed(DismissiblePrompt.createCoinTagWarning);
-            if (dismissed && context.mounted) {
-              setState(() {
-                dialogOpen = true;
-              });
-              await showEnvoyDialog(
-                context: context,
-                useRootNavigator: true,
-                onDispose: () {
-                  setState(() {
-                    dialogOpen = false;
-                  });
-                },
-                builder: Builder(
-                  builder: (context) => CreateCoinTag(
-                    accountId: selectedAccount.id,
-                    onTagUpdate: () async {
-                      ref.read(coinSelectionStateProvider.notifier).reset();
-                      await Future.delayed(const Duration(milliseconds: 100));
-                      navigator.popUntil((route) {
-                        return route.settings is MaterialPage;
-                      });
-                    },
-                  ),
-                ),
-                alignment: const Alignment(0.0, -.6),
-              );
-            } else if (context.mounted) {
-              setState(() {
-                dialogOpen = true;
-              });
-              await showEnvoyDialog(
-                useRootNavigator: true,
-                context: context,
-                onDispose: () {
-                  setState(() {
-                    dialogOpen = false;
-                  });
-                },
-                builder: Builder(
-                  builder: (context) {
-                    return CreateCoinTagWarning(onContinue: () async {
-                      Navigator.pop(context); // Close warning dialog
-
-                      Future.delayed(const Duration(milliseconds: 500), () {
-                        setState(() {
-                          dialogOpen = true;
-                        });
-                      });
-
-                      await showEnvoyDialog(
-                        context: context,
-                        useRootNavigator: true,
-                        onDispose: () {
-                          if (mounted) {
-                            setState(() {
-                              dialogOpen = false;
-                            });
-                          }
-                        },
-                        builder: Builder(
-                          builder: (context) => CreateCoinTag(
-                            accountId: selectedAccount.id,
-                            onTagUpdate: () async {
-                              ref
-                                  .read(coinSelectionStateProvider.notifier)
-                                  .reset();
-                              NavigatorState navigator =
-                                  Navigator.of(context, rootNavigator: true);
-                              await Future.delayed(
-                                  const Duration(milliseconds: 100));
-                              navigator.popUntil((route) {
-                                return route.settings is MaterialPage;
-                              });
-                            },
-                          ),
-                        ),
-                        alignment: const Alignment(0.0, -.6),
-                      );
-                    });
-                  },
-                ),
-                alignment: const Alignment(0.0, -.6),
-              );
-            }
-          },
-        );
-      },
-    );
   }
 }
 
