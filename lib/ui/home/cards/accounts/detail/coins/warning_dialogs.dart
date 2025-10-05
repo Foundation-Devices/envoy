@@ -46,11 +46,11 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
         showCloseButton: true,
         content: widget.warningMessage,
         primaryButtonLabel: widget.buttonTitle,
-        onPrimaryButtonTap: (context) {
+        onPrimaryButtonTap: (context) async {
           if (dismissed) {
-            EnvoyStorage().addPromptState(widget.promptType);
+            await EnvoyStorage().addPromptState(widget.promptType);
           } else {
-            EnvoyStorage().removePromptState(widget.promptType);
+            await EnvoyStorage().removePromptState(widget.promptType);
           }
           widget.onContinue();
         },

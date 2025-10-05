@@ -598,6 +598,7 @@ class SpendRequirementOverlayState
         setState(() {
           _hideOverlay = true;
         });
+        final selectedOutputs = _getSelectedOutputs(selectedAccount.id);
         if (dismissed && mounted) {
           dialogOpen = true;
           await showEnvoyDialog(
@@ -609,8 +610,10 @@ class SpendRequirementOverlayState
             builder: Builder(
               builder: (context) => CreateCoinTag(
                 accountId: selectedAccount.id,
-                onTagUpdate: () async {
-                  ref.read(coinSelectionStateProvider.notifier).reset();
+                coins: selectedOutputs,
+                onTagUpdate: (context) async {
+                  final container = ProviderScope.containerOf(context);
+                  container.read(coinSelectionStateProvider.notifier).reset();
                   await Future.delayed(const Duration(milliseconds: 100));
                   Haptics.lightImpact();
                   navigator.popUntil((route) {
@@ -629,21 +632,14 @@ class SpendRequirementOverlayState
             useRootNavigator: true,
             context: context,
             onDispose: () {
-              setState(() {
-                dialogOpen = false;
-              });
+              // setState(() {
+              dialogOpen = false;
+              // });
             },
             builder: Builder(
               builder: (context) {
                 return CreateCoinTagWarning(onContinue: () async {
                   Navigator.pop(context); // Close warning dialog
-
-                  Future.delayed(const Duration(milliseconds: 500), () {
-                    setState(() {
-                      dialogOpen = true;
-                    });
-                  });
-
                   await showEnvoyDialog(
                     context: context,
                     useRootNavigator: true,
@@ -657,9 +653,12 @@ class SpendRequirementOverlayState
                     builder: Builder(
                       builder: (context) => CreateCoinTag(
                         accountId: selectedAccount.id,
-                        onTagUpdate: () async {
+                        coins: selectedOutputs,
+                        onTagUpdate: (context) async {
                           Haptics.lightImpact();
-                          ref.read(coinSelectionStateProvider.notifier).reset();
+                          ProviderScope.containerOf(context)
+                              .read(coinSelectionStateProvider.notifier)
+                              .reset();
                           NavigatorState navigator =
                               Navigator.of(context, rootNavigator: true);
                           await Future.delayed(
@@ -825,6 +824,18 @@ class SpendRequirementOverlayState
         clearSpendState(container);
       }
     }
+  }
+
+  List<Output> _getSelectedOutputs(String id) {
+    List<Output> coins = [];
+    ref.read(tagsProvider(id)).map((e) => e.utxo).forEach((element) {
+      coins.addAll(element);
+    });
+    Set<String> selection = ref.read(coinSelectionStateProvider);
+
+    return coins
+        .where((element) => selection.contains(element.getId()))
+        .toList();
   }
 }
 
