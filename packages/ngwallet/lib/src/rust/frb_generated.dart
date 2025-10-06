@@ -265,7 +265,7 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiEnvoyWalletEnvoyAccountHandlerSetDoNotSpendMultiple(
       {required EnvoyAccountHandler that,
-      required List<String> utxo,
+      required List<Output> utxo,
       required bool doNotSpend});
 
   Future<bool> crateApiEnvoyWalletEnvoyAccountHandlerSetNote(
@@ -283,7 +283,7 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiEnvoyWalletEnvoyAccountHandlerSetTagMultiple(
       {required EnvoyAccountHandler that,
-      required List<String> utxo,
+      required List<Output> utxos,
       required String tag});
 
   Future<bool> crateApiEnvoyWalletEnvoyAccountHandlerSetTags(
@@ -1696,14 +1696,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @override
   Future<void> crateApiEnvoyWalletEnvoyAccountHandlerSetDoNotSpendMultiple(
       {required EnvoyAccountHandler that,
-      required List<String> utxo,
+      required List<Output> utxo,
       required bool doNotSpend}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
             that, serializer);
-        sse_encode_list_String(utxo, serializer);
+        sse_encode_list_output(utxo, serializer);
         sse_encode_bool(doNotSpend, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 40, port: port_);
@@ -1821,14 +1821,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @override
   Future<void> crateApiEnvoyWalletEnvoyAccountHandlerSetTagMultiple(
       {required EnvoyAccountHandler that,
-      required List<String> utxo,
+      required List<Output> utxos,
       required String tag}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyAccountHandler(
             that, serializer);
-        sse_encode_list_String(utxo, serializer);
+        sse_encode_list_output(utxos, serializer);
         sse_encode_String(tag, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 44, port: port_);
@@ -1838,7 +1838,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerSetTagMultipleConstMeta,
-      argValues: [that, utxo, tag],
+      argValues: [that, utxos, tag],
       apiImpl: this,
     ));
   }
@@ -1847,7 +1847,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       get kCrateApiEnvoyWalletEnvoyAccountHandlerSetTagMultipleConstMeta =>
           const TaskConstMeta(
             debugName: "EnvoyAccountHandler_set_tag_multiple",
-            argNames: ["that", "utxo", "tag"],
+            argNames: ["that", "utxos", "tag"],
           );
 
   @override
@@ -5394,7 +5394,7 @@ class EnvoyAccountHandlerImpl extends RustOpaque
           that: this, utxo: utxo, doNotSpend: doNotSpend);
 
   Future<void> setDoNotSpendMultiple(
-          {required List<String> utxo, required bool doNotSpend}) =>
+          {required List<Output> utxo, required bool doNotSpend}) =>
       RustLib.instance.api
           .crateApiEnvoyWalletEnvoyAccountHandlerSetDoNotSpendMultiple(
               that: this, utxo: utxo, doNotSpend: doNotSpend);
@@ -5413,9 +5413,9 @@ class EnvoyAccountHandlerImpl extends RustOpaque
           that: this, utxo: utxo, tag: tag);
 
   Future<void> setTagMultiple(
-          {required List<String> utxo, required String tag}) =>
+          {required List<Output> utxos, required String tag}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerSetTagMultiple(
-          that: this, utxo: utxo, tag: tag);
+          that: this, utxos: utxos, tag: tag);
 
   Future<bool> setTags({required List<Output> utxo, required String tag}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerSetTags(

@@ -225,7 +225,7 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   Future<void> setDoNotSpend({required Output utxo, required bool doNotSpend});
 
   Future<void> setDoNotSpendMultiple(
-      {required List<String> utxo, required bool doNotSpend});
+      {required List<Output> utxo, required bool doNotSpend});
 
   Future<bool> setNote({required String txId, required String note});
 
@@ -234,7 +234,7 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   Future<bool> setTag({required Output utxo, required String tag});
 
   Future<void> setTagMultiple(
-      {required List<String> utxo, required String tag});
+      {required List<Output> utxos, required String tag});
 
   Future<bool> setTags({required List<Output> utxo, required String tag});
 

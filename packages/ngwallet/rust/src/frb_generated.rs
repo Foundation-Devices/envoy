@@ -2028,7 +2028,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_do_not_spend_multiple
             let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
             let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>>>::sse_decode(&mut deserializer);
-let api_utxo = <Vec<String>>::sse_decode(&mut deserializer);
+let api_utxo = <Vec<ngwallet::transaction::Output>>::sse_decode(&mut deserializer);
 let api_do_not_spend = <bool>::sse_decode(&mut deserializer);deserializer.end(); move |context|  {
                     transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>((move ||  {
                         let mut api_that_guard = None;
@@ -2040,7 +2040,7 @@ let decode_indices_ = flutter_rust_bridge::for_generated::lockable_compute_decod
             }
         }
         let mut api_that_guard = api_that_guard.unwrap();
- let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::set_do_not_spend_multiple(&mut *api_that_guard, api_utxo, api_do_not_spend)?;   Ok(output_ok)
+ let output_ok = crate::api::envoy_wallet::EnvoyAccountHandler::set_do_not_spend_multiple(&mut *api_that_guard, &api_utxo, api_do_not_spend)?;   Ok(output_ok)
                     })())
                 } })
 }
@@ -2208,7 +2208,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_tag_multiple_impl(
             let api_that = <RustOpaqueMoi<
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyAccountHandler>,
             >>::sse_decode(&mut deserializer);
-            let api_utxo = <Vec<String>>::sse_decode(&mut deserializer);
+            let api_utxos = <Vec<ngwallet::transaction::Output>>::sse_decode(&mut deserializer);
             let api_tag = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
@@ -2231,7 +2231,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_set_tag_multiple_impl(
                         let output_ok =
                             crate::api::envoy_wallet::EnvoyAccountHandler::set_tag_multiple(
                                 &mut *api_that_guard,
-                                api_utxo,
+                                api_utxos,
                                 &api_tag,
                             )?;
                         Ok(output_ok)
