@@ -42,6 +42,7 @@ dependencies:
     path: rust_builder
   flutter_rust_bridge: 2.11.1
   freezed_annotation: ^2.0.0
+  collection: ^1.18.0
 
 dev_dependencies:
   freezed: ^2.0.0

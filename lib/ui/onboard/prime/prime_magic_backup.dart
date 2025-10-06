@@ -17,10 +17,11 @@ class PrimeMagicBackup extends ConsumerStatefulWidget {
   const PrimeMagicBackup({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _PrimePinSetupState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _PrimeMagicBackupState();
 }
 
-class _PrimePinSetupState extends ConsumerState<PrimeMagicBackup> {
+class _PrimeMagicBackupState extends ConsumerState<PrimeMagicBackup> {
   IconLoaderState _state = IconLoaderState.indeterminate;
   rive.File? _lockFile;
   rive.RiveWidgetController? _lockController;

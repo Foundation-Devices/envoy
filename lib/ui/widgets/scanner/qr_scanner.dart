@@ -91,7 +91,7 @@ class _QrScannerState extends State<QrScanner> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      primary: false,
+      primary: true,
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
