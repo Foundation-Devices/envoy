@@ -233,10 +233,7 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   Future<bool> setTag({required Output utxo, required String tag});
 
-  Future<void> setTagMultiple(
-      {required List<Output> utxos, required String tag});
-
-  Future<bool> setTags({required List<Output> utxo, required String tag});
+  Future<void> setTags({required List<Output> utxos, required String tag});
 
   Future<EnvoyAccount> state();
 
