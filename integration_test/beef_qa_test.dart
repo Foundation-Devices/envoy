@@ -1689,6 +1689,12 @@ Future<void> main() async {
       await testNodeEntry(tester,
           node: localNode1T, expectedPrefix: 'tcp://', checkIfConnects: false);
 
+      /// Change back to Foundation deault
+      // Press dropdown - Personal Node
+      await findAndPressTextButton(tester, 'Personal Node');
+      // Tap Foundation (default)
+      await findAndPressTextButton(tester, 'Foundation (Default)');
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
