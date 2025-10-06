@@ -38,10 +38,10 @@ jobs:
       - run: mkdir -p ~/.cargo/registry ~/.cargo/git
         name: Make sure cache directories exist
 
-      - run: nix develop .#build --command scripts/build_ffi_android.sh
+      - run: nix develop --command ./scripts/build_ffi_android.sh
         name: Build legacy FFI libs
 
-      - run:  echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop .#build --command cargo flutter build --release --target-platform android-arm64
+      - run:  echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command cargo flutter build --release --target-platform android-arm64
         name: Build Envoy
         env:
           KEY_JKS: ${{ secrets.KEY_JKS }}
