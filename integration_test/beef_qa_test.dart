@@ -2513,10 +2513,10 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
 
       // get the first device with matching name
-      final deviceFinder = find.text(deviceName).first;
+      final deviceFinder = find.text(deviceName).last;
       expect(deviceFinder, findsOneWidget);
       await tester.tap(deviceFinder);
-      await tester.pumpAndSettle(Durations.long2);
+      await tester.pump(Durations.long2);
 
       await openMenuAndPressDeleteDevice(tester);
 
@@ -2540,26 +2540,23 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
       await tester.pump(Durations.long2);
 
-      // Make sure device is removed
-      final emptyDevices = find.byType(GhostDevice);
-      await tester.pumpUntilFound(emptyDevices);
-      expect(emptyDevices, findsOne);
+      // check that only one passport remains
+      final remainingDevices = find.text(deviceName);
+      expect(remainingDevices,
+          findsNWidgets(1)); // second device have 2 "Passport" texts inside
 
       // Verify that deleting the device also removes its associated accounts
       await findAndPressTextButton(tester, 'Accounts');
       await tester.pump(Durations.long2);
-
-      // check that only one remains
-      final remainingDevices = find.text(deviceName);
-      expect(remainingDevices,
-          findsNWidgets(2)); // second device have 2 "Passport" texts inside
+      await scrollHome(tester, -600);
+      final deletedAccount = find.text('Taproot modal test');
+      expect(deletedAccount, findsNothing);
 
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
-
     testWidgets('<Logs freeze>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
