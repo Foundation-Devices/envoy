@@ -588,11 +588,7 @@ impl EnvoyAccountHandler {
         result
     }
 
-    pub fn set_do_not_spend_multiple(
-        &mut self,
-        mut utxo: &Vec<Output>,
-        do_not_spend: bool,
-    ) -> Result<()> {
+    pub fn set_do_not_spend_multiple(&mut self, utxo: &[Output], do_not_spend: bool) -> Result<()> {
         let utxo_ids: HashSet<String> = utxo.iter().map(|u| u.get_id()).collect();
         {
             //for immediate UI feedback, update the last event with the new do_not_spend status
