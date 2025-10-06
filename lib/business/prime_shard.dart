@@ -11,6 +11,9 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/services.dart';
 import 'package:shards/shards.dart';
 
+import 'package:envoy/util/bug_report_helper.dart';
+import 'package:collection/collection.dart';
+
 const String LAST_BACKUP_PREFS = "last_backup_prime";
 const String PRIME_SECRET = "prime.secret";
 const String PRIME_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME =
@@ -24,9 +27,9 @@ class PrimeShard {
 
   static Future<void> init() async {
     try {
-      // await RustLib.init();
+      await RustLib.init();
     } catch (e) {
-      // EnvoyReport().log("PrimeShard", "Error initializing ShardsLib: $e");
+      EnvoyReport().log("PrimeShard", "Error initializing ShardsLib: $e");
     }
   }
 
@@ -49,15 +52,22 @@ class PrimeShard {
     );
   }
 
-  //TODO: use secure storage too ?
+  // TODO: rewrite in Rust
+  Future<ShardBackUp?> getShard({required Uint8List fingerprint}) async {
+    final shards = await getAllShards();
+    return shards.firstWhereOrNull((shard) {
+      kPrint("looking for: $fingerprint");
+      kPrint("got: ${Uint8List.fromList(shard.fingerprint)}");
+
+      return ListEquality()
+          .equals(Uint8List.fromList(shard.fingerprint), fingerprint);
+    });
+  }
+
   Future addShard({
     required List<int> shard,
-    required String shardIdentifier,
-    required String deviceSerial,
   }) async {
     await ShardBackUp.addNewShard(
-      deviceSerial: deviceSerial,
-      shardIdentifier: shardIdentifier,
       shard: shard,
       filePath: getPrimeSecretPath(),
     );
@@ -66,20 +76,9 @@ class PrimeShard {
     }
   }
 
-  // Future<String?> _restoreNonSecure(String name) async {
-  //   if (!await LocalStorage().fileExists(name)) {
-  //     return null;
-  //   }
-  //   return await LocalStorage().readFile(name);
-  // }
-
   void showSettingsMenu() {
     _platform.invokeMethod('show_settings');
   }
-
-  // Future<String?> _getNonSecure() async {
-  //   return await _restoreNonSecure(PRIME_SECRET);
-  // }
 
   Future<DateTime?> getNonSecureLastBackupTimestamp() async {
     if (!await LocalStorage()

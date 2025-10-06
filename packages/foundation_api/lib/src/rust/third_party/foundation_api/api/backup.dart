@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../../../frb_generated.dart';
+import '../../../lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'backup.freezed.dart';
@@ -36,8 +37,8 @@ sealed class BackupShardResponse with _$BackupShardResponse {
   ) = BackupShardResponse_Error;
 }
 
-class RestoreShardRequest {
-  const RestoreShardRequest();
+class MagicBackupEnabledRequest {
+  const MagicBackupEnabledRequest();
 
   @override
   int get hashCode => 0;
@@ -45,7 +46,43 @@ class RestoreShardRequest {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is RestoreShardRequest && runtimeType == other.runtimeType;
+      other is MagicBackupEnabledRequest && runtimeType == other.runtimeType;
+}
+
+class MagicBackupEnabledResponse {
+  final bool enabled;
+
+  const MagicBackupEnabledResponse({
+    required this.enabled,
+  });
+
+  @override
+  int get hashCode => enabled.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MagicBackupEnabledResponse &&
+          runtimeType == other.runtimeType &&
+          enabled == other.enabled;
+}
+
+class RestoreShardRequest {
+  final U8Array32 seedFingerprint;
+
+  const RestoreShardRequest({
+    required this.seedFingerprint,
+  });
+
+  @override
+  int get hashCode => seedFingerprint.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RestoreShardRequest &&
+          runtimeType == other.runtimeType &&
+          seedFingerprint == other.seedFingerprint;
 }
 
 @freezed
@@ -58,6 +95,9 @@ sealed class RestoreShardResponse with _$RestoreShardResponse {
   const factory RestoreShardResponse.error(
     String field0,
   ) = RestoreShardResponse_Error;
+  const factory RestoreShardResponse.notFound(
+    String field0,
+  ) = RestoreShardResponse_NotFound;
 }
 
 class Shard {
