@@ -260,8 +260,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
       setState(() {
         _isLoading = true;
       });
-      await selectedAccount.handler
-          ?.setTags(utxos: widget.coins, tag: tag);
+      await selectedAccount.handler?.setTags(utxos: widget.coins, tag: tag);
     } catch (e) {
       kPrint(e);
     } finally {
