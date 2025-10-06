@@ -421,8 +421,9 @@ class CoinTagBalanceWidget extends ConsumerWidget {
       }
     });
     try {
+      Haptics.lightImpact();
       await account?.handler?.setDoNotSpendMultiple(
-        utxo: coinTag.utxo.map((e) => e.getId()).toList(),
+        utxo: coinTag.utxo.toList(),
         doNotSpend: true,
       );
     } catch (e) {
@@ -433,8 +434,9 @@ class CoinTagBalanceWidget extends ConsumerWidget {
   void unLockAllCoins(Tag coinTag, WidgetRef ref) async {
     final account = ref.read(selectedAccountProvider);
     try {
+      Haptics.lightImpact();
       await account?.handler?.setDoNotSpendMultiple(
-        utxo: coinTag.utxo.map((e) => e.getId()).toList(),
+        utxo: coinTag.utxo.toList(),
         doNotSpend: false,
       );
     } catch (e) {
