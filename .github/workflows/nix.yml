@@ -9,7 +9,7 @@ on:
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 jobs:
-  build:
+  nix-build:
     runs-on: [ self-hosted, Linux, X64 ]
     steps:
       - uses: actions/checkout@v3
@@ -41,8 +41,13 @@ jobs:
       - run: nix develop .#build --command scripts/build_ffi_android.sh
         name: Build legacy FFI libs
 
-      - run: nix develop .#build --command cargo flutter build --release --target-platform android-arm64
+      - run:  echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop .#build --command cargo flutter build --release --target-platform android-arm64
         name: Build Envoy
+        env:
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - run: git diff -I 'rustflags = ' --exit-code
         name: Check if any file (e.g. Cargo.lock) is changed during build
