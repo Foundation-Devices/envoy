@@ -155,13 +155,14 @@ class _AdvancedSettingsOptionsState
                                     Column(
                                       children: [
                                         ListTile(
-                                          leading: Text(
+                                          title: Text(
                                             S().onboarding_advanced_magicBackupSwitchText,
                                             style:
                                                 EnvoyTypography.info.copyWith(
                                               color: EnvoyColors.textPrimary,
                                               fontWeight: FontWeight.w600,
                                             ),
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                           trailing: Padding(
                                             padding: const EdgeInsets.only(
