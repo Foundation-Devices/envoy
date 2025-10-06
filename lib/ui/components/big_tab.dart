@@ -78,6 +78,7 @@ class BigTabState extends State<BigTab> {
                           color: textColor,
                           fontSize: 12.0,
                         ),
+                        overflow: TextOverflow.ellipsis,
                         maxLines: 2,
                       ),
                     ],
