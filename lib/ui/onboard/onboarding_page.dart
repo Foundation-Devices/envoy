@@ -415,6 +415,7 @@ class LinkText extends StatelessWidget {
     }
 
     return RichText(
+      textScaler: MediaQuery.textScalerOf(context),
       textAlign: textAlign,
       text: TextSpan(
         style: textStyleBuild,
