@@ -532,7 +532,6 @@ impl EnvoyAccountHandler {
         if let Some(sink) = self.stream_sink.clone() {
             let current_state = self.state().unwrap();
             self.last_event = Some(current_state.clone());
-            info!("Sending last event set {:?}", self.last_event.is_some());
             sink.add(current_state).unwrap();
         };
     }
