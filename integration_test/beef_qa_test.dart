@@ -1400,6 +1400,120 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
+    testWidgets('<Tags>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
+      await goBackHome(tester);
+      await checkSync(tester);
+
+      // go to acc
+      await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
+
+      // go to tags
+      await findAndTapActivitySlideButton(tester);
+
+      /// 1) Select a coin from Untagged
+      final Finder lastSwitchFinder = find.byType(CoinTagSwitch).last;
+      await tester.tap(lastSwitchFinder);
+
+      /// 2) Tap Tag selected
+      await findAndPressTextButton(tester, "Tag Selected");
+
+      /// 3) Tap "back" in the pop up
+      await findAndPressTextButton(tester, "Back");
+
+      /// 4) Repeat steps 1 and 2
+      await findAndPressTextButton(tester, "Tag Selected");
+
+      /// 5) Tap Continue
+      await findAndPressTextButton(tester, "Continue");
+
+      /// 6) Tap any of the suggested tags
+      await findAndPressTextButton(tester, "Expenses");
+
+      /// 7) Tap Continue
+      await findAndPressTextButton(tester, "Continue");
+
+      /// 8) Check that the pop up closes and the coin is tagged (to avoid ENV-2434)
+      // 1) Verify "Expenses" tag is visible
+      await findTextOnScreen(tester, "Expenses");
+
+      // 2) Verify "Selected Amount" is NOT on screen
+      expect(find.text("Selected Amount"), findsNothing);
+
+      // 3) Verify "Choose a Tag" is NOT on screen
+      expect(find.text("Choose a Tag"), findsNothing);
+
+      /// 9) Open the tag created
+      await findAndPressTextButton(tester, "Expenses");
+
+      /// 10) Select the coin form the tag
+      await tester.tap(lastSwitchFinder);
+
+      /// 10) Tap Retag selected
+      await findAndPressTextButton(tester, "Retag Selected");
+
+      /// 11) Tap Back in the pop up
+      await findAndPressTextButton(tester, "Back");
+
+      /// 12) Repeat steps 10 and 11
+      await findAndPressTextButton(tester, "Retag Selected");
+
+      /// 13) Tap Continue in the pop up
+
+      await findAndPressTextButton(tester, "Continue");
+
+      /// 14) Check the bottom tray disappears (to avoid ENV-2431)
+      // TODO
+
+      /// 14) Write anything in the Choose a tag field
+      await enterTextInField(tester, find.byType(TextFormField), "Whatever");
+
+      /// 15) Tap Continue
+      await findAndPressTextButton(tester, "Continue");
+
+      /// 16) Check the pop up closes and the coin has been tagged to the tag written in step 14
+      // 1) Verify "Whatever" tag is visible
+      await findTextOnScreen(tester, "Whatever");
+
+      // 2) Verify "Selected Amount" is NOT on screen
+      expect(find.text("Selected Amount"), findsNothing);
+
+      // 3) Verify "Choose a Tag" is NOT on screen
+      expect(find.text("Choose a Tag"), findsNothing);
+
+      /// 17) Open the tag written in step 14
+      await findAndPressTextButton(tester, "Whatever");
+
+      /// 18) Tap the three dots on the top right corner
+      // Find the Icon widget with the ellipsis icon
+      final ellipsisFinder = find.byIcon(CupertinoIcons.ellipsis);
+      // Ensure it exists
+      expect(ellipsisFinder, findsOneWidget);
+      // Tap it
+      await tester.tap(ellipsisFinder);
+      await tester.pump(Durations.long2);
+
+      /// 19) Tap Delete tag
+      await findAndPressTextButton(tester, "DELETE TAG");
+
+      /// 20) Tap Back
+      await findAndPressTextButton(tester, "Back");
+
+      /// 21) repeat steps 18 and 19
+      await findAndPressTextButton(tester, "DELETE TAG");
+
+      /// 22) Tap Delete tag
+      await findAndPressTextButton(tester, "Delete Tag");
+
+      /// 23) Check the tag disappears and the coin  is moved back to Untagged
+      await findTextOnScreen(tester, "Untagged");
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
     testWidgets('<Taproot address test>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
