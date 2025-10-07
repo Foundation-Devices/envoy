@@ -41,7 +41,7 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.foundationdevices.envoy"
         minSdkVersion 29
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionCode generateVersionCode(flutterVersionName, flutterVersionCode.toInteger())
         versionName flutterVersionName
 
