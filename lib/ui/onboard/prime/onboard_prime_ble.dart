@@ -654,9 +654,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             decoder: PrimeQlPayloadDecoder(
               decoder: qrDecoder,
               onScan: (XidDocument payload) async {
-                kPrint("XID payload: $payload");
-                await pairWithPrime(payload);
-
                 // TODO: process XidDocument for connection
 
                 if (!context.mounted) return;
@@ -669,6 +666,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
                 if (!context.mounted) return;
                 context.goNamed(ONBOARD_PRIME_PAIR);
+
+                kPrint("XID payload: $payload");
+                await pairWithPrime(payload);
               },
             ),
           );
