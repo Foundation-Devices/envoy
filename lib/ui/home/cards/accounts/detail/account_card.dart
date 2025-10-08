@@ -252,7 +252,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     child: EnvoyTextButton(
                         label: S().receive_tx_list_receive,
                         onTap: () {
-                          if (accountHasNoTaprootXpub(account)) {
+                          if (accountHasNoTaprootXpub(account) &&
+                              Settings().taprootEnabled()) {
                             showEnvoyPopUp(
                               context,
                               icon: EnvoyIcons.info,
@@ -789,7 +790,8 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
             style: const TextStyle(color: Colors.white),
           ),
           onTap: () {
-            if (accountHasNoTaprootXpub(widget.account)) {
+            if (accountHasNoTaprootXpub(widget.account) &&
+                Settings().taprootEnabled()) {
               showEnvoyPopUp(
                 context,
                 icon: EnvoyIcons.info,

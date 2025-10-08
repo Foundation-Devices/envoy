@@ -7,7 +7,6 @@ import 'dart:io';
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
-import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
@@ -387,6 +386,160 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
+    testWidgets('<Test taproot modal>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+      await goBackHome(tester);
+
+      // make sure it is disabled
+      await pressHamburgerMenu(tester);
+      await tapSettingsButton(tester);
+      await openAdvancedMenu(tester);
+      bool taprootAlreadyEnabled =
+          await isSlideSwitchOn(tester, "Receive to Taproot");
+      if (taprootAlreadyEnabled) {
+        // Disable it!
+        await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
+        await tester.pump(Durations.extralong4);
+        await tester.pump();
+        await findAndPressTextButton(tester, "Confirm");
+        await tester.pump(Durations.extralong4);
+        await tester.pump();
+      }
+
+      const String accountPassportName = "Taproot modal test";
+
+      // go to home
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+
+      /// Before enabling taproot, go to this account and tap receive, check that pop up does NOT show up
+      await scrollHome(tester, -600);
+
+      // go to acc
+      await findAndPressTextButton(tester, accountPassportName);
+      await findAndPressTextButton(tester, "Receive");
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+
+      // find no pop-up
+      final taprootFinder = find.text("Taproot on Passport");
+      expect(taprootFinder, findsNothing);
+
+      // go back
+      //await pressHamburgerMenu(tester);
+      await findAndPressTextButton(tester, "Accounts");
+      await findAndPressTextButton(tester, accountPassportName);
+
+      /// Then go to the descriptor and check that the pop up does NOT show up
+      // open menu
+      await findAndPressIcon(tester, Icons.more_horiz_outlined);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+      await findAndPressTextButton(tester, "SHOW DESCRIPTOR");
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+      // find no pop-up
+      expect(taprootFinder, findsNothing);
+
+      /// Then enable taproot form settings, check the pop up shows
+      // go back to settings
+      //await pressHamburgerMenu(tester);
+      await findAndPressTextButton(tester, "Accounts");
+      await pressHamburgerMenu(tester);
+      await tapSettingsButton(tester);
+      await openAdvancedMenu(tester);
+
+      // Enable it
+      await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+      await findAndPressTextButton(tester, "Confirm");
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+
+      /// Tap Do it later
+      await findAndPressTextButton(tester, "Do It Later");
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+
+      /// Go to this account, tap receive, check pop up shows
+      // go back to accounts
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+
+      // go to acc
+      await findAndPressTextButton(tester, accountPassportName);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+      await findAndPressTextButton(tester, "Receive");
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+
+      /// Tap Do it later
+      await findAndPressTextButton(tester, "Do It Later");
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+
+      // go back to acc
+      //await pressHamburgerMenu(tester);
+      await findAndPressTextButton(tester, "Accounts");
+      await findAndPressTextButton(tester, accountPassportName);
+
+      /// Go to show descriptor for this account, check pop up shows
+      // open menu
+      await findAndPressIcon(tester, Icons.more_horiz_outlined);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+      await findAndPressTextButton(tester, "SHOW DESCRIPTOR");
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+
+      /// Tap Do it later
+      await findAndPressTextButton(tester, "Do It Later");
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+
+      /// Check a segwit receive address is displayed
+      // already checking this in another test
+
+      /// Check a segwit descriptor shows
+      await findTextOnScreen(tester, "Segwit");
+
+      /// Go to another passport account paired after 2.3.0
+      // go back to home
+      //await pressHamburgerMenu(tester);
+      await findAndPressTextButton(tester, "Accounts");
+      await findAndPressTextButton(tester, "Primary (#0)");
+
+      /// Tap receive, check that pop up does NOT show up
+      await findAndPressTextButton(tester, "Receive");
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+
+      // find no pop-up
+      expect(taprootFinder, findsNothing);
+
+      /// Go to descriptor, check that pop up does NOT show up
+      // go back to home
+      //await pressHamburgerMenu(tester);
+      await findAndPressTextButton(tester, "Accounts");
+      await findAndPressTextButton(tester, "Primary (#0)");
+
+      // open menu
+      await findAndPressIcon(tester, Icons.more_horiz_outlined);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+      await findAndPressTextButton(tester, "SHOW DESCRIPTOR");
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+      // find no pop-up
+      expect(taprootFinder, findsNothing);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
     testWidgets('<Testing Prompts for Wallets with Balances>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
@@ -412,6 +565,7 @@ Future<void> main() async {
       Finder swipeBalancePromptFinder = find.text(swipeBalancePrompt);
       expect(swipeBalancePromptFinder, findsOneWidget);
 
+      await scrollHome(tester, -600);
       // check Dismiss button functionality
       final dismissButton = find.text('Dismiss');
       await tester.tap(dismissButton);
@@ -486,7 +640,10 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
 
       // Input text without tapping Save
-      await openDeviceCard(tester, "Passport");
+      final firstPassport = find.text("Passport").first;
+      await tester.tap(firstPassport);
+      await tester.pump(Durations.long2);
+
       await openDotsMenu(tester);
       await openEditDevice(tester);
 
@@ -1290,6 +1447,11 @@ Future<void> main() async {
       // Check that a pop up closed
       expect(confirmTextFromDialog, findsNothing);
 
+      /// Tap Do it later
+      await findAndPressTextButton(tester, "Do It Later");
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // disable
       await tester.pump(Durations.extralong4);
@@ -1300,6 +1462,7 @@ Future<void> main() async {
 
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // enable again
+      await tester.pump(Durations.extralong4);
 
       // Check that a pop up comes up
       expect(confirmTextFromDialog, findsOneWidget);
@@ -1308,6 +1471,11 @@ Future<void> main() async {
       await tester.pump();
       // Check that a pop up closed
       expect(confirmTextFromDialog, findsNothing);
+
+      /// Tap Do it later
+      await findAndPressTextButton(tester, "Do It Later");
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
 
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
@@ -2343,18 +2511,22 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
       await tester.pump(Durations.long2);
 
-      await openDeviceCard(tester, deviceName);
+      // get the first device with matching name
+      final deviceFinder = find.text(deviceName).last;
+      expect(deviceFinder, findsOneWidget);
+      await tester.tap(deviceFinder);
+      await tester.pump(Durations.long2);
+
       await openMenuAndPressDeleteDevice(tester);
 
-      final popUpText = find.text(
-        'Are you sure',
-      );
+      final popUpText = find.text('Are you sure');
       // Check that a pop up comes up
       await tester.pumpUntilFound(popUpText, duration: Durations.long1);
       final closeDialogButton = find.byIcon(Icons.close);
       await tester.tap(closeDialogButton.last);
       await tester.pump(Durations.long2);
       await tester.pump(Durations.long2);
+
       // Check that a pop up close on 'x'
       expect(popUpText, findsNothing);
 
@@ -2365,22 +2537,19 @@ Future<void> main() async {
       expect(deleteButtonFromDialog, findsOneWidget);
       await tester.tap(deleteButtonFromDialog);
       await tester.pump(Durations.long2);
-
       await tester.pump(Durations.long2);
 
-      // Make sure device is removed
-      final emptyDevices = find.byType(GhostDevice);
-      await tester.pumpUntilFound(emptyDevices);
-      expect(emptyDevices, findsOne);
+      // check that only one passport remains
+      final remainingDevices = find.text(deviceName);
+      expect(remainingDevices,
+          findsNWidgets(1)); // second device have 2 "Passport" texts inside
 
       // Verify that deleting the device also removes its associated accounts
       await findAndPressTextButton(tester, 'Accounts');
       await tester.pump(Durations.long2);
-      final passportAccount = find.text(
-        deviceName,
-      );
-
-      expect(passportAccount, findsNothing);
+      await scrollHome(tester, -600);
+      final deletedAccount = find.text('Taproot modal test');
+      expect(deletedAccount, findsNothing);
 
       stopwatch.stop();
       debugPrint(
