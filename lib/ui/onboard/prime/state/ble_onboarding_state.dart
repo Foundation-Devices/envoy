@@ -31,7 +31,9 @@ final bleConnectionProvider =
 
 final deviceSecurityProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier();
+  return StepNotifier(
+      stepName: S().onboarding_connectionIntro_checkingDeviceSecurity,
+      state: EnvoyStepState.LOADING);
 });
 
 final firmWareUpdateProvider =
