@@ -951,6 +951,50 @@ Future<void> findAndTapActivitySlideButton(WidgetTester tester) async {
   fail('No GestureDetector with the specified EnvoyIcon was found.');
 }
 
+Future<void> testNodeEntry(
+  WidgetTester tester, {
+  required String node,
+  required String expectedPrefix,
+  bool checkIfConnects = true,
+}) async {
+  // Enter the node into the TextFormField
+  await enterTextInField(tester, find.byType(TextFormField), node);
+
+  if (checkIfConnects) {
+    // Expect it connects
+    final textConnectFinder = find.text("Connected");
+    await tester.pumpUntilFound(
+      textConnectFinder,
+      tries: 50,
+      duration: Durations.long2,
+    );
+  } else {
+    // Expect it does NOT connect
+    final noConnection = find.text("Couldn't reach node.");
+    await tester.pumpUntilFound(
+      noConnection,
+      tries: 50,
+      duration: Durations.long2,
+    );
+  }
+
+  // Get the TextFormField widget
+  final textFormField = tester.widget<TextFormField>(
+    find.byType(TextFormField),
+  );
+
+  // Extract the text from its controller
+  final currentValue = textFormField.controller?.text ?? "";
+
+  // Assert the expected prefix
+  expect(
+    currentValue.startsWith(expectedPrefix),
+    isTrue,
+    reason:
+        "TextFormField value should start with $expectedPrefix, got: $currentValue",
+  );
+}
+
 Future<String> extractFiatAmountFromAccount(
     WidgetTester tester, String accountText) async {
   await pumpRepeatedly(tester); // Ensure the widget tree is settled

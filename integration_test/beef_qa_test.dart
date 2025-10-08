@@ -1801,6 +1801,73 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
+    testWidgets('<Check prefix & suffixes for nodes>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
+      await goBackHome(tester);
+
+      final personalNodeNoPrefix1 = "mainnet-0.foundation.xyz:50001";
+      final personalNodeNoPrefix2 = "mainnet-0.foundation.xyz:50002";
+      final localNode1 = "192.168.xxx.xxx:50001";
+      final localNode2 = "192.168.xxx.xxx:50002";
+
+      // Go to privacy
+      await findAndPressTextButton(tester, 'Privacy');
+      // Tap Foundation (default) to open dropdown
+      await findAndPressTextButton(tester, 'Foundation (Default)');
+      // Select Personal Node
+      await findAndPressTextButton(tester, 'Personal Node');
+
+      // Check that it gets selected and the field to enter the personal node shows up
+      await findTextOnScreen(tester, "Personal Node");
+      await findTextOnScreen(tester, "Enter your node address");
+
+      /// check for 50002
+
+      await testNodeEntry(tester,
+          node: personalNodeNoPrefix2, expectedPrefix: 'ssl://');
+      await testNodeEntry(tester,
+          node: localNode2, expectedPrefix: 'ssl://', checkIfConnects: false);
+
+      /// check for 50001
+      await testNodeEntry(tester,
+          node: personalNodeNoPrefix1, expectedPrefix: 'tcp://');
+      await testNodeEntry(tester,
+          node: localNode1, expectedPrefix: 'tcp://', checkIfConnects: false);
+
+      /// Now do all the tests again if there is a :t / :s at the end ///////////////////
+
+      final personalNodeNoPrefix1T = "mainnet-0.foundation.xyz:50001:t";
+      final personalNodeNoPrefix2T = "mainnet-0.foundation.xyz:50002:s";
+      final localNode1T = "192.168.xxx.xxx:50001:t";
+      final localNode2T = "192.168.xxx.xxx:50002:s";
+
+      /// check for 50002:t
+      // paste node
+      await testNodeEntry(tester,
+          node: personalNodeNoPrefix2T, expectedPrefix: 'ssl://');
+
+      await testNodeEntry(tester,
+          node: localNode2T, expectedPrefix: 'ssl://', checkIfConnects: false);
+
+      /// check for 50001:t
+
+      await testNodeEntry(tester,
+          node: personalNodeNoPrefix1T, expectedPrefix: 'tcp://');
+      await testNodeEntry(tester,
+          node: localNode1T, expectedPrefix: 'tcp://', checkIfConnects: false);
+
+      /// Change back to Foundation deault
+      // Press dropdown - Personal Node
+      await findAndPressTextButton(tester, 'Personal Node');
+      // Tap Foundation (default)
+      await findAndPressTextButton(tester, 'Foundation (Default)');
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
     testWidgets('<Enable tor and check top shield>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
