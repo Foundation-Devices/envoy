@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:animations/animations.dart';
@@ -59,6 +60,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   PairingResponse? pairingResponse;
 
   Completer<QuantumLinkMessage_BroadcastTransaction>? _completer;
+
   Completer<QuantumLinkMessage_BroadcastTransaction>? get completer =>
       _completer;
 
@@ -749,11 +751,22 @@ class _QuantumLinkCommunicationInfoState
                         child: ExpandablePageView(
                           controller: _pageController,
                           children: [
-                            Text(
-                              //TODO: implement [[iCloud Keychain.]] button
-                              S().wallet_security_modal_1_4_ios_subheading,
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.info,
+                            LinkText(
+                              text: Platform.isAndroid
+                                  ? S()
+                                      .wallet_security_modal_1_4_android_subheading
+                                  : S()
+                                      .wallet_security_modal_1_4_ios_subheading,
+                              linkStyle: EnvoyTypography.info.copyWith(
+                                color: EnvoyColors.accentPrimary,
+                              ),
+                              onTap: () => launchUrl(
+                                Uri.parse(
+                                  Platform.isAndroid
+                                      ? "https://developer.android.com/guide/topics/data/autobackup"
+                                      : "https://support.apple.com/en-us/HT202303",
+                                ),
+                              ),
                             ),
                             Text(
                               S().backups_erase_wallets_and_backups_modal_2_2_subheading,
