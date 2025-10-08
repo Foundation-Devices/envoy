@@ -742,6 +742,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
               ? S().tagged_tagDetails_sheet_cta2
               : S().tagged_tagDetails_sheet_retag_cta2;
         }
+        final navigator = Navigator.of(context, rootNavigator: true);
 
         return EnvoyButton(
           enabled: widget.valid,
@@ -753,7 +754,6 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
             // capture notifier before dialogs
             final coinSelectionNotifier =
                 ref.read(coinSelectionStateProvider.notifier);
-            final navigator = Navigator.of(context, rootNavigator: true);
 
             if (!widget.inTagSelectionMode) {
               SpendRequirementOverlayState().cancel(context);
@@ -784,7 +784,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                   builder: (context) => CreateCoinTag(
                     accountId: selectedAccount.id,
                     onTagUpdate: () async {
-                      ref.read(coinSelectionStateProvider.notifier).reset();
+                      coinSelectionNotifier.reset();
                       await Future.delayed(const Duration(milliseconds: 100));
                       navigator.popUntil((route) {
                         return route.settings is MaterialPage;

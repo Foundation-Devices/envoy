@@ -41,42 +41,45 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-      padding: const EdgeInsets.all(EnvoySpacing.medium2),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Align(
-            alignment: const Alignment(1.00, -1.02),
-            child: IconButton(
-              icon: const Icon(Icons.close),
-              padding: const EdgeInsets.all(EnvoySpacing.small),
-              onPressed: () {
-                if (ref.read(selectedAccountProvider) != null) {
-                  coinSelectionOverlayKey.currentState
-                      ?.show(SpendOverlayContext.preselectCoins);
-                }
-                Navigator.of(context).pop();
-              },
+    return SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(), // to fix overflow in tests
+      child: Container(
+        width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
+        padding: const EdgeInsets.all(EnvoySpacing.medium2),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Align(
+              alignment: const Alignment(1.00, -1.02),
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                padding: const EdgeInsets.all(EnvoySpacing.small),
+                onPressed: () {
+                  if (ref.read(selectedAccountProvider) != null) {
+                    coinSelectionOverlayKey.currentState
+                        ?.show(SpendOverlayContext.preselectCoins);
+                  }
+                  Navigator.of(context).pop();
+                },
+              ),
             ),
-          ),
-          const SizedBox(height: EnvoySpacing.small),
-          Image.asset(
-            "assets/exclamation_icon.png",
-            height: 68,
-            width: 68,
-          ),
-          const SizedBox(height: EnvoySpacing.medium1),
-          Text(
-            S().change_output_from_multiple_tags_modal_heading,
-            style: EnvoyTypography.heading
-                .copyWith(color: EnvoyColors.textPrimary),
-          ),
-          const SizedBox(height: EnvoySpacing.medium1),
-          _tagWidget(context),
-        ],
+            const SizedBox(height: EnvoySpacing.small),
+            Image.asset(
+              "assets/exclamation_icon.png",
+              height: 68,
+              width: 68,
+            ),
+            const SizedBox(height: EnvoySpacing.medium1),
+            Text(
+              S().change_output_from_multiple_tags_modal_heading,
+              style: EnvoyTypography.heading
+                  .copyWith(color: EnvoyColors.textPrimary),
+            ),
+            const SizedBox(height: EnvoySpacing.medium1),
+            _tagWidget(context),
+          ],
+        ),
       ),
     );
   }
