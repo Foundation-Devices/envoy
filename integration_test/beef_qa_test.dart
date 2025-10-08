@@ -1426,6 +1426,8 @@ Future<void> main() async {
       await findAndPressTextButton(tester, "Tag Selected");
 
       /// 5) Tap Continue
+      // make sure that the snack bar is closed
+      expect(find.text("Selected Amount"), findsNothing);
       await findAndPressTextButton(tester, "Continue");
 
       /// 6) Tap any of the suggested tags
@@ -1464,7 +1466,8 @@ Future<void> main() async {
       await findAndPressTextButton(tester, "Continue");
 
       /// 14) Check the bottom tray disappears (to avoid ENV-2431)
-      // TODO
+      // make sure that the snack bar is closed
+      expect(find.text("Selected Amount"), findsNothing);
 
       /// 14) Write anything in the Choose a tag field
       await enterTextInField(tester, find.byType(TextFormField), "Whatever");

@@ -72,7 +72,6 @@ class CoinSelectionOverlayState extends ConsumerState<CoinSelectionOverlay> {
           } else {
             if (ref.read(spendEditModeProvider) != SpendOverlayContext.hidden) {
               hideCoinSnack(ref);
-
             }
           }
         }
@@ -754,7 +753,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
 
             // capture notifier before dialogs
             final coinSelectionNotifier =
-            ref.read(coinSelectionStateProvider.notifier);
+                ref.read(coinSelectionStateProvider.notifier);
             final navigator = Navigator.of(context, rootNavigator: true);
 
             if (!widget.inTagSelectionMode) {
@@ -766,7 +765,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
             }
 
             // Hide overlay before showing any popup
-             hideCoinSnack(ref);
+            hideCoinSnack(ref);
 
             bool dismissed = await EnvoyStorage()
                 .checkPromptDismissed(DismissiblePrompt.createCoinTagWarning);
@@ -838,11 +837,12 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                             accountId: selectedAccount.id,
                             onTagUpdate: () async {
                               coinSelectionNotifier.reset();
-                              await Future.delayed(const Duration(milliseconds: 100));
+                              await Future.delayed(
+                                  const Duration(milliseconds: 100));
 
                               if (!navigator.mounted) return;
                               navigator.popUntil(
-                                      (route) => route.settings is MaterialPage);
+                                  (route) => route.settings is MaterialPage);
                             },
                           ),
                         ),
