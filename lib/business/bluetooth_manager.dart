@@ -152,11 +152,11 @@ class BluetoothManager extends WidgetsBindingObserver {
           _updateConnectionStatus(device);
           // TODO: don't autoconnect in onboarding
           // TODO: need some way to know if we're in OB
-          // if (bleId.isNotEmpty && device.id == bleId && !connected) {
-          //   kPrint("Autoconnecting to: ${device.id}");
-          //   await connect(id: device.id);
-          //   await listen(id: bleId);
-          // }
+          if (bleId.isNotEmpty && device.id == bleId && !connected) {
+            kPrint("Autoconnecting to: ${device.id}");
+            await connect(id: device.id);
+            await listen(id: bleId);
+          }
         }
       }
     });
