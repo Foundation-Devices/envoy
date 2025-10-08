@@ -72,6 +72,7 @@ class CoinSelectionOverlayState extends ConsumerState<CoinSelectionOverlay> {
           } else {
             if (ref.read(spendEditModeProvider) != SpendOverlayContext.hidden) {
               hideCoinSnack(ref);
+
             }
           }
         }
@@ -203,6 +204,7 @@ class SpendRequirementOverlayState
   }
 
   ///hide overlay to show dialogs
+  ///
   bool _hideOverlay = false;
   bool _isInMinimizedState = false;
 
@@ -750,8 +752,11 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
           onTap: () async {
             if (dialogOpen) return; // Prevent opening multiple dialogs
 
-            NavigatorState navigator =
-                Navigator.of(context, rootNavigator: true);
+            // capture notifier before dialogs
+            final coinSelectionNotifier =
+            ref.read(coinSelectionStateProvider.notifier);
+            final navigator = Navigator.of(context, rootNavigator: true);
+
             if (!widget.inTagSelectionMode) {
               SpendRequirementOverlayState().cancel(context);
               return;
@@ -759,6 +764,10 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
             if (selectedAccount == null) {
               return;
             }
+
+            // Hide overlay before showing any popup
+             hideCoinSnack(ref);
+
             bool dismissed = await EnvoyStorage()
                 .checkPromptDismissed(DismissiblePrompt.createCoinTagWarning);
             if (dismissed && context.mounted) {
@@ -795,9 +804,11 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                 useRootNavigator: true,
                 context: context,
                 onDispose: () {
-                  setState(() {
-                    dialogOpen = false;
-                  });
+                  if (mounted) {
+                    setState(() {
+                      dialogOpen = false;
+                    });
+                  }
                 },
                 builder: Builder(
                   builder: (context) {
@@ -805,9 +816,11 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                       Navigator.pop(context); // Close warning dialog
 
                       Future.delayed(const Duration(milliseconds: 500), () {
-                        setState(() {
-                          dialogOpen = true;
-                        });
+                        if (mounted) {
+                          setState(() {
+                            dialogOpen = true;
+                          });
+                        }
                       });
 
                       await showEnvoyDialog(
@@ -824,16 +837,12 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                           builder: (context) => CreateCoinTag(
                             accountId: selectedAccount.id,
                             onTagUpdate: () async {
-                              ref
-                                  .read(coinSelectionStateProvider.notifier)
-                                  .reset();
-                              NavigatorState navigator =
-                                  Navigator.of(context, rootNavigator: true);
-                              await Future.delayed(
-                                  const Duration(milliseconds: 100));
-                              navigator.popUntil((route) {
-                                return route.settings is MaterialPage;
-                              });
+                              coinSelectionNotifier.reset();
+                              await Future.delayed(const Duration(milliseconds: 100));
+
+                              if (!navigator.mounted) return;
+                              navigator.popUntil(
+                                      (route) => route.settings is MaterialPage);
                             },
                           ),
                         ),

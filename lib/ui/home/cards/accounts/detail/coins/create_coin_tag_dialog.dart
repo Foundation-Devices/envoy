@@ -239,6 +239,8 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
   }
 
   Future tagSelected(BuildContext context, WidgetRef ref) async {
+    if (!context.mounted) return;
+
     try {
       final selectedAccount = ref.read(selectedAccountProvider);
       if (selectedAccount == null) {
