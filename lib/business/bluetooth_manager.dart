@@ -4,7 +4,6 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:bluart/bluart.dart' as bluart;
@@ -76,6 +75,8 @@ class BluetoothManager extends WidgetsBindingObserver {
   bool connected = false;
 
   bool _sendingData = false;
+
+  double? _lastSentBtcPrice;
 
   factory BluetoothManager() {
     return _instance;
@@ -547,30 +548,37 @@ class BluetoothManager extends WidgetsBindingObserver {
   }
 
   Future<void> sendExchangeRate() async {
-    if (_sendingData) {
-      return;
-    }
-    try {
-      final exchangeRate = ExchangeRate();
+    if (_sendingData) return;
 
-      // TODO: remove the randomness post-demo
-      final exchangeRateMessage = api.ExchangeRate(
-        currencyCode: "USD",
-        rate: exchangeRate.usdRate! + Random().nextDouble() * 10,
-      );
+    try {
+      _sendingData = true;
+      final exchangeRate = ExchangeRate();
+      final currentExchange = exchangeRate.usdRate!;
+
+      // Only send if price actually changed
+      if (_lastSentBtcPrice != null && _lastSentBtcPrice == currentExchange) {
+        return;
+      }
+
+      final exchangeRateMessage =
+          api.ExchangeRate(currencyCode: "USD", rate: currentExchange);
 
       writeMessage(api.QuantumLinkMessage.exchangeRate(exchangeRateMessage));
+
+      _lastSentBtcPrice = currentExchange;
     } catch (e) {
-      kPrint('Failed to send exchange rate: $e');
+      kPrint('Failed to send exchange rate to Prime: $e');
+    } finally {
+      _sendingData = false;
     }
   }
 
   void setupExchangeRateListener() {
     ExchangeRate().addListener(() async {
-/*      if (connected) {
-        kPrint("Sending exchange rate");
+      if (connected) {
+        kPrint("Sending exchange rate to Prime ...");
         await sendExchangeRate();
-      }*/
+      }
     });
   }
 
