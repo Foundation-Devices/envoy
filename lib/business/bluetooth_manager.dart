@@ -116,7 +116,6 @@ class BluetoothManager extends WidgetsBindingObserver {
 
     kPrint("QL Identity: $_qlIdentity");
 
-    await restorePrimeDevice();
     await restoreQuantumLinkIdentity();
 
     kPrint("QL Identity: $_qlIdentity");
@@ -227,7 +226,8 @@ class BluetoothManager extends WidgetsBindingObserver {
       if (message.message is api.QuantumLinkMessage_MagicBackupEnabledRequest) {
         kPrint("Got magic backup enabled request!");
         writeMessage(api.QuantumLinkMessage.magicBackupEnabledResponse(
-            api.MagicBackupEnabledResponse(enabled: true)));
+            api.MagicBackupEnabledResponse(
+                enabled: true))); // TODO: stop hardcoding
       }
 
       if (message.message
@@ -337,10 +337,12 @@ class BluetoothManager extends WidgetsBindingObserver {
           if (device.type == DeviceType.passportPrime &&
               connectedDevices.map((d) => d.id).contains(device.bleId)) {
             foundDevice = true;
+
+            await restorePrimeDevice(device.bleId);
             break;
           }
         }
-        //found a device, devices is not completed onboarding
+        //found a device, devices has not completed onboarding
         if (!foundDevice) {
           kPrint("Disconnecting from Prime");
           await BluetoothManager().removeConnectedDevice();
@@ -463,7 +465,7 @@ class BluetoothManager extends WidgetsBindingObserver {
           _passportMessageStream.add(value);
           kPrint(
               "Got Passport message type: ${value.message.runtimeType} ${value.message}");
-          if (value
+          if (value.message
               case api.QuantumLinkMessage_BroadcastTransaction transaction) {
             kPrint("Got the Broadcast Transaction");
             _transactionStream.add(transaction);
@@ -515,7 +517,7 @@ class BluetoothManager extends WidgetsBindingObserver {
     await writeMessage(api.QuantumLinkMessage.securityCheck(message));
   }
 
-  Future<void> restorePrimeDevice() async {
+  Future<void> restorePrimeDevice(String bluetoothId) async {
     try {
       List<PrimeDevice> primes = await EnvoyStorage().getAllPrimes();
 
@@ -523,17 +525,19 @@ class BluetoothManager extends WidgetsBindingObserver {
         return;
       }
 
-      PrimeDevice prime = primes.last;
+      for (final prime in primes) {
+        if (prime.bleId == bluetoothId) {
+          // Convert the xidDocument to a List<int>
+          final List<int> xidBytes = prime.xidDocument.toList();
 
-      // Convert the xidDocument to a List<int>
-      final List<int> xidBytes = prime.xidDocument.toList();
+          final api.XidDocument recipientXid = await api.deserializeXid(
+            data: xidBytes,
+          );
 
-      final api.XidDocument recipientXid = await api.deserializeXid(
-        data: xidBytes,
-      );
-
-      _recipientXid = recipientXid;
-      bleId = prime.bleId;
+          _recipientXid = recipientXid;
+          bleId = prime.bleId;
+        }
+      }
     } catch (e) {
       kPrint('Error deserializing XidDocument: $e');
     }
