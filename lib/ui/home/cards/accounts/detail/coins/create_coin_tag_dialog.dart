@@ -4,7 +4,7 @@
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
@@ -13,7 +13,6 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/console.dart';
-import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
@@ -38,6 +37,8 @@ List<String> tagSuggestions = [
 ];
 
 class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -220,16 +221,13 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
               ),
             ),
             EnvoyButton(
-              S().component_continue,
-              enabled: _tagController.text.isNotEmpty,
-              textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: _tagController.text.isNotEmpty
-                        ? EnvoyColors.textPrimaryInverse
-                        : EnvoyColors.textTertiary,
-                  ),
-              type: _tagController.text.isNotEmpty
-                  ? EnvoyButtonTypes.primaryModal
-                  : EnvoyButtonTypes.tertiary,
+              label: S().component_continue,
+              type: ButtonType.primary,
+              state: _isLoading
+                  ? ButtonState.loading
+                  : _tagController.text.trim().isEmpty
+                      ? ButtonState.disabled
+                      : ButtonState.defaultState,
               onTap: () => tagSelected(context, ref),
             ),
           ],
@@ -269,12 +267,17 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
           tag.toLowerCase().trim() == "untagged") {
         tag = "";
       }
+      setState(() {
+        _isLoading = true;
+      });
       await selectedAccount.handler
           ?.setTagMultiple(utxo: selectedCoins, tag: tag);
-      //Reset the selection
-      Haptics.lightImpact();
     } catch (e) {
       kPrint(e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
     widget.onTagUpdate();
   }

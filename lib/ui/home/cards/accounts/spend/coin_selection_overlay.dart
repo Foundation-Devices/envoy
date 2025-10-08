@@ -203,7 +203,6 @@ class SpendRequirementOverlayState
   }
 
   ///hide overlay to show dialogs
-  ///
   bool _hideOverlay = false;
   bool _isInMinimizedState = false;
 

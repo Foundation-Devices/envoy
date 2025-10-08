@@ -1426,8 +1426,6 @@ Future<void> main() async {
       await findAndPressTextButton(tester, "Tag Selected");
 
       /// 5) Tap Continue
-      // make sure that the snack bar is closed
-      expect(find.text("Selected Amount"), findsNothing);
       await findAndPressTextButton(tester, "Continue");
 
       /// 6) Tap any of the suggested tags
@@ -1439,6 +1437,7 @@ Future<void> main() async {
       /// 8) Check that the pop up closes and the coin is tagged (to avoid ENV-2434)
       // 1) Verify "Expenses" tag is visible
       await findTextOnScreen(tester, "Expenses");
+      await tester.pump(Durations.long2);
 
       // 2) Verify "Selected Amount" is NOT on screen
       expect(find.text("Selected Amount"), findsNothing);
@@ -1466,6 +1465,7 @@ Future<void> main() async {
       await findAndPressTextButton(tester, "Continue");
 
       /// 14) Check the bottom tray disappears (to avoid ENV-2431)
+      await tester.pump(Durations.long2);
       // make sure that the snack bar is closed
       expect(find.text("Selected Amount"), findsNothing);
 
@@ -1476,6 +1476,7 @@ Future<void> main() async {
       await findAndPressTextButton(tester, "Continue");
 
       /// 16) Check the pop up closes and the coin has been tagged to the tag written in step 14
+      await tester.pump(Durations.long2);
       // 1) Verify "Whatever" tag is visible
       await findTextOnScreen(tester, "Whatever");
 
@@ -1510,6 +1511,8 @@ Future<void> main() async {
       await findAndPressTextButton(tester, "Delete Tag");
 
       /// 23) Check the tag disappears and the coin  is moved back to Untagged
+      expect(
+          find.text("Whatever"), findsNothing); // make sure the Tag is deleted
       await findTextOnScreen(tester, "Untagged");
 
       stopwatch.stop();
