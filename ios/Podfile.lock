@@ -6,13 +6,11 @@ PODS:
   - file_saver (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - flutter_local_notifications (0.0.1):
-    - Flutter
   - flutter_secure_storage (6.0.0):
     - Flutter
   - flutter_vlc_player (3.0.3):
     - Flutter
-    - MobileVLCKit (~> 3.6.0b12)
+    - MobileVLCKit (~> 3.6.1b1)
   - in_app_purchase_storekit (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -23,10 +21,10 @@ PODS:
     - FlutterMacOS
   - MobileVLCKit (3.6.1b1)
   - MTBBarcodeScanner (5.0.11)
-  - ObjectBox (4.1.0)
+  - ObjectBox (4.3.0)
   - objectbox_flutter_libs (0.0.1):
     - Flutter
-    - ObjectBox (= 4.1.0)
+    - ObjectBox (= 4.3.0)
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_foundation (0.0.1):
@@ -44,6 +42,8 @@ PODS:
   - rive_common (0.0.1):
     - Flutter
   - rust_lib_foundation_api (0.0.1):
+    - Flutter
+  - rust_lib_http_tor (0.0.1):
     - Flutter
   - rust_lib_ngwallet (0.0.1):
     - Flutter
@@ -69,7 +69,6 @@ DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - file_saver (from `.symlinks/plugins/file_saver/ios`)
   - Flutter (from `Flutter`)
-  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - flutter_vlc_player (from `.symlinks/plugins/flutter_vlc_player/ios`)
   - in_app_purchase_storekit (from `.symlinks/plugins/in_app_purchase_storekit/darwin`)
@@ -84,6 +83,7 @@ DEPENDENCIES:
   - ramp_flutter (from `.symlinks/plugins/ramp_flutter/ios`)
   - rive_common (from `.symlinks/plugins/rive_common/ios`)
   - rust_lib_foundation_api (from `.symlinks/plugins/rust_lib_foundation_api/ios`)
+  - rust_lib_http_tor (from `.symlinks/plugins/rust_lib_http_tor/ios`)
   - rust_lib_ngwallet (from `.symlinks/plugins/rust_lib_ngwallet/ios`)
   - rust_lib_shards (from `.symlinks/plugins/rust_lib_shards/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
@@ -108,8 +108,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/file_saver/ios"
   Flutter:
     :path: Flutter
-  flutter_local_notifications:
-    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   flutter_vlc_player:
@@ -139,6 +137,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/rive_common/ios"
   rust_lib_foundation_api:
     :path: ".symlinks/plugins/rust_lib_foundation_api/ios"
+  rust_lib_http_tor:
+    :path: ".symlinks/plugins/rust_lib_http_tor/ios"
   rust_lib_ngwallet:
     :path: ".symlinks/plugins/rust_lib_ngwallet/ios"
   rust_lib_shards:
@@ -162,37 +162,37 @@ CHECKOUT OPTIONS:
     :tag: 4.0.1
 
 SPEC CHECKSUMS:
-  bluart: 2e6699380d7344463ba5759f6d7866d1d8eb2593
-  file_picker: 9e4c55a49b5bec4a3cc3c01410ce11348811c551
-  file_saver: 503e386464dbe118f630e17b4c2e1190fa0cf808
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
-  flutter_secure_storage: d33dac7ae2ea08509be337e775f6b59f1ff45f12
-  flutter_vlc_player: 68553dec38187c14a7800e6d27a30bf9b25b53bc
-  in_app_purchase_storekit: a1ce04056e23eecc666b086040239da7619cd783
-  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
-  local_auth_darwin: 66e40372f1c29f383a314c738c7446e2f7fdadc3
+  bluart: 2fb0ee000c8d9deab329b951881d2320cf50ecff
+  file_picker: fb04e739ae6239a76ce1f571863a196a922c87d4
+  file_saver: 6cdbcddd690cb02b0c1a0c225b37cd805c2bf8b6
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
+  flutter_vlc_player: 5464f594a9338e080d240bbe7b10ffe30c7bc8bc
+  in_app_purchase_storekit: d1a48cb0f8b29dbf5f85f782f5dd79b21b90a5e6
+  integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
+  local_auth_darwin: d2e8c53ef0c4f43c646462e3415432c4dab3ae19
   MobileVLCKit: 2d9c7c373393ae43086aeeff890bf0b1afc15c5c
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
-  ObjectBox: bf3d4b51075d52868422d5d1f2f2141b1d630d30
-  objectbox_flutter_libs: 2f30755c12b0fe104d75445c3ba879e3072eda54
-  package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
-  qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
+  ObjectBox: 7760fa9072adcffe102a6adf4646ca84ba70ab6b
+  objectbox_flutter_libs: 4014e38f57250b074b99893ae84579aba8f02876
+  package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
+  qr_code_scanner: d77f94ecc9abf96d9b9b8fc04ef13f611e5a147a
   Ramp: 3f843fb75cac12ad40842afa3226bae36dc93521
-  ramp_flutter: aac85dee8bc93b5f7563c909ba15a37727fe3fe8
-  rive_common: 3a4c254c6e4db7e4b9e05daeb3d1f47ae4f7bf76
-  rust_lib_foundation_api: b926bd066994ff2c0354873b5335f7287ac62945
-  rust_lib_ngwallet: a676d2f92f92a5f2b54ed711f4f1a459ca71af3a
-  rust_lib_shards: 75df8eaa486e82faea1fae52144238991d037dea
-  share_plus: 8b6f8b3447e494cca5317c8c3073de39b3600d1f
-  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
-  sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
-  tor: 662a9f5b980b5c86decb8ba611de9bcd4c8286eb
-  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
-  wakelock_plus: 373cfe59b235a6dd5837d0fb88791d2f13a90d56
+  ramp_flutter: 9811ca74c3348e29fb5331bdc47c6cc9f1ebf8a5
+  rive_common: dd421daaf9ae69f0125aa761dd96abd278399952
+  rust_lib_foundation_api: 1e84938cd4e5a3212ab7a8d126181bf957de7f8e
+  rust_lib_http_tor: af3eb1c9969cd9a8bd8e711e3d32efb370321a6f
+  rust_lib_ngwallet: 49dbc10f3372cdf395f48833580742e845435bb6
+  rust_lib_shards: d545f871a633f1b7047c5c28affabd6fd90faf60
+  share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
+  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
+  tor: 767208930250ef7be241963b75568c55c0a81890
+  url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
+  wakelock_plus: e29112ab3ef0b318e58cfa5c32326458be66b556
 
-PODFILE CHECKSUM: dbcfe0eb16baa2f26e442d8dc652993159052923
+PODFILE CHECKSUM: 1f7f8e7f228c2392fb4a8daf1a436d820cea3b4b
 
 COCOAPODS: 1.16.2

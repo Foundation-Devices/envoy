@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/uniform_resource.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class UnableToDecodeException implements Exception {
   @override
@@ -17,7 +17,7 @@ abstract class ScannerDecoder {
 
   ScannerDecoder();
 
-  onProgressUpdates(Function(double progress) progressCallBack) {
+  void onProgressUpdates(Function(double progress) progressCallBack) {
     _progressCallBack = progressCallBack;
   }
 

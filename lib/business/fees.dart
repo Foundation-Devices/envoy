@@ -13,14 +13,14 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:tor/tor.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/business/fee_rates.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/util/tuple.dart';
 
 // Generated
 part 'fees.g.dart';
+
+const int FEE_UNKNOWN = 0x7FFFFFFFFFFFFFFF; // i64::MAX from rust
 
 final mempoolBlocksMedianFeeRateProvider =
     Provider.family<List<double>, Network>((ref, network) {
@@ -59,7 +59,7 @@ class Fees {
     return fees[network]?.mempoolHourRate ?? 1;
   }
 
-  static _defaultFees() {
+  static Map<Network, FeeRates> _defaultFees() {
     return {
       Network.bitcoin: FeeRates(),
       Network.testnet: FeeRates(),
@@ -67,7 +67,7 @@ class Fees {
     };
   }
 
-  static _feesToJson(Map<Network, FeeRates> fees) {
+  static Map<String, dynamic> _feesToJson(Map<Network, FeeRates> fees) {
     Map<String, dynamic> jsonMap = {};
     for (var entry in fees.entries) {
       jsonMap[entry.key.name] = entry.value.toJson();
@@ -76,7 +76,7 @@ class Fees {
     return jsonMap;
   }
 
-  static _feesFromJson(Map<String, dynamic> fees) {
+  static Map<Network, FeeRates> _feesFromJson(Map<String, dynamic> fees) {
     Map<Network, FeeRates> map = {};
     for (var entry in fees.entries) {
       map[Network.values.byName(entry.key)] = FeeRates.fromJson(entry.value);
@@ -145,7 +145,7 @@ class Fees {
     _getMempoolBlocksFees(Network.signet);
   }
 
-  static restore() {
+  static void restore() {
     if (_ls.prefs.containsKey(FEE_RATE_PREFS)) {
       var storedFees = jsonDecode(_ls.prefs.getString(FEE_RATE_PREFS)!);
       try {
@@ -158,15 +158,13 @@ class Fees {
     Fees.init();
   }
 
-  _storeRates() {
+  void _storeRates() {
     String json = jsonEncode(this);
     _ls.prefs.setString(FEE_RATE_PREFS, json);
   }
 
-  _getMempoolRecommendedRates(Network network) {
-    HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get(_mempoolRecommendedFeesEndpoints[network]!)
-        .then((response) {
+  void _getMempoolRecommendedRates(Network network) {
+    HttpTor().get(_mempoolRecommendedFeesEndpoints[network]!).then((response) {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
 
@@ -186,10 +184,8 @@ class Fees {
     );
   }
 
-  _getMempoolBlocksFees(Network network) {
-    HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get(_mempoolBlocksFeesEndpoints[network]!)
-        .then((response) {
+  void _getMempoolBlocksFees(Network network) {
+    HttpTor().get(_mempoolBlocksFeesEndpoints[network]!).then((response) {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         for (final block in json) {

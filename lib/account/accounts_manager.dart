@@ -164,6 +164,7 @@ class NgAccountManager extends ChangeNotifier {
         notifyIfAccountBalanceHigherThanUsd1000();
       }));
     }
+    removeDuplicateHotWallets();
   }
 
   Future deriveMissingTypes() async {
@@ -269,8 +270,9 @@ class NgAccountManager extends ChangeNotifier {
   }
 
   EnvoyAccountHandler? getHandler(EnvoyAccount envoyAccount) {
-    return handlers
-        .firstWhereOrNull((element) => element.id() == envoyAccount.id);
+    final index =
+        _accountsHandler.indexWhere((e) => e.$1.id == envoyAccount.id);
+    return index != -1 ? _accountsHandler[index].$2 : null;
   }
 
   bool hotAccountsExist() {
@@ -316,34 +318,40 @@ class NgAccountManager extends ChangeNotifier {
 
   Future<bool> checkIfWalletFromSeedExists(String seed,
       {String? passphrase, required Network network}) async {
-    final descriptors = await EnvoyBip39.deriveDescriptorFromSeed(
-        seedWords: seed, network: network, passphrase: passphrase);
-    final fingerPrint = getFingerprint(descriptors
-        .firstWhere((element) => element.addressType == AddressType.p2Wpkh)
-        .externalPubDescriptor);
-    if (fingerPrint == null) {
-      EnvoyReport().log("Accounts", "Invalid fingerprint $fingerPrint");
+    try {
+      final descriptors = await EnvoyBip39.deriveDescriptorFromSeed(
+          seedWords: seed, network: network, passphrase: passphrase);
+      final fingerPrint = getFingerprint(descriptors
+          .firstWhere((element) => element.addressType == AddressType.p2Wpkh)
+          .externalPubDescriptor);
+      if (fingerPrint == null) {
+        EnvoyReport().log("Accounts", "Invalid fingerprint $fingerPrint");
+        return false;
+      }
+      var dir = NgAccountManager.getAccountDirectory(
+          deviceSerial: "envoy",
+          network: network.toString(),
+          number: 0,
+          fingerprint: fingerPrint);
+      if (await dir.exists()) {
+        final files = dir.listSync();
+        bool hasP2tr = files
+            .any((file) => file.path.toLowerCase().endsWith('p2tr.sqlite'));
+        bool hasP2wpkh = files
+            .any((file) => file.path.toLowerCase().endsWith('p2wpkh.sqlite'));
+        if (hasP2tr || hasP2wpkh) {
+          return true;
+        }
+      }
+      return false;
+    } catch (e) {
+      EnvoyReport().log("Accounts", "Failed to check wallet existence: $e");
       return false;
     }
-    var dir = NgAccountManager.getAccountDirectory(
-        deviceSerial: "envoy",
-        network: network.toString(),
-        number: 0,
-        fingerprint: fingerPrint);
-    if (await dir.exists()) {
-      final files = dir.listSync();
-      bool hasP2tr =
-          files.any((file) => file.path.toLowerCase().endsWith('p2tr.sqlite'));
-      bool hasP2wpkh = files
-          .any((file) => file.path.toLowerCase().endsWith('p2wpkh.sqlite'));
-      if (hasP2tr || hasP2wpkh) {
-        return true;
-      }
-    }
-    return false;
   }
 
-  addAccount(EnvoyAccount state, EnvoyAccountHandler handler) async {
+  Future<void> addAccount(
+      EnvoyAccount state, EnvoyAccountHandler handler) async {
     if (_accountsHandler.any((element) => element.$1.id == state.id)) {
       return;
     }
@@ -414,7 +422,7 @@ class NgAccountManager extends ChangeNotifier {
     }
   }
 
-  notifyIfAccountBalanceHigherThanUsd1000() {
+  void notifyIfAccountBalanceHigherThanUsd1000() {
     for (var account in accounts) {
       if (account.isHot && account.network == Network.bitcoin) {
         var amountUSD = ExchangeRate().getUsdValue(account.balance.toInt());
@@ -431,11 +439,7 @@ class NgAccountManager extends ChangeNotifier {
     final accountOrder = _ls.prefs.getString(ACCOUNT_ORDER);
     List<String> order = List<String>.from(jsonDecode(accountOrder ?? "[]"));
     final hotWallets = accounts.where((element) => element.isHot).toList();
-    for (var element in hotWallets) {
-      _accountsHandler.removeWhere((e) => e.$1.id == element.id);
-      order.remove(element.id);
-    }
-    await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(order));
+
     _accountsOrder.sink.add(order);
     for (var account in hotWallets) {
       try {
@@ -444,6 +448,10 @@ class NgAccountManager extends ChangeNotifier {
         EnvoyReport().log("Error deleting account", e.toString());
       }
     }
+    for (var element in hotWallets) {
+      order.remove(element.id);
+    }
+    await _ls.prefs.setString(ACCOUNT_ORDER, jsonEncode(order));
     notifyListeners();
   }
 
@@ -490,10 +498,10 @@ class NgAccountManager extends ChangeNotifier {
         customMimeType: 'application/jsonl',
         name: 'bip329_export',
         bytes: fileContentBytes,
-        ext: 'jsonl');
+        fileExtension: 'jsonl');
   }
 
-  EnvoyAccount? getHotWalletAccount({network = Network.bitcoin}) {
+  EnvoyAccount? getHotWalletAccount({Network network = Network.bitcoin}) {
     return accounts.firstWhereOrNull(
         (element) => element.isHot && element.network == network);
   }
@@ -610,12 +618,43 @@ class NgAccountManager extends ChangeNotifier {
       return (DeviceAccountResult.ERROR, null);
     }
   }
+
+  //due to ENV-2272, there is a user might have duplicated accounts
+  //any hot wallets that doesn't match the seed fingerprint and has 0 balance
+  //should be removed
+  void removeDuplicateHotWallets() async {
+    try {
+      final seed = await EnvoySeed().get();
+      if (seed == null) {
+        return;
+      }
+      final derivations = await EnvoyBip39.deriveDescriptorFromSeed(
+          seedWords: seed, network: Network.bitcoin);
+      final fingerprint = NgAccountManager.getFingerprint(
+          derivations.first.externalPubDescriptor);
+
+      for (var account in accounts) {
+        if (account.isHot) {
+          if (account.xfp != fingerprint && account.balance.toInt() == 0) {
+            EnvoyReport().log("AccountManager",
+                "Deleting duplicated account ${account.name} ${account.xfp}");
+            await deleteAccount(account);
+            _accountsHandler.removeWhere((e) => e.$1.id == account.id);
+          }
+        }
+      }
+    } catch (e, stacktrace) {
+      EnvoyReport().log(
+          "AccountManager", "Error checking duplicated accounts: $e",
+          stackTrace: stacktrace);
+    }
+  }
 }
 
-List<EnvoyAccount> sortByAccountOrder<EnvoyAccount>(
-  List<EnvoyAccount> list,
+List<T> sortByAccountOrder<T>(
+  List<T> list,
   List<String> order,
-  String Function(EnvoyAccount item) getId,
+  String Function(T item) getId,
 ) {
   list.sort((a, b) {
     final aIndex = order.indexOf(getId(a));

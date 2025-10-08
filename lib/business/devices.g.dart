@@ -13,6 +13,10 @@ Device _$DeviceFromJson(Map<String, dynamic> json) => Device(
       DateTime.parse(json['datePaired'] as String),
       json['firmwareVersion'] as String,
       colorFromJson(json['color'] as String),
+      deviceColor:
+          $enumDecodeNullable(_$DeviceColorEnumMap, json['deviceColor']) ??
+              DeviceColor.light,
+      bleId: json['bleId'] as String? ?? '',
     )..pairedAccountIds = (json['pairedAccountIds'] as List<dynamic>?)
         ?.map((e) => e as String)
         .toList();
@@ -20,7 +24,9 @@ Device _$DeviceFromJson(Map<String, dynamic> json) => Device(
 Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
       'name': instance.name,
       'type': _$DeviceTypeEnumMap[instance.type]!,
+      'deviceColor': _$DeviceColorEnumMap[instance.deviceColor]!,
       'serial': instance.serial,
+      'bleId': instance.bleId,
       'datePaired': instance.datePaired.toIso8601String(),
       'firmwareVersion': instance.firmwareVersion,
       'pairedAccountIds': instance.pairedAccountIds,
@@ -31,4 +37,9 @@ const _$DeviceTypeEnumMap = {
   DeviceType.passportGen1: 'passportGen1',
   DeviceType.passportGen12: 'passportGen12',
   DeviceType.passportPrime: 'passportPrime',
+};
+
+const _$DeviceColorEnumMap = {
+  DeviceColor.light: 'light',
+  DeviceColor.dark: 'dark',
 };

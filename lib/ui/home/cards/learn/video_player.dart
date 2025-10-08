@@ -8,13 +8,11 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http_tor/http_tor.dart';
-import 'package:tor/tor.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:envoy/business/video.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class FullScreenVideoPlayer extends StatefulWidget {
@@ -96,15 +94,13 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
 
     getApplicationDocumentsDirectory().then((dir) {
       streamFile = File("${dir.path}/stream.mp4");
-      HttpTor(Tor.instance, EnvoyScheduler().parallel)
-          .getFile(streamFile.path, _getDownloadLink())
-          .then((download) {
+      HttpTor().getFile(streamFile.path, _getDownloadLink()).then((download) {
         _cancelDownload = download.cancel;
         _downloadProgressSubscription = download.progress.listen((progress) {
           setState(() {
             _downloadProgress = progress.downloaded / progress.total;
           });
-          if (progress.downloaded > _playThreshold ||
+          if (progress.downloaded.toInt() > _playThreshold ||
               progress.downloaded >= progress.total) {
             if (_controller == null) {
               _controller = VlcPlayerController.file(streamFile,
@@ -126,7 +122,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
           } else {
             // Update the loading circle
             setState(() {
-              _downloaded = progress.downloaded;
+              _downloaded = progress.downloaded.toInt();
             });
           }
         });

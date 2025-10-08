@@ -21,7 +21,6 @@ pub mod device;
 pub mod peripheral;
 
 use crate::frb_generated::StreamSink;
-use flutter_rust_bridge::frb;
 
 pub use device::*;
 pub use peripheral::*;
@@ -92,8 +91,8 @@ impl std::fmt::Debug for Command {
 #[derive(Clone)]
 pub enum Event {
     ScanResult(Vec<BleDevice>),
-    DeviceDisconnected,
-    DeviceConnected,
+    DeviceDisconnected(BleDevice),
+    DeviceConnected(BleDevice),
 }
 
 #[derive(Clone)]
@@ -109,12 +108,13 @@ fn ble_state() -> &'static BleState {
     BLE_STATE.get().expect("BleState not initialized")
 }
 
+#[allow(unused_variables)]
 fn init_logging(level: log::LevelFilter) {
-    //  #[cfg(target_os = "android")]
-    //        let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
+    #[cfg(target_os = "android")]
+    let _ = android_logger::init_once(android_logger::Config::default().with_max_level(level));
 
-    //      #[cfg(any(target_os = "ios", target_os = "macos"))]
-    //    let _ = oslog::OsLogger::new("frb_user").level_filter(level).init();
+    //#[cfg(any(target_os = "ios", target_os = "macos"))]
+    //let _ = oslog::OsLogger::new("frb_user").level_filter(level).init();
 }
 
 /// The init() function must be called before anything else.
@@ -157,13 +157,11 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
         let mut events = central.events().await.unwrap();
         debug!("Subscribed to events!");
 
-        //central.start_scan(ScanFilter::default()).await.unwrap();
-
         while let Some(event) = events.next().await {
             debug!("{:?}", event);
             match event {
                 CentralEvent::DeviceDiscovered(id) => {
-                    debug!("{}", format!("DeviceDiscovered: {:?}", &id));
+                    debug!("DeviceDiscovered: {:?}", &id);
                     let peripheral = central.peripheral(&id).await.unwrap();
                     let peripheral = Device::new(peripheral);
                     let mut devices = ble_state().devices.lock().await;
@@ -176,19 +174,25 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
                     }
                 }
                 CentralEvent::DeviceConnected(id) => {
-                    debug!("{}", format!("DeviceConnected: {:?}", id));
+                    debug!("DeviceConnected: {:?}", id);
                     let mut devices = ble_state().devices.lock().await;
                     if let Some(device) = devices.get_mut(&id.to_string()) {
                         device.is_connected = true;
-                        sink.add(Event::DeviceConnected).unwrap();
+                        sink.add(Event::DeviceConnected(
+                            BleDevice::from_peripheral(device).await,
+                        ))
+                        .unwrap();
                     }
                 }
                 CentralEvent::DeviceDisconnected(id) => {
-                    debug!("{}", format!("DeviceDisconnected: {:?}", id));
+                    debug!("DeviceDisconnected: {:?}", id);
                     let mut devices = ble_state().devices.lock().await;
                     if let Some(device) = devices.get_mut(&id.to_string()) {
                         device.is_connected = false;
-                        sink.add(Event::DeviceDisconnected).unwrap();
+                        sink.add(Event::DeviceDisconnected(
+                            BleDevice::from_peripheral(device).await,
+                        ))
+                        .unwrap();
                     }
                 }
                 CentralEvent::ManufacturerDataAdvertisement {
@@ -204,6 +208,7 @@ pub async fn init(sink: StreamSink<Event>) -> Result<()> {
                     id: _,
                     service_data: _,
                 } => {
+
                     // tracing::debug!("{}",format!(
                     //     "ServiceDataAdvertisement: {:?}, {:?}",
                     //     id, service_data
@@ -300,11 +305,11 @@ pub fn read(id: String, sink: StreamSink<Vec<u8>>) -> Result<()> {
     command::send(Command::Read { id, sink })
 }
 
-#[frb(ignore)]
+/// flutter_rust_bridge:ignore
 mod command {
-    use anyhow::Context;
-
     use super::*;
+    use anyhow::Context;
+    use uuid::Uuid;
 
     pub fn init(runtime: &tokio::runtime::Runtime, mut rx: mpsc::UnboundedReceiver<Command>) {
         runtime.spawn(async move {
@@ -365,11 +370,20 @@ mod command {
         });
     }
 
-    async fn inner_scan(_filter: Vec<String>) -> Result<()> {
+    async fn inner_scan(filter: Vec<String>) -> Result<()> {
         debug!("inner scan");
         let central = ble_state().central.lock().await;
-        central.start_scan(ScanFilter::default()).await?;
-        // tracing::debug!("Scan finished");
+
+        let services: Vec<Uuid> = filter
+            .into_iter()
+            .filter_map(|f| Uuid::parse_str(f.as_str()).ok())
+            .collect();
+
+        if services.is_empty() {
+            debug!("Warning: empty list of services to filter for");
+        }
+
+        central.start_scan(ScanFilter { services }).await?;
         Ok(())
     }
 
@@ -427,7 +441,7 @@ mod command {
                     sink.add(result as u64).unwrap();
                 }
                 Err(e) => {
-                    error!("{}", format!("Benchmark failed: {e}"));
+                    error!("Benchmark failed: {e}");
                     break;
                 }
             }
@@ -454,7 +468,7 @@ mod command {
                 });
             }
             Err(e) => {
-                debug!("{}", format!("Got error: {:?}", e));
+                debug!("Got error: {:?}", e);
             }
         }
 

@@ -52,7 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("1"),
+        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
         "about_appVersion":
             MessageLookupByLibrary.simpleMessage("Versão da Aplicação"),
         "about_openSourceLicences":
@@ -1968,9 +1968,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "wallet_security_modal_4_4_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Se preferires optar por não utilizar as Cópias Mágicas de Segurança e, em alternativa, proteger manualmente as sementes e os dados da tua carteira, não há problema!\n\nBasta voltar ao menu de configuração e escolher Configuração Manual das Palavras Semente."),
+        "wallet_security_modal_HowToRecoverYourWallet":
+            MessageLookupByLibrary.simpleMessage("How to Recover Your Wallet"),
+        "wallet_security_modal_HowYourDatatIsSecured":
+            MessageLookupByLibrary.simpleMessage("How Your Data is Secured"),
+        "wallet_security_modal_HowYourSeedIsSecured":
+            MessageLookupByLibrary.simpleMessage("How Your Seed is Secured"),
         "wallet_security_modal_HowYourWalletIsSecured":
             MessageLookupByLibrary.simpleMessage(
                 "Como é Que a Tua Carteira é Protegida"),
+        "wallet_security_modal_WantToOptOut":
+            MessageLookupByLibrary.simpleMessage("Want to Opt Out?"),
         "wallet_security_modal__heading":
             MessageLookupByLibrary.simpleMessage("Dica de Segurança"),
         "wallet_security_modal_subheading": MessageLookupByLibrary.simpleMessage(

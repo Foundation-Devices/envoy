@@ -5,7 +5,6 @@
 import 'dart:io';
 
 import 'package:envoy/main.dart';
-import 'package:envoy/ui/amount_display.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/home/cards/devices/devices_card.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -16,9 +15,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'util.dart';
 
 Future<void> main() async {
+  // Start the global timer
+  final Stopwatch stopwatch = Stopwatch()..start();
+
   final FlutterExceptionHandler? originalOnError = FlutterError.onError;
   FlutterError.onError = (FlutterErrorDetails details) {
     kPrint('FlutterError caught: ${details.exceptionAsString()}');
@@ -38,6 +41,8 @@ Future<void> main() async {
     // These tests use wallet which is set up from zero (no need for passport account)
     testWidgets('<Buy ATM filter by country first and flow to map>',
         (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await tester.pumpWidget(const EnvoyApp());
 
       await setUpAppFromStart(tester);
@@ -82,14 +87,26 @@ Future<void> main() async {
       // If found, it indicates that the map has loaded correctly for the specified region (Granada, Spain).
       final atmName = find.text("Kurant Bitcoin ATM");
       expect(atmName, findsAny);
+
+      stopwatch.stop();
+      debugPrint(
+          '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s');
     });
     testWidgets('<Buy button>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
       await goBackHome(tester);
 
       await findAndPressBuyOptions(tester);
       await checkBuyOptionAndTitle(tester);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Buy button - enable from Settings>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       // Find the Buy button (enabled in Settings by default)
@@ -108,14 +125,22 @@ Future<void> main() async {
       await pressHamburgerMenu(tester);
 
       expect(buyButtonFinder, findsNothing);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<About>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await pressHamburgerMenu(tester);
       await goToAbout(tester);
-
-      final appVersion = find.text('2.0.2');
+      final version = await PackageInfo.fromPlatform();
+      final appVersion =
+          find.text("${version.version} (${version.buildNumber})");
       expect(appVersion, findsOneWidget);
 
       final showButton = find.text('Show');
@@ -125,8 +150,15 @@ Future<void> main() async {
 
       final licensePage = find.text('Licenses');
       expect(licensePage, findsOneWidget);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Check support buttons in settings>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await pressHamburgerMenu(tester);
@@ -135,8 +167,15 @@ Future<void> main() async {
       await goToDocumentation(tester);
       await goToCommunity(tester);
       await goToEmail(tester);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Flow to edit acc name>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await fromHomeToHotWallet(tester);
@@ -162,8 +201,15 @@ Future<void> main() async {
 
       await enterTextInField(tester, find.byType(TextField), 'Mobile Wallet');
       await saveName(tester);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Testing Prompts for Wallets with Balances>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await clearPromptStates(tester);
@@ -245,8 +291,15 @@ Future<void> main() async {
       // Enable Segwit
       await fromHomeToAdvancedMenu(tester);
       await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Test decimal point in Send>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await pressHamburgerMenu(tester);
@@ -282,35 +335,56 @@ Future<void> main() async {
       // Check the main amount to see if pressing the dot was successful.
       final sendAmount = find.text("0.");
       expect(sendAmount.first, findsOneWidget);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
   });
 
   group('Passport wallet tests', () {
     // Below tests require already set up wallet with passport and coins
     testWidgets('<Magic recovery from Foundation server>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       // Wallet for BEEFQA: this seed has magic recovery enabled on the Foundation server
       const List<String> seed = [
-        "vault",
-        "dust",
-        "appear",
-        "acoustic",
-        "evolve",
-        "monster",
-        "arena",
-        "injury",
-        "tourist",
-        "grab",
-        "pair",
-        "harvest"
+        "minor",
+        "inspire",
+        "domain",
+        "sport",
+        "radio",
+        "put",
+        "museum",
+        "sure",
+        "dose",
+        "peanut",
+        "home",
+        "comfort"
       ];
 
       await tester.pumpWidget(const EnvoyApp());
       await setUpWalletFromSeedViaBackupFile(tester, seed);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Pump until balance sync>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await checkSync(tester);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Testing Prompts for Wallets with Balances>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await disableAllNetworks(tester);
@@ -389,8 +463,15 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
       reorderPromptFinder = find.text(reorderPromptMessage);
       expect(tapCardsPromptFinder, findsNothing);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Edit device name>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       final devicesButton = find.text('Devices');
@@ -423,8 +504,15 @@ Future<void> main() async {
 
       await enterTextInField(tester, find.byType(TextField), 'Passport');
       await saveName(tester);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Edit Passport account name>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       const String accountPassportName = "GH TEST ACC (#1)";
@@ -455,8 +543,15 @@ Future<void> main() async {
       await enterTextInField(
           tester, find.byType(TextField), accountPassportName);
       await saveName(tester);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<BUY forever back loop>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await fromHomeToBuyOptions(tester);
@@ -483,8 +578,15 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
       await findTextOnScreen(tester, "SETTINGS");
       await tester.pump(Durations.long2);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Fiat in App>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await checkSync(tester);
       await goBackHome(tester);
 
@@ -582,8 +684,9 @@ Future<void> main() async {
 
       /// in Send
       await findAndPressTextButton(tester, 'Send');
-      // press the widget so it can circle to Sats
-      //   await findAndPressWidget<AmountDisplay>(tester);
+
+      /// Check if you are entering sats
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
@@ -625,10 +728,17 @@ Future<void> main() async {
             await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
         expect(fiatCheckResult, isTrue);
       }
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Test send to all address types>', (tester) async {
-      await checkSync(tester);
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
+      await checkSync(tester);
       await disableAllNetworks(tester);
 
       final walletWithBalance = find.text("GH TEST ACC (#1)");
@@ -641,6 +751,9 @@ Future<void> main() async {
       expect(sendButtonFinder, findsWidgets);
       await tester.tap(sendButtonFinder.last);
       await tester.pump(Durations.long2);
+
+      /// Check if you are entering sats
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
 
       // enter amount
       await findAndPressTextButton(tester, '1');
@@ -660,14 +773,20 @@ Future<void> main() async {
       String p2trAddress =
           "bc1pgqnxzknhzyypgslhcevt96cnry4jkarv5gqp560a95uv6mzf4x7s0r67mm";
       await trySendToAddress(tester, p2trAddress);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<BTC/sats in App>', (tester) async {
-      await checkSync(tester);
+      final stopwatch = Stopwatch()..start(); // Start timer
 
       await goBackHome(tester);
+      await checkSync(tester);
 
       String someValidSignetReceiveAddress =
-          'tb1plhv9qthzz4trg5te27ulz6k8y46jd84azhe5fdmu6kehl9xwpp8qum6h3a';
+          'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql';
 
       /// Go to setting and enable fiat, we will need this later
       await pressHamburgerMenu(tester);
@@ -684,7 +803,7 @@ Future<void> main() async {
       bool isSettingsViewSatsSwitchOn =
           await isSlideSwitchOn(tester, 'View Amount in Sats');
       if (isSettingsViewSatsSwitchOn) {
-        // find And Toggle DisplayFiat Switch
+        // turn it off
         await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
       }
 
@@ -733,14 +852,14 @@ Future<void> main() async {
       await findFirstTextButtonAndPress(tester, 'Signet');
       await findAndPressTextButton(tester, 'Send');
 
+      /// This is not important anymore because of the new sendUnit (depending on the last Send selection)?
       /// Make sure the first proposed unit is BTC
       // function is checking icons from top to bottom so the first icon in Send needs to be BTC
-      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
+      // await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       /// Tap the BTC number in the send screen until you get to fiat (you might need to enable fiat from settings first)
-      // press the widget two times so it can circle to BTC
-      await findAndPressWidget<AmountDisplay>(tester);
-      await findAndPressWidget<AmountDisplay>(tester);
+      // circle to BTC
+      await cycleToEnvoyIcon(tester, EnvoyIcons.btc);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
@@ -751,8 +870,7 @@ Future<void> main() async {
       await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       // switch to SATS for easy input
-      await findAndPressWidget<AmountDisplay>(tester);
-      await tester.pump(Durations.long2);
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
 
       /// With the unit in SATS, paste a valid address, enter a valid amount, tap continue
       await enterTextInField(
@@ -766,7 +884,7 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
 
       // switch back to BTC
-      await findAndPressWidget<AmountDisplay>(tester);
+      await cycleToEnvoyIcon(tester, EnvoyIcons.btc);
 
       // go to staging
       await waitForTealTextAndTap(tester, 'Confirm');
@@ -826,23 +944,25 @@ Future<void> main() async {
       await findFirstTextButtonAndPress(tester, 'Signet');
       await findAndPressTextButton(tester, 'Send');
 
-      /// Make sure the first proposed unit is sats
-      // function is checking icons from top to bottom so the first icon in Send needs to be sats
-      await checkForEnvoyIcon(tester, EnvoyIcons.sats);
+      /// Make sure the first proposed unit is BTC (last selected in send was BTC)
+      // function is checking icons from top to bottom so the first icon in Send needs to be BTC
+      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       if (currentSettingsFiatCode != null) {
         await tester.pump(Durations.long2);
         await findTextOnScreen(tester, "\$");
       }
 
-      ///  Check that the number below the fiat is displayed in sats
-      await checkForEnvoyIcon(tester, EnvoyIcons.sats);
+      ///  Check that the number below the fiat is displayed in btc
+      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
-      /// With the unit in sats, paste a valid address, enter a valid amount, tap continue
+      /// With the unit in BTC, paste a valid address, enter a valid amount, tap continue
       await enterTextInField(
           tester, find.byType(TextFormField), someValidSignetReceiveAddress);
 
       // enter amount in SATS
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
+
       // This can fail if the fee is too high (small total amount) !!!
       await findAndPressTextButton(tester, '5');
       await findAndPressTextButton(tester, '6');
@@ -874,8 +994,15 @@ Future<void> main() async {
       await tester.pump(Durations.long1);
       await findAndPressTextButton(tester,
           'Accounts'); // TODO: Since Send is f***ed I must go back like this
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Enable testnet>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await fromHomeToAdvancedMenu(tester);
@@ -930,8 +1057,15 @@ Future<void> main() async {
       await pressHamburgerMenu(tester); // back to home
       // Ensure there are at least two badges: one for the passport and one for the hot testnet wallet.
       expect(testnetAccountBadge, findsAtLeast(2));
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Enable taproot>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await pressHamburgerMenu(tester);
@@ -942,43 +1076,61 @@ Future<void> main() async {
       if (taprootAlreadyEnabled) {
         // Disable it
         await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
+        await tester.pump(Durations.extralong4);
+        await tester.pump();
         await findAndPressTextButton(tester, "Confirm");
+        await tester.pump(Durations.extralong4);
+        await tester.pump();
       }
-      await findAndToggleSettingsSwitch(tester, "Receive to Taproot");
-      await tester.pump(Durations.long2);
-      final confirmTextFromDialog = find.text('Confirm');
+      await findAndToggleSettingsSwitch(
+          tester, "Receive to Taproot"); //enable it
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
 
+      final confirmTextFromDialog = find.text('Confirm');
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       // Check that a pop up comes up
       await tester.pumpUntilFound(confirmTextFromDialog,
-          duration: Durations.long1);
-
+          duration: Durations.extralong4);
+      await tester.pump();
       await tester.tap(confirmTextFromDialog);
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       // Check that a pop up closed
       expect(confirmTextFromDialog, findsNothing);
+
       await findAndToggleSettingsSwitch(
-          tester, "Receive to Taproot"); // Disable
+          tester, "Receive to Taproot"); // disable
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       await tester.tap(confirmTextFromDialog);
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+
       await findAndToggleSettingsSwitch(
-          tester, "Receive to Taproot"); // Enable again
+          tester, "Receive to Taproot"); // enable again
 
       // Check that a pop up comes up
       expect(confirmTextFromDialog, findsOneWidget);
       await tester.tap(confirmTextFromDialog);
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       // Check that a pop up closed
       expect(confirmTextFromDialog, findsNothing);
 
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
+
       await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
       await findAndPressTextButton(tester, "Receive");
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
 
       // copy Taproot address
       final address1 = await getAddressFromReceiveScreen(tester);
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       expect(address1.startsWith('bc1p'), isTrue,
           reason:
               'The first address should be a Taproot address starting with bc1p');
@@ -1001,7 +1153,8 @@ Future<void> main() async {
 
       // Grab the second address
       final address2 = await getAddressFromReceiveScreen(tester);
-      await tester.pump(Durations.long2);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
       expect(address2.startsWith('bc1q'), isTrue,
           reason:
               'The second address should be a non-Taproot address starting with bc1q');
@@ -1016,8 +1169,15 @@ Future<void> main() async {
       await openAdvancedMenu(tester);
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // Enable again
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Check Signet in App>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await fromHomeToAdvancedMenu(tester);
@@ -1090,8 +1250,15 @@ Future<void> main() async {
       await tester.pump();
       signetTextAccount = find.text('Signet');
       expect(signetTextAccount, findsNothing);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Node selection>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       // Go to privacy
@@ -1140,8 +1307,15 @@ Future<void> main() async {
         tries: 10,
         duration: Durations.long1,
       );
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Enable tor and check top shield>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await findAndPressTextButton(tester, 'Privacy');
@@ -1160,19 +1334,26 @@ Future<void> main() async {
       // turn off Tor for next test
       await enablePerformance(tester);
       await checkTorShieldIcon(tester, expectPrivacy: false);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Boost screen>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await disableAllNetworks(tester);
 
       //const hotSignetReceiveAddress =
-      //    'tb1paj3dzfa392fp44hadwj3mnryqqurtp6qel6svyfzgelfs6j42x3q6xw9jg';
+      //    'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql';
       // TODO: fill this wallet if there is no money from here https://signet257.bublina.eu.org/
       // TODO: when getting more coins you need to wait for the transaction confirmation before running the tests!!!
 
       const hotSignetSendAddress =
-          'tb1pddwvqpcv5s4a738cs2av3x4kq3lr3kqt4w2flmpyha3srenxxseq9mlz5h'; // send coins to this address from base wallet
+          'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql'; // send coins to this address from base wallet
 
       await tester.pump(Durations.long2);
 
@@ -1297,14 +1478,21 @@ Future<void> main() async {
         await findAndTapCoinLockButton(tester);
         await findAndPressTextButton(tester, 'Unlock');
       }
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Fee % test>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await disableAllNetworks(tester);
 
       const hotSignetSendAddress =
-          'tb1pddwvqpcv5s4a738cs2av3x4kq3lr3kqt4w2flmpyha3srenxxseq9mlz5h'; // send coins to this address from base wallet
+          'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql'; // send coins to this address from base wallet
 
       await tester.pump(Durations.long2);
 
@@ -1431,19 +1619,26 @@ Future<void> main() async {
           ((fee.toInt() / (total.toInt())) * 100).round();
 
       expect(feePercentage, equals(expectedFeePercentage));
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Receiving txs - check Boost and Cancel>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await disableAllNetworks(tester);
 
       //const testnetReceiveAddress =
-      //    'tb1qe78y9rk4nwh9xuwmug7unpldfvpgkcqlufmgct';
+      //    'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql';
       // TODO: fill this wallet if there is no money from here https://coinfaucet.eu/en/btc-testnet4/
       // TODO: when getting more coins you need to wait for the transaction confirmation before running the tests!!!
 
       const testnetSendAddress =
-          'tb1qrjfqkufhvxexvkvss5e0ng2j5v3u0jhurcrlyk'; // send coins to this address from base wallet
+          'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql'; // send coins to this address from base wallet
 
       const testWallet = "Mobile Wallet";
 
@@ -1509,8 +1704,15 @@ Future<void> main() async {
       final cancelButton = find.text('Cancel Transaction');
       expect(boostButton, findsNothing);
       expect(cancelButton, findsNothing);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Switching Fiat in App>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
       const String accountPassportName = "GH TEST ACC (#1)";
 
@@ -1609,7 +1811,8 @@ Future<void> main() async {
       bool torIsConnected =
           await checkTorShieldIcon(tester, expectPrivacy: true);
 
-      expect(torIsConnected, isTrue);
+      expect(torIsConnected, isTrue,
+          reason: 'Tor should be connected, but it is not.');
 
       /// Open Envoy settings, enable fiat
       await pressHamburgerMenu(tester);
@@ -1676,8 +1879,15 @@ Future<void> main() async {
           await extractFiatAmountFromAccount(tester, accountPassportName);
       // Check if the numbers differ from different Fiats
       expect(newFiatAmount != usdFiatAmount, isTrue);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Account delete icon>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await disableAllNetworks(tester);
@@ -1696,8 +1906,15 @@ Future<void> main() async {
       );
 
       expect(envoyIconFinder, findsOneWidget);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Delete device>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
       String deviceName = "Passport";
 
@@ -1743,8 +1960,15 @@ Future<void> main() async {
       );
 
       expect(passportAccount, findsNothing);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
     testWidgets('<Logs freeze>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
       await goBackHome(tester);
 
       await fromHomeToAdvancedMenu(tester);
@@ -1765,6 +1989,17 @@ Future<void> main() async {
 
       await tester.pumpUntilFound(newElementFinder,
           duration: Durations.long1, tries: 100);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
     });
   });
+
+  // Stop the timer and print the elapsed time
+  stopwatch.stop();
+  debugPrint(
+    '⏱ Beefqa tests took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+  );
 }

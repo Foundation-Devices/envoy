@@ -98,10 +98,11 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
                                 width: 10,
                                 height: 10,
                                 fit: BoxFit.fitHeight,
-                                color:
+                                colorFilter: ColorFilter.mode(
                                     widget.value == CoinTagSwitchState.partial
                                         ? EnvoyColors.darkTeal
                                         : EnvoyColors.transparent,
+                                    BlendMode.srcIn),
                               ),
                             ),
                           )

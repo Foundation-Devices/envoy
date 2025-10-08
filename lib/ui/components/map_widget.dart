@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use
 // SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -5,26 +6,27 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
+
+import 'package:envoy/business/coordinates.dart';
 import 'package:envoy/business/keys_manager.dart';
+import 'package:envoy/business/map_data.dart';
+import 'package:envoy/business/venue.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
+import 'package:envoy/util/envoy_storage.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:envoy/business/venue.dart';
-import 'package:envoy/business/map_data.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/util/envoy_storage.dart';
-import 'package:flutter/material.dart' as material;
-import 'package:envoy/business/coordinates.dart';
 
 const String mapType = "positron";
 
@@ -204,104 +206,109 @@ class MarkersPageState extends State<MarkersPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _dataLoaded
-        ? Scaffold(
-            extendBodyBehindAppBar: true,
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      right: EnvoySpacing.medium2, top: EnvoySpacing.medium2),
-                  child: MapButton(
-                      icon: EnvoyIcons.close,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      }),
-                ),
-              ],
+    if (_dataLoaded) {
+      return Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(
+                  right: EnvoySpacing.medium2, top: EnvoySpacing.medium2),
+              child: MapButton(
+                  icon: EnvoyIcons.close,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  }),
             ),
-            body: Stack(
+          ],
+        ),
+        body: Stack(
+          children: [
+            FlutterMap(
+              mapController: mapController,
+              options: MapOptions(
+                  initialCenter: currentCenter,
+                  interactionOptions: const InteractionOptions(
+                    flags: InteractiveFlag.drag | InteractiveFlag.pinchZoom,
+                  ),
+                  onMapReady: () {
+                    _showLocallyVenues();
+                  },
+                  onMapEvent: (mapEvent) {
+                    if (mapEvent is MapEventMove) {
+                      _showLocallyVenues();
+                    }
+                  }),
               children: [
-                FlutterMap(
-                  mapController: mapController,
-                  options: MapOptions(
-                      initialCenter: currentCenter,
-                      interactionOptions: const InteractionOptions(
-                        flags: InteractiveFlag.drag | InteractiveFlag.pinchZoom,
-                      ),
-                      onMapReady: () {
-                        _showLocallyVenues();
-                      },
-                      onMapEvent: (mapEvent) {
-                        if (mapEvent is MapEventMove) {
-                          _showLocallyVenues();
-                        }
-                      }),
-                  children: [
-                    TileLayer(
-                      urlTemplate: _getTileUrl(),
-                      userAgentPackageName: 'Foundation Envoy',
-                      errorTileCallback: (tile, error, stackTrace) {
-                        setState(() {
-                          areMapTilesLoaded = false;
-                        });
-                        if (!errorModalShown) {
-                          showEnvoyPopUp(
-                              context,
-                              S().buy_bitcoin_mapLoadingError_subheader,
-                              S().component_ok,
-                              (BuildContext context) {
-                                Navigator.pop(context);
-                              },
-                              icon: EnvoyIcons.alert,
-                              typeOfMessage: PopUpState.warning,
-                              title: S().buy_bitcoin_mapLoadingError_header,
-                              secondaryButtonLabel: S().component_retry,
-                              onSecondaryButtonTap: (BuildContext context) {
-                                Navigator.pop(context);
-                                setState(() {
-                                  // trigger build
-                                });
-                              },
-                              onCheckBoxChanged: (_) {});
+                TileLayer(
+                  urlTemplate: _getTileUrl(),
+                  userAgentPackageName: 'Foundation Envoy',
+                  errorTileCallback: (tile, error, stackTrace) {
+                    setState(() {
+                      areMapTilesLoaded = false;
+                    });
+                    if (!errorModalShown) {
+                      showEnvoyPopUp(
+                          context,
+                          S().buy_bitcoin_mapLoadingError_subheader,
+                          S().component_ok,
+                          (BuildContext context) {
+                            Navigator.pop(context);
+                          },
+                          icon: EnvoyIcons.alert,
+                          typeOfMessage: PopUpState.warning,
+                          title: S().buy_bitcoin_mapLoadingError_header,
+                          secondaryButtonLabel: S().component_retry,
+                          onSecondaryButtonTap: (BuildContext context) {
+                            Navigator.pop(context);
+                            setState(() {
+                              // trigger build
+                            });
+                          },
+                          onCheckBoxChanged: (_) {});
 
-                          setState(() {
-                            errorModalShown = true;
-                          });
-                        }
-                      },
-                      tileProvider:
-                          const FMTCStore('mapStore').getTileProvider(),
-                    ),
-                    MarkerLayer(markers: showLocalMarkers()),
-                  ],
+                      setState(() {
+                        errorModalShown = true;
+                      });
+                    }
+                  },
+                  tileProvider: FMTCTileProvider(
+                    stores: const {
+                      'mapStore': BrowseStoreStrategy.readUpdateCreate
+                    },
+                  ),
                 ),
+                MarkerLayer(markers: showLocalMarkers()),
               ],
             ),
-            floatingActionButton: Padding(
-              padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  MapButton(
-                      icon: EnvoyIcons.plus,
-                      onTap: () {
-                        _zoomIn();
-                      }),
-                  const SizedBox(height: EnvoySpacing.small),
-                  MapButton(
-                      icon: EnvoyIcons.minus,
-                      onTap: () {
-                        _zoomOut();
-                      }),
-                ],
-              ),
-            ),
-          )
-        : const Center(child: CircularProgressIndicator());
+          ],
+        ),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              MapButton(
+                  icon: EnvoyIcons.plus,
+                  onTap: () {
+                    _zoomIn();
+                  }),
+              const SizedBox(height: EnvoySpacing.small),
+              MapButton(
+                  icon: EnvoyIcons.minus,
+                  onTap: () {
+                    _zoomOut();
+                  }),
+            ],
+          ),
+        ),
+      );
+    } else {
+      return const Center(child: CircularProgressIndicator());
+    }
   }
 }
 

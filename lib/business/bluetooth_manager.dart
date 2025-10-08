@@ -6,20 +6,27 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
+
 import 'package:bluart/bluart.dart' as bluart;
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/scv_server.dart';
+import 'package:envoy/business/server.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/ntp.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:ngwallet/ngwallet.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
-import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/account/accounts_manager.dart';
+
+import '../ui/envoy_colors.dart';
+import 'devices.dart';
 
 final sendProgressProvider =
     StateNotifierProvider<SendProgressNotifier, double>(
@@ -27,10 +34,29 @@ final sendProgressProvider =
 );
 
 final remainingTimeProvider = StateProvider<Duration>((ref) => Duration.zero);
+final connectedDevicesProvider = StreamProvider<Set<bluart.BleDevice>>((ref) {
+  return BluetoothManager().connectedDevicesStream;
+});
 
-class BluetoothManager {
+final isPrimeConnectedProvider = Provider.family<bool, String>((ref, bleId) {
+  final devices = ref.watch(connectedDevicesProvider).valueOrNull ?? {};
+  kPrint("Connected devices: $devices");
+  return devices.any((d) => d.id == bleId);
+});
+
+class BluetoothManager extends WidgetsBindingObserver {
   StreamSubscription? _subscription;
   StreamSubscription? _writeProgressSubscription;
+  final Set<bluart.BleDevice> _connectedDevices = {};
+
+  final StreamController<Set<bluart.BleDevice>> _connectedDevicesStream =
+      StreamController<Set<bluart.BleDevice>>();
+
+  Set<bluart.BleDevice> get connectedDevices => _connectedDevices;
+
+  Stream<Set<bluart.BleDevice>> get connectedDevicesStream =>
+      _connectedDevicesStream.stream.asBroadcastStream();
+
   static final BluetoothManager _instance = BluetoothManager._internal();
   UuidValue rxCharacteristic =
       UuidValue.fromString("6E400002B5A3F393E0A9E50E24DCCA9E");
@@ -43,7 +69,7 @@ class BluetoothManager {
   final StreamController<api.PassportMessage> _transactionStream =
       StreamController<api.PassportMessage>();
 
-  api.Dechunker? _decoder;
+  api.EnvoyMasterDechunker? _decoder;
   api.XidDocument? _recipientXid;
 
   bool connected = false;
@@ -78,18 +104,13 @@ class BluetoothManager {
   }
 
   BluetoothManager._internal() {
-    if (!Platform.isIOS) {
-      _init();
-    }
-
+    _init();
     kPrint("Instance of BluetoothManager created!");
   }
 
-  _init() async {
+  Future _init() async {
     await api.RustLib.init();
     await bluart.RustLib.init();
-
-    events = bluart.init().asBroadcastStream();
 
     kPrint("QL Identity: $_qlIdentity");
 
@@ -97,31 +118,40 @@ class BluetoothManager {
     await restoreQuantumLinkIdentity();
 
     kPrint("QL Identity: $_qlIdentity");
+  }
 
-    if (bleId != "" &&
-        _qlIdentity != null &&
-        await Permission.bluetoothScan.isDenied) {
-      await getPermissions();
+  Future<void> initBluetooth() async {
+    if (events != null) {
+      kPrint("Bluetooth already initialized");
+      return;
     }
+
+    events = bluart.init().asBroadcastStream();
+
+    // Add a small delay to ensure Rust library is fully initialized
+    await Future.delayed(const Duration(milliseconds: 300));
 
     events?.listen((bluart.Event event) async {
       if (event is bluart.Event_DeviceConnected) {
+        _updateConnectionStatus(event.field0);
         connected = true;
       }
 
       if (event is bluart.Event_DeviceDisconnected) {
+        _updateConnectionStatus(event.field0);
         connected = false;
       }
 
       if (event is bluart.Event_ScanResult) {
-        //kPrint("Scan result received, bleId = $bleId");
-        if (bleId == "") {
-          return;
+        if (event.field0.isEmpty) {
+          kPrint("received empty scan result");
         }
 
         for (final device in event.field0) {
-          //kPrint("Paired device found: ${device.id}");
-          if (device.id == bleId && !connected) {
+          _updateConnectionStatus(device);
+          // TODO: don't autoconnect in onboarding
+          if (bleId.isNotEmpty && device.id == bleId && !connected) {
+            kPrint("Autoconnecting to: ${device.id}");
             await connect(id: device.id);
             await listen(id: bleId);
           }
@@ -135,10 +165,22 @@ class BluetoothManager {
 
     await scan();
     _listenForAccountUpdate();
-    _listenWriteProgress();
+    _listenToWriteProgress();
   }
 
-  void _listenWriteProgress() {
+  void _updateConnectionStatus(bluart.BleDevice device) {
+    if (device.connected) {
+      kPrint("Event Device connected: ${device.id} ${device.name}");
+      _connectedDevices.add(device);
+    } else {
+      if (_connectedDevices.any((d) => d.id == device.id)) {
+        _connectedDevices.removeWhere((d) => d.id == device.id);
+      }
+    }
+    _connectedDevicesStream.sink.add(_connectedDevices);
+  }
+
+  void _listenToWriteProgress() {
     BluetoothManager().writeProgressStream.listen((progress) {
       kPrint("Write progress: ${(progress * 100).toStringAsFixed(1)}%");
     });
@@ -177,17 +219,89 @@ class BluetoothManager {
     });
   }
 
-  getPermissions() async {
-    await Permission.bluetooth.request();
-    await Permission.bluetoothConnect.request();
-    // TODO: remove this
-    // Envoy will be getting the BT addresses via QR
-    await Permission.bluetoothScan.request();
+  Future getPermissions() async {
+    try {
+      kPrint("Getting permissions...");
+      await Permission.bluetooth.request();
+      await Permission.bluetoothConnect.request();
+      // TODO: remove this
+      // Envoy will be getting the BT addresses via QR
+      await Permission.bluetoothScan.request();
+      kPrint("Scanning...");
+      bool denied = await isBluetoothDenied();
+      if (!denied) {
+        await initBluetooth();
+      }
+    } catch (e, stack) {
+      kPrint("Error getting permissions: $e", stackTrace: stack);
+    }
   }
 
-  scan() async {
-    if (await Permission.bluetoothScan.isGranted) {
-      await bluart.scan(filter: [""]);
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        Devices().connect();
+        break;
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.paused:
+        break;
+      case AppLifecycleState.detached:
+        break;
+      case AppLifecycleState.hidden:
+    }
+  }
+
+  static Future<bool> isBluetoothDenied() async {
+    if (Platform.isLinux) {
+      return false;
+    }
+
+    bool isDenied = true;
+    if (Platform.isAndroid) {
+      isDenied = await Permission.bluetooth.isDenied ||
+          await Permission.bluetoothConnect.isDenied ||
+          await Permission.bluetoothScan.isDenied;
+    } else {
+      //Permission.bluetoothConnect and Permission.bluetoothScan are not available on iOS
+      isDenied = await Permission.bluetooth.isDenied;
+    }
+    return isDenied;
+  }
+
+  //checks connected devices.
+  // if a device is connected and its not in the list of prime devices, disconnect from it
+  Future<void> checkDeviceStates() async {
+    kPrint("Checking device states...");
+    try {
+      kPrint(
+          "Connected devices: ${connectedDevices.map((d) => "${d.id} :: ${d.name}").join(", name")}");
+      if (connectedDevices.isNotEmpty) {
+        bool foundDevice = false;
+        for (var device in Devices().getPrimeDevices) {
+          if (device.type == DeviceType.passportPrime &&
+              connectedDevices.map((d) => d.id).contains(device.bleId)) {
+            foundDevice = true;
+            break;
+          }
+        }
+        //found a device, devices is not completed onboarding
+        if (!foundDevice) {
+          kPrint("Disconnecting from Prime");
+          await BluetoothManager().removeConnectedDevice();
+        }
+      }
+    } catch (e, stack) {
+      kPrint("Error checking device states: $e", stackTrace: stack);
+    }
+  }
+
+  Future scan() async {
+    bool isDenied = await isBluetoothDenied();
+    if (Platform.isLinux || !isDenied) {
+      kPrint("Scanning...");
+      await bluart.scan(filter: ["6E400001-B5A3-F393-E0A9-E50E24DCCA9E"]);
     }
   }
 
@@ -216,35 +330,55 @@ class BluetoothManager {
     final recipientXid =
         await api.serializeXidDocument(xidDocument: _recipientXid!);
 
-    api.PairingRequest request = api.PairingRequest(xidDocument: xid);
-    kPrint("Encoding...");
-
-    final encoded = await encodeMessage(
-        message: api.QuantumLinkMessage.pairingRequest(request));
-
-/*    kPrint("Encoded...");
-    kPrint("post-decode quantum isDisposed = ${qlIdentity!.isDisposed}");
-    kPrint("Number of chunks: ${encoded.length}");*/
-
-    _writeWithProgress(encoded);
+    await writeMessage(api.QuantumLinkMessage.pairingRequest(
+        api.PairingRequest(xidDocument: xid)));
 
     // Listen for response
     listen(id: bleId);
-    Future.delayed(Duration(seconds: 2));
+    //Future.delayed(Duration(seconds: 2));
 
-    connected = true;
-
+    // TODO: handle this in same place
     PrimeDevice prime = PrimeDevice(bleId, recipientXid);
     await EnvoyStorage().savePrime(prime);
+
+    connected = true;
   }
 
-  Future<void> sendPsbt(String accountId, String psbt) async {
-    final encoded = await encodeMessage(
-        message: api.QuantumLinkMessage.signPsbt(
-            api.SignPsbt(psbt: psbt, accountId: accountId)));
+  Future<void> writeMessage(api.QuantumLinkMessage message) async {
+    kPrint("Sending message: $message");
 
-    kPrint("before sending psbt");
-    _writeWithProgress(encoded);
+    final encoded = await encodeMessage(message: message);
+    kPrint("Encoded message!");
+
+    await _writeWithProgress(encoded);
+  }
+
+  Future<void> addDevice(String serialNumber, String firmwareVersion,
+      String bleId, DeviceColor deviceColor) async {
+    Devices().add(Device("Prime", DeviceType.passportPrime, serialNumber,
+        DateTime.now(), firmwareVersion, EnvoyColors.listAccountTileColors[0],
+        bleId: bleId, deviceColor: deviceColor));
+  }
+
+  Future<void> removeConnectedDevice() async {
+    if (connected) {
+      disconnect();
+    }
+
+    EnvoyStorage().deletePrimeByBleId(bleId);
+
+    bleId = "";
+    _recipientXid = null;
+  }
+
+  Future disconnect() async {
+    await bluart.disconnect(id: bleId);
+    connected = false;
+  }
+
+  Future<void> sendPsbt(String accountId, Uint8List psbt) async {
+    await writeMessage(api.QuantumLinkMessage.signPsbt(
+        api.SignPsbt(psbt: psbt, accountId: accountId)));
   }
 
   Future<void> _generateQlIdentity() async {
@@ -263,6 +397,8 @@ class BluetoothManager {
     bleId = id;
     await bluart.connect(id: id);
     connected = true;
+
+    await Future.delayed(const Duration(seconds: 1));
   }
 
   Future<void> listen({required String id}) async {
@@ -273,7 +409,7 @@ class BluetoothManager {
         if (value != null) {
           _passportMessageStream.add(value);
           kPrint(
-              "get passport message type:: ${value.message.runtimeType} ${value.message}");
+              "Got Passport message type: ${value.message.runtimeType} ${value.message}");
           _transactionStream.add(value);
         }
       }, onError: (e) {
@@ -297,40 +433,12 @@ class BluetoothManager {
   }
 
   Future<void> sendOnboardingState(api.OnboardingState state) async {
-    final encoded = await encodeMessage(
-      message: api.QuantumLinkMessage.onboardingState(state),
-    );
-
-    _writeWithProgress(encoded);
+    writeMessage(api.QuantumLinkMessage.onboardingState(state));
   }
 
-  Future<void> send(api.QuantumLinkMessage message) async {
-    final encoded = await encodeMessage(
-      message: message,
-    );
-    _writeWithProgress(encoded);
-  }
-
-  Future<void> sendFirmwarePayload() async {
-    // Create 100 KB of random data
-    final random = Random();
-    final payloadSize = 100 * 1024; // 100 KB
-    final randomBytes = Uint8List.fromList(
-      List.generate(payloadSize, (_) => random.nextInt(256)),
-    );
-
-    final payload = api.FirmwarePayload(payload: randomBytes);
-
-    final encoded = await encodeMessage(
-      message: api.QuantumLinkMessage.firmwarePayload(payload),
-    );
-
-    _writeWithProgress(encoded);
-  }
-
-  Future<void> sendChallengeMessage() async {
-    api.SecurityChallengeMessage? challenge =
-        await ScvServer().getPrimeChallenge();
+  Future<void> sendSecurityChallengeRequest() async {
+    kPrint("sending security challenge");
+    api.ChallengeRequest? challenge = await ScvServer().getPrimeChallenge();
 
     if (challenge == null) {
       // TODO: SCV what now?
@@ -338,11 +446,16 @@ class BluetoothManager {
       return;
     }
 
-    final encoded = await encodeMessage(
-      message: api.QuantumLinkMessage.securityChallengeMessage(challenge),
-    );
+    final request = api.SecurityCheck.challengeRequest(challenge);
+    kPrint("writing security challenge");
+    await writeMessage(api.QuantumLinkMessage.securityCheck(request));
+    kPrint("successfully wrote security challenge");
+  }
 
-    _writeWithProgress(encoded);
+  Future<void> sendSecurityChallengeVerificationResult(
+      api.VerificationResult result) async {
+    final message = api.SecurityCheck.verificationResult(result);
+    await writeMessage(api.QuantumLinkMessage.securityCheck(message));
   }
 
   Future<void> restorePrimeDevice() async {
@@ -390,11 +503,7 @@ class BluetoothManager {
         rate: exchangeRate.usdRate! + Random().nextDouble() * 10,
       );
 
-      final encoded = await encodeMessage(
-        message: api.QuantumLinkMessage.exchangeRate(exchangeRateMessage),
-      );
-
-      _writeWithProgress(encoded);
+      writeMessage(api.QuantumLinkMessage.exchangeRate(exchangeRateMessage));
     } catch (e) {
       kPrint('Failed to send exchange rate: $e');
     }
@@ -402,38 +511,57 @@ class BluetoothManager {
 
   void setupExchangeRateListener() {
     ExchangeRate().addListener(() async {
-      if (connected) {
+/*      if (connected) {
         kPrint("Sending exchange rate");
         await sendExchangeRate();
-      }
+      }*/
     });
   }
 
-  Future<void> sendFirmwareUpdateInfo() async {
-    // TODO: replace with actual firmware update info
-    // Create dummy firmware update metadata
-    final dummyUpdate = api.FirmwareUpdate(
-      version: 'v1.2.3-test',
-      timestamp: DateTime.now().millisecondsSinceEpoch,
-      changelog:
-          '• Fixed minor bugs\n• Improved performance\n• Added test logging',
-    );
+  Future<void> sendFirmwareUpdateInfo(List<PrimePatch> patches) async {
+    if (patches.isEmpty) {
+      writeMessage(api.QuantumLinkMessage.firmwareUpdateCheckResponse(
+          api.FirmwareUpdateCheckResponse_NotAvailable()));
+      return;
+    }
 
-    // Create the firmware update message
-    final message = api.QuantumLinkMessage.firmwareUpdate(
-      api.FirmwareUpdate(
-        version: dummyUpdate.version,
-        timestamp: dummyUpdate.timestamp,
-        changelog: dummyUpdate.changelog,
-      ),
-    );
+    final response = api.QuantumLinkMessage.firmwareUpdateCheckResponse(
+        api.FirmwareUpdateCheckResponse.available(api.FirmwareUpdateAvailable(
+            version: patches.last.version,
+            timestamp: patches.last.releaseDate.millisecondsSinceEpoch,
+            totalSize: 100,
+            changelog: patches.last.changelog,
+            patchCount: patches.length)));
 
-    // Encode and send
-    final encoded = await encodeMessage(message: message);
-    _writeWithProgress(encoded);
+    kPrint("TELLING PRIME THERE'S UPDATES");
+    await writeMessage(response);
+  }
+
+  Future<void> sendFirmwareFetchEvent(api.FirmwareFetchEvent event) async {
+    await writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(event));
+  }
+
+  Future<void> sendFirmwarePayload(List<Uint8List> patches) async {
+    for (final (patchIndex, patch) in patches.indexed) {
+      kPrint("sending patch $patchIndex of size ${patch.length} bytes");
+      final chunks = await api.splitFwUpdateIntoChunks(
+          patchIndex: patchIndex,
+          totalPatches: patches.length,
+          patchBytes: patch,
+          chunkSize: BigInt.from(10000));
+      kPrint("split patch into ${chunks.length} chunks");
+
+      for (final (chunkIndex, chunk) in chunks.indexed) {
+        kPrint("sending chunk $chunkIndex of patch $patchIndex");
+        await writeMessage(chunk);
+      }
+    }
+    await writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(
+        api.FirmwareFetchEvent.complete()));
   }
 
   Future<void> _writeWithProgress(List<Uint8List> data) async {
+    final completer = Completer<void>();
     _sendingData = true;
 
     final writeStream = bluart.writeAll(id: bleId, data: data);
@@ -444,16 +572,26 @@ class BluetoothManager {
         _writeProgressController.add(progress);
       },
       onDone: () {
+        kPrint("Progress stream done!");
         _sendingData = false;
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
       },
       onError: (e) {
+        kPrint("Progress stream errored out!");
         _sendingData = false;
         _writeProgressController.addError(e);
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
       },
     );
+
+    return completer.future;
   }
 
-  dispose() {
+  void dispose() {
     _subscription?.cancel();
     _writeProgressSubscription?.cancel();
   }

@@ -8,7 +8,6 @@ import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
-import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/ramp_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
@@ -20,6 +19,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ngwallet/ngwallet.dart';
 
 final pendingTransactionsProvider =
     Provider.family<List<EnvoyTransaction>, String?>((ref, String? accountId) {
@@ -52,10 +52,9 @@ final filteredTransactionsProvider =
       ref.watch(transactionsProvider(accountId));
 
   List<EnvoyTransaction> pendingTransactions =
-      walletTransactions.where((element) => element.confirmations < 3).toList();
-  List<EnvoyTransaction> confirmedTransactions = walletTransactions
-      .where((element) => element.confirmations >= 3)
-      .toList();
+      walletTransactions.where((e) => e.confirmations < 3).toList();
+  List<EnvoyTransaction> confirmedTransactions =
+      walletTransactions.where((e) => e.confirmations >= 3).toList();
 
   List<EnvoyTransaction> transactions = [];
 
@@ -64,57 +63,42 @@ final filteredTransactionsProvider =
 
   if (txFilterState.contains(TransactionFilters.sent) &&
       txFilterState.contains(TransactionFilters.received)) {
-    //do nothing
+    // do nothing
   } else {
     if (txFilterState.contains(TransactionFilters.sent)) {
-      transactions =
-          transactions.where((element) => element.amount < 0).toList();
+      transactions = transactions.where((e) => e.amount < 0).toList();
     } else if (txFilterState.contains(TransactionFilters.received)) {
-      transactions =
-          transactions.where((element) => element.amount > 0).toList();
+      transactions = transactions.where((e) => e.amount > 0).toList();
     } else {
-      transactions.sort(
-        (a, b) => a.date!.toInt().compareTo(b.date!.toInt()),
-      );
+      // use custom compareTx through compareTo
+      transactions.sort((a, b) => a.compareTo(b));
     }
   }
 
   switch (txSortState) {
     case TransactionSortTypes.newestFirst:
-      {
-        transactions = transactions.reversed.toList();
-        break;
-      }
+      transactions = transactions.reversed.toList();
+      break;
+
     case TransactionSortTypes.oldestFirst:
-      confirmedTransactions.sort(
-        (a, b) {
-          return compareTimestamps(b.date, a.date);
-        },
-      );
-      pendingTransactions.sort(
-        (a, b) {
-          return compareTimestamps(b.date, a.date);
-        },
-      );
+      confirmedTransactions.sort((a, b) => a.compareTo(b));
+      pendingTransactions.sort((a, b) => a.compareTo(b));
       transactions.clear();
       transactions.addAll(confirmedTransactions.reversed);
       transactions.addAll(pendingTransactions.reversed);
       break;
+
     case TransactionSortTypes.amountLowToHigh:
-      transactions.sort(
-        (a, b) {
-          return a.amount.abs().toInt().compareTo(b.amount.abs());
-        },
-      );
+      transactions
+          .sort((a, b) => a.amount.abs().toInt().compareTo(b.amount.abs()));
       break;
+
     case TransactionSortTypes.amountHighToLow:
-      transactions.sort(
-        (a, b) {
-          return b.amount.abs().toInt().compareTo(a.amount.abs());
-        },
-      );
+      transactions
+          .sort((a, b) => b.amount.abs().toInt().compareTo(a.amount.abs()));
       break;
   }
+
   if (txFilterState.isEmpty) {
     transactions = [];
   }
@@ -137,7 +121,7 @@ class Equal<T> {
 
   @override
   int get hashCode {
-    return _hashCode != null ? _hashCode!(value) : super.hashCode;
+    return _hashCode != null ? _hashCode(value) : super.hashCode;
   }
 }
 
@@ -256,10 +240,9 @@ final rbfTxStateProvider = StreamProvider.family<RBFState?, String>(
 
 final isTxBoostedProvider = Provider.family<bool?, String>(
   (ref, txId) {
-    final selectedAccount = ref.watch(selectedAccountProvider);
     return ref.watch(rbfTxStateProvider(txId)).when(
           data: (data) {
-            if (data != null && data.accountId == selectedAccount?.id) {
+            if (data != null) {
               if (data.newTxId == txId || data.originalTxId == txId) {
                 return true;
               } else {
@@ -330,7 +313,13 @@ Future prunePendingTransactions(
             tx.outputs.any((output) => output.address == pendingTx.address))
         .forEach((actualAztecoTx) {
       kPrint("Pruning Azteco tx: ${actualAztecoTx.txId}");
-      EnvoyStorage().addTxNote(note: S().azteco_note, key: actualAztecoTx.txId);
+      EnvoyAccount? account =
+          NgAccountManager().getAccountById(actualAztecoTx.accountId);
+
+      account?.handler?.setNote(
+        note: pendingTx.note ?? "",
+        txId: actualAztecoTx.txId,
+      );
       EnvoyStorage().deleteTxNote(pendingTx.address);
       EnvoyStorage().deletePendingTx(pendingTx.address);
     });
@@ -352,10 +341,16 @@ Future prunePendingTransactions(
             tx.outputs.any((output) => output.address == pendingTx.address))
         .forEach((actualBtcPayTx) {
       kPrint("Pruning BtcPay tx: ${actualBtcPayTx.txId}");
-      EnvoyStorage().addTxNote(note: S().btcpay_note, key: actualBtcPayTx.txId);
+      EnvoyAccount? account =
+          NgAccountManager().getAccountById(actualBtcPayTx.accountId);
+
+      account?.handler?.setNote(
+        note: pendingTx.note ?? "",
+        txId: actualBtcPayTx.txId,
+      );
+
       //TODO: add pull payment id to the note
       // actualBtcPayTx.setPullPaymentId(pendingTx.pullPaymentId);
-      EnvoyStorage().deleteTxNote(pendingTx.pullPaymentId!);
       EnvoyStorage().deletePendingTx(pendingTx.txId);
     });
 
@@ -394,7 +389,13 @@ Future prunePendingTransactions(
       //TODO: fix ramp for ngWallet
       // actualRampTx.setRampFee(pendingTx.rampFee);
       // actualRampTx.setRampId(pendingTx.rampId);
-      EnvoyStorage().addTxNote(note: S().ramp_note, key: actualRampTx.txId);
+      EnvoyAccount? account =
+          NgAccountManager().getAccountById(actualRampTx.accountId);
+
+      account?.handler?.setNote(
+        note: pendingTx.note ?? "",
+        txId: actualRampTx.txId,
+      );
       EnvoyStorage().deleteTxNote(pendingTx.address);
       EnvoyStorage().deletePendingTx(pendingTx.txId);
     });

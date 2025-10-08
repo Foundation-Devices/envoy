@@ -52,7 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("1"),
+        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences":
             MessageLookupByLibrary.simpleMessage("Open Source Licences"),
@@ -1917,10 +1917,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Envoy is loading your video over the Tor Network"),
         "wallet_security_modal_1_4_android_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy securely and automatically backs up your wallet seed with [[Android Auto Backup]].\n\nYour seed is always end-to-end encrypted and is never visible to Google."),
+                "Envoy securely and automatically backs up your mobile wallet seed with [[Android Auto Backup]].\n\nYour seed is always end-to-end encrypted and is never visible to Google."),
         "wallet_security_modal_1_4_ios_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "Envoy securely and automatically backs up your wallet seed to [[iCloud Keychain.]]\n\nYour seed is always end-to-end encrypted and is never visible to Apple."),
+                "Envoy securely and automatically backs up your mobile wallet seed to [[iCloud Keychain]].\n\nYour seed is always end-to-end encrypted and is never visible to Apple."),
         "wallet_security_modal_2_4_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Your wallet data – including tags, notes, accounts and settings – is automatically backed up to Foundation servers.\n\nThis backup is first encrypted with your wallet seed, ensuring that Foundation can never access your data."),
@@ -1934,9 +1934,17 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("How Your Data is Secured"),
         "wallet_security_modal_4_4_subheading":
             MessageLookupByLibrary.simpleMessage(
-                "If you prefer to opt out of Magic Backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manually Configure Seed Words."),
+                "If you prefer not to use Magic Backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the previous screen and disable Magic Backups."),
+        "wallet_security_modal_HowToRecoverYourWallet":
+            MessageLookupByLibrary.simpleMessage("How to Recover Your Wallet"),
+        "wallet_security_modal_HowYourDatatIsSecured":
+            MessageLookupByLibrary.simpleMessage("How Your Data is Secured"),
+        "wallet_security_modal_HowYourSeedIsSecured":
+            MessageLookupByLibrary.simpleMessage("How Your Seed is Secured"),
         "wallet_security_modal_HowYourWalletIsSecured":
             MessageLookupByLibrary.simpleMessage("How Your Wallet is Secured"),
+        "wallet_security_modal_WantToOptOut":
+            MessageLookupByLibrary.simpleMessage("Want to Opt Out?"),
         "wallet_security_modal__heading":
             MessageLookupByLibrary.simpleMessage("Security Tip"),
         "wallet_security_modal_subheading": MessageLookupByLibrary.simpleMessage(

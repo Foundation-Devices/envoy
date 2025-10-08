@@ -16,7 +16,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' hide Image;
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
@@ -253,23 +253,21 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
         child: Material(
             color: Colors.transparent,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: EnvoySpacing.large3),
+                  padding: const EdgeInsets.only(
+                      bottom: EnvoySpacing.medium3, top: EnvoySpacing.large2),
                   child: Container(
                     constraints:
-                        BoxConstraints.tight(const Size.fromHeight(150)),
+                        BoxConstraints.tight(const Size.fromHeight(184)),
                     child: Image.asset(
-                      "assets/exclamation_icon.png",
-                      height: 150,
-                      width: 150,
+                      "assets/images/onboarding_info.png",
+                      height: 184,
                     ),
                   ),
                 ),
-                Flexible(
+                Expanded(
                   child: SingleChildScrollView(
                       child: isAndroid
                           ? _androidBackUPInfo(context)
@@ -308,7 +306,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
     );
   }
 
-  _recoverStepsInfo(BuildContext context) {
+  Padding _recoverStepsInfo(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
       child: Column(
@@ -404,7 +402,7 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
     );
   }
 
-  _androidBackUPInfo(BuildContext context) {
+  PageTransitionSwitcher _androidBackUPInfo(BuildContext context) {
     return PageTransitionSwitcher(
       reverse: _androidBackupInfoPage == 1,
       duration: const Duration(milliseconds: 600),

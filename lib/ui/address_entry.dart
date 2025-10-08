@@ -13,7 +13,7 @@ import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
-import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/ui/state/app_unit_state.dart';
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
@@ -61,7 +61,7 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
 
   @override
   Widget build(BuildContext context) {
-    var unit = ref.read(sendScreenUnitProvider);
+    var unit = ref.read(appUnitProvider);
 
     return Material(
       borderRadius: BorderRadius.circular(15),

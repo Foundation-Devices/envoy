@@ -52,10 +52,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `1`
+  /// `Secondary action`
   String get _ {
     return Intl.message(
-      '1',
+      'Secondary action',
       name: '_',
       desc: '',
       args: [],
@@ -8828,20 +8828,20 @@ class S {
     );
   }
 
-  /// `Envoy securely and automatically backs up your wallet seed with [[Android Auto Backup]].\n\nYour seed is always end-to-end encrypted and is never visible to Google.`
+  /// `Envoy securely and automatically backs up your mobile wallet seed with [[Android Auto Backup]].\n\nYour seed is always end-to-end encrypted and is never visible to Google.`
   String get wallet_security_modal_1_4_android_subheading {
     return Intl.message(
-      'Envoy securely and automatically backs up your wallet seed with [[Android Auto Backup]].\n\nYour seed is always end-to-end encrypted and is never visible to Google.',
+      'Envoy securely and automatically backs up your mobile wallet seed with [[Android Auto Backup]].\n\nYour seed is always end-to-end encrypted and is never visible to Google.',
       name: 'wallet_security_modal_1_4_android_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Envoy securely and automatically backs up your wallet seed to [[iCloud Keychain.]]\n\nYour seed is always end-to-end encrypted and is never visible to Apple.`
+  /// `Envoy securely and automatically backs up your mobile wallet seed to [[iCloud Keychain]].\n\nYour seed is always end-to-end encrypted and is never visible to Apple.`
   String get wallet_security_modal_1_4_ios_subheading {
     return Intl.message(
-      'Envoy securely and automatically backs up your wallet seed to [[iCloud Keychain.]]\n\nYour seed is always end-to-end encrypted and is never visible to Apple.',
+      'Envoy securely and automatically backs up your mobile wallet seed to [[iCloud Keychain]].\n\nYour seed is always end-to-end encrypted and is never visible to Apple.',
       name: 'wallet_security_modal_1_4_ios_subheading',
       desc: '',
       args: [],
@@ -8888,11 +8888,41 @@ class S {
     );
   }
 
-  /// `If you prefer to opt out of Magic Backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manually Configure Seed Words.`
+  /// `If you prefer not to use Magic Backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the previous screen and disable Magic Backups.`
   String get wallet_security_modal_4_4_subheading {
     return Intl.message(
-      'If you prefer to opt out of Magic Backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the setup screen and choose Manually Configure Seed Words.',
+      'If you prefer not to use Magic Backups and instead manually secure your wallet seed and data, no problem!\n\nSimply head back to the previous screen and disable Magic Backups.',
       name: 'wallet_security_modal_4_4_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How to Recover Your Wallet`
+  String get wallet_security_modal_HowToRecoverYourWallet {
+    return Intl.message(
+      'How to Recover Your Wallet',
+      name: 'wallet_security_modal_HowToRecoverYourWallet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How Your Data is Secured`
+  String get wallet_security_modal_HowYourDatatIsSecured {
+    return Intl.message(
+      'How Your Data is Secured',
+      name: 'wallet_security_modal_HowYourDatatIsSecured',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How Your Seed is Secured`
+  String get wallet_security_modal_HowYourSeedIsSecured {
+    return Intl.message(
+      'How Your Seed is Secured',
+      name: 'wallet_security_modal_HowYourSeedIsSecured',
       desc: '',
       args: [],
     );
@@ -8903,6 +8933,16 @@ class S {
     return Intl.message(
       'How Your Wallet is Secured',
       name: 'wallet_security_modal_HowYourWalletIsSecured',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Want to Opt Out?`
+  String get wallet_security_modal_WantToOptOut {
+    return Intl.message(
+      'Want to Opt Out?',
+      name: 'wallet_security_modal_WantToOptOut',
       desc: '',
       args: [],
     );

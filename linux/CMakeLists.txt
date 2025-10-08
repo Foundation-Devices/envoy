@@ -31,6 +31,12 @@ function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_features(${TARGET} PUBLIC cxx_std_14)
   target_compile_options(${TARGET} PRIVATE -Wall -Werror)
   target_compile_options(${TARGET} PRIVATE -Wno-deprecated)
+
+  # Workarounds to enable Rive
+  target_compile_options(${TARGET} PRIVATE -Wno-error=nontrivial-memaccess)
+  target_compile_options(${TARGET} PRIVATE -Wno-unused-variable)
+  target_compile_options(${TARGET} PRIVATE -Wno-unused-function)
+
   target_compile_options(${TARGET} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:-O3>")
   target_compile_definitions(${TARGET} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:NDEBUG>")
 endfunction()

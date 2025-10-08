@@ -45,17 +45,21 @@ class AllowedRegions {
 
   //returns true if buy is disabled
   static Future<bool> checkBuyDisabled() async {
-    if (_isAllowed != null) {
-      return _isAllowed!;
-    }
-    if (!(await InAppPurchase.instance.isAvailable())) {
-      return false;
-    }
     try {
-      String? countryCode = await InAppPurchase.instance.countryCode();
-      _isAllowed = buyDisabled.contains(countryCode);
+      if (_isAllowed != null) {
+        return _isAllowed!;
+      }
+      if (!(await InAppPurchase.instance.isAvailable())) {
+        return false;
+      }
+      try {
+        String? countryCode = await InAppPurchase.instance.countryCode();
+        _isAllowed = buyDisabled.contains(countryCode.toUpperCase());
+      } catch (e) {
+        _isAllowed = false;
+      }
     } catch (e) {
-      _isAllowed = false;
+      rethrow;
     }
     return _isAllowed!;
   }

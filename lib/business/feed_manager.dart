@@ -8,11 +8,9 @@ import 'package:envoy/business/video.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:tor/tor.dart';
 import 'package:webfeed/webfeed.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:envoy/business/blog_post.dart';
-import 'package:envoy/business/scheduler.dart';
 
 class FeedManager {
   static const vimeoToken = "141c53cdd50a0285e03885dc6f444f9a";
@@ -39,9 +37,7 @@ class FeedManager {
 
     _addVideosFromVimeo();
 
-    HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get("https://foundation.xyz/feed")
-        .then((response) {
+    HttpTor().get("https://foundation.xyz/feed").then((response) {
       RssFeed feed = RssFeed.parse(response.body);
       _addBlogPostsFromRssFeed(feed);
     }).catchError((error) {
@@ -54,13 +50,13 @@ class FeedManager {
     String videoPerPageString = "?per_page=$videosPerPage";
     String pageString = "&page=$page";
 
-    return await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+    return await HttpTor().get(
       "https://api.vimeo.com/users/$vimeoAccountId/videos$videoPerPageString$pageString",
       headers: {'authorization': "bearer $vimeoToken"},
     );
   }
 
-  _addVideosFromVimeo() async {
+  Future<void> _addVideosFromVimeo() async {
     try {
       List<Video> currentVideos = [];
 
@@ -157,7 +153,7 @@ class FeedManager {
     return currentVideos;
   }
 
-  _addBlogPostsFromRssFeed(RssFeed feed) async {
+  Future<void> _addBlogPostsFromRssFeed(RssFeed feed) async {
     List<BlogPost> currentBlogPosts = [];
 
     for (RssItem item in feed.items!) {
@@ -195,15 +191,15 @@ class FeedManager {
     updateBlogPosts(currentBlogPosts);
   }
 
-  _dropVideos() {
+  void _dropVideos() {
     videos.clear();
   }
 
-  _dropBlogs() {
+  void _dropBlogs() {
     blogs.clear();
   }
 
-  _restoreVideos() async {
+  Future<void> _restoreVideos() async {
     _dropVideos();
 
     var storedVideos = await EnvoyStorage().getAllVideos();
@@ -212,7 +208,7 @@ class FeedManager {
     }
   }
 
-  _restoreBlogs() async {
+  Future<void> _restoreBlogs() async {
     _dropBlogs();
 
     var storedBlogs = await EnvoyStorage().getAllBlogPosts();
@@ -221,7 +217,7 @@ class FeedManager {
     }
   }
 
-  updateVideos(List<Video> currentVideos) async {
+  Future<void> updateVideos(List<Video> currentVideos) async {
     for (var video in currentVideos) {
       for (var storedVideo in videos) {
         if (video.url == storedVideo.url && storedVideo.watched != null) {
@@ -237,7 +233,7 @@ class FeedManager {
     storeVideos();
   }
 
-  updateBlogPosts(List<BlogPost> currentBlogPosts) async {
+  Future<void> updateBlogPosts(List<BlogPost> currentBlogPosts) async {
     for (var blog in currentBlogPosts) {
       for (var storedBlogPosts in blogs) {
         if (blog.url == storedBlogPosts.url && storedBlogPosts.read != null) {
@@ -254,13 +250,13 @@ class FeedManager {
     storeBlogPosts();
   }
 
-  storeVideos() {
+  void storeVideos() {
     for (var video in videos) {
       EnvoyStorage().insertVideo(video);
     }
   }
 
-  storeBlogPosts() {
+  void storeBlogPosts() {
     for (var blog in blogs) {
       EnvoyStorage().insertBlogPost(blog);
     }

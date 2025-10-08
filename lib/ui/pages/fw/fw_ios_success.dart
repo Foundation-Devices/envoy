@@ -48,7 +48,7 @@ class FwIosSuccessPage extends StatelessWidget {
         OnboardingButton(
             label: S().component_continue,
             onTap: () {
-              context.goNamed(PASSPORT_UPDATE_PASSPORT, extra: fwPagePayload);
+              context.pushNamed(PASSPORT_UPDATE_PASSPORT, extra: fwPagePayload);
               return;
             })
       ],

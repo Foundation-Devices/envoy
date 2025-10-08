@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class TextEntry extends StatelessWidget {
   final _controller = TextEditingController();
 
-  get enteredText => _controller.text;
+  String get enteredText => _controller.text;
   final FocusNode? focusNode;
   final int? maxLength;
   final TextAlign textAlign;

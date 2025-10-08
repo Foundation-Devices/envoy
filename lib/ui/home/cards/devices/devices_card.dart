@@ -6,18 +6,18 @@ import 'dart:ui';
 
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/linear_gradient.dart';
 import 'package:envoy/ui/embedded_video.dart';
 import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/components/linear_gradient.dart';
 
 //ignore: must_be_immutable
 class DevicesCard extends ConsumerStatefulWidget {
@@ -33,7 +33,7 @@ class DevicesCard extends ConsumerStatefulWidget {
 // Unfortunately it seems to only work with TabView
 class DevicesCardState extends ConsumerState<DevicesCard>
     with AutomaticKeepAliveClientMixin {
-  _redraw() {
+  void _redraw() {
     setState(() {});
   }
 
@@ -74,7 +74,7 @@ class DevicesList extends ConsumerStatefulWidget {
 }
 
 class _DevicesListState extends ConsumerState<DevicesList> {
-  _redraw() {
+  void _redraw() {
     setState(() {});
   }
 

@@ -13,7 +13,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
-import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/ui/state/app_unit_state.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
@@ -262,10 +262,12 @@ void clearSpendState(ProviderContainer ref) {
       );
     }
 
+    ref.read(spendValidationErrorProvider.notifier).state =
+        null; // Fix: Clear validation error state
     ref.read(stagingTxChangeOutPutTagProvider.notifier).state = null;
     ref.read(stagingTxNoteProvider.notifier).state = null;
     ref.read(spendFeeProcessing.notifier).state = false;
-    ref.read(sendScreenUnitProvider.notifier).state =
+    ref.read(appUnitProvider.notifier).state =
         Settings().displayUnit == DisplayUnit.btc
             ? AmountDisplayUnit.btc
             : AmountDisplayUnit.sat;

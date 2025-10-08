@@ -19,7 +19,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart';
+import 'package:rive/rive.dart' hide Image;
 import 'package:tor/tor.dart';
 
 class ManualSetupImportBackup extends StatefulWidget {
@@ -48,7 +48,7 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
     isTest = const bool.fromEnvironment('IS_TEST', defaultValue: true);
   }
 
-  _onRiveInit(Artboard artBoard) {
+  void _onRiveInit(Artboard artBoard) {
     _stateMachineController =
         StateMachineController.fromArtboard(artBoard, 'STM');
     artBoard.addController(_stateMachineController!);
@@ -236,7 +236,7 @@ class RecoverFromSeedLoader extends StatefulWidget {
 class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
   Map<String, String>? data;
 
-  checkForCloudBackup(String seed) async {
+  Future<void> checkForCloudBackup(String seed) async {
     List<String> seedList = widget.seed.split(" ");
     try {
       data = await Backup.restore(
@@ -312,7 +312,8 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
 Future<void> tryMagicRecover(List<String> seedList, String seed,
     Map<String, String>? data, BuildContext context) async {
   final navigator = Navigator.of(context);
-  bool success = await EnvoySeed().processRecoveryData(seed, data, null);
+  bool success = await EnvoySeed()
+      .processRecoveryData(seed, data, null, isMagicBackup: true);
 
   if (success) {
     Settings().setSyncToCloud(true);

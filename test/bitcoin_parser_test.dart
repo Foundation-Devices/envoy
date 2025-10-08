@@ -2,19 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:io';
-import 'dart:math';
+// ignore_for_file: depend_on_referenced_packages
 import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/ui/amount_entry.dart';
-import 'package:test/test.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'bitcoin_parser_test.mocks.dart';
+import 'package:test/test.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-@GenerateMocks([Wallet])
 void main() async {
-  Directory dir = Directory.current;
+  setUpAll(() async => await RustLib.init(
+      externalLibrary:
+          ExternalLibrary.open('target/debug/librust_lib_ngwallet.so')));
 
   test("Test valid address and amount", () async {
     var pasted =
@@ -75,14 +73,9 @@ void main() async {
 
   test("Test with dot and not enough in wallet", () async {
     var pasted = "1.28";
-    final wallet = MockWallet();
-
-    when(wallet.balance).thenReturn(10);
-    when(wallet.validateAddress(pasted)).thenAnswer((_) async => false);
-
     var parsed = await BitcoinParser.parse(pasted,
         fiatExchangeRate: 1,
-        wallet: wallet,
+        account: getAccount(balance: 10),
         selectedFiat: "USD",
         currentUnit: AmountDisplayUnit.btc);
 
@@ -113,15 +106,9 @@ void main() async {
 
   test("Test amount with dot and enough in wallet ", () async {
     var pasted = "0.05";
-
-    final wallet = MockWallet();
-
-    when(wallet.balance).thenReturn(10000000);
-    when(wallet.validateAddress(pasted)).thenAnswer((_) async => false);
-
     var parsed = await BitcoinParser.parse(pasted,
         fiatExchangeRate: 1,
-        wallet: wallet,
+        account: getAccount(balance: 10000000),
         currentUnit: AmountDisplayUnit.btc);
 
     expect(parsed.address, null);
@@ -131,15 +118,9 @@ void main() async {
 
   test("Test amount with dot and not enough in wallet", () async {
     var pasted = "0.05";
-
-    final wallet = MockWallet();
-
-    when(wallet.balance).thenReturn(10);
-    when(wallet.validateAddress(pasted)).thenAnswer((_) async => false);
-
     var parsed = await BitcoinParser.parse(pasted,
         fiatExchangeRate: 1,
-        wallet: wallet,
+        account: getAccount(balance: 10),
         selectedFiat: "USD",
         currentUnit: AmountDisplayUnit.fiat);
 
@@ -180,17 +161,6 @@ void main() async {
 
     expect(parsed.address, null);
     expect(parsed.unit, AmountDisplayUnit.fiat);
-  });
-
-  test("Test only address", () async {
-    var pasted = "bc1qj9cjncwvsg02fqkjrh7p3umujyvn2a80ty3mwn";
-    Wallet wallet = getWallet(dir);
-
-    var parsed =
-        await BitcoinParser.parse(pasted, fiatExchangeRate: 1, wallet: wallet);
-
-    expect(parsed.address, "bc1qj9cjncwvsg02fqkjrh7p3umujyvn2a80ty3mwn");
-    expect(parsed.unit, null);
   });
 
   test("Test string with \$ and fiat is not selected", () async {
@@ -284,16 +254,26 @@ void main() async {
   });
 }
 
-Wallet getWallet(Directory dir) {
-  const seed =
-      "copper december enlist body dove discover cross help evidence fall rich clean";
-  const path = "m/84'/0'/0'";
-
-  var walletsDir = "${dir.path}/test_wallets_${Random().nextInt(9999)}/";
-
-  var wallet = Wallet.deriveWallet(seed, path, walletsDir, Network.Mainnet,
-      privateKey: false,
-      initWallet: true,
-      type: WalletType.witnessPublicKeyHash);
-  return wallet;
+EnvoyAccount getAccount({required int balance}) {
+  final account = EnvoyAccount(
+      name: "name",
+      color: "color",
+      preferredAddressType: AddressType.p2Sh,
+      seedHasPassphrase: true,
+      index: 0,
+      descriptors: [
+        NgDescriptor(internal: "internal", addressType: AddressType.p2Sh)
+      ],
+      network: Network.bitcoin,
+      id: "id",
+      nextAddress: [("p2sh", AddressType.p2Sh)],
+      balance: BigInt.from(balance),
+      unlockedBalance: BigInt.from(0),
+      isHot: true,
+      transactions: [],
+      utxo: [],
+      tags: [],
+      xfp: "xfp",
+      externalPublicDescriptors: [(AddressType.p2Sh, "p2sh")]);
+  return account;
 }

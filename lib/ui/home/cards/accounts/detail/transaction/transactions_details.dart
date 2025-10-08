@@ -8,6 +8,7 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/locale.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -84,14 +85,34 @@ class _TransactionsDetailsWidgetState
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await Future.delayed(const Duration(milliseconds: 50));
+      _fetchFee();
       _checkForRBF();
     });
   }
 
+  Future<void> _fetchFee() async {
+    if (widget.tx.fee.toInt() == FEE_UNKNOWN) {
+      final server = Settings().electrumAddress(widget.account.network);
+      int? port = Settings().getTorPort(widget.account.network, server);
+      try {
+        final fee = await EnvoyAccountHandler.fetchElectrumFee(
+            txid: widget.tx.txId, electrumServer: server, torPort: port);
+        if (fee != null) {
+          await widget.account.handler
+              ?.updateTxFee(transaction: widget.tx, fee: fee);
+        }
+      } catch (e) {
+        EnvoyReport().log("FetchFee", "RBF check failed : $e");
+      }
+    }
+  }
+
   Future _checkForRBF() async {
-    if (widget.tx.confirmations == 0) {
+    // don't check boost/cancel on received tx's ˇˇˇˇˇ
+    if (widget.tx.confirmations == 0 && !(widget.tx.amount > 0)) {
       try {
         await _checkBoost();
       } catch (e) {
@@ -225,10 +246,10 @@ class _TransactionsDetailsWidgetState
   @override
   Widget build(BuildContext context) {
     ///watch transaction changes to get real time updates
-    final tx = widget.tx;
+    final tx = ref.watch(getTransactionProvider(widget.tx.txId)) ?? widget.tx;
 
     String note = ref.watch(getTransactionProvider(tx.txId).select(
-      (value) => value?.note ?? "",
+      (value) => value?.note ?? tx.note ?? "",
     ));
 
     if (!tx.isConfirmed && tx is RampTransaction) {
@@ -595,9 +616,12 @@ class _TransactionsDetailsWidgetState
                             noteHintText: S().add_note_modal_ie_text_field,
                             noteSubTitle: S().add_note_modal_subheading,
                             onAdd: (note) async {
-                              if (!tx.isConfirmed && tx is RampTransaction) {
-                                await EnvoyStorage()
-                                    .addTxNote(key: tx.txId, note: note);
+                              if (!tx.isConfirmed &&
+                                  (tx is RampTransaction ||
+                                      tx is BtcPayTransaction ||
+                                      tx is AztecoTransaction)) {
+                                EnvoyStorage()
+                                    .updatePendingTx(tx.txId, note: note);
                               } else {
                                 widget.account.handler?.setNote(
                                   note: note,
@@ -693,7 +717,7 @@ class _TransactionsDetailsWidgetState
           )
         : SvgPicture.asset(
             "assets/icons/ic_bitcoin_straight_circle.svg",
-            color: Colors.black,
+            colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
             height: 18,
           );
 
@@ -707,8 +731,11 @@ class _TransactionsDetailsWidgetState
     return EnvoyInfoCardListItem(
       title: feeTitle,
       icon: icon,
-      trailing: hideBalance
-          ? const LoaderGhost(width: 74, animate: false, height: 16)
+      trailing: hideBalance || tx.fee.toInt() == FEE_UNKNOWN
+          ? Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: const LoaderGhost(width: 74, animate: false, height: 16),
+            )
           : Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -834,7 +861,8 @@ class NoteDisplay extends StatelessWidget {
                 padding: const EdgeInsets.only(left: EnvoySpacing.xs),
                 child: SvgPicture.asset(
                   "assets/icons/ic_edit_note.svg",
-                  color: Theme.of(context).primaryColor,
+                  colorFilter: ColorFilter.mode(
+                      Theme.of(context).primaryColor, BlendMode.srcIn),
                   height: 14,
                 ),
               ),

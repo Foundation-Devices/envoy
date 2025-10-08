@@ -4,9 +4,7 @@
 
 import 'package:envoy/business/local_storage.dart';
 import 'package:crypto/crypto.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:http_tor/http_tor.dart';
-import 'package:tor/tor.dart';
 
 class Media {
   final String title;
@@ -44,10 +42,8 @@ class Media {
     return sha256.convert(thumbnailUrl!.codeUnits).toString();
   }
 
-  _fetchThumbnail() async {
-    HttpTor(Tor.instance, EnvoyScheduler().parallel)
-        .get(thumbnailUrl!)
-        .then((response) async {
+  Future<void> _fetchThumbnail() async {
+    HttpTor().get(thumbnailUrl!).then((response) async {
       await LocalStorage().saveFileBytes(
           "$thumbnailsFolder/${thumbnailHash!}", response.bodyBytes);
     });

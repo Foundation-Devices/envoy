@@ -127,7 +127,7 @@ func getSdCardBookmark() -> URL {
         print("Source application: \(sendingAppID ?? "Unknown")")
 
         let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
-        controller.engine!.navigationChannel.invokeMethod("pushRoute", arguments: url.absoluteString)
+        controller.engine.navigationChannel.invokeMethod("pushRoute", arguments: url.absoluteString)
 
         return true
     }
@@ -257,7 +257,6 @@ func getSdCardBookmark() -> URL {
             // This will never be called
             ur_decoder()
             tor_hello()
-            http_hello()
             backup_hello()
         }
 }

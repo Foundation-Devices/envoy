@@ -59,7 +59,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
         fontStyle: FontStyle.normal);
   }
 
-  selectFeeTab(num fee) {
+  void selectFeeTab(num fee) {
     int index = 0;
     if (fee.toInt() == standardFee.toInt()) {
       index = 0;
@@ -107,73 +107,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
           child: TabBar(
               textScaler: feeTextScaler,
               controller: _tabController,
-              onTap: (index) {
-                switch (index) {
-                  case 0:
-                    widget.onFeeSelect(standardFee.toInt(), context, false);
-                    break;
-                  case 1:
-                    widget.onFeeSelect(fasterFee.toInt(), context, false);
-                    break;
-                  case 2:
-                    showModalBottomSheet(
-                      context: context,
-                      elevation: 0,
-                      backgroundColor: Colors.transparent,
-                      useRootNavigator: true,
-                      barrierColor: Colors.transparent,
-                      builder: (context) {
-                        return Container(
-                            decoration: const BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  spreadRadius: 2,
-                                  blurRadius: 24,
-                                  offset: Offset(
-                                      0, -4), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            child: Card(
-                              elevation: 0,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft:
-                                      Radius.circular(EnvoySpacing.medium2),
-                                  topRight:
-                                      Radius.circular(EnvoySpacing.medium2),
-                                ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Consumer(
-                                  builder: (context, ref, child) {
-                                    return FeeSlider(
-                                      fees: feeList,
-                                      onFeeSelect: (index) {
-                                        widget.onFeeSelect(
-                                            index, context, true);
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
-                            ));
-                      },
-                    ).then((value) {
-                      /// if the user cancels/sets the fee slider , we need to reset/set the fee rate that used in block estimation
-                      /// otherwise set the fee rate to selected value
-                      ref
-                          .read(spendFeeRateBlockEstimationProvider.notifier)
-                          .state = ref.read(spendFeeRateProvider);
-                      ref.read(userHasChangedFeesProvider.notifier).state =
-                          true;
-                    });
-                    break;
-                }
-              },
               indicatorColor: Colors.white,
+              onTap: onTabSelected,
               labelPadding: const EdgeInsets.symmetric(horizontal: 0),
               padding: const EdgeInsets.symmetric(horizontal: 0),
               indicatorPadding: const EdgeInsets.symmetric(horizontal: 0),
@@ -207,6 +142,76 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                 ),
               ]),
         ));
+  }
+
+  void onTabSelected(int index) {
+    switch (index) {
+      case 0:
+        widget.onFeeSelect(standardFee.toInt(), context, false);
+        break;
+      case 1:
+        widget.onFeeSelect(fasterFee.toInt(), context, false);
+        break;
+      case 2:
+        {
+          final currentFee = ref.read(spendTransactionProvider.select(
+            (value) => value.transaction?.feeRate.toInt() ?? 1,
+          ));
+          bool feeChanged = false;
+          showModalBottomSheet(
+            context: context,
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            useRootNavigator: true,
+            barrierColor: Colors.transparent,
+            builder: (context) {
+              return Container(
+                  decoration: const BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        spreadRadius: 2,
+                        blurRadius: 24,
+                        offset: Offset(0, -4), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: Card(
+                    elevation: 0,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(EnvoySpacing.medium2),
+                        topRight: Radius.circular(EnvoySpacing.medium2),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          return FeeSlider(
+                            fees: feeList,
+                            onFeeSelect: (index) {
+                              widget.onFeeSelect(index, context, true);
+                              feeChanged = true;
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ));
+            },
+          ).then((value) {
+            if (!feeChanged) {
+              /// if the user cancels/sets the fee slider , we need to reset/set the fee rate that used in block estimation
+              /// otherwise set the fee rate to selected value
+              ref.read(spendFeeRateProvider.notifier).state = currentFee;
+              selectFeeTab(currentFee);
+              ref.read(userHasChangedFeesProvider.notifier).state = true;
+            }
+          });
+        }
+        break;
+    }
   }
 
   void calculateFeeBoundary() {
@@ -478,7 +483,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     ref.read(_selectedFeeStateProvider.notifier).state =
         widget.fees[index].toInt();
     if (_initializationFinished) {
-      ref.read(spendFeeRateBlockEstimationProvider.notifier).state =
+      ref.read(spendFeeRateProvider.notifier).state =
           widget.fees[index].toInt();
     }
   }

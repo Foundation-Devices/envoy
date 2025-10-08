@@ -15,9 +15,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:flutter/services.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:intl/intl.dart';
-import 'package:tor/tor.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/locale.dart';
 
 class FiatCurrency {
@@ -45,7 +43,7 @@ class FiatCurrency {
   @override
   int get hashCode => code.hashCode;
 
-  static fromCode(String code) {
+  static FiatCurrency fromCode(String code) {
     return FiatCurrency(
         code: code, title: "", symbol: "", flag: "", decimalPoints: 2);
   }
@@ -96,7 +94,7 @@ class ExchangeRate extends ChangeNotifier {
   double? get usdRate => _usdRate;
   FiatCurrency? _selectedCurrency;
 
-  final HttpTor _http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+  final HttpTor _http = HttpTor();
   final String _serverAddress = Settings().nguServerAddress;
 
   static final ExchangeRate _instance = ExchangeRate._internal();
@@ -146,14 +144,14 @@ class ExchangeRate extends ChangeNotifier {
     });
   }
 
-  restore() async {
+  Future<void> restore() async {
     // First get whatever we saved last
     _restoreRate();
     // Double check that that's still the choice
     setCurrency(Settings().selectedFiat);
   }
 
-  _restoreRate() async {
+  Future<void> _restoreRate() async {
     final storedExchangeRate = await EnvoyStorage().getExchangeRate();
 
     if (storedExchangeRate != null &&
@@ -191,7 +189,7 @@ class ExchangeRate extends ChangeNotifier {
     notifyListeners();
   }
 
-  _storeRate(double? selectedRate, String? currencyCode, double? usdRate) {
+  void _storeRate(double? selectedRate, String? currencyCode, double? usdRate) {
     Map exchangeRateMap = {
       CURRENCY_KEY: currencyCode,
       RATE_KEY: selectedRate,
@@ -201,7 +199,7 @@ class ExchangeRate extends ChangeNotifier {
     EnvoyStorage().setExchangeRate(exchangeRateMap);
   }
 
-  _getNonUsdRate(bool triggeredByTimer) async {
+  Future<void> _getNonUsdRate(bool triggeredByTimer) async {
     // We have a separate function for USD
     if (_selectedCurrency == null) {
       return;
@@ -239,7 +237,7 @@ class ExchangeRate extends ChangeNotifier {
     _isFetchingData = false;
   }
 
-  _getUsdRate() async {
+  Future<void> _getUsdRate() async {
     try {
       _usdRate = await _getRateForCode("USD");
       _storeRate(_selectedCurrencyRate, _selectedCurrency?.code, _usdRate);
@@ -257,6 +255,7 @@ class ExchangeRate extends ChangeNotifier {
         ConnectivityManager().nguSuccess();
         return rate.toDouble();
       } else {
+        ConnectivityManager().nguFailure();
         throw Exception("Couldn't get exchange rate");
       }
     } catch (e) {

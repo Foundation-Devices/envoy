@@ -9,6 +9,7 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
+import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -68,8 +69,9 @@ class Settings extends ChangeNotifier {
   static const String TESTNET4_ONION_ELECTRUM_SERVER =
       "7gohqoo7du3l3p72gld33hd5d6xtciych6plli6fwrixi2tsmyqc33yd.onion:50001";
 
-  static const String MUTINYNET_ONION_ELECTRUM_SERVER =
-      "zal4yu74bpyjm4enzxgo42ev34usyag5cmfn3ej6q5sf72urpfbej6ad.onion:50001";
+  // FD signet server
+  static const String SIGNET_ONION_ELECTRUM_SERVER =
+      "qkpvnm3gn7x7yzxp7pddlcpn5h4tyxve7yx4olvi437fzw4gz3sxbmad.onion:50001";
 
   static final List<String> defaultServers = getDefaultFulcrumServers();
   static String currentDefaultServer = selectRandomDefaultServer();
@@ -105,6 +107,7 @@ class Settings extends ChangeNotifier {
 
     return fullPaths;
   }
+
   // FD testnet4 server
 
   static const String TESTNET4_ELECTRUM_SERVER =
@@ -120,7 +123,7 @@ class Settings extends ChangeNotifier {
     return displayUnit == DisplayUnit.sat;
   }
 
-  setDisplayUnitSat(bool enable) {
+  void setDisplayUnitSat(bool enable) {
     if (enable) {
       displayUnit = DisplayUnit.sat;
     } else {
@@ -134,10 +137,21 @@ class Settings extends ChangeNotifier {
 
   String? displayFiat() => selectedFiat;
 
-  setDisplayFiat(String? displayFiat) {
+  void setDisplayFiat(String? displayFiat) {
     selectedFiat = displayFiat;
     ExchangeRate().setCurrency(selectedFiat);
 
+    notifyListeners();
+    store();
+  }
+
+  @JsonKey(includeIfNull: false)
+  AmountDisplayUnit? sendUnit;
+
+  /// send and staging unit
+
+  void setSendUnit(AmountDisplayUnit unit) {
+    sendUnit = unit;
     notifyListeners();
     store();
   }
@@ -163,6 +177,9 @@ class Settings extends ChangeNotifier {
     }
 
     if (network == Network.signet) {
+      if (usingTor) {
+        return SIGNET_ONION_ELECTRUM_SERVER;
+      }
       return SIGNET_ELECTRUM_SERVER;
     }
 
@@ -181,13 +198,13 @@ class Settings extends ChangeNotifier {
     return selectedElectrumAddress;
   }
 
-  setCustomElectrumAddress(String electrumAddress) {
+  void setCustomElectrumAddress(String electrumAddress) {
     selectedElectrumAddress = electrumAddress;
     usingDefaultElectrumServer = false;
     store();
   }
 
-  useDefaultElectrumServer(bool enabled) {
+  void useDefaultElectrumServer(bool enabled) {
     currentDefaultServer = selectRandomDefaultServer();
     usingDefaultElectrumServer = enabled;
     notifyListeners();
@@ -198,13 +215,26 @@ class Settings extends ChangeNotifier {
     return !usingDefaultElectrumServer;
   }
 
+  @JsonKey(defaultValue: "")
+  String personalElectrumAddress = "";
+
+  String getPersonalElectrumAddress() {
+    return personalElectrumAddress;
+  }
+
+  void setPersonalElectrumAddress(String address) {
+    personalElectrumAddress = address;
+    notifyListeners();
+    store();
+  }
+
   bool usingTor = false;
 
   bool torEnabled() {
     return usingTor;
   }
 
-  setTorEnabled(bool torEnabled) {
+  void setTorEnabled(bool torEnabled) {
     usingTor = torEnabled;
     if (torEnabled) {
       Tor.instance.enable();
@@ -257,7 +287,7 @@ class Settings extends ChangeNotifier {
     syncToCloudSetting = syncToCloud;
   }
 
-  setSyncToCloud(bool syncToCloud) {
+  void setSyncToCloud(bool syncToCloud) {
     syncToCloudSetting = syncToCloud;
     store();
     notifyListeners();
@@ -270,7 +300,7 @@ class Settings extends ChangeNotifier {
     return allowScreenshotsSetting;
   }
 
-  setAllowScreenshots(bool allowScreenshots) {
+  void setAllowScreenshots(bool allowScreenshots) {
     allowScreenshotsSetting = allowScreenshots;
     store();
   }
@@ -282,7 +312,7 @@ class Settings extends ChangeNotifier {
     return showTestnetAccountsSetting;
   }
 
-  setShowTestnetAccounts(bool showTestnetAccounts) {
+  void setShowTestnetAccounts(bool showTestnetAccounts) {
     showTestnetAccountsSetting = showTestnetAccounts;
     notifyListeners();
     store();
@@ -295,7 +325,7 @@ class Settings extends ChangeNotifier {
     return showSignetAccountsSetting;
   }
 
-  setShowSignetAccounts(bool showSignetAccounts) async {
+  Future<void> setShowSignetAccounts(bool showSignetAccounts) async {
     showSignetAccountsSetting = showSignetAccounts;
 
     // if a other hot wallet exists and no signet then add one
@@ -317,7 +347,7 @@ class Settings extends ChangeNotifier {
     return enableTaprootSetting;
   }
 
-  setTaprootEnabled(bool taprootEnabled) async {
+  Future<void> setTaprootEnabled(bool taprootEnabled) async {
     enableTaprootSetting = taprootEnabled;
 
     // If wpkh is derived but no taproot then do it
@@ -341,15 +371,20 @@ class Settings extends ChangeNotifier {
     return allowBuyInEnvoy;
   }
 
-  setAllowBuyInEnvoy(bool allowBuy) async {
+  Future<void> setAllowBuyInEnvoy(bool allowBuy) async {
     allowBuyInEnvoy = allowBuy;
 
     notifyListeners();
     store();
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool nodeChangedInAdvanced = false;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool torChangedInAdvanced = false;
+
   // ENV-989: Trigger settings to show all restored accounts.
-  updateAccountsViewSettings() {
+  void updateAccountsViewSettings() {
     setShowTestnetAccounts(showTestnetAccountsSetting);
     setTaprootEnabled(enableTaprootSetting);
     setShowSignetAccounts(showSignetAccountsSetting);
@@ -387,20 +422,29 @@ class Settings extends ChangeNotifier {
     return "USD";
   }
 
-  static restore({bool fromBackup = false}) {
+  static Future<void> restore({bool fromBackup = false}) async {
     if (ls.prefs.containsKey(SETTINGS_PREFS)) {
       var json = jsonDecode(ls.prefs.getString(SETTINGS_PREFS)!);
+
       if (fromBackup) {
-        json["usingTor"] = Settings().usingTor;
+        if (Settings().nodeChangedInAdvanced ||
+            Settings().torChangedInAdvanced) {
+          json["usingTor"] = Settings().usingTor;
+          json["usingDefaultElectrumServer"] =
+              Settings().usingDefaultElectrumServer;
+          json["selectedElectrumAddress"] = Settings().selectedElectrumAddress;
+          json["personalElectrumAddress"] = Settings().personalElectrumAddress;
+        }
       }
       Settings.fromJson(json);
     }
-    Settings.init();
+
+    await Settings.init();
   }
 
-  store() {
+  Future store() async {
     String json = jsonEncode(this);
-    ls.prefs.setString(SETTINGS_PREFS, json);
+    await ls.prefs.setString(SETTINGS_PREFS, json);
   }
 
 // Generated

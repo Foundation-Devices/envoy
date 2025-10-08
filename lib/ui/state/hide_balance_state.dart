@@ -36,7 +36,7 @@ class HideStateNotifier extends ChangeNotifier {
     });
   }
 
-  setHideState(bool hide, EnvoyAccount account) {
+  void setHideState(bool hide, EnvoyAccount account) {
     if (hide) {
       amountHiddenAccounts.add(account.id);
 

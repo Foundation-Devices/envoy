@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/state/send_screen_state.dart';
+import 'package:envoy/ui/state/send_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,9 +49,8 @@ class AmountDisplay extends ConsumerStatefulWidget {
 
 class _AmountDisplayState extends ConsumerState<AmountDisplay> {
   void nextUnit() {
-    var unit = ref.read(sendScreenUnitProvider);
-
-    int currentIndex = unit.index;
+    var currentUnit = ref.read(sendUnitProvider);
+    int currentIndex = currentUnit.index;
     int length = AmountDisplayUnit.values.length;
 
     // Fiat is always at the end of enum
@@ -60,19 +59,20 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
       length--;
     }
 
+    AmountDisplayUnit nextUnit;
     if (currentIndex < length - 1) {
-      ref.read(sendScreenUnitProvider.notifier).state =
-          AmountDisplayUnit.values[currentIndex + 1];
+      nextUnit = AmountDisplayUnit.values[currentIndex + 1];
+    } else {
+      nextUnit = AmountDisplayUnit.values[0];
     }
-    if (currentIndex >= length - 1) {
-      ref.read(sendScreenUnitProvider.notifier).state =
-          AmountDisplayUnit.values[0];
-    }
+
+    ref.read(sendUnitProvider.notifier).state = nextUnit;
+    Settings().setSendUnit(nextUnit);
   }
 
   @override
   void initState() {
-    widget.setDisplayAmount(ref.read(sendScreenUnitProvider));
+    widget.setDisplayAmount(ref.read(sendUnitProvider));
 
     super.initState();
   }
@@ -86,7 +86,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
     double baseFontScale = 1;
     double textScaleFactor = textScaler.scale(baseFontScale);
 
-    ref.listen(sendScreenUnitProvider, (_, AmountDisplayUnit next) {
+    ref.listen(sendUnitProvider, (_, AmountDisplayUnit next) {
       widget.setDisplayAmount(next);
 
       if (widget.onUnitToggled != null) {
@@ -94,7 +94,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
       }
     });
 
-    var unit = ref.watch(sendScreenUnitProvider);
+    var unit = ref.read(sendUnitProvider);
 
     bool renderGhostZeros = unit == AmountDisplayUnit.fiat &&
         widget.displayedAmount.contains(fiatDecimalSeparator);

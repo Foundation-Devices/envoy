@@ -13,11 +13,9 @@ import 'package:ramp_flutter/offramp_sale.dart';
 import 'package:ramp_flutter/onramp_purchase.dart';
 import 'package:ramp_flutter/ramp_flutter.dart';
 import 'package:ramp_flutter/send_crypto_payload.dart';
-import 'package:tor/tor.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/home/cards/purchase_completed.dart';
 import 'package:envoy/ui/shield.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class RampWidget {
@@ -75,8 +73,9 @@ class RampWidget {
         TransactionType.ramp, amount, 0, address,
         purchaseViewToken: purchaseViewToken,
         rampId: purchase.id,
-        rampFee: rampFee);
-    EnvoyStorage().addTxNote(note: S().ramp_note, key: txID);
+        rampFee: rampFee,
+        note: S().ramp_note);
+
     if (context.mounted) {
       Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(builder: (context) {
@@ -104,7 +103,7 @@ class RampWidget {
 }
 
 Future<String?> checkPurchase(String id, String purchaseViewToken) async {
-  var response = await HttpTor(Tor.instance, EnvoyScheduler().parallel).get(
+  var response = await HttpTor().get(
     "https://api.ramp.network/api/host-api/purchase/$id?secret=$purchaseViewToken",
   );
   var data = jsonDecode(response.body);

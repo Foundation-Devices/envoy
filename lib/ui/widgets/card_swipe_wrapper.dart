@@ -6,8 +6,8 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/haptics.dart';
-import 'package:flutter/physics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
 
@@ -58,11 +58,7 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
     final unitsPerSecond = Offset(unitsPerSecondX, unitsPerSecondY);
     final unitVelocity = unitsPerSecond.distance;
 
-    const spring = SpringDescription(
-      mass: 30,
-      stiffness: 12,
-      damping: 1,
-    );
+    const spring = SpringDescription(mass: 1, stiffness: 225.3, damping: 30);
 
     final simulation = SpringSimulation(spring, 0, 1, -unitVelocity);
 

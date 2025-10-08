@@ -5,16 +5,22 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 set -e
 
-# maybe check for fvm based flutter installation ?
-FLUTTER="flutter"
+# Check for fvm based flutter installation
+if command -v fvm &> /dev/null; then
+    FLUTTER="fvm flutter"
+    echo "FVM detected, using fvm flutter"
+else
+    FLUTTER="flutter"
+fi
 
-echo  "using flutter $FLUTTER"
+echo "using flutter $FLUTTER"
 # Define packages that need FRB generation
 PACKAGES=(
     "packages/foundation_api"
     "packages/ngwallet"
     "packages/bluart"
     "packages/shards"
+    "packages/http_tor"
 )
 
 for PACKAGE_DIR in "${PACKAGES[@]}"; do
@@ -22,7 +28,11 @@ for PACKAGE_DIR in "${PACKAGES[@]}"; do
 
     cd "$PACKAGE_DIR"
     # get pub packages
-    "$FLUTTER" pub get
+    if command -v fvm &> /dev/null; then
+        fvm flutter pub get
+    else
+        flutter pub get
+    fi
 
     echo "Removing old generated files..."
     rm -f rust/frb_generated.rs
@@ -38,7 +48,13 @@ for PACKAGE_DIR in "${PACKAGES[@]}"; do
     # if pubspec.yaml contains build_runner, run build_runner
     if [ -f "pubspec.yaml" ] && grep -E "^\s*build_runner:" pubspec.yaml; then
          echo "Running build_runner..."
-        "$FLUTTER" pub run build_runner build --delete-conflicting-outputs
+        if command -v fvm &> /dev/null; then
+            fvm flutter pub run build_runner build --delete-conflicting-outputs
+            fvm dart format .
+        else
+            flutter pub run build_runner build --delete-conflicting-outputs
+            dart format .
+        fi
     fi
 
     echo "Formatting generated files..."

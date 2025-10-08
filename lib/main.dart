@@ -3,6 +3,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
+
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
@@ -33,6 +35,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http_tor/http_tor.dart';
+import 'package:rive/rive.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:tor/tor.dart';
 
@@ -80,7 +84,7 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   // kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
   //
   await LocalStorage.init();
-
+  unawaited(RiveFile.initialize());
   NgAccountManager.init();
 
   if (!(await MigrationManager().isMigrationRequired())) {
@@ -88,8 +92,7 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
     await NgAccountManager().restore();
   }
   await NTPUtil.init();
-  EnvoyScheduler.init();
-  await KeysManager.init();
+  await EnvoyScheduler.init();
   await Settings.restore();
   await ExchangeRate.init();
 
@@ -102,9 +105,11 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   }
 
   EnvoyReport().init();
-  Tor.init(enabled: Settings().torEnabled());
+  await Tor.init(enabled: Settings().torEnabled());
+  await HttpTor.init(Tor.instance, EnvoyScheduler().parallel);
   UpdatesManager.init();
   ScvServer.init();
+  await KeysManager.init();
   await EnvoySeed.init();
   await PrimeShard.init();
   await FMTCObjectBoxBackend().initialise();
@@ -129,8 +134,25 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   ConnectivityManager.init();
 }
 
-class EnvoyApp extends StatelessWidget {
+class EnvoyApp extends StatefulWidget {
   const EnvoyApp({super.key});
+
+  @override
+  State<EnvoyApp> createState() => _EnvoyAppState();
+}
+
+class _EnvoyAppState extends State<EnvoyApp> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(BluetoothManager());
+  }
+
+  @override
+  dispose() {
+    WidgetsBinding.instance.removeObserver(BluetoothManager());
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

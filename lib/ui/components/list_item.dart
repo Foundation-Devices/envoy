@@ -30,6 +30,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 
 class EnvoyListTile extends StatelessWidget {
   const EnvoyListTile({
@@ -195,11 +196,11 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
           } else {
             return Padding(
                 padding: EdgeInsets.only(
-                    bottom: s.displayFiat() == null ||
-                            (kDebugMode &&
-                                transactionAccount.network != Network.bitcoin)
-                        ? EnvoySpacing.medium2
-                        : 0),
+                    bottom: (s.displayFiat() != null &&
+                            (transactionAccount.network == Network.bitcoin ||
+                                kDebugMode))
+                        ? 6
+                        : EnvoySpacing.medium2),
                 child: FittedBox(
                   child: EnvoyAmount(
                     account: transactionAccount,
@@ -286,6 +287,8 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
       BuildContext context, EnvoyTransaction transaction) {
     final accountId = widget.notification.accountId;
     final account = NgAccountManager().getAccountById(accountId!);
+
+    ref.read(selectedAccountProvider.notifier).state = account;
 
     return TransactionsDetailsWidget(
       account: account!,

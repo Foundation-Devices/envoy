@@ -4,7 +4,7 @@
 
 import 'package:envoy/ui/widgets/scanner/decoders/pair_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class DeviceDecoder extends ScannerDecoder {
   final Function(String code) onScan;

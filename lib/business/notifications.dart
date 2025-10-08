@@ -17,10 +17,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
-import 'package:tor/tor.dart';
 import 'dart:convert';
 import 'package:envoy/business/account.dart';
-import 'package:envoy/business/scheduler.dart';
 
 part 'notifications.g.dart';
 
@@ -146,7 +144,7 @@ class Notifications {
     restoreNotifications();
   }
 
-  add(EnvoyNotification notification) {
+  void add(EnvoyNotification notification) {
     notifications.add(notification);
     _storeNotifications();
     unread++;
@@ -189,7 +187,7 @@ class Notifications {
   }
 
   // TODO: refactor this to monstrosity to use composable providers
-  _checkForNotificationsToAdd() async {
+  Future<void> _checkForNotificationsToAdd() async {
     bool newEnvoyVersionAvailable = false;
     if (!_githubVersionChecked) {
       newEnvoyVersionAvailable = await isThereNewEnvoyVersion();
@@ -223,7 +221,8 @@ class Notifications {
     }
 
     if (newEnvoyVersionAvailable) {
-      var latestEnvoyVersion = await fetchLatestEnvoyVersionFromGit();
+      final result = await fetchLatestEnvoyVersionFromGit();
+      String latestEnvoyVersion = result.version;
       bool skip = false;
       for (var notification in notifications) {
         if (notification.type == EnvoyNotificationType.envoyUpdate) {
@@ -235,7 +234,7 @@ class Notifications {
       if (!skip) {
         add(EnvoyNotification(
             "App Update", // TODO: FIGMA
-            DateTime.now(),
+            result.publishedAt,
             EnvoyNotificationType.envoyUpdate,
             latestEnvoyVersion,
             EnvoyNotificationType.envoyUpdate.name,
@@ -247,33 +246,33 @@ class Notifications {
     }
   }
 
-  deleteFromAccount(Account account) {
+  void deleteFromAccount(Account account) {
     notifications.removeWhere((element) => account.id == element.accountId);
     _storeNotifications();
     sync();
   }
 
-  getNotificationsStream() {
+  Stream<List<EnvoyNotification>> getNotificationsStream() {
     return streamController.stream;
   }
 
   //ignore:unused_element
-  _clearNotifications() {
+  void _clearNotifications() {
     _ls.prefs.remove(notificationPrefs);
   }
 
-  dispose() {
+  void dispose() {
     streamController.close();
   }
 
-  _storeNotifications() {
+  void _storeNotifications() {
     var jsonMap = {"notifications": notifications};
 
     String json = jsonEncode(jsonMap);
     _ls.prefs.setString(notificationPrefs, json);
   }
 
-  restoreNotifications() {
+  void restoreNotifications() {
     if (_syncTimer != null) {
       _syncTimer!.cancel();
     }
@@ -327,24 +326,26 @@ class Notifications {
         .any((account) => account.id == notification.accountId);
   }
 
-  _startPeriodicSync() {
+  void _startPeriodicSync() {
     // Sync periodically
     _syncTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
       _checkForNotificationsToAdd();
     });
   }
 
-  Future<String> fetchLatestEnvoyVersionFromGit() async {
-    HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+  Future<({String version, DateTime publishedAt})>
+      fetchLatestEnvoyVersionFromGit() async {
+    HttpTor http = HttpTor();
     final response = await http.get(
         'https://api.github.com/repos/Foundation-Devices/envoy/releases/latest',
         headers: {'User-Agent': 'request'});
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      if (data.containsKey('tag_name')) {
-        final version = data['tag_name'];
-        return version;
+      if (data.containsKey('tag_name') && data.containsKey('published_at')) {
+        final version = data['tag_name'] as String;
+        final publishedAt = DateTime.parse(data['published_at'] as String);
+        return (version: version, publishedAt: publishedAt);
       } else {
         EnvoyReport().log(
             "EnvoyGHVersionCheck", "Couldn't find tag_name in GitHub response");
@@ -364,7 +365,8 @@ class Notifications {
     String versionOnGitHub;
 
     try {
-      versionOnGitHub = await fetchLatestEnvoyVersionFromGit();
+      final result = await fetchLatestEnvoyVersionFromGit();
+      versionOnGitHub = result.version;
     } on Exception catch (_) {
       return false;
     }

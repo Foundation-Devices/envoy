@@ -333,6 +333,13 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
   bool _isDeleted = false;
 
   @override
+  void dispose() {
+    // Properly dispose Rive controller to free GPU resources
+    _stateMachineController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PopScope(
         canPop: !_deleteInProgress,
@@ -431,7 +438,7 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
         ));
   }
 
-  _onInit() async {
+  Future<void> _onInit() async {
     try {
       setState(() {
         _deleteInProgress = true;
@@ -574,7 +581,7 @@ class _AndroidBackupWarningState extends State<AndroidBackupWarning> {
                         Consumer(
                           builder: (context, ref, child) {
                             return OnboardingButton(
-                              type: EnvoyButtonTypes.tertiary,
+                              type: EnvoyButtonTypes.secondary,
                               label: S().component_skip,
                               onTap: () async {
                                 if (widget.skipSuccess) {

@@ -6,7 +6,6 @@ import 'dart:async';
 
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/node_url.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/text_field.dart';
@@ -17,8 +16,8 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_tor/http_tor.dart';
-import 'package:tor/tor.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:tor/tor.dart';
 
 enum ElectrumServerEntryState { pending, valid, invalid }
 
@@ -45,9 +44,13 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
   void initState() {
     super.initState();
     _controller.text = widget.getter();
+
     if (_controller.text.isNotEmpty) {
-      _onAddressChanged(_controller.text);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _onAddressChanged(_controller.text);
+      });
     }
+
     Future.delayed(Duration.zero).then((value) {
       if (ref.read(torEnabledProvider)) {
         updateControllerTextIfNeeded();
@@ -94,7 +97,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
     _updateTorEnabledStatus();
   }
 
-  onChange(String address) {
+  void onChange(String address) {
     widget.setter(address);
 
     if (address.isEmpty) {
@@ -147,7 +150,9 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
                     Navigator.pop(context);
                   },
                   decoder: GenericQrDecoder(onScan: (result) {
-                    Navigator.of(context, rootNavigator: true).pop();
+                    if (context.mounted) {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
                     var parsedUrl = parseNodeUrl(result);
                     _controller.text = parsedUrl;
                     _onAddressChanged(parsedUrl);
@@ -178,16 +183,14 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
     }
   }
 
-  void _checkElectrumServer(String address, {int retryCount = 0}) {
+  void _checkElectrumServer(String address) async {
     bool useTor = !Settings().onTorWhitelist(address);
-    int port = useTor ? Tor.instance.port : -1;
-    if (useTor && port == -1) {
-      if (retryCount <= 3) {
-        Future.delayed(const Duration(seconds: 1), () {
-          _checkElectrumServer(address, retryCount: retryCount + 1);
-        });
-      } else {
-        // Handle the case where the port is still -1 after retries
+    Tor tor = Tor.instance;
+
+    if (useTor && !tor.bootstrapped) {
+      try {
+        await tor.isReady();
+      } catch (_) {
         if (mounted) {
           setState(() {
             _state = ElectrumServerEntryState.invalid;
@@ -196,8 +199,9 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
           });
         }
         ConnectivityManager().electrumFailure();
+
+        return;
       }
-      return;
     }
 
     _tryGetServerFeatures(address, useTor);
@@ -259,8 +263,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
 
   Future<void> _checkEsploraServer(String address) async {
     try {
-      final response = await HttpTor(Tor.instance, EnvoyScheduler().parallel)
-          .get(('$address/blocks/tip/height'));
+      final response = await HttpTor().get(('$address/blocks/tip/height'));
       if (response.statusCode == 200) {
         final responseBody = response.body;
         final blockHeight = int.tryParse(responseBody);

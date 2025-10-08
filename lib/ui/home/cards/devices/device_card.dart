@@ -2,8 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
 import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
@@ -12,6 +14,7 @@ import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -19,8 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/components/pop_up.dart';
 
 //ignore: must_be_immutable
 class DeviceCard extends ConsumerStatefulWidget {
@@ -33,7 +34,7 @@ class DeviceCard extends ConsumerStatefulWidget {
 }
 
 class _DeviceCardState extends ConsumerState<DeviceCard> {
-  _redraw() {
+  void _redraw() {
     setState(() {});
   }
 
@@ -76,6 +77,8 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
   @override
   Widget build(BuildContext context) {
     final Locale activeLocale = Localizations.localeOf(context);
+    final isConnected =
+        ref.watch(isPrimeConnectedProvider(widget.device.bleId));
 
     return PopScope(
       canPop: !ref.watch(homePageOptionsVisibilityProvider),
@@ -114,6 +117,12 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
               child: Text(
                   "${S().manage_device_details_devicePaired} ${timeago.format(widget.device.datePaired, locale: activeLocale.languageCode)}"),
             ),
+            if (widget.device.type == DeviceType.passportPrime)
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0, left: 35.0),
+                child: Text(
+                    isConnected ? "Device connected" : "Device disconnected"),
+              ),
           ],
         ),
       ),

@@ -115,7 +115,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     }
   }
 
-  onNativeBackPressed(bool didPop) {
+  void onNativeBackPressed(bool didPop) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       String path = ref.read(routePathProvider);
       bool navigatingToRegion = ref.read(navigatingToEditRegionProvider);

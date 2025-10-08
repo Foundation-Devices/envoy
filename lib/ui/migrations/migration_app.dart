@@ -14,7 +14,6 @@ import 'package:envoy/ui/migrations/migration_manager.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/bug_report_helper.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -98,12 +97,7 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
         EnvoyReport().log("Migration", "Failed to restore accounts: $e",
             stackTrace: stack);
       }
-      await EnvoyStorage().setNoBackUpPreference(
-          MigrationManager.migrationCodePrefs,
-          MigrationManager.migrationVersionCode);
-      await EnvoyStorage().setNoBackUpPreference(
-          MigrationManager.migrationVersion,
-          MigrationManager.migrationVersionCode.toString());
+      await MigrationManager().setMigrationComplete();
       if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
         runApp(const AuthenticateApp());
       } else {

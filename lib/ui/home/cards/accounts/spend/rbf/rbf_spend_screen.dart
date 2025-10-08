@@ -439,7 +439,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
   /// if the newly created RBF tx has more inputs
   /// than the original tx, show a warning
-  _checkInputsChanged() async {
+  Future<void> _checkInputsChanged() async {
     EnvoyAccount? account = ref.read(selectedAccountProvider);
     RBFSpendState? rbfSpendState = ref.read(rbfSpendStateProvider);
     if (account == null || rbfSpendState == null) {
@@ -495,7 +495,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     }
   }
 
-  _boostTx(BuildContext context) async {
+  Future<void> _boostTx(BuildContext context) async {
     EnvoyAccount? account = ref.read(selectedAccountProvider);
     RBFSpendState? rbfSpendState = ref.read(rbfSpendStateProvider);
     if (account == null || rbfSpendState == null) {
@@ -769,7 +769,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
   //show edit coins screen,
   //if the user changed coin selection, recalculate the fee boundaries and rebuild the boosted tx
-  _editCoins(BuildContext context) async {
+  Future<void> _editCoins(BuildContext context) async {
     final selectedAccount = ref.read(selectedAccountProvider);
 
     final account = ref.read(selectedAccountProvider);
@@ -949,5 +949,11 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         },
         opaque: false,
         fullscreenDialog: true));
+  }
+
+  @override
+  void dispose() {
+    _stateMachineController?.dispose();
+    super.dispose();
   }
 }

@@ -4,7 +4,7 @@
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
@@ -13,17 +13,20 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/console.dart';
-import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
 
 class CreateCoinTag extends ConsumerStatefulWidget {
   final String accountId;
-  final Function onTagUpdate;
+  final List<Output> coins;
+  final Function(BuildContext context) onTagUpdate;
 
   const CreateCoinTag(
-      {super.key, required this.onTagUpdate, required this.accountId});
+      {super.key,
+      required this.onTagUpdate,
+      required this.accountId,
+      required this.coins});
 
   @override
   ConsumerState<CreateCoinTag> createState() => _CreateCoinTagState();
@@ -38,6 +41,8 @@ List<String> tagSuggestions = [
 ];
 
 class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -83,7 +88,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
   final TextEditingController _tagController = TextEditingController();
   String value = '';
 
-  _tagWidget(BuildContext context) {
+  Consumer _tagWidget(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
         final tags = ref.watch(tagsProvider(widget.accountId)).toList()
@@ -220,16 +225,13 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
               ),
             ),
             EnvoyButton(
-              S().component_continue,
-              enabled: _tagController.text.isNotEmpty,
-              textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: _tagController.text.isNotEmpty
-                        ? EnvoyColors.textPrimaryInverse
-                        : EnvoyColors.textTertiary,
-                  ),
-              type: _tagController.text.isNotEmpty
-                  ? EnvoyButtonTypes.primaryModal
-                  : EnvoyButtonTypes.tertiary,
+              label: S().component_continue,
+              type: ButtonType.primary,
+              state: _isLoading
+                  ? ButtonState.loading
+                  : _tagController.text.trim().isEmpty
+                      ? ButtonState.disabled
+                      : ButtonState.defaultState,
               onTap: () => tagSelected(context, ref),
             ),
           ],
@@ -244,19 +246,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
       if (selectedAccount == null) {
         return;
       }
-      List<Output> coins = [];
-      ref
-          .read(tagsProvider(widget.accountId))
-          .map((e) => e.utxo)
-          .forEach((element) {
-        coins.addAll(element);
-      });
-      final selections = ref.read(coinSelectionStateProvider);
-      //pick all the coins that are selected in current tag
-      final selectedCoins = coins
-          .where((element) => selections.contains(element.getId()))
-          .map((element) => element.getId())
-          .toList();
+
       String tag = _tagController.text;
 
       if (tag.toLowerCase().trim().isEmpty) {
@@ -267,18 +257,22 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
           tag.toLowerCase().trim() == "untagged") {
         tag = "";
       }
-      await selectedAccount.handler
-          ?.setTagMultiple(utxo: selectedCoins, tag: tag);
-      //Reset the selection
-      Haptics.lightImpact();
+      setState(() {
+        _isLoading = true;
+      });
+      await selectedAccount.handler?.setTags(utxos: widget.coins, tag: tag);
     } catch (e) {
       kPrint(e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
-    widget.onTagUpdate();
+    if (context.mounted) widget.onTagUpdate(context);
   }
 }
 
-Widget tagItem(context, String item, Function() onTap) {
+Widget tagItem(BuildContext context, String item, Function() onTap) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 4),
     child: InkWell(

@@ -87,9 +87,14 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
           child: FutureBuilder(
               future: AllowedRegions.checkBuyDisabled(),
               builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const SizedBox.shrink();
+                }
                 bool countryRestricted =
                     snapshot.data != null && snapshot.data!;
-                bool disabled = mainNetAccounts.isEmpty;
+                //if there are no mainnet accounts or the future is still loading, disable the button
+                bool disabled = mainNetAccounts.isEmpty ||
+                    snapshot.connectionState == ConnectionState.waiting;
 
                 if (countryRestricted || !allowBuyInEnvoy) {
                   return const SizedBox.shrink();
@@ -217,7 +222,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
         }
       });
 
-      NgAccountManager().updateAccountOrder(_accountsOrder);
+      Future.microtask(
+          () => NgAccountManager().updateAccountOrder(_accountsOrder));
 
       if (previous!.length < next.length) {
         if (_scrollController.hasClients) {
@@ -301,7 +307,9 @@ class _AccountsListState extends ConsumerState<AccountsList> {
               }
             }
             _accountsOrder = toReorder;
-            NgAccountManager().updateAccountOrder(toReorder);
+
+            Future.microtask(
+                () => NgAccountManager().updateAccountOrder(toReorder));
           });
           await EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
         },

@@ -79,16 +79,16 @@ class CustomCheckBoxState extends State<CustomCheckBox> {
 //ignore: must_be_immutable
 class DialogCheckBox extends StatefulWidget {
   final String label;
-  bool isChecked;
+  final bool isChecked;
   final bool isRadio;
-  final ValueChanged<bool?>? onChanged;
+  final ValueChanged<bool?> onChanged;
 
-  DialogCheckBox({
+  const DialogCheckBox({
     super.key,
     required this.label,
     required this.isChecked,
     this.isRadio = false,
-    this.onChanged,
+    required this.onChanged,
   });
 
   @override
@@ -96,19 +96,31 @@ class DialogCheckBox extends StatefulWidget {
 }
 
 class DialogCheckBoxState extends State<DialogCheckBox> {
+  late bool isChecked = widget.isChecked;
+
+  @override
+  void didUpdateWidget(covariant DialogCheckBox oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isChecked != widget.isChecked) {
+      setState(() {
+        isChecked = widget.isChecked;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              widget.isChecked = !widget.isChecked;
-            });
-            widget.onChanged!(!widget.isChecked);
-          },
-          child: Container(
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          isChecked = !isChecked;
+        });
+        widget.onChanged.call(isChecked);
+      },
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
             width: EnvoySpacing.medium2,
             height: EnvoySpacing.medium2,
             decoration: BoxDecoration(
@@ -133,17 +145,17 @@ class DialogCheckBoxState extends State<DialogCheckBox> {
                   )
                 : null,
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
-          child: Text(
-            widget.label,
-            style: EnvoyTypography.info.copyWith(
-              color: EnvoyColors.textSecondary,
+          Padding(
+            padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
+            child: Text(
+              widget.label,
+              style: EnvoyTypography.info.copyWith(
+                color: EnvoyColors.textSecondary,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

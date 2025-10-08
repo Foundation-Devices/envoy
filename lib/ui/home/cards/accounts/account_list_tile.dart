@@ -57,7 +57,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
     super.dispose();
   }
 
-  _redraw() {
+  void _redraw() {
     setState(() {});
   }
 
@@ -325,7 +325,7 @@ class BadgeIcon extends StatelessWidget {
         "assets/icons/ic_wallet_coins.svg",
         height: 24,
         width: 24,
-        color: Colors.white,
+        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
       );
     }
     if (account.deviceSerial == "prime") {
@@ -333,7 +333,7 @@ class BadgeIcon extends StatelessWidget {
         "assets/icons/ic_wallet_coins.svg",
         height: 24,
         width: 24,
-        color: Colors.white,
+        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
       );
     }
     if (!account.isHot) {
@@ -341,14 +341,14 @@ class BadgeIcon extends StatelessWidget {
         "assets/icons/ic_passport_account.svg",
         height: 24,
         width: 24,
-        color: Colors.white,
+        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
       );
     }
     return SvgPicture.asset(
       "assets/icons/bitcoin.svg",
       height: 20,
       width: 20,
-      color: Colors.white,
+      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
     );
   }
 }

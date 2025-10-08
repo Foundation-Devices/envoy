@@ -59,6 +59,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
   @override
   void initState() {
     super.initState();
+    //load rive animation with cache to avoid repeated allocations
+    _loadRiveAnimation();
+  }
+
+  void _loadRiveAnimation() async {
     //load rive animation for better performance
     rootBundle.load('assets/envoy_loader.riv').then((data) {
       final file = rive.RiveFile.import(data);
@@ -68,7 +73,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
       if (_stateMachineController != null) {
         artboard.addController(_stateMachineController!);
       }
-      setState(() => _artBoard = artboard);
+      if (mounted) {
+        setState(() => _artBoard = artboard);
+      }
     });
   }
 
@@ -125,10 +132,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
   @override
   dispose() {
     _passportMessageSubscription?.cancel();
+    _stateMachineController?.dispose();
     super.dispose();
   }
 
-  _handleQRExchange(EnvoyAccount account, BuildContext rootContext,
+  Future<void> _handleQRExchange(EnvoyAccount account, BuildContext rootContext,
       ProviderContainer providerScope) async {
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
     Uint8List? psbt = transactionModel.draftTransaction?.psbt;
@@ -247,7 +255,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
       }
     }
     if (context.mounted) {
-      await _showNotesDialog(context);
+      //for non hot wallets,note dialog already before finalizing the tx
+      await _showNotesDialog(context, account);
+
       if (account.isHot) {
         ref
             .read(spendTransactionProvider.notifier)
@@ -402,6 +412,12 @@ class _TxReviewState extends ConsumerState<TxReview> {
   Future<bool> _showTagDialog(BuildContext context, EnvoyAccount account,
       BuildContext rootContext, TransactionModel transactionModel) async {
     final completer = Completer<bool>();
+    if (!account.isHot && transactionModel.isFinalized) {
+      //tags already added before finalizing the tx
+
+      completer.complete(true);
+      return completer.future;
+    }
     await showEnvoyDialog(
         useRootNavigator: true,
         context: context,
@@ -410,7 +426,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
             accountId: account.id,
             onEditTransaction: () {
               Navigator.pop(context);
-              completer.complete(true);
+              //exit broadcast flow and move to review screen
+              completer.complete(false);
               editTransaction(context, ref);
             },
             hasMultipleTagsInput: true,
@@ -430,9 +447,14 @@ class _TxReviewState extends ConsumerState<TxReview> {
     return completer.future;
   }
 
-  Future _showNotesDialog(BuildContext context) async {
+  Future _showNotesDialog(BuildContext context, EnvoyAccount account) async {
     final completer = Completer();
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
+    if (!account.isHot && transactionModel.isFinalized) {
+      //notes already added before finalizing the tx
+      completer.complete();
+      return completer.future;
+    }
     final notes = ref.read(stagingTxNoteProvider) ?? "";
     final notesParam = transactionModel.transactionParams?.note ?? "";
     if (notesParam.isEmpty && notes.isEmpty) {
@@ -482,7 +504,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
     }
   }
 
-  _setAnimState(BroadcastProgress progress) {
+  void _setAnimState(BroadcastProgress progress) {
     bool happy = progress == BroadcastProgress.success;
     bool unhappy = progress == BroadcastProgress.failed;
     bool indeterminate = progress == BroadcastProgress.inProgress;

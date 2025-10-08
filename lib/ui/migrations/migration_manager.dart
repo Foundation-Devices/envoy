@@ -104,7 +104,7 @@ class MigrationManager {
   Stream<MigrationProgress> get migrationProgress =>
       _streamController.stream.asBroadcastStream();
 
-  dispose() {
+  void dispose() {
     _streamController.close();
   }
 
@@ -150,7 +150,7 @@ class MigrationManager {
     }
   }
 
-  //2.0
+  //2.0.0
   Future migrateToV2() async {
     final newWalletDirectory = NgAccountManager.walletsDirectory;
     //clean directory for new wallets
@@ -211,7 +211,7 @@ class MigrationManager {
     }
   }
 
-  //2.2
+  //2.0.2
   //move accounts with same fingerprint to new directory
   //the directory name will be {deviceSerial}_{network}_{xfp}_acc_{index}
   Future mergeWithFingerPrint() async {
@@ -453,7 +453,7 @@ class MigrationManager {
       if (legacyAccount.wallet.network.toLowerCase() == "testnet") {
         if (showTestnet) {
           LocalStorage().prefs.setBool(migratedToTestnet4, true);
-          await Settings().setShowTestnetAccounts(false);
+          Settings().setShowTestnetAccounts(false);
         }
         network = Network.testnet4;
       } else if (legacyAccount.wallet.network.toLowerCase() == "signet") {
@@ -1003,6 +1003,15 @@ class MigrationManager {
   //this currently is only used in migration
   Directory _getCurrentWalletPath(EnvoyAccountHandler handler) {
     return Directory(handler.getDirectoryPath());
+  }
+
+  Future setMigrationComplete() async {
+    await EnvoyStorage().setNoBackUpPreference(
+        MigrationManager.migrationCodePrefs,
+        MigrationManager.migrationVersionCode);
+    await EnvoyStorage().setNoBackUpPreference(
+        MigrationManager.migrationVersion,
+        MigrationManager.migrationVersionCode.toString());
   }
 
   Future resetMigrationPrefs() async {

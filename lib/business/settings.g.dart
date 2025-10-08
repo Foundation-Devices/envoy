@@ -7,14 +7,16 @@ part of 'settings.dart';
 // **************************************************************************
 
 Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
+  ..personalElectrumAddress = json['personalElectrumAddress'] as String? ?? ''
   ..displayUnit = $enumDecode(_$DisplayUnitEnumMap, json['displayUnit'])
   ..selectedFiat = json['selectedFiat'] as String?
+  ..sendUnit = $enumDecodeNullable(_$AmountDisplayUnitEnumMap, json['sendUnit'])
   ..environment = $enumDecode(_$EnvironmentEnumMap, json['environment'])
   ..selectedElectrumAddress = json['selectedElectrumAddress'] as String
   ..usingDefaultElectrumServer =
       json['usingDefaultElectrumServer'] as bool? ?? true
   ..usingTor = json['usingTor'] as bool
-  ..syncToCloudSetting = json['syncToCloudSetting'] as bool? ?? false
+  ..syncToCloudSetting = json['syncToCloudSetting'] as bool? ?? true
   ..allowScreenshotsSetting = json['allowScreenshotsSetting'] as bool? ?? false
   ..showTestnetAccountsSetting =
       json['showTestnetAccountsSetting'] as bool? ?? false
@@ -24,8 +26,11 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
   ..allowBuyInEnvoy = json['allowBuyInEnvoy'] as bool? ?? true;
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
+      'personalElectrumAddress': instance.personalElectrumAddress,
       'displayUnit': _$DisplayUnitEnumMap[instance.displayUnit]!,
       'selectedFiat': instance.selectedFiat,
+      if (_$AmountDisplayUnitEnumMap[instance.sendUnit] case final value?)
+        'sendUnit': value,
       'environment': _$EnvironmentEnumMap[instance.environment]!,
       'selectedElectrumAddress': instance.selectedElectrumAddress,
       'usingDefaultElectrumServer': instance.usingDefaultElectrumServer,
@@ -41,6 +46,12 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
 const _$DisplayUnitEnumMap = {
   DisplayUnit.btc: 'btc',
   DisplayUnit.sat: 'sat',
+};
+
+const _$AmountDisplayUnitEnumMap = {
+  AmountDisplayUnit.btc: 'btc',
+  AmountDisplayUnit.sat: 'sat',
+  AmountDisplayUnit.fiat: 'fiat',
 };
 
 const _$EnvironmentEnumMap = {

@@ -6,8 +6,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:tor/tor.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'dart:async';
 
 enum AztecoVoucherRedeemResult {
@@ -52,7 +50,7 @@ class AztecoVoucher {
   Future<AztecoVoucherRedeemResult> redeem(String address) async {
     String url = getRedeemUrl(address);
 
-    HttpTor http = HttpTor(Tor.instance, EnvoyScheduler().parallel);
+    HttpTor http = HttpTor();
 
     Response? response;
 
@@ -87,6 +85,6 @@ class AztecoVoucher {
 
 void addPendingTx(String address, EnvoyAccount account) {
   EnvoyStorage().addPendingTx(address, account.id, DateTime.now(),
-      TransactionType.azteco, 0, 0, address);
-  EnvoyStorage().addTxNote(note: S().azteco_note, key: address);
+      TransactionType.azteco, 0, 0, address,
+      note: S().azteco_note);
 }

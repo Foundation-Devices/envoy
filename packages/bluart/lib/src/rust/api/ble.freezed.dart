@@ -16,25 +16,26 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$Event {
+  Object get field0 => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(List<BleDevice> field0) scanResult,
-    required TResult Function() deviceDisconnected,
-    required TResult Function() deviceConnected,
+    required TResult Function(BleDevice field0) deviceDisconnected,
+    required TResult Function(BleDevice field0) deviceConnected,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<BleDevice> field0)? scanResult,
-    TResult? Function()? deviceDisconnected,
-    TResult? Function()? deviceConnected,
+    TResult? Function(BleDevice field0)? deviceDisconnected,
+    TResult? Function(BleDevice field0)? deviceConnected,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<BleDevice> field0)? scanResult,
-    TResult Function()? deviceDisconnected,
-    TResult Function()? deviceConnected,
+    TResult Function(BleDevice field0)? deviceDisconnected,
+    TResult Function(BleDevice field0)? deviceConnected,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -161,8 +162,8 @@ class _$Event_ScanResultImpl extends Event_ScanResult {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(List<BleDevice> field0) scanResult,
-    required TResult Function() deviceDisconnected,
-    required TResult Function() deviceConnected,
+    required TResult Function(BleDevice field0) deviceDisconnected,
+    required TResult Function(BleDevice field0) deviceConnected,
   }) {
     return scanResult(field0);
   }
@@ -171,8 +172,8 @@ class _$Event_ScanResultImpl extends Event_ScanResult {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<BleDevice> field0)? scanResult,
-    TResult? Function()? deviceDisconnected,
-    TResult? Function()? deviceConnected,
+    TResult? Function(BleDevice field0)? deviceDisconnected,
+    TResult? Function(BleDevice field0)? deviceConnected,
   }) {
     return scanResult?.call(field0);
   }
@@ -181,8 +182,8 @@ class _$Event_ScanResultImpl extends Event_ScanResult {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<BleDevice> field0)? scanResult,
-    TResult Function()? deviceDisconnected,
-    TResult Function()? deviceConnected,
+    TResult Function(BleDevice field0)? deviceDisconnected,
+    TResult Function(BleDevice field0)? deviceConnected,
     required TResult orElse(),
   }) {
     if (scanResult != null) {
@@ -232,6 +233,7 @@ abstract class Event_ScanResult extends Event {
       _$Event_ScanResultImpl;
   const Event_ScanResult._() : super._();
 
+  @override
   List<BleDevice> get field0;
 
   /// Create a copy of Event
@@ -247,6 +249,8 @@ abstract class _$$Event_DeviceDisconnectedImplCopyWith<$Res> {
           _$Event_DeviceDisconnectedImpl value,
           $Res Function(_$Event_DeviceDisconnectedImpl) then) =
       __$$Event_DeviceDisconnectedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({BleDevice field0});
 }
 
 /// @nodoc
@@ -260,58 +264,83 @@ class __$$Event_DeviceDisconnectedImplCopyWithImpl<$Res>
 
   /// Create a copy of Event
   /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$Event_DeviceDisconnectedImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as BleDevice,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$Event_DeviceDisconnectedImpl extends Event_DeviceDisconnected {
-  const _$Event_DeviceDisconnectedImpl() : super._();
+  const _$Event_DeviceDisconnectedImpl(this.field0) : super._();
+
+  @override
+  final BleDevice field0;
 
   @override
   String toString() {
-    return 'Event.deviceDisconnected()';
+    return 'Event.deviceDisconnected(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$Event_DeviceDisconnectedImpl);
+            other is _$Event_DeviceDisconnectedImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of Event
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$Event_DeviceDisconnectedImplCopyWith<_$Event_DeviceDisconnectedImpl>
+      get copyWith => __$$Event_DeviceDisconnectedImplCopyWithImpl<
+          _$Event_DeviceDisconnectedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(List<BleDevice> field0) scanResult,
-    required TResult Function() deviceDisconnected,
-    required TResult Function() deviceConnected,
+    required TResult Function(BleDevice field0) deviceDisconnected,
+    required TResult Function(BleDevice field0) deviceConnected,
   }) {
-    return deviceDisconnected();
+    return deviceDisconnected(field0);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<BleDevice> field0)? scanResult,
-    TResult? Function()? deviceDisconnected,
-    TResult? Function()? deviceConnected,
+    TResult? Function(BleDevice field0)? deviceDisconnected,
+    TResult? Function(BleDevice field0)? deviceConnected,
   }) {
-    return deviceDisconnected?.call();
+    return deviceDisconnected?.call(field0);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<BleDevice> field0)? scanResult,
-    TResult Function()? deviceDisconnected,
-    TResult Function()? deviceConnected,
+    TResult Function(BleDevice field0)? deviceDisconnected,
+    TResult Function(BleDevice field0)? deviceConnected,
     required TResult orElse(),
   }) {
     if (deviceDisconnected != null) {
-      return deviceDisconnected();
+      return deviceDisconnected(field0);
     }
     return orElse();
   }
@@ -353,8 +382,18 @@ class _$Event_DeviceDisconnectedImpl extends Event_DeviceDisconnected {
 }
 
 abstract class Event_DeviceDisconnected extends Event {
-  const factory Event_DeviceDisconnected() = _$Event_DeviceDisconnectedImpl;
+  const factory Event_DeviceDisconnected(final BleDevice field0) =
+      _$Event_DeviceDisconnectedImpl;
   const Event_DeviceDisconnected._() : super._();
+
+  @override
+  BleDevice get field0;
+
+  /// Create a copy of Event
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$Event_DeviceDisconnectedImplCopyWith<_$Event_DeviceDisconnectedImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -363,6 +402,8 @@ abstract class _$$Event_DeviceConnectedImplCopyWith<$Res> {
           _$Event_DeviceConnectedImpl value,
           $Res Function(_$Event_DeviceConnectedImpl) then) =
       __$$Event_DeviceConnectedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({BleDevice field0});
 }
 
 /// @nodoc
@@ -375,58 +416,83 @@ class __$$Event_DeviceConnectedImplCopyWithImpl<$Res>
 
   /// Create a copy of Event
   /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$Event_DeviceConnectedImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as BleDevice,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$Event_DeviceConnectedImpl extends Event_DeviceConnected {
-  const _$Event_DeviceConnectedImpl() : super._();
+  const _$Event_DeviceConnectedImpl(this.field0) : super._();
+
+  @override
+  final BleDevice field0;
 
   @override
   String toString() {
-    return 'Event.deviceConnected()';
+    return 'Event.deviceConnected(field0: $field0)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$Event_DeviceConnectedImpl);
+            other is _$Event_DeviceConnectedImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of Event
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$Event_DeviceConnectedImplCopyWith<_$Event_DeviceConnectedImpl>
+      get copyWith => __$$Event_DeviceConnectedImplCopyWithImpl<
+          _$Event_DeviceConnectedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(List<BleDevice> field0) scanResult,
-    required TResult Function() deviceDisconnected,
-    required TResult Function() deviceConnected,
+    required TResult Function(BleDevice field0) deviceDisconnected,
+    required TResult Function(BleDevice field0) deviceConnected,
   }) {
-    return deviceConnected();
+    return deviceConnected(field0);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(List<BleDevice> field0)? scanResult,
-    TResult? Function()? deviceDisconnected,
-    TResult? Function()? deviceConnected,
+    TResult? Function(BleDevice field0)? deviceDisconnected,
+    TResult? Function(BleDevice field0)? deviceConnected,
   }) {
-    return deviceConnected?.call();
+    return deviceConnected?.call(field0);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(List<BleDevice> field0)? scanResult,
-    TResult Function()? deviceDisconnected,
-    TResult Function()? deviceConnected,
+    TResult Function(BleDevice field0)? deviceDisconnected,
+    TResult Function(BleDevice field0)? deviceConnected,
     required TResult orElse(),
   }) {
     if (deviceConnected != null) {
-      return deviceConnected();
+      return deviceConnected(field0);
     }
     return orElse();
   }
@@ -468,6 +534,16 @@ class _$Event_DeviceConnectedImpl extends Event_DeviceConnected {
 }
 
 abstract class Event_DeviceConnected extends Event {
-  const factory Event_DeviceConnected() = _$Event_DeviceConnectedImpl;
+  const factory Event_DeviceConnected(final BleDevice field0) =
+      _$Event_DeviceConnectedImpl;
   const Event_DeviceConnected._() : super._();
+
+  @override
+  BleDevice get field0;
+
+  /// Create a copy of Event
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$Event_DeviceConnectedImplCopyWith<_$Event_DeviceConnectedImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }

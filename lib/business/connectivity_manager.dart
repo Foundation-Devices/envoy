@@ -17,6 +17,7 @@ enum ConnectivityManagerEvent {
   electrumUnreachable,
   electrumReachable,
   foundationServerDown,
+  nguStatusChanged,
 }
 
 enum PublicServer {
@@ -53,7 +54,7 @@ class ConnectivityManager {
   int failedFoundationServerAttempts = 0;
 
   bool electrumConnected = true;
-  bool nguConnected = false;
+  bool nguConnected = true;
 
   DateTime? torTemporarilyDisabledTimeStamp;
 
@@ -99,34 +100,37 @@ class ConnectivityManager {
     events.close();
   }
 
-  electrumSuccess() {
+  void electrumSuccess() {
     failedFoundationServerAttempts = 0;
     electrumConnected = true;
     events.add(ConnectivityManagerEvent.electrumReachable);
     checkTor();
   }
 
-  electrumFailure() {
+  void electrumFailure() {
     electrumConnected = false;
     events.add(ConnectivityManagerEvent.electrumUnreachable);
     checkTor();
     checkFoundationServer();
   }
 
-  nguSuccess() {
+  void nguSuccess() {
     nguConnected = true;
+    events.add(ConnectivityManagerEvent.nguStatusChanged);
     checkTor();
   }
 
-  nguFailure() {
+  void nguFailure() {
     nguConnected = false;
+    events.add(ConnectivityManagerEvent.nguStatusChanged);
     checkTor();
   }
 
   void checkTor() {
-    if (torEnabled && !nguConnected && !electrumConnected) {
+    if (torEnabled && (!nguConnected || !electrumConnected)) {
       restartTor();
-      EnvoyReport().log("tor", "Both Electrum and NGU unreachable through Tor");
+      EnvoyReport().log("tor",
+          "Unreachable via Tor -> NGU: ${nguConnected ? 'ok' : 'fail'}, Electrum: ${electrumConnected ? 'ok' : 'fail'}");
       events.add(ConnectivityManagerEvent.torConnectedDoesntWork);
     }
   }
@@ -134,7 +138,7 @@ class ConnectivityManager {
   Future<void> checkFoundationServer() async {
     if (usingDefaultServer) {
       Response response = await FeedManager().getVimeoData();
-      if (response.code == 200) {
+      if (response.statusCode == 200) {
         failedFoundationServerAttempts++;
         if (failedFoundationServerAttempts >= 3) {
           events.add(ConnectivityManagerEvent.foundationServerDown);
@@ -145,7 +149,7 @@ class ConnectivityManager {
     }
   }
 
-  restartTor() {
+  void restartTor() {
     // ENV-175
     if (torEnabled) {
       Tor.instance.start();

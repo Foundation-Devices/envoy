@@ -57,21 +57,21 @@ final coinBlockStateStreamProvider =
 class CoinStateNotifier extends StateNotifier<Set<String>> {
   CoinStateNotifier(super.state);
 
-  add(String coinId) {
+  void add(String coinId) {
     //Creates new state from existing state,
     //this is required for state notifier to notify the state change
     final newState = {...state}..add(coinId);
     state = newState;
   }
 
-  addAll(List<String> coinIds) {
+  void addAll(List<String> coinIds) {
     //Creates new state from existing state,
     //this is required for state notifier to notify the state change
     final newState = {...state}..addAll(coinIds);
     state = newState;
   }
 
-  remove(String coinId) {
+  void remove(String coinId) {
     if (state.contains(coinId)) {
       final newState = {...state}..remove(coinId);
       state = newState;
@@ -125,7 +125,13 @@ final outputProvider = Provider.family<Output?, String>((ref, coinId) {
 final tagProvider = Provider.family<Tag?, String>((ref, name) {
   final selectedAccount = ref.watch(selectedAccountProvider);
   final tags = ref.watch(tagsProvider(selectedAccount?.id ?? ""));
-  return tags.firstWhereOrNull((element) => element.name.toLowerCase() == name);
+  return tags.firstWhereOrNull((element) {
+    if (element.untagged) {
+      return name.toLowerCase() ==
+          S().account_details_untagged_card.toLowerCase();
+    }
+    return element.name.toLowerCase() == name.toLowerCase();
+  });
 });
 
 /// Provider for watching a list of [Tag] objects that belongs to a specific account

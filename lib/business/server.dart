@@ -3,21 +3,23 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
+
 import 'package:envoy/business/settings.dart';
-import 'package:envoy/ui/home/home_page.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:flutter/services.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
-import 'package:tor/tor.dart';
-import 'package:envoy/business/scheduler.dart';
+
+typedef PatchBinary = ({Uint8List binary, PrimePatch patch});
 
 class Server {
   HttpTor? http;
   final String _serverAddress = Settings().envoyServerAddress;
 
   Server({this.http}) {
-    http ??= HttpTor(Tor.instance, EnvoyScheduler().parallel);
+    http ??= HttpTor();
   }
 
   Future<FirmwareUpdate> fetchFirmwareUpdateInfo(int deviceId) async {
@@ -32,6 +34,51 @@ class Server {
     }
   }
 
+  Future<List<PrimePatch>> fetchPrimePatches(String currentVersion) async {
+    final staticPatch = PrimePatch(
+      version: "1.0.0",
+      baseVersion: currentVersion,
+      signedSha256: "static_signed_hash",
+      unsignedSha256: "static_unsigned_hash",
+      updateFilename: "release-bin.tar",
+      signatureFilename: "release-bin.sig",
+      url: "assets/prime/release-bin.tar",
+      changelog: "Static firmware update from assets",
+      description: "Embedded release-bin.tar firmware binary",
+      releaseDate: DateTime.now(),
+    );
+
+    return [staticPatch];
+  }
+
+  Future<Uint8List> fetchPrimePatchBinary(PrimePatch patch) async {
+    final ByteData data = await rootBundle.load("assets/prime/release.tar");
+    return data.buffer.asUint8List();
+  }
+
+  Future<List<PatchBinary>> fetchPrimePatchBinaries(
+      String currentVersion) async {
+    List<PatchBinary> result = [];
+
+    try {
+      final patches = await fetchPrimePatches(currentVersion);
+      for (final patch in patches) {
+        final response = await http!.get(patch.url);
+        if (response.statusCode == 200) {
+          PatchBinary patchBinary =
+              (binary: Uint8List.fromList(response.bodyBytes), patch: patch);
+          result.add(patchBinary);
+        } else {
+          throw Exception('Failed to fetch prime patch');
+        }
+      }
+    } catch (e) {
+      kPrint("Error fetching prime patches: $e");
+    }
+
+    return result;
+  }
+
   Future<ApiKeys> fetchApiKeys() async {
     final response = await http!.get('$_serverAddress/keys');
 
@@ -42,7 +89,7 @@ class Server {
     }
   }
 
-  Future<void> checkForForceUpdate() async {
+  Future<bool> checkForForceUpdate() async {
     try {
       // Fetch deprecated versions from the backend
       final response = await http!.get('$_serverAddress/deprecated-versions');
@@ -61,15 +108,59 @@ class Server {
           return envoyVersionOnPhone == deprecatedVersion;
         });
 
-        if (isDeprecated) {
-          isCurrentVersionDeprecated.add(true);
-        }
+        return isDeprecated;
       } else {
-        throw Exception('Failed to fetch deprecated versions');
+        throw Exception(
+            'Failed to fetch deprecated versions,server error ${response.statusCode}');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      EnvoyReport().log("UpdateCheck", "Error checking envoy update: $e",
+          stackTrace: stackTrace);
       kPrint("Error checking for force update: $e");
+      return false;
     }
+  }
+}
+
+class PrimePatch {
+  final String version;
+  final String baseVersion;
+  final String signedSha256;
+  final String unsignedSha256;
+  final String updateFilename;
+  final String signatureFilename;
+  final String url;
+  final String changelog;
+  final String description;
+  final DateTime releaseDate;
+
+  PrimePatch({
+    required this.version,
+    required this.baseVersion,
+    required this.signedSha256,
+    required this.unsignedSha256,
+    required this.updateFilename,
+    required this.signatureFilename,
+    required this.url,
+    required this.changelog,
+    required this.description,
+    required this.releaseDate,
+  });
+
+  factory PrimePatch.fromJson(Map<String, dynamic> json) {
+    return PrimePatch(
+        version: json['version'],
+        baseVersion: json['base_version'],
+        signedSha256: json['signed_sha256'],
+        unsignedSha256: json['unsigned_sha256'],
+        updateFilename: json['update_filename'],
+        signatureFilename: json['signature_filename'],
+        url: json['url'],
+        changelog: json['changelog'],
+        description: json['description'],
+        releaseDate: DateTime.parse(
+          (json['release_date']),
+        ));
   }
 }
 

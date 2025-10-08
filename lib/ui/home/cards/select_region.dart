@@ -129,7 +129,7 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
     return foundCountry;
   }
 
-  onNativeBackPressed(bool didPop) {
+  void onNativeBackPressed(bool didPop) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       String path = ref.read(routePathProvider);
 
@@ -211,6 +211,8 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
                     height: EnvoySpacing.medium2,
                   ),
                   EnvoyDropdown(
+                    showCheckIcon: false,
+                    dropdownMaxHeight: 400,
                     initialIndex: _initialCountryIndex,
                     options: [
                       ...dropdownCountryOptions,
@@ -224,6 +226,8 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
                   ),
                   EnvoyDropdown(
                     key: dropdownDivisionKey,
+                    showCheckIcon: false,
+                    dropdownMaxHeight: 300,
                     initialIndex:
                         selectedRegion != null ? _initialRegionIndex + 1 : 0,
                     options: [

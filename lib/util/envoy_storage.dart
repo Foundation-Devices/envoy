@@ -173,6 +173,7 @@ class EnvoyStorage {
   //do not include in backup
   StoreRef<String, bool> accountFullsScanStateStore =
       StoreRef<String, bool>(accountFullsScanStateStoreName);
+
   //do not include in backup
   StoreRef<String, dynamic> noBackUpPrefsStore =
       StoreRef<String, dynamic>(noBackUpPrefsStoreName);
@@ -284,7 +285,7 @@ class EnvoyStorage {
   }
 
   // Preferences are stored in a cache for fast retrieval
-  _updatePreferencesCache(DatabaseClient db) async {
+  Future<void> _updatePreferencesCache(DatabaseClient db) async {
     final keys = await preferencesStore.findKeys(db);
 
     for (String key in keys) {
@@ -341,6 +342,7 @@ class EnvoyStorage {
     String? btcPayVoucherUri,
     String? rampId,
     int? rampFee,
+    String? note,
   }) async {
     await pendingTxStore.record(key).put(_db, {
       'account': accountId,
@@ -357,6 +359,7 @@ class EnvoyStorage {
       'btcPayVoucherUri': btcPayVoucherUri,
       'rampId': rampId,
       'rampFee': rampFee,
+      'note': note,
     });
     return true;
   }
@@ -403,34 +406,34 @@ class EnvoyStorage {
         }
         if (type == wallet.TransactionType.btcPay) {
           return BtcPayTransaction(
-            txId: e.key as String,
-            accountId: e["account"] as String,
-            vsize: BigInt.zero,
-            feeRate: BigInt.zero,
-            timestamp:
-                DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
-            fee: BigInt.from((e["fee"] as int? ?? 0)),
-            amount: 0,
-            address: e["address"] as String,
-            pullPaymentId: e['pullPaymentId'] as String?,
-            currency: e['currency'] as String?,
-            currencyAmount: e['currencyAmount'] as String?,
-            payoutId: e['payoutId'] as String?,
-            btcPayVoucherUri: e['btcPayVoucherUri'] as String?,
-          );
+              txId: e.key as String,
+              accountId: e["account"] as String,
+              vsize: BigInt.zero,
+              feeRate: BigInt.zero,
+              timestamp:
+                  DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
+              fee: BigInt.from((e["fee"] as int? ?? 0)),
+              amount: 0,
+              address: e["address"] as String,
+              pullPaymentId: e['pullPaymentId'] as String?,
+              currency: e['currency'] as String?,
+              currencyAmount: e['currencyAmount'] as String?,
+              payoutId: e['payoutId'] as String?,
+              btcPayVoucherUri: e['btcPayVoucherUri'] as String?,
+              note: e['note'] as String?);
         }
         if (type == wallet.TransactionType.azteco) {
           return AztecoTransaction(
-            txId: e.key as String,
-            amount: 0,
-            timestamp:
-                DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
-            accountId: e["account"] as String,
-            fee: BigInt.from((e["fee"] as int? ?? 0)),
-            address: e["address"] as String,
-            vsize: BigInt.zero,
-            feeRate: BigInt.zero,
-          );
+              txId: e.key as String,
+              amount: 0,
+              timestamp:
+                  DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
+              accountId: e["account"] as String,
+              fee: BigInt.from((e["fee"] as int? ?? 0)),
+              address: e["address"] as String,
+              vsize: BigInt.zero,
+              feeRate: BigInt.zero,
+              note: e['note'] as String?);
         }
         return EnvoyTransaction(
             txId: e.key as String,
@@ -444,7 +447,7 @@ class EnvoyStorage {
             vsize: BigInt.zero,
             feeRate: BigInt.zero,
             isConfirmed: false,
-            note: null,
+            note: e['note'] as String?,
             accountId: e["account"] as String,
             date: BigInt.zero);
       },
@@ -467,6 +470,7 @@ class EnvoyStorage {
     String? btcPayVoucherUri,
     String? rampId,
     int? rampFee,
+    String? note,
   }) async {
     // Retrieve the existing record
     final existingRecord = await pendingTxStore.record(key).get(_db);
@@ -500,6 +504,9 @@ class EnvoyStorage {
     }
     if (rampFee != null) {
       updateData['rampFee'] = rampFee;
+    }
+    if (note != null) {
+      updateData['note'] = note;
     }
 
     // Update the record with the new data
@@ -679,7 +686,7 @@ class EnvoyStorage {
         await exportDatabase(_db, storeNames: storesToBackUp.keys.toList()));
   }
 
-  restore(String json) async {
+  Future<void> restore(String json) async {
     var map = jsonDecode(json) as Map;
     if (map.isEmpty) {
       return;
@@ -719,7 +726,7 @@ class EnvoyStorage {
     return cleared != 0;
   }
 
-  Future<bool> remove(key) async {
+  Future<bool> remove(String key) async {
     var removed = await preferencesStore.record(key).delete(_db);
     return removed == key;
   }
@@ -758,11 +765,11 @@ class EnvoyStorage {
     return cleared > 0;
   }
 
-  insertVideo(Video video) async {
+  Future<void> insertVideo(Video video) async {
     await videoStore.record(video.id).put(_db, jsonEncode(video));
   }
 
-  updateVideo(Video video) {
+  void updateVideo(Video video) {
     videoStore.record(video.id).update(_db, jsonEncode(video));
   }
 
@@ -789,11 +796,11 @@ class EnvoyStorage {
     });
   }
 
-  updateBlogPost(BlogPost blog) {
+  void updateBlogPost(BlogPost blog) {
     blogPostsStore.record(blog.id).update(_db, jsonEncode(blog));
   }
 
-  insertBlogPost(BlogPost blog) async {
+  Future<void> insertBlogPost(BlogPost blog) async {
     await blogPostsStore.record(blog.id).put(_db, jsonEncode(blog));
   }
 

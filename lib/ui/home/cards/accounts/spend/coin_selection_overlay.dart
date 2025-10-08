@@ -27,6 +27,7 @@ import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -195,10 +196,7 @@ class SpendRequirementOverlayState
     final unitVelocity = unitsPerSecond.distance;
 
     SpringDescription spring = SpringDescription.withDampingRatio(
-      mass: 1.5,
-      stiffness: 300.0,
-      ratio: 0.4,
-    );
+        mass: 1, stiffness: 330, ratio: 0.700);
 
     final simulation = SpringSimulation(spring, 0, 1, -unitVelocity);
 
@@ -362,7 +360,7 @@ class SpendRequirementOverlayState
             child: Transform.scale(
               scale: 1.0,
               child: SizedBox(
-                  height: 230,
+                  height: 245,
                   width: MediaQuery.of(context).size.width,
                   child: Container(
                     decoration: BoxDecoration(
@@ -524,7 +522,7 @@ class SpendRequirementOverlayState
                                             padding: EdgeInsets.all(
                                                 EnvoySpacing.xs)),
                                         inTagSelectionMode
-                                            ? CoinSelectionButton(
+                                            ? coinSelectionButton(
                                                 valid: valid,
                                                 inTagSelectionMode:
                                                     inTagSelectionMode)
@@ -534,7 +532,7 @@ class SpendRequirementOverlayState
                                                 bottom: MediaQuery.of(context)
                                                         .padding
                                                         .bottom +
-                                                    4))
+                                                    EnvoySpacing.medium3))
                                       ],
                                     ),
                                   ),
@@ -550,6 +548,137 @@ class SpendRequirementOverlayState
           ),
         ),
       ),
+    );
+  }
+
+  bool dialogOpen = false;
+
+  Widget coinSelectionButton(
+      {required bool inTagSelectionMode, required bool valid}) {
+    EnvoyAccount? selectedAccount = ref.read(selectedAccountProvider);
+    Set<String> selection = ref.watch(coinSelectionStateProvider);
+    String buttonText = S().component_cancel;
+    if (inTagSelectionMode) {
+      List<Tag> tags = ref.read(tagsProvider(selectedAccount?.id ?? "")) ?? [];
+      bool isCoinsOnlyPartOfUntagged = false;
+      Tag? untagged = tags.firstWhereOrNull((element) => element.untagged);
+      if (untagged == null) {
+        isCoinsOnlyPartOfUntagged = false;
+      } else {
+        isCoinsOnlyPartOfUntagged = true;
+
+        /// check if selected coins are only part of untagged coins
+        selection.toList().forEach((selectionId) {
+          if (!untagged.utxo.map((e) => e.getId()).contains(selectionId)) {
+            isCoinsOnlyPartOfUntagged = false;
+          }
+        });
+      }
+
+      buttonText = isCoinsOnlyPartOfUntagged
+          ? S().tagged_tagDetails_sheet_cta2
+          : S().tagged_tagDetails_sheet_retag_cta2;
+    }
+    return EnvoyButton(
+      enabled: valid,
+      type: EnvoyButtonTypes.secondary,
+      buttonText,
+      onTap: () async {
+        if (dialogOpen) return; // Prevent opening multiple dialogs
+        NavigatorState navigator = Navigator.of(context, rootNavigator: true);
+        if (!inTagSelectionMode) {
+          SpendRequirementOverlayState().cancel(context);
+          return;
+        }
+        if (selectedAccount == null) {
+          return;
+        }
+        bool dismissed = await EnvoyStorage()
+            .checkPromptDismissed(DismissiblePrompt.createCoinTagWarning);
+        setState(() {
+          _hideOverlay = true;
+        });
+        final selectedOutputs = _getSelectedOutputs(selectedAccount.id);
+        if (dismissed && mounted) {
+          dialogOpen = true;
+          await showEnvoyDialog(
+            context: context,
+            useRootNavigator: true,
+            onDispose: () {
+              dialogOpen = false;
+            },
+            builder: Builder(
+              builder: (context) => CreateCoinTag(
+                accountId: selectedAccount.id,
+                coins: selectedOutputs,
+                onTagUpdate: (context) async {
+                  final container = ProviderScope.containerOf(context);
+                  container.read(coinSelectionStateProvider.notifier).reset();
+                  await Future.delayed(const Duration(milliseconds: 100));
+                  Haptics.lightImpact();
+                  navigator.popUntil((route) {
+                    return route.settings is MaterialPage;
+                  });
+                },
+              ),
+            ),
+            alignment: const Alignment(0.0, -.6),
+          );
+        } else if (mounted) {
+          setState(() {
+            dialogOpen = true;
+          });
+          await showEnvoyDialog(
+            useRootNavigator: true,
+            context: context,
+            onDispose: () {
+              // setState(() {
+              dialogOpen = false;
+              // });
+            },
+            builder: Builder(
+              builder: (context) {
+                return CreateCoinTagWarning(onContinue: () async {
+                  Navigator.pop(context); // Close warning dialog
+                  await showEnvoyDialog(
+                    context: context,
+                    useRootNavigator: true,
+                    onDispose: () {
+                      if (mounted) {
+                        setState(() {
+                          dialogOpen = false;
+                        });
+                      }
+                    },
+                    builder: Builder(
+                      builder: (context) => CreateCoinTag(
+                        accountId: selectedAccount.id,
+                        coins: selectedOutputs,
+                        onTagUpdate: (context) async {
+                          Haptics.lightImpact();
+                          ProviderScope.containerOf(context)
+                              .read(coinSelectionStateProvider.notifier)
+                              .reset();
+                          NavigatorState navigator =
+                              Navigator.of(context, rootNavigator: true);
+                          await Future.delayed(
+                              const Duration(milliseconds: 100));
+                          navigator.popUntil((route) {
+                            return route.settings is MaterialPage;
+                          });
+                        },
+                      ),
+                    ),
+                    alignment: const Alignment(0.0, -.6),
+                  );
+                });
+              },
+            ),
+            alignment: const Alignment(0.0, -.6),
+          );
+        }
+        ref.read(coinSelectionStateProvider.notifier).reset();
+      },
     );
   }
 
@@ -659,7 +788,7 @@ class SpendRequirementOverlayState
     );
   }
 
-  cancel(BuildContext context) async {
+  Future<void> cancel(BuildContext context) async {
     /// if the user is in utxo details screen we need to wait animations to finish
     /// before we can pop back to home screen
     ProviderContainer container = ProviderScope.containerOf(context);
@@ -696,166 +825,21 @@ class SpendRequirementOverlayState
       }
     }
   }
-}
 
-class CoinSelectionButton extends StatefulWidget {
-  final bool valid;
-  final bool inTagSelectionMode;
+  List<Output> _getSelectedOutputs(String id) {
+    List<Output> coins = [];
+    ref.read(tagsProvider(id)).map((e) => e.utxo).forEach((element) {
+      coins.addAll(element);
+    });
+    Set<String> selection = ref.read(coinSelectionStateProvider);
 
-  const CoinSelectionButton({
-    super.key,
-    required this.valid,
-    required this.inTagSelectionMode,
-  });
-
-  @override
-  State<CoinSelectionButton> createState() => _CoinSelectionButtonState();
-}
-
-class _CoinSelectionButtonState extends State<CoinSelectionButton> {
-  bool dialogOpen = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer(
-      builder: (_, ref, child) {
-        EnvoyAccount? selectedAccount = ref.read(selectedAccountProvider);
-        Set<String> selection = ref.watch(coinSelectionStateProvider);
-
-        String buttonText = S().component_cancel;
-        if (widget.inTagSelectionMode) {
-          List<Tag> tags =
-              ref.read(tagsProvider(selectedAccount?.id ?? "")) ?? [];
-          bool isCoinsOnlyPartOfUntagged = false;
-          Tag? untagged = tags.firstWhereOrNull((element) => element.untagged);
-          if (untagged == null) {
-            isCoinsOnlyPartOfUntagged = false;
-          } else {
-            isCoinsOnlyPartOfUntagged = true;
-
-            /// check if selected coins are only part of untagged coins
-            selection.toList().forEach((selectionId) {
-              if (!untagged.utxo.map((e) => e.getId()).contains(selectionId)) {
-                isCoinsOnlyPartOfUntagged = false;
-              }
-            });
-          }
-
-          buttonText = isCoinsOnlyPartOfUntagged
-              ? S().tagged_tagDetails_sheet_cta2
-              : S().tagged_tagDetails_sheet_retag_cta2;
-        }
-
-        return EnvoyButton(
-          enabled: widget.valid,
-          type: EnvoyButtonTypes.secondary,
-          buttonText,
-          onTap: () async {
-            if (dialogOpen) return; // Prevent opening multiple dialogs
-
-            NavigatorState navigator =
-                Navigator.of(context, rootNavigator: true);
-            if (!widget.inTagSelectionMode) {
-              SpendRequirementOverlayState().cancel(context);
-              return;
-            }
-            if (selectedAccount == null) {
-              return;
-            }
-            bool dismissed = await EnvoyStorage()
-                .checkPromptDismissed(DismissiblePrompt.createCoinTagWarning);
-            if (dismissed && context.mounted) {
-              setState(() {
-                dialogOpen = true;
-              });
-              await showEnvoyDialog(
-                context: context,
-                useRootNavigator: true,
-                onDispose: () {
-                  setState(() {
-                    dialogOpen = false;
-                  });
-                },
-                builder: Builder(
-                  builder: (context) => CreateCoinTag(
-                    accountId: selectedAccount.id,
-                    onTagUpdate: () async {
-                      ref.read(coinSelectionStateProvider.notifier).reset();
-                      await Future.delayed(const Duration(milliseconds: 100));
-                      navigator.popUntil((route) {
-                        return route.settings is MaterialPage;
-                      });
-                    },
-                  ),
-                ),
-                alignment: const Alignment(0.0, -.6),
-              );
-            } else if (context.mounted) {
-              setState(() {
-                dialogOpen = true;
-              });
-              await showEnvoyDialog(
-                useRootNavigator: true,
-                context: context,
-                onDispose: () {
-                  setState(() {
-                    dialogOpen = false;
-                  });
-                },
-                builder: Builder(
-                  builder: (context) {
-                    return CreateCoinTagWarning(onContinue: () async {
-                      Navigator.pop(context); // Close warning dialog
-
-                      Future.delayed(const Duration(milliseconds: 500), () {
-                        setState(() {
-                          dialogOpen = true;
-                        });
-                      });
-
-                      await showEnvoyDialog(
-                        context: context,
-                        useRootNavigator: true,
-                        onDispose: () {
-                          if (mounted) {
-                            setState(() {
-                              dialogOpen = false;
-                            });
-                          }
-                        },
-                        builder: Builder(
-                          builder: (context) => CreateCoinTag(
-                            accountId: selectedAccount.id,
-                            onTagUpdate: () async {
-                              ref
-                                  .read(coinSelectionStateProvider.notifier)
-                                  .reset();
-                              NavigatorState navigator =
-                                  Navigator.of(context, rootNavigator: true);
-                              await Future.delayed(
-                                  const Duration(milliseconds: 100));
-                              navigator.popUntil((route) {
-                                return route.settings is MaterialPage;
-                              });
-                            },
-                          ),
-                        ),
-                        alignment: const Alignment(0.0, -.6),
-                      );
-                    });
-                  },
-                ),
-                alignment: const Alignment(0.0, -.6),
-              );
-            }
-          },
-        );
-      },
-    );
+    return coins
+        .where((element) => selection.contains(element.getId()))
+        .toList();
   }
 }
 
-void hideCoinSnack(ref) {
+void hideCoinSnack(WidgetRef ref) {
   ref.read(spendEditModeProvider.notifier).state = SpendOverlayContext.hidden;
   ref.read(hideBottomNavProvider.notifier).state = false;
 }

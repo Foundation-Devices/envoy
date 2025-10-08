@@ -67,7 +67,7 @@ class EnvoyToast<T> extends StatefulWidget {
 
     // do not show toast if it is already showing with the same message
     if (replaceExisting && _toast != null) {
-      if (_toast!.message == this.message) {
+      if (_toast!.message == message) {
         return null;
       }
     }
@@ -79,7 +79,7 @@ class EnvoyToast<T> extends StatefulWidget {
   }
 
   // clear all previous toasts overlays
-  static dismissPreviousToasts(BuildContext context,
+  static void dismissPreviousToasts(BuildContext context,
       {bool rootNavigator = false}) {
     Navigator.of(context, rootNavigator: rootNavigator)
         .popUntil((route) => route.settings.name != ENVY_TOAST_ROUTE);
@@ -124,7 +124,7 @@ class EnvoyToastState extends State<EnvoyToast> {
     );
   }
 
-  Widget createGenericToast(context) {
+  Widget createGenericToast(BuildContext context) {
     return widget.builder != null
         ? widget.builder!(context)
         : Container(

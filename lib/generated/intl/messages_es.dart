@@ -1989,9 +1989,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "wallet_security_modal_4_4_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "Si prefieres no tener Copia de Seguridad Mágica, y en su lugar proteger manualmente la semilla y los datos de tu cartera, ¡no hay problema!\n\nSimplemente vuleve a la pantalla de configuración y selecciona \"Configurar Semilla Manualmente\"."),
+        "wallet_security_modal_HowToRecoverYourWallet":
+            MessageLookupByLibrary.simpleMessage("How to Recover Your Wallet"),
+        "wallet_security_modal_HowYourDatatIsSecured":
+            MessageLookupByLibrary.simpleMessage("How Your Data is Secured"),
+        "wallet_security_modal_HowYourSeedIsSecured":
+            MessageLookupByLibrary.simpleMessage("How Your Seed is Secured"),
         "wallet_security_modal_HowYourWalletIsSecured":
             MessageLookupByLibrary.simpleMessage(
                 "Cómo Está Protegida tu Cartera"),
+        "wallet_security_modal_WantToOptOut":
+            MessageLookupByLibrary.simpleMessage("Want to Opt Out?"),
         "wallet_security_modal__heading":
             MessageLookupByLibrary.simpleMessage("Consejo Se Seguridad"),
         "wallet_security_modal_subheading": MessageLookupByLibrary.simpleMessage(
