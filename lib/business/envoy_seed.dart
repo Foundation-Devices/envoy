@@ -554,8 +554,7 @@ class EnvoySeed {
             .setBool(MigrationManager.migratedToUnifiedAccounts, true);
       }
 
-      await EnvoyStorage().setNoBackUpPreference(
-          MigrationManager.migrationPrefs, MigrationManager.migrationVersion);
+      await MigrationManager().setMigrationComplete();
     }
     return success;
   }
