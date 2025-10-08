@@ -40,7 +40,8 @@ Future<void> goBackHome(WidgetTester tester) async {
 
 Future<void> fromHomeToBuyOptions(WidgetTester tester,
     {bool selectFirstCountryAvailable = true}) async {
-  await tester.pump();
+  await tester.pump(Durations.long2);
+  await tester.pump(Durations.long2);
   final buyBitcoinButton = find.text('Buy');
   await tester.pumpUntilFound(buyBitcoinButton);
   expect(buyBitcoinButton, findsOneWidget);
