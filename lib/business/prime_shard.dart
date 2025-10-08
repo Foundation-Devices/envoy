@@ -52,7 +52,6 @@ class PrimeShard {
     );
   }
 
-  // TODO: rewrite in Rust
   Future<ShardBackUp?> getShard({required Uint8List fingerprint}) async {
     final shards = await getAllShards();
     return shards.firstWhereOrNull((shard) {

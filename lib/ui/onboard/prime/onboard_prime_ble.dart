@@ -194,9 +194,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               S().onboarding_connectionChecking_forUpdates,
               EnvoyStepState.LOADING);
 
-          //final patches = await Server().fetchPrimePatches(currentVersion);
-          List<PrimePatch> patches = [];
-
+          final patches = await Server().fetchPrimePatches(currentVersion);
           await BluetoothManager().sendFirmwareUpdateInfo(patches);
 
           await ref.read(firmWareUpdateProvider.notifier).updateStep(
@@ -395,14 +393,14 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
     List<PrimePatch> patches = [];
 
-    // try {
-    //   patches = await Server().fetchPrimePatches(currentVersion);
-    // } catch (e) {
-    //   kPrint("failed to fetch patches: $e");
-    //   await _handleFirmwareError(
-    //       S().firmware_updateError_downloadFailed, fwDownloadStateProvider);
-    //   return;
-    // }
+    try {
+      patches = await Server().fetchPrimePatches(currentVersion);
+    } catch (e) {
+      kPrint("failed to fetch patches: $e");
+      await _handleFirmwareError(
+          S().firmware_updateError_downloadFailed, fwDownloadStateProvider);
+      return;
+    }
 
     if (patches.isEmpty) {
       await BluetoothManager()
@@ -416,6 +414,10 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       try {
         for (final patch in patches) {
           final binary = await Server().fetchPrimePatchBinary(patch);
+          if (binary == null) {
+            throw Exception("Must get all the patches!");
+          }
+
           patchBinaries.add(binary);
         }
       } catch (e) {

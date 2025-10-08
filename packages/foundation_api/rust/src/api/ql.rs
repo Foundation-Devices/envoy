@@ -163,6 +163,9 @@ pub async fn encode(
     sender: &QuantumLinkIdentity,
     recipient: &XIDDocument,
 ) -> Vec<Vec<u8>> {
+    debug!("SENDER: {:?}", sender.xid_document);
+    debug!("RECEIVER: {:?}", recipient);
+
     let expression = QuantumLink::encode(&message);
     let event: SealedEvent<Expression> =
         SealedEvent::new(expression, ARID::new(), sender.clone().xid_document);
