@@ -59,6 +59,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   PairingResponse? pairingResponse;
 
   Completer<QuantumLinkMessage_BroadcastTransaction>? _completer;
+
   Completer<QuantumLinkMessage_BroadcastTransaction>? get completer =>
       _completer;
 
@@ -356,10 +357,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
         break;
       case OnboardingState.completed:
-        if (mounted) {
-          context.go("/");
-          _notifyAfterOnboardingTutorial(context);
-        }
+        resetOnboardingPrimeProviders(ref);
+        context.go("/");
+        _notifyAfterOnboardingTutorial(context);
         break;
       case OnboardingState.securityChecked:
         break;

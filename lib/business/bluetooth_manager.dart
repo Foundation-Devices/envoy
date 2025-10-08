@@ -27,6 +27,7 @@ import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 
 final sendProgressProvider =
     StateNotifierProvider<SendProgressNotifier, double>(
@@ -211,7 +212,15 @@ class BluetoothManager extends WidgetsBindingObserver {
             fingerprint: fingerprint,
             number: config.index);
         kPrint("Account path! ${dir.path}");
-        await dir.create();
+
+        if (await dir.exists()) {
+          EnvoyReport().log("AccountManager",
+              "Failed to create account directory for ${config.name}:${config.deviceSerial}, already exists: ${dir.path}");
+          throw Exception("Account already paired");
+        } else {
+          await dir.create(recursive: true);
+        }
+
         final accountHandler = await EnvoyAccountHandler.addAccountFromConfig(
             dbPath: dir.path, config: config);
         await NgAccountManager()
