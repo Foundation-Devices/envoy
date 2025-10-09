@@ -4,12 +4,14 @@
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class ConnectionLostDialog extends StatelessWidget {
@@ -35,14 +37,15 @@ class ConnectionLostDialog extends StatelessWidget {
   }
 }
 
-class ConnectionLostModal extends StatefulWidget {
+class ConnectionLostModal extends ConsumerStatefulWidget {
   const ConnectionLostModal({super.key});
 
   @override
-  State<ConnectionLostModal> createState() => _ConnectionLostModal();
+  ConsumerState<ConnectionLostModal> createState() =>
+      _ConnectionLostModalState();
 }
 
-class _ConnectionLostModal extends State<ConnectionLostModal> {
+class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
   // bool _isReconnecting = false;
 
   // Future<void> _attemptReconnect() async {
@@ -109,6 +112,7 @@ class _ConnectionLostModal extends State<ConnectionLostModal> {
                 borderRadius: BorderRadius.circular(EnvoySpacing.small),
                 type: EnvoyButtonTypes.secondary,
                 onTap: () {
+                  resetOnboardingPrimeProviders(ref);
                   Navigator.of(context).pop();
                   context.go("/");
                 },
