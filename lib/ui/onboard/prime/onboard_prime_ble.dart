@@ -45,6 +45,10 @@ import 'package:url_launcher/url_launcher.dart';
 // TODO: remove this, store somewhere else
 final primeDeviceVersionProvider = StateProvider<String>((ref) => '');
 
+final primeDeviceNewVersionProvider = StateProvider<String>((ref) => '');
+
+final estimatedTimeProvider = StateProvider<int>((ref) => 0);
+
 class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
   const OnboardPrimeBluetooth({super.key});
 
@@ -195,6 +199,12 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               EnvoyStepState.LOADING);
 
           final patches = await Server().fetchPrimePatches(currentVersion);
+
+          if (patches.isNotEmpty) {
+            ref.read(primeDeviceNewVersionProvider.notifier).state =
+                patches.last.version;
+          }
+
           await BluetoothManager().sendFirmwareUpdateInfo(patches);
 
           await ref.read(firmWareUpdateProvider.notifier).updateStep(
@@ -202,6 +212,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                   ? S().onboarding_connectionUpdatesAvailable_updatesAvailable
                   : S().onboarding_connectionNoUpdates_noUpdates,
               EnvoyStepState.FINISHED);
+
+          int estimatedTime = await getEstimatedUpdateTimeInMinutes(patches);
+          ref.read(estimatedTimeProvider.notifier).state = estimatedTime;
 
         case QuantumLinkMessage_FirmwareFetchRequest(field0: final request):
           handleFirmwareFetchRequest(request.currentVersion);
@@ -253,6 +266,36 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
       }
     });
+  }
+
+  Future<int> getEstimatedUpdateTimeInMinutes(List<PrimePatch> patches) async {
+    const double minutesPerMB = 6.0;
+    if (patches.isEmpty) {
+      return 0;
+    }
+
+    try {
+      List<Uint8List> patchBinaries = [];
+      for (final patch in patches) {
+        final binary = await Server().fetchPrimePatchBinary(patch);
+        if (binary == null) {
+          throw Exception("A required patch binary could not be downloaded.");
+        }
+        patchBinaries.add(binary);
+      }
+
+      final totalSizeInBytes =
+          patchBinaries.fold<int>(0, (prev, binary) => prev + binary.length);
+
+      final double totalSizeInMB = totalSizeInBytes / (1024 * 1024);
+
+      final double estimatedMinutes = totalSizeInMB * minutesPerMB;
+
+      //Return the final time, rounded to the nearest minute.
+      return estimatedMinutes.round();
+    } catch (e) {
+      return 0;
+    }
   }
 
   Future<void> _handleOnboardingState(OnboardingState state) async {

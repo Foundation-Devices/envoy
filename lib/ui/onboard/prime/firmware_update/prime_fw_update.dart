@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime_ble.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OnboardPrimeFwUpdate extends ConsumerStatefulWidget {
   const OnboardPrimeFwUpdate({super.key});
@@ -266,9 +267,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         Column(
           children: [
             Text(
-              //TODO: Note: {0} in firmware.updateAvailable.estimatedUpdateTime should be programmatically replaced by the estimated update time rounded to minutes
               S().firmware_updateAvailable_estimatedUpdateTime(
-                  "est_upd_time"), // TODO
+                  "${ref.read(estimatedTimeProvider)} min"),
               textAlign: TextAlign.center,
               style: EnvoyTypography.explainer.copyWith(fontSize: 14),
             ),
@@ -276,9 +276,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
             Padding(
               padding: const EdgeInsets.all(EnvoySpacing.small),
               child: Text(
-                // TODO: Note to devs: {0} in firmware.updateAvailable.whatsNew should be programmatically replaced by the new keyOS version found
                 S().firmware_updateAvailable_content2(
-                    ref.read(primeDeviceVersionProvider)), // TODO
+                    ref.read(primeDeviceVersionProvider)),
                 textAlign: TextAlign.center,
                 style: EnvoyTypography.explainer.copyWith(fontSize: 14),
               ),
@@ -302,14 +301,15 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         //       BluetoothManager().sendOnboardingState(OnboardingState.receivingUpdate);
         //     }),
 
-// TODO: Note to devs: {0} in firmware.updateAvailable.whatsNew should be programmatically replaced by the new keyOS version found
         Padding(
           padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
           child: EnvoyButton(
               S().firmware_updateAvailable_whatsNew(
-                  "new_keyOS_version"), // TODO
-              type: EnvoyButtonTypes.secondary,
-              onTap: () {}),
+                  ref.read(primeDeviceNewVersionProvider)),
+              type: EnvoyButtonTypes.secondary, onTap: () {
+            launchUrl(Uri.parse(
+                "https://github.com/Foundation-Devices/KeyOS-Releases/releases/tag/${ref.read(primeDeviceNewVersionProvider)}"));
+          }),
         ),
       ],
     );
