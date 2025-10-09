@@ -50,7 +50,7 @@ class BluetoothManager extends WidgetsBindingObserver {
   final Set<bluart.BleDevice> _connectedDevices = {};
 
   final StreamController<Set<bluart.BleDevice>> _connectedDevicesStream =
-      StreamController<Set<bluart.BleDevice>>();
+      StreamController<Set<bluart.BleDevice>>.broadcast();
 
   Set<bluart.BleDevice> get connectedDevices => _connectedDevices;
 
