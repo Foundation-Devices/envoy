@@ -742,6 +742,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
               ? S().tagged_tagDetails_sheet_cta2
               : S().tagged_tagDetails_sheet_retag_cta2;
         }
+        final navigator = Navigator.of(context, rootNavigator: true);
 
         return EnvoyButton(
           enabled: widget.valid,
@@ -750,8 +751,10 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
           onTap: () async {
             if (dialogOpen) return; // Prevent opening multiple dialogs
 
-            NavigatorState navigator =
-                Navigator.of(context, rootNavigator: true);
+            // capture notifier before dialogs
+            final coinSelectionNotifier =
+                ref.read(coinSelectionStateProvider.notifier);
+
             if (!widget.inTagSelectionMode) {
               SpendRequirementOverlayState().cancel(context);
               return;
@@ -759,6 +762,10 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
             if (selectedAccount == null) {
               return;
             }
+
+            // Hide overlay before showing any popup
+            hideCoinSnack(ref);
+
             bool dismissed = await EnvoyStorage()
                 .checkPromptDismissed(DismissiblePrompt.createCoinTagWarning);
             if (dismissed && context.mounted) {
@@ -777,7 +784,7 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                   builder: (context) => CreateCoinTag(
                     accountId: selectedAccount.id,
                     onTagUpdate: () async {
-                      ref.read(coinSelectionStateProvider.notifier).reset();
+                      coinSelectionNotifier.reset();
                       await Future.delayed(const Duration(milliseconds: 100));
                       navigator.popUntil((route) {
                         return route.settings is MaterialPage;
@@ -795,9 +802,11 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                 useRootNavigator: true,
                 context: context,
                 onDispose: () {
-                  setState(() {
-                    dialogOpen = false;
-                  });
+                  if (mounted) {
+                    setState(() {
+                      dialogOpen = false;
+                    });
+                  }
                 },
                 builder: Builder(
                   builder: (context) {
@@ -805,9 +814,11 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                       Navigator.pop(context); // Close warning dialog
 
                       Future.delayed(const Duration(milliseconds: 500), () {
-                        setState(() {
-                          dialogOpen = true;
-                        });
+                        if (mounted) {
+                          setState(() {
+                            dialogOpen = true;
+                          });
+                        }
                       });
 
                       await showEnvoyDialog(
@@ -824,16 +835,13 @@ class _CoinSelectionButtonState extends State<CoinSelectionButton> {
                           builder: (context) => CreateCoinTag(
                             accountId: selectedAccount.id,
                             onTagUpdate: () async {
-                              ref
-                                  .read(coinSelectionStateProvider.notifier)
-                                  .reset();
-                              NavigatorState navigator =
-                                  Navigator.of(context, rootNavigator: true);
+                              coinSelectionNotifier.reset();
                               await Future.delayed(
                                   const Duration(milliseconds: 100));
-                              navigator.popUntil((route) {
-                                return route.settings is MaterialPage;
-                              });
+
+                              if (!navigator.mounted) return;
+                              navigator.popUntil(
+                                  (route) => route.settings is MaterialPage);
                             },
                           ),
                         ),
