@@ -68,7 +68,7 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   final StreamController<api.QuantumLinkMessage_BroadcastTransaction>
       _transactionStream =
-      StreamController<api.QuantumLinkMessage_BroadcastTransaction>();
+      StreamController<api.QuantumLinkMessage_BroadcastTransaction>.broadcast();
 
   api.EnvoyMasterDechunker? _decoder;
   api.XidDocument? _recipientXid;

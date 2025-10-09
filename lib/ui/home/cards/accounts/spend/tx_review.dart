@@ -551,7 +551,6 @@ class _TransactionReviewScreenState
     try {
       _primeTransactionsSubscription = BluetoothManager()
           .transactionStream
-          .asBroadcastStream()
           .listen((QuantumLinkMessage_BroadcastTransaction message) async {
         if (!mounted) {
           return;
