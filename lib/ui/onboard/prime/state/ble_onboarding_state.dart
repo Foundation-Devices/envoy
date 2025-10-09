@@ -71,3 +71,34 @@ final connectAccountProvider =
       stepName: S().finalize_catchAll_connectAccount,
       state: EnvoyStepState.IDLE);
 });
+
+void resetOnboardingPrimeProviders(WidgetRef ref) {
+  ref.read(deviceSecurityProvider.notifier).updateStep(
+      S().onboarding_connectionIntro_checkingDeviceSecurity,
+      EnvoyStepState.LOADING);
+
+  ref.read(firmWareUpdateProvider.notifier).updateStep(
+        S().onboarding_connectionIntro_checkForUpdates,
+        EnvoyStepState.IDLE,
+      );
+
+  ref.read(creatingPinProvider.notifier).updateStep(
+        S().finalize_catchAll_creatingPin,
+        EnvoyStepState.LOADING,
+      );
+
+  ref.read(setUpMasterKeyProvider.notifier).updateStep(
+        S().finalize_catchAll_setUpMasterKey,
+        EnvoyStepState.IDLE,
+      );
+
+  ref.read(backUpMasterKeyProvider.notifier).updateStep(
+        S().finalize_catchAll_backUpMasterKey,
+        EnvoyStepState.IDLE,
+      );
+
+  ref.read(connectAccountProvider.notifier).updateStep(
+        S().finalize_catchAll_connectAccount,
+        EnvoyStepState.IDLE,
+      );
+}

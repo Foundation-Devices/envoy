@@ -4,7 +4,7 @@
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
@@ -13,7 +13,6 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/console.dart';
-import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
@@ -38,44 +37,49 @@ List<String> tagSuggestions = [
 ];
 
 class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
-      padding: const EdgeInsets.all(EnvoySpacing.medium2),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Align(
-            alignment: const Alignment(1.00, -1.02),
-            child: IconButton(
-              icon: const Icon(Icons.close),
-              padding: const EdgeInsets.all(EnvoySpacing.small),
-              onPressed: () {
-                if (ref.read(selectedAccountProvider) != null) {
-                  coinSelectionOverlayKey.currentState
-                      ?.show(SpendOverlayContext.preselectCoins);
-                }
-                Navigator.of(context).pop();
-              },
+    return SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(), // to fix overflow in tests
+      child: Container(
+        width: (MediaQuery.of(context).size.width * 0.7).clamp(300, 540),
+        padding: const EdgeInsets.all(EnvoySpacing.medium2),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Align(
+              alignment: const Alignment(1.00, -1.02),
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                padding: const EdgeInsets.all(EnvoySpacing.small),
+                onPressed: () {
+                  if (ref.read(selectedAccountProvider) != null) {
+                    coinSelectionOverlayKey.currentState
+                        ?.show(SpendOverlayContext.preselectCoins);
+                  }
+                  Navigator.of(context).pop();
+                },
+              ),
             ),
-          ),
-          const SizedBox(height: EnvoySpacing.small),
-          Image.asset(
-            "assets/exclamation_icon.png",
-            height: 68,
-            width: 68,
-          ),
-          const SizedBox(height: EnvoySpacing.medium1),
-          Text(
-            S().change_output_from_multiple_tags_modal_heading,
-            style: EnvoyTypography.heading
-                .copyWith(color: EnvoyColors.textPrimary),
-          ),
-          const SizedBox(height: EnvoySpacing.medium1),
-          _tagWidget(context),
-        ],
+            const SizedBox(height: EnvoySpacing.small),
+            Image.asset(
+              "assets/exclamation_icon.png",
+              height: 68,
+              width: 68,
+            ),
+            const SizedBox(height: EnvoySpacing.medium1),
+            Text(
+              S().change_output_from_multiple_tags_modal_heading,
+              style: EnvoyTypography.heading
+                  .copyWith(color: EnvoyColors.textPrimary),
+            ),
+            const SizedBox(height: EnvoySpacing.medium1),
+            _tagWidget(context),
+          ],
+        ),
       ),
     );
   }
@@ -220,16 +224,13 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
               ),
             ),
             EnvoyButton(
-              S().component_continue,
-              enabled: _tagController.text.isNotEmpty,
-              textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: _tagController.text.isNotEmpty
-                        ? EnvoyColors.textPrimaryInverse
-                        : EnvoyColors.textTertiary,
-                  ),
-              type: _tagController.text.isNotEmpty
-                  ? EnvoyButtonTypes.primaryModal
-                  : EnvoyButtonTypes.tertiary,
+              label: S().component_continue,
+              type: ButtonType.primary,
+              state: _isLoading
+                  ? ButtonState.loading
+                  : _tagController.text.trim().isEmpty
+                      ? ButtonState.disabled
+                      : ButtonState.defaultState,
               onTap: () => tagSelected(context, ref),
             ),
           ],
@@ -239,6 +240,8 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
   }
 
   Future tagSelected(BuildContext context, WidgetRef ref) async {
+    if (!context.mounted) return;
+
     try {
       final selectedAccount = ref.read(selectedAccountProvider);
       if (selectedAccount == null) {
@@ -267,12 +270,17 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
           tag.toLowerCase().trim() == "untagged") {
         tag = "";
       }
+      setState(() {
+        _isLoading = true;
+      });
       await selectedAccount.handler
           ?.setTagMultiple(utxo: selectedCoins, tag: tag);
-      //Reset the selection
-      Haptics.lightImpact();
     } catch (e) {
       kPrint(e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
     widget.onTagUpdate();
   }

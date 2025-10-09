@@ -356,10 +356,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
         break;
       case OnboardingState.completed:
-        if (mounted) {
-          context.go("/");
-          _notifyAfterOnboardingTutorial(context);
-        }
+        resetOnboardingPrimeProviders(ref);
+        context.go("/");
+        _notifyAfterOnboardingTutorial(context);
         break;
       case OnboardingState.securityChecked:
         break;
