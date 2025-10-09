@@ -97,6 +97,23 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   Stream<double> get writeProgressStream => _writeProgressController.stream;
 
+  int _totalFirmwareChunks = 0;
+  int _sentFirmwareChunks = 0;
+  bool _isUpdatingFirmware = false;
+
+  void startFirmwareUpdate({required int totalChunks}) {
+    _totalFirmwareChunks = totalChunks;
+    _sentFirmwareChunks = 0;
+    _isUpdatingFirmware = true;
+    _writeProgressController.add(0.0);
+  }
+
+  void endFirmwareUpdate() {
+    _isUpdatingFirmware = false;
+    _totalFirmwareChunks = 0;
+    _sentFirmwareChunks = 0;
+  }
+
   String bleId = "";
 
   Stream<bluart.Event>? events;
@@ -619,22 +636,40 @@ class BluetoothManager extends WidgetsBindingObserver {
   }
 
   Future<void> sendFirmwarePayload(List<Uint8List> patches) async {
+    final List<api.QuantumLinkMessage> allChunks = [];
     for (final (patchIndex, patch) in patches.indexed) {
-      kPrint("sending patch $patchIndex of size ${patch.length} bytes");
-      final chunks = await api.splitFwUpdateIntoChunks(
-          patchIndex: patchIndex,
-          totalPatches: patches.length,
-          patchBytes: patch,
-          chunkSize: BigInt.from(10000));
-      kPrint("split patch into ${chunks.length} chunks");
+      final chunksForPatch = await api.splitFwUpdateIntoChunks(
+        patchIndex: patchIndex,
+        totalPatches: patches.length,
+        patchBytes: patch,
+        chunkSize: BigInt.from(10000),
+      );
+      allChunks.addAll(chunksForPatch);
+    }
 
-      for (final (chunkIndex, chunk) in chunks.indexed) {
-        kPrint("sending chunk $chunkIndex of patch $patchIndex");
+    final int totalChunks = allChunks.length;
+    kPrint("Total chunks to send across all patches: $totalChunks");
+
+    if (totalChunks == 0) {
+      kPrint("No chunks to send. Aborting.");
+      return;
+    }
+
+    try {
+      startFirmwareUpdate(totalChunks: totalChunks);
+
+      for (final (chunkIndex, chunk) in allChunks.indexed) {
+        kPrint("Sending overall chunk ${chunkIndex + 1} of $totalChunks");
         await writeMessage(chunk);
       }
+
+      await writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(
+        api.FirmwareFetchEvent.complete(),
+      ));
+      kPrint("Firmware payload sent successfully!");
+    } finally {
+      endFirmwareUpdate();
     }
-    await writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(
-        api.FirmwareFetchEvent.complete()));
   }
 
   Future<void> _writeWithProgress(List<Uint8List> data) async {
@@ -646,10 +681,19 @@ class BluetoothManager extends WidgetsBindingObserver {
     _writeProgressSubscription?.cancel();
     _writeProgressSubscription = writeStream.listen(
       (progress) {
-        _writeProgressController.add(progress);
+        if (_isUpdatingFirmware && _totalFirmwareChunks > 0) {
+          final overallProgress =
+              (_sentFirmwareChunks + progress) / _totalFirmwareChunks;
+          _writeProgressController.add(overallProgress.clamp(0.0, 1.0));
+        } else {
+          _writeProgressController.add(progress);
+        }
       },
       onDone: () {
         kPrint("Progress stream done!");
+        if (_isUpdatingFirmware) {
+          _sentFirmwareChunks++;
+        }
         _sendingData = false;
         if (!completer.isCompleted) {
           completer.complete();
@@ -657,6 +701,9 @@ class BluetoothManager extends WidgetsBindingObserver {
       },
       onError: (e) {
         kPrint("Progress stream errored out!");
+        if (_isUpdatingFirmware) {
+          endFirmwareUpdate();
+        }
         _sendingData = false;
         _writeProgressController.addError(e);
         if (!completer.isCompleted) {
