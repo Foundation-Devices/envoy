@@ -26,6 +26,8 @@ log = "0.4.26"
 sled = { version = "0.34" }
 chrono = "0.4.40"
 android_logger = "0.15.1"
+[target.'cfg(target_os = "ios")'.dependencies]
+oslog = "0.2.0"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
