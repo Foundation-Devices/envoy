@@ -153,12 +153,22 @@
             android-studio
             # todo: is this really needed?
             multiStdenv.cc.cc.lib
+
             # Add 32-bit libraries for cross-compilation support
             pkgsi686Linux.glibc
             pkgsi686Linux.glibc.dev
             glibc
             glibc.dev
             glibc.static
+
+            # System utilities
+            util-linux
+            util-linux.dev
+            libselinux
+            libselinux.dev
+            libsepol
+            libsepol.dev
+            libwebp
           ]);
       in {
         customPackages = buildInputs + darwinPackages;
