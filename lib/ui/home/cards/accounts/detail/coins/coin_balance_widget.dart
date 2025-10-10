@@ -526,7 +526,6 @@ class _CoinLockButtonState extends State<CoinLockButton> {
               )));
     });
   }
-
 }
 
 //Widget to show coin tag selections and lock states
