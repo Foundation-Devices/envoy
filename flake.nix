@@ -79,11 +79,6 @@
             gnumake
             pkg-config
 
-            # Essential C/C++ development libraries and headers
-            glibc
-            glibc.dev
-            glibc.static
-            libcxx
 
             # pthread and threading support
             libpthread-stubs
@@ -135,15 +130,6 @@
             zstd
             zstd.dev
 
-            # System utilities
-            util-linux
-            util-linux.dev
-            libselinux
-            libselinux.dev
-            libsepol
-            libsepol.dev
-            libwebp
-
             # Add SQLite and PCRE2 for Rust dependencies
             sqlite
             sqlite.dev
@@ -161,6 +147,9 @@
             # Add 32-bit libraries for cross-compilation support
             pkgsi686Linux.glibc
             pkgsi686Linux.glibc.dev
+            glibc
+            glibc.dev
+            glibc.static
           ]);
       in {
         customPackages = buildInputs;
