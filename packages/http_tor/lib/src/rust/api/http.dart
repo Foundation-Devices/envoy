@@ -61,8 +61,6 @@ abstract class ArcJoinHandleResultError implements RustOpaqueInterface {}
 abstract class Download implements RustOpaqueInterface {
   ArcJoinHandleResultError get handle;
 
-  RustStreamSink<Progress> get progress;
-
   set handle(ArcJoinHandleResultError handle);
 
   Future<void> cancel();

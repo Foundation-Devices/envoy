@@ -6,9 +6,8 @@ import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/btcpay_voucher.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
-import 'package:envoy/util/console.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class InvalidAddressException implements Exception {
   @override
@@ -18,6 +17,7 @@ class InvalidAddressException implements Exception {
 //specific QR decoder for home screen scans, handles azteco,BTCPay,
 //normal bitcoin address and Payment URI
 class PaymentQrDecoder extends ScannerDecoder {
+  bool _scanned = false;
   final Function(String, int, String?)? onAddressValidated;
   final Function(AztecoVoucher aztecoVoucher)? onAztecoScan;
   final Function(BtcPayVoucher btcPayVoucher)? btcPayVoucherScan;
@@ -34,16 +34,18 @@ class PaymentQrDecoder extends ScannerDecoder {
   @override
   Future<void> onDetectBarCode(Barcode barCode) async {
     String code = barCode.code!;
-    if (barCode.code == null) {
+    if (barCode.code == null || _scanned) {
       return;
     }
     if (AztecoVoucher.isVoucher(code)) {
       onAztecoScan?.call(AztecoVoucher(code));
+      _scanned = true;
       return;
     }
     if (BtcPayVoucher.isVoucher(code)) {
       final voucher = BtcPayVoucher(code);
       btcPayVoucherScan?.call(voucher);
+      _scanned = true;
       return;
     }
 
@@ -58,19 +60,19 @@ class PaymentQrDecoder extends ScannerDecoder {
       message = bip21.message;
       // BIP-21 amounts are in BTC
       amount = (bip21.amount * 100000000.0).toInt();
-    } catch (e, s) {
-      kPrint(e, stackTrace: s);
+    } catch (e) {
+      // kPrint(e, stackTrace: s);
     }
     // Remove bitcoin: prefix in case BIP-21 parsing failed
     address = address.replaceFirst("bitcoin:", "").trim();
-    kPrint("address scanned $address");
-    if (await EnvoyAccountHandler.validateAddress(
-        address: address, network: account.network)) {
+    final valid = await EnvoyAccountHandler.validateAddress(
+        address: address, network: account.network);
+    if (valid) {
       // Convert the address to lowercase for consistent display in Envoy
       if (address.startsWith('bc') || address.startsWith("tb")) {
         address = address.toLowerCase();
       }
-
+      _scanned = true;
       onAddressValidated!(address, amount, message);
     } else {
       throw InvalidAddressException();

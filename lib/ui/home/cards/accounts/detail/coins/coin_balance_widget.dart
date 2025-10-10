@@ -56,13 +56,9 @@ class BalanceWidget extends ConsumerWidget {
     List<Widget> rowItems = [];
     if (showLock) {
       rowItems.add(FittedBox(
-        child: StatefulBuilder(
-          builder: (context, setState) {
-            return CoinLockButton(
-              locked: locked,
-              gestureTapCallback: () => onLockTap?.call(),
-            );
-          },
+        child: CoinLockButton(
+          locked: locked,
+          gestureTapCallback: () => onLockTap?.call(),
         ),
       ));
     }
@@ -266,6 +262,7 @@ class CoinTagBalanceWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tag = ref.watch(tagProvider(coinTag.name)) ?? coinTag;
+
     bool isRbfChangeOutput = false;
     final rbfChangeOutput = ref.watch(rbfChangeOutputProvider);
     if (ref.read(spendEditModeProvider) == SpendOverlayContext.rbfSelection &&
@@ -423,8 +420,9 @@ class CoinTagBalanceWidget extends ConsumerWidget {
       }
     });
     try {
+      Haptics.lightImpact();
       await account?.handler?.setDoNotSpendMultiple(
-        utxo: coinTag.utxo.map((e) => e.getId()).toList(),
+        utxo: coinTag.utxo.toList(),
         doNotSpend: true,
       );
     } catch (e) {
@@ -435,8 +433,9 @@ class CoinTagBalanceWidget extends ConsumerWidget {
   void unLockAllCoins(Tag coinTag, WidgetRef ref) async {
     final account = ref.read(selectedAccountProvider);
     try {
+      Haptics.lightImpact();
       await account?.handler?.setDoNotSpendMultiple(
-        utxo: coinTag.utxo.map((e) => e.getId()).toList(),
+        utxo: coinTag.utxo.toList(),
         doNotSpend: false,
       );
     } catch (e) {
@@ -458,8 +457,9 @@ class CoinLockButton extends StatefulWidget {
 }
 
 class _CoinLockButtonState extends State<CoinLockButton> {
-  rive.RiveWidgetController? _controller;
   bool _isInitialized = false;
+  rive.RiveWidgetController? _controller;
+  late rive.File riveFile;
 
   @override
   void initState() {
@@ -525,11 +525,6 @@ class _CoinLockButtonState extends State<CoinLockButton> {
                     : const SizedBox.shrink(),
               )));
     });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
   }
 }
 

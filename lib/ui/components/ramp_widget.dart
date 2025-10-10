@@ -73,8 +73,9 @@ class RampWidget {
         TransactionType.ramp, amount, 0, address,
         purchaseViewToken: purchaseViewToken,
         rampId: purchase.id,
-        rampFee: rampFee);
-    EnvoyStorage().addTxNote(note: S().ramp_note, key: txID);
+        rampFee: rampFee,
+        note: S().ramp_note);
+
     if (context.mounted) {
       Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(builder: (context) {

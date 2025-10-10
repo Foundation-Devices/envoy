@@ -19,10 +19,14 @@ import 'package:ngwallet/ngwallet.dart';
 
 class CreateCoinTag extends ConsumerStatefulWidget {
   final String accountId;
-  final Function onTagUpdate;
+  final List<Output> coins;
+  final Function(BuildContext context) onTagUpdate;
 
   const CreateCoinTag(
-      {super.key, required this.onTagUpdate, required this.accountId});
+      {super.key,
+      required this.onTagUpdate,
+      required this.accountId,
+      required this.coins});
 
   @override
   ConsumerState<CreateCoinTag> createState() => _CreateCoinTagState();
@@ -247,19 +251,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
       if (selectedAccount == null) {
         return;
       }
-      List<Output> coins = [];
-      ref
-          .read(tagsProvider(widget.accountId))
-          .map((e) => e.utxo)
-          .forEach((element) {
-        coins.addAll(element);
-      });
-      final selections = ref.read(coinSelectionStateProvider);
-      //pick all the coins that are selected in current tag
-      final selectedCoins = coins
-          .where((element) => selections.contains(element.getId()))
-          .map((element) => element.getId())
-          .toList();
+
       String tag = _tagController.text;
 
       if (tag.toLowerCase().trim().isEmpty) {
@@ -273,8 +265,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
       setState(() {
         _isLoading = true;
       });
-      await selectedAccount.handler
-          ?.setTagMultiple(utxo: selectedCoins, tag: tag);
+      await selectedAccount.handler?.setTags(utxos: widget.coins, tag: tag);
     } catch (e) {
       kPrint(e);
     } finally {
@@ -282,7 +273,6 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
         _isLoading = false;
       });
     }
-    widget.onTagUpdate();
   }
 }
 

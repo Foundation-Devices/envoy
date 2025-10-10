@@ -1005,6 +1005,15 @@ class MigrationManager {
     return Directory(handler.getDirectoryPath());
   }
 
+  Future setMigrationComplete() async {
+    await EnvoyStorage().setNoBackUpPreference(
+        MigrationManager.migrationCodePrefs,
+        MigrationManager.migrationVersionCode);
+    await EnvoyStorage().setNoBackUpPreference(
+        MigrationManager.migrationVersion,
+        MigrationManager.migrationVersionCode.toString());
+  }
+
   Future resetMigrationPrefs() async {
     try {
       await EnvoyStorage().setNoBackUpPreference(

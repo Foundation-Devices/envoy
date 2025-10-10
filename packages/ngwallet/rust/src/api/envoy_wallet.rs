@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::sync::{Arc, Mutex};
@@ -30,6 +30,7 @@ use ngwallet::config::{
 use ngwallet::ngwallet::NgWallet;
 use ngwallet::send::{DraftTransaction, TransactionFeeResult, TransactionParams};
 use ngwallet::transaction;
+use ngwallet::transaction::Output;
 
 #[frb(init)]
 pub fn init_app() {
@@ -59,6 +60,7 @@ pub struct EnvoyAccountHandler {
     mempool_txs: Vec<transaction::BitcoinTransaction>,
     //account to access handler, lifting id from ng_account
     id: String,
+    last_event: Option<EnvoyAccount>,
     directory_path: String,
 }
 
@@ -143,6 +145,7 @@ impl EnvoyAccountHandler {
                     id: id.clone(),
                     ng_account: Arc::new(Mutex::new(ng_account)),
                     directory_path: db_path.clone(),
+                    last_event: None,
                 }),
                 Err(_) => Err(anyhow!("Failed to persist account")),
             },
@@ -188,6 +191,7 @@ impl EnvoyAccountHandler {
                     id: id.clone(),
                     ng_account: Arc::new(Mutex::new(ng_account)),
                     directory_path: db_path.clone(),
+                    last_event: None,
                 };
 
                 for (index, sled_path) in legacy_sled_db_path.iter().enumerate() {
@@ -282,6 +286,7 @@ impl EnvoyAccountHandler {
                     id: ng_account.config.clone().read().unwrap().clone().id,
                     ng_account: Arc::new(Mutex::new(ng_account)),
                     directory_path: db_path.clone(),
+                    last_event: None,
                 };
 
                 Ok(account)
@@ -544,7 +549,9 @@ impl EnvoyAccountHandler {
 
     pub fn send_update(&mut self) {
         if let Some(sink) = self.stream_sink.clone() {
-            sink.add(self.state().unwrap()).unwrap();
+            let current_state = self.state().unwrap();
+            self.last_event = Some(current_state.clone());
+            sink.add(current_state).unwrap();
         };
     }
 
@@ -573,22 +580,23 @@ impl EnvoyAccountHandler {
         self.send_update();
         status
     }
-    pub fn set_tags(&mut self, utxo: Vec<transaction::Output>, tag: &str) -> Result<bool> {
-        utxo.iter().for_each(|utxo| {
-            self.ng_account
-                .lock()
-                .unwrap()
-                .set_tag(utxo.get_id().as_str(), tag)
-                .unwrap();
-        });
-        self.send_update();
-        Ok(true)
-    }
-    pub fn set_do_not_spend(
-        &mut self,
-        utxo: &transaction::Output,
-        do_not_spend: bool,
-    ) -> Result<()> {
+    pub fn set_do_not_spend(&mut self, utxo: &Output, do_not_spend: bool) -> Result<()> {
+        {
+            if self.last_event.is_some() {
+                let current_state = self.last_event.as_ref().unwrap();
+                let mut current_state = current_state.clone();
+                current_state.utxo.iter_mut().for_each(|x| {
+                    if x.get_id() == utxo.get_id() {
+                        x.do_not_spend = do_not_spend;
+                    }
+                });
+                if let Some(sink) = self.stream_sink.clone() {
+                    sink.add(current_state).unwrap();
+                };
+            } else {
+                info!("No last event to update");
+            }
+        }
         let result = self
             .ng_account
             .lock()
@@ -597,38 +605,57 @@ impl EnvoyAccountHandler {
         self.send_update();
         result
     }
-    pub fn set_do_not_spend_multiple(
-        &mut self,
-        utxo: Vec<String>,
-        do_not_spend: bool,
-    ) -> Result<()> {
-        let utxos = self.utxo();
 
-        utxos
-            .iter()
-            .filter(|x| utxo.contains(&x.get_id().clone()))
-            .for_each(|output| {
-                self.ng_account
-                    .lock()
-                    .unwrap()
-                    .set_do_not_spend(output.get_id().as_str(), do_not_spend)
-                    .unwrap();
-            });
+    pub fn set_do_not_spend_multiple(&mut self, utxo: &[Output], do_not_spend: bool) -> Result<()> {
+        let utxo_ids: HashSet<String> = utxo.iter().map(|u| u.get_id()).collect();
+        {
+            //for immediate UI feedback, update the last event with the new do_not_spend status
+            if self.last_event.is_some() {
+                let current_state = self.last_event.as_ref().unwrap();
+                let mut current_state = current_state.clone();
+                current_state.utxo.iter_mut().for_each(|x| {
+                    if utxo_ids.contains(&x.get_id()) {
+                        x.do_not_spend = do_not_spend;
+                    }
+                });
+                if let Some(sink) = self.stream_sink.clone() {
+                    sink.add(current_state).unwrap();
+                };
+            }
+        }
+        utxo.iter().for_each(|output| {
+            self.ng_account
+                .lock()
+                .unwrap()
+                .set_do_not_spend(output.get_id().as_str(), do_not_spend)
+                .unwrap();
+        });
         self.send_update();
         Ok(())
     }
-    pub fn set_tag_multiple(&mut self, utxo: Vec<String>, tag: &str) -> Result<()> {
-        let utxos = self.utxo();
-        utxos
-            .iter()
-            .filter(|x| utxo.contains(&x.get_id().clone()))
-            .for_each(|output| {
-                self.ng_account
-                    .lock()
-                    .unwrap()
-                    .set_tag(output.get_id().as_str(), tag)
-                    .unwrap();
-            });
+    pub fn set_tags(&mut self, utxos: Vec<Output>, tag: &str) -> Result<()> {
+        {
+            //for immediate UI feedback, update the last event with the new do_not_spend status
+            if self.last_event.is_some() {
+                let current_state = self.last_event.as_ref().unwrap();
+                let mut current_state = current_state.clone();
+                current_state.utxo.iter_mut().for_each(|x| {
+                    if utxos.iter().any(|u| u.get_id() == x.get_id()) {
+                        x.tag = Some(tag.to_string());
+                    }
+                });
+                if let Some(sink) = self.stream_sink.clone() {
+                    sink.add(current_state).unwrap();
+                };
+            }
+        }
+        utxos.iter().for_each(|output| {
+            self.ng_account
+                .lock()
+                .unwrap()
+                .set_tag(output.get_id().as_str(), tag)
+                .unwrap();
+        });
         self.send_update();
         Ok(())
     }
@@ -911,6 +938,7 @@ impl EnvoyAccountHandler {
                     id: config.id.clone(),
                     ng_account: Arc::new(Mutex::new(account)),
                     directory_path: db_path.clone(),
+                    last_event: None,
                 };
                 handler.migrate_meta(backup.notes, backup.tags, backup.do_not_spend);
                 Ok(handler)
@@ -1003,6 +1031,7 @@ impl EnvoyAccountHandler {
                     id: config.id.clone(),
                     ng_account: Arc::new(Mutex::new(account)),
                     directory_path: db_path.clone(),
+                    last_event: None,
                 }),
                 Err(err) => Err(anyhow!("Failed to persist: {:?}", err)),
             },

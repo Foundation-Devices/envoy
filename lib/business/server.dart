@@ -3,8 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:convert';
+
 import 'package:envoy/business/settings.dart';
-import 'package:envoy/ui/home/home_page.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/services.dart';
 import 'package:http_tor/http_tor.dart';
@@ -105,7 +106,7 @@ class Server {
     }
   }
 
-  Future<void> checkForForceUpdate() async {
+  Future<bool> checkForForceUpdate() async {
     try {
       // Fetch deprecated versions from the backend
       final response = await http!.get('$_serverAddress/deprecated-versions');
@@ -124,14 +125,16 @@ class Server {
           return envoyVersionOnPhone == deprecatedVersion;
         });
 
-        if (isDeprecated) {
-          isCurrentVersionDeprecated.add(true);
-        }
+        return isDeprecated;
       } else {
-        throw Exception('Failed to fetch deprecated versions');
+        throw Exception(
+            'Failed to fetch deprecated versions,server error ${response.statusCode}');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      EnvoyReport().log("UpdateCheck", "Error checking envoy update: $e",
+          stackTrace: stackTrace);
       kPrint("Error checking for force update: $e");
+      return false;
     }
   }
 }

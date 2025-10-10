@@ -66,7 +66,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 1828455099;
+  int get rustContentHash => 749957930;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -81,17 +81,9 @@ abstract class RustLibApi extends BaseApi {
     required Download that,
   });
 
-  RustStreamSink<Progress> crateApiHttpDownloadAutoAccessorGetProgress({
-    required Download that,
-  });
-
   void crateApiHttpDownloadAutoAccessorSetHandle({
     required Download that,
     required ArcJoinHandleResultError handle,
-  });
-
-  Stream<Progress> crateApiHttpDownloadAutoAccessorSetProgress({
-    required Download that,
   });
 
   Future<void> crateApiHttpDownloadCancel({required Download that});
@@ -174,37 +166,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  RustStreamSink<Progress> crateApiHttpDownloadAutoAccessorGetProgress({
-    required Download that,
-  }) {
-    return handler.executeSync(
-      SyncTask(
-        callFfi: () {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownload(
-            that,
-            serializer,
-          );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_StreamSink_progress_Sse,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiHttpDownloadAutoAccessorGetProgressConstMeta,
-        argValues: [that],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiHttpDownloadAutoAccessorGetProgressConstMeta =>
-      const TaskConstMeta(
-        debugName: "Download_auto_accessor_get_progress",
-        argNames: ["that"],
-      );
-
-  @override
   void crateApiHttpDownloadAutoAccessorSetHandle({
     required Download that,
     required ArcJoinHandleResultError handle,
@@ -221,7 +182,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             handle,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -241,40 +202,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Stream<Progress> crateApiHttpDownloadAutoAccessorSetProgress({
-    required Download that,
-  }) {
-    final progress = RustStreamSink<Progress>();
-    handler.executeSync(
-      SyncTask(
-        callFfi: () {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownload(
-            that,
-            serializer,
-          );
-          sse_encode_StreamSink_progress_Sse(progress, serializer);
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiHttpDownloadAutoAccessorSetProgressConstMeta,
-        argValues: [that, progress],
-        apiImpl: this,
-      ),
-    );
-    return progress.stream;
-  }
-
-  TaskConstMeta get kCrateApiHttpDownloadAutoAccessorSetProgressConstMeta =>
-      const TaskConstMeta(
-        debugName: "Download_auto_accessor_set_progress",
-        argNames: ["that", "progress"],
-      );
-
-  @override
   Future<void> crateApiHttpDownloadCancel({required Download that}) {
     return handler.executeNormal(
       NormalTask(
@@ -287,7 +214,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 5,
+            funcId: 3,
             port: port_,
           );
         },
@@ -323,7 +250,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 6,
+            funcId: 4,
             port: port_,
           );
         },
@@ -354,7 +281,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 7,
+            funcId: 5,
             port: port_,
           );
         },
@@ -381,7 +308,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 8,
+            funcId: 6,
             port: port_,
           );
         },
@@ -419,7 +346,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 9,
+            funcId: 7,
             port: port_,
           );
         },
@@ -1175,9 +1102,6 @@ class DownloadImpl extends RustOpaque implements Download {
 
   ArcJoinHandleResultError get handle => RustLib.instance.api
       .crateApiHttpDownloadAutoAccessorGetHandle(that: this);
-
-  RustStreamSink<Progress> get progress => RustLib.instance.api
-      .crateApiHttpDownloadAutoAccessorGetProgress(that: this);
 
   set handle(ArcJoinHandleResultError handle) => RustLib.instance.api
       .crateApiHttpDownloadAutoAccessorSetHandle(that: this, handle: handle);

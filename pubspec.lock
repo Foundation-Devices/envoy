@@ -1290,15 +1290,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
-  qr_code_scanner:
+  qr_code_scanner_plus:
     dependency: "direct main"
     description:
       path: "."
-      ref: "5af7a54f9af712e9512382093d6928ed0f766379"
-      resolved-ref: "5af7a54f9af712e9512382093d6928ed0f766379"
+      ref: "1bf7ecb41e62d490578ccfd0b5d59d39cba05725"
+      resolved-ref: "1bf7ecb41e62d490578ccfd0b5d59d39cba05725"
       url: "https://github.com/foundation-devices/qr_code_scanner.git"
     source: git
-    version: "1.0.0"
+    version: "2.0.12"
   qr_flutter:
     dependency: "direct main"
     description:

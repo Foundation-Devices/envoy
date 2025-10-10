@@ -586,48 +586,44 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
           });
         }
       },
-      child: Consumer(
-        builder: (context, ref, child) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 12, top: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            tag.name,
-                            style: textStyleWallet,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          CoinSubTitleText(tag),
-                        ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 12, top: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        tag.name,
+                        style: textStyleWallet,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
+                      CoinSubTitleText(tag),
+                    ],
+                  ),
                 ),
-              ),
-              Consumer(
-                builder: (context, ref, child) {
-                  return Container(
-                    alignment: Alignment.bottomCenter,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 2, horizontal: 4.5),
-                    height: 42,
-                    child: CoinTagBalanceWidget(coinTag: tag),
-                  );
-                },
-              ),
-            ],
-          );
-        },
+              ],
+            ),
+          ),
+          Consumer(
+            builder: (context, ref, child) {
+              return Container(
+                alignment: Alignment.bottomCenter,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 2, horizontal: 4.5),
+                height: 42,
+                child: CoinTagBalanceWidget(coinTag: tag),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

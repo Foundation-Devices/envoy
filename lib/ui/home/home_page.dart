@@ -12,6 +12,7 @@ import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/notifications.dart';
+import 'package:envoy/business/server.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
@@ -52,8 +53,10 @@ final _fullScreenProvider = Provider((ref) {
   return fullScreen || selections.isNotEmpty;
 });
 
-StreamController<bool> isCurrentVersionDeprecated =
-    StreamController.broadcast();
+//called once and result will be cached.
+final currentVersionDeprecatedProvider = FutureProvider<bool>((ref) {
+  return Server().checkForForceUpdate();
+});
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -247,26 +250,28 @@ class HomePageState extends ConsumerState<HomePage>
       }
     });
     _subscriptions.add(backupCompletedSub);
-    final newAppVersionAvailableSub =
-        isNewAppVersionAvailable.stream.listen((String newVersion) {
+    //fixme: use a provider to check the status
+    final newAppVersionAvailableSub = isNewAppVersionAvailable.stream
+        .asBroadcastStream()
+        .listen((String newVersion) {
       if (mounted) {
         _notifyAboutNewAppVersion(newVersion);
       }
     });
     _subscriptions.add(newAppVersionAvailableSub);
 
-    final isCurrentVersionDeprecatedSub =
-        isCurrentVersionDeprecated.stream.listen((bool isDeprecated) {
-      if (mounted && isDeprecated) {
-        showForceUpdateDialog();
-      }
-    });
-    _subscriptions.add(isCurrentVersionDeprecatedSub);
-
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final router = Navigator.of(context);
       SessionManager().bind(router);
       notifyAboutNetworkMigrationDialog(context);
+    });
+  }
+
+  void _checkUpdatesAndNotify() {
+    ref.listen(currentVersionDeprecatedProvider, (previous, next) {
+      if (next.hasValue && next.value == true) {
+        showForceUpdateDialog();
+      }
     });
   }
 
@@ -502,6 +507,8 @@ class HomePageState extends ConsumerState<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    _checkUpdatesAndNotify();
+
     bool optionsShown = ref.watch(homePageOptionsVisibilityProvider);
 
     double screenHeight = MediaQuery.of(context).size.height;

@@ -46,7 +46,6 @@ lazy_static! {
 }
 
 pub struct Download {
-    pub progress: StreamSink<Progress>,
     pub handle: Arc<JoinHandle<Result<(), anyhow::Error>>>,
 }
 
@@ -71,7 +70,6 @@ pub async fn get_file(
     progress_stream: ProgressStream,
 ) -> Download {
     let rt = RUNTIME.as_ref().unwrap();
-    let sink_clone = progress_stream.0.clone();
     let handle = rt.spawn(async move {
         let client: reqwest::Client = if tor_port > 0 {
             let proxy = reqwest::Proxy::all(format!("socks5://127.0.0.1:{}", tor_port))?;
@@ -111,7 +109,6 @@ pub async fn get_file(
     });
 
     Download {
-        progress: sink_clone,
         handle: Arc::new(handle),
     }
 }

@@ -42,7 +42,6 @@ class UpdatesManager {
         kPrint("Couldn't fetch firmware for device $device: $e");
       });
     }
-    Server().checkForForceUpdate();
   }
 
   Future<void> _downloadAndStoreFirmware(FirmwareUpdate fw) async {
