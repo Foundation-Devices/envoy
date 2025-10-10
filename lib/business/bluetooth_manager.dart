@@ -642,7 +642,7 @@ class BluetoothManager extends WidgetsBindingObserver {
         patchIndex: patchIndex,
         totalPatches: patches.length,
         patchBytes: patch,
-        chunkSize: BigInt.from(10000),
+        chunkSize: BigInt.from(100000),
       );
       allChunks.addAll(chunksForPatch);
     }
