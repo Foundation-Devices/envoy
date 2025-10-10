@@ -87,6 +87,7 @@ class Devices extends ChangeNotifier {
     for (var device in getPrimeDevices) {
       if (device.bleId.isNotEmpty) {
         kPrint("Connecting to ${device.bleId}");
+        await BluetoothManager().restorePrimeDevice(device.bleId);
         await BluetoothManager().connect(id: device.bleId);
       }
     }

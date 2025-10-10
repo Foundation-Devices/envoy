@@ -50,7 +50,7 @@ class BluetoothManager extends WidgetsBindingObserver {
   final Set<bluart.BleDevice> _connectedDevices = {};
 
   final StreamController<Set<bluart.BleDevice>> _connectedDevicesStream =
-      StreamController<Set<bluart.BleDevice>>();
+      StreamController<Set<bluart.BleDevice>>.broadcast();
 
   Set<bluart.BleDevice> get connectedDevices => _connectedDevices;
 
@@ -68,7 +68,7 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   final StreamController<api.QuantumLinkMessage_BroadcastTransaction>
       _transactionStream =
-      StreamController<api.QuantumLinkMessage_BroadcastTransaction>();
+      StreamController<api.QuantumLinkMessage_BroadcastTransaction>.broadcast();
 
   api.EnvoyMasterDechunker? _decoder;
   api.XidDocument? _recipientXid;
@@ -642,7 +642,7 @@ class BluetoothManager extends WidgetsBindingObserver {
         patchIndex: patchIndex,
         totalPatches: patches.length,
         patchBytes: patch,
-        chunkSize: BigInt.from(10000),
+        chunkSize: BigInt.from(100000),
       );
       allChunks.addAll(chunksForPatch);
     }

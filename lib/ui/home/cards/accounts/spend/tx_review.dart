@@ -7,6 +7,7 @@ import 'dart:ui';
 
 import 'package:animations/animations.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
@@ -24,6 +25,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/transaction_review_card.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/shield_path.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
@@ -32,6 +34,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
@@ -42,9 +45,6 @@ import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:envoy/business/devices.dart';
-import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
-import 'package:envoy/ui/widgets/envoy_step_item.dart';
 
 final primeConnectedStateProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
@@ -57,7 +57,7 @@ final transferTransactionStateProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
   return StepNotifier(
       stepName: "Transferring Transaction", // TODO: localazy
-      state: EnvoyStepState.LOADING);
+      state: EnvoyStepState.IDLE);
 });
 
 final signTransactionStateProvider =
@@ -76,8 +76,6 @@ class TxReview extends ConsumerStatefulWidget {
 }
 
 class _TxReviewState extends ConsumerState<TxReview> {
-  StreamSubscription<QuantumLinkMessage_BroadcastTransaction>?
-      _primeTransactionsSubscription;
   rive.File? _riveFile;
   rive.RiveWidgetController? _controller;
   bool _isInitialized = false;
@@ -111,7 +109,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
   void dispose() {
     _controller?.dispose();
     _riveFile?.dispose();
-    _primeTransactionsSubscription?.cancel();
     super.dispose();
   }
 
@@ -172,11 +169,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
         );
     ref.read(transferTransactionStateProvider.notifier).updateStep(
           "Transferring Transaction", //TODO: localazy
-          EnvoyStepState.LOADING,
+          EnvoyStepState.IDLE,
         );
     ref.read(signTransactionStateProvider.notifier).updateStep(
           "Waiting for Signing ", //TODO: localazy
-          EnvoyStepState.LOADING,
+          EnvoyStepState.IDLE,
         );
   }
 
@@ -204,42 +201,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
             "Waiting for Signing ", //TODO: localazy
             EnvoyStepState.LOADING,
           );
-
-      try {
-        _primeTransactionsSubscription = BluetoothManager()
-            .transactionStream
-            .listen((QuantumLinkMessage_BroadcastTransaction message) async {
-          kPrint("Got the Broadcast Transaction");
-          try {
-            final signedPsbt = message.field0;
-            kPrint("Signed Psbt $signedPsbt");
-
-            //TODO: fix quantum link with Uint8List psbt
-            await ref
-                .read(spendTransactionProvider.notifier)
-                .decodePrimePsbt(providerScope, signedPsbt.psbt);
-
-            ref.read(signTransactionStateProvider.notifier).updateStep(
-                  "Transaction ready", //TODO: localazy
-                  EnvoyStepState.FINISHED,
-                );
-          } catch (e, stack) {
-            debugPrintStack(stackTrace: stack);
-            kPrint(e);
-          }
-        });
-
-        // TODO: fix quantum link with Uint8List psbt
-        // await BluetoothManager().send(QuantumLinkMessage_SignPsbt(SignPsbt(
-        //   accountId: account.id,
-        //   psbt: psbt,
-        // )));
-        kPrint("Waiting for prime response...");
-        //wait for response from prime. maybe show some dialog while waiting?
-      } catch (e, stack) {
-        debugPrintStack(stackTrace: stack);
-        kPrint("Error sending to prime: $e");
-      }
     } else {
       TransactionModeNotifier transactionModeNotifier =
           ref.read(spendTransactionProvider.notifier);
@@ -574,6 +535,71 @@ class TransactionReviewScreen extends ConsumerStatefulWidget {
 
 class _TransactionReviewScreenState
     extends ConsumerState<TransactionReviewScreen> {
+  StepModel _primeConnectionState = StepModel(
+      stepName: S().onboarding_connectionIntro_connectedToPrime,
+      state: EnvoyStepState.IDLE);
+  StreamSubscription<QuantumLinkMessage_BroadcastTransaction>?
+      _primeTransactionsSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        _initTxStream();
+        final isConnected = ref.read(isPrimeConnectedProvider(
+            ref.read(selectedAccountProvider)?.deviceSerial ?? ""));
+        final EnvoyAccount? account = ref.read(selectedAccountProvider);
+        final Device? device =
+            Devices().getDeviceBySerial(account?.deviceSerial ?? "");
+        if (!isConnected && device != null) {
+          BluetoothManager().connect(id: device.bleId);
+        }
+      },
+    );
+  }
+
+  void _initTxStream() {
+    try {
+      _primeTransactionsSubscription = BluetoothManager()
+          .transactionStream
+          .listen((QuantumLinkMessage_BroadcastTransaction message) async {
+        if (!mounted) {
+          return;
+        }
+        final providerScope = ProviderScope.containerOf(context);
+        kPrint("Got the Broadcast Transaction");
+        try {
+          final signedPsbt = message.field0;
+          kPrint("Signed Psbt $signedPsbt");
+
+          //TODO: fix quantum link with Uint8List psbt
+          await ref
+              .read(spendTransactionProvider.notifier)
+              .decodePrimePsbt(providerScope, signedPsbt.psbt);
+
+          ref.read(signTransactionStateProvider.notifier).updateStep(
+                "Transaction ready", //TODO: localazy
+                EnvoyStepState.FINISHED,
+              );
+        } catch (e, stack) {
+          debugPrintStack(stackTrace: stack);
+          kPrint(e);
+        }
+      });
+      // TODO: fix quantum link with Uint8List psbt
+      // await BluetoothManager().send(QuantumLinkMessage_SignPsbt(SignPsbt(
+      //   accountId: account.id,
+      //   psbt: psbt,
+      // )));
+      kPrint("Waiting for prime response...");
+      //wait for response from prime. maybe show some dialog while waiting?
+    } catch (e, stack) {
+      debugPrintStack(stackTrace: stack);
+      kPrint("Error sending to prime: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isTest = const bool.fromEnvironment('IS_TEST', defaultValue: true);
@@ -608,10 +634,34 @@ class _TransactionReviewScreenState
     bool isPrime = device?.type == DeviceType.passportPrime;
     final bool isConnected =
         ref.watch(isPrimeConnectedProvider(device?.bleId ?? ""));
-
-    if (isPrime && device != null) {
-      checkConnectivity(isConnected, device);
+    if (isConnected) {
+      _primeConnectionState = StepModel(
+          stepName: S().onboarding_connectionIntro_connectedToPrime,
+          state: EnvoyStepState.FINISHED);
+    } else {
+      _primeConnectionState = StepModel(
+          stepName: "Reconnecting to Prime", // TODO: localazy
+          state: EnvoyStepState.LOADING);
     }
+
+    ref.listen(isPrimeConnectedProvider(device?.bleId ?? ""), (previous, next) {
+      if (isPrime) {
+        if (next == false) {
+          ref.read(primeConnectedStateProvider.notifier).updateStep(
+                "Reconnecting to Passport", // todo: localazy
+                EnvoyStepState.LOADING,
+              );
+          // try to connect to prime
+          if (device != null) {
+            BluetoothManager().connect(id: device.bleId);
+          }
+        } else {
+          ref.read(primeConnectedStateProvider.notifier).updateStep(
+              S().onboarding_connectionIntro_connectedToPrime,
+              EnvoyStepState.FINISHED);
+        }
+      }
+    });
 
     String header = (account.isHot || transactionModel.isFinalized)
         ? S().coincontrol_tx_detail_heading
@@ -626,6 +676,9 @@ class _TransactionReviewScreenState
             100)
         .round();
 
+    final enableButton = !transactionModel.loading &&
+        ((account.isHot || transactionModel.isFinalized) ||
+            (isPrime && isConnected));
     return EnvoyScaffold(
       backgroundColor: Colors.transparent,
       hasScrollBody: true,
@@ -668,7 +721,7 @@ class _TransactionReviewScreenState
                   ),
                 const Padding(padding: EdgeInsets.all(6)),
                 EnvoyButton(
-                  enabled: !transactionModel.loading,
+                  enabled: enableButton,
                   borderRadius: const BorderRadius.all(
                       Radius.circular(EnvoySpacing.small)),
                   leading: isPrime
@@ -812,7 +865,14 @@ class _TransactionReviewScreenState
     );
   }
 
-  void checkConnectivity(bool isConnected, Device device) {
+  @override
+  void dispose() {
+    _primeTransactionsSubscription?.cancel();
+    super.dispose();
+  }
+
+  void checkConnectivity(bool isConnected, Device device) async {
+    await Future.delayed(const Duration(milliseconds: 500));
     if (isConnected) {
       ref.read(primeConnectedStateProvider.notifier).updateStep(
           S().onboarding_connectionIntro_connectedToPrime,
@@ -833,8 +893,7 @@ class _TransactionReviewScreenState
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        EnvoyStepItem(
-            step: ref.watch(primeConnectedStateProvider), highlight: false),
+        EnvoyStepItem(step: _primeConnectionState, highlight: false),
         SizedBox(
           height: EnvoySpacing.medium1,
         ),
