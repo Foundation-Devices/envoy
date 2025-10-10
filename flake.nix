@@ -10,7 +10,6 @@
   };
 
   outputs = {
-    lib,
     nixpkgs,
     flake-utils,
     ...
@@ -24,6 +23,8 @@
             android_sdk.accept_license = true;
           };
         };
+
+        inherit (nixpkgs) lib;
 
         # Android SDK configuration
         androidComposition = pkgs.androidenv.composeAndroidPackages {
