@@ -3622,6 +3622,7 @@ dependencies = [
  "flutter_rust_bridge",
  "log",
  "ngwallet",
+ "oslog 0.2.0",
  "sled",
 ]
 
