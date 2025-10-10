@@ -521,12 +521,11 @@ class TransactionReviewScreen extends ConsumerStatefulWidget {
 
 class _TransactionReviewScreenState
     extends ConsumerState<TransactionReviewScreen> {
-
   StepModel _primeConnectionState = StepModel(
       stepName: S().onboarding_connectionIntro_connectedToPrime,
       state: EnvoyStepState.IDLE);
   StreamSubscription<QuantumLinkMessage_BroadcastTransaction>?
-  _primeTransactionsSubscription;
+      _primeTransactionsSubscription;
 
   @override
   void initState() {
@@ -539,13 +538,12 @@ class _TransactionReviewScreenState
         final EnvoyAccount? account = ref.read(selectedAccountProvider);
         final Device? device =
             Devices().getDeviceBySerial(account?.deviceSerial ?? "");
-        if (!isConnected && device  != null) {
+        if (!isConnected && device != null) {
           BluetoothManager().connect(id: device.bleId);
         }
       },
     );
   }
-
 
   void _initTxStream() {
     try {
@@ -567,9 +565,9 @@ class _TransactionReviewScreenState
               .decodePrimePsbt(providerScope, signedPsbt.psbt);
 
           ref.read(signTransactionStateProvider.notifier).updateStep(
-            "Transaction ready", //TODO: localazy
-            EnvoyStepState.FINISHED,
-          );
+                "Transaction ready", //TODO: localazy
+                EnvoyStepState.FINISHED,
+              );
         } catch (e, stack) {
           debugPrintStack(stackTrace: stack);
           kPrint(e);
@@ -858,7 +856,7 @@ class _TransactionReviewScreenState
     _primeTransactionsSubscription?.cancel();
     super.dispose();
   }
-  
+
   void checkConnectivity(bool isConnected, Device device) async {
     await Future.delayed(const Duration(milliseconds: 500));
     if (isConnected) {

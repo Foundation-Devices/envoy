@@ -150,7 +150,8 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                 Flexible(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       DefaultTextStyle(
                                         style: EnvoyTypography.subheading
@@ -160,7 +161,8 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                           account.name,
                                           style: EnvoyTypography.subheading
                                               .copyWith(
-                                                  color: EnvoyColors.solidWhite),
+                                                  color:
+                                                      EnvoyColors.solidWhite),
                                         ),
                                       ),
                                       DefaultTextStyle(
