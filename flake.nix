@@ -179,6 +179,7 @@
             # darwin xcode
             unset DEVELOPER_DIR
             unset SDKROOT
+            ${lib.optionalString pkgs.stdenv.isDarwin "export DEVELOPER_DIR=\"$(xcode-select -p)\""}
 
             # Android SDK and NDK configuration
             export ANDROID_SDK_ROOT="${androidComposition.androidsdk}/libexec/android-sdk"
