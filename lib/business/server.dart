@@ -35,25 +35,42 @@ class Server {
   }
 
   Future<List<PrimePatch>> fetchPrimePatches(String currentVersion) async {
-    final staticPatch = PrimePatch(
-      version: "1.0.0",
-      baseVersion: currentVersion,
-      signedSha256: "static_signed_hash",
-      unsignedSha256: "static_unsigned_hash",
-      updateFilename: "release-bin.tar",
-      signatureFilename: "release-bin.sig",
-      url: "assets/prime/release-bin.tar",
-      changelog: "Static firmware update from assets",
-      description: "Embedded release-bin.tar firmware binary",
-      releaseDate: DateTime.now(),
-    );
+    final response = await http!
+        .get('$_serverAddress/prime/patches?version=$currentVersion');
 
-    return [staticPatch];
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> json = jsonDecode(response.body);
+
+      if (json['patches'] == null) {
+        return [];
+      }
+
+      final List<dynamic> patches = json['patches'];
+
+      final List<PrimePatch> updates = [];
+      for (final patch in patches) {
+        updates.add(PrimePatch.fromJson(patch));
+      }
+
+      return updates;
+    } else {
+      throw Exception('Failed to fetch update chain');
+    }
   }
 
-  Future<Uint8List> fetchPrimePatchBinary(PrimePatch patch) async {
-    final ByteData data = await rootBundle.load("assets/prime/release.tar");
-    return data.buffer.asUint8List();
+  Future<Uint8List?> fetchPrimePatchBinary(PrimePatch patch) async {
+    try {
+      final response = await http!.get(patch.url);
+      if (response.statusCode == 200) {
+        return Uint8List.fromList(response.bodyBytes);
+      } else {
+        throw Exception('Failed to fetch prime patch');
+      }
+    } catch (e) {
+      kPrint("Error fetching prime patches: $e");
+    }
+
+    return null;
   }
 
   Future<List<PatchBinary>> fetchPrimePatchBinaries(
@@ -131,7 +148,6 @@ class PrimePatch {
   final String signatureFilename;
   final String url;
   final String changelog;
-  final String description;
   final DateTime releaseDate;
 
   PrimePatch({
@@ -143,7 +159,6 @@ class PrimePatch {
     required this.signatureFilename,
     required this.url,
     required this.changelog,
-    required this.description,
     required this.releaseDate,
   });
 
@@ -157,7 +172,6 @@ class PrimePatch {
         signatureFilename: json['signature_filename'],
         url: json['url'],
         changelog: json['changelog'],
-        description: json['description'],
         releaseDate: DateTime.parse(
           (json['release_date']),
         ));

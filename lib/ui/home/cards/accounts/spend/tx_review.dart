@@ -42,6 +42,30 @@ import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
+import 'package:envoy/business/devices.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
+import 'package:envoy/ui/widgets/envoy_step_item.dart';
+
+final primeConnectedStateProvider =
+    StateNotifierProvider<StepNotifier, StepModel>((ref) {
+  return StepNotifier(
+      stepName: S().onboarding_connectionIntro_connectedToPrime,
+      state: EnvoyStepState.FINISHED);
+});
+
+final transferTransactionStateProvider =
+    StateNotifierProvider<StepNotifier, StepModel>((ref) {
+  return StepNotifier(
+      stepName: "Transferring Transaction", // TODO: localazy
+      state: EnvoyStepState.LOADING);
+});
+
+final signTransactionStateProvider =
+    StateNotifierProvider<StepNotifier, StepModel>((ref) {
+  return StepNotifier(
+      stepName: "Wait for Signing", // TODO: localazy
+      state: EnvoyStepState.IDLE);
+});
 
 //ignore: must_be_immutable
 class TxReview extends ConsumerStatefulWidget {
@@ -52,31 +76,43 @@ class TxReview extends ConsumerStatefulWidget {
 }
 
 class _TxReviewState extends ConsumerState<TxReview> {
-  StreamSubscription<PassportMessage>? _passportMessageSubscription;
-  late final rive.Artboard _artBoard;
-  rive.StateMachineController? _stateMachineController;
+  StreamSubscription<QuantumLinkMessage_BroadcastTransaction>?
+      _primeTransactionsSubscription;
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _controller;
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    //load rive animation with cache to avoid repeated allocations
     _loadRiveAnimation();
   }
 
   void _loadRiveAnimation() async {
-    //load rive animation for better performance
-    rootBundle.load('assets/envoy_loader.riv').then((data) {
-      final file = rive.RiveFile.import(data);
-      final artboard = file.mainArtboard;
-      _stateMachineController =
-          rive.StateMachineController.fromArtboard(artboard, 'STM');
-      if (_stateMachineController != null) {
-        artboard.addController(_stateMachineController!);
-      }
+    try {
+      _riveFile = await rive.File.asset('assets/envoy_loader.riv',
+          riveFactory: rive.Factory.rive);
+      _controller = rive.RiveWidgetController(
+        _riveFile!,
+        stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+      );
+
       if (mounted) {
-        setState(() => _artBoard = artboard);
+        setState(() => _isInitialized = true);
       }
-    });
+    } catch (e) {
+      kPrint('Error loading Rive file: $e');
+    }
+
+    Future.microtask(() => _resetPrimeProviderStates());
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _riveFile?.dispose();
+    _primeTransactionsSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -129,71 +165,67 @@ class _TxReviewState extends ConsumerState<TxReview> {
     );
   }
 
-  @override
-  dispose() {
-    _passportMessageSubscription?.cancel();
-    _stateMachineController?.dispose();
-    super.dispose();
+  void _resetPrimeProviderStates() {
+    ref.read(primeConnectedStateProvider.notifier).updateStep(
+          S().onboarding_connectionIntro_connectedToPrime,
+          EnvoyStepState.FINISHED,
+        );
+    ref.read(transferTransactionStateProvider.notifier).updateStep(
+          "Transferring Transaction", //TODO: localazy
+          EnvoyStepState.LOADING,
+        );
+    ref.read(signTransactionStateProvider.notifier).updateStep(
+          "Waiting for Signing ", //TODO: localazy
+          EnvoyStepState.LOADING,
+        );
   }
 
   Future<void> _handleQRExchange(EnvoyAccount account, BuildContext rootContext,
       ProviderContainer providerScope) async {
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
     Uint8List? psbt = transactionModel.draftTransaction?.psbt;
-    //if serial is prime, send psbt through ql
-    if (account.deviceSerial == "prime" && psbt != null) {
+
+    final Device? device =
+        Devices().getDeviceBySerial(account.deviceSerial ?? "");
+    final bool isPrime = device?.type == DeviceType.passportPrime;
+    if (isPrime && psbt != null) {
       kPrint("Sending to prime $psbt");
-      showEnvoyDialog(
-          context: rootContext,
-          blur: 16,
-          blurColor: Colors.black,
-          linearGradient: true,
-          dialog: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              EnvoyIcon(EnvoyIcons.prime,
-                  size: EnvoyIconSize.mediumLarge,
-                  color: EnvoyColors.solidWhite),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: EnvoySpacing.medium2,
-                ),
-                child: Text("Waiting for Prime to sign transaction...",
-                    style: EnvoyTypography.digitsMedium
-                        .copyWith(color: EnvoyColors.textPrimaryInverse)),
-              ),
-            ],
-          ),
-          cardColor: Colors.transparent,
-          useRootNavigator: true);
+      ref.read(transferTransactionStateProvider.notifier).updateStep(
+            "Transferring Transaction", //TODO: localazy
+            EnvoyStepState.LOADING,
+          );
+
+      await BluetoothManager().sendPsbt(account.id, psbt);
+      ref.read(transferTransactionStateProvider.notifier).updateStep(
+            "Transaction transferred", //TODO: localazy
+            EnvoyStepState.FINISHED,
+          );
+      ref.read(signTransactionStateProvider.notifier).updateStep(
+            "Waiting for Signing ", //TODO: localazy
+            EnvoyStepState.LOADING,
+          );
+
       try {
-        _passportMessageSubscription = BluetoothManager()
+        _primeTransactionsSubscription = BluetoothManager()
             .transactionStream
-            .listen((PassportMessage message) async {
-          kPrint(
-              "Got the Passport Message : ${message.message} :::  ${message.message.runtimeType}");
-          if (message.message is QuantumLinkMessage_BroadcastTransaction) {
-            kPrint("Got the Broadcast Transaction");
-            try {
-              final signedPsbt =
-                  (message.message as QuantumLinkMessage_BroadcastTransaction)
-                      .field0;
-              kPrint("Signed Psbt $signedPsbt");
-              kPrint("Signed Psbt $signedPsbt");
-              //TODO: fix quantum link with Uint8List psbt
-              // await ref
-              //     .read(spendTransactionProvider.notifier)
-              //     .decodePrimePsbt(providerScope, signedPsbt.psbt);
-              //hide the dialog
-              if (rootContext.mounted) {
-                Navigator.pop(rootContext);
-              }
-            } catch (e, stack) {
-              debugPrintStack(stackTrace: stack);
-              kPrint(e);
-            }
+            .listen((QuantumLinkMessage_BroadcastTransaction message) async {
+          kPrint("Got the Broadcast Transaction");
+          try {
+            final signedPsbt = message.field0;
+            kPrint("Signed Psbt $signedPsbt");
+
+            //TODO: fix quantum link with Uint8List psbt
+            await ref
+                .read(spendTransactionProvider.notifier)
+                .decodePrimePsbt(providerScope, signedPsbt.psbt);
+
+            ref.read(signTransactionStateProvider.notifier).updateStep(
+                  "Transaction ready", //TODO: localazy
+                  EnvoyStepState.FINISHED,
+                );
+          } catch (e, stack) {
+            debugPrintStack(stackTrace: stack);
+            kPrint(e);
           }
         });
 
@@ -299,10 +331,12 @@ class _TxReviewState extends ConsumerState<TxReview> {
               SliverToBoxAdapter(
                 child: SizedBox(
                   height: 260,
-                  child: rive.Rive(
-                    artboard: _artBoard,
-                    fit: BoxFit.contain,
-                  ),
+                  child: _isInitialized && _controller != null
+                      ? rive.RiveWidget(
+                          controller: _controller!,
+                          fit: rive.Fit.contain,
+                        )
+                      : const SizedBox(),
                 ),
               ),
               const SliverPadding(padding: EdgeInsets.all(28)),
@@ -505,14 +539,16 @@ class _TxReviewState extends ConsumerState<TxReview> {
   }
 
   void _setAnimState(BroadcastProgress progress) {
+    if (_controller?.stateMachine == null) return;
+
     bool happy = progress == BroadcastProgress.success;
     bool unhappy = progress == BroadcastProgress.failed;
     bool indeterminate = progress == BroadcastProgress.inProgress;
-    _stateMachineController
-        ?.findInput<bool>("indeterminate")
-        ?.change(indeterminate);
-    _stateMachineController?.findInput<bool>("happy")?.change(happy);
-    _stateMachineController?.findInput<bool>("unhappy")?.change(unhappy);
+
+    final stateMachine = _controller!.stateMachine;
+    stateMachine.boolean("indeterminate")?.value = indeterminate;
+    stateMachine.boolean("happy")?.value = happy;
+    stateMachine.boolean("unhappy")?.value = unhappy;
   }
 
   bool hapticCalled = false;
@@ -567,6 +603,16 @@ class _TransactionReviewScreenState
       );
     }
 
+    final Device? device =
+        Devices().getDeviceBySerial(account.deviceSerial ?? "");
+    bool isPrime = device?.type == DeviceType.passportPrime;
+    final bool isConnected =
+        ref.watch(isPrimeConnectedProvider(device?.bleId ?? ""));
+
+    if (isPrime && device != null) {
+      checkConnectivity(isConnected, device);
+    }
+
     String header = (account.isHot || transactionModel.isFinalized)
         ? S().coincontrol_tx_detail_heading
         : S().coincontrol_txDetail_heading_passport;
@@ -612,6 +658,8 @@ class _TransactionReviewScreenState
                     enabled: !transactionModel.loading,
                     S().replaceByFee_boost_reviewCoinSelection,
                     type: EnvoyButtonTypes.secondary,
+                    borderRadius: const BorderRadius.all(
+                        Radius.circular(EnvoySpacing.small)),
                     onTap: () {
                       ref.read(userHasChangedFeesProvider.notifier).state =
                           false;
@@ -621,6 +669,17 @@ class _TransactionReviewScreenState
                 const Padding(padding: EdgeInsets.all(6)),
                 EnvoyButton(
                   enabled: !transactionModel.loading,
+                  borderRadius: const BorderRadius.all(
+                      Radius.circular(EnvoySpacing.small)),
+                  leading: isPrime
+                      ? EnvoyIcon(
+                          transactionModel.isFinalized
+                              ? EnvoyIcons.send
+                              : EnvoyIcons.quantum,
+                          color: EnvoyColors.solidWhite,
+                          size: EnvoyIconSize.small,
+                        )
+                      : null,
                   (account.isHot || transactionModel.isFinalized)
                       ? S().coincontrol_tx_detail_cta1
                       : S().coincontrol_txDetail_cta1_passport,
@@ -693,6 +752,12 @@ class _TransactionReviewScreenState
                                   top: EnvoySpacing.medium1),
                               child: feeOverSpendWarning(feePercentage),
                             ),
+                          if (isPrime)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: EnvoySpacing.medium1),
+                              child: transactionPrimeStatus(context),
+                            ),
                           if (isTest)
                             const SizedBox(height: EnvoySpacing.medium1)
                         ]),
@@ -744,6 +809,44 @@ class _TransactionReviewScreenState
           ),
         ],
       ),
+    );
+  }
+
+  void checkConnectivity(bool isConnected, Device device) {
+    if (isConnected) {
+      ref.read(primeConnectedStateProvider.notifier).updateStep(
+          S().onboarding_connectionIntro_connectedToPrime,
+          EnvoyStepState.FINISHED);
+    } else if (!isConnected) {
+      ref.read(primeConnectedStateProvider.notifier).updateStep(
+            "Reconnecting to Passport", // todo: localazy
+            EnvoyStepState.LOADING,
+          );
+      // try to connect to prime
+      BluetoothManager().connect(id: device.bleId);
+    }
+  }
+
+  Column transactionPrimeStatus(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        EnvoyStepItem(
+            step: ref.watch(primeConnectedStateProvider), highlight: false),
+        SizedBox(
+          height: EnvoySpacing.medium1,
+        ),
+        EnvoyStepItem(
+            step: ref.watch(transferTransactionStateProvider),
+            highlight: false),
+        SizedBox(
+          height: EnvoySpacing.medium1,
+        ),
+        EnvoyStepItem(
+            step: ref.watch(signTransactionStateProvider), highlight: false),
+      ],
     );
   }
 

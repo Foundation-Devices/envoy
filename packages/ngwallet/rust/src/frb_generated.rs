@@ -42,6 +42,16 @@ use bdk_wallet::rusqlite::Connection;
 use bdk_wallet::KeychainKind;
 use bdk_wallet::Update;
 use ngwallet::account::NgAccount;
+use ngwallet::config::AddressType;
+use ngwallet::config::NgAccountBackup;
+use ngwallet::config::NgAccountConfig;
+use ngwallet::config::NgDescriptor;
+use ngwallet::send::DraftTransaction;
+use ngwallet::send::TransactionComposeError;
+use ngwallet::send::TransactionFeeResult;
+use ngwallet::send::TransactionParams;
+use ngwallet::transaction::BitcoinTransaction;
+use ngwallet::transaction::Output;
 use std::sync::Mutex;
 
 flutter_rust_bridge::frb_generated_boilerplate!(
@@ -3027,6 +3037,7 @@ const _: fn() = || {
         let _: crate::api::envoy_wallet::Network = NgAccountConfig.network;
         let _: String = NgAccountConfig.id;
         let _: Option<MultiSigDetails> = NgAccountConfig.multisig;
+        let _: bool = NgAccountConfig.archived;
     }
     {
         let NgDescriptor = None::<ngwallet::config::NgDescriptor>.unwrap();
@@ -3752,6 +3763,7 @@ impl SseDecode for ngwallet::config::NgAccountConfig {
         let mut var_network = <crate::api::envoy_wallet::Network>::sse_decode(deserializer);
         let mut var_id = <String>::sse_decode(deserializer);
         let mut var_multisig = <Option<MultiSigDetails>>::sse_decode(deserializer);
+        let mut var_archived = <bool>::sse_decode(deserializer);
         return ngwallet::config::NgAccountConfig {
             name: var_name,
             color: var_color,
@@ -3765,6 +3777,7 @@ impl SseDecode for ngwallet::config::NgAccountConfig {
             network: var_network,
             id: var_id,
             multisig: var_multisig,
+            archived: var_archived,
         };
     }
 }
@@ -4973,6 +4986,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<ngwallet::config::NgAccountCon
             self.0.network.into_into_dart().into_dart(),
             self.0.id.into_into_dart().into_dart(),
             self.0.multisig.into_into_dart().into_dart(),
+            self.0.archived.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -5757,6 +5771,7 @@ impl SseEncode for ngwallet::config::NgAccountConfig {
         <crate::api::envoy_wallet::Network>::sse_encode(self.network, serializer);
         <String>::sse_encode(self.id, serializer);
         <Option<MultiSigDetails>>::sse_encode(self.multisig, serializer);
+        <bool>::sse_encode(self.archived, serializer);
     }
 }
 
@@ -6113,6 +6128,16 @@ mod io {
     use bdk_wallet::KeychainKind;
     use bdk_wallet::Update;
     use ngwallet::account::NgAccount;
+    use ngwallet::config::AddressType;
+    use ngwallet::config::NgAccountBackup;
+    use ngwallet::config::NgAccountConfig;
+    use ngwallet::config::NgDescriptor;
+    use ngwallet::send::DraftTransaction;
+    use ngwallet::send::TransactionComposeError;
+    use ngwallet::send::TransactionFeeResult;
+    use ngwallet::send::TransactionParams;
+    use ngwallet::transaction::BitcoinTransaction;
+    use ngwallet::transaction::Output;
     use std::sync::Mutex;
 
     flutter_rust_bridge::frb_generated_boilerplate_io!();
@@ -6286,6 +6311,16 @@ mod web {
     use bdk_wallet::KeychainKind;
     use bdk_wallet::Update;
     use ngwallet::account::NgAccount;
+    use ngwallet::config::AddressType;
+    use ngwallet::config::NgAccountBackup;
+    use ngwallet::config::NgAccountConfig;
+    use ngwallet::config::NgDescriptor;
+    use ngwallet::send::DraftTransaction;
+    use ngwallet::send::TransactionComposeError;
+    use ngwallet::send::TransactionFeeResult;
+    use ngwallet::send::TransactionParams;
+    use ngwallet::transaction::BitcoinTransaction;
+    use ngwallet::transaction::Output;
     use std::sync::Mutex;
 
     flutter_rust_bridge::frb_generated_boilerplate_web!();

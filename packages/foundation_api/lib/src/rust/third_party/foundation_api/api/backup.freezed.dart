@@ -341,18 +341,21 @@ mixin _$RestoreShardResponse {
   TResult when<TResult extends Object?>({
     required TResult Function(Shard field0) success,
     required TResult Function(String field0) error,
+    required TResult Function(String field0) notFound,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(Shard field0)? success,
     TResult? Function(String field0)? error,
+    TResult? Function(String field0)? notFound,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(Shard field0)? success,
     TResult Function(String field0)? error,
+    TResult Function(String field0)? notFound,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -360,18 +363,21 @@ mixin _$RestoreShardResponse {
   TResult map<TResult extends Object?>({
     required TResult Function(RestoreShardResponse_Success value) success,
     required TResult Function(RestoreShardResponse_Error value) error,
+    required TResult Function(RestoreShardResponse_NotFound value) notFound,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(RestoreShardResponse_Success value)? success,
     TResult? Function(RestoreShardResponse_Error value)? error,
+    TResult? Function(RestoreShardResponse_NotFound value)? notFound,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(RestoreShardResponse_Success value)? success,
     TResult Function(RestoreShardResponse_Error value)? error,
+    TResult Function(RestoreShardResponse_NotFound value)? notFound,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -474,6 +480,7 @@ class _$RestoreShardResponse_SuccessImpl extends RestoreShardResponse_Success {
   TResult when<TResult extends Object?>({
     required TResult Function(Shard field0) success,
     required TResult Function(String field0) error,
+    required TResult Function(String field0) notFound,
   }) {
     return success(field0);
   }
@@ -483,6 +490,7 @@ class _$RestoreShardResponse_SuccessImpl extends RestoreShardResponse_Success {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(Shard field0)? success,
     TResult? Function(String field0)? error,
+    TResult? Function(String field0)? notFound,
   }) {
     return success?.call(field0);
   }
@@ -492,6 +500,7 @@ class _$RestoreShardResponse_SuccessImpl extends RestoreShardResponse_Success {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(Shard field0)? success,
     TResult Function(String field0)? error,
+    TResult Function(String field0)? notFound,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -505,6 +514,7 @@ class _$RestoreShardResponse_SuccessImpl extends RestoreShardResponse_Success {
   TResult map<TResult extends Object?>({
     required TResult Function(RestoreShardResponse_Success value) success,
     required TResult Function(RestoreShardResponse_Error value) error,
+    required TResult Function(RestoreShardResponse_NotFound value) notFound,
   }) {
     return success(this);
   }
@@ -514,6 +524,7 @@ class _$RestoreShardResponse_SuccessImpl extends RestoreShardResponse_Success {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(RestoreShardResponse_Success value)? success,
     TResult? Function(RestoreShardResponse_Error value)? error,
+    TResult? Function(RestoreShardResponse_NotFound value)? notFound,
   }) {
     return success?.call(this);
   }
@@ -523,6 +534,7 @@ class _$RestoreShardResponse_SuccessImpl extends RestoreShardResponse_Success {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(RestoreShardResponse_Success value)? success,
     TResult Function(RestoreShardResponse_Error value)? error,
+    TResult Function(RestoreShardResponse_NotFound value)? notFound,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -622,6 +634,7 @@ class _$RestoreShardResponse_ErrorImpl extends RestoreShardResponse_Error {
   TResult when<TResult extends Object?>({
     required TResult Function(Shard field0) success,
     required TResult Function(String field0) error,
+    required TResult Function(String field0) notFound,
   }) {
     return error(field0);
   }
@@ -631,6 +644,7 @@ class _$RestoreShardResponse_ErrorImpl extends RestoreShardResponse_Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(Shard field0)? success,
     TResult? Function(String field0)? error,
+    TResult? Function(String field0)? notFound,
   }) {
     return error?.call(field0);
   }
@@ -640,6 +654,7 @@ class _$RestoreShardResponse_ErrorImpl extends RestoreShardResponse_Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(Shard field0)? success,
     TResult Function(String field0)? error,
+    TResult Function(String field0)? notFound,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -653,6 +668,7 @@ class _$RestoreShardResponse_ErrorImpl extends RestoreShardResponse_Error {
   TResult map<TResult extends Object?>({
     required TResult Function(RestoreShardResponse_Success value) success,
     required TResult Function(RestoreShardResponse_Error value) error,
+    required TResult Function(RestoreShardResponse_NotFound value) notFound,
   }) {
     return error(this);
   }
@@ -662,6 +678,7 @@ class _$RestoreShardResponse_ErrorImpl extends RestoreShardResponse_Error {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(RestoreShardResponse_Success value)? success,
     TResult? Function(RestoreShardResponse_Error value)? error,
+    TResult? Function(RestoreShardResponse_NotFound value)? notFound,
   }) {
     return error?.call(this);
   }
@@ -671,6 +688,7 @@ class _$RestoreShardResponse_ErrorImpl extends RestoreShardResponse_Error {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(RestoreShardResponse_Success value)? success,
     TResult Function(RestoreShardResponse_Error value)? error,
+    TResult Function(RestoreShardResponse_NotFound value)? notFound,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -692,5 +710,161 @@ abstract class RestoreShardResponse_Error extends RestoreShardResponse {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$RestoreShardResponse_ErrorImplCopyWith<_$RestoreShardResponse_ErrorImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$RestoreShardResponse_NotFoundImplCopyWith<$Res> {
+  factory _$$RestoreShardResponse_NotFoundImplCopyWith(
+          _$RestoreShardResponse_NotFoundImpl value,
+          $Res Function(_$RestoreShardResponse_NotFoundImpl) then) =
+      __$$RestoreShardResponse_NotFoundImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String field0});
+}
+
+/// @nodoc
+class __$$RestoreShardResponse_NotFoundImplCopyWithImpl<$Res>
+    extends _$RestoreShardResponseCopyWithImpl<$Res,
+        _$RestoreShardResponse_NotFoundImpl>
+    implements _$$RestoreShardResponse_NotFoundImplCopyWith<$Res> {
+  __$$RestoreShardResponse_NotFoundImplCopyWithImpl(
+      _$RestoreShardResponse_NotFoundImpl _value,
+      $Res Function(_$RestoreShardResponse_NotFoundImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of RestoreShardResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$RestoreShardResponse_NotFoundImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$RestoreShardResponse_NotFoundImpl
+    extends RestoreShardResponse_NotFound {
+  const _$RestoreShardResponse_NotFoundImpl(this.field0) : super._();
+
+  @override
+  final String field0;
+
+  @override
+  String toString() {
+    return 'RestoreShardResponse.notFound(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$RestoreShardResponse_NotFoundImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of RestoreShardResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$RestoreShardResponse_NotFoundImplCopyWith<
+          _$RestoreShardResponse_NotFoundImpl>
+      get copyWith => __$$RestoreShardResponse_NotFoundImplCopyWithImpl<
+          _$RestoreShardResponse_NotFoundImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(Shard field0) success,
+    required TResult Function(String field0) error,
+    required TResult Function(String field0) notFound,
+  }) {
+    return notFound(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(Shard field0)? success,
+    TResult? Function(String field0)? error,
+    TResult? Function(String field0)? notFound,
+  }) {
+    return notFound?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(Shard field0)? success,
+    TResult Function(String field0)? error,
+    TResult Function(String field0)? notFound,
+    required TResult orElse(),
+  }) {
+    if (notFound != null) {
+      return notFound(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(RestoreShardResponse_Success value) success,
+    required TResult Function(RestoreShardResponse_Error value) error,
+    required TResult Function(RestoreShardResponse_NotFound value) notFound,
+  }) {
+    return notFound(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(RestoreShardResponse_Success value)? success,
+    TResult? Function(RestoreShardResponse_Error value)? error,
+    TResult? Function(RestoreShardResponse_NotFound value)? notFound,
+  }) {
+    return notFound?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(RestoreShardResponse_Success value)? success,
+    TResult Function(RestoreShardResponse_Error value)? error,
+    TResult Function(RestoreShardResponse_NotFound value)? notFound,
+    required TResult orElse(),
+  }) {
+    if (notFound != null) {
+      return notFound(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class RestoreShardResponse_NotFound extends RestoreShardResponse {
+  const factory RestoreShardResponse_NotFound(final String field0) =
+      _$RestoreShardResponse_NotFoundImpl;
+  const RestoreShardResponse_NotFound._() : super._();
+
+  @override
+  String get field0;
+
+  /// Create a copy of RestoreShardResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$RestoreShardResponse_NotFoundImplCopyWith<
+          _$RestoreShardResponse_NotFoundImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

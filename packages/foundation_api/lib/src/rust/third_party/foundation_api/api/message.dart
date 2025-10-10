@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../../../frb_generated.dart';
+import '../../../lib.dart';
 import 'backup.dart';
 import 'bitcoin.dart';
 import 'firmware.dart';
@@ -109,6 +110,12 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.securityCheck(
     SecurityCheck field0,
   ) = QuantumLinkMessage_SecurityCheck;
+  const factory QuantumLinkMessage.magicBackupEnabledRequest(
+    MagicBackupEnabledRequest field0,
+  ) = QuantumLinkMessage_MagicBackupEnabledRequest;
+  const factory QuantumLinkMessage.magicBackupEnabledResponse(
+    MagicBackupEnabledResponse field0,
+  ) = QuantumLinkMessage_MagicBackupEnabledResponse;
   const factory QuantumLinkMessage.backupShardRequest(
     BackupShardRequest field0,
   ) = QuantumLinkMessage_BackupShardRequest;

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:animations/animations.dart';
@@ -63,6 +64,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   Completer<QuantumLinkMessage_BroadcastTransaction>? get completer =>
       _completer;
 
+  StreamSubscription<PassportMessage>? _passportMessagesSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -70,8 +73,15 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     _startBluetoothDisconnectionListener(context);
   }
 
+  @override
+  void dispose() {
+    _passportMessagesSubscription?.cancel();
+    _connectionMonitorSubscription?.cancel();
+    super.dispose();
+  }
+
   void _listenForPassportMessages() {
-    BluetoothManager()
+    _passportMessagesSubscription = BluetoothManager()
         .passportMessageStream
         .listen((PassportMessage message) async {
       kPrint("Got the Passport Message : ${message.message}");
@@ -185,7 +195,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               EnvoyStepState.LOADING);
 
           final patches = await Server().fetchPrimePatches(currentVersion);
-
           await BluetoothManager().sendFirmwareUpdateInfo(patches);
 
           await ref.read(firmWareUpdateProvider.notifier).updateStep(
@@ -347,10 +356,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
         break;
       case OnboardingState.completed:
-        if (mounted) {
-          context.go("/");
-          _notifyAfterOnboardingTutorial(context);
-        }
+        resetOnboardingPrimeProviders(ref);
+        context.go("/");
+        _notifyAfterOnboardingTutorial(context);
         break;
       case OnboardingState.securityChecked:
         break;
@@ -382,7 +390,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     ref.read(fwDownloadStateProvider.notifier).updateStep(
         S().firmware_updatingDownload_downloading, EnvoyStepState.LOADING);
 
-    List<PrimePatch> patches;
+    List<PrimePatch> patches = [];
 
     try {
       patches = await Server().fetchPrimePatches(currentVersion);
@@ -405,6 +413,10 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       try {
         for (final patch in patches) {
           final binary = await Server().fetchPrimePatchBinary(patch);
+          if (binary == null) {
+            throw Exception("Must get all the patches!");
+          }
+
           patchBinaries.add(binary);
         }
       } catch (e) {
@@ -645,9 +657,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             decoder: PrimeQlPayloadDecoder(
               decoder: qrDecoder,
               onScan: (XidDocument payload) async {
-                kPrint("XID payload: $payload");
-                await pairWithPrime(payload);
-
                 // TODO: process XidDocument for connection
 
                 if (!context.mounted) return;
@@ -660,6 +669,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
                 if (!context.mounted) return;
                 context.goNamed(ONBOARD_PRIME_PAIR);
+
+                kPrint("XID payload: $payload");
+                await pairWithPrime(payload);
               },
             ),
           );
@@ -740,11 +752,22 @@ class _QuantumLinkCommunicationInfoState
                         child: ExpandablePageView(
                           controller: _pageController,
                           children: [
-                            Text(
-                              //TODO: implement [[iCloud Keychain.]] button
-                              S().wallet_security_modal_1_4_ios_subheading,
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.info,
+                            LinkText(
+                              text: Platform.isAndroid
+                                  ? S()
+                                      .wallet_security_modal_1_4_android_subheading
+                                  : S()
+                                      .wallet_security_modal_1_4_ios_subheading,
+                              linkStyle: EnvoyTypography.info.copyWith(
+                                color: EnvoyColors.accentPrimary,
+                              ),
+                              onTap: () => launchUrl(
+                                Uri.parse(
+                                  Platform.isAndroid
+                                      ? "https://developer.android.com/guide/topics/data/autobackup"
+                                      : "https://support.apple.com/en-us/HT202303",
+                                ),
+                              ),
                             ),
                             Text(
                               S().backups_erase_wallets_and_backups_modal_2_2_subheading,

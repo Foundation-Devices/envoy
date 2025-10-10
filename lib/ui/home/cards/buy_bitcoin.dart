@@ -28,6 +28,31 @@ import 'package:url_launcher/url_launcher.dart';
 
 enum BuyBitcoinCardState { buyInEnvoy, peerToPeer, vouchers, atms, none }
 
+void showBuyBitcoinOptions(WidgetRef ref) {
+  ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
+      optionsWidget: const CountryOptions(),
+      rightAction: Consumer(
+        builder: (context, ref, child) {
+          bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              HomePageState.of(context)?.toggleOptions();
+            },
+            child: Container(
+              height: 55,
+              width: 55,
+              color: Colors.transparent,
+              child: Icon(
+                menuVisible ? Icons.close : Icons.more_horiz_outlined,
+              ),
+            ),
+          );
+        },
+      ));
+  ref.read(buyBTCPageProvider.notifier).state = true;
+}
+
 class BuyBitcoinCard extends ConsumerStatefulWidget {
   const BuyBitcoinCard({super.key});
 
@@ -56,27 +81,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
       ref.read(homePageTitleProvider.notifier).state = "";
       ref.read(navigatingToEditRegionProvider.notifier).state = false;
 
-      ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
-          optionsWidget: const CountryOptions(),
-          rightAction: Consumer(
-            builder: (context, ref, child) {
-              bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  HomePageState.of(context)?.toggleOptions();
-                },
-                child: Container(
-                  height: 55,
-                  width: 55,
-                  color: Colors.transparent,
-                  child: Icon(
-                    menuVisible ? Icons.close : Icons.more_horiz_outlined,
-                  ),
-                ),
-              );
-            },
-          ));
+      showBuyBitcoinOptions(ref);
       String path = ref.read(routePathProvider);
 
       if (path == ROUTE_BUY_BITCOIN) {
@@ -266,12 +271,16 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                       ? EnvoyIcons.externalLink
                       : null,
                   onTap: () {
+                    ref.read(homePageOptionsVisibilityProvider.notifier).state =
+                        false;
                     switch (currentState) {
                       case BuyBitcoinCardState.buyInEnvoy:
                         context.go(
                           ROUTE_SELECT_ACCOUNT,
                         );
                       case BuyBitcoinCardState.peerToPeer:
+                        ref.read(homeShellOptionsProvider.notifier).state =
+                            null;
                         context.go(
                           ROUTE_PEER_TO_PEER,
                         );

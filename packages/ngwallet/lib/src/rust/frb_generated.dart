@@ -2742,7 +2742,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   EnvoyBip39 dco_decode_envoy_bip_39(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 0)
+    if (arr.isNotEmpty)
       throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
     return EnvoyBip39();
   }
@@ -2897,8 +2897,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   NgAccountConfig dco_decode_ng_account_config(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 12)
-      throw Exception('unexpected arr length: expect 12 but see ${arr.length}');
+    if (arr.length != 13)
+      throw Exception('unexpected arr length: expect 13 but see ${arr.length}');
     return NgAccountConfig(
       name: dco_decode_String(arr[0]),
       color: dco_decode_String(arr[1]),
@@ -2914,6 +2914,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       multisig:
           dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
               arr[11]),
+      archived: dco_decode_bool(arr[12]),
     );
   }
 
@@ -3912,6 +3913,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_multisig =
         sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
             deserializer);
+    var var_archived = sse_decode_bool(deserializer);
     return NgAccountConfig(
         name: var_name,
         color: var_color,
@@ -3924,7 +3926,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         dateSynced: var_dateSynced,
         network: var_network,
         id: var_id,
-        multisig: var_multisig);
+        multisig: var_multisig,
+        archived: var_archived);
   }
 
   @protected
@@ -4876,6 +4879,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.id, serializer);
     sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
         self.multisig, serializer);
+    sse_encode_bool(self.archived, serializer);
   }
 
   @protected

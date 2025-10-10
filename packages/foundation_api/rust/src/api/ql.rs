@@ -97,13 +97,23 @@ pub async fn decode(
     decoder: &mut EnvoyMasterDechunker,
     quantum_link_identity: &QuantumLinkIdentity,
 ) -> Result<DecoderStatus> {
-    debug!("receiving data");
     let chunk = Chunk::decode(&data)?;
+
+    let m = chunk.header.index;
+    let n = chunk.header.total_chunks;
     let msg_id = chunk.header.message_id;
+
+    debug!("receiving data id: {msg_id} {m}/{n}");
+    //debug!("DECHUNKER: {:?}", decoder.inner);
 
     match decoder.inner.insert_chunk(chunk) {
         None => {
-            let progress = decoder.inner.get_dechunker(msg_id).unwrap().progress() as f64;
+            let dechunker = decoder.inner.get_dechunker(msg_id).unwrap();
+            let progress = dechunker.progress() as f64;
+
+            //debug!("DECHUNKER: {dechunker:?}");
+            //debug!("MASTER DECHUNKER: {:?}", decoder.inner);
+
             Ok(DecoderStatus {
                 progress,
                 payload: None,
@@ -153,6 +163,9 @@ pub async fn encode(
     sender: &QuantumLinkIdentity,
     recipient: &XIDDocument,
 ) -> Vec<Vec<u8>> {
+    debug!("SENDER: {:?}", sender.xid_document);
+    debug!("RECEIVER: {:?}", recipient);
+
     let expression = QuantumLink::encode(&message);
     let event: SealedEvent<Expression> =
         SealedEvent::new(expression, ARID::new(), sender.clone().xid_document);

@@ -6,7 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   file_saver
   flutter_secure_storage_linux
   objectbox_flutter_libs
-  rive_common
+  rive_native
   url_launcher_linux
 )
 

@@ -26,6 +26,7 @@ import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'accounts/account_list_tile.dart';
+import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
 
 GlobalKey<ChooseAccountState> chooseAccountKey =
     GlobalKey<ChooseAccountState>();
@@ -43,6 +44,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
   String? address;
   bool _canPop = true;
   final Map<String, String?> accountAddressCache = {};
+  bool isRampOpen = false;
 
   GlobalKey<StackedAccountChooserState> accountChooserKey = GlobalKey();
 
@@ -113,6 +115,8 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
         onPopInvokedWithResult: (didPop, _) {
           if (!didPop) {
             accountChooserKey.currentState?.dismiss();
+          } else if (didPop && !isRampOpen) {
+            showBuyBitcoinOptions(ref);
           }
         },
         child: Padding(
@@ -230,6 +234,9 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                               S().buy_bitcoin_accountSelection_modal_subheading,
                               S().send_keyboard_address_confirm,
                               (BuildContext context) {
+                                setState(() {
+                                  isRampOpen = true;
+                                });
                                 Navigator.pop(context);
                                 RampWidget.showRamp(
                                     context, selectedAccount!, address!);
@@ -248,6 +255,9 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                               });
                         } else {
                           if (context.mounted) {
+                            setState(() {
+                              isRampOpen = true;
+                            });
                             RampWidget.showRamp(
                                 context, selectedAccount!, address!);
                           }

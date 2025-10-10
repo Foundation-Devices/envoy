@@ -219,111 +219,131 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
         .checkPromptDismissed(DismissiblePrompt.scanToConnect);
 
     if (!promptDismissed && context.mounted) {
-      showEnvoyDialog(
-          context: context,
-          useRootNavigator: true,
-          dialog: StatefulBuilder(
-            builder: (context, setState) {
-              return Container(
-                width: MediaQuery.of(context).size.width * 0.85,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(EnvoySpacing.medium2),
-                  ),
-                  color: EnvoyColors.textPrimaryInverse,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(EnvoySpacing.medium2),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          height: 200,
-                          child: rive.RiveAnimation.asset(
-                            "assets/anim/animated_qr_scanner.riv",
-                            animations: [
-                              Platform.isIOS ? "ios_scan" : "android_scan"
-                            ],
-                            fit: BoxFit.contain,
+      final assetPath =
+          Platform.isIOS ? "assets/ios_scan.riv" : "assets/android_scan.riv";
+
+      rive.File? file;
+      rive.RiveWidgetController? controller;
+
+      try {
+        file = await rive.File.asset(assetPath, riveFactory: rive.Factory.rive);
+        controller = rive.RiveWidgetController(file!);
+        if (context.mounted) {
+          showEnvoyDialog(
+                  context: context,
+                  useRootNavigator: true,
+                  dialog: StatefulBuilder(
+                    builder: (context, setState) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width * 0.85,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(EnvoySpacing.medium2),
+                          ),
+                          color: EnvoyColors.textPrimaryInverse,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(EnvoySpacing.medium2),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  height: 200,
+                                  child: rive.RiveWidget(
+                                    controller: controller!,
+                                    fit: rive.Fit.contain,
+                                  ),
+                                ),
+                                //TODO: add more context instead of dismissible
+                                // GestureDetector(
+                                //   onTap: () {
+                                //     setState(() {
+                                //       dismissed = !dismissed;
+                                //     });
+                                //   },
+                                //   child: Row(
+                                //     crossAxisAlignment: CrossAxisAlignment.center,
+                                //     mainAxisAlignment: MainAxisAlignment.center,
+                                //     children: [
+                                //       SizedBox(
+                                //         child: EnvoyCheckbox(
+                                //           value: dismissed,
+                                //           onChanged: (value) {
+                                //             if (value != null) {
+                                //               setState(() {
+                                //                 dismissed = value;
+                                //               });
+                                //             }
+                                //           },
+                                //         ),
+                                //       ),
+                                //       Text(
+                                //         S().component_dontShowAgain,
+                                //         style: Theme.of(context)
+                                //             .textTheme
+                                //             .bodyMedium
+                                //             ?.copyWith(
+                                //               color: dismissed
+                                //                   ? Colors.black
+                                //                   : const Color(0xff808080),
+                                //             ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
+                                EnvoyButton(
+                                  label: "Continue",
+                                  type: ButtonType.primary,
+                                  state: ButtonState.defaultState,
+                                  onTap: () {
+                                    // if (dismissed) {
+                                    //   EnvoyStorage().addPromptState(
+                                    //       DismissiblePrompt.scanToConnect);
+                                    // }
+                                    // Navigator.pop(context);
+
+                                    showScannerDialog(
+                                        showInfoDialog: true,
+                                        context: context,
+                                        onBackPressed: (context) {
+                                          Navigator.pop(context);
+                                        },
+                                        decoder: GenericQrDecoder(
+                                            onScan: (String payload) {
+                                          Navigator.pop(context);
+                                          final uri = Uri.parse(payload);
+                                          kPrint(
+                                              "BLE UriParams ${uri.queryParameters}");
+                                          context.pushNamed(
+                                            ONBOARD_PRIME,
+                                            queryParameters:
+                                                uri.queryParameters,
+                                          );
+                                        }));
+                                  },
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                        //TODO: add more context instead of dismissible
-                        // GestureDetector(
-                        //   onTap: () {
-                        //     setState(() {
-                        //       dismissed = !dismissed;
-                        //     });
-                        //   },
-                        //   child: Row(
-                        //     crossAxisAlignment: CrossAxisAlignment.center,
-                        //     mainAxisAlignment: MainAxisAlignment.center,
-                        //     children: [
-                        //       SizedBox(
-                        //         child: EnvoyCheckbox(
-                        //           value: dismissed,
-                        //           onChanged: (value) {
-                        //             if (value != null) {
-                        //               setState(() {
-                        //                 dismissed = value;
-                        //               });
-                        //             }
-                        //           },
-                        //         ),
-                        //       ),
-                        //       Text(
-                        //         S().component_dontShowAgain,
-                        //         style: Theme.of(context)
-                        //             .textTheme
-                        //             .bodyMedium
-                        //             ?.copyWith(
-                        //               color: dismissed
-                        //                   ? Colors.black
-                        //                   : const Color(0xff808080),
-                        //             ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-                        EnvoyButton(
-                          label: "Continue",
-                          type: ButtonType.primary,
-                          state: ButtonState.defaultState,
-                          onTap: () {
-                            // if (dismissed) {
-                            //   EnvoyStorage().addPromptState(
-                            //       DismissiblePrompt.scanToConnect);
-                            // }
-                            // Navigator.pop(context);
-
-                            showScannerDialog(
-                                showInfoDialog: true,
-                                context: context,
-                                onBackPressed: (context) {
-                                  Navigator.pop(context);
-                                },
-                                decoder:
-                                    GenericQrDecoder(onScan: (String payload) {
-                                  Navigator.pop(context);
-                                  final uri = Uri.parse(payload);
-                                  kPrint(
-                                      "BLE UriParams ${uri.queryParameters}");
-                                  context.pushNamed(
-                                    ONBOARD_PRIME,
-                                    queryParameters: uri.queryParameters,
-                                  );
-                                }));
-                          },
-                        )
-                      ],
-                    ),
+                      );
+                    },
                   ),
-                ),
-              );
-            },
-          ),
-          dismissible: true);
+                  dismissible: true)
+              .then((_) {
+            // Clean up resources when dialog is dismissed
+            controller?.dispose();
+            file?.dispose();
+          });
+        }
+      } catch (e) {
+        // Handle error loading Rive file
+        kPrint('Error loading Rive file: $e');
+        controller?.dispose();
+        file?.dispose();
+      }
     } else {
       if (context.mounted) {
         context.goNamed(ONBOARD_PRIME);
