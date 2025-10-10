@@ -10,6 +10,7 @@
   };
 
   outputs = {
+    lib,
     nixpkgs,
     flake-utils,
     ...
@@ -46,6 +47,14 @@
             "extras;google;gcm"
           ];
         };
+
+        darwinPackages = let
+          xcodeenv = import (nixpkgs + "/pkgs/development/mobile/xcodeenv") {inherit (pkgs) callPackage;};
+        in
+          lib.optionals pkgs.stdenv.isDarwin [
+            (xcodeenv.composeXcodeWrapper {versions = ["16.0"];})
+          ];
+
         buildInputs = with pkgs;
           [
             # Rust tools
@@ -78,7 +87,6 @@
             # Build tools - multiStdenv provides better cross-compilation support
             gnumake
             pkg-config
-
 
             # pthread and threading support
             libpthread-stubs
@@ -152,7 +160,7 @@
             glibc.static
           ]);
       in {
-        customPackages = buildInputs;
+        customPackages = buildInputs + darwinPackages;
         devShells.default = pkgs.mkShell {
           inherit buildInputs;
           shellHook = ''
@@ -167,6 +175,9 @@
             export FLUTTER_ROOT="${pkgs.flutter}"
             export PATH="$FLUTTER_ROOT/bin:$PATH"
 
+            # darwin xcode
+            unset DEVELOPER_DIR
+            unset SDKROOT
 
             # Android SDK and NDK configuration
             export ANDROID_SDK_ROOT="${androidComposition.androidsdk}/libexec/android-sdk"
