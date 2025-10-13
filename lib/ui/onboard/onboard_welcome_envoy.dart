@@ -3,12 +3,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,8 +35,12 @@ bool _checkedMagicBackUpInWelcomeScreen = false;
 class _OnboardEnvoyWelcomeScreenState
     extends ConsumerState<OnboardEnvoyWelcomeScreen> {
   final bool _magicBackUpEnabled = Settings().syncToCloud;
+
   @override
   Widget build(BuildContext context) {
+    final bool isOnboardingComplete =
+        LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
+
     return EnvoyPatternScaffold(
       gradientHeight: 1.8,
       appBar: AppBar(
@@ -42,7 +48,13 @@ class _OnboardEnvoyWelcomeScreenState
         backgroundColor: Colors.transparent,
         leading: CupertinoNavigationBarBackButton(
           color: Colors.white,
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (isOnboardingComplete) {
+              context.go('/');
+            } else {
+              context.pop();
+            }
+          },
         ),
         actions: [
           Padding(
