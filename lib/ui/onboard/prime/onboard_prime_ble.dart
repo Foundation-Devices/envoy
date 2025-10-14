@@ -370,8 +370,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       case OnboardingState.magicBackupScreen:
         ref.read(backUpMasterKeyProvider.notifier).updateStep(
             S().finalize_catchAll_backingUpMasterKey, EnvoyStepState.LOADING);
-        // context.goNamed(ONBOARD_PRIME_MAGIC_BACKUP);
-        // TODO: Handle magic backup screen
         break;
       case OnboardingState.creatingMagicBackup:
         // TODO: Handle creating magic backup
@@ -381,7 +379,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             S().finalize_catchAll_masterKeyBackedUp, EnvoyStepState.FINISHED);
         break;
       case OnboardingState.creatingManualBackup:
-        // TODO: Handle creating manual backup
+        ref.read(backUpMasterKeyProvider.notifier).updateStep(
+            S().finalize_catchAll_backingUpMasterKey, EnvoyStepState.LOADING);
         break;
       case OnboardingState.creatingKeycardBackup:
         // TODO: Handle creating keycard backup
