@@ -13,6 +13,7 @@ import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/prime_shard.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/server.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/ntp.dart';
@@ -252,8 +253,7 @@ class BluetoothManager extends WidgetsBindingObserver {
       if (message.message is api.QuantumLinkMessage_MagicBackupEnabledRequest) {
         kPrint("Got magic backup enabled request!");
         writeMessage(api.QuantumLinkMessage.magicBackupEnabledResponse(
-            api.MagicBackupEnabledResponse(
-                enabled: true))); // TODO: stop hardcoding
+            api.MagicBackupEnabledResponse(enabled: Settings().syncToCloud)));
       }
 
       if (message.message
