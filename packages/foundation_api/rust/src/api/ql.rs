@@ -14,7 +14,7 @@ use btp::{chunk, Chunk, MasterDechunker};
 use flutter_rust_bridge::frb;
 use foundation_api::firmware::{split_update_into_chunks, FirmwareFetchEvent};
 use foundation_api::message::{EnvoyMessage, PassportMessage, QuantumLinkMessage};
-use foundation_api::quantum_link::{QuantumLink, QuantumLinkIdentity};
+use foundation_api::quantum_link::{ARIDCache, QuantumLink, QuantumLinkIdentity};
 use gstp::SealedEvent;
 use log::debug;
 
@@ -32,6 +32,17 @@ pub async fn get_decoder() -> EnvoyMasterDechunker {
 pub struct DecoderStatus {
     pub progress: f64,
     pub payload: Option<PassportMessage>,
+}
+
+#[frb(opaque)]
+pub struct EnvoyARIDCache {
+    inner: ARIDCache,
+}
+
+pub fn get_arid_cache() -> EnvoyARIDCache {
+    EnvoyARIDCache{
+        inner: ARIDCache::default()
+    }
 }
 
 pub async fn serialize_xid(quantum_link_identity: &QuantumLinkIdentity) -> Vec<u8> {
@@ -96,6 +107,7 @@ pub async fn decode(
     data: Vec<u8>,
     decoder: &mut EnvoyMasterDechunker,
     quantum_link_identity: &QuantumLinkIdentity,
+    mut arid_cache: EnvoyARIDCache,
 ) -> Result<DecoderStatus> {
     let chunk = Chunk::decode(&data)?;
 
@@ -133,9 +145,10 @@ pub async fn decode(
             };
             debug!("Unsealing envelope...");
 
-            let (passport_message, _) = PassportMessage::unseal_passport_message(
+            let (passport_message, _) = PassportMessage::unseal_passport_message_with_replay_check(
                 &envelope,
                 &quantum_link_identity.clone().private_keys.unwrap(),
+                &mut arid_cache.inner,
             )
             .context("failed to unseal passport message")?;
 

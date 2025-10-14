@@ -8,11 +8,14 @@ import 'dart:typed_data';
 
 import 'package:bluart/bluart.dart' as bluart;
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/prime_shard.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/server.dart';
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/ntp.dart';
@@ -24,9 +27,6 @@ import 'package:ngwallet/ngwallet.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
-import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/business/devices.dart';
-import 'package:envoy/util/bug_report_helper.dart';
 
 final sendProgressProvider =
     StateNotifierProvider<SendProgressNotifier, double>(
@@ -60,6 +60,8 @@ class BluetoothManager extends WidgetsBindingObserver {
   static final BluetoothManager _instance = BluetoothManager._internal();
   UuidValue rxCharacteristic =
       UuidValue.fromString("6E400002B5A3F393E0A9E50E24DCCA9E");
+
+  api.EnvoyAridCache? _aridCache;
 
   // Persist this across sessions
   api.QuantumLinkIdentity? _qlIdentity;
@@ -135,7 +137,7 @@ class BluetoothManager extends WidgetsBindingObserver {
     kPrint("QL Identity: $_qlIdentity");
 
     await restoreQuantumLinkIdentity();
-
+    _aridCache = await api.getAridCache();
     kPrint("QL Identity: $_qlIdentity");
   }
 
@@ -505,10 +507,12 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   Future<api.PassportMessage?> decode(Uint8List bleData) async {
     _decoder ??= await api.getDecoder();
+    _aridCache ??= await api.getAridCache();
     api.DecoderStatus decoderStatus = await api.decode(
         data: bleData.toList(),
         decoder: _decoder!,
-        quantumLinkIdentity: _qlIdentity!);
+        quantumLinkIdentity: _qlIdentity!,
+        aridCache: _aridCache!);
     if (decoderStatus.payload != null) {
       _decoder = await api.getDecoder();
       return decoderStatus.payload;
