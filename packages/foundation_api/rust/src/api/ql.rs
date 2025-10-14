@@ -40,8 +40,8 @@ pub struct EnvoyARIDCache {
 }
 
 pub fn get_arid_cache() -> EnvoyARIDCache {
-    EnvoyARIDCache{
-        inner: ARIDCache::default()
+    EnvoyARIDCache {
+        inner: ARIDCache::default(),
     }
 }
 
@@ -107,7 +107,7 @@ pub async fn decode(
     data: Vec<u8>,
     decoder: &mut EnvoyMasterDechunker,
     quantum_link_identity: &QuantumLinkIdentity,
-    mut arid_cache: EnvoyARIDCache,
+    arid_cache: &mut EnvoyARIDCache,
 ) -> Result<DecoderStatus> {
     let chunk = Chunk::decode(&data)?;
 
@@ -179,17 +179,11 @@ pub async fn encode(
     debug!("SENDER: {:?}", sender.xid_document);
     debug!("RECEIVER: {:?}", recipient);
 
-    let expression = QuantumLink::encode(&message);
-    let event: SealedEvent<Expression> =
-        SealedEvent::new(expression, ARID::new(), sender.clone().xid_document);
-
-    let envelope = event
-        .to_envelope(
-            None,
-            Some(&sender.clone().private_keys.unwrap()),
-            Some(recipient),
-        )
-        .unwrap();
+    let envelope = QuantumLink::seal(
+        &message,
+        (sender.private_keys.as_ref().unwrap(), &sender.xid_document),
+        recipient,
+    );
 
     let cbor = envelope.to_cbor_data();
 

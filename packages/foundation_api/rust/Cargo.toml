@@ -13,7 +13,7 @@ crate-type = ["cdylib", "staticlib"]
 [dependencies]
 flutter_rust_bridge = "=2.11.1"
 
-foundation-api = { git = "https://github.com/Foundation-Devices/foundation-api", tag = "3.4.0" }
+foundation-api = { git = "https://github.com/Foundation-Devices/foundation-api", rev = "c8c0a52db615021be7ace7a7a83c8aa31dc21569" }
 btp = { git = "https://github.com/Foundation-Devices/foundation-api", tag = "3.3.0" }
 
 #foundation-api = { path = "../../../../foundation-api/api" }

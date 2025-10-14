@@ -82,13 +82,16 @@ fn wire__crate__api__ql__decode_impl(
             let api_quantum_link_identity = <RustOpaqueMoi<
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>,
             >>::sse_decode(&mut deserializer);
-            let api_arid_cache = <EnvoyARIDCache>::sse_decode(&mut deserializer);
+            let api_arid_cache = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyARIDCache>,
+            >>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
                         let mut api_decoder_guard = None;
                         let mut api_quantum_link_identity_guard = None;
+                        let mut api_arid_cache_guard = None;
                         let decode_indices_ =
                             flutter_rust_bridge::for_generated::lockable_compute_decode_order(
                                 vec![
@@ -101,6 +104,11 @@ fn wire__crate__api__ql__decode_impl(
                                         &api_quantum_link_identity,
                                         1,
                                         false,
+                                    ),
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_arid_cache,
+                                        2,
+                                        true,
                                     ),
                                 ],
                             );
@@ -115,17 +123,22 @@ fn wire__crate__api__ql__decode_impl(
                                         api_quantum_link_identity.lockable_decode_async_ref().await,
                                     )
                                 }
+                                2 => {
+                                    api_arid_cache_guard =
+                                        Some(api_arid_cache.lockable_decode_async_ref_mut().await)
+                                }
                                 _ => unreachable!(),
                             }
                         }
                         let mut api_decoder_guard = api_decoder_guard.unwrap();
                         let api_quantum_link_identity_guard =
                             api_quantum_link_identity_guard.unwrap();
+                        let mut api_arid_cache_guard = api_arid_cache_guard.unwrap();
                         let output_ok = crate::api::ql::decode(
                             api_data,
                             &mut *api_decoder_guard,
                             &*api_quantum_link_identity_guard,
-                            api_arid_cache,
+                            &mut *api_arid_cache_guard,
                         )
                         .await?;
                         Ok(output_ok)
