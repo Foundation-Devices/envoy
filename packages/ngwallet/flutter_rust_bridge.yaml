@@ -12,12 +12,12 @@ dart_type_rename :
   Arc<Mutex<Update>>: WalletUpdate
 rust_preamble: |
   use std::sync::{Mutex};
-  use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse,SyncRequest};
-  use bdk_wallet::KeychainKind;
-  use bdk_wallet::Update;
-  use bdk_wallet::error::CreateTxError;
-  use bdk_wallet::rusqlite::Connection;
-  use bdk_wallet::bitcoin::bip32::{DerivationPath, Fingerprint, Xpub};
+  use ngwallet::bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse,SyncRequest};
+  use ngwallet::bdk_wallet::KeychainKind;
+  use ngwallet::bdk_wallet::Update;
+  use ngwallet::bdk_wallet::error::CreateTxError;
+  use ngwallet::bdk_wallet::rusqlite::Connection;
+  use ngwallet::bdk_wallet::bitcoin::bip32::{DerivationPath, Fingerprint, Xpub};
   use ngwallet::account::NgAccount;
   use ngwallet::send::TransactionParams;
   use ngwallet::transaction::Output;

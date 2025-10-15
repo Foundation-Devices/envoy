@@ -178,6 +178,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  AddressType dco_decode_box_autoadd_address_type(dynamic raw);
+
+  @protected
   BitcoinTransaction dco_decode_box_autoadd_bitcoin_transaction(dynamic raw);
 
   @protected
@@ -306,6 +309,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   MultiSigDetails?
       dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
           dynamic raw);
+
+  @protected
+  AddressType? dco_decode_opt_box_autoadd_address_type(dynamic raw);
 
   @protected
   PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw);
@@ -505,6 +511,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  AddressType sse_decode_box_autoadd_address_type(SseDeserializer deserializer);
+
+  @protected
   BitcoinTransaction sse_decode_box_autoadd_bitcoin_transaction(
       SseDeserializer deserializer);
 
@@ -644,6 +653,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   MultiSigDetails?
       sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
           SseDeserializer deserializer);
+
+  @protected
+  AddressType? sse_decode_opt_box_autoadd_address_type(
+      SseDeserializer deserializer);
 
   @protected
   PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer);
@@ -848,6 +861,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           MultiSigDetails self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_address_type(
+      AddressType self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_bitcoin_transaction(
       BitcoinTransaction self, SseSerializer serializer);
 
@@ -996,6 +1013,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void
       sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
           MultiSigDetails? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_address_type(
+      AddressType? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_i_64(

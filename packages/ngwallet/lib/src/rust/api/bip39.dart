@@ -56,6 +56,13 @@ class EnvoyBip39 {
       RustLib.instance.api.crateApiBip39EnvoyBip39DeriveDescriptorFromSeed(
           seedWords: seedWords, network: network, passphrase: passphrase);
 
+  static Future<String> deriveFingerprintFromSeed(
+          {required String seedWords,
+          String? passphrase,
+          required Network network}) =>
+      RustLib.instance.api.crateApiBip39EnvoyBip39DeriveFingerprintFromSeed(
+          seedWords: seedWords, passphrase: passphrase, network: network);
+
   static Future<String> generateSeed() =>
       RustLib.instance.api.crateApiBip39EnvoyBip39GenerateSeed();
 

@@ -149,16 +149,21 @@ class NgDescriptor {
   final String internal;
   final String? external_;
   final AddressType addressType;
+  final AddressType? exportAddrHint;
 
   const NgDescriptor({
     required this.internal,
     this.external_,
     required this.addressType,
+    this.exportAddrHint,
   });
 
   @override
   int get hashCode =>
-      internal.hashCode ^ external_.hashCode ^ addressType.hashCode;
+      internal.hashCode ^
+      external_.hashCode ^
+      addressType.hashCode ^
+      exportAddrHint.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -167,5 +172,6 @@ class NgDescriptor {
           runtimeType == other.runtimeType &&
           internal == other.internal &&
           external_ == other.external_ &&
-          addressType == other.addressType;
+          addressType == other.addressType &&
+          exportAddrHint == other.exportAddrHint;
 }

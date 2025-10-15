@@ -77,7 +77,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 1370660686;
+  int get rustContentHash => -207370575;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -324,6 +324,11 @@ abstract class RustLibApi extends BaseApi {
           {required String seedWords,
           required Network network,
           String? passphrase});
+
+  Future<String> crateApiBip39EnvoyBip39DeriveFingerprintFromSeed(
+      {required String seedWords,
+      String? passphrase,
+      required Network network});
 
   Future<String> crateApiBip39EnvoyBip39GenerateSeed();
 
@@ -2144,12 +2149,43 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<String> crateApiBip39EnvoyBip39DeriveFingerprintFromSeed(
+      {required String seedWords,
+      String? passphrase,
+      required Network network}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(seedWords, serializer);
+        sse_encode_opt_String(passphrase, serializer);
+        sse_encode_network(network, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 55, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBip39EnvoyBip39DeriveFingerprintFromSeedConstMeta,
+      argValues: [seedWords, passphrase, network],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiBip39EnvoyBip39DeriveFingerprintFromSeedConstMeta =>
+          const TaskConstMeta(
+            debugName: "envoy_bip_39_derive_fingerprint_from_seed",
+            argNames: ["seedWords", "passphrase", "network"],
+          );
+
+  @override
   Future<String> crateApiBip39EnvoyBip39GenerateSeed() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 55, port: port_);
+            funcId: 56, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -2175,7 +2211,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(seedWords, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 56, port: port_);
+            funcId: 57, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -2202,7 +2238,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(server, serializer);
         sse_encode_opt_String(proxy, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 57, port: port_);
+            funcId: 58, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_server_features,
@@ -2226,7 +2262,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 58, port: port_);
+            funcId: 59, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2249,7 +2285,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_output(that, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 59)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 60)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -2276,7 +2312,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTransactionComposeError(
             transactionComposeError, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 60, port: port_);
+            funcId: 61, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_tx_compose_error,
@@ -2585,6 +2621,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AddressType dco_decode_box_autoadd_address_type(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_address_type(raw);
+  }
+
+  @protected
   BitcoinTransaction dco_decode_box_autoadd_bitcoin_transaction(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_bitcoin_transaction(raw);
@@ -2742,7 +2784,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   EnvoyBip39 dco_decode_envoy_bip_39(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.isNotEmpty)
+    if (arr.length != 0)
       throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
     return EnvoyBip39();
   }
@@ -2922,12 +2964,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   NgDescriptor dco_decode_ng_descriptor(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 3)
-      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
     return NgDescriptor(
       internal: dco_decode_String(arr[0]),
       external_: dco_decode_opt_String(arr[1]),
       addressType: dco_decode_address_type(arr[2]),
+      exportAddrHint: dco_decode_opt_box_autoadd_address_type(arr[3]),
     );
   }
 
@@ -2953,6 +2996,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         ? null
         : dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
             raw);
+  }
+
+  @protected
+  AddressType? dco_decode_opt_box_autoadd_address_type(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_address_type(raw);
   }
 
   @protected
@@ -3495,6 +3544,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AddressType sse_decode_box_autoadd_address_type(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_address_type(deserializer));
+  }
+
+  @protected
   BitcoinTransaction sse_decode_box_autoadd_bitcoin_transaction(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3936,10 +3992,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_internal = sse_decode_String(deserializer);
     var var_external_ = sse_decode_opt_String(deserializer);
     var var_addressType = sse_decode_address_type(deserializer);
+    var var_exportAddrHint =
+        sse_decode_opt_box_autoadd_address_type(deserializer);
     return NgDescriptor(
         internal: var_internal,
         external_: var_external_,
-        addressType: var_addressType);
+        addressType: var_addressType,
+        exportAddrHint: var_exportAddrHint);
   }
 
   @protected
@@ -3974,6 +4033,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (sse_decode_bool(deserializer)) {
       return (sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
           deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  AddressType? sse_decode_opt_box_autoadd_address_type(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_address_type(deserializer));
     } else {
       return null;
     }
@@ -4538,6 +4609,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_address_type(
+      AddressType self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_address_type(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_bitcoin_transaction(
       BitcoinTransaction self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4888,6 +4966,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.internal, serializer);
     sse_encode_opt_String(self.external_, serializer);
     sse_encode_address_type(self.addressType, serializer);
+    sse_encode_opt_box_autoadd_address_type(self.exportAddrHint, serializer);
   }
 
   @protected
@@ -4921,6 +5000,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (self != null) {
       sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMultiSigDetails(
           self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_address_type(
+      AddressType? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_address_type(self, serializer);
     }
   }
 

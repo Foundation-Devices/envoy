@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use bdk_wallet::error::CreateTxError;
-use bdk_wallet::KeychainKind;
 use ngwallet::bdk_electrum::electrum_client::Error;
+use ngwallet::bdk_wallet::error::CreateTxError;
+use ngwallet::bdk_wallet::KeychainKind;
 use ngwallet::rbf::BumpFeeError;
 use ngwallet::send::TransactionComposeError;
 
