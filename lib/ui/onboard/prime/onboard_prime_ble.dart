@@ -22,6 +22,8 @@ import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -399,7 +401,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         break;
       case OnboardingState.completed:
         resetOnboardingPrimeProviders(ref);
-        context.go("/");
+        mainRouter.go(ROUTE_ACCOUNTS_HOME);
         _notifyAfterOnboardingTutorial(context);
         break;
       case OnboardingState.securityChecked:
