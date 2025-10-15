@@ -628,10 +628,8 @@ class NgAccountManager extends ChangeNotifier {
       if (seed == null) {
         return;
       }
-      final derivations = await EnvoyBip39.deriveDescriptorFromSeed(
+      final fingerprint = await EnvoyBip39.deriveFingerprintFromSeed(
           seedWords: seed, network: Network.bitcoin);
-      final fingerprint = NgAccountManager.getFingerprint(
-          derivations.first.externalPubDescriptor);
 
       for (var account in accounts) {
         if (account.isHot) {
