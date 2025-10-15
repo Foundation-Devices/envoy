@@ -500,6 +500,20 @@ dependencies = [
 [[package]]
 name = "bdk_wallet"
 version = "2.1.0-alpha.0"
+source = "git+https://github.com/Foundation-Devices/bdk_wallet?rev=3a983ae313c661c63b2bd6bc8a68551b07d83d8a#3a983ae313c661c63b2bd6bc8a68551b07d83d8a"
+dependencies = [
+ "bdk_chain",
+ "bip39",
+ "bitcoin 0.32.7",
+ "miniscript 12.3.5",
+ "rand_core",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "bdk_wallet"
+version = "2.1.0-alpha.0"
 source = "git+https://github.com/Foundation-Devices/bdk_wallet?rev=622143d55c8a5607b144db70fca358ceb2c648f5#622143d55c8a5607b144db70fca358ceb2c648f5"
 dependencies = [
  "bdk_chain",
@@ -912,9 +926,9 @@ checksum = "6d43a04d8753f35258c91f8ec639f792891f748a1edbd759cf1dcea3382ad83c"
 
 [[package]]
 name = "cfg-if"
-version = "1.0.3"
+version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2fd1289c04a9ea8cb22300a459a72a385d7c73d3259e2ed7dcb2af674838cfa9"
+checksum = "9330f8b2ff13f34540b44e946ef35111825727b38d33286ef986142615121801"
 
 [[package]]
 name = "chacha20"
@@ -1612,7 +1626,7 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "2.0.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.4.0#4c8ec3a45dbd2310ab69fdb18cdf2e1d91246356"
+source = "git+https://github.com/Foundation-Devices/foundation-api?rev=c8c0a52db615021be7ace7a7a83c8aa31dc21569#c8c0a52db615021be7ace7a7a83c8aa31dc21569"
 dependencies = [
  "anyhow",
  "bc-components",
@@ -1791,20 +1805,20 @@ dependencies = [
  "cfg-if",
  "js-sys",
  "libc",
- "wasi 0.11.1+wasi-snapshot-preview1",
+ "wasi",
  "wasm-bindgen",
 ]
 
 [[package]]
 name = "getrandom"
-version = "0.3.3"
+version = "0.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "26145e563e54f2cadc477553f1ec5ee650b00862f0a58bcd12cbdc5f0ea2d2f4"
+checksum = "899def5c37c4fd7b2664648c28120ecec138e4d395b459e5ca34f9cce2dd77fd"
 dependencies = [
  "cfg-if",
  "libc",
  "r-efi",
- "wasi 0.14.7+wasi-0.2.4",
+ "wasip2",
 ]
 
 [[package]]
@@ -2400,7 +2414,7 @@ version = "0.1.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9afb3de4395d6b3e67a780b6de64b51c978ecf11cb9a462c66be7d4ca9039d33"
 dependencies = [
- "getrandom 0.3.3",
+ "getrandom 0.3.4",
  "libc",
 ]
 
@@ -2656,7 +2670,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "78bed444cc8a2160f01cbcf811ef18cac863ad68ae8ca62092e8db51d51c761c"
 dependencies = [
  "libc",
- "wasi 0.11.1+wasi-snapshot-preview1",
+ "wasi",
  "windows-sys 0.59.0",
 ]
 
@@ -2705,12 +2719,12 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?tag=2.4.0#04b2ba8b9a565e1c5a6cfa4bab7f4d671d864f88"
+source = "git+https://github.com/Foundation-Devices/ngwallet?tag=2.10.0#367eaa0d7d8224b779bb047aa6be72229aaf067c"
 dependencies = [
  "anyhow",
  "bdk_core",
  "bdk_electrum",
- "bdk_wallet",
+ "bdk_wallet 2.1.0-alpha.0 (git+https://github.com/Foundation-Devices/bdk_wallet?rev=3a983ae313c661c63b2bd6bc8a68551b07d83d8a)",
  "bip39",
  "bip85",
  "log",
@@ -3306,7 +3320,7 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.4.0#4c8ec3a45dbd2310ab69fdb18cdf2e1d91246356"
+source = "git+https://github.com/Foundation-Devices/foundation-api?rev=c8c0a52db615021be7ace7a7a83c8aa31dc21569#c8c0a52db615021be7ace7a7a83c8aa31dc21569"
 dependencies = [
  "quote",
  "syn 2.0.106",
@@ -3600,7 +3614,7 @@ version = "0.1.0"
 dependencies = [
  "android_logger 0.15.1",
  "anyhow",
- "bdk_wallet",
+ "bdk_wallet 2.1.0-alpha.0 (git+https://github.com/Foundation-Devices/bdk_wallet?rev=622143d55c8a5607b144db70fca358ceb2c648f5)",
  "bip39",
  "chrono",
  "flutter_rust_bridge",
@@ -4223,7 +4237,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2d31c77bdf42a745371d260a26ca7163f1e0924b64afa0b688e61b5a9fa02f16"
 dependencies = [
  "fastrand",
- "getrandom 0.3.3",
+ "getrandom 0.3.4",
  "once_cell",
  "rustix",
  "windows-sys 0.61.2",
@@ -4641,15 +4655,6 @@ name = "wasi"
 version = "0.11.1+wasi-snapshot-preview1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ccf3ec651a847eb01de73ccad15eb7d99f80485de043efb2f370cd654f4ea44b"
-
-[[package]]
-name = "wasi"
-version = "0.14.7+wasi-0.2.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "883478de20367e224c0090af9cf5f9fa85bed63a95c1abf3afc5c083ebc06e8c"
-dependencies = [
- "wasip2",
-]
 
 [[package]]
 name = "wasip2"
