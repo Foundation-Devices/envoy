@@ -5,9 +5,8 @@
 use anyhow::anyhow;
 use anyhow::Context;
 use anyhow::Result;
-use bc_components::ARID;
 use bc_envelope::prelude::CBOREncodable;
-use bc_envelope::{Envelope, Expression};
+use bc_envelope::Envelope;
 use bc_ur::prelude::{CBORCase, CBOR};
 use bc_xid::XIDDocument;
 use btp::{chunk, Chunk, MasterDechunker};
@@ -15,7 +14,6 @@ use flutter_rust_bridge::frb;
 use foundation_api::firmware::{split_update_into_chunks, FirmwareFetchEvent};
 use foundation_api::message::{EnvoyMessage, PassportMessage, QuantumLinkMessage};
 use foundation_api::quantum_link::{ARIDCache, QuantumLink, QuantumLinkIdentity};
-use gstp::SealedEvent;
 use log::debug;
 
 #[frb(opaque)]

@@ -5,12 +5,12 @@
 use anyhow::Result;
 use bip39::{Language, Mnemonic};
 use log::info;
+use ngwallet::bdk_wallet::bitcoin::bip32::Xpriv;
+use ngwallet::bdk_wallet::bitcoin::key::Secp256k1;
 use ngwallet::bdk_wallet::bitcoin::Network;
 use ngwallet::bdk_wallet::miniscript::descriptor::DescriptorType;
 use ngwallet::bip39::{get_descriptors, get_random_seed};
 use ngwallet::config::AddressType;
-use ngwallet::bdk_wallet::bitcoin::bip32::{Fingerprint, Xpriv};
-use ngwallet::bdk_wallet::bitcoin::key::Secp256k1;
 
 pub struct Seed {
     pub mnemonic: String,
@@ -77,7 +77,7 @@ impl EnvoyBip39 {
         }
     }
 
-    pub  fn derive_fingerprint_from_seed(
+    pub fn derive_fingerprint_from_seed(
         seed_words: &str,
         passphrase: Option<String>,
         network: Network,
