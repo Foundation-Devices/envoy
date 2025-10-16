@@ -3,10 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use anyhow::Result;
-use bdk_wallet::bitcoin::Network;
-use bdk_wallet::miniscript::descriptor::DescriptorType;
 use bip39::{Language, Mnemonic};
 use log::info;
+use ngwallet::bdk_wallet::bitcoin::bip32::Xpriv;
+use ngwallet::bdk_wallet::bitcoin::key::Secp256k1;
+use ngwallet::bdk_wallet::bitcoin::Network;
+use ngwallet::bdk_wallet::miniscript::descriptor::DescriptorType;
 use ngwallet::bip39::{get_descriptors, get_random_seed};
 use ngwallet::config::AddressType;
 
@@ -46,7 +48,10 @@ impl EnvoyBip39 {
         network: Network,
         passphrase: Option<String>,
     ) -> Result<Vec<DerivedDescriptor>> {
-        match get_descriptors(seed_words.to_string(), network, passphrase) {
+        let mnemonic = Mnemonic::parse(seed_words)?;
+        let seed = mnemonic.to_seed(passphrase.unwrap_or("".to_owned()));
+
+        match get_descriptors(&seed, network, 0) {
             Ok(descriptors) => {
                 let mut derived_descriptors = Vec::new();
                 info!("Descriptors Size: {:?}", descriptors.len());
@@ -54,10 +59,10 @@ impl EnvoyBip39 {
                     let address_type = Self::get_address_type(descriptor.descriptor_type);
                     if let Some(address_type) = address_type {
                         let derived_descriptor = DerivedDescriptor {
-                            external_descriptor: descriptor.descriptor_xprv,
-                            external_pub_descriptor: descriptor.descriptor_xpub,
-                            internal_pub_descriptor: descriptor.change_descriptor_xpub,
-                            internal_descriptor: descriptor.change_descriptor_xprv,
+                            external_descriptor: descriptor.descriptor_xprv(),
+                            external_pub_descriptor: descriptor.descriptor_xpub(),
+                            internal_pub_descriptor: descriptor.change_descriptor_xpub(),
+                            internal_descriptor: descriptor.change_descriptor_xprv(),
                             address_type,
                         };
                         derived_descriptors.push(derived_descriptor);
@@ -72,6 +77,17 @@ impl EnvoyBip39 {
         }
     }
 
+    pub fn derive_fingerprint_from_seed(
+        seed_words: &str,
+        passphrase: Option<String>,
+        network: Network,
+    ) -> Result<String> {
+        let mnemonic = Mnemonic::parse(seed_words)?;
+        let seed = mnemonic.to_seed(passphrase.unwrap_or("".to_owned()));
+        let xprv: Xpriv = Xpriv::new_master(network, &seed)?;
+        let fingerprint = xprv.fingerprint(&Secp256k1::new());
+        Ok(fingerprint.to_string())
+    }
     //
     fn get_address_type(descriptor_type: DescriptorType) -> Option<AddressType> {
         match descriptor_type {

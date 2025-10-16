@@ -35,13 +35,13 @@ use ngwallet::send::*;
 
 // Section: boilerplate
 
-use bdk_wallet::bitcoin::bip32::{DerivationPath, Fingerprint, Xpub};
-use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
-use bdk_wallet::error::CreateTxError;
-use bdk_wallet::rusqlite::Connection;
-use bdk_wallet::KeychainKind;
-use bdk_wallet::Update;
 use ngwallet::account::NgAccount;
+use ngwallet::bdk_wallet::bitcoin::bip32::{DerivationPath, Fingerprint, Xpub};
+use ngwallet::bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
+use ngwallet::bdk_wallet::error::CreateTxError;
+use ngwallet::bdk_wallet::rusqlite::Connection;
+use ngwallet::bdk_wallet::KeychainKind;
+use ngwallet::bdk_wallet::Update;
 use ngwallet::config::AddressType;
 use ngwallet::config::NgAccountBackup;
 use ngwallet::config::NgAccountConfig;
@@ -60,7 +60,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1370660686;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -207370575;
 
 // Section: executor
 
@@ -2769,6 +2769,48 @@ fn wire__crate__api__bip39__envoy_bip_39_derive_descriptor_from_seed_impl(
         },
     )
 }
+fn wire__crate__api__bip39__envoy_bip_39_derive_fingerprint_from_seed_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "envoy_bip_39_derive_fingerprint_from_seed",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_seed_words = <String>::sse_decode(&mut deserializer);
+            let api_passphrase = <Option<String>>::sse_decode(&mut deserializer);
+            let api_network = <crate::api::envoy_wallet::Network>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let output_ok =
+                            crate::api::bip39::EnvoyBip39::derive_fingerprint_from_seed(
+                                &api_seed_words,
+                                api_passphrase,
+                                api_network,
+                            )?;
+                        Ok(output_ok)
+                    })(),
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__bip39__envoy_bip_39_generate_seed_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -3044,6 +3086,7 @@ const _: fn() = || {
         let _: String = NgDescriptor.internal;
         let _: Option<String> = NgDescriptor.external;
         let _: ngwallet::config::AddressType = NgDescriptor.address_type;
+        let _: Option<ngwallet::config::AddressType> = NgDescriptor.export_addr_hint;
     }
     {
         let Output = None::<ngwallet::transaction::Output>.unwrap();
@@ -3788,10 +3831,13 @@ impl SseDecode for ngwallet::config::NgDescriptor {
         let mut var_internal = <String>::sse_decode(deserializer);
         let mut var_external_ = <Option<String>>::sse_decode(deserializer);
         let mut var_addressType = <ngwallet::config::AddressType>::sse_decode(deserializer);
+        let mut var_exportAddrHint =
+            <Option<ngwallet::config::AddressType>>::sse_decode(deserializer);
         return ngwallet::config::NgDescriptor {
             internal: var_internal,
             external: var_external_,
             address_type: var_addressType,
+            export_addr_hint: var_exportAddrHint,
         };
     }
 }
@@ -3833,6 +3879,17 @@ impl SseDecode for Option<MultiSigDetails> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<MultiSigDetails>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<ngwallet::config::AddressType> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<ngwallet::config::AddressType>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -4435,26 +4492,32 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        55 => wire__crate__api__bip39__envoy_bip_39_generate_seed_impl(
+        55 => wire__crate__api__bip39__envoy_bip_39_derive_fingerprint_from_seed_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        56 => wire__crate__api__bip39__envoy_bip_39_validate_seed_impl(
+        56 => wire__crate__api__bip39__envoy_bip_39_generate_seed_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        57 => wire__crate__api__envoy_wallet__get_server_features_impl(
+        57 => wire__crate__api__bip39__envoy_bip_39_validate_seed_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        58 => wire__crate__api__envoy_wallet__init_app_impl(port, ptr, rust_vec_len, data_len),
-        60 => wire__crate__api__errors__tx_compose_error_map_err_impl(
+        58 => wire__crate__api__envoy_wallet__get_server_features_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        59 => wire__crate__api__envoy_wallet__init_app_impl(port, ptr, rust_vec_len, data_len),
+        61 => wire__crate__api__errors__tx_compose_error_map_err_impl(
             port,
             ptr,
             rust_vec_len,
@@ -4524,7 +4587,7 @@ fn pde_ffi_dispatcher_sync_impl(
             rust_vec_len,
             data_len,
         ),
-        59 => wire__ngwallet__transaction__output_get_id_impl(ptr, rust_vec_len, data_len),
+        60 => wire__ngwallet__transaction__output_get_id_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -5009,6 +5072,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<ngwallet::config::NgDescriptor
             self.0.internal.into_into_dart().into_dart(),
             self.0.external.into_into_dart().into_dart(),
             self.0.address_type.into_into_dart().into_dart(),
+            self.0.export_addr_hint.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -5781,6 +5845,7 @@ impl SseEncode for ngwallet::config::NgDescriptor {
         <String>::sse_encode(self.internal, serializer);
         <Option<String>>::sse_encode(self.external, serializer);
         <ngwallet::config::AddressType>::sse_encode(self.address_type, serializer);
+        <Option<ngwallet::config::AddressType>>::sse_encode(self.export_addr_hint, serializer);
     }
 }
 
@@ -5820,6 +5885,16 @@ impl SseEncode for Option<MultiSigDetails> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <MultiSigDetails>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<ngwallet::config::AddressType> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <ngwallet::config::AddressType>::sse_encode(value, serializer);
         }
     }
 }
@@ -6121,13 +6196,13 @@ mod io {
 
     // Section: boilerplate
 
-    use bdk_wallet::bitcoin::bip32::{DerivationPath, Fingerprint, Xpub};
-    use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
-    use bdk_wallet::error::CreateTxError;
-    use bdk_wallet::rusqlite::Connection;
-    use bdk_wallet::KeychainKind;
-    use bdk_wallet::Update;
     use ngwallet::account::NgAccount;
+    use ngwallet::bdk_wallet::bitcoin::bip32::{DerivationPath, Fingerprint, Xpub};
+    use ngwallet::bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
+    use ngwallet::bdk_wallet::error::CreateTxError;
+    use ngwallet::bdk_wallet::rusqlite::Connection;
+    use ngwallet::bdk_wallet::KeychainKind;
+    use ngwallet::bdk_wallet::Update;
     use ngwallet::config::AddressType;
     use ngwallet::config::NgAccountBackup;
     use ngwallet::config::NgAccountConfig;
@@ -6304,13 +6379,13 @@ mod web {
 
     // Section: boilerplate
 
-    use bdk_wallet::bitcoin::bip32::{DerivationPath, Fingerprint, Xpub};
-    use bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
-    use bdk_wallet::error::CreateTxError;
-    use bdk_wallet::rusqlite::Connection;
-    use bdk_wallet::KeychainKind;
-    use bdk_wallet::Update;
     use ngwallet::account::NgAccount;
+    use ngwallet::bdk_wallet::bitcoin::bip32::{DerivationPath, Fingerprint, Xpub};
+    use ngwallet::bdk_wallet::chain::spk_client::{FullScanRequest, FullScanResponse, SyncRequest};
+    use ngwallet::bdk_wallet::error::CreateTxError;
+    use ngwallet::bdk_wallet::rusqlite::Connection;
+    use ngwallet::bdk_wallet::KeychainKind;
+    use ngwallet::bdk_wallet::Update;
     use ngwallet::config::AddressType;
     use ngwallet::config::NgAccountBackup;
     use ngwallet::config::NgAccountConfig;
