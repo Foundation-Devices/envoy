@@ -512,6 +512,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "bdk_wallet"
+version = "2.1.0-alpha.0"
+source = "git+https://github.com/Foundation-Devices/bdk_wallet?rev=622143d55c8a5607b144db70fca358ceb2c648f5#622143d55c8a5607b144db70fca358ceb2c648f5"
+dependencies = [
+ "bdk_chain",
+ "bip39",
+ "bitcoin 0.32.7",
+ "miniscript 12.3.5",
+ "rand_core",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "bech32"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2705,11 +2719,12 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
+source = "git+https://github.com/Foundation-Devices/ngwallet?rev=1a0935d25b7d2d542dea9e222586a64bea9bfd6f#1a0935d25b7d2d542dea9e222586a64bea9bfd6f"
 dependencies = [
  "anyhow",
  "bdk_core",
  "bdk_electrum",
- "bdk_wallet",
+ "bdk_wallet 2.1.0-alpha.0 (git+https://github.com/Foundation-Devices/bdk_wallet?rev=3a983ae313c661c63b2bd6bc8a68551b07d83d8a)",
  "bip39",
  "bip85",
  "log",
@@ -3599,6 +3614,7 @@ version = "0.1.0"
 dependencies = [
  "android_logger 0.15.1",
  "anyhow",
+ "bdk_wallet 2.1.0-alpha.0 (git+https://github.com/Foundation-Devices/bdk_wallet?rev=622143d55c8a5607b144db70fca358ceb2c648f5)",
  "bip39",
  "chrono",
  "flutter_rust_bridge",

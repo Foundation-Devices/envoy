@@ -19,6 +19,7 @@ import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/ntp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -236,7 +237,21 @@ class BluetoothManager extends WidgetsBindingObserver {
         if (await dir.exists()) {
           EnvoyReport().log("AccountManager",
               "Failed to create account directory for ${config.name}:${config.deviceSerial}, already exists: ${dir.path}");
-          throw Exception("Account already paired");
+
+          final acc = NgAccountManager()
+              .accounts
+              .firstWhereOrNull((a) => a.id == config.id);
+          kPrint("Account already exists, updating handler $acc");
+
+          if (acc != null) {
+            kPrint("Account already exists, updating handler");
+            final handler = acc.handler;
+            if (handler != null) {
+              await handler.renameAccount(name: config.name);
+              kPrint("Account updated!");
+              return;
+            }
+          }
         } else {
           await dir.create(recursive: true);
         }
@@ -676,8 +691,8 @@ class BluetoothManager extends WidgetsBindingObserver {
     }
   }
 
-  Future<void> _writeWithProgress(List<Uint8List> data) async {
-    final completer = Completer<void>();
+  Future<Future<bool>> _writeWithProgress(List<Uint8List> data) async {
+    final completer = Completer<bool>();
     _sendingData = true;
 
     final writeStream = bluart.writeAll(id: bleId, data: data);
@@ -700,7 +715,7 @@ class BluetoothManager extends WidgetsBindingObserver {
         }
         _sendingData = false;
         if (!completer.isCompleted) {
-          completer.complete();
+          completer.complete(true);
         }
       },
       onError: (e) {
@@ -711,7 +726,7 @@ class BluetoothManager extends WidgetsBindingObserver {
         _sendingData = false;
         _writeProgressController.addError(e);
         if (!completer.isCompleted) {
-          completer.complete();
+          completer.complete(false);
         }
       },
     );
@@ -722,6 +737,11 @@ class BluetoothManager extends WidgetsBindingObserver {
   void dispose() {
     _subscription?.cancel();
     _writeProgressSubscription?.cancel();
+  }
+
+  Future sendAccountUpdate(api.AccountUpdate update) async {
+    kPrint("Sending account update to Prime");
+    await writeMessage(api.QuantumLinkMessage.accountUpdate(update));
   }
 }
 

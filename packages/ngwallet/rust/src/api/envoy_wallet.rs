@@ -7,7 +7,6 @@ use crate::api::envoy_account::EnvoyAccount;
 use crate::api::errors::{BroadcastError, RBFBumpFeeError, TxComposeError};
 use crate::api::migration::get_last_used_index;
 use crate::frb_generated::StreamSink;
-use anyhow::anyhow;
 use chrono::Utc;
 use flutter_rust_bridge::frb;
 use log::info;
@@ -26,6 +25,7 @@ use ngwallet::send::{DraftTransaction, TransactionFeeResult, TransactionParams};
 use ngwallet::transaction;
 use ngwallet::transaction::Output;
 
+use anyhow::anyhow;
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
@@ -1061,6 +1061,10 @@ impl EnvoyAccountHandler {
     pub fn export_bip329_data(&self) -> anyhow::Result<Vec<String>> {
         let account = self.ng_account.lock().unwrap();
         account.get_bip329_data()
+    }
+
+    pub fn to_remote_update(&self) -> Vec<u8> {
+        self.config().to_remote_update()
     }
 }
 

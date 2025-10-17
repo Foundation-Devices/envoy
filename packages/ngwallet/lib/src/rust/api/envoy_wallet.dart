@@ -250,6 +250,8 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
           electrumServer: electrumServer,
           torPort: torPort);
 
+  Future<Uint8List> toRemoteUpdate();
+
   Future<List<BitcoinTransaction>> transactions();
 
   Future<void> updateBroadcastState(
