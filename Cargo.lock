@@ -512,20 +512,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bdk_wallet"
-version = "2.1.0-alpha.0"
-source = "git+https://github.com/Foundation-Devices/bdk_wallet?rev=622143d55c8a5607b144db70fca358ceb2c648f5#622143d55c8a5607b144db70fca358ceb2c648f5"
-dependencies = [
- "bdk_chain",
- "bip39",
- "bitcoin 0.32.7",
- "miniscript 12.3.5",
- "rand_core",
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "bech32"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1440,7 +1426,7 @@ dependencies = [
  "byteorder",
  "libc",
  "log",
- "rustls 0.23.32",
+ "rustls 0.23.33",
  "serde",
  "serde_json",
  "webpki-roots 0.25.4",
@@ -2106,7 +2092,7 @@ dependencies = [
  "http",
  "hyper",
  "hyper-util",
- "rustls 0.23.32",
+ "rustls 0.23.33",
  "rustls-pki-types",
  "tokio",
  "tokio-rustls",
@@ -2724,7 +2710,7 @@ dependencies = [
  "anyhow",
  "bdk_core",
  "bdk_electrum",
- "bdk_wallet 2.1.0-alpha.0 (git+https://github.com/Foundation-Devices/bdk_wallet?rev=3a983ae313c661c63b2bd6bc8a68551b07d83d8a)",
+ "bdk_wallet",
  "bip39",
  "bip85",
  "log",
@@ -3614,7 +3600,6 @@ version = "0.1.0"
 dependencies = [
  "android_logger 0.15.1",
  "anyhow",
- "bdk_wallet 2.1.0-alpha.0 (git+https://github.com/Foundation-Devices/bdk_wallet?rev=622143d55c8a5607b144db70fca358ceb2c648f5)",
  "bip39",
  "chrono",
  "flutter_rust_bridge",
@@ -3685,9 +3670,9 @@ dependencies = [
 
 [[package]]
 name = "rustls"
-version = "0.23.32"
+version = "0.23.33"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cd3c25631629d034ce7cd9940adc9d45762d46de2b0f57193c4443b92c6d4d40"
+checksum = "751e04a496ca00bb97a5e043158d23d66b5aabf2e1d5aa2a0aaebb1aafe6f82c"
 dependencies = [
  "log",
  "once_cell",
@@ -4385,7 +4370,7 @@ version = "0.26.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1729aa945f29d91ba541258c8df89027d5792d85a8841fb65e8bf0f4ede4ef61"
 dependencies = [
- "rustls 0.23.32",
+ "rustls 0.23.33",
  "tokio",
 ]
 
