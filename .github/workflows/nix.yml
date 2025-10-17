@@ -10,7 +10,7 @@ env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 jobs:
   nix-build:
-    runs-on: [ self-hosted, Linux, X64 ]
+    runs-on: [ self-hosted, Linux, X64, nix ]
     steps:
       - uses: actions/checkout@v3
 
@@ -26,9 +26,9 @@ jobs:
         id: cache-cargo
         with:
           path: |
-            #~/.cargo/registry/index/
-            #~/.cargo/registry/cache/
-            #~/.cargo/git/db/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
             target/
           key: ${{ github.workflow }}-cache-${{ hashFiles('rust-toolchain.toml') }}-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
