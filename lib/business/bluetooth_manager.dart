@@ -691,7 +691,7 @@ class BluetoothManager extends WidgetsBindingObserver {
     }
   }
 
-  Future<Future<bool>> _writeWithProgress(List<Uint8List> data) async {
+  Future<bool> _writeWithProgress(List<Uint8List> data) {
     final completer = Completer<bool>();
     _sendingData = true;
 
