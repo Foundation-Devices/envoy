@@ -59,11 +59,12 @@ class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
       _OnboardPrimeBluetoothState();
 }
 
+PairingResponse? pairingResponse;
+
 class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     with SingleTickerProviderStateMixin {
   final s = Settings();
   bool scanForPayload = false;
-  PairingResponse? pairingResponse;
 
   Completer<QuantumLinkMessage_BroadcastTransaction>? _completer;
 
@@ -128,7 +129,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                 pairingResponse!.passportColor == PassportColor.dark
                     ? DeviceColor.dark
                     : DeviceColor.light;
-            BluetoothManager().addDevice(
+            await BluetoothManager().addDevice(
                 pairingResponse!.passportSerial.field0,
                 pairingResponse!.passportFirmwareVersion.field0,
                 BluetoothManager().bleId,

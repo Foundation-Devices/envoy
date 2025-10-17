@@ -1426,7 +1426,7 @@ dependencies = [
  "byteorder",
  "libc",
  "log",
- "rustls 0.23.32",
+ "rustls 0.23.33",
  "serde",
  "serde_json",
  "webpki-roots 0.25.4",
@@ -2092,7 +2092,7 @@ dependencies = [
  "http",
  "hyper",
  "hyper-util",
- "rustls 0.23.32",
+ "rustls 0.23.33",
  "rustls-pki-types",
  "tokio",
  "tokio-rustls",
@@ -2705,6 +2705,7 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
+source = "git+https://github.com/Foundation-Devices/ngwallet?rev=1a0935d25b7d2d542dea9e222586a64bea9bfd6f#1a0935d25b7d2d542dea9e222586a64bea9bfd6f"
 dependencies = [
  "anyhow",
  "bdk_core",
@@ -3669,9 +3670,9 @@ dependencies = [
 
 [[package]]
 name = "rustls"
-version = "0.23.32"
+version = "0.23.33"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cd3c25631629d034ce7cd9940adc9d45762d46de2b0f57193c4443b92c6d4d40"
+checksum = "751e04a496ca00bb97a5e043158d23d66b5aabf2e1d5aa2a0aaebb1aafe6f82c"
 dependencies = [
  "log",
  "once_cell",
@@ -4369,7 +4370,7 @@ version = "0.26.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1729aa945f29d91ba541258c8df89027d5792d85a8841fb65e8bf0f4ede4ef61"
 dependencies = [
- "rustls 0.23.32",
+ "rustls 0.23.33",
  "tokio",
 ]
 

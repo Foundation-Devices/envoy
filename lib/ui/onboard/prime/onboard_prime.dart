@@ -79,7 +79,8 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
       if (regex.hasMatch(bleId ?? "")) {
         await BluetoothManager().getPermissions();
         kPrint("Connecting to Prime with ID: $bleId");
-        await BluetoothManager().events?.any((bluart.Event event) {
+        final found =
+            await BluetoothManager().events?.any((bluart.Event event) {
           if (event is bluart.Event_ScanResult) {
             for (final device in event.field0) {
               if (device.name.contains("Prime")) {
@@ -90,9 +91,13 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
           }
 
           return false;
+        }).timeout(const Duration(seconds: 10), onTimeout: () {
+          return false;
         });
-
-        kPrint("Scan finished...");
+        if (found != true) {
+          throw Exception("Prime device not found."
+              " Please ensure it is powered on and in range.");
+        }
         await BluetoothManager().connect(id: bleId!);
         await LocalStorage().prefs.setString(primeSerialPref, bleId!);
 

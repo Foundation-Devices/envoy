@@ -2,9 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
+
 import 'package:animations/animations.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -51,6 +55,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart' as ngwallet;
 import 'package:ngwallet/ngwallet.dart';
@@ -865,8 +870,23 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                         S().component_save,
                         onTap: () async {
                           final navigator = Navigator.of(context);
-                          await account?.handler
-                              ?.renameAccount(name: textEntry.enteredText);
+                          Device? device = Devices().getDeviceBySerial(
+                              widget.account.deviceSerial ?? "");
+                          final handler = account?.handler;
+                          if (handler == null) {
+                            return;
+                          }
+                          await handler.renameAccount(
+                              name: textEntry.enteredText);
+
+                          if (device != null &&
+                              device.type == DeviceType.passportPrime &&
+                              account?.id != null) {
+                            await BluetoothManager().sendAccountUpdate(
+                                api.AccountUpdate(
+                                    accountId: account!.id,
+                                    update: (await handler.toRemoteUpdate())));
+                          }
                           navigator.pop();
                         },
                       ),
