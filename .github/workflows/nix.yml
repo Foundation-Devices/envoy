@@ -26,9 +26,9 @@ jobs:
         id: cache-cargo
         with:
           path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
+            #~/.cargo/registry/index/
+            #~/.cargo/registry/cache/
+            #~/.cargo/git/db/
             target/
           key: ${{ github.workflow }}-cache-${{ hashFiles('rust-toolchain.toml') }}-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
