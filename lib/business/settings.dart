@@ -71,21 +71,18 @@ class Settings extends ChangeNotifier {
       "qkpvnm3gn7x7yzxp7pddlcpn5h4tyxve7yx4olvi437fzw4gz3sxbmad.onion:50001";
 
   static final List<String> defaultServers = getDefaultFulcrumServers();
-  static String currentDefaultServer = selectRandomDefaultServer();
+  static String currentDefaultServer = selectRandomServerFrom(defaultServers);
 
   static final List<String> defaultTorServers = [
     "mocmguuik7rws4bclpcoz2ldfzesjolatrzggaxfl37hjpreap777yqd.onion:50001",
     "l7wsl4yghqvdgp4ullod67ydb54ttxs3nnvctblbofl7umw6j72e5did.onion:50001",
     "vtdblqfka4iqbvjscagwglbg4wxmc42hvf5i7htr3dipnbqz5eiwqrqd.onion:50001"
   ];
-  static String currentDefaultTorServer = selectRandomDefaultTorServer();
+  static String currentDefaultTorServer =
+      selectRandomServerFrom(defaultTorServers);
 
-  static String selectRandomDefaultTorServer() {
-    return defaultTorServers[Random().nextInt(defaultTorServers.length)];
-  }
-
-  static String selectRandomDefaultServer() {
-    return defaultServers[Random().nextInt(defaultServers.length)];
+  static String selectRandomServerFrom(List<String> servers) {
+    return servers[Random().nextInt(servers.length)];
   }
 
   void switchToNextDefaultServer() {
@@ -219,7 +216,7 @@ class Settings extends ChangeNotifier {
   }
 
   void useDefaultElectrumServer(bool enabled) {
-    currentDefaultServer = selectRandomDefaultServer();
+    currentDefaultServer = selectRandomServerFrom(defaultServers);
     usingDefaultElectrumServer = enabled;
     notifyListeners();
     store();
