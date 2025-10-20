@@ -552,7 +552,9 @@ class _TransactionReviewScreenState
         final EnvoyAccount? account = ref.read(selectedAccountProvider);
         final Device? device =
             Devices().getDeviceBySerial(account?.deviceSerial ?? "");
-        if (!isConnected && device != null) {
+        if (!isConnected &&
+            device != null &&
+            device.type == DeviceType.passportPrime) {
           BluetoothManager().connect(id: device.bleId);
         }
       },
