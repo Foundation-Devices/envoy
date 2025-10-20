@@ -62,7 +62,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
   void updateControllerTextIfNeeded() {
     if (_controller.text.isEmpty ||
         Settings.defaultServers.contains(_controller.text)) {
-      _controller.text = Settings.MAINNET_ONION_ELECTRUM_SERVER;
+      _controller.text = Settings.currentDefaultTorServer;
     }
   }
 
