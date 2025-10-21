@@ -1629,6 +1629,7 @@ Future<void> main() async {
       await findAndPressTextButton(tester, "Back");
 
       /// 12) Repeat steps 10 and 11
+      await tester.tap(lastSwitchFinder);
       await findAndPressTextButton(tester, "Retag Selected");
 
       /// 13) Tap Continue in the pop up
