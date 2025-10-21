@@ -1515,7 +1515,7 @@ Future<void> main() async {
       await tester.pump();
       expect(address2.startsWith('bc1q'), isTrue,
           reason:
-              'The second address should be a non-Taproot address starting with bc1q');
+              'The second address should be a non-Taproot address starting with bc1q, the second address: $address2');
 
       // Check if "Reconnect Passport" button working
       // back to home
@@ -1589,6 +1589,9 @@ Future<void> main() async {
 
       /// 3) Tap "back" in the pop up
       await findAndPressTextButton(tester, "Back");
+
+      await tester.tap(lastSwitchFinder);
+      await tester.pump(Durations.long2);
 
       /// 4) Repeat steps 1 and 2
       await findAndPressTextButton(tester, "Tag Selected");
@@ -2223,6 +2226,8 @@ Future<void> main() async {
       await enterTextInField(
           tester, find.byType(TextFormField), hotSignetSendAddress);
 
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
+
       // enter amount
       await findAndPressTextButton(tester, '5');
       await findAndPressTextButton(tester, '6');
@@ -2445,6 +2450,8 @@ Future<void> main() async {
       /// SEND some money to hot signet wallet
       await enterTextInField(
           tester, find.byType(TextFormField), hotSignetSelfAddress);
+
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
 
       // enter amount
       await findAndPressTextButton(tester, '5');
