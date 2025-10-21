@@ -1651,6 +1651,8 @@ Future<void> main() async {
       /// 15) Tap Continue
       await findAndPressTextButton(tester, "Continue");
 
+      await pressHamburgerMenu(tester);
+
       /// 16) Check the pop up closes and the coin has been tagged to the tag written in step 14
       await tester.pump(Durations.long2);
       // 1) Verify "Whatever" tag is visible
@@ -1665,13 +1667,11 @@ Future<void> main() async {
       /// 17) Open the tag written in step 14
       await findAndPressTextButton(tester, "Whatever");
 
+      await pumpRepeatedly(tester);
+
       /// 18) Tap the three dots on the top right corner
-      // Find the Icon widget with the ellipsis icon
-      final ellipsisFinder = find.byIcon(CupertinoIcons.ellipsis);
-      // Ensure it exists
-      expect(ellipsisFinder, findsOneWidget);
-      // Tap it
-      await tester.tap(ellipsisFinder);
+      await openDotsMenu(tester);
+
       await tester.pump(Durations.long2);
 
       /// 19) Tap Delete tag

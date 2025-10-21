@@ -478,7 +478,7 @@ Future<void> openDotsMenu(WidgetTester tester) async {
   final dotsButton = find.byIcon(Icons.more_horiz_outlined);
   expect(dotsButton, findsOneWidget);
 
-  await tester.tap(dotsButton);
+  await tester.tap(dotsButton, warnIfMissed: false);
   await tester.pump(Durations.long2);
 }
 
