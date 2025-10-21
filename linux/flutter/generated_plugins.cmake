@@ -11,6 +11,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
+  backup
   bluart
   rust_lib_foundation_api
   rust_lib_http_tor

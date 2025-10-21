@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2025 Foundation Devices Inc
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+rust_input: crate::api
+rust_root: rust/
+dart_output: lib/src/rust
+rust_preamble: |
+  use curve25519_parser::StaticSecret;
+  use effort::Solution;
+  use reqwest::{Client, Response};

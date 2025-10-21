@@ -8,6 +8,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:backup/backup.dart' as Backup;
 import 'package:backup/backup.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/legacy/legacy_account.dart';
@@ -45,6 +46,7 @@ const String LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME =
 
 const int SECRET_LENGTH_BYTES = 16;
 const magicBackupVersion = 2;
+class SeedNotFound implements Exception {}
 
 class EnvoySeed {
   static final EnvoySeed _instance = EnvoySeed._internal();
@@ -55,7 +57,7 @@ class EnvoySeed {
 
   static Future<EnvoySeed> init() async {
     var singleton = EnvoySeed._instance;
-
+    await Backup.RustLib.init();
     // After a fresh install of Envoy following an Envoy erase,
     // the keychain may still retain the seed for a brief period.
     // To ensure the seed is fully removed, set the flag during the erase flow
@@ -272,9 +274,13 @@ class EnvoySeed {
 
     //add accounts
     backupData = await processBackupData(backupData, cloud);
-    return Backup.perform(
-            backupData, seed, Settings().envoyServerAddress, Tor.instance,
-            path: encryptedBackupFilePath, cloud: cloud)
+    return Backup.performBackup(
+            payload: backupData,
+            seedWords: seed,
+            serverUrl: Settings().envoyServerAddress,
+            proxyPort: Tor.instance.port,
+            localBackup: encryptedBackupFilePath,
+            performCloud: cloud)
         .then((success) async {
       if (cloud && success) {
         // Only notify if we are doing an online backup
@@ -382,8 +388,14 @@ class EnvoySeed {
 
     if (Settings().syncToCloud) {
       try {
-        isDeleted = await Backup.delete(
-            seed!, Settings().envoyServerAddress, Tor.instance);
+        if(Settings().usingTor){
+          await Tor.instance.isReady();
+        }
+
+        isDeleted = await Backup.backupDelete(
+            seedWords: seed!,
+            serverUrl: Settings().envoyServerAddress,
+            proxyPort: Tor.instance.port) == 202;
       } on Exception {
         return false;
       }
@@ -415,7 +427,10 @@ class EnvoySeed {
   Future<bool> deleteMagicBackup() async {
     final seed = await get();
     Settings().setSyncToCloud(false);
-    return Backup.delete(seed!, Settings().envoyServerAddress, Tor.instance);
+    if(Settings().torEnabled()){
+      await Tor.instance.isReady();
+    }
+    return  await Backup.delete(seedWords: seed!, serverUrl: Settings().envoyServerAddress,proxyPort:  Tor.instance.port) == 202;
   }
 
   Future<bool> restoreData(
@@ -433,7 +448,8 @@ class EnvoySeed {
     }
     if (filePath == null) {
       try {
-        return Backup.restore(seed, Settings().envoyServerAddress, Tor.instance)
+        final data = Backup.
+        return Backup.(seed, Settings().envoyServerAddress, Tor.instance)
             .then((data) async {
           bool status = await processRecoveryData(seed!, data, passphrase,
               isMagicBackup: true);
