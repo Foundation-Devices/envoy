@@ -1483,6 +1483,7 @@ Future<void> main() async {
       await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
       await findAndPressTextButton(tester, "Receive");
       await tester.pump(Durations.extralong4);
+      await tester.pump(Durations.extralong4);
       await tester.pump();
 
       // copy Taproot address
@@ -1494,8 +1495,7 @@ Future<void> main() async {
               'The first address should be a Taproot address starting with bc1p');
 
       // back to home
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
+      await findAndPressTextButton(tester, "Accounts");
       // settings
       await pressHamburgerMenu(tester);
       await tapSettingsButton(tester);
@@ -1506,8 +1506,12 @@ Future<void> main() async {
 
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
-      // await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)"); /// for some reason on iphone goes straight to receive screen (only in tests)
-      // await findAndPressTextButton(tester, "Receive");
+
+      await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
+
+      await findAndPressTextButton(tester, "Receive");
+
+      await pumpRepeatedly(tester, times: 30);
 
       // Grab the second address
       final address2 = await getAddressFromReceiveScreen(tester);
