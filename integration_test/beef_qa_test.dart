@@ -1483,6 +1483,7 @@ Future<void> main() async {
       await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
       await findAndPressTextButton(tester, "Receive");
       await tester.pump(Durations.extralong4);
+      await tester.pump(Durations.extralong4);
       await tester.pump();
 
       // copy Taproot address
@@ -1494,8 +1495,7 @@ Future<void> main() async {
               'The first address should be a Taproot address starting with bc1p');
 
       // back to home
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
+      await findAndPressTextButton(tester, "Accounts");
       // settings
       await pressHamburgerMenu(tester);
       await tapSettingsButton(tester);
@@ -1506,8 +1506,12 @@ Future<void> main() async {
 
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
-      // await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)"); /// for some reason on iphone goes straight to receive screen (only in tests)
-      // await findAndPressTextButton(tester, "Receive");
+
+      await findFirstTextButtonAndPress(tester, "GH TEST ACC (#1)");
+
+      await findAndPressTextButton(tester, "Receive");
+
+      await pumpRepeatedly(tester, times: 30);
 
       // Grab the second address
       final address2 = await getAddressFromReceiveScreen(tester);
@@ -1515,7 +1519,7 @@ Future<void> main() async {
       await tester.pump();
       expect(address2.startsWith('bc1q'), isTrue,
           reason:
-              'The second address should be a non-Taproot address starting with bc1q');
+              'The second address should be a non-Taproot address starting with bc1q, the second address: $address2');
 
       // Check if "Reconnect Passport" button working
       // back to home
@@ -1590,6 +1594,9 @@ Future<void> main() async {
       /// 3) Tap "back" in the pop up
       await findAndPressTextButton(tester, "Back");
 
+      await tester.tap(lastSwitchFinder);
+      await tester.pump(Durations.long2);
+
       /// 4) Repeat steps 1 and 2
       await findAndPressTextButton(tester, "Tag Selected");
 
@@ -1626,6 +1633,7 @@ Future<void> main() async {
       await findAndPressTextButton(tester, "Back");
 
       /// 12) Repeat steps 10 and 11
+      await tester.tap(lastSwitchFinder);
       await findAndPressTextButton(tester, "Retag Selected");
 
       /// 13) Tap Continue in the pop up
@@ -1643,6 +1651,8 @@ Future<void> main() async {
       /// 15) Tap Continue
       await findAndPressTextButton(tester, "Continue");
 
+      await pressHamburgerMenu(tester);
+
       /// 16) Check the pop up closes and the coin has been tagged to the tag written in step 14
       await tester.pump(Durations.long2);
       // 1) Verify "Whatever" tag is visible
@@ -1657,13 +1667,11 @@ Future<void> main() async {
       /// 17) Open the tag written in step 14
       await findAndPressTextButton(tester, "Whatever");
 
+      await pumpRepeatedly(tester);
+
       /// 18) Tap the three dots on the top right corner
-      // Find the Icon widget with the ellipsis icon
-      final ellipsisFinder = find.byIcon(CupertinoIcons.ellipsis);
-      // Ensure it exists
-      expect(ellipsisFinder, findsOneWidget);
-      // Tap it
-      await tester.tap(ellipsisFinder);
+      await openDotsMenu(tester);
+
       await tester.pump(Durations.long2);
 
       /// 19) Tap Delete tag
@@ -2223,6 +2231,8 @@ Future<void> main() async {
       await enterTextInField(
           tester, find.byType(TextFormField), hotSignetSendAddress);
 
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
+
       // enter amount
       await findAndPressTextButton(tester, '5');
       await findAndPressTextButton(tester, '6');
@@ -2445,6 +2455,8 @@ Future<void> main() async {
       /// SEND some money to hot signet wallet
       await enterTextInField(
           tester, find.byType(TextFormField), hotSignetSelfAddress);
+
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
 
       // enter amount
       await findAndPressTextButton(tester, '5');

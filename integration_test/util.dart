@@ -478,7 +478,7 @@ Future<void> openDotsMenu(WidgetTester tester) async {
   final dotsButton = find.byIcon(Icons.more_horiz_outlined);
   expect(dotsButton, findsOneWidget);
 
-  await tester.tap(dotsButton);
+  await tester.tap(dotsButton, warnIfMissed: false);
   await tester.pump(Durations.long2);
 }
 
@@ -1569,50 +1569,66 @@ Future<void> findPopUpText(WidgetTester tester, String tapText) async {
 }
 
 Future<void> waitForTealTextAndTap(
-    WidgetTester tester, String textToFind) async {
-  // Define the Teal color you want to check for
+  WidgetTester tester,
+  String textToFind,
+) async {
   const Color expectedColor = EnvoyColors.accentPrimary;
-
-  // Finder for the text widget
   final Finder textFinder = find.text(textToFind);
 
-  // Wait until the text is found initially
+  // Wait until the text initially appears
   await tester.pumpUntilFound(textFinder,
       tries: 100, duration: Durations.long2);
 
   // Set the maximum number of retries to wait for the text to turn Teal
   const int maxRetries = 20;
   int retryCount = 0;
-
-  // Wait the text button to settle
-  await tester.pump(const Duration(milliseconds: 3500));
-  // Loop until the text's color is Teal or the maximum retries are reached
   bool isTeal = false;
-  while (!isTeal && retryCount < maxRetries) {
-    // Find the text again
-    await tester.pumpUntilFound(textFinder,
-        tries: 100, duration: Durations.long2);
-    // Get the Text widget
-    final Text textWidget = tester.widget<Text>(textFinder);
 
-    // Check the color of the Text widget
-    if (textWidget.style?.color == expectedColor) {
-      isTeal = true;
-    } else {
-      // If not Teal, wait a bit and try again
+  // Let UI settle before checking color
+  await tester.pump(const Duration(milliseconds: 3500));
+
+  while (!isTeal && retryCount < maxRetries) {
+    // Let animations or transitions complete
+    await pumpRepeatedly(tester);
+
+    final matched = textFinder.evaluate().toList();
+
+    if (matched.isEmpty) {
+      // Widget temporarily disappeared — wait and retry
       await tester.pump(const Duration(milliseconds: 1000));
       retryCount++;
+      continue;
     }
+
+    // Safely grab the first matched text
+    final Text textWidget = matched.first.widget as Text;
+    final currentColor = textWidget.style?.color;
+
+    if (currentColor == expectedColor) {
+      isTeal = true;
+      break;
+    }
+
+    await tester.pump(const Duration(milliseconds: 1000));
+    retryCount++;
   }
 
-  // If the text is Teal, tap it
-  if (isTeal) {
-    await tester.tap(textFinder);
-    await tester.pump(Durations.long2);
-  } else {
-    throw Exception("Text did not turn teal after $maxRetries attempts");
+  if (!isTeal) {
+    // Try to report last observed color
+    String finalColor = "widget not found";
+    final matched = textFinder.evaluate().toList();
+    if (matched.isNotEmpty) {
+      finalColor =
+          (matched.first.widget as Text).style?.color?.toString() ?? "null";
+    }
+
+    throw Exception(
+      "Text '$textToFind' did not turn teal after $maxRetries attempts. Last color: $finalColor",
+    );
   }
 
+  // Tap once the color matches
+  await tester.tap(textFinder);
   await tester.pump(Durations.long2);
 }
 

@@ -62,9 +62,6 @@ class Settings extends ChangeNotifier {
 
   static const String SETTINGS_PREFS = "settings";
 
-  static const String MAINNET_ONION_ELECTRUM_SERVER =
-      "mocmguuik7rws4bclpcoz2ldfzesjolatrzggaxfl37hjpreap777yqd.onion:50001";
-
   // FD testnet4 server
   static const String TESTNET4_ONION_ELECTRUM_SERVER =
       "7gohqoo7du3l3p72gld33hd5d6xtciych6plli6fwrixi2tsmyqc33yd.onion:50001";
@@ -74,16 +71,30 @@ class Settings extends ChangeNotifier {
       "qkpvnm3gn7x7yzxp7pddlcpn5h4tyxve7yx4olvi437fzw4gz3sxbmad.onion:50001";
 
   static final List<String> defaultServers = getDefaultFulcrumServers();
-  static String currentDefaultServer = selectRandomDefaultServer();
+  static String currentDefaultServer = selectRandomServerFrom(defaultServers);
 
-  static String selectRandomDefaultServer() {
-    return defaultServers[Random().nextInt(defaultServers.length)];
+  static final List<String> defaultTorServers = [
+    "mocmguuik7rws4bclpcoz2ldfzesjolatrzggaxfl37hjpreap777yqd.onion:50001",
+    "l7wsl4yghqvdgp4ullod67ydb54ttxs3nnvctblbofl7umw6j72e5did.onion:50001",
+    "vtdblqfka4iqbvjscagwglbg4wxmc42hvf5i7htr3dipnbqz5eiwqrqd.onion:50001"
+  ];
+  static String currentDefaultTorServer =
+      selectRandomServerFrom(defaultTorServers);
+
+  static String selectRandomServerFrom(List<String> servers) {
+    return servers[Random().nextInt(servers.length)];
   }
 
   void switchToNextDefaultServer() {
-    final currentIndex = defaultServers.indexOf(currentDefaultServer);
-    currentDefaultServer =
-        defaultServers[(currentIndex + 1) % defaultServers.length];
+    if (usingTor) {
+      final currentIndex = defaultTorServers.indexOf(currentDefaultTorServer);
+      currentDefaultTorServer =
+          defaultTorServers[(currentIndex + 1) % defaultTorServers.length];
+    } else {
+      final currentIndex = defaultServers.indexOf(currentDefaultServer);
+      currentDefaultServer =
+          defaultServers[(currentIndex + 1) % defaultServers.length];
+    }
     store();
     notifyListeners();
   }
@@ -185,7 +196,7 @@ class Settings extends ChangeNotifier {
 
     if (usingDefaultElectrumServer) {
       if (usingTor) {
-        return MAINNET_ONION_ELECTRUM_SERVER;
+        return currentDefaultTorServer;
       } else {
         return currentDefaultServer;
       }
@@ -205,7 +216,7 @@ class Settings extends ChangeNotifier {
   }
 
   void useDefaultElectrumServer(bool enabled) {
-    currentDefaultServer = selectRandomDefaultServer();
+    currentDefaultServer = selectRandomServerFrom(defaultServers);
     usingDefaultElectrumServer = enabled;
     notifyListeners();
     store();

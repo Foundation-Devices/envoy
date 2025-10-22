@@ -272,6 +272,9 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
       setState(() {
         _isLoading = false;
       });
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
     }
   }
 }
