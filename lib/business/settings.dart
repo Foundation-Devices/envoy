@@ -6,10 +6,12 @@
 
 import 'dart:math';
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
 import 'package:envoy/ui/amount_entry.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -399,6 +401,34 @@ class Settings extends ChangeNotifier {
   static Future<Settings> init() async {
     var singleton = Settings._instance;
 
+    //ENV-2474 fix for issue due to new personalElectrumAddress field
+    if (singleton.personalElectrumAddress.isEmpty) {
+      final currentNode = singleton.selectedElectrumAddress;
+      final isDiyNodes = PublicServer.diyNodes.address == currentNode;
+      final isBlockstreamNodes =
+          PublicServer.blockstream.address == currentNode;
+      final isFoundationNodes = [
+            ...getDefaultFulcrumServers(),
+            getDefaultFulcrumServers(ssl: true)
+          ].contains(currentNode) ||
+          currentNode == MAINNET_ONION_ELECTRUM_SERVER;
+
+      if (!isDiyNodes && !isBlockstreamNodes && !isFoundationNodes) {
+        singleton.personalElectrumAddress = currentNode;
+        singleton.usingDefaultElectrumServer = false;
+        await singleton.store();
+      }
+    }
+    //if the personalElectrumAddress is set to default onion server,
+    //this is probably due to 2.1.0 bug, so reset it to selectedElectrumAddress
+    else if (singleton.personalElectrumAddress ==
+        MAINNET_ONION_ELECTRUM_SERVER) {
+      if (singleton.selectedElectrumAddress != MAINNET_ONION_ELECTRUM_SERVER) {
+        singleton.personalElectrumAddress = singleton.selectedElectrumAddress;
+        singleton.usingDefaultElectrumServer = false;
+        await singleton.store();
+      }
+    }
     return singleton;
   }
 
