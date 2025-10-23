@@ -91,6 +91,7 @@ class NgAccountConfig {
   final Network network;
   final String id;
   final MultiSigDetails? multisig;
+  final bool archived;
 
   const NgAccountConfig({
     required this.name,
@@ -105,6 +106,7 @@ class NgAccountConfig {
     required this.network,
     required this.id,
     this.multisig,
+    required this.archived,
   });
 
   @override
@@ -120,7 +122,8 @@ class NgAccountConfig {
       dateSynced.hashCode ^
       network.hashCode ^
       id.hashCode ^
-      multisig.hashCode;
+      multisig.hashCode ^
+      archived.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -138,23 +141,29 @@ class NgAccountConfig {
           dateSynced == other.dateSynced &&
           network == other.network &&
           id == other.id &&
-          multisig == other.multisig;
+          multisig == other.multisig &&
+          archived == other.archived;
 }
 
 class NgDescriptor {
   final String internal;
   final String? external_;
   final AddressType addressType;
+  final AddressType? exportAddrHint;
 
   const NgDescriptor({
     required this.internal,
     this.external_,
     required this.addressType,
+    this.exportAddrHint,
   });
 
   @override
   int get hashCode =>
-      internal.hashCode ^ external_.hashCode ^ addressType.hashCode;
+      internal.hashCode ^
+      external_.hashCode ^
+      addressType.hashCode ^
+      exportAddrHint.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -163,5 +172,6 @@ class NgDescriptor {
           runtimeType == other.runtimeType &&
           internal == other.internal &&
           external_ == other.external_ &&
-          addressType == other.addressType;
+          addressType == other.addressType &&
+          exportAddrHint == other.exportAddrHint;
 }

@@ -11,6 +11,7 @@ import 'api/qr.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
+import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
 import 'third_party/bc_xid.dart';
 import 'third_party/foundation_api/api/backup.dart';
@@ -39,6 +40,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder;
 
   CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_EnvoyAridCachePtr => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache;
+
+  CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_EnvoyMasterDechunkerPtr => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker;
 
@@ -59,6 +64,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  EnvoyAridCache
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          dynamic raw);
+
+  @protected
   EnvoyMasterDechunker
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
           dynamic raw);
@@ -71,6 +81,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   XidDocument
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          dynamic raw);
+
+  @protected
+  EnvoyAridCache
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
           dynamic raw);
 
   @protected
@@ -99,6 +114,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  EnvoyAridCache
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          dynamic raw);
+
+  @protected
   EnvoyMasterDechunker
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
           dynamic raw);
@@ -124,6 +144,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BackupShardResponse dco_decode_backup_shard_response(dynamic raw);
+
+  @protected
+  bool dco_decode_bool(dynamic raw);
 
   @protected
   XidDocument
@@ -187,6 +210,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   FirmwareUpdateResult dco_decode_box_autoadd_firmware_update_result(
       dynamic raw);
+
+  @protected
+  MagicBackupEnabledRequest dco_decode_box_autoadd_magic_backup_enabled_request(
+      dynamic raw);
+
+  @protected
+  MagicBackupEnabledResponse
+      dco_decode_box_autoadd_magic_backup_enabled_response(dynamic raw);
 
   @protected
   PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw);
@@ -297,6 +328,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw);
 
   @protected
+  MagicBackupEnabledRequest dco_decode_magic_backup_enabled_request(
+      dynamic raw);
+
+  @protected
+  MagicBackupEnabledResponse dco_decode_magic_backup_enabled_response(
+      dynamic raw);
+
+  @protected
   OnboardingState dco_decode_onboarding_state(dynamic raw);
 
   @protected
@@ -362,6 +401,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int dco_decode_u_8(dynamic raw);
 
   @protected
+  U8Array32 dco_decode_u_8_array_32(dynamic raw);
+
+  @protected
   void dco_decode_unit(dynamic raw);
 
   @protected
@@ -379,6 +421,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  EnvoyAridCache
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          SseDeserializer deserializer);
+
+  @protected
   EnvoyMasterDechunker
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
           SseDeserializer deserializer);
@@ -391,6 +438,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   XidDocument
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+          SseDeserializer deserializer);
+
+  @protected
+  EnvoyAridCache
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
           SseDeserializer deserializer);
 
   @protected
@@ -416,6 +468,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   ArcMutexDecoder
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          SseDeserializer deserializer);
+
+  @protected
+  EnvoyAridCache
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
           SseDeserializer deserializer);
 
   @protected
@@ -446,6 +503,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   BackupShardResponse sse_decode_backup_shard_response(
       SseDeserializer deserializer);
+
+  @protected
+  bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
   XidDocument
@@ -520,6 +580,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   FirmwareUpdateResult sse_decode_box_autoadd_firmware_update_result(
       SseDeserializer deserializer);
+
+  @protected
+  MagicBackupEnabledRequest sse_decode_box_autoadd_magic_backup_enabled_request(
+      SseDeserializer deserializer);
+
+  @protected
+  MagicBackupEnabledResponse
+      sse_decode_box_autoadd_magic_backup_enabled_response(
+          SseDeserializer deserializer);
 
   @protected
   PairingRequest sse_decode_box_autoadd_pairing_request(
@@ -644,6 +713,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  MagicBackupEnabledRequest sse_decode_magic_backup_enabled_request(
+      SseDeserializer deserializer);
+
+  @protected
+  MagicBackupEnabledResponse sse_decode_magic_backup_enabled_response(
+      SseDeserializer deserializer);
+
+  @protected
   OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer);
 
   @protected
@@ -714,6 +791,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int sse_decode_u_8(SseDeserializer deserializer);
 
   @protected
+  U8Array32 sse_decode_u_8_array_32(SseDeserializer deserializer);
+
+  @protected
   void sse_decode_unit(SseDeserializer deserializer);
 
   @protected
@@ -724,9 +804,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer);
-
-  @protected
   void sse_encode_AnyhowException(
       AnyhowException self, SseSerializer serializer);
 
@@ -734,6 +811,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
           ArcMutexDecoder self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          EnvoyAridCache self, SseSerializer serializer);
 
   @protected
   void
@@ -749,6 +831,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           XidDocument self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          EnvoyAridCache self, SseSerializer serializer);
 
   @protected
   void
@@ -774,6 +861,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
           ArcMutexDecoder self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          EnvoyAridCache self, SseSerializer serializer);
 
   @protected
   void
@@ -803,6 +895,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_backup_shard_response(
       BackupShardResponse self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
   void
@@ -876,6 +971,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_firmware_update_result(
       FirmwareUpdateResult self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_magic_backup_enabled_request(
+      MagicBackupEnabledRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_magic_backup_enabled_response(
+      MagicBackupEnabledResponse self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_pairing_request(
@@ -1003,6 +1106,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<QuantumLinkMessage> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_magic_backup_enabled_request(
+      MagicBackupEnabledRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_magic_backup_enabled_response(
+      MagicBackupEnabledResponse self, SseSerializer serializer);
+
+  @protected
   void sse_encode_onboarding_state(
       OnboardingState self, SseSerializer serializer);
 
@@ -1079,6 +1190,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_u_8(int self, SseSerializer serializer);
 
   @protected
+  void sse_encode_u_8_array_32(U8Array32 self, SseSerializer serializer);
+
+  @protected
   void sse_encode_unit(void self, SseSerializer serializer);
 
   @protected
@@ -1087,9 +1201,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_verification_result(
       VerificationResult self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer);
 }
 
 // Section: wire_class
@@ -1107,6 +1218,18 @@ class RustLibWire implements BaseWire {
           int ptr) =>
       wasmModule
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+              ptr);
+
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          int ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+              ptr);
+
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          int ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
               ptr);
 
   void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker(
@@ -1158,6 +1281,14 @@ extension type RustLibWasmModule._(JSObject _) implements JSObject {
 
   external void
       rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
+          int ptr);
+
+  external void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
+          int ptr);
+
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
           int ptr);
 
   external void

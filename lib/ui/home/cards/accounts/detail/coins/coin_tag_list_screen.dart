@@ -151,19 +151,23 @@ class CoinItemWidget extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Flexible(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  tag.name,
-                                  style: textStyleWallet,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                                CoinSubTitleText(tag),
-                              ],
+                            child: SingleChildScrollView(
+                              physics:
+                                  const NeverScrollableScrollPhysics(), // to fix overflow in tests
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    tag.name,
+                                    style: textStyleWallet,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                  CoinSubTitleText(tag),
+                                ],
+                              ),
                             ),
                           ),
                         ],

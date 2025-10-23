@@ -14,10 +14,9 @@ crate-type = ["cdylib", "staticlib"]
 flutter_rust_bridge = "=2.11.1"
 
 #ngwallet = { path = "../../../../ngwallet", features = ["envoy"] }
-ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", tag = "2.0.1", features = ["envoy"] }
-#ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", rev = "57dd6d9d1671605b77ab8b9a6819ccf7cad62a91", features = ["envoy"] }
+#ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", tag = "2.4.0", features = ["envoy"] }
+ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", rev = "1a0935d25b7d2d542dea9e222586a64bea9bfd6f", features = ["envoy"] }
 
-bdk_wallet = { git = "https://github.com/Foundation-Devices/bdk_wallet", rev = "622143d55c8a5607b144db70fca358ceb2c648f5", features = ["keys-bip39","test-utils","rusqlite"] }
 bip39 = { version = "2.1.0", features = ["rand"] }
 # TODO: Check if this is necessary for the iOS build.
 #aws-lc-sys = { version = "0.26.0", features = ["bindgen"] }
@@ -26,6 +25,8 @@ log = "0.4.26"
 sled = { version = "0.34" }
 chrono = "0.4.40"
 android_logger = "0.15.1"
+[target.'cfg(target_os = "ios")'.dependencies]
+oslog = "0.2.0"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }

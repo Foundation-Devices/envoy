@@ -66,7 +66,7 @@ class _AdvancedSettingsOptionsState
             topBarActions: [
               GestureDetector(
                 child: Padding(
-                  padding: const EdgeInsets.only(right: EnvoySpacing.small),
+                  padding: const EdgeInsets.all(EnvoySpacing.medium1),
                   child: EnvoyIcon(EnvoyIcons.info,
                       size: EnvoyIconSize.normal,
                       color: EnvoyColors.solidWhite),
@@ -155,13 +155,14 @@ class _AdvancedSettingsOptionsState
                                     Column(
                                       children: [
                                         ListTile(
-                                          leading: Text(
+                                          title: Text(
                                             S().onboarding_advanced_magicBackupSwitchText,
                                             style:
                                                 EnvoyTypography.info.copyWith(
                                               color: EnvoyColors.textPrimary,
                                               fontWeight: FontWeight.w600,
                                             ),
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                           trailing: Padding(
                                             padding: const EdgeInsets.only(

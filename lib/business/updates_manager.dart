@@ -228,8 +228,11 @@ class UpdatesManager {
   }
 
   Future<bool> shouldUpdate(String version, DeviceType type) async {
-    final parsedVersion =
-        Version.parse(version.replaceAll("v", "").substring(0, 5));
+    // Remove the v and keep only letters and numbers (Prime sends us NULL chars sometimes)
+    final sanitizedString =
+        version.replaceAll("v", "").replaceAll(RegExp(r'[^a-zA-Z0-9.]'), '');
+
+    final parsedVersion = Version.parse(sanitizedString);
     final storedVersionString =
         await getStoredFirmwareVersionString(type.index);
     if (storedVersionString == null) return false;

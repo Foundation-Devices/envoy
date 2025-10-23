@@ -24,7 +24,7 @@ import 'package:ngwallet/ngwallet.dart';
 class SeedScreen extends StatefulWidget {
   final bool generate;
 
-  const SeedScreen({super.key, this.generate = true});
+  const SeedScreen({super.key, required this.generate});
 
   @override
   State<SeedScreen> createState() => _SeedScreenState();
@@ -71,7 +71,7 @@ class _SeedScreenState extends State<SeedScreen> {
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            _buildMnemonicGrid(context),
+            _buildMnemonicGrid(context, widget.generate),
             _buildSeedVerification(context),
             VerifySeedPuzzleWidget(
                 seed: seedList,
@@ -151,7 +151,7 @@ class _SeedScreenState extends State<SeedScreen> {
   //   );
   // }
 
-  Widget _buildMnemonicGrid(BuildContext context) {
+  Widget _buildMnemonicGrid(BuildContext context, bool generate) {
     if (seedList.isEmpty) {
       return Container();
     }
@@ -162,12 +162,15 @@ class _SeedScreenState extends State<SeedScreen> {
           alignment: Alignment.centerLeft,
           child: Padding(
             padding: const EdgeInsets.all(EnvoySpacing.medium1),
-            child: GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: const Icon(Icons.arrow_back_ios_rounded,
-                    size: EnvoySpacing.medium2)),
+            child:
+                !generate // ENV-2299 no back so no re-shuffle / re-gen of words
+                    ? GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Icon(Icons.arrow_back_ios_rounded,
+                            size: EnvoySpacing.medium2))
+                    : const SizedBox(height: EnvoySpacing.medium2),
           ),
         ),
         Expanded(
@@ -189,17 +192,13 @@ class _SeedScreenState extends State<SeedScreen> {
               ),
               const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.medium2),
-                  child: PageView(
-                      controller: _seedDisplayPageController,
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: [
-                        _buildTwoMnemonicColumns(0),
-                        if (seedList.length > 12) _buildTwoMnemonicColumns(12),
-                      ]),
-                ),
+                child: PageView(
+                    controller: _seedDisplayPageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      _buildTwoMnemonicColumns(0),
+                      if (seedList.length > 12) _buildTwoMnemonicColumns(12),
+                    ]),
               ),
               if (seedList.length > 12)
                 Padding(
@@ -287,20 +286,20 @@ class _SeedScreenState extends State<SeedScreen> {
   }
 
   Widget _buildMnemonicColumn(List<Tuple<int, String>> list) {
-    const TextStyle textTheme = TextStyle(
-        fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold);
-    double margin = MediaQuery.of(context).devicePixelRatio < 2.5 ? 4 : 14;
+    TextStyle textTheme =
+        EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary);
+    double margin = MediaQuery.of(context).devicePixelRatio < 2.5 ? 12 : 16;
 
     return Column(
       children: list.map((word) {
         return Container(
-          height: 40,
-          margin: EdgeInsets.symmetric(vertical: margin, horizontal: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          height: 52,
+          margin: EdgeInsets.symmetric(vertical: margin, horizontal: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           constraints:
-              const BoxConstraints(maxWidth: 220, minWidth: 160, maxHeight: 40),
+              const BoxConstraints(maxWidth: 220, minWidth: 160, maxHeight: 52),
           decoration: BoxDecoration(
-              color: Colors.grey[300], borderRadius: BorderRadius.circular(8)),
+              color: Colors.grey[300], borderRadius: BorderRadius.circular(16)),
           child: Row(
             children: [
               Text("${word.item1}. ", style: textTheme),
@@ -340,66 +339,59 @@ class _SeedScreenState extends State<SeedScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.chevron_left,
-                      color: Colors.black, size: EnvoySpacing.medium3),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(EnvoySpacing.medium1),
+                        child: Icon(Icons.arrow_back_ios_rounded,
+                            size: EnvoySpacing.medium2),
+                      )),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.close,
-                      color: Colors.black, size: EnvoySpacing.medium2),
-                  onPressed: () {
-                    // Tap on "x" should exit the flow, so pop twice to navigate back two levels
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-            Image.asset(
-              "assets/shield_ok.png",
-              height: 250,
-              width: 250,
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: EnvoySpacing.medium2,
-        ),
-        Flexible(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Text(S().manual_setup_generate_seed_verify_seed_heading,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.heading
-                        .copyWith(color: EnvoyColors.textPrimary)),
                 Padding(
-                  padding: const EdgeInsets.all(EnvoySpacing.medium2),
-                  child: Text(
-                    S().manual_setup_generate_seed_verify_seed_subheading,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall!
-                        .copyWith(fontSize: 13),
+                  padding: const EdgeInsets.only(top: EnvoySpacing.xs),
+                  child: Image.asset(
+                    "assets/shield_ok.png",
+                    height: 184,
                   ),
                 ),
               ],
             ),
-          ),
-        ),
-        const SizedBox(
-          height: EnvoySpacing.large2,
+            const SizedBox(height: EnvoySpacing.medium3),
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text(S().manual_setup_generate_seed_verify_seed_heading,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.heading
+                            .copyWith(color: EnvoyColors.textPrimary)),
+                    const SizedBox(height: EnvoySpacing.medium3),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium1),
+                      child: Text(
+                        S().manual_setup_generate_seed_verify_seed_subheading,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.info
+                            .copyWith(color: EnvoyColors.textTertiary),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
         Padding(
           padding: const EdgeInsets.symmetric(

@@ -5,17 +5,15 @@
 use anyhow::anyhow;
 use anyhow::Context;
 use anyhow::Result;
-use bc_components::ARID;
 use bc_envelope::prelude::CBOREncodable;
-use bc_envelope::{Envelope, Expression};
+use bc_envelope::Envelope;
 use bc_ur::prelude::{CBORCase, CBOR};
 use bc_xid::XIDDocument;
 use btp::{chunk, Chunk, MasterDechunker};
 use flutter_rust_bridge::frb;
 use foundation_api::firmware::{split_update_into_chunks, FirmwareFetchEvent};
 use foundation_api::message::{EnvoyMessage, PassportMessage, QuantumLinkMessage};
-use foundation_api::quantum_link::{QuantumLink, QuantumLinkIdentity};
-use gstp::SealedEvent;
+use foundation_api::quantum_link::{ARIDCache, QuantumLink, QuantumLinkIdentity};
 use log::debug;
 
 #[frb(opaque)]
@@ -32,6 +30,17 @@ pub async fn get_decoder() -> EnvoyMasterDechunker {
 pub struct DecoderStatus {
     pub progress: f64,
     pub payload: Option<PassportMessage>,
+}
+
+#[frb(opaque)]
+pub struct EnvoyARIDCache {
+    inner: ARIDCache,
+}
+
+pub fn get_arid_cache() -> EnvoyARIDCache {
+    EnvoyARIDCache {
+        inner: ARIDCache::default(),
+    }
 }
 
 pub async fn serialize_xid(quantum_link_identity: &QuantumLinkIdentity) -> Vec<u8> {
@@ -96,14 +105,25 @@ pub async fn decode(
     data: Vec<u8>,
     decoder: &mut EnvoyMasterDechunker,
     quantum_link_identity: &QuantumLinkIdentity,
+    arid_cache: &mut EnvoyARIDCache,
 ) -> Result<DecoderStatus> {
-    debug!("receiving data");
     let chunk = Chunk::decode(&data)?;
+
+    let m = chunk.header.index;
+    let n = chunk.header.total_chunks;
     let msg_id = chunk.header.message_id;
+
+    debug!("receiving data id: {msg_id} {m}/{n}");
+    //debug!("DECHUNKER: {:?}", decoder.inner);
 
     match decoder.inner.insert_chunk(chunk) {
         None => {
-            let progress = decoder.inner.get_dechunker(msg_id).unwrap().progress() as f64;
+            let dechunker = decoder.inner.get_dechunker(msg_id).unwrap();
+            let progress = dechunker.progress() as f64;
+
+            //debug!("DECHUNKER: {dechunker:?}");
+            //debug!("MASTER DECHUNKER: {:?}", decoder.inner);
+
             Ok(DecoderStatus {
                 progress,
                 payload: None,
@@ -123,9 +143,10 @@ pub async fn decode(
             };
             debug!("Unsealing envelope...");
 
-            let (passport_message, _) = PassportMessage::unseal_passport_message(
+            let (passport_message, _) = PassportMessage::unseal_passport_message_with_replay_check(
                 &envelope,
                 &quantum_link_identity.clone().private_keys.unwrap(),
+                &mut arid_cache.inner,
             )
             .context("failed to unseal passport message")?;
 
@@ -153,17 +174,14 @@ pub async fn encode(
     sender: &QuantumLinkIdentity,
     recipient: &XIDDocument,
 ) -> Vec<Vec<u8>> {
-    let expression = QuantumLink::encode(&message);
-    let event: SealedEvent<Expression> =
-        SealedEvent::new(expression, ARID::new(), sender.clone().xid_document);
+    debug!("SENDER: {:?}", sender.xid_document);
+    debug!("RECEIVER: {:?}", recipient);
 
-    let envelope = event
-        .to_envelope(
-            None,
-            Some(&sender.clone().private_keys.unwrap()),
-            Some(recipient),
-        )
-        .unwrap();
+    let envelope = QuantumLink::seal(
+        &message,
+        (sender.private_keys.as_ref().unwrap(), &sender.xid_document),
+        recipient,
+    );
 
     let cbor = envelope.to_cbor_data();
 

@@ -25,7 +25,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:rive/rive.dart';
 
 //Widget that displays the balance,lock icon etc of a coin
 
@@ -458,21 +457,58 @@ class CoinLockButton extends StatefulWidget {
 }
 
 class _CoinLockButtonState extends State<CoinLockButton> {
-  rive.StateMachineController? _controller;
-  late rive.RiveFile riveFile;
+  bool _isInitialized = false;
+  rive.RiveWidgetController? _controller;
+  late rive.File riveFile;
 
-  void _onInit(Artboard art) {
-    var ctrl = StateMachineController.fromArtboard(art, 'CoinStateMachine')
-        as StateMachineController;
-    art.addController(ctrl);
-    _controller = ctrl;
-    _controller?.findInput<bool>("Lock")?.change(widget.locked);
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void _initRive(rive.File riveFile) {
+    if (_controller == null) {
+      _controller = rive.RiveWidgetController(
+        riveFile,
+        stateMachineSelector:
+            rive.StateMachineSelector.byName('CoinStateMachine'),
+      );
+
+      _controller?.stateMachine.boolean("Lock")?.value = widget.locked;
+
+      setState(() => _isInitialized = true);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant CoinLockButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.locked != oldWidget.locked) {
+      _controller?.stateMachine.boolean("Lock")?.value = widget.locked;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    _controller?.stateMachine.boolean("Lock")?.value = widget.locked;
+
     return Consumer(builder: (context, ref, child) {
-      RiveFile? riveFile = ref.watch(coinLockRiveProvider);
+      rive.File? riveFile = ref.watch(coinLockRiveProvider);
+
+      if (riveFile != null && !_isInitialized) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _initRive(riveFile);
+          }
+        });
+      }
+
       return GestureDetector(
           onTap: widget.gestureTapCallback,
           behavior: HitTestBehavior.opaque,
@@ -482,22 +518,13 @@ class _CoinLockButtonState extends State<CoinLockButton> {
               color: Colors.transparent,
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-                child: riveFile != null
-                    ? rive.RiveAnimation.direct(
-                        riveFile,
-                        onInit: _onInit,
+                child: riveFile != null && _isInitialized && _controller != null
+                    ? rive.RiveWidget(
+                        controller: _controller!,
                       )
                     : const SizedBox.shrink(),
               )));
     });
-  }
-
-  @override
-  void didUpdateWidget(covariant CoinLockButton oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (_controller != null && oldWidget.locked != widget.locked) {
-      _controller?.findInput<bool>("Lock")?.change(widget.locked);
-    }
   }
 }
 

@@ -2,17 +2,19 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
+import 'dart:convert';
 import 'dart:ui';
+
+import 'package:bluart/bluart.dart' as bluart;
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/util/color_serializer.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:envoy/business/local_storage.dart';
-import 'dart:convert';
-import 'package:envoy/util/color_serializer.dart';
-import 'package:envoy/generated/l10n.dart';
 
 part 'devices.g.dart';
 
@@ -86,8 +88,31 @@ class Devices extends ChangeNotifier {
     kPrint("Connecting to ${getPrimeDevices.length} primes");
     for (var device in getPrimeDevices) {
       if (device.bleId.isNotEmpty) {
-        kPrint("Connecting to ${device.bleId}");
-        await BluetoothManager().connect(id: device.bleId);
+        await BluetoothManager().restorePrimeDevice(device.bleId);
+        await BluetoothManager().getPermissions();
+        final foundPrime =
+            await BluetoothManager().events?.any((bluart.Event event) {
+          if (event is bluart.Event_ScanResult) {
+            for (final bleDevice in event.field0) {
+              if (bleDevice.id == device.bleId) {
+                kPrint(
+                    "Found device ${device.name} with id ${bleDevice.id}, connecting...");
+                return true;
+              }
+            }
+          }
+          return false;
+        }).timeout(Duration(seconds: 10), onTimeout: () {
+          kPrint("Timeout while scanning for device ${device.name}");
+          return false;
+        });
+        kPrint("Scan finished...");
+        if (foundPrime == true) {
+          await BluetoothManager().connect(id: device.bleId);
+        } else {
+          kPrint(
+              "Device ${device.name} with id ${device.bleId} not found during scan");
+        }
       }
     }
   }
@@ -199,5 +224,9 @@ class Devices extends ChangeNotifier {
     return devices
         .where((device) => device.type == DeviceType.passportPrime)
         .toList();
+  }
+
+  Device? getDeviceBySerial(String serialNumber) {
+    return devices.firstWhereOrNull((device) => device.serial == serialNumber);
   }
 }

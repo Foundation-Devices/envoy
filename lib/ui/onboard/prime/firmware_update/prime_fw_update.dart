@@ -15,8 +15,9 @@ import 'package:envoy/ui/widgets/envoy_gradient_progress.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rive/rive.dart' hide Image;
+import 'package:rive/rive.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime_ble.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OnboardPrimeFwUpdate extends ConsumerStatefulWidget {
   const OnboardPrimeFwUpdate({super.key});
@@ -27,7 +28,36 @@ class OnboardPrimeFwUpdate extends ConsumerStatefulWidget {
 }
 
 class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
-  StateMachineController? _progressAnimationController;
+  File? _riveFile;
+  RiveWidgetController? _controller;
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initRive();
+  }
+
+  void _initRive() async {
+    _riveFile =
+        await File.asset("assets/envoy_loader.riv", riveFactory: Factory.rive);
+    _controller = RiveWidgetController(
+      _riveFile!,
+      stateMachineSelector: StateMachineSelector.byName('STM'),
+    );
+
+    // Set the boolean input after controller is ready
+    _controller!.stateMachine.boolean('indeterminate')?.value = true;
+
+    setState(() => _isInitialized = true);
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _riveFile?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,19 +75,13 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
       child: SizedBox(
         width: 230,
         height: 230,
-        child: RiveAnimation.asset(
-          "assets/envoy_loader.riv",
-          fit: BoxFit.contain,
-          alignment: Alignment.center,
-          onInit: (artboard) {
-            _progressAnimationController =
-                StateMachineController.fromArtboard(artboard, 'STM');
-            artboard.addController(_progressAnimationController!);
-            _progressAnimationController
-                ?.findInput<bool>("indeterminate")
-                ?.change(true);
-          },
-        ),
+        child: _isInitialized && _controller != null
+            ? RiveWidget(
+                controller: _controller!,
+                fit: Fit.contain,
+                alignment: Alignment.center,
+              )
+            : const SizedBox(),
       ),
     );
 
@@ -205,17 +229,16 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     primFwRebootStateNotifier.updateStep(
         "Passport Prime is rebooting", EnvoyStepState.FINISHED);
     await Future.delayed(const Duration(seconds: 1));
-    _progressAnimationController
-        ?.findInput<bool>("indeterminate")
-        ?.change(false);
-    _progressAnimationController?.findInput<bool>("happy")?.change(true);
-    _progressAnimationController?.findInput<bool>("unhappy")?.change(false);
+
+    _controller?.stateMachine.boolean('indeterminate')?.value = false;
+    _controller?.stateMachine.boolean('happy')?.value = true;
+    _controller?.stateMachine.boolean('unhappy')?.value = false;
 
     primeUpdateNotifier.state = PrimeFwUpdateStep.finished;
   }
 
   Widget _updateFinishedWidget(BuildContext context) {
-    _progressAnimationController?.findInput<bool>("happy")?.change(true);
+    _controller?.stateMachine.boolean('happy')?.value = true;
     return Column(
       children: [
         Text(
@@ -244,9 +267,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         Column(
           children: [
             Text(
-              //TODO: Note: {0} in firmware.updateAvailable.estimatedUpdateTime should be programmatically replaced by the estimated update time rounded to minutes
               S().firmware_updateAvailable_estimatedUpdateTime(
-                  "est_upd_time"), // TODO
+                  "${ref.read(estimatedTimeProvider)} min"),
               textAlign: TextAlign.center,
               style: EnvoyTypography.explainer.copyWith(fontSize: 14),
             ),
@@ -254,9 +276,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
             Padding(
               padding: const EdgeInsets.all(EnvoySpacing.small),
               child: Text(
-                // TODO: Note to devs: {0} in firmware.updateAvailable.whatsNew should be programmatically replaced by the new keyOS version found
                 S().firmware_updateAvailable_content2(
-                    ref.read(primeDeviceVersionProvider)), // TODO
+                    ref.read(primeDeviceVersionProvider)),
                 textAlign: TextAlign.center,
                 style: EnvoyTypography.explainer.copyWith(fontSize: 14),
               ),
@@ -280,14 +301,15 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         //       BluetoothManager().sendOnboardingState(OnboardingState.receivingUpdate);
         //     }),
 
-// TODO: Note to devs: {0} in firmware.updateAvailable.whatsNew should be programmatically replaced by the new keyOS version found
         Padding(
           padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
           child: EnvoyButton(
               S().firmware_updateAvailable_whatsNew(
-                  "new_keyOS_version"), // TODO
-              type: EnvoyButtonTypes.secondary,
-              onTap: () {}),
+                  ref.read(primeDeviceNewVersionProvider)),
+              type: EnvoyButtonTypes.secondary, onTap: () {
+            launchUrl(Uri.parse(
+                "https://github.com/Foundation-Devices/KeyOS-Releases/releases/tag/${ref.read(primeDeviceNewVersionProvider)}"));
+          }),
         ),
       ],
     );
@@ -342,57 +364,61 @@ class _PrimeFwDownloadProgressState
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Expanded(
-              child: Padding(
-            padding: const EdgeInsets.only(
-              left: EnvoySpacing.medium1,
-            ),
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              direction: Axis.horizontal,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              runSpacing: EnvoySpacing.medium1,
-              children: [
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                EnvoyStepItem(
-                    step: ref.watch(fwDownloadStateProvider), highlight: false),
-                EnvoyStepItem(
-                    step: ref.watch(fwTransferStateProvider), highlight: false),
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                Consumer(builder: (context, ref, child) {
-                  final progress = ref.watch(sendProgressProvider);
-                  var timeRemaining = ref.watch(remainingTimeProvider);
+              child: Wrap(
+            alignment: WrapAlignment.center,
+            direction: Axis.horizontal,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            runSpacing: EnvoySpacing.medium1,
+            children: [
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  EnvoyStepItem(
+                      step: ref.watch(fwDownloadStateProvider),
+                      highlight: false),
+                  SizedBox(
+                    height: EnvoySpacing.medium1,
+                  ),
+                  EnvoyStepItem(
+                      step: ref.watch(fwTransferStateProvider),
+                      highlight: false),
+                ],
+              ),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+              Consumer(builder: (context, ref, child) {
+                final progress = ref.watch(sendProgressProvider);
+                var timeRemaining = ref.watch(remainingTimeProvider);
 
-                  String formatDuration(Duration d) {
-                    final totalSeconds = d.inSeconds;
+                String formatDuration(Duration d) {
+                  final totalSeconds = d.inSeconds;
 
-                    if (totalSeconds < 60) {
-                      return " ${totalSeconds}s";
-                    } else {
-                      final minutes = (totalSeconds / 60).round();
-                      return " ~${minutes}min";
-                    }
+                  if (totalSeconds < 60) {
+                    return " ${totalSeconds}s";
+                  } else {
+                    final minutes = (totalSeconds / 60).round();
+                    return " ~${minutes}min";
                   }
+                }
 
-                  return Column(
-                    children: [
-                      EnvoyGradientProgress(
-                        progress: progress,
+                return Column(
+                  children: [
+                    EnvoyGradientProgress(
+                      progress: progress,
+                    ),
+                    const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                    if (ref.watch(fwDownloadStateProvider).state ==
+                        EnvoyStepState.FINISHED)
+                      Text(
+                        S().firmware_downloadingUpdate_timeRemaining(
+                            formatDuration(timeRemaining)), //
+                        style: EnvoyTypography.explainer.copyWith(fontSize: 14),
                       ),
-                      const Padding(
-                          padding: EdgeInsets.all(EnvoySpacing.small)),
-                      if (ref.watch(fwDownloadStateProvider).state ==
-                          EnvoyStepState.FINISHED)
-                        Text(
-                          S().firmware_downloadingUpdate_timeRemaining(
-                              formatDuration(timeRemaining)), //
-                          style:
-                              EnvoyTypography.explainer.copyWith(fontSize: 14),
-                        ),
-                    ],
-                  );
-                })
-              ],
-            ),
+                  ],
+                );
+              })
+            ],
           ))
         ],
       ),
@@ -424,29 +450,36 @@ class _PrimeFwFlashProgressState extends ConsumerState<PrimeFwFlashProgress> {
             style: EnvoyTypography.explainer.copyWith(fontSize: 14),
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Padding(
-            padding: const EdgeInsets.only(
-              left: EnvoySpacing.medium2,
-            ),
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              direction: Axis.horizontal,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              runSpacing: EnvoySpacing.medium1,
-              children: [
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                EnvoyStepItem(
-                    step: ref.watch(primeFwSigVerifyStateProvider),
-                    highlight: false),
-                EnvoyStepItem(
-                    step: ref.watch(primeFwInstallStateProvider),
-                    highlight: false),
-                EnvoyStepItem(
-                    step: ref.watch(primeFwRebootStateProvider),
-                    highlight: false),
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-              ],
-            ),
+          Wrap(
+            alignment: WrapAlignment.center,
+            direction: Axis.horizontal,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            runSpacing: EnvoySpacing.medium1,
+            children: [
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  EnvoyStepItem(
+                      step: ref.watch(primeFwSigVerifyStateProvider),
+                      highlight: false),
+                  SizedBox(
+                    height: EnvoySpacing.medium1,
+                  ),
+                  EnvoyStepItem(
+                      step: ref.watch(primeFwInstallStateProvider),
+                      highlight: false),
+                  SizedBox(
+                    height: EnvoySpacing.medium1,
+                  ),
+                  EnvoyStepItem(
+                      step: ref.watch(primeFwRebootStateProvider),
+                      highlight: false),
+                ],
+              ),
+              const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+            ],
           ),
           Consumer(builder: (context, ref, child) {
             final progress = ref.watch(primeFwRebootStateProvider);

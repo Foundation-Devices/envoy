@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../lib.dart';
 import '../third_party/bc_xid.dart';
 import '../third_party/foundation_api/api/backup.dart';
 import '../third_party/foundation_api/api/bitcoin.dart';
@@ -21,6 +22,9 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 Future<EnvoyMasterDechunker> getDecoder() =>
     RustLib.instance.api.crateApiQlGetDecoder();
+
+Future<EnvoyAridCache> getAridCache() =>
+    RustLib.instance.api.crateApiQlGetAridCache();
 
 Future<Uint8List> serializeXid(
         {required QuantumLinkIdentity quantumLinkIdentity}) =>
@@ -45,9 +49,13 @@ Future<QuantumLinkIdentity> deserializeQlIdentity({required List<int> data}) =>
 Future<DecoderStatus> decode(
         {required List<int> data,
         required EnvoyMasterDechunker decoder,
-        required QuantumLinkIdentity quantumLinkIdentity}) =>
+        required QuantumLinkIdentity quantumLinkIdentity,
+        required EnvoyAridCache aridCache}) =>
     RustLib.instance.api.crateApiQlDecode(
-        data: data, decoder: decoder, quantumLinkIdentity: quantumLinkIdentity);
+        data: data,
+        decoder: decoder,
+        quantumLinkIdentity: quantumLinkIdentity,
+        aridCache: aridCache);
 
 Future<List<QuantumLinkMessage>> splitFwUpdateIntoChunks(
         {required int patchIndex,
@@ -69,6 +77,9 @@ Future<List<Uint8List>> encode(
 
 Future<QuantumLinkIdentity> generateQlIdentity() =>
     RustLib.instance.api.crateApiQlGenerateQlIdentity();
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyARIDCache>>
+abstract class EnvoyAridCache implements RustOpaqueInterface {}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>
 abstract class EnvoyMasterDechunker implements RustOpaqueInterface {}

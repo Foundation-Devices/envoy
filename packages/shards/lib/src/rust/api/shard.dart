@@ -4,36 +4,26 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `decode`, `encode`
 
-String greet({required String name}) =>
-    RustLib.instance.api.crateApiShardGreet(name: name);
-
 class ShardBackUp {
-  final String deviceSerial;
-  final String shardIdentifier;
+  final U8Array32 fingerprint;
   final BigInt timestamp;
   final Uint8List shard;
 
   const ShardBackUp({
-    required this.deviceSerial,
-    required this.shardIdentifier,
+    required this.fingerprint,
     required this.timestamp,
     required this.shard,
   });
 
   static Future<void> addNewShard(
-          {required List<int> shard,
-          required String shardIdentifier,
-          required String deviceSerial,
-          required String filePath}) =>
+          {required List<int> shard, required String filePath}) =>
       RustLib.instance.api.crateApiShardShardBackUpAddNewShard(
-          shard: shard,
-          shardIdentifier: shardIdentifier,
-          deviceSerial: deviceSerial,
-          filePath: filePath);
+          shard: shard, filePath: filePath);
 
   static Future<ShardBackUp> fromBytes({required List<int> data}) =>
       RustLib.instance.api.crateApiShardShardBackUpFromBytes(data: data);
@@ -44,13 +34,9 @@ class ShardBackUp {
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<ShardBackUp> newInstance(
-          {required String deviceSerial,
-          required String shardIdentifier,
-          required List<int> shard}) =>
-      RustLib.instance.api.crateApiShardShardBackUpNew(
-          deviceSerial: deviceSerial,
-          shardIdentifier: shardIdentifier,
-          shard: shard);
+          {required U8Array32 fingerprint, required List<int> shard}) =>
+      RustLib.instance.api
+          .crateApiShardShardBackUpNew(fingerprint: fingerprint, shard: shard);
 
   Future<Uint8List> toBytes() =>
       RustLib.instance.api.crateApiShardShardBackUpToBytes(
@@ -59,18 +45,14 @@ class ShardBackUp {
 
   @override
   int get hashCode =>
-      deviceSerial.hashCode ^
-      shardIdentifier.hashCode ^
-      timestamp.hashCode ^
-      shard.hashCode;
+      fingerprint.hashCode ^ timestamp.hashCode ^ shard.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ShardBackUp &&
           runtimeType == other.runtimeType &&
-          deviceSerial == other.deviceSerial &&
-          shardIdentifier == other.shardIdentifier &&
+          fingerprint == other.fingerprint &&
           timestamp == other.timestamp &&
           shard == other.shard;
 }

@@ -17,13 +17,47 @@ class PrimeMagicBackup extends ConsumerStatefulWidget {
   const PrimeMagicBackup({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _PrimePinSetupState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _PrimeMagicBackupState();
 }
 
-class _PrimePinSetupState extends ConsumerState<PrimeMagicBackup> {
+class _PrimeMagicBackupState extends ConsumerState<PrimeMagicBackup> {
   IconLoaderState _state = IconLoaderState.indeterminate;
+  rive.File? _lockFile;
+  rive.RiveWidgetController? _lockController;
+  bool _isLockInitialized = false;
 
-  //TODO: make per figma
+  @override
+  void initState() {
+    super.initState();
+    _initLockRive();
+  }
+
+  void _initLockRive() async {
+    _lockFile = await rive.File.asset("assets/anim/lock.riv",
+        riveFactory: rive.Factory.rive);
+    _lockController = rive.RiveWidgetController(
+      _lockFile!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
+
+    setState(() => _isLockInitialized = true);
+
+    // Trigger the lock animation after 3 seconds
+    await Future.delayed(const Duration(seconds: 3));
+    setState(() {
+      _state = IconLoaderState.noIcon;
+    });
+    _lockController?.stateMachine.boolean('Lock')?.value = true;
+  }
+
+  @override
+  void dispose() {
+    _lockController?.dispose();
+    _lockFile?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -42,25 +76,12 @@ class _PrimePinSetupState extends ConsumerState<PrimeMagicBackup> {
                 state: _state,
                 child: SizedBox.square(
                   dimension: 180,
-                  child: rive.RiveAnimation.asset(
-                    "assets/anim/lock.riv",
-                    fit: BoxFit.contain,
-                    onInit: (artBoard) async {
-                      final stateMachineController =
-                          rive.StateMachineController.fromArtboard(
-                              artBoard, 'STM');
-                      if (stateMachineController != null) {
-                        artBoard.addController(stateMachineController);
-                        await Future.delayed(const Duration(seconds: 3));
-                        setState(() {
-                          _state = IconLoaderState.noIcon;
-                        });
-                        stateMachineController
-                            .findInput<bool>("Lock")
-                            ?.change(true);
-                      }
-                    },
-                  ),
+                  child: _isLockInitialized && _lockController != null
+                      ? rive.RiveWidget(
+                          controller: _lockController!,
+                          fit: rive.Fit.contain,
+                        )
+                      : const SizedBox(),
                 ),
               ),
               Text("Create Magic Backup", style: EnvoyTypography.heading),
@@ -70,7 +91,7 @@ class _PrimePinSetupState extends ConsumerState<PrimeMagicBackup> {
                   vertical: EnvoySpacing.small,
                 ),
                 child: Text(
-                  "Create a secure, fast and easy  2 out of 3 Backup including Envoy and two keycards The locally created Envoy Part will be uploaded encrypted to the keychain in Apples iCloud/ Googles Cloud.",
+                  "Create a secure, fast and easy  2 out of 3 Backup including Envoy and two keycards The locally created Envoy Part will be uploaded encrypted to the keychain in Apples iCloud/ Googles Cloud.",
                   style: EnvoyTypography.body
                       .copyWith(color: EnvoyColors.textSecondary),
                   textAlign: TextAlign.center,

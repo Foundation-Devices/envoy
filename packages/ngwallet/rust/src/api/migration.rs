@@ -2,12 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use ngwallet::bdk_wallet::KeychainKind;
+use sled::{IVec, Tree};
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
-
-use bdk_wallet::KeychainKind;
-use sled::{IVec, Tree};
 
 #[allow(dead_code)]
 pub(crate) enum MapKey {

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:animations/animations.dart';
@@ -21,6 +22,8 @@ import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -44,6 +47,10 @@ import 'package:url_launcher/url_launcher.dart';
 // TODO: remove this, store somewhere else
 final primeDeviceVersionProvider = StateProvider<String>((ref) => '');
 
+final primeDeviceNewVersionProvider = StateProvider<String>((ref) => '');
+
+final estimatedTimeProvider = StateProvider<int>((ref) => 0);
+
 class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
   const OnboardPrimeBluetooth({super.key});
 
@@ -52,16 +59,19 @@ class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
       _OnboardPrimeBluetoothState();
 }
 
+PairingResponse? pairingResponse;
+
 class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     with SingleTickerProviderStateMixin {
   final s = Settings();
   bool scanForPayload = false;
-  PairingResponse? pairingResponse;
 
   Completer<QuantumLinkMessage_BroadcastTransaction>? _completer;
 
   Completer<QuantumLinkMessage_BroadcastTransaction>? get completer =>
       _completer;
+
+  StreamSubscription<PassportMessage>? _passportMessagesSubscription;
 
   @override
   void initState() {
@@ -70,8 +80,15 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     _startBluetoothDisconnectionListener(context);
   }
 
+  @override
+  void dispose() {
+    _passportMessagesSubscription?.cancel();
+    _connectionMonitorSubscription?.cancel();
+    super.dispose();
+  }
+
   void _listenForPassportMessages() {
-    BluetoothManager()
+    _passportMessagesSubscription = BluetoothManager()
         .passportMessageStream
         .listen((PassportMessage message) async {
       kPrint("Got the Passport Message : ${message.message}");
@@ -112,7 +129,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                 pairingResponse!.passportColor == PassportColor.dark
                     ? DeviceColor.dark
                     : DeviceColor.light;
-            BluetoothManager().addDevice(
+            await BluetoothManager().addDevice(
                 pairingResponse!.passportSerial.field0,
                 pairingResponse!.passportFirmwareVersion.field0,
                 BluetoothManager().bleId,
@@ -186,6 +203,11 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
           final patches = await Server().fetchPrimePatches(currentVersion);
 
+          if (patches.isNotEmpty) {
+            ref.read(primeDeviceNewVersionProvider.notifier).state =
+                patches.last.version;
+          }
+
           await BluetoothManager().sendFirmwareUpdateInfo(patches);
 
           await ref.read(firmWareUpdateProvider.notifier).updateStep(
@@ -193,6 +215,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                   ? S().onboarding_connectionUpdatesAvailable_updatesAvailable
                   : S().onboarding_connectionNoUpdates_noUpdates,
               EnvoyStepState.FINISHED);
+
+          int estimatedTime = await getEstimatedUpdateTimeInMinutes(patches);
+          ref.read(estimatedTimeProvider.notifier).state = estimatedTime;
 
         case QuantumLinkMessage_FirmwareFetchRequest(field0: final request):
           handleFirmwareFetchRequest(request.currentVersion);
@@ -244,6 +269,36 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
       }
     });
+  }
+
+  Future<int> getEstimatedUpdateTimeInMinutes(List<PrimePatch> patches) async {
+    const double minutesPerMB = 6.0;
+    if (patches.isEmpty) {
+      return 0;
+    }
+
+    try {
+      List<Uint8List> patchBinaries = [];
+      for (final patch in patches) {
+        final binary = await Server().fetchPrimePatchBinary(patch);
+        if (binary == null) {
+          throw Exception("A required patch binary could not be downloaded.");
+        }
+        patchBinaries.add(binary);
+      }
+
+      final totalSizeInBytes =
+          patchBinaries.fold<int>(0, (prev, binary) => prev + binary.length);
+
+      final double totalSizeInMB = totalSizeInBytes / (1024 * 1024);
+
+      final double estimatedMinutes = totalSizeInMB * minutesPerMB;
+
+      //Return the final time, rounded to the nearest minute.
+      return estimatedMinutes.round();
+    } catch (e) {
+      return 0;
+    }
   }
 
   Future<void> _handleOnboardingState(OnboardingState state) async {
@@ -318,8 +373,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       case OnboardingState.magicBackupScreen:
         ref.read(backUpMasterKeyProvider.notifier).updateStep(
             S().finalize_catchAll_backingUpMasterKey, EnvoyStepState.LOADING);
-        // context.goNamed(ONBOARD_PRIME_MAGIC_BACKUP);
-        // TODO: Handle magic backup screen
         break;
       case OnboardingState.creatingMagicBackup:
         // TODO: Handle creating magic backup
@@ -329,7 +382,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             S().finalize_catchAll_masterKeyBackedUp, EnvoyStepState.FINISHED);
         break;
       case OnboardingState.creatingManualBackup:
-        // TODO: Handle creating manual backup
+        ref.read(backUpMasterKeyProvider.notifier).updateStep(
+            S().finalize_catchAll_backingUpMasterKey, EnvoyStepState.LOADING);
         break;
       case OnboardingState.creatingKeycardBackup:
         // TODO: Handle creating keycard backup
@@ -347,10 +401,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
         break;
       case OnboardingState.completed:
-        if (mounted) {
-          context.go("/");
-          _notifyAfterOnboardingTutorial(context);
-        }
+        resetOnboardingPrimeProviders(ref);
+        mainRouter.go(ROUTE_ACCOUNTS_HOME);
+        _notifyAfterOnboardingTutorial(context);
         break;
       case OnboardingState.securityChecked:
         break;
@@ -382,7 +435,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     ref.read(fwDownloadStateProvider.notifier).updateStep(
         S().firmware_updatingDownload_downloading, EnvoyStepState.LOADING);
 
-    List<PrimePatch> patches;
+    List<PrimePatch> patches = [];
 
     try {
       patches = await Server().fetchPrimePatches(currentVersion);
@@ -405,6 +458,10 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       try {
         for (final patch in patches) {
           final binary = await Server().fetchPrimePatchBinary(patch);
+          if (binary == null) {
+            throw Exception("Must get all the patches!");
+          }
+
           patchBinaries.add(binary);
         }
       } catch (e) {
@@ -645,9 +702,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             decoder: PrimeQlPayloadDecoder(
               decoder: qrDecoder,
               onScan: (XidDocument payload) async {
-                kPrint("XID payload: $payload");
-                await pairWithPrime(payload);
-
                 // TODO: process XidDocument for connection
 
                 if (!context.mounted) return;
@@ -660,6 +714,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
                 if (!context.mounted) return;
                 context.goNamed(ONBOARD_PRIME_PAIR);
+
+                kPrint("XID payload: $payload");
+                await pairWithPrime(payload);
               },
             ),
           );
@@ -740,11 +797,22 @@ class _QuantumLinkCommunicationInfoState
                         child: ExpandablePageView(
                           controller: _pageController,
                           children: [
-                            Text(
-                              //TODO: implement [[iCloud Keychain.]] button
-                              S().wallet_security_modal_1_4_ios_subheading,
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.info,
+                            LinkText(
+                              text: Platform.isAndroid
+                                  ? S()
+                                      .wallet_security_modal_1_4_android_subheading
+                                  : S()
+                                      .wallet_security_modal_1_4_ios_subheading,
+                              linkStyle: EnvoyTypography.info.copyWith(
+                                color: EnvoyColors.accentPrimary,
+                              ),
+                              onTap: () => launchUrl(
+                                Uri.parse(
+                                  Platform.isAndroid
+                                      ? "https://developer.android.com/guide/topics/data/autobackup"
+                                      : "https://support.apple.com/en-us/HT202303",
+                                ),
+                              ),
                             ),
                             Text(
                               S().backups_erase_wallets_and_backups_modal_2_2_subheading,
