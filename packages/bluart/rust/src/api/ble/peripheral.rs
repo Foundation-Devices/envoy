@@ -93,8 +93,6 @@ impl Device {
 
             let progress = (i + 1) as f64 / total as f64;
             let _ = sink.add(progress);
-
-            tokio::time::sleep(time::Duration::from_millis(30)).await;
         }
 
         let duration = start.elapsed();
