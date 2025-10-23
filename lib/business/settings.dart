@@ -412,6 +412,10 @@ class Settings extends ChangeNotifier {
     var singleton = Settings._instance;
 
     //ENV-2474 fix for issue due to new personalElectrumAddress field
+    //introduced in 2.1.1, 2.2.0 will be using defaultTorServers array,
+    //ENV-2474 only affects 2.1.0 users only
+    final mainnetOnionElectrumServer =
+        "mocmguuik7rws4bclpcoz2ldfzesjolatrzggaxfl37hjpreap777yqd.onion:50001";
     if (singleton.personalElectrumAddress.isEmpty) {
       final currentNode = singleton.selectedElectrumAddress;
       final isDiyNodes = PublicServer.diyNodes.address == currentNode;
@@ -421,7 +425,7 @@ class Settings extends ChangeNotifier {
             ...getDefaultFulcrumServers(),
             getDefaultFulcrumServers(ssl: true)
           ].contains(currentNode) ||
-          currentNode == MAINNET_ONION_ELECTRUM_SERVER;
+          currentNode == mainnetOnionElectrumServer;
 
       if (!isDiyNodes && !isBlockstreamNodes && !isFoundationNodes) {
         singleton.personalElectrumAddress = currentNode;
@@ -431,9 +435,8 @@ class Settings extends ChangeNotifier {
     }
     //if the personalElectrumAddress is set to default onion server,
     //this is probably due to 2.1.0 bug, so reset it to selectedElectrumAddress
-    else if (singleton.personalElectrumAddress ==
-        MAINNET_ONION_ELECTRUM_SERVER) {
-      if (singleton.selectedElectrumAddress != MAINNET_ONION_ELECTRUM_SERVER) {
+    else if (singleton.personalElectrumAddress == mainnetOnionElectrumServer) {
+      if (singleton.selectedElectrumAddress != mainnetOnionElectrumServer) {
         singleton.personalElectrumAddress = singleton.selectedElectrumAddress;
         singleton.usingDefaultElectrumServer = false;
         await singleton.store();
