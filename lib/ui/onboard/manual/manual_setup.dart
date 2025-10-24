@@ -8,7 +8,6 @@ import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/manual/generate_seed.dart';
 import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/onboard/seed_passphrase_entry.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -101,8 +100,8 @@ class SeedIntroScreen extends StatelessWidget {
                                     ? S().manual_setup_generate_seed_subheading
                                     : S().manual_setup_import_seed_subheading,
                                 textAlign: TextAlign.center,
-                                style: EnvoyTypography.info
-                                    .copyWith(color: EnvoyColors.textTertiary),
+                                style: EnvoyTypography.body
+                                    .copyWith(color: EnvoyColors.textSecondary),
                               ),
                               const SizedBox(
                                 height: EnvoySpacing.medium2,
@@ -137,76 +136,81 @@ class SeedIntroScreen extends StatelessWidget {
                       vertical: EnvoySpacing.medium2),
                   child: mode == SeedIntroScreenType.generate ||
                           mode == SeedIntroScreenType.verify
-                      ? OnboardingButton(
-                          label: mode == SeedIntroScreenType.generate
+                      ? EnvoyButton(
+                          mode == SeedIntroScreenType.generate
                               ? S().manual_setup_generate_seed_CTA
                               : S()
                                   .backups_erase_wallets_and_backups_show_seed_CTA,
-                          fontWeight: FontWeight.w600,
-                          onTap: () {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return Builder(builder: (context) {
-                                return SeedScreen(
-                                    generate:
-                                        mode == SeedIntroScreenType.generate);
-                              });
-                            }));
-                          })
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(EnvoySpacing.medium1)),
+                          fontWeight: FontWeight.w600, onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return Builder(builder: (context) {
+                              return SeedScreen(
+                                  generate:
+                                      mode == SeedIntroScreenType.generate);
+                            });
+                          }));
+                        })
                       : Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            OnboardingButton(
+                            EnvoyButton(S().manual_setup_import_seed_CTA3,
                                 type: EnvoyButtonTypes.secondary,
-                                label: S().manual_setup_import_seed_CTA3,
-                                fontWeight: FontWeight.w600,
-                                onTap: () {
-                                  context
-                                      .goNamed(ONBOARD_ENVOY_MANUAL_IMPORT_12);
-                                }),
-                            OnboardingButton(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(EnvoySpacing.medium1)),
+                                fontWeight: FontWeight.w600, onTap: () {
+                              context.goNamed(ONBOARD_ENVOY_MANUAL_IMPORT_12);
+                            }),
+                            const SizedBox(
+                              height: EnvoySpacing.medium1,
+                            ),
+                            EnvoyButton(S().manual_setup_import_seed_CTA2,
                                 type: EnvoyButtonTypes.secondary,
-                                label: S().manual_setup_import_seed_CTA2,
-                                fontWeight: FontWeight.w600,
-                                onTap: () {
-                                  context
-                                      .goNamed(ONBOARD_ENVOY_MANUAL_IMPORT_24);
-                                }),
-                            OnboardingButton(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(EnvoySpacing.medium1)),
+                                fontWeight: FontWeight.w600, onTap: () {
+                              context.goNamed(ONBOARD_ENVOY_MANUAL_IMPORT_24);
+                            }),
+                            const SizedBox(
+                              height: EnvoySpacing.medium1,
+                            ),
+                            EnvoyButton(S().manual_setup_import_seed_CTA1,
                                 type: EnvoyButtonTypes.primary,
-                                label: S().manual_setup_import_seed_CTA1,
-                                fontWeight: FontWeight.w600,
-                                onTap: () {
-                                  showScannerDialog(
-                                      context: context,
-                                      onBackPressed: (context) {
-                                        Navigator.pop(context);
-                                      },
-                                      decoder: SeedQrDecoder(
-                                        onSeedValidated: (String result) {
-                                          context.pop();
-                                          List<String> seedWords =
-                                              result.split(" ");
-                                          bool isValid = seedWords
-                                              .map((e) => seedEn.contains(e))
-                                              .reduce((value, element) =>
-                                                  value && element);
-                                          if (!isValid) {
-                                            showInvalidSeedDialog(
-                                              context: context,
-                                            );
-                                            return;
-                                          }
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(EnvoySpacing.medium1)),
+                                fontWeight: FontWeight.w600, onTap: () {
+                              showScannerDialog(
+                                  context: context,
+                                  onBackPressed: (context) {
+                                    Navigator.pop(context);
+                                  },
+                                  decoder: SeedQrDecoder(
+                                    onSeedValidated: (String result) {
+                                      context.pop();
+                                      List<String> seedWords =
+                                          result.split(" ");
+                                      bool isValid = seedWords
+                                          .map((e) => seedEn.contains(e))
+                                          .reduce((value, element) =>
+                                              value && element);
+                                      if (!isValid) {
+                                        showInvalidSeedDialog(
+                                          context: context,
+                                        );
+                                        return;
+                                      }
 
-                                          kPrint("isValid $isValid $seedWords");
-                                          Future.delayed(Duration.zero, () {
-                                            if (context.mounted) {
-                                              checkSeed(context, result);
-                                            }
-                                          });
-                                        },
-                                      ));
-                                }),
+                                      kPrint("isValid $isValid $seedWords");
+                                      Future.delayed(Duration.zero, () {
+                                        if (context.mounted) {
+                                          checkSeed(context, result);
+                                        }
+                                      });
+                                    },
+                                  ));
+                            }),
                           ],
                         ),
                 ),

@@ -5,6 +5,7 @@
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup_create_and_store_backup.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
@@ -383,8 +384,8 @@ class _SeedScreenState extends State<SeedScreen> {
                       child: Text(
                         S().manual_setup_generate_seed_verify_seed_subheading,
                         textAlign: TextAlign.center,
-                        style: EnvoyTypography.info
-                            .copyWith(color: EnvoyColors.textTertiary),
+                        style: EnvoyTypography.body
+                            .copyWith(color: EnvoyColors.textSecondary),
                       ),
                     ),
                   ],
@@ -396,14 +397,14 @@ class _SeedScreenState extends State<SeedScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.medium2),
-          child: OnboardingButton(
-              label: S().component_continue,
-              fontWeight: FontWeight.w600,
-              onTap: () {
-                _pageController.nextPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.ease);
-              }),
+          child: EnvoyButton(S().component_continue,
+              borderRadius:
+                  BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+              fontWeight: FontWeight.w600, onTap: () {
+            _pageController.nextPage(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.ease);
+          }),
         ),
       ],
     );

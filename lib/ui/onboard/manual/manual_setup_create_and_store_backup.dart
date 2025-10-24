@@ -65,8 +65,8 @@ class _ManualSetupCreateAndStoreBackupState
                         Text(
                           S().manual_setup_create_and_store_backup_subheading,
                           textAlign: TextAlign.center,
-                          style: EnvoyTypography.info
-                              .copyWith(color: EnvoyColors.textTertiary),
+                          style: EnvoyTypography.body
+                              .copyWith(color: EnvoyColors.textSecondary),
                         ),
                       ],
                     ),
@@ -80,36 +80,37 @@ class _ManualSetupCreateAndStoreBackupState
                 left: EnvoySpacing.xs,
                 right: EnvoySpacing.xs,
                 bottom: EnvoySpacing.medium2),
-            child: OnboardingButton(
+            child: EnvoyButton(S().manual_setup_create_and_store_backup_CTA,
                 type: EnvoyButtonTypes.primary,
-                label: S().manual_setup_create_and_store_backup_CTA,
+                borderRadius:
+                    BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
                 onTap: () async {
-                  await EnvoySeed().saveOfflineData();
+              await EnvoySeed().saveOfflineData();
 
-                  switch (globalState) {
-                    case GlobalState.normal:
-                      if (context.mounted) {
-                        showWarningModal(context);
-                      }
-                      break;
-
-                    case GlobalState.nuclearDelete:
-                      if (context.mounted) {
-                        showEnvoyDialog(
-                            context: context,
-                            dialog: const EraseWalletsConfirmation());
-                      }
-                      break;
-
-                    case GlobalState.backupDelete:
-                      if (context.mounted) {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return const MagicBackupDeactivated();
-                        }));
-                      }
+              switch (globalState) {
+                case GlobalState.normal:
+                  if (context.mounted) {
+                    showWarningModal(context);
                   }
-                }),
+                  break;
+
+                case GlobalState.nuclearDelete:
+                  if (context.mounted) {
+                    showEnvoyDialog(
+                        context: context,
+                        dialog: const EraseWalletsConfirmation());
+                  }
+                  break;
+
+                case GlobalState.backupDelete:
+                  if (context.mounted) {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return const MagicBackupDeactivated();
+                    }));
+                  }
+              }
+            }),
           )
         ],
       ),
