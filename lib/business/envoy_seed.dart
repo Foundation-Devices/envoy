@@ -58,8 +58,8 @@ class EnvoySeed {
     var singleton = EnvoySeed._instance;
     try {
       await backup_lib.RustLib.init();
-    } catch (e,stack) {
-      EnvoyReport().log("Envoyseed", "$e",stackTrace: stack);
+    } catch (e, stack) {
+      EnvoyReport().log("Envoyseed", "$e", stackTrace: stack);
     }
     // After a fresh install of Envoy following an Envoy erase,
     // the keychain may still retain the seed for a brief period.
