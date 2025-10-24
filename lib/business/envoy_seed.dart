@@ -8,8 +8,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:backup/backup.dart' as Backup;
 import 'package:backup/backup.dart';
+import 'package:backup/backup.dart' as backup_lib;
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/legacy/legacy_account.dart';
 import 'package:envoy/account/sync_manager.dart';
@@ -46,7 +46,6 @@ const String LOCAL_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME =
 
 const int SECRET_LENGTH_BYTES = 16;
 const magicBackupVersion = 2;
-class SeedNotFound implements Exception {}
 
 class EnvoySeed {
   static final EnvoySeed _instance = EnvoySeed._internal();
@@ -57,7 +56,11 @@ class EnvoySeed {
 
   static Future<EnvoySeed> init() async {
     var singleton = EnvoySeed._instance;
-    await Backup.RustLib.init();
+    try {
+      await backup_lib.RustLib.init();
+    } catch (e,stack) {
+      EnvoyReport().log("Envoyseed", "$e",stackTrace: stack);
+    }
     // After a fresh install of Envoy following an Envoy erase,
     // the keychain may still retain the seed for a brief period.
     // To ensure the seed is fully removed, set the flag during the erase flow
@@ -388,14 +391,15 @@ class EnvoySeed {
 
     if (Settings().syncToCloud) {
       try {
-        if(Settings().usingTor){
+        if (Settings().usingTor) {
           await Tor.instance.isReady();
         }
 
-        isDeleted = await Backup.backupDelete(
-            seedWords: seed!,
-            serverUrl: Settings().envoyServerAddress,
-            proxyPort: Tor.instance.port) == 202;
+        isDeleted = await Backup.delete(
+                seedWords: seed!,
+                serverUrl: Settings().envoyServerAddress,
+                proxyPort: Tor.instance.port) ==
+            202;
       } on Exception {
         return false;
       }
@@ -427,10 +431,14 @@ class EnvoySeed {
   Future<bool> deleteMagicBackup() async {
     final seed = await get();
     Settings().setSyncToCloud(false);
-    if(Settings().torEnabled()){
+    if (Settings().torEnabled()) {
       await Tor.instance.isReady();
     }
-    return  await Backup.delete(seedWords: seed!, serverUrl: Settings().envoyServerAddress,proxyPort:  Tor.instance.port) == 202;
+    return await Backup.delete(
+            seedWords: seed!,
+            serverUrl: Settings().envoyServerAddress,
+            proxyPort: Tor.instance.port) ==
+        202;
   }
 
   Future<bool> restoreData(
@@ -440,32 +448,35 @@ class EnvoySeed {
       if (seed == null) {
         seed = await get();
         if (seed == null) {
-          throw SeedNotFound();
+          throw GetBackupException.seedNotFound;
         }
       }
     } catch (e) {
-      throw SeedNotFound();
+      throw GetBackupException.seedNotFound;
     }
     if (filePath == null) {
       try {
-        final data = Backup.
-        return Backup.(seed, Settings().envoyServerAddress, Tor.instance)
-            .then((data) async {
-          bool status = await processRecoveryData(seed!, data, passphrase,
-              isMagicBackup: true);
-          return status;
-        }).catchError((e, st) {
-          debugPrintStack(stackTrace: st);
-          return false;
-        });
+        if (Settings().usingTor) {
+          await Tor.instance.isReady();
+        }
+        final backupPayload = await Backup.getBackup(
+            seedWords: seed,
+            serverUrl: Settings().envoyServerAddress,
+            proxyPort: Tor.instance.port);
+        final status = await processRecoveryData(
+            seed, extractDataFromPayload(backupPayload), passphrase,
+            isMagicBackup: true);
+        return status;
       } catch (e, st) {
         debugPrintStack(stackTrace: st);
         rethrow;
       }
     } else {
       try {
-        Map<String, String>? data = Backup.restoreOffline(seed, filePath);
-        bool success = await processRecoveryData(seed, data, passphrase);
+        final data =
+            await Backup.getBackupOffline(seedWords: seed, filePath: filePath);
+        bool success = await processRecoveryData(
+            seed, extractDataFromPayload(data), passphrase);
         return success;
       } catch (e, st) {
         debugPrintStack(stackTrace: st);
@@ -904,5 +915,14 @@ class EnvoySeed {
       EnvoyReport()
           .log("EnvoySeed", "Error restoring accounts: $e", stackTrace: stack);
     }
+  }
+
+  static Map<String, String> extractDataFromPayload(
+      List<(String, String)> payload) {
+    var data = <String, String>{};
+    for (var (key, value) in payload) {
+      data[key] = value;
+    }
+    return data;
   }
 }

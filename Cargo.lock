@@ -246,25 +246,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "backup"
-version = "0.1.0"
-dependencies = [
- "allo-isolate",
- "bdk",
- "curve25519-parser",
- "effort",
- "flutter_rust_bridge",
- "hex",
- "lazy_static",
- "log",
- "mla",
- "reqwest",
- "serde",
- "serde_json",
- "tokio",
-]
-
-[[package]]
 name = "backup-shard"
 version = "0.1.0"
 source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.3.0#37f94abccd6bb7e1124f1752813a3cba6e374c6e"
@@ -3561,6 +3542,25 @@ dependencies = [
  "hashlink",
  "libsqlite3-sys",
  "smallvec",
+]
+
+[[package]]
+name = "rust_lib_backup"
+version = "0.1.0"
+dependencies = [
+ "allo-isolate",
+ "bdk",
+ "curve25519-parser",
+ "effort",
+ "flutter_rust_bridge",
+ "hex",
+ "lazy_static",
+ "log",
+ "mla",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]

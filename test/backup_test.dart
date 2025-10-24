@@ -15,9 +15,9 @@ void main() {
 
     // Try restoring
     expect(
-        () => Backup.restoreOffline(
-            "copper december enlist body dove discover cross help evidence fall rich clean",
-            file.absolute.path),
+        () => Backup.getBackupOffline(
+            seedWords: "copper december enlist body dove discover cross help evidence fall rich clean",
+            filePath: file.absolute.path),
         throwsException);
   });
 }

@@ -257,6 +257,5 @@ func getSdCardBookmark() -> URL {
             // This will never be called
             ur_decoder()
             tor_hello()
-            backup_hello()
         }
 }

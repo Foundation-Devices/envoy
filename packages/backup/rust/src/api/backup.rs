@@ -132,8 +132,7 @@ impl Backup {
             keys_nr: payload.len() as u8,
             data: payload
                 .into_iter()
-                .map(|(k, v)| vec![k, v])
-                .flatten()
+                .flat_map(|(k, v)| vec![k, v])
                 .collect(),
         };
         let backup_data =
@@ -252,21 +251,17 @@ impl Backup {
     }
 
     pub fn extract_backup_data(payload: BackupPayload) -> anyhow::Result<Vec<(String, String)>> {
-        if payload.keys_nr <= 0 {
+        if payload.keys_nr == 0 {
             Err(anyhow!("invalid keys_nr"))
         } else {
             let keys_nr = payload.keys_nr as usize;
 
-            if keys_nr <= 0 {
+            if keys_nr == 0 {
                 return Err(anyhow!("invalid keys_nr"));
             }
 
             if payload.data.is_empty() {
                 return Err(anyhow::anyhow!("payload.data is empty"));
-            }
-
-            if payload.data.len() % 2 != 0 {
-                return Err(anyhow::anyhow!("payload.data length must be even"));
             }
 
             let mut backup_data = Vec::new();
