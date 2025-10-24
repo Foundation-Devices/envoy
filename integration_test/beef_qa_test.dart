@@ -2160,6 +2160,8 @@ Future<void> main() async {
         // Unlock it for the next test
         await findAndTapCoinLockButton(tester);
         await findAndPressTextButton(tester, 'Unlock');
+        // wait for unlocking coins
+        await pumpRepeatedly(tester, times: 30);
       }
 
       stopwatch.stop();
