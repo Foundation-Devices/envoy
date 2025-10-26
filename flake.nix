@@ -95,6 +95,24 @@
             # D-Bus and related libraries
             dbus
 
+            # Android SDK and NDK (for when you do need Android builds)
+            androidComposition.androidsdk
+          ]
+          ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
+            # x86_64-linux specific packages
+            android-studio
+
+            # Essential C/C++ development libraries and headers
+            glibc
+            glibc.dev
+            glibc.static
+            multiStdenv.cc.cc.lib
+            libcxx
+
+            # Add 32-bit libraries for cross-compilation support
+            pkgsi686Linux.glibc
+            pkgsi686Linux.glibc.dev
+
             # Necessary for secure storage on Linux
             libsecret
             libsecret.dev
@@ -139,28 +157,6 @@
             zstd
             zstd.dev
 
-            # Add SQLite and PCRE2 for Rust dependencies
-            sqlite
-            sqlite.dev
-            pcre2
-            pcre2.dev
-
-            # Android SDK and NDK (for when you do need Android builds)
-            androidComposition.androidsdk
-          ]
-          ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux")
-          (with pkgs; [
-            android-studio
-            # todo: is this really needed?
-            multiStdenv.cc.cc.lib
-
-            # Add 32-bit libraries for cross-compilation support
-            pkgsi686Linux.glibc
-            pkgsi686Linux.glibc.dev
-            glibc
-            glibc.dev
-            glibc.static
-
             # System utilities
             util-linux
             util-linux.dev
@@ -169,9 +165,16 @@
             libsepol
             libsepol.dev
             libwebp
-          ]);
+
+            # Add SQLite and PCRE2 for Rust dependencies
+            sqlite
+            sqlite.dev
+            pcre2
+            pcre2.dev
+          ]
+          ++ darwinPackages;
       in {
-        customPackages = buildInputs + darwinPackages;
+        customPackages = buildInputs;
         devShells.default = pkgs.mkShell {
           inherit buildInputs;
           shellHook = ''
