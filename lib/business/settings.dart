@@ -6,6 +6,7 @@
 
 import 'dart:math';
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
@@ -410,6 +411,37 @@ class Settings extends ChangeNotifier {
   static Future<Settings> init() async {
     var singleton = Settings._instance;
 
+    //ENV-2474 fix for issue due to new personalElectrumAddress field
+    //introduced in 2.1.1, 2.2.0 will be using defaultTorServers array,
+    //ENV-2474 only affects 2.1.0 users only
+    final mainnetOnionElectrumServer =
+        "mocmguuik7rws4bclpcoz2ldfzesjolatrzggaxfl37hjpreap777yqd.onion:50001";
+    if (singleton.personalElectrumAddress.isEmpty) {
+      final currentNode = singleton.selectedElectrumAddress;
+      final isDiyNodes = PublicServer.diyNodes.address == currentNode;
+      final isBlockstreamNodes =
+          PublicServer.blockstream.address == currentNode;
+      final isFoundationNodes = [
+            ...getDefaultFulcrumServers(),
+            getDefaultFulcrumServers(ssl: true)
+          ].contains(currentNode) ||
+          currentNode == mainnetOnionElectrumServer;
+
+      if (!isDiyNodes && !isBlockstreamNodes && !isFoundationNodes) {
+        singleton.personalElectrumAddress = currentNode;
+        singleton.usingDefaultElectrumServer = false;
+        await singleton.store();
+      }
+    }
+    //if the personalElectrumAddress is set to default onion server,
+    //this is probably due to 2.1.0 bug, so reset it to selectedElectrumAddress
+    else if (singleton.personalElectrumAddress == mainnetOnionElectrumServer) {
+      if (singleton.selectedElectrumAddress != mainnetOnionElectrumServer) {
+        singleton.personalElectrumAddress = singleton.selectedElectrumAddress;
+        singleton.usingDefaultElectrumServer = false;
+        await singleton.store();
+      }
+    }
     return singleton;
   }
 
