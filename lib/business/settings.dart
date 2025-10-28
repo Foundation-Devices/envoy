@@ -287,7 +287,11 @@ class Settings extends ChangeNotifier {
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  String nguServerAddress = "https://ngu.foundation.xyz";
+  String get nguServerAddress {
+    return usingTor
+        ? "http://sz6grlqwcmxw5rxqc7jtep76gn4psaei2tdxcd4kxdfwjg3xdoaiqvqd.onion"
+        : "https://ngu.foundation.xyz";
+  }
 
   @JsonKey(defaultValue: true)
   bool syncToCloudSetting = true;
