@@ -442,6 +442,28 @@ class Settings extends ChangeNotifier {
         await singleton.store();
       }
     }
+
+    // ENV-2224
+    // Normalize default Electrum server: if current is not one of our defaults, pick a fresh one.
+    if (singleton.usingDefaultElectrumServer) {
+      final current = singleton.selectedElectrumAddress;
+
+      // All current clearnet defaults (both tcp and ssl, though we prefer ssl when selecting)
+      final allowedDefaults = <String>{
+        ...getDefaultFulcrumServers(ssl: true),
+        ...getDefaultFulcrumServers(ssl: false),
+      };
+
+      if (!allowedDefaults.contains(current)) {
+        final newDefault =
+            selectRandomServerFrom(getDefaultFulcrumServers(ssl: true));
+        currentDefaultServer = newDefault; // update static default
+        singleton.selectedElectrumAddress =
+            newDefault; // persist chosen default
+        await singleton.store();
+      }
+    }
+
     return singleton;
   }
 
