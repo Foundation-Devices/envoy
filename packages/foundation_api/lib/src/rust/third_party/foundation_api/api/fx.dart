@@ -9,14 +9,17 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 class ExchangeRate {
   final String currencyCode;
   final double rate;
+  final BigInt timestamp;
 
   const ExchangeRate({
     required this.currencyCode,
     required this.rate,
+    required this.timestamp,
   });
 
   @override
-  int get hashCode => currencyCode.hashCode ^ rate.hashCode;
+  int get hashCode =>
+      currencyCode.hashCode ^ rate.hashCode ^ timestamp.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -24,5 +27,48 @@ class ExchangeRate {
       other is ExchangeRate &&
           runtimeType == other.runtimeType &&
           currencyCode == other.currencyCode &&
-          rate == other.rate;
+          rate == other.rate &&
+          timestamp == other.timestamp;
+}
+
+class ExchangeRateHistory {
+  final List<PricePoint> history;
+  final String currencyCode;
+
+  const ExchangeRateHistory({
+    required this.history,
+    required this.currencyCode,
+  });
+
+  @override
+  int get hashCode => history.hashCode ^ currencyCode.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ExchangeRateHistory &&
+          runtimeType == other.runtimeType &&
+          history == other.history &&
+          currencyCode == other.currencyCode;
+}
+
+class PricePoint {
+  final double rate;
+  final BigInt timestamp;
+
+  const PricePoint({
+    required this.rate,
+    required this.timestamp,
+  });
+
+  @override
+  int get hashCode => rate.hashCode ^ timestamp.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PricePoint &&
+          runtimeType == other.runtimeType &&
+          rate == other.rate &&
+          timestamp == other.timestamp;
 }
