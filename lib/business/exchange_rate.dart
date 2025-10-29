@@ -88,10 +88,12 @@ class ExchangeRate extends ChangeNotifier {
   double? get selectedCurrencyRate => _selectedCurrencyRate;
 
   double? _usdRate;
+  DateTime? _usdRateTimestamp;
 
   bool _isFetchingData = false;
 
   double? get usdRate => _usdRate;
+  DateTime? get usdRateTimestamp => _usdRateTimestamp;
   FiatCurrency? _selectedCurrency;
 
   final HttpTor _http = HttpTor();
@@ -240,6 +242,7 @@ class ExchangeRate extends ChangeNotifier {
   Future<void> _getUsdRate() async {
     try {
       _usdRate = await _getRateForCode("USD");
+      _usdRateTimestamp = DateTime.now();
       _storeRate(_selectedCurrencyRate, _selectedCurrency?.code, _usdRate);
     } on Exception catch (e) {
       EnvoyReport().log("connectivity", e.toString());
