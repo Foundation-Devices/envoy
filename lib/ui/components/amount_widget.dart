@@ -432,36 +432,45 @@ List<TextSpan> buildPrimaryBtcTextSpans(
     return [_createTextSpan('0', textStyleGray!)];
   }
 
-  final amountBTC = convertSatsToBTC(amountSats);
-  final btcString =
+  List<TextSpan> textSpans = [];
+  String btcString =
       convertSatsToBtcString(amountSats, decimalSeparator, groupSeparator);
 
-  final isAmountBtcUnder1 = amountBTC < 1;
-  final textSpans = <TextSpan>[];
+  double amountBTC = convertSatsToBTC(amountSats);
+  bool isAmountBtcUnder1 = amountBTC < 1;
 
   if (isAmountBtcUnder1) {
     bool foundNum = false;
 
     for (int i = 0; i < btcString.length; i++) {
-      final char = btcString[i];
+      String char = btcString[i];
 
-      if (i == 0 || char == decimalSeparator) {
+      if (i == 0) {
         textSpans.add(_createTextSpan(char, textStyleGray!));
-      } else if (char != '0') {
-        foundNum = true;
-        textSpans.add(_createTextSpan(char, textStyleBlack!));
       } else {
-        textSpans.add(
-            _createTextSpan(char, foundNum ? textStyleBlack! : textStyleGray!));
+        if (char == decimalSeparator) {
+          textSpans.add(_createTextSpan(char, textStyleGray!));
+        } else if (char != '0') {
+          foundNum = true;
+          textSpans.add(_createTextSpan(char, textStyleBlack!));
+        } else {
+          if (foundNum) {
+            textSpans.add(_createTextSpan(char, textStyleBlack!));
+          } else {
+            textSpans.add(_createTextSpan(char, textStyleGray!));
+          }
+        }
       }
     }
-  } else {
+  }
+
+  if (!isAmountBtcUnder1) {
     bool foundDecimalSeparator = false;
     bool foundNum = false;
     bool foundGroupSeparator = false;
 
     for (int i = 0; i < btcString.length; i++) {
-      final char = btcString[i];
+      String char = btcString[i];
 
       if (int.tryParse(char) != null) {
         foundNum = true;
@@ -673,38 +682,29 @@ double convertSatsToBTC(int sats) {
 }
 
 String convertSatsToBtcString(
-  int sats,
-  String decimalSeparator,
-  String groupSeparator,
-) {
-  final btcAmount = convertSatsToBTC(sats);
+    int sats, String decimalSeparator, String groupSeparator,
+    {bool trailingZeroes = true}) {
+  // Divide by 100,000,000 to convert to BTC
+  double btcAmount = convertSatsToBTC(sats);
 
-  // Always 8 decimals, never scientific notation
-  String btcString = btcAmount.toStringAsFixed(8);
+  // Format the BTC amount with commas for thousands and trailing zeroes
+  String formattedAmount = formatAmountWithSeparators(
+      btcAmount, trailingZeroes, decimalSeparator, groupSeparator);
 
-  // Replace decimal separator for locale
-  btcString = btcString.replaceAll('.', decimalSeparator);
-
-  // Group separators for thousands (integer only)
-  final parts = btcString.split(decimalSeparator);
-  parts[0] = _addGroupSeparators(parts[0], groupSeparator);
-
-  return parts.join(decimalSeparator);
+  return formattedAmount;
 }
 
-String _addGroupSeparators(String integerPart, String groupSeparator) {
-  final reg = RegExp(r'\B(?=(\d{3})+(?!\d))');
-  return integerPart.replaceAllMapped(reg, (_) => groupSeparator);
-}
-
-@Deprecated('Not in use, leaving it here if something breaks')
 String formatAmountWithSeparators(double amount, bool trailingZeroes,
     String decimalSeparator, String groupSeparator) {
-  // Convert the double to a string and add commas for thousands
-  String amountString = amount.toString();
+  // Use .toStringAsFixed(8) for < 1000 BTC (ENV-2486)
+  // Use .toString() (natural trimming) for >= 1000 BTC (ENV-2486)
+  String amountString =
+      amount < 1000 ? amount.toStringAsFixed(8) : amount.toString();
 
-  List<String> parts =
-      amountString.split("."); // here amount always has decimal dot
+  // Standard decimal separator replacement
+  amountString = amountString.replaceAll('.', decimalSeparator);
+
+  List<String> parts = amountString.split(decimalSeparator);
   String integerPart = parts[0];
   String decimalPart = parts.length > 1 ? parts[1] : '';
 
@@ -717,21 +717,17 @@ String formatAmountWithSeparators(double amount, bool trailingZeroes,
     }
   }
 
-  // Join the integer and decimal parts
-  String formattedAmount =
-      integerDigits.join('') + decimalSeparator + decimalPart;
-
-  // Add trailing zeroes if specified and btcAmount is less than 999
+  // Only pad decimals if required (small BTC values ENV-2486)
   if (trailingZeroes && amount < 1000) {
     int currentDecimalLength = decimalPart.length;
-    int targetDecimalLength = 8; // BTC has up to 8 decimal places
-
-    for (int i = currentDecimalLength; i < targetDecimalLength; i++) {
-      formattedAmount += '0';
+    int targetDecimalLength = 8;
+    if (currentDecimalLength < targetDecimalLength) {
+      decimalPart = decimalPart.padRight(targetDecimalLength, '0');
     }
   }
 
-  return formattedAmount;
+  return integerDigits.join('') +
+      (decimalPart.isNotEmpty ? "$decimalSeparator$decimalPart" : "");
 }
 
 double convertFiatStringToFiat(
