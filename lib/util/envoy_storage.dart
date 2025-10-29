@@ -31,6 +31,7 @@ import 'package:sembast/sembast_io.dart';
 import 'package:sembast/src/type.dart';
 import 'package:sembast/utils/sembast_import_export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:envoy/business/stripe.dart';
 
 class Action {
   Action({
@@ -106,6 +107,7 @@ const String selectedCountryStoreName = "countries";
 const String apiKeysStoreName = "api_keys";
 const String primeDataStoreName = "prime";
 const String quantumLinkIdentityStoreName = "ql_identity";
+const String stripeStoreName = "stripe";
 
 ///keeps track of the prime account full scan status, and migration,
 ///no backup for this store
@@ -142,6 +144,8 @@ class EnvoyStorage {
       StoreRef<String, Map<String, dynamic>>(inputTagHistoryStoreName);
 
   StoreRef<int, Map> firmwareStore = StoreRef<int, Map>(firmwareStoreName);
+
+  final onrampSessionStore = stringMapStoreFactory.store(stripeStoreName);
 
   StoreRef<String, bool> utxoBlockState = StoreRef(utxoBlockStateStoreName);
   StoreRef<String, Map<String, Object?>> tagStore = StoreRef(tagsStoreName);
@@ -638,6 +642,54 @@ class EnvoyStorage {
         .map((firmwares) {
       return transformFirmware(firmwares);
     });
+  }
+
+  /// Add or overwrite a session
+  Future<bool> addNewOnrampSession(OnrampSessionInfo session) async {
+    await onrampSessionStore.record(session.id).put(_db, session.toMap());
+    return true;
+  }
+
+  /// Get a stored session by ID
+  Future<OnrampSessionInfo?> getStoredOnrampSession(String sessionId) async {
+    final record = await onrampSessionStore.record(sessionId).get(_db);
+    if (record == null) return null;
+    return OnrampSessionInfo.fromMap(Map<String, dynamic>.from(record));
+  }
+
+  /// Get all stored sessions
+  Future<List<OnrampSessionInfo>> getAllOnrampSessions() async {
+    final records = await onrampSessionStore.find(_db);
+    return records
+        .map((r) => OnrampSessionInfo.fromMap(
+              Map<String, dynamic>.from(r.value),
+            ))
+        .toList();
+  }
+
+  /// Watch all sessions (stream updates)
+  Stream<List<OnrampSessionInfo>> getSessionsStream() {
+    return onrampSessionStore
+        .query()
+        .onSnapshots(_db)
+        .map((snapshots) => snapshots
+            .map((r) => OnrampSessionInfo.fromMap(
+                  Map<String, dynamic>.from(r.value),
+                ))
+            .toList());
+  }
+
+  /// Update a session’s status field
+  Future<void> updateOnrampSessionStatus(
+      String sessionId, String newStatus) async {
+    await onrampSessionStore
+        .record(sessionId)
+        .update(_db, {'status': newStatus});
+  }
+
+  /// Delete a session (optional)
+  Future<void> deleteOnrampSession(String sessionId) async {
+    await onrampSessionStore.record(sessionId).delete(_db);
   }
 
   Map<String, dynamic> _packageActionToMap(PackageAction action) {

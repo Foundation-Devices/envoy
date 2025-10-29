@@ -7,6 +7,9 @@ import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/business/server.dart';
 
+// TODO: move to server
+const stripeSecretKey = "sk_test_***";
+
 class KeysManager {
   ApiKeys? keys;
 
