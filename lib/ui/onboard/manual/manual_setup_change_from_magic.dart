@@ -14,7 +14,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
 
 class MagicBackupDeactivated extends ConsumerStatefulWidget {
   const MagicBackupDeactivated({super.key});
@@ -70,52 +69,48 @@ class _MagicBackupDeactivatedState
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const SizedBox(height: EnvoySpacing.small),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-            child:
-                Image.asset("assets/images/onboarding_info.png", height: 184),
-          ),
           Flexible(
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: EnvoySpacing.medium1),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
+                    SizedBox(height: EnvoySpacing.xl),
+                    Image.asset("assets/images/onboarding_info.png",
+                        height: 184),
+                    const SizedBox(height: EnvoySpacing.medium3),
                     Text(S().manual_setup_change_from_magic_header,
                         textAlign: TextAlign.center,
                         style: EnvoyTypography.heading),
-                    const SizedBox(height: EnvoySpacing.large2),
+                    const SizedBox(height: EnvoySpacing.medium3),
                     Text(
                       Platform.isAndroid
                           ? S().manual_setup_change_from_magic_subheaderGoogle
                           : S().manual_setup_change_from_magic_subheaderApple,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .copyWith(fontSize: 13),
+                      style: EnvoyTypography.body,
                     ),
+                    const SizedBox(height: EnvoySpacing.medium3),
                   ],
                 ),
               ),
             ),
           ),
-          const SizedBox(height: EnvoySpacing.medium1),
           Padding(
             padding: const EdgeInsets.only(
-                left: EnvoySpacing.xs,
-                right: EnvoySpacing.xs,
+                left: EnvoySpacing.small,
+                right: EnvoySpacing.small,
                 bottom: EnvoySpacing.medium2),
-            child: OnboardingButton(
+            child: EnvoyButton(S().component_confirm,
                 type: EnvoyButtonTypes.primary,
-                label: S().component_confirm,
+                borderRadius:
+                    BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
                 onTap: () async {
-                  context.go("/");
-                }),
+              context.go("/");
+            }),
           )
         ],
       );
