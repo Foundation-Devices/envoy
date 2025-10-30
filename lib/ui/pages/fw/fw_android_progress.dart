@@ -5,7 +5,9 @@
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/fw_uploader.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
+import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/sd_card_spinner.dart';
 import 'package:envoy/ui/pages/fw/fw_routes.dart';
@@ -17,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class FwAndroidProgressPage extends ConsumerStatefulWidget {
   final FwPagePayload payload;
@@ -30,8 +33,7 @@ class FwAndroidProgressPage extends ConsumerStatefulWidget {
 
 class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
   bool? done;
-  int currentDotIndex = 3;
-  int navigationDots = 6;
+
   late int deviceId = widget.payload.deviceId;
   late bool onboarding = widget.payload.onboarding;
 
@@ -73,82 +75,112 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
       },
     );
 
-    return OnboardingPage(
-      leftFunction: (context) {
-        context.pop();
-      },
-      rightFunction: null,
-      key: const Key("fw_progress"),
-      text: [
-        ExpandablePageView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: _instructionPageController,
-            onPageChanged: (index) {
-              setState(() {
-                currentDotIndex = index == 3 ? 3 : 4;
-                navigationDots = index == 2 ? 0 : 6;
-              });
-            },
+    return OnboardPageBackground(
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.only(
+              left: EnvoySpacing.medium1,
+              right: EnvoySpacing.medium1,
+              bottom: EnvoySpacing.medium2),
+          child: Column(
+            key: const Key("fw_progress"),
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SingleChildScrollView(
-                child: OnboardingText(
-                  header: S().envoy_fw_progress_heading,
-                  text: S().envoy_fw_progress_subheading,
-                ),
-              ),
-              SingleChildScrollView(
-                child: OnboardingText(
-                  header: S().envoy_fw_success_heading,
-                  text: S().envoy_fw_success_subheading,
-                ),
-              ),
               Column(
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Flexible(
-                    child: SingleChildScrollView(
-                      child: Column(
+                  const SdCardSpinner(),
+                  Transform.translate(
+                    offset: const Offset(0, -EnvoySpacing.medium2),
+                    child: ExpandablePageView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        controller: _instructionPageController,
                         children: [
-                          OnboardingText(
-                            header: S().envoy_fw_fail_heading,
+                          SingleChildScrollView(
+                              child: Column(
+                            children: [
+                              Text(
+                                S().envoy_fw_progress_heading,
+                                style: EnvoyTypography.heading,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: EnvoySpacing.medium3),
+                              Text(
+                                S().envoy_fw_progress_subheading,
+                                style: EnvoyTypography.body
+                                    .copyWith(color: EnvoyColors.textSecondary),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          )),
+                          SingleChildScrollView(
+                              child: Column(
+                            children: [
+                              Text(
+                                S().envoy_fw_success_heading,
+                                style: EnvoyTypography.heading,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: EnvoySpacing.medium3),
+                              Text(
+                                S().envoy_fw_success_subheading,
+                                style: EnvoyTypography.body
+                                    .copyWith(color: EnvoyColors.textSecondary),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          )),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        S().envoy_fw_fail_heading,
+                                        style: EnvoyTypography.heading,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(
+                                          height: EnvoySpacing.medium3),
+                                      LinkText(
+                                          text: S().envoy_fw_fail_subheading,
+                                          linkStyle: EnvoyTypography.button
+                                              .copyWith(
+                                                  color: EnvoyColors
+                                                      .accentPrimary),
+                                          onTap: () {
+                                            launchUrlString(
+                                                "https://github.com/Foundation-Devices/passport2/releases/tag/${fwInfo.value!.storedVersion}");
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 32.0),
-                            child: LinkText(
-                                text: S().envoy_fw_fail_subheading,
-                                linkStyle: EnvoyTypography.button
-                                    .copyWith(color: EnvoyColors.accentPrimary),
-                                onTap: () {
-                                  launchUrlString(
-                                      "https://github.com/Foundation-Devices/passport2/releases/tag/${fwInfo.value!.storedVersion}");
-                                }),
-                          ),
-                        ],
-                      ),
-                    ),
+                        ]),
                   ),
                 ],
               ),
-            ]),
-      ],
-      clipArt: const SdCardSpinner(),
-      navigationDots: navigationDots,
-      navigationDotsIndex: currentDotIndex,
-      buttons: [
-        if (done != null)
-          OnboardingButton(
-              label: done! ? S().component_continue : S().component_tryAgain,
-              onTap: () {
-                if (done!) {
-                  context.pushNamed(PASSPORT_UPDATE_PASSPORT,
-                      extra: widget.payload);
-                  return;
-                } else {
-                  context.pushNamed(PASSPORT_UPDATE, extra: widget.payload);
-                }
-              })
-      ],
+              if (done != null)
+                EnvoyButton(
+                    done! ? S().component_continue : S().component_tryAgain,
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+                    onTap: () {
+                  if (done!) {
+                    context.pushNamed(PASSPORT_UPDATE_PASSPORT,
+                        extra: widget.payload);
+                    return;
+                  } else {
+                    context.pushNamed(PASSPORT_UPDATE, extra: widget.payload);
+                  }
+                })
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/pages/fw/fw_routes.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -19,45 +20,27 @@ class FwPassportPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool onboarding = fwPagePayload.onboarding;
-    return OnboardingPage(
+    return CustomOnboardingPage(
       key: const Key("fw_passport"),
-      leftFunction: (context) {
-        context.go("/");
-      },
-      rightFunction: null,
-      clipArt: Image.asset("assets/fw_passport.png"),
-      text: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(
-                child: SingleChildScrollView(
-                  child: OnboardingText(
-                    header: S().envoy_fw_passport_heading,
-                    text: onboarding
-                        ? S().envoy_fw_passport_subheading
-                        : S().envoy_fw_passport_onboarded_subheading,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        )
-      ],
-      navigationDots: 6,
-      navigationDotsIndex: 5,
+      mainWidget: Image.asset(
+        "assets/fw_passport.png",
+        height: 270,
+      ),
+      title: S().envoy_fw_passport_heading,
+      subheading: onboarding
+          ? S().envoy_fw_passport_subheading
+          : S().envoy_fw_passport_onboarded_subheading,
       buttons: [
-        OnboardingButton(
-            label: S().component_continue,
+        EnvoyButton(S().component_done,
+            borderRadius:
+                BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
             onTap: () {
-              if (!onboarding) {
-                context.go("/");
-              } else {
-                context.pushNamed(PASSPORT_INTRO);
-              }
-            }),
+          if (!onboarding) {
+            context.go("/");
+          } else {
+            context.pushNamed(PASSPORT_INTRO);
+          }
+        }),
       ],
     );
   }
