@@ -6,21 +6,25 @@ import 'dart:io';
 
 import 'package:backup/backup.dart';
 import 'package:test/test.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 void main() {
-  test("Test offline restore wrong file", () async {
+  setUpAll(() async => await RustLib.init(
+      externalLibrary: ExternalLibrary.open(
+          'target/release/librust_lib_backup.${Platform.isMacOS ? "dylib" : "so"}')));
+
+  test('Test offline restore wrong file', () async {
     // Create bogus file
-    await RustLib.init();
     const filename = 'bogus.mpa';
     var file = File(filename);
     file.writeAsStringSync('bogus');
 
     // Try restoring
     expect(
-        () => Backup.getBackupOffline(
+        () async => await Backup.getBackupOffline(
             seedWords:
                 "copper december enlist body dove discover cross help evidence fall rich clean",
             filePath: file.absolute.path),
-        throwsException);
+        throwsA(equals(GetBackupException.backupNotFound)));
   });
 }
