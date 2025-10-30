@@ -2,13 +2,15 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:backup/backup.dart';
-import 'package:test/test.dart';
 import 'dart:io';
 
+import 'package:backup/backup.dart';
+import 'package:test/test.dart';
+
 void main() {
-  test("Test offline restore wrong file", () {
+  test("Test offline restore wrong file", () async {
     // Create bogus file
+    await RustLib.init();
     const filename = 'bogus.mpa';
     var file = File(filename);
     file.writeAsStringSync('bogus');
