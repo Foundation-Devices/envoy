@@ -130,10 +130,7 @@ impl Backup {
 
         let backup_payload = BackupPayload {
             keys_nr: payload.len() as u8,
-            data: payload
-                .into_iter()
-                .flat_map(|(k, v)| vec![k, v])
-                .collect(),
+            data: payload.into_iter().flat_map(|(k, v)| vec![k, v]).collect(),
         };
         let backup_data =
             Self::extract_backup_data(backup_payload).context("invalid backup payload")?;

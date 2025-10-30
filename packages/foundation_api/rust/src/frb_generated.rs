@@ -839,6 +839,20 @@ const _: fn() = || {
         let _: Vec<u8> = AccountUpdate.update;
     }
     {
+        let ApplyPassphrase = None::<foundation_api::api::bitcoin::ApplyPassphrase>.unwrap();
+        let _: Option<String> = ApplyPassphrase.fingerprint;
+    }
+    {
+        let BackupChunk = None::<foundation_api::api::backup::BackupChunk>.unwrap();
+        let _: u32 = BackupChunk.chunk_index;
+        let _: u32 = BackupChunk.total_chunks;
+        let _: Vec<u8> = BackupChunk.data;
+    }
+    {
+        let BackupMetadata = None::<foundation_api::api::backup::BackupMetadata>.unwrap();
+        let _: u32 = BackupMetadata.total_chunks;
+    }
+    {
         let BackupShardRequest_ = None::<foundation_api::api::backup::BackupShardRequest>.unwrap();
         let _: foundation_api::api::backup::Shard = BackupShardRequest_.0;
     }
@@ -866,6 +880,20 @@ const _: fn() = || {
             let _: String = error;
         }
     }
+    match None::<foundation_api::api::backup::CreateMagicBackupEvent>.unwrap() {
+        foundation_api::api::backup::CreateMagicBackupEvent::Start(field0) => {
+            let _: foundation_api::api::backup::StartMagicBackup = field0;
+        }
+        foundation_api::api::backup::CreateMagicBackupEvent::Chunk(field0) => {
+            let _: foundation_api::api::backup::BackupChunk = field0;
+        }
+    }
+    match None::<foundation_api::api::backup::CreateMagicBackupResult>.unwrap() {
+        foundation_api::api::backup::CreateMagicBackupResult::Success => {}
+        foundation_api::api::backup::CreateMagicBackupResult::Error(field0) => {
+            let _: String = field0;
+        }
+    }
     {
         let DeviceStatus = None::<foundation_api::api::status::DeviceStatus>.unwrap();
         let _: foundation_api::api::status::DeviceState = DeviceStatus.state;
@@ -887,6 +915,12 @@ const _: fn() = || {
         let ExchangeRate = None::<foundation_api::api::fx::ExchangeRate>.unwrap();
         let _: String = ExchangeRate.currency_code;
         let _: f32 = ExchangeRate.rate;
+        let _: u64 = ExchangeRate.timestamp;
+    }
+    {
+        let ExchangeRateHistory = None::<foundation_api::api::fx::ExchangeRateHistory>.unwrap();
+        let _: Vec<foundation_api::api::fx::PricePoint> = ExchangeRateHistory.history;
+        let _: String = ExchangeRateHistory.currency_code;
     }
     {
         let FirmwareChunk = None::<foundation_api::api::firmware::FirmwareChunk>.unwrap();
@@ -978,9 +1012,17 @@ const _: fn() = || {
         let PassportSerial_ = None::<foundation_api::api::passport::PassportSerial>.unwrap();
         let _: String = PassportSerial_.0;
     }
+    {
+        let PricePoint = None::<foundation_api::api::fx::PricePoint>.unwrap();
+        let _: f32 = PricePoint.rate;
+        let _: u64 = PricePoint.timestamp;
+    }
     match None::<foundation_api::api::message::QuantumLinkMessage>.unwrap() {
         foundation_api::api::message::QuantumLinkMessage::ExchangeRate(field0) => {
             let _: foundation_api::api::fx::ExchangeRate = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::ExchangeRateHistory(field0) => {
+            let _: foundation_api::api::fx::ExchangeRateHistory = field0;
         }
         foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateCheckRequest(field0) => {
             let _: foundation_api::api::firmware::FirmwareUpdateCheckRequest = field0;
@@ -1021,6 +1063,9 @@ const _: fn() = || {
         foundation_api::api::message::QuantumLinkMessage::AccountUpdate(field0) => {
             let _: foundation_api::api::bitcoin::AccountUpdate = field0;
         }
+        foundation_api::api::message::QuantumLinkMessage::ApplyPassphrase(field0) => {
+            let _: foundation_api::api::bitcoin::ApplyPassphrase = field0;
+        }
         foundation_api::api::message::QuantumLinkMessage::SecurityCheck(field0) => {
             let _: foundation_api::api::scv::SecurityCheck = field0;
         }
@@ -1042,6 +1087,21 @@ const _: fn() = || {
         foundation_api::api::message::QuantumLinkMessage::RestoreShardResponse(field0) => {
             let _: foundation_api::api::backup::RestoreShardResponse = field0;
         }
+        foundation_api::api::message::QuantumLinkMessage::CreateMagicBackupEvent(field0) => {
+            let _: foundation_api::api::backup::CreateMagicBackupEvent = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::CreateMagicBackupResult(field0) => {
+            let _: foundation_api::api::backup::CreateMagicBackupResult = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupRequest(field0) => {
+            let _: foundation_api::api::backup::RestoreMagicBackupRequest = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupEvent(field0) => {
+            let _: foundation_api::api::backup::RestoreMagicBackupEvent = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupResult(field0) => {
+            let _: foundation_api::api::backup::RestoreMagicBackupResult = field0;
+        }
         foundation_api::api::message::QuantumLinkMessage::RawData(field0) => {
             let _: foundation_api::api::raw::RawData = field0;
         }
@@ -1049,6 +1109,31 @@ const _: fn() = || {
     {
         let RawData = None::<foundation_api::api::raw::RawData>.unwrap();
         let _: Vec<u8> = RawData.payload;
+    }
+    match None::<foundation_api::api::backup::RestoreMagicBackupEvent>.unwrap() {
+        foundation_api::api::backup::RestoreMagicBackupEvent::NoBackupFound => {}
+        foundation_api::api::backup::RestoreMagicBackupEvent::Starting(field0) => {
+            let _: foundation_api::api::backup::BackupMetadata = field0;
+        }
+        foundation_api::api::backup::RestoreMagicBackupEvent::Downloading => {}
+        foundation_api::api::backup::RestoreMagicBackupEvent::Chunk(field0) => {
+            let _: foundation_api::api::backup::BackupChunk = field0;
+        }
+        foundation_api::api::backup::RestoreMagicBackupEvent::Error(field0) => {
+            let _: String = field0;
+        }
+    }
+    {
+        let RestoreMagicBackupRequest =
+            None::<foundation_api::api::backup::RestoreMagicBackupRequest>.unwrap();
+        let _: [u8; 32] = RestoreMagicBackupRequest.seed_fingerprint;
+        let _: u32 = RestoreMagicBackupRequest.resume_from_chunk;
+    }
+    match None::<foundation_api::api::backup::RestoreMagicBackupResult>.unwrap() {
+        foundation_api::api::backup::RestoreMagicBackupResult::Success => {}
+        foundation_api::api::backup::RestoreMagicBackupResult::Error(field0) => {
+            let _: String = field0;
+        }
     }
     {
         let RestoreShardRequest = None::<foundation_api::api::backup::RestoreShardRequest>.unwrap();
@@ -1084,6 +1169,11 @@ const _: fn() = || {
         let SignPsbt = None::<foundation_api::api::bitcoin::SignPsbt>.unwrap();
         let _: String = SignPsbt.account_id;
         let _: Vec<u8> = SignPsbt.psbt;
+    }
+    {
+        let StartMagicBackup = None::<foundation_api::api::backup::StartMagicBackup>.unwrap();
+        let _: [u8; 32] = StartMagicBackup.seed_fingerprint;
+        let _: u32 = StartMagicBackup.total_chunks;
     }
     match None::<foundation_api::api::scv::VerificationResult>.unwrap() {
         foundation_api::api::scv::VerificationResult::Success => {}
@@ -1241,6 +1331,40 @@ impl SseDecode for foundation_api::api::bitcoin::AccountUpdate {
     }
 }
 
+impl SseDecode for foundation_api::api::bitcoin::ApplyPassphrase {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_fingerprint = <Option<String>>::sse_decode(deserializer);
+        return foundation_api::api::bitcoin::ApplyPassphrase {
+            fingerprint: var_fingerprint,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::backup::BackupChunk {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_chunkIndex = <u32>::sse_decode(deserializer);
+        let mut var_totalChunks = <u32>::sse_decode(deserializer);
+        let mut var_data = <Vec<u8>>::sse_decode(deserializer);
+        return foundation_api::api::backup::BackupChunk {
+            chunk_index: var_chunkIndex,
+            total_chunks: var_totalChunks,
+            data: var_data,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::backup::BackupMetadata {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_totalChunks = <u32>::sse_decode(deserializer);
+        return foundation_api::api::backup::BackupMetadata {
+            total_chunks: var_totalChunks,
+        };
+    }
+}
+
 impl SseDecode for foundation_api::api::backup::BackupShardRequest {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1311,6 +1435,47 @@ impl SseDecode for foundation_api::api::scv::ChallengeResponseResult {
                 return foundation_api::api::scv::ChallengeResponseResult::Error {
                     error: var_error,
                 };
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseDecode for foundation_api::api::backup::CreateMagicBackupEvent {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::StartMagicBackup>::sse_decode(deserializer);
+                return foundation_api::api::backup::CreateMagicBackupEvent::Start(var_field0);
+            }
+            1 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::BackupChunk>::sse_decode(deserializer);
+                return foundation_api::api::backup::CreateMagicBackupEvent::Chunk(var_field0);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseDecode for foundation_api::api::backup::CreateMagicBackupResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                return foundation_api::api::backup::CreateMagicBackupResult::Success;
+            }
+            1 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return foundation_api::api::backup::CreateMagicBackupResult::Error(var_field0);
             }
             _ => {
                 unimplemented!("");
@@ -1403,9 +1568,23 @@ impl SseDecode for foundation_api::api::fx::ExchangeRate {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_currencyCode = <String>::sse_decode(deserializer);
         let mut var_rate = <f32>::sse_decode(deserializer);
+        let mut var_timestamp = <u64>::sse_decode(deserializer);
         return foundation_api::api::fx::ExchangeRate {
             currency_code: var_currencyCode,
             rate: var_rate,
+            timestamp: var_timestamp,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::fx::ExchangeRateHistory {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_history = <Vec<foundation_api::api::fx::PricePoint>>::sse_decode(deserializer);
+        let mut var_currencyCode = <String>::sse_decode(deserializer);
+        return foundation_api::api::fx::ExchangeRateHistory {
+            history: var_history,
+            currency_code: var_currencyCode,
         };
     }
 }
@@ -1589,6 +1768,20 @@ impl SseDecode for Vec<Vec<u8>> {
     }
 }
 
+impl SseDecode for Vec<foundation_api::api::fx::PricePoint> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<foundation_api::api::fx::PricePoint>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<u8> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1662,6 +1855,17 @@ impl SseDecode for foundation_api::api::onboarding::OnboardingState {
             24 => foundation_api::api::onboarding::OnboardingState::SecurityCheckFailed,
             _ => unreachable!("Invalid variant for OnboardingState: {}", inner),
         };
+    }
+}
+
+impl SseDecode for Option<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<String>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
     }
 }
 
@@ -1773,6 +1977,18 @@ impl SseDecode for foundation_api::api::passport::PassportSerial {
     }
 }
 
+impl SseDecode for foundation_api::api::fx::PricePoint {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_rate = <f32>::sse_decode(deserializer);
+        let mut var_timestamp = <u64>::sse_decode(deserializer);
+        return foundation_api::api::fx::PricePoint {
+            rate: var_rate,
+            timestamp: var_timestamp,
+        };
+    }
+}
+
 impl SseDecode for crate::api::qr::QrDecoderStatus {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1797,93 +2013,107 @@ impl SseDecode for foundation_api::api::message::QuantumLinkMessage {
             }
             1 => {
                 let mut var_field0 =
+                    <foundation_api::api::fx::ExchangeRateHistory>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::ExchangeRateHistory(
+                    var_field0,
+                );
+            }
+            2 => {
+                let mut var_field0 =
                     <foundation_api::api::firmware::FirmwareUpdateCheckRequest>::sse_decode(
                         deserializer,
                     );
                 return foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateCheckRequest(var_field0);
             }
-            2 => {
+            3 => {
                 let mut var_field0 =
                     <foundation_api::api::firmware::FirmwareUpdateCheckResponse>::sse_decode(
                         deserializer,
                     );
                 return foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateCheckResponse(var_field0);
             }
-            3 => {
+            4 => {
                 let mut var_field0 =
                     <foundation_api::api::firmware::FirmwareFetchRequest>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::FirmwareFetchRequest(
                     var_field0,
                 );
             }
-            4 => {
+            5 => {
                 let mut var_field0 =
                     <foundation_api::api::firmware::FirmwareFetchEvent>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::FirmwareFetchEvent(
                     var_field0,
                 );
             }
-            5 => {
+            6 => {
                 let mut var_field0 =
                     <foundation_api::api::firmware::FirmwareUpdateResult>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateResult(
                     var_field0,
                 );
             }
-            6 => {
+            7 => {
                 let mut var_field0 =
                     <foundation_api::api::status::DeviceStatus>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::DeviceStatus(var_field0);
             }
-            7 => {
+            8 => {
                 let mut var_field0 =
                     <foundation_api::api::status::EnvoyStatus>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::EnvoyStatus(var_field0);
             }
-            8 => {
+            9 => {
                 let mut var_field0 =
                     <foundation_api::api::pairing::PairingRequest>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::PairingRequest(
                     var_field0,
                 );
             }
-            9 => {
+            10 => {
                 let mut var_field0 =
                     <foundation_api::api::pairing::PairingResponse>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::PairingResponse(
                     var_field0,
                 );
             }
-            10 => {
+            11 => {
                 let mut var_field0 =
                     <foundation_api::api::onboarding::OnboardingState>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::OnboardingState(
                     var_field0,
                 );
             }
-            11 => {
+            12 => {
                 let mut var_field0 =
                     <foundation_api::api::bitcoin::SignPsbt>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::SignPsbt(var_field0);
             }
-            12 => {
+            13 => {
                 let mut var_field0 =
                     <foundation_api::api::bitcoin::BroadcastTransaction>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::BroadcastTransaction(
                     var_field0,
                 );
             }
-            13 => {
+            14 => {
                 let mut var_field0 =
                     <foundation_api::api::bitcoin::AccountUpdate>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::AccountUpdate(var_field0);
             }
-            14 => {
+            15 => {
+                let mut var_field0 =
+                    <foundation_api::api::bitcoin::ApplyPassphrase>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::ApplyPassphrase(
+                    var_field0,
+                );
+            }
+            16 => {
                 let mut var_field0 =
                     <foundation_api::api::scv::SecurityCheck>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::SecurityCheck(var_field0);
             }
-            15 => {
+            17 => {
                 let mut var_field0 =
                     <foundation_api::api::backup::MagicBackupEnabledRequest>::sse_decode(
                         deserializer,
@@ -1892,42 +2122,85 @@ impl SseDecode for foundation_api::api::message::QuantumLinkMessage {
                     var_field0,
                 );
             }
-            16 => {
+            18 => {
                 let mut var_field0 =
                     <foundation_api::api::backup::MagicBackupEnabledResponse>::sse_decode(
                         deserializer,
                     );
                 return foundation_api::api::message::QuantumLinkMessage::MagicBackupEnabledResponse(var_field0);
             }
-            17 => {
+            19 => {
                 let mut var_field0 =
                     <foundation_api::api::backup::BackupShardRequest>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::BackupShardRequest(
                     var_field0,
                 );
             }
-            18 => {
+            20 => {
                 let mut var_field0 =
                     <foundation_api::api::backup::BackupShardResponse>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::BackupShardResponse(
                     var_field0,
                 );
             }
-            19 => {
+            21 => {
                 let mut var_field0 =
                     <foundation_api::api::backup::RestoreShardRequest>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::RestoreShardRequest(
                     var_field0,
                 );
             }
-            20 => {
+            22 => {
                 let mut var_field0 =
                     <foundation_api::api::backup::RestoreShardResponse>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::RestoreShardResponse(
                     var_field0,
                 );
             }
-            21 => {
+            23 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::CreateMagicBackupEvent>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::CreateMagicBackupEvent(
+                    var_field0,
+                );
+            }
+            24 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::CreateMagicBackupResult>::sse_decode(
+                        deserializer,
+                    );
+                return foundation_api::api::message::QuantumLinkMessage::CreateMagicBackupResult(
+                    var_field0,
+                );
+            }
+            25 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::RestoreMagicBackupRequest>::sse_decode(
+                        deserializer,
+                    );
+                return foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupRequest(
+                    var_field0,
+                );
+            }
+            26 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::RestoreMagicBackupEvent>::sse_decode(
+                        deserializer,
+                    );
+                return foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupEvent(
+                    var_field0,
+                );
+            }
+            27 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::RestoreMagicBackupResult>::sse_decode(
+                        deserializer,
+                    );
+                return foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupResult(
+                    var_field0,
+                );
+            }
+            28 => {
                 let mut var_field0 = <foundation_api::api::raw::RawData>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::RawData(var_field0);
             }
@@ -1945,6 +2218,69 @@ impl SseDecode for foundation_api::api::raw::RawData {
         return foundation_api::api::raw::RawData {
             payload: var_payload,
         };
+    }
+}
+
+impl SseDecode for foundation_api::api::backup::RestoreMagicBackupEvent {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                return foundation_api::api::backup::RestoreMagicBackupEvent::NoBackupFound;
+            }
+            1 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::BackupMetadata>::sse_decode(deserializer);
+                return foundation_api::api::backup::RestoreMagicBackupEvent::Starting(var_field0);
+            }
+            2 => {
+                return foundation_api::api::backup::RestoreMagicBackupEvent::Downloading;
+            }
+            3 => {
+                let mut var_field0 =
+                    <foundation_api::api::backup::BackupChunk>::sse_decode(deserializer);
+                return foundation_api::api::backup::RestoreMagicBackupEvent::Chunk(var_field0);
+            }
+            4 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return foundation_api::api::backup::RestoreMagicBackupEvent::Error(var_field0);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseDecode for foundation_api::api::backup::RestoreMagicBackupRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_seedFingerprint = <[u8; 32]>::sse_decode(deserializer);
+        let mut var_resumeFromChunk = <u32>::sse_decode(deserializer);
+        return foundation_api::api::backup::RestoreMagicBackupRequest {
+            seed_fingerprint: var_seedFingerprint,
+            resume_from_chunk: var_resumeFromChunk,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::backup::RestoreMagicBackupResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                return foundation_api::api::backup::RestoreMagicBackupResult::Success;
+            }
+            1 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return foundation_api::api::backup::RestoreMagicBackupResult::Error(var_field0);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -2031,6 +2367,18 @@ impl SseDecode for foundation_api::api::bitcoin::SignPsbt {
     }
 }
 
+impl SseDecode for foundation_api::api::backup::StartMagicBackup {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_seedFingerprint = <[u8; 32]>::sse_decode(deserializer);
+        let mut var_totalChunks = <u32>::sse_decode(deserializer);
+        return foundation_api::api::backup::StartMagicBackup {
+            seed_fingerprint: var_seedFingerprint,
+            total_chunks: var_totalChunks,
+        };
+    }
+}
+
 impl SseDecode for u16 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2042,6 +2390,13 @@ impl SseDecode for u32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_u32::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for u64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u64::<NativeEndian>().unwrap()
     }
 }
 
@@ -2245,6 +2600,62 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::bitcoin::
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::bitcoin::ApplyPassphrase> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0.fingerprint.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::bitcoin::ApplyPassphrase>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::bitcoin::ApplyPassphrase>>
+    for foundation_api::api::bitcoin::ApplyPassphrase
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::bitcoin::ApplyPassphrase> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::backup::BackupChunk> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.chunk_index.into_into_dart().into_dart(),
+            self.0.total_chunks.into_into_dart().into_dart(),
+            self.0.data.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::backup::BackupChunk>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::backup::BackupChunk>>
+    for foundation_api::api::backup::BackupChunk
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::BackupChunk> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::backup::BackupMetadata> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0.total_chunks.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::backup::BackupMetadata>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::backup::BackupMetadata>>
+    for foundation_api::api::backup::BackupMetadata
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::BackupMetadata> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::backup::BackupShardRequest> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [self.0 .0.into_into_dart().into_dart()].into_dart()
@@ -2359,6 +2770,68 @@ impl
     for foundation_api::api::scv::ChallengeResponseResult
 {
     fn into_into_dart(self) -> FrbWrapper<foundation_api::api::scv::ChallengeResponseResult> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::backup::CreateMagicBackupEvent>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::backup::CreateMagicBackupEvent::Start(field0) => {
+                [0.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::backup::CreateMagicBackupEvent::Chunk(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::backup::CreateMagicBackupEvent>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        FrbWrapper<foundation_api::api::backup::CreateMagicBackupEvent>,
+    > for foundation_api::api::backup::CreateMagicBackupEvent
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::CreateMagicBackupEvent> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::backup::CreateMagicBackupResult>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::backup::CreateMagicBackupResult::Success => {
+                [0.into_dart()].into_dart()
+            }
+            foundation_api::api::backup::CreateMagicBackupResult::Error(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::backup::CreateMagicBackupResult>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        FrbWrapper<foundation_api::api::backup::CreateMagicBackupResult>,
+    > for foundation_api::api::backup::CreateMagicBackupResult
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::CreateMagicBackupResult> {
         self.into()
     }
 }
@@ -2494,6 +2967,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::fx::Excha
         [
             self.0.currency_code.into_into_dart().into_dart(),
             self.0.rate.into_into_dart().into_dart(),
+            self.0.timestamp.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -2506,6 +2980,27 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::fx::Excha
     for foundation_api::api::fx::ExchangeRate
 {
     fn into_into_dart(self) -> FrbWrapper<foundation_api::api::fx::ExchangeRate> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::fx::ExchangeRateHistory> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.history.into_into_dart().into_dart(),
+            self.0.currency_code.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::fx::ExchangeRateHistory>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::fx::ExchangeRateHistory>>
+    for foundation_api::api::fx::ExchangeRateHistory
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::fx::ExchangeRateHistory> {
         self.into()
     }
 }
@@ -2953,6 +3448,27 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::passport:
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::fx::PricePoint> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.rate.into_into_dart().into_dart(),
+            self.0.timestamp.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::fx::PricePoint>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::fx::PricePoint>>
+    for foundation_api::api::fx::PricePoint
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::fx::PricePoint> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::qr::QrDecoderStatus {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -2982,68 +3498,89 @@ impl flutter_rust_bridge::IntoDart
             foundation_api::api::message::QuantumLinkMessage::ExchangeRate(field0) => {
                 [0.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
+            foundation_api::api::message::QuantumLinkMessage::ExchangeRateHistory(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
             foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateCheckRequest(
                 field0,
-            ) => [1.into_dart(), field0.into_into_dart().into_dart()].into_dart(),
+            ) => [2.into_dart(), field0.into_into_dart().into_dart()].into_dart(),
             foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateCheckResponse(
                 field0,
-            ) => [2.into_dart(), field0.into_into_dart().into_dart()].into_dart(),
+            ) => [3.into_dart(), field0.into_into_dart().into_dart()].into_dart(),
             foundation_api::api::message::QuantumLinkMessage::FirmwareFetchRequest(field0) => {
-                [3.into_dart(), field0.into_into_dart().into_dart()].into_dart()
-            }
-            foundation_api::api::message::QuantumLinkMessage::FirmwareFetchEvent(field0) => {
                 [4.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateResult(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::FirmwareFetchEvent(field0) => {
                 [5.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::DeviceStatus(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateResult(field0) => {
                 [6.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::EnvoyStatus(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::DeviceStatus(field0) => {
                 [7.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::PairingRequest(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::EnvoyStatus(field0) => {
                 [8.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::PairingResponse(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::PairingRequest(field0) => {
                 [9.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::OnboardingState(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::PairingResponse(field0) => {
                 [10.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::SignPsbt(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::OnboardingState(field0) => {
                 [11.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::BroadcastTransaction(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::SignPsbt(field0) => {
                 [12.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::AccountUpdate(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::BroadcastTransaction(field0) => {
                 [13.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::SecurityCheck(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::AccountUpdate(field0) => {
                 [14.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::MagicBackupEnabledRequest(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::ApplyPassphrase(field0) => {
                 [15.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::SecurityCheck(field0) => {
+                [16.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::MagicBackupEnabledRequest(field0) => {
+                [17.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
             foundation_api::api::message::QuantumLinkMessage::MagicBackupEnabledResponse(
                 field0,
-            ) => [16.into_dart(), field0.into_into_dart().into_dart()].into_dart(),
+            ) => [18.into_dart(), field0.into_into_dart().into_dart()].into_dart(),
             foundation_api::api::message::QuantumLinkMessage::BackupShardRequest(field0) => {
-                [17.into_dart(), field0.into_into_dart().into_dart()].into_dart()
-            }
-            foundation_api::api::message::QuantumLinkMessage::BackupShardResponse(field0) => {
-                [18.into_dart(), field0.into_into_dart().into_dart()].into_dart()
-            }
-            foundation_api::api::message::QuantumLinkMessage::RestoreShardRequest(field0) => {
                 [19.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::RestoreShardResponse(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::BackupShardResponse(field0) => {
                 [20.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::message::QuantumLinkMessage::RawData(field0) => {
+            foundation_api::api::message::QuantumLinkMessage::RestoreShardRequest(field0) => {
                 [21.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::RestoreShardResponse(field0) => {
+                [22.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::CreateMagicBackupEvent(field0) => {
+                [23.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::CreateMagicBackupResult(field0) => {
+                [24.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupRequest(field0) => {
+                [25.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupEvent(field0) => {
+                [26.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupResult(field0) => {
+                [27.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::RawData(field0) => {
+                [28.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
             _ => {
                 unimplemented!("");
@@ -3076,6 +3613,102 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::raw::RawD
     for foundation_api::api::raw::RawData
 {
     fn into_into_dart(self) -> FrbWrapper<foundation_api::api::raw::RawData> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::backup::RestoreMagicBackupEvent>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::backup::RestoreMagicBackupEvent::NoBackupFound => {
+                [0.into_dart()].into_dart()
+            }
+            foundation_api::api::backup::RestoreMagicBackupEvent::Starting(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::backup::RestoreMagicBackupEvent::Downloading => {
+                [2.into_dart()].into_dart()
+            }
+            foundation_api::api::backup::RestoreMagicBackupEvent::Chunk(field0) => {
+                [3.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::backup::RestoreMagicBackupEvent::Error(field0) => {
+                [4.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::backup::RestoreMagicBackupEvent>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        FrbWrapper<foundation_api::api::backup::RestoreMagicBackupEvent>,
+    > for foundation_api::api::backup::RestoreMagicBackupEvent
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::RestoreMagicBackupEvent> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::backup::RestoreMagicBackupRequest>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.seed_fingerprint.into_into_dart().into_dart(),
+            self.0.resume_from_chunk.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::backup::RestoreMagicBackupRequest>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        FrbWrapper<foundation_api::api::backup::RestoreMagicBackupRequest>,
+    > for foundation_api::api::backup::RestoreMagicBackupRequest
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::RestoreMagicBackupRequest> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart
+    for FrbWrapper<foundation_api::api::backup::RestoreMagicBackupResult>
+{
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self.0 {
+            foundation_api::api::backup::RestoreMagicBackupResult::Success => {
+                [0.into_dart()].into_dart()
+            }
+            foundation_api::api::backup::RestoreMagicBackupResult::Error(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::backup::RestoreMagicBackupResult>
+{
+}
+impl
+    flutter_rust_bridge::IntoIntoDart<
+        FrbWrapper<foundation_api::api::backup::RestoreMagicBackupResult>,
+    > for foundation_api::api::backup::RestoreMagicBackupResult
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::RestoreMagicBackupResult> {
         self.into()
     }
 }
@@ -3196,6 +3829,27 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::bitcoin::
     for foundation_api::api::bitcoin::SignPsbt
 {
     fn into_into_dart(self) -> FrbWrapper<foundation_api::api::bitcoin::SignPsbt> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::backup::StartMagicBackup> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.seed_fingerprint.into_into_dart().into_dart(),
+            self.0.total_chunks.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::backup::StartMagicBackup>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::backup::StartMagicBackup>>
+    for foundation_api::api::backup::StartMagicBackup
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::StartMagicBackup> {
         self.into()
     }
 }
@@ -3342,6 +3996,29 @@ impl SseEncode for foundation_api::api::bitcoin::AccountUpdate {
     }
 }
 
+impl SseEncode for foundation_api::api::bitcoin::ApplyPassphrase {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<String>>::sse_encode(self.fingerprint, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::backup::BackupChunk {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <u32>::sse_encode(self.chunk_index, serializer);
+        <u32>::sse_encode(self.total_chunks, serializer);
+        <Vec<u8>>::sse_encode(self.data, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::backup::BackupMetadata {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <u32>::sse_encode(self.total_chunks, serializer);
+    }
+}
+
 impl SseEncode for foundation_api::api::backup::BackupShardRequest {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -3400,6 +4077,43 @@ impl SseEncode for foundation_api::api::scv::ChallengeResponseResult {
             foundation_api::api::scv::ChallengeResponseResult::Error { error } => {
                 <i32>::sse_encode(1, serializer);
                 <String>::sse_encode(error, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseEncode for foundation_api::api::backup::CreateMagicBackupEvent {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            foundation_api::api::backup::CreateMagicBackupEvent::Start(field0) => {
+                <i32>::sse_encode(0, serializer);
+                <foundation_api::api::backup::StartMagicBackup>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::backup::CreateMagicBackupEvent::Chunk(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <foundation_api::api::backup::BackupChunk>::sse_encode(field0, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseEncode for foundation_api::api::backup::CreateMagicBackupResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            foundation_api::api::backup::CreateMagicBackupResult::Success => {
+                <i32>::sse_encode(0, serializer);
+            }
+            foundation_api::api::backup::CreateMagicBackupResult::Error(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <String>::sse_encode(field0, serializer);
             }
             _ => {
                 unimplemented!("");
@@ -3483,6 +4197,15 @@ impl SseEncode for foundation_api::api::fx::ExchangeRate {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.currency_code, serializer);
         <f32>::sse_encode(self.rate, serializer);
+        <u64>::sse_encode(self.timestamp, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::fx::ExchangeRateHistory {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<foundation_api::api::fx::PricePoint>>::sse_encode(self.history, serializer);
+        <String>::sse_encode(self.currency_code, serializer);
     }
 }
 
@@ -3633,6 +4356,16 @@ impl SseEncode for Vec<Vec<u8>> {
     }
 }
 
+impl SseEncode for Vec<foundation_api::api::fx::PricePoint> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <foundation_api::api::fx::PricePoint>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<u8> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -3701,6 +4434,16 @@ impl SseEncode for foundation_api::api::onboarding::OnboardingState {
             },
             serializer,
         );
+    }
+}
+
+impl SseEncode for Option<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <String>::sse_encode(value, serializer);
+        }
     }
 }
 
@@ -3802,6 +4545,14 @@ impl SseEncode for foundation_api::api::passport::PassportSerial {
     }
 }
 
+impl SseEncode for foundation_api::api::fx::PricePoint {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f32>::sse_encode(self.rate, serializer);
+        <u64>::sse_encode(self.timestamp, serializer);
+    }
+}
+
 impl SseEncode for crate::api::qr::QrDecoderStatus {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -3818,10 +4569,14 @@ impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
                 <i32>::sse_encode(0, serializer);
                 <foundation_api::api::fx::ExchangeRate>::sse_encode(field0, serializer);
             }
+            foundation_api::api::message::QuantumLinkMessage::ExchangeRateHistory(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <foundation_api::api::fx::ExchangeRateHistory>::sse_encode(field0, serializer);
+            }
             foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateCheckRequest(
                 field0,
             ) => {
-                <i32>::sse_encode(1, serializer);
+                <i32>::sse_encode(2, serializer);
                 <foundation_api::api::firmware::FirmwareUpdateCheckRequest>::sse_encode(
                     field0, serializer,
                 );
@@ -3829,67 +4584,71 @@ impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
             foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateCheckResponse(
                 field0,
             ) => {
-                <i32>::sse_encode(2, serializer);
+                <i32>::sse_encode(3, serializer);
                 <foundation_api::api::firmware::FirmwareUpdateCheckResponse>::sse_encode(
                     field0, serializer,
                 );
             }
             foundation_api::api::message::QuantumLinkMessage::FirmwareFetchRequest(field0) => {
-                <i32>::sse_encode(3, serializer);
+                <i32>::sse_encode(4, serializer);
                 <foundation_api::api::firmware::FirmwareFetchRequest>::sse_encode(
                     field0, serializer,
                 );
             }
             foundation_api::api::message::QuantumLinkMessage::FirmwareFetchEvent(field0) => {
-                <i32>::sse_encode(4, serializer);
+                <i32>::sse_encode(5, serializer);
                 <foundation_api::api::firmware::FirmwareFetchEvent>::sse_encode(field0, serializer);
             }
             foundation_api::api::message::QuantumLinkMessage::FirmwareUpdateResult(field0) => {
-                <i32>::sse_encode(5, serializer);
+                <i32>::sse_encode(6, serializer);
                 <foundation_api::api::firmware::FirmwareUpdateResult>::sse_encode(
                     field0, serializer,
                 );
             }
             foundation_api::api::message::QuantumLinkMessage::DeviceStatus(field0) => {
-                <i32>::sse_encode(6, serializer);
+                <i32>::sse_encode(7, serializer);
                 <foundation_api::api::status::DeviceStatus>::sse_encode(field0, serializer);
             }
             foundation_api::api::message::QuantumLinkMessage::EnvoyStatus(field0) => {
-                <i32>::sse_encode(7, serializer);
+                <i32>::sse_encode(8, serializer);
                 <foundation_api::api::status::EnvoyStatus>::sse_encode(field0, serializer);
             }
             foundation_api::api::message::QuantumLinkMessage::PairingRequest(field0) => {
-                <i32>::sse_encode(8, serializer);
+                <i32>::sse_encode(9, serializer);
                 <foundation_api::api::pairing::PairingRequest>::sse_encode(field0, serializer);
             }
             foundation_api::api::message::QuantumLinkMessage::PairingResponse(field0) => {
-                <i32>::sse_encode(9, serializer);
+                <i32>::sse_encode(10, serializer);
                 <foundation_api::api::pairing::PairingResponse>::sse_encode(field0, serializer);
             }
             foundation_api::api::message::QuantumLinkMessage::OnboardingState(field0) => {
-                <i32>::sse_encode(10, serializer);
+                <i32>::sse_encode(11, serializer);
                 <foundation_api::api::onboarding::OnboardingState>::sse_encode(field0, serializer);
             }
             foundation_api::api::message::QuantumLinkMessage::SignPsbt(field0) => {
-                <i32>::sse_encode(11, serializer);
+                <i32>::sse_encode(12, serializer);
                 <foundation_api::api::bitcoin::SignPsbt>::sse_encode(field0, serializer);
             }
             foundation_api::api::message::QuantumLinkMessage::BroadcastTransaction(field0) => {
-                <i32>::sse_encode(12, serializer);
+                <i32>::sse_encode(13, serializer);
                 <foundation_api::api::bitcoin::BroadcastTransaction>::sse_encode(
                     field0, serializer,
                 );
             }
             foundation_api::api::message::QuantumLinkMessage::AccountUpdate(field0) => {
-                <i32>::sse_encode(13, serializer);
+                <i32>::sse_encode(14, serializer);
                 <foundation_api::api::bitcoin::AccountUpdate>::sse_encode(field0, serializer);
             }
+            foundation_api::api::message::QuantumLinkMessage::ApplyPassphrase(field0) => {
+                <i32>::sse_encode(15, serializer);
+                <foundation_api::api::bitcoin::ApplyPassphrase>::sse_encode(field0, serializer);
+            }
             foundation_api::api::message::QuantumLinkMessage::SecurityCheck(field0) => {
-                <i32>::sse_encode(14, serializer);
+                <i32>::sse_encode(16, serializer);
                 <foundation_api::api::scv::SecurityCheck>::sse_encode(field0, serializer);
             }
             foundation_api::api::message::QuantumLinkMessage::MagicBackupEnabledRequest(field0) => {
-                <i32>::sse_encode(15, serializer);
+                <i32>::sse_encode(17, serializer);
                 <foundation_api::api::backup::MagicBackupEnabledRequest>::sse_encode(
                     field0, serializer,
                 );
@@ -3897,29 +4656,59 @@ impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
             foundation_api::api::message::QuantumLinkMessage::MagicBackupEnabledResponse(
                 field0,
             ) => {
-                <i32>::sse_encode(16, serializer);
+                <i32>::sse_encode(18, serializer);
                 <foundation_api::api::backup::MagicBackupEnabledResponse>::sse_encode(
                     field0, serializer,
                 );
             }
             foundation_api::api::message::QuantumLinkMessage::BackupShardRequest(field0) => {
-                <i32>::sse_encode(17, serializer);
+                <i32>::sse_encode(19, serializer);
                 <foundation_api::api::backup::BackupShardRequest>::sse_encode(field0, serializer);
             }
             foundation_api::api::message::QuantumLinkMessage::BackupShardResponse(field0) => {
-                <i32>::sse_encode(18, serializer);
+                <i32>::sse_encode(20, serializer);
                 <foundation_api::api::backup::BackupShardResponse>::sse_encode(field0, serializer);
             }
             foundation_api::api::message::QuantumLinkMessage::RestoreShardRequest(field0) => {
-                <i32>::sse_encode(19, serializer);
+                <i32>::sse_encode(21, serializer);
                 <foundation_api::api::backup::RestoreShardRequest>::sse_encode(field0, serializer);
             }
             foundation_api::api::message::QuantumLinkMessage::RestoreShardResponse(field0) => {
-                <i32>::sse_encode(20, serializer);
+                <i32>::sse_encode(22, serializer);
                 <foundation_api::api::backup::RestoreShardResponse>::sse_encode(field0, serializer);
             }
+            foundation_api::api::message::QuantumLinkMessage::CreateMagicBackupEvent(field0) => {
+                <i32>::sse_encode(23, serializer);
+                <foundation_api::api::backup::CreateMagicBackupEvent>::sse_encode(
+                    field0, serializer,
+                );
+            }
+            foundation_api::api::message::QuantumLinkMessage::CreateMagicBackupResult(field0) => {
+                <i32>::sse_encode(24, serializer);
+                <foundation_api::api::backup::CreateMagicBackupResult>::sse_encode(
+                    field0, serializer,
+                );
+            }
+            foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupRequest(field0) => {
+                <i32>::sse_encode(25, serializer);
+                <foundation_api::api::backup::RestoreMagicBackupRequest>::sse_encode(
+                    field0, serializer,
+                );
+            }
+            foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupEvent(field0) => {
+                <i32>::sse_encode(26, serializer);
+                <foundation_api::api::backup::RestoreMagicBackupEvent>::sse_encode(
+                    field0, serializer,
+                );
+            }
+            foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupResult(field0) => {
+                <i32>::sse_encode(27, serializer);
+                <foundation_api::api::backup::RestoreMagicBackupResult>::sse_encode(
+                    field0, serializer,
+                );
+            }
             foundation_api::api::message::QuantumLinkMessage::RawData(field0) => {
-                <i32>::sse_encode(21, serializer);
+                <i32>::sse_encode(28, serializer);
                 <foundation_api::api::raw::RawData>::sse_encode(field0, serializer);
             }
             _ => {
@@ -3933,6 +4722,61 @@ impl SseEncode for foundation_api::api::raw::RawData {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<u8>>::sse_encode(self.payload, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::backup::RestoreMagicBackupEvent {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            foundation_api::api::backup::RestoreMagicBackupEvent::NoBackupFound => {
+                <i32>::sse_encode(0, serializer);
+            }
+            foundation_api::api::backup::RestoreMagicBackupEvent::Starting(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <foundation_api::api::backup::BackupMetadata>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::backup::RestoreMagicBackupEvent::Downloading => {
+                <i32>::sse_encode(2, serializer);
+            }
+            foundation_api::api::backup::RestoreMagicBackupEvent::Chunk(field0) => {
+                <i32>::sse_encode(3, serializer);
+                <foundation_api::api::backup::BackupChunk>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::backup::RestoreMagicBackupEvent::Error(field0) => {
+                <i32>::sse_encode(4, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
+impl SseEncode for foundation_api::api::backup::RestoreMagicBackupRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <[u8; 32]>::sse_encode(self.seed_fingerprint, serializer);
+        <u32>::sse_encode(self.resume_from_chunk, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::backup::RestoreMagicBackupResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            foundation_api::api::backup::RestoreMagicBackupResult::Success => {
+                <i32>::sse_encode(0, serializer);
+            }
+            foundation_api::api::backup::RestoreMagicBackupResult::Error(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -4004,6 +4848,14 @@ impl SseEncode for foundation_api::api::bitcoin::SignPsbt {
     }
 }
 
+impl SseEncode for foundation_api::api::backup::StartMagicBackup {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <[u8; 32]>::sse_encode(self.seed_fingerprint, serializer);
+        <u32>::sse_encode(self.total_chunks, serializer);
+    }
+}
+
 impl SseEncode for u16 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -4015,6 +4867,13 @@ impl SseEncode for u32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_u32::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for u64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u64::<NativeEndian>(self).unwrap();
     }
 }
 

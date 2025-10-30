@@ -821,16 +821,17 @@ void openTxDetailPage(Network network, String txId) {
   }
 }
 
+/// Returns the base URL for [network]; we don't launch URLs via Tor.
 String? getBaseUrlForNetwork(Network network) {
   switch (network) {
     case Network.bitcoin:
-      return Fees.mempoolFoundationInstance;
+      return Fees.mempoolFoundationUrl;
     case Network.signet:
-      return Fees.signetMempoolFoundationInstance;
+      return "${Fees.mempoolFoundationUrl}/signet";
     case Network.testnet4:
-      return Fees.testnet4MempoolFoundationInstance;
+      return "${Fees.mempoolFoundationUrl}/testnet4";
     case Network.testnet:
-      return Fees.testnet4MempoolFoundationInstance;
+      return "${Fees.mempoolFoundationUrl}/testnet4";
     case Network.regtest:
       return null;
   }

@@ -27,6 +27,24 @@ class AccountUpdate {
           update == other.update;
 }
 
+class ApplyPassphrase {
+  final String? fingerprint;
+
+  const ApplyPassphrase({
+    this.fingerprint,
+  });
+
+  @override
+  int get hashCode => fingerprint.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ApplyPassphrase &&
+          runtimeType == other.runtimeType &&
+          fingerprint == other.fingerprint;
+}
+
 class BroadcastTransaction {
   final String accountId;
   final Uint8List psbt;

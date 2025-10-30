@@ -685,7 +685,7 @@ String convertSatsToBtcString(
     int sats, String decimalSeparator, String groupSeparator,
     {bool trailingZeroes = true}) {
   // Divide by 100,000,000 to convert to BTC
-  double btcAmount = sats / 100000000;
+  double btcAmount = convertSatsToBTC(sats);
 
   // Format the BTC amount with commas for thousands and trailing zeroes
   String formattedAmount = formatAmountWithSeparators(
@@ -696,11 +696,15 @@ String convertSatsToBtcString(
 
 String formatAmountWithSeparators(double amount, bool trailingZeroes,
     String decimalSeparator, String groupSeparator) {
-  // Convert the double to a string and add commas for thousands
-  String amountString = amount.toString();
+  // Use .toStringAsFixed(8) for < 1000 BTC (ENV-2486)
+  // Use .toString() (natural trimming) for >= 1000 BTC (ENV-2486)
+  String amountString =
+      amount < 1000 ? amount.toStringAsFixed(8) : amount.toString();
 
-  List<String> parts =
-      amountString.split("."); // here amount always has decimal dot
+  // Standard decimal separator replacement
+  amountString = amountString.replaceAll('.', decimalSeparator);
+
+  List<String> parts = amountString.split(decimalSeparator);
   String integerPart = parts[0];
   String decimalPart = parts.length > 1 ? parts[1] : '';
 
@@ -713,21 +717,17 @@ String formatAmountWithSeparators(double amount, bool trailingZeroes,
     }
   }
 
-  // Join the integer and decimal parts
-  String formattedAmount =
-      integerDigits.join('') + decimalSeparator + decimalPart;
-
-  // Add trailing zeroes if specified and btcAmount is less than 999
+  // Only pad decimals if required (small BTC values ENV-2486)
   if (trailingZeroes && amount < 1000) {
     int currentDecimalLength = decimalPart.length;
-    int targetDecimalLength = 8; // BTC has up to 8 decimal places
-
-    for (int i = currentDecimalLength; i < targetDecimalLength; i++) {
-      formattedAmount += '0';
+    int targetDecimalLength = 8;
+    if (currentDecimalLength < targetDecimalLength) {
+      decimalPart = decimalPart.padRight(targetDecimalLength, '0');
     }
   }
 
-  return formattedAmount;
+  return integerDigits.join('') +
+      (decimalPart.isNotEmpty ? "$decimalSeparator$decimalPart" : "");
 }
 
 double convertFiatStringToFiat(

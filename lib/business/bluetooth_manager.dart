@@ -613,8 +613,14 @@ class BluetoothManager extends WidgetsBindingObserver {
         return;
       }
 
-      final exchangeRateMessage =
-          api.ExchangeRate(currencyCode: "USD", rate: currentExchange);
+      final timestamp = exchangeRate.usdRateTimestamp?.millisecondsSinceEpoch ??
+          DateTime.now().millisecondsSinceEpoch;
+
+      final exchangeRateMessage = api.ExchangeRate(
+        currencyCode: "USD",
+        rate: currentExchange,
+        timestamp: BigInt.from(timestamp),
+      );
 
       writeMessage(api.QuantumLinkMessage.exchangeRate(exchangeRateMessage));
 

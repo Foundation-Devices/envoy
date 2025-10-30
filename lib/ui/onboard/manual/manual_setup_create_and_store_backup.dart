@@ -69,8 +69,8 @@ class _ManualSetupCreateAndStoreBackupState
                         Text(
                           S().manual_setup_create_and_store_backup_subheading,
                           textAlign: TextAlign.center,
-                          style: EnvoyTypography.info
-                              .copyWith(color: EnvoyColors.textTertiary),
+                          style: EnvoyTypography.body
+                              .copyWith(color: EnvoyColors.textSecondary),
                         ),
                       ],
                     ),

@@ -233,6 +233,77 @@ class OnboardingPage extends StatelessWidget {
   }
 }
 
+class CustomOnboardingPage extends StatelessWidget {
+  final Widget mainWidget;
+  final String title;
+  final String subheading;
+  final List<Widget> buttons;
+  final Function? onLinkTextTap;
+  final double? topPadding;
+
+  const CustomOnboardingPage({
+    super.key,
+    required this.mainWidget,
+    required this.title,
+    required this.subheading,
+    required this.buttons,
+    this.onLinkTextTap,
+    this.topPadding,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: PopScope(
+        canPop: false,
+        child: Scaffold(
+          body: OnboardPageBackground(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  left: EnvoySpacing.medium1,
+                  right: EnvoySpacing.medium1,
+                  bottom: EnvoySpacing.medium2),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(height: topPadding ?? EnvoySpacing.xl),
+                          mainWidget,
+                          const SizedBox(height: EnvoySpacing.medium3),
+                          Text(
+                            title,
+                            style: EnvoyTypography.heading,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: EnvoySpacing.medium3),
+                          LinkText(
+                            text: subheading,
+                            textStyle: EnvoyTypography.body
+                                .copyWith(color: EnvoyColors.textSecondary),
+                            textAlign: TextAlign.center,
+                            onTap: onLinkTextTap,
+                          ),
+                          const SizedBox(height: EnvoySpacing.medium3),
+                        ],
+                      ),
+                    ),
+                  ),
+                  ...buttons,
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _LoadingRiveWidget extends StatefulWidget {
   @override
   State<_LoadingRiveWidget> createState() => _LoadingRiveWidgetState();

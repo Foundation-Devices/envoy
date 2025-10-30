@@ -9,6 +9,49 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'backup.freezed.dart';
 
+class BackupChunk {
+  final int chunkIndex;
+  final int totalChunks;
+  final Uint8List data;
+
+  const BackupChunk({
+    required this.chunkIndex,
+    required this.totalChunks,
+    required this.data,
+  });
+
+  @override
+  int get hashCode =>
+      chunkIndex.hashCode ^ totalChunks.hashCode ^ data.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BackupChunk &&
+          runtimeType == other.runtimeType &&
+          chunkIndex == other.chunkIndex &&
+          totalChunks == other.totalChunks &&
+          data == other.data;
+}
+
+class BackupMetadata {
+  final int totalChunks;
+
+  const BackupMetadata({
+    required this.totalChunks,
+  });
+
+  @override
+  int get hashCode => totalChunks.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BackupMetadata &&
+          runtimeType == other.runtimeType &&
+          totalChunks == other.totalChunks;
+}
+
 class BackupShardRequest {
   final Shard field0;
 
@@ -35,6 +78,29 @@ sealed class BackupShardResponse with _$BackupShardResponse {
   const factory BackupShardResponse.error(
     String field0,
   ) = BackupShardResponse_Error;
+}
+
+@freezed
+sealed class CreateMagicBackupEvent with _$CreateMagicBackupEvent {
+  const CreateMagicBackupEvent._();
+
+  const factory CreateMagicBackupEvent.start(
+    StartMagicBackup field0,
+  ) = CreateMagicBackupEvent_Start;
+  const factory CreateMagicBackupEvent.chunk(
+    BackupChunk field0,
+  ) = CreateMagicBackupEvent_Chunk;
+}
+
+@freezed
+sealed class CreateMagicBackupResult with _$CreateMagicBackupResult {
+  const CreateMagicBackupResult._();
+
+  const factory CreateMagicBackupResult.success() =
+      CreateMagicBackupResult_Success;
+  const factory CreateMagicBackupResult.error(
+    String field0,
+  ) = CreateMagicBackupResult_Error;
 }
 
 class MagicBackupEnabledRequest {
@@ -65,6 +131,59 @@ class MagicBackupEnabledResponse {
       other is MagicBackupEnabledResponse &&
           runtimeType == other.runtimeType &&
           enabled == other.enabled;
+}
+
+@freezed
+sealed class RestoreMagicBackupEvent with _$RestoreMagicBackupEvent {
+  const RestoreMagicBackupEvent._();
+
+  const factory RestoreMagicBackupEvent.noBackupFound() =
+      RestoreMagicBackupEvent_NoBackupFound;
+  const factory RestoreMagicBackupEvent.starting(
+    BackupMetadata field0,
+  ) = RestoreMagicBackupEvent_Starting;
+  const factory RestoreMagicBackupEvent.downloading() =
+      RestoreMagicBackupEvent_Downloading;
+  const factory RestoreMagicBackupEvent.chunk(
+    BackupChunk field0,
+  ) = RestoreMagicBackupEvent_Chunk;
+  const factory RestoreMagicBackupEvent.error(
+    String field0,
+  ) = RestoreMagicBackupEvent_Error;
+}
+
+class RestoreMagicBackupRequest {
+  final U8Array32 seedFingerprint;
+
+  /// if 0, then go from start
+  final int resumeFromChunk;
+
+  const RestoreMagicBackupRequest({
+    required this.seedFingerprint,
+    required this.resumeFromChunk,
+  });
+
+  @override
+  int get hashCode => seedFingerprint.hashCode ^ resumeFromChunk.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RestoreMagicBackupRequest &&
+          runtimeType == other.runtimeType &&
+          seedFingerprint == other.seedFingerprint &&
+          resumeFromChunk == other.resumeFromChunk;
+}
+
+@freezed
+sealed class RestoreMagicBackupResult with _$RestoreMagicBackupResult {
+  const RestoreMagicBackupResult._();
+
+  const factory RestoreMagicBackupResult.success() =
+      RestoreMagicBackupResult_Success;
+  const factory RestoreMagicBackupResult.error(
+    String field0,
+  ) = RestoreMagicBackupResult_Error;
 }
 
 class RestoreShardRequest {
@@ -116,4 +235,25 @@ class Shard {
       other is Shard &&
           runtimeType == other.runtimeType &&
           payload == other.payload;
+}
+
+class StartMagicBackup {
+  final U8Array32 seedFingerprint;
+  final int totalChunks;
+
+  const StartMagicBackup({
+    required this.seedFingerprint,
+    required this.totalChunks,
+  });
+
+  @override
+  int get hashCode => seedFingerprint.hashCode ^ totalChunks.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is StartMagicBackup &&
+          runtimeType == other.runtimeType &&
+          seedFingerprint == other.seedFingerprint &&
+          totalChunks == other.totalChunks;
 }
