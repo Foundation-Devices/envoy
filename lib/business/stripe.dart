@@ -10,14 +10,51 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'dart:async';
 
-// TODO: add more info to the OnrampSessionInfo class
+class StripeSessionMonitor {
+  static final StripeSessionMonitor _instance =
+      StripeSessionMonitor._internal();
+
+  factory StripeSessionMonitor() => _instance;
+
+  StripeSessionMonitor._internal();
+
+  Timer? _timer;
+
+  void init({Duration interval = const Duration(seconds: 10)}) {
+    if (_timer?.isActive ?? false) return;
+
+    _checkAllSessions();
+    _timer = Timer.periodic(interval, (_) => _checkAllSessions());
+  }
+
+  void stop() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  Future<void> _checkAllSessions() async {
+    try {
+      await checkAllOnrampSessionStatuses();
+    } catch (e) {
+      kPrint('[StripeSessionMonitor] Error while checking sessions: $e');
+    }
+  }
+}
+
 class OnrampSessionInfo {
   final String id;
   final String clientSecret;
   final String? redirectUrl;
   final String? status;
   final String accountId;
+  final String? transactionId;
+  final double? destinationAmount;
+  final double? networkFee;
+  final double? transactionFee;
+  final String? walletAddress;
+  final String? sourceCurrency;
 
   OnrampSessionInfo({
     required this.id,
@@ -25,6 +62,12 @@ class OnrampSessionInfo {
     this.redirectUrl,
     this.status,
     required this.accountId,
+    this.transactionId,
+    this.destinationAmount,
+    this.networkFee,
+    this.transactionFee,
+    this.walletAddress,
+    this.sourceCurrency,
   });
 
   Map<String, dynamic> toMap() {
@@ -34,21 +77,76 @@ class OnrampSessionInfo {
       'redirectUrl': redirectUrl,
       'status': status,
       'accountId': accountId,
+      'transactionId': transactionId,
+      'destinationAmount': destinationAmount,
+      'networkFee': networkFee,
+      'transactionFee': transactionFee,
+      'walletAddress': walletAddress,
+      'sourceCurrency': sourceCurrency,
     };
   }
 
   factory OnrampSessionInfo.fromMap(Map<String, dynamic> map) {
     return OnrampSessionInfo(
-        id: map['id'],
-        clientSecret: map['clientSecret'],
-        redirectUrl: map['redirectUrl'],
-        status: map['status'],
-        accountId: map['accountId']);
+      id: map['id'],
+      clientSecret: map['clientSecret'],
+      redirectUrl: map['redirectUrl'],
+      status: map['status'],
+      accountId: map['accountId'],
+      transactionId: map['transactionId'],
+      destinationAmount: _tryParseDouble(map['destinationAmount']),
+      networkFee: _tryParseDouble(map['networkFee']),
+      transactionFee: _tryParseDouble(map['transactionFee']),
+      walletAddress: map['walletAddress'],
+      sourceCurrency: map['sourceCurrency'],
+    );
+  }
+
+  static double? _tryParseDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) return double.tryParse(value);
+    return null;
+  }
+
+  OnrampSessionInfo copyWith({
+    String? status,
+    String? transactionId,
+    double? destinationAmount,
+    double? networkFee,
+    double? transactionFee,
+    String? walletAddress,
+    String? sourceCurrency,
+  }) {
+    return OnrampSessionInfo(
+      id: id,
+      clientSecret: clientSecret,
+      redirectUrl: redirectUrl,
+      accountId: accountId,
+      status: status ?? this.status,
+      transactionId: transactionId ?? this.transactionId,
+      destinationAmount: destinationAmount ?? this.destinationAmount,
+      networkFee: networkFee ?? this.networkFee,
+      transactionFee: transactionFee ?? this.transactionFee,
+      walletAddress: walletAddress ?? this.walletAddress,
+      sourceCurrency: sourceCurrency ?? this.sourceCurrency,
+    );
   }
 
   @override
   String toString() {
-    return 'OnrampSessionInfo(id: $id, status: $status, redirectUrl: $redirectUrl, accountId: $accountId)';
+    return 'OnrampSessionInfo('
+        'id: $id, '
+        'status: $status, '
+        'transactionId: $transactionId, '
+        'destinationAmount: $destinationAmount, '
+        'networkFee: $networkFee, '
+        'transactionFee: $transactionFee, '
+        'walletAddress: $walletAddress, '
+        'sourceCurrency: $sourceCurrency, '
+        'redirectUrl: $redirectUrl, '
+        'accountId: $accountId)';
   }
 }
 
@@ -92,31 +190,6 @@ Future<OnrampSessionInfo?> createOnrampSession(
     }
   } catch (e) {
     kPrint('⚠️ Error creating Onramp session: $e');
-    return null;
-  }
-}
-
-Future<String?> getOnrampSessionStatus(String sessionId) async {
-  final url = 'https://api.stripe.com/v1/crypto/onramp_sessions/$sessionId';
-
-  final response = await HttpTor().get(
-    url,
-    headers: {
-      'Authorization': 'Bearer $stripeSecretKey',
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-  );
-
-  if (response.statusCode == 200) {
-    final json = jsonDecode(response.body);
-    final status = json['status'];
-    kPrint('Session status: $status');
-    // Update the stored Onramp session (if exists)
-    await EnvoyStorage().updateOnrampSessionStatus(sessionId, status);
-    return status;
-  } else {
-    kPrint('Failed to fetch Onramp session: ${response.statusCode}');
-    kPrint('Response body: ${response.body}');
     return null;
   }
 }
@@ -166,7 +239,6 @@ Future<void> launchOnrampSession(
   }
 }
 
-// TODO: call in some timer
 Future<void> checkAllOnrampSessionStatuses() async {
   // Retrieve all stored sessions
   final sessions = await EnvoyStorage().getAllOnrampSessions();
@@ -194,43 +266,92 @@ Future<void> checkAllOnrampSessionStatuses() async {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         final status = json['status'] as String?;
+        final details = json['transaction_details'] as Map<String, dynamic>?;
 
-        if (status != null) {
-          // Update local storage
-          await EnvoyStorage().updateOnrampSessionStatus(sessionId, status);
+        String? transactionId;
+        double? destinationAmount;
+        double? networkFee;
+        double? transactionFee;
+        String? walletAddress;
+        String? sourceCurrency;
 
-          // Handle each possible status
-          switch (status) {
-            case 'initialized':
-              kPrint('Session $sessionId is initialized.');
-              break;
+        if (details != null) {
+          transactionId = details['transaction_id'];
+          destinationAmount =
+              double.tryParse(details['destination_amount'] ?? '');
+          walletAddress = details['wallet_address'] as String?;
+          sourceCurrency = details['source_currency'] as String?;
 
-            case 'rejected':
-              kPrint('Session $sessionId was rejected.');
-              break;
-
-            case 'requires_payment':
-              kPrint('Session $sessionId requires payment.');
-              break;
-
-            case 'fulfillment_processing':
-              // TODO: add amount, fee and adsress!!!
-              EnvoyStorage().addPendingTx(session.id, session.accountId,
-                  DateTime.now(), TransactionType.stripe, 0, 0, "address");
-              kPrint('Session $sessionId is being processed.');
-              break;
-
-            case 'fulfillment_complete':
-              EnvoyStorage().addPendingTx(session.id, session.accountId,
-                  DateTime.now(), TransactionType.stripe, 0, 0, "address");
-              kPrint('Session $sessionId is complete!');
-              break;
-
-            default:
-              kPrint('Session $sessionId has unknown status: $status');
+          if (details['fees'] != null) {
+            final fees = details['fees'] as Map;
+            networkFee = double.tryParse(fees['network_fee_amount'] ?? '');
+            transactionFee =
+                double.tryParse(fees['transaction_fee_amount'] ?? '');
           }
-        } else {
-          kPrint('No status field for session $sessionId.');
+        }
+
+        // Update local storage with session info
+        await EnvoyStorage().updateOnrampSession(
+          sessionId,
+          status: status,
+          transactionId: transactionId,
+          destinationAmount: destinationAmount,
+          networkFee: networkFee,
+          transactionFee: transactionFee,
+          walletAddress: walletAddress,
+          sourceCurrency: sourceCurrency,
+        );
+
+        // Handle each possible status
+        switch (status) {
+          case 'initialized':
+            kPrint('Session $sessionId is initialized.');
+            break;
+
+          case 'rejected':
+            kPrint('Session $sessionId was rejected.');
+            break;
+
+          case 'requires_payment':
+            kPrint('Session $sessionId requires payment.');
+            break;
+
+          case 'fulfillment_processing':
+            if (destinationAmount != null) {
+              int amountInSats = (destinationAmount * 100000000).toInt();
+              EnvoyStorage().addPendingTx(
+                session.id,
+                session.accountId,
+                DateTime.now(),
+                TransactionType.stripe,
+                amountInSats,
+                0,
+                walletAddress ?? 'unknown',
+              );
+            }
+            kPrint('Session $sessionId is being processed.');
+            break;
+
+          case 'fulfillment_complete':
+            // TODO: remove this(just for test)
+            int amountInSats = (destinationAmount! * 100000000).toInt();
+            kPrint("amount in sats: $amountInSats");
+            EnvoyStorage().addPendingTx(
+              session.id,
+              session.accountId,
+              DateTime.now(),
+              TransactionType.stripe,
+              amountInSats,
+              0,
+              walletAddress ?? 'unknown',
+              note: "Stripe Purchase",
+              // TODO: loclaazy
+              stripeId: session.id,
+            );
+            break;
+
+          default:
+            kPrint('Session $sessionId has unknown status: $status');
         }
       } else {
         // Handle Stripe API error response
@@ -244,7 +365,6 @@ Future<void> checkAllOnrampSessionStatuses() async {
           kPrint('❗ Stripe error for session $sessionId: [$code] $message');
 
           if (code == 'resource_missing') {
-            // Remove missing sessions from storage
             await EnvoyStorage().deleteOnrampSession(sessionId);
             kPrint('Removed missing session $sessionId from local storage.');
           }

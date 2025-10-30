@@ -90,6 +90,11 @@ final watchedVideoStreamProvider = StreamProvider.family<bool, String>(
 final txNoteFromStorageProvider = StreamProvider.family<String, String>(
     (ref, txId) => EnvoyStorage().getTxNotesStream(txId));
 
+final onrampSessionStreamProvider =
+    StreamProvider.family<OnrampSessionInfo?, String>((ref, sessionId) {
+  return EnvoyStorage().getOnrampSessionStream(sessionId);
+});
+
 const String txNotesStoreName = "tx_notes";
 const String videosStoreName = "videos";
 const String pendingTxStoreName = "pending_tx";
@@ -347,6 +352,8 @@ class EnvoyStorage {
     String? rampId,
     int? rampFee,
     String? note,
+    int? stripeFee,
+    String? stripeId,
   }) async {
     await pendingTxStore.record(key).put(_db, {
       'account': accountId,
@@ -364,6 +371,8 @@ class EnvoyStorage {
       'rampId': rampId,
       'rampFee': rampFee,
       'note': note,
+      'stripeFee': stripeFee,
+      'stripeId': stripeId
     });
     return true;
   }
@@ -407,6 +416,20 @@ class EnvoyStorage {
               vsize: BigInt.zero,
               feeRate: BigInt.zero,
               rampFee: e['rampFee'] as int?);
+        }
+        if (type == wallet.TransactionType.stripe) {
+          return StripeTransaction(
+              txId: e.key as String,
+              accountId: e["account"] as String,
+              timestamp:
+                  DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
+              fee: BigInt.from((e["fee"] as int? ?? 0)),
+              amount: e["amount"] as int,
+              address: e["address"] as String,
+              stripeId: e['stripeId'] as String?,
+              vsize: BigInt.zero,
+              feeRate: BigInt.zero,
+              stripeFee: e['stripeFee'] as int?);
         }
         if (type == wallet.TransactionType.btcPay) {
           return BtcPayTransaction(
@@ -475,6 +498,7 @@ class EnvoyStorage {
     String? rampId,
     int? rampFee,
     String? note,
+    int? stripeFee,
   }) async {
     // Retrieve the existing record
     final existingRecord = await pendingTxStore.record(key).get(_db);
@@ -511,6 +535,10 @@ class EnvoyStorage {
     }
     if (note != null) {
       updateData['note'] = note;
+    }
+
+    if (stripeFee != null) {
+      updateData['stripeFee'] = stripeFee;
     }
 
     // Update the record with the new data
@@ -679,12 +707,43 @@ class EnvoyStorage {
             .toList());
   }
 
-  /// Update a session’s status field
-  Future<void> updateOnrampSessionStatus(
-      String sessionId, String newStatus) async {
-    await onrampSessionStore
-        .record(sessionId)
-        .update(_db, {'status': newStatus});
+  Stream<OnrampSessionInfo?> getOnrampSessionStream(String sessionId) {
+    final finder = Finder(filter: Filter.byKey(sessionId));
+    return onrampSessionStore
+        .query(finder: finder)
+        .onSnapshots(_db)
+        .map((records) {
+      if (records.isEmpty) return null;
+      return OnrampSessionInfo.fromMap(
+          Map<String, dynamic>.from(records.first.value));
+    });
+  }
+
+  Future<void> updateOnrampSession(
+    String sessionId, {
+    String? status,
+    String? transactionId,
+    double? destinationAmount,
+    double? networkFee,
+    double? transactionFee,
+    String? walletAddress,
+    String? sourceCurrency,
+  }) async {
+    final updateData = <String, dynamic>{};
+
+    if (status != null) updateData['status'] = status;
+    if (transactionId != null) updateData['transactionId'] = transactionId;
+    if (destinationAmount != null) {
+      updateData['destinationAmount'] = destinationAmount;
+    }
+    if (networkFee != null) updateData['networkFee'] = networkFee;
+    if (transactionFee != null) updateData['transactionFee'] = transactionFee;
+    if (walletAddress != null) updateData['walletAddress'] = walletAddress;
+    if (sourceCurrency != null) updateData['sourceCurrency'] = sourceCurrency;
+
+    if (updateData.isNotEmpty) {
+      await onrampSessionStore.record(sessionId).update(_db, updateData);
+    }
   }
 
   /// Delete a session (optional)

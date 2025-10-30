@@ -252,7 +252,7 @@ class _TransactionsDetailsWidgetState
       (value) => value?.note ?? tx.note ?? "",
     ));
 
-    if (!tx.isConfirmed && tx is RampTransaction) {
+    if (!tx.isConfirmed && (tx is RampTransaction || tx is StripeTransaction)) {
       final noteFromStorage = ref.watch(txNoteFromStorageProvider(tx.txId));
 
       note = noteFromStorage.maybeWhen(
@@ -260,6 +260,9 @@ class _TransactionsDetailsWidgetState
         orElse: () => note,
       );
     }
+
+    final onRampSessionInfo =
+        ref.watch(onrampSessionStreamProvider(tx.txId)).value;
 
     final hideBalance =
         ref.watch(balanceHideStateStatusProvider(widget.account.id));
@@ -584,6 +587,59 @@ class _TransactionsDetailsWidgetState
                               ],
                             ),
                     ),
+                  if (tx is StripeTransaction && tx.stripeId != null)
+                    EnvoyInfoCardListItem(
+                      title: "Stripe ID", // todo: localazy,
+                      centerSingleLineTitle: true,
+                      icon: const EnvoyIcon(
+                        EnvoyIcons.stripe,
+                        size: EnvoyIconSize.small,
+                        color: EnvoyColors.textPrimary,
+                      ),
+                      trailing: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onLongPress: () {
+                          copyTxId(context, tx.stripeId!, tx);
+                        },
+                        child: Text(
+                          tx.stripeId!,
+                          style: idTextStyle,
+                          textAlign: TextAlign.end,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  if (tx is StripeTransaction)
+                    EnvoyInfoCardListItem(
+                      title: "Stripe Fee", // TODO: localazy
+                      centerSingleLineTitle: true,
+                      icon: const EnvoyIcon(
+                        EnvoyIcons.stripe,
+                        size: EnvoyIconSize.small,
+                        color: EnvoyColors.textPrimary,
+                      ),
+                      trailing: hideBalance
+                          ? const LoaderGhost(
+                              width: 74, animate: false, height: 16)
+                          : Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (tx.stripeFee != null)
+                                  EnvoyAmount(
+                                      account: widget.account,
+                                      amountSats: tx.stripeFee!,
+                                      amountWidgetStyle:
+                                          AmountWidgetStyle.normal),
+                                if (tx.stripeFee == null)
+                                  Text(
+                                    "${(onRampSessionInfo?.networkFee ?? 0.0) + (onRampSessionInfo?.transactionFee ?? 0)} ${onRampSessionInfo?.sourceCurrency}",
+                                    style: EnvoyTypography.body.copyWith(
+                                      color: EnvoyColors.textPrimary,
+                                    ),
+                                  )
+                              ],
+                            ),
+                    ),
                   rbfPossible && tx.vsize != BigInt.zero
                       ? EnvoyInfoCardListItem(
                           centerSingleLineTitle: true,
@@ -604,7 +660,8 @@ class _TransactionsDetailsWidgetState
                               : SizedBox.shrink(),
                         )
                       : Container(),
-                  if (tx is! RampTransaction) _renderFeeWidget(context, tx),
+                  if (tx is! RampTransaction && tx is! StripeTransaction)
+                    _renderFeeWidget(context, tx),
                   GestureDetector(
                     onTap: () {
                       showEnvoyDialog(
@@ -619,7 +676,8 @@ class _TransactionsDetailsWidgetState
                               if (!tx.isConfirmed &&
                                   (tx is RampTransaction ||
                                       tx is BtcPayTransaction ||
-                                      tx is AztecoTransaction)) {
+                                      tx is AztecoTransaction ||
+                                      tx is StripeTransaction)) {
                                 EnvoyStorage()
                                     .updatePendingTx(tx.txId, note: note);
                               } else {
