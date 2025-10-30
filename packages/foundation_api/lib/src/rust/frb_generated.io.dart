@@ -138,6 +138,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AccountUpdate dco_decode_account_update(dynamic raw);
 
   @protected
+  ApplyPassphrase dco_decode_apply_passphrase(dynamic raw);
+
+  @protected
+  BackupChunk dco_decode_backup_chunk(dynamic raw);
+
+  @protected
+  BackupMetadata dco_decode_backup_metadata(dynamic raw);
+
+  @protected
   BackupShardRequest dco_decode_backup_shard_request(dynamic raw);
 
   @protected
@@ -153,6 +162,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AccountUpdate dco_decode_box_autoadd_account_update(dynamic raw);
+
+  @protected
+  ApplyPassphrase dco_decode_box_autoadd_apply_passphrase(dynamic raw);
+
+  @protected
+  BackupChunk dco_decode_box_autoadd_backup_chunk(dynamic raw);
+
+  @protected
+  BackupMetadata dco_decode_box_autoadd_backup_metadata(dynamic raw);
 
   @protected
   BackupShardRequest dco_decode_box_autoadd_backup_shard_request(dynamic raw);
@@ -172,6 +190,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  CreateMagicBackupEvent dco_decode_box_autoadd_create_magic_backup_event(
+      dynamic raw);
+
+  @protected
+  CreateMagicBackupResult dco_decode_box_autoadd_create_magic_backup_result(
+      dynamic raw);
+
+  @protected
   DeviceStatus dco_decode_box_autoadd_device_status(dynamic raw);
 
   @protected
@@ -182,6 +208,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ExchangeRate dco_decode_box_autoadd_exchange_rate(dynamic raw);
+
+  @protected
+  ExchangeRateHistory dco_decode_box_autoadd_exchange_rate_history(dynamic raw);
 
   @protected
   FirmwareChunk dco_decode_box_autoadd_firmware_chunk(dynamic raw);
@@ -230,6 +259,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RawData dco_decode_box_autoadd_raw_data(dynamic raw);
 
   @protected
+  RestoreMagicBackupEvent dco_decode_box_autoadd_restore_magic_backup_event(
+      dynamic raw);
+
+  @protected
+  RestoreMagicBackupRequest dco_decode_box_autoadd_restore_magic_backup_request(
+      dynamic raw);
+
+  @protected
+  RestoreMagicBackupResult dco_decode_box_autoadd_restore_magic_backup_result(
+      dynamic raw);
+
+  @protected
   RestoreShardRequest dco_decode_box_autoadd_restore_shard_request(dynamic raw);
 
   @protected
@@ -246,6 +287,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SignPsbt dco_decode_box_autoadd_sign_psbt(dynamic raw);
 
   @protected
+  StartMagicBackup dco_decode_box_autoadd_start_magic_backup(dynamic raw);
+
+  @protected
   VerificationResult dco_decode_box_autoadd_verification_result(dynamic raw);
 
   @protected
@@ -256,6 +300,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ChallengeResponseResult dco_decode_challenge_response_result(dynamic raw);
+
+  @protected
+  CreateMagicBackupEvent dco_decode_create_magic_backup_event(dynamic raw);
+
+  @protected
+  CreateMagicBackupResult dco_decode_create_magic_backup_result(dynamic raw);
 
   @protected
   DecoderStatus dco_decode_decoder_status(dynamic raw);
@@ -277,6 +327,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ExchangeRate dco_decode_exchange_rate(dynamic raw);
+
+  @protected
+  ExchangeRateHistory dco_decode_exchange_rate_history(dynamic raw);
 
   @protected
   double dco_decode_f_32(dynamic raw);
@@ -317,6 +370,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<Uint8List> dco_decode_list_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<PricePoint> dco_decode_list_price_point(dynamic raw);
+
+  @protected
   List<int> dco_decode_list_prim_u_8_loose(dynamic raw);
 
   @protected
@@ -335,6 +391,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   OnboardingState dco_decode_onboarding_state(dynamic raw);
+
+  @protected
+  String? dco_decode_opt_String(dynamic raw);
 
   @protected
   XidDocument?
@@ -366,6 +425,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PassportSerial dco_decode_passport_serial(dynamic raw);
 
   @protected
+  PricePoint dco_decode_price_point(dynamic raw);
+
+  @protected
   QrDecoderStatus dco_decode_qr_decoder_status(dynamic raw);
 
   @protected
@@ -373,6 +435,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   RawData dco_decode_raw_data(dynamic raw);
+
+  @protected
+  RestoreMagicBackupEvent dco_decode_restore_magic_backup_event(dynamic raw);
+
+  @protected
+  RestoreMagicBackupRequest dco_decode_restore_magic_backup_request(
+      dynamic raw);
+
+  @protected
+  RestoreMagicBackupResult dco_decode_restore_magic_backup_result(dynamic raw);
 
   @protected
   RestoreShardRequest dco_decode_restore_shard_request(dynamic raw);
@@ -390,10 +462,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SignPsbt dco_decode_sign_psbt(dynamic raw);
 
   @protected
+  StartMagicBackup dco_decode_start_magic_backup(dynamic raw);
+
+  @protected
   int dco_decode_u_16(dynamic raw);
 
   @protected
   int dco_decode_u_32(dynamic raw);
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -495,6 +573,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AccountUpdate sse_decode_account_update(SseDeserializer deserializer);
 
   @protected
+  ApplyPassphrase sse_decode_apply_passphrase(SseDeserializer deserializer);
+
+  @protected
+  BackupChunk sse_decode_backup_chunk(SseDeserializer deserializer);
+
+  @protected
+  BackupMetadata sse_decode_backup_metadata(SseDeserializer deserializer);
+
+  @protected
   BackupShardRequest sse_decode_backup_shard_request(
       SseDeserializer deserializer);
 
@@ -512,6 +599,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AccountUpdate sse_decode_box_autoadd_account_update(
+      SseDeserializer deserializer);
+
+  @protected
+  ApplyPassphrase sse_decode_box_autoadd_apply_passphrase(
+      SseDeserializer deserializer);
+
+  @protected
+  BackupChunk sse_decode_box_autoadd_backup_chunk(SseDeserializer deserializer);
+
+  @protected
+  BackupMetadata sse_decode_box_autoadd_backup_metadata(
       SseDeserializer deserializer);
 
   @protected
@@ -535,6 +633,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  CreateMagicBackupEvent sse_decode_box_autoadd_create_magic_backup_event(
+      SseDeserializer deserializer);
+
+  @protected
+  CreateMagicBackupResult sse_decode_box_autoadd_create_magic_backup_result(
+      SseDeserializer deserializer);
+
+  @protected
   DeviceStatus sse_decode_box_autoadd_device_status(
       SseDeserializer deserializer);
 
@@ -547,6 +653,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ExchangeRate sse_decode_box_autoadd_exchange_rate(
+      SseDeserializer deserializer);
+
+  @protected
+  ExchangeRateHistory sse_decode_box_autoadd_exchange_rate_history(
       SseDeserializer deserializer);
 
   @protected
@@ -604,6 +714,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RawData sse_decode_box_autoadd_raw_data(SseDeserializer deserializer);
 
   @protected
+  RestoreMagicBackupEvent sse_decode_box_autoadd_restore_magic_backup_event(
+      SseDeserializer deserializer);
+
+  @protected
+  RestoreMagicBackupRequest sse_decode_box_autoadd_restore_magic_backup_request(
+      SseDeserializer deserializer);
+
+  @protected
+  RestoreMagicBackupResult sse_decode_box_autoadd_restore_magic_backup_result(
+      SseDeserializer deserializer);
+
+  @protected
   RestoreShardRequest sse_decode_box_autoadd_restore_shard_request(
       SseDeserializer deserializer);
 
@@ -622,6 +744,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SignPsbt sse_decode_box_autoadd_sign_psbt(SseDeserializer deserializer);
 
   @protected
+  StartMagicBackup sse_decode_box_autoadd_start_magic_backup(
+      SseDeserializer deserializer);
+
+  @protected
   VerificationResult sse_decode_box_autoadd_verification_result(
       SseDeserializer deserializer);
 
@@ -634,6 +760,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ChallengeResponseResult sse_decode_challenge_response_result(
+      SseDeserializer deserializer);
+
+  @protected
+  CreateMagicBackupEvent sse_decode_create_magic_backup_event(
+      SseDeserializer deserializer);
+
+  @protected
+  CreateMagicBackupResult sse_decode_create_magic_backup_result(
       SseDeserializer deserializer);
 
   @protected
@@ -656,6 +790,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ExchangeRate sse_decode_exchange_rate(SseDeserializer deserializer);
+
+  @protected
+  ExchangeRateHistory sse_decode_exchange_rate_history(
+      SseDeserializer deserializer);
 
   @protected
   double sse_decode_f_32(SseDeserializer deserializer);
@@ -701,6 +839,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<PricePoint> sse_decode_list_price_point(SseDeserializer deserializer);
+
+  @protected
   List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer);
 
   @protected
@@ -720,6 +861,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer);
+
+  @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer);
 
   @protected
   XidDocument?
@@ -753,6 +897,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PassportSerial sse_decode_passport_serial(SseDeserializer deserializer);
 
   @protected
+  PricePoint sse_decode_price_point(SseDeserializer deserializer);
+
+  @protected
   QrDecoderStatus sse_decode_qr_decoder_status(SseDeserializer deserializer);
 
   @protected
@@ -761,6 +908,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   RawData sse_decode_raw_data(SseDeserializer deserializer);
+
+  @protected
+  RestoreMagicBackupEvent sse_decode_restore_magic_backup_event(
+      SseDeserializer deserializer);
+
+  @protected
+  RestoreMagicBackupRequest sse_decode_restore_magic_backup_request(
+      SseDeserializer deserializer);
+
+  @protected
+  RestoreMagicBackupResult sse_decode_restore_magic_backup_result(
+      SseDeserializer deserializer);
 
   @protected
   RestoreShardRequest sse_decode_restore_shard_request(
@@ -780,10 +939,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SignPsbt sse_decode_sign_psbt(SseDeserializer deserializer);
 
   @protected
+  StartMagicBackup sse_decode_start_magic_backup(SseDeserializer deserializer);
+
+  @protected
   int sse_decode_u_16(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
+
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -887,6 +1052,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_account_update(AccountUpdate self, SseSerializer serializer);
 
   @protected
+  void sse_encode_apply_passphrase(
+      ApplyPassphrase self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_backup_chunk(BackupChunk self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_backup_metadata(
+      BackupMetadata self, SseSerializer serializer);
+
+  @protected
   void sse_encode_backup_shard_request(
       BackupShardRequest self, SseSerializer serializer);
 
@@ -905,6 +1081,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_account_update(
       AccountUpdate self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_apply_passphrase(
+      ApplyPassphrase self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_backup_chunk(
+      BackupChunk self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_backup_metadata(
+      BackupMetadata self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_backup_shard_request(
@@ -927,6 +1115,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ChallengeResponseResult self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_create_magic_backup_event(
+      CreateMagicBackupEvent self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_create_magic_backup_result(
+      CreateMagicBackupResult self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_device_status(
       DeviceStatus self, SseSerializer serializer);
 
@@ -941,6 +1137,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_exchange_rate(
       ExchangeRate self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_exchange_rate_history(
+      ExchangeRateHistory self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_firmware_chunk(
@@ -994,6 +1194,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_raw_data(RawData self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_restore_magic_backup_event(
+      RestoreMagicBackupEvent self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_restore_magic_backup_request(
+      RestoreMagicBackupRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_restore_magic_backup_result(
+      RestoreMagicBackupResult self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_restore_shard_request(
       RestoreShardRequest self, SseSerializer serializer);
 
@@ -1013,6 +1225,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SignPsbt self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_start_magic_backup(
+      StartMagicBackup self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_verification_result(
       VerificationResult self, SseSerializer serializer);
 
@@ -1027,6 +1243,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_challenge_response_result(
       ChallengeResponseResult self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_create_magic_backup_event(
+      CreateMagicBackupEvent self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_create_magic_backup_result(
+      CreateMagicBackupResult self, SseSerializer serializer);
 
   @protected
   void sse_encode_decoder_status(DecoderStatus self, SseSerializer serializer);
@@ -1048,6 +1272,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_exchange_rate(ExchangeRate self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_exchange_rate_history(
+      ExchangeRateHistory self, SseSerializer serializer);
 
   @protected
   void sse_encode_f_32(double self, SseSerializer serializer);
@@ -1093,6 +1321,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<Uint8List> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_price_point(
+      List<PricePoint> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_prim_u_8_loose(List<int> self, SseSerializer serializer);
 
   @protected
@@ -1114,6 +1346,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_onboarding_state(
       OnboardingState self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer);
 
   @protected
   void
@@ -1151,6 +1386,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       PassportSerial self, SseSerializer serializer);
 
   @protected
+  void sse_encode_price_point(PricePoint self, SseSerializer serializer);
+
+  @protected
   void sse_encode_qr_decoder_status(
       QrDecoderStatus self, SseSerializer serializer);
 
@@ -1160,6 +1398,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_raw_data(RawData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_restore_magic_backup_event(
+      RestoreMagicBackupEvent self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_restore_magic_backup_request(
+      RestoreMagicBackupRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_restore_magic_backup_result(
+      RestoreMagicBackupResult self, SseSerializer serializer);
 
   @protected
   void sse_encode_restore_shard_request(
@@ -1179,10 +1429,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_sign_psbt(SignPsbt self, SseSerializer serializer);
 
   @protected
+  void sse_encode_start_magic_backup(
+      StartMagicBackup self, SseSerializer serializer);
+
+  @protected
   void sse_encode_u_16(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);

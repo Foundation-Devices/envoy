@@ -68,6 +68,9 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.exchangeRate(
     ExchangeRate field0,
   ) = QuantumLinkMessage_ExchangeRate;
+  const factory QuantumLinkMessage.exchangeRateHistory(
+    ExchangeRateHistory field0,
+  ) = QuantumLinkMessage_ExchangeRateHistory;
   const factory QuantumLinkMessage.firmwareUpdateCheckRequest(
     FirmwareUpdateCheckRequest field0,
   ) = QuantumLinkMessage_FirmwareUpdateCheckRequest;
@@ -107,6 +110,9 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.accountUpdate(
     AccountUpdate field0,
   ) = QuantumLinkMessage_AccountUpdate;
+  const factory QuantumLinkMessage.applyPassphrase(
+    ApplyPassphrase field0,
+  ) = QuantumLinkMessage_ApplyPassphrase;
   const factory QuantumLinkMessage.securityCheck(
     SecurityCheck field0,
   ) = QuantumLinkMessage_SecurityCheck;
@@ -128,6 +134,21 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.restoreShardResponse(
     RestoreShardResponse field0,
   ) = QuantumLinkMessage_RestoreShardResponse;
+  const factory QuantumLinkMessage.createMagicBackupEvent(
+    CreateMagicBackupEvent field0,
+  ) = QuantumLinkMessage_CreateMagicBackupEvent;
+  const factory QuantumLinkMessage.createMagicBackupResult(
+    CreateMagicBackupResult field0,
+  ) = QuantumLinkMessage_CreateMagicBackupResult;
+  const factory QuantumLinkMessage.restoreMagicBackupRequest(
+    RestoreMagicBackupRequest field0,
+  ) = QuantumLinkMessage_RestoreMagicBackupRequest;
+  const factory QuantumLinkMessage.restoreMagicBackupEvent(
+    RestoreMagicBackupEvent field0,
+  ) = QuantumLinkMessage_RestoreMagicBackupEvent;
+  const factory QuantumLinkMessage.restoreMagicBackupResult(
+    RestoreMagicBackupResult field0,
+  ) = QuantumLinkMessage_RestoreMagicBackupResult;
   const factory QuantumLinkMessage.rawData(
     RawData field0,
   ) = QuantumLinkMessage_RawData;
