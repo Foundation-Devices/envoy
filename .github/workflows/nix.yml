@@ -39,20 +39,11 @@ jobs:
       - run: nix develop --command dart format --output=none --set-exit-if-changed .
         name: Check Dart formatting
 
-      - run: nix develop --command cargo fmt --all --check
-        name: Check Rust formatting
-
-      - run: nix develop --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
-        name: Run Clippy
-
-      - run: nix develop --command cargo test
-        name: Run Rust tests
-
       - run: nix develop --command flutter analyze
         name: Analyze Dart project source
 
-      - run: nix develop --command ./scripts/build_ffi_android.sh
-        name: Build legacy FFI libs for Android
+      - run: nix develop --command cargo fmt --all --check
+        name: Check Rust formatting
 
       - run: nix develop --command cargo build
         name: Build Rust libs
@@ -60,8 +51,25 @@ jobs:
       - run: nix develop --command flutter test
         name: Run Dart tests
 
+      - run: nix develop --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
+        name: Run Clippy
+
+      - run: nix develop --command cargo test
+        name: Run Rust tests
+
+      - run: nix develop --command ./scripts/build_ffi_android.sh
+        name: Build legacy FFI libs for Android
+
       - run:  echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build apk --release --target-platform android-arm64
-        name: Build Envoy
+        name: Build Envoy APK
+        env:
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - run: echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build aab --release --target-platform android-arm64
+        name: Build Envoy AAB
         env:
           KEY_JKS: ${{ secrets.KEY_JKS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
@@ -75,3 +83,8 @@ jobs:
         with:
           name: app-release.apk
           path: build/app/outputs/flutter-apk/app-release.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-release.aab
+          path: build/app/outputs/flutter-apk/app-release.aab
