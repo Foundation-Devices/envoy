@@ -4,20 +4,22 @@
 
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/onboard/manual/manual_setup_change_from_magic.dart';
-import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/ui/envoy_button.dart' hide EnvoyButton;
 import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup_change_from_magic.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/state/global_state.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/state/global_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/bug_report_helper.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ManualSetupCreateAndStoreBackup extends ConsumerStatefulWidget {
   const ManualSetupCreateAndStoreBackup({super.key});
@@ -29,6 +31,8 @@ class ManualSetupCreateAndStoreBackup extends ConsumerStatefulWidget {
 
 class _ManualSetupCreateAndStoreBackupState
     extends ConsumerState<ManualSetupCreateAndStoreBackup> {
+  bool _writingOfflineMBfile = false;
+
   @override
   Widget build(BuildContext context) {
     final globalState = ref.watch(globalStateProvider);
@@ -80,37 +84,50 @@ class _ManualSetupCreateAndStoreBackupState
                 left: EnvoySpacing.xs,
                 right: EnvoySpacing.xs,
                 bottom: EnvoySpacing.medium2),
-            child: EnvoyButton(S().manual_setup_create_and_store_backup_CTA,
-                type: EnvoyButtonTypes.primary,
-                borderRadius:
-                    BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+            child: EnvoyButton(
+                label: S().manual_setup_create_and_store_backup_CTA,
+                type: ButtonType.primary,
+                state: _writingOfflineMBfile
+                    ? ButtonState.loading
+                    : ButtonState.defaultState,
                 onTap: () async {
-              await EnvoySeed().saveOfflineData();
+                  setState(() {
+                    _writingOfflineMBfile = true;
+                  });
+                  try {
+                    await EnvoySeed().saveOfflineData();
 
-              switch (globalState) {
-                case GlobalState.normal:
-                  if (context.mounted) {
-                    showWarningModal(context);
-                  }
-                  break;
+                    switch (globalState) {
+                      case GlobalState.normal:
+                        if (context.mounted) {
+                          showWarningModal(context);
+                        }
+                        break;
 
-                case GlobalState.nuclearDelete:
-                  if (context.mounted) {
-                    showEnvoyDialog(
-                        context: context,
-                        dialog: const EraseWalletsConfirmation());
-                  }
-                  break;
+                      case GlobalState.nuclearDelete:
+                        if (context.mounted) {
+                          showEnvoyDialog(
+                              context: context,
+                              dialog: const EraseWalletsConfirmation());
+                        }
+                        break;
 
-                case GlobalState.backupDelete:
-                  if (context.mounted) {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return const MagicBackupDeactivated();
-                    }));
+                      case GlobalState.backupDelete:
+                        if (context.mounted) {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return const MagicBackupDeactivated();
+                          }));
+                        }
+                    }
+                  } catch (e) {
+                    EnvoyReport().log("ManualBackup", "$e");
+                  } finally {
+                    setState(() {
+                      _writingOfflineMBfile = false;
+                    });
                   }
-              }
-            }),
+                }),
           )
         ],
       ),

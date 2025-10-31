@@ -62,6 +62,18 @@ SPDX-FileCopyrightText = "2022 Foundation Devices Inc."
 SPDX-License-Identifier = "GPL-3.0-or-later"
 
 [[annotations]]
+path = "**/.DS_Store"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 Foundation Devices Inc."
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "**/.idea/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 Foundation Devices Inc."
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
 path = "**.lock"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022 Foundation Devices Inc."

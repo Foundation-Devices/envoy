@@ -11,9 +11,6 @@
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		4BAFFFE02D0994DD00DAA96C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78ABDD292C46ED4500677063 /* CoreBluetooth.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
-		7861873B299FF9AD00CDC6F4 /* libbackup_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7861873A299FF9AC00CDC6F4 /* libbackup_ffi.a */; };
-		7861873D299FF9EF00CDC6F4 /* libbackup_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7861873C299FF9EF00CDC6F4 /* libbackup_ffi.a */; };
-		7861873F299FFA0F00CDC6F4 /* libbackup_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7861873E299FFA0F00CDC6F4 /* libbackup_ffi.a */; };
 		787400C02955C8010097D2C3 /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BC2955C8010097D2C3 /* libur_ffi.a */; };
 		78CFC742291BC27600A3AFDC /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760C27F831AC005559E4 /* libur_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		78CFC76D292E5CE000A3AFDC /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78CFC769292E5CDF00A3AFDC /* libur_ffi.a */; };
@@ -32,9 +29,6 @@
 		53ACD787AE4F9E7EDE3068CD /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		7861873A299FF9AC00CDC6F4 /* libbackup_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbackup_ffi.a; path = "../target/aarch64-apple-ios/debug/libbackup_ffi.a"; sourceTree = "<group>"; };
-		7861873C299FF9EF00CDC6F4 /* libbackup_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbackup_ffi.a; path = "../target/aarch64-apple-ios/release/libbackup_ffi.a"; sourceTree = "<group>"; };
-		7861873E299FFA0F00CDC6F4 /* libbackup_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbackup_ffi.a; path = "../target/aarch64-apple-ios-sim/debug/libbackup_ffi.a"; sourceTree = "<group>"; };
 		787400BA2955C8010097D2C3 /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet_ffi.a; path = "../target/aarch64-apple-ios-sim/debug/libwallet_ffi.a"; sourceTree = "<group>"; };
 		787400BC2955C8010097D2C3 /* libur_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libur_ffi.a; path = "../target/aarch64-apple-ios-sim/debug/libur_ffi.a"; sourceTree = "<group>"; };
 		788D58E02795A8DC00CD47BA /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
@@ -63,10 +57,7 @@
 				78CFC76D292E5CE000A3AFDC /* libur_ffi.a in Frameworks */,
 				4BAFFFE02D0994DD00DAA96C /* CoreBluetooth.framework in Frameworks */,
 				787400C02955C8010097D2C3 /* libur_ffi.a in Frameworks */,
-				7861873D299FF9EF00CDC6F4 /* libbackup_ffi.a in Frameworks */,
-				7861873B299FF9AD00CDC6F4 /* libbackup_ffi.a in Frameworks */,
 				78CFC742291BC27600A3AFDC /* libur_ffi.a in Frameworks */,
-				7861873F299FFA0F00CDC6F4 /* libbackup_ffi.a in Frameworks */,
 				962D03B34CBBC13056A4CFD4 /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -78,9 +69,6 @@
 			isa = PBXGroup;
 			children = (
 				78ABDD292C46ED4500677063 /* CoreBluetooth.framework */,
-				7861873A299FF9AC00CDC6F4 /* libbackup_ffi.a */,
-				7861873C299FF9EF00CDC6F4 /* libbackup_ffi.a */,
-				7861873E299FFA0F00CDC6F4 /* libbackup_ffi.a */,
 				78CFC769292E5CDF00A3AFDC /* libur_ffi.a */,
 				787400BC2955C8010097D2C3 /* libur_ffi.a */,
 				78C3760E27F831B4005559E4 /* libwallet_ffi.a */,
