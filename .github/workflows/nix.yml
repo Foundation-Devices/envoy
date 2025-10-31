@@ -33,7 +33,7 @@ jobs:
       - run: nix develop --command ./scripts/build_ffi_android.sh
         name: Build legacy FFI libs
 
-      - run:  echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build --release --target-platform android-arm64
+      - run:  echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build apk --release --target-platform android-arm64
         name: Build Envoy
         env:
           KEY_JKS: ${{ secrets.KEY_JKS }}
