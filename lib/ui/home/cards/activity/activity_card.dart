@@ -85,7 +85,7 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
 
     // pull your two lists synchronously
     final nonTxList = ref.watch(nonTxNotificationStreamProvider);
-    final txList = ref.watch(allTxProvider);
+    final txList = ref.watch(filteredAllTransactionsProvider);
 
     // wrap the combination in a Future so that FutureBuilder can show a loader
     final futureNotifications = Future<List<EnvoyNotification>>.value(
