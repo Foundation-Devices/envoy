@@ -196,8 +196,7 @@
             export PATH=$(echo $PATH | tr ':' '\n' | grep -v ".cargo/bin" | tr '\n' ':')
 
             # darwin xcode
-            unset DEVELOPER_DIR
-            unset SDKROOT
+            ${lib.optionalString pkgs.stdenv.isDarwin "unset DEVELOPER_DIR && unset SDKROOT"}
             ${lib.optionalString pkgs.stdenv.isDarwin "export DEVELOPER_DIR=\"$(xcode-select -p)\""}
 
             # Android SDK and NDK configuration

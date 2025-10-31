@@ -30,8 +30,29 @@ jobs:
       - run: mkdir -p ~/.cargo/registry ~/.cargo/git
         name: Make sure cache directories exist
 
+      - run: nix develop --command reuse lint
+        name: Check license headers
+
+      - run: nix develop --command dart format --output=none --set-exit-if-changed .
+        name: Check Dart formatting
+
+      - run: nix develop --command cargo fmt --all --check
+        name: Check Rust formatting
+
+      - run: nix develop --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
+        name: Run Clippy
+
+      - run: nix develop --command cargo test
+        name: Run Rust tests
+
+      - run: nix develop --command flutter analyze
+        name: Analyze Dart project source
+
       - run: nix develop --command ./scripts/build_ffi_android.sh
         name: Build legacy FFI libs
+
+      - run: nix develop --command flutter test
+        name: Run Dart tests
 
       - run:  echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build apk --release --target-platform android-arm64
         name: Build Envoy
