@@ -11,7 +11,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 void main() {
   setUpAll(() async => await RustLib.init(
       externalLibrary: ExternalLibrary.open(
-          'target/release/librust_lib_backup.${Platform.isMacOS ? "dylib" : "so"}')));
+          'target/debug/librust_lib_backup.${Platform.isMacOS ? "dylib" : "so"}')));
 
   test('Test offline restore wrong file', () async {
     // Create bogus file
