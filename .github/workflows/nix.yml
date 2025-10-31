@@ -14,21 +14,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/cache@v4
-        id: cache-cargo
-        with:
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ github.workflow }}-cache-${{ hashFiles('rust-toolchain.toml') }}-${{ hashFiles('Cargo.lock') }}
-          restore-keys: |
-            ${{ github.workflow }}-cache-${{ hashFiles('rust-toolchain.toml') }}
-        name: Cache cargo registry and target
+#      - uses: actions/cache@v4
+#        id: cache-cargo
+#        with:
+#          path: |
+#            ~/.cargo/registry/index/
+#            ~/.cargo/registry/cache/
+#            ~/.cargo/git/db/
+#            target/
+#          key: ${{ github.workflow }}-cache-${{ hashFiles('rust-toolchain.toml') }}-${{ hashFiles('Cargo.lock') }}
+#          restore-keys: |
+#            ${{ github.workflow }}-cache-${{ hashFiles('rust-toolchain.toml') }}
+#        name: Cache cargo registry and target
 
-      - run: mkdir -p ~/.cargo/registry ~/.cargo/git
-        name: Make sure cache directories exist
+#      - run: mkdir -p ~/.cargo/registry ~/.cargo/git
+#        name: Make sure cache directories exist
 
       - run: nix develop --command reuse lint
         name: Check license headers
