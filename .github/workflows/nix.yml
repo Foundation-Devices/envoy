@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: 2024 Foundation Devices, Inc. <hello@foundation.xyz>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Envoy APK (nix)
+on:
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+env:
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+jobs:
+  nix-build:
+    runs-on: [ self-hosted, Linux, X64, nix ]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v4
+        id: cache-cargo
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ github.workflow }}-cache-${{ hashFiles('rust-toolchain.toml') }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ github.workflow }}-cache-${{ hashFiles('rust-toolchain.toml') }}
+        name: Cache cargo registry and target
+
+      - run: mkdir -p ~/.cargo/registry ~/.cargo/git
+        name: Make sure cache directories exist
+
+      - run: nix develop --command ./scripts/build_ffi_android.sh
+        name: Build legacy FFI libs
+
+      - run:  echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command cargo flutter build --release --target-platform android-arm64
+        name: Build Envoy
+        env:
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - run: git diff -I 'rustflags = ' --exit-code
+        name: Check if any file (e.g. Cargo.lock) is changed during build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
