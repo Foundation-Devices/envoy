@@ -7,20 +7,20 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    rust-overlay.url = "github:oxalica/rust-overlay";
+    fenix.url = "github:nix-community/fenix";
   };
 
   outputs = {
     nixpkgs,
     flake-utils,
-    rust-overlay,
+    fenix,
     ...
   }:
     flake-utils.lib.eachDefaultSystem (
       system: let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [(import rust-overlay)];
+          overlays = [fenix.overlays.default];
           config = {
             allowUnfree = true;
             android_sdk.accept_license = true;
@@ -59,7 +59,10 @@
             (xcodeenv.composeXcodeWrapper {versions = ["16.0"];})
           ];
 
-        rustToolchain = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+        rustToolchain = pkgs.fenix.fromToolchainFile {
+          file = ./rust-toolchain.toml;
+          sha256 = "sha256-SJwZ8g0zF2WrKDVmHrVG3pD2RGoQeo24MEXnNx5FyuI=";
+        };
 
         buildInputs = with pkgs;
           [
@@ -188,6 +191,9 @@
             # Flutter setup
             export FLUTTER_ROOT="${pkgs.flutter}"
             export PATH="$FLUTTER_ROOT/bin:$PATH"
+            
+            # Remove rustup from PATH to use Nix Rust
+            export PATH=$(echo $PATH | tr ':' '\n' | grep -v ".cargo/bin" | tr '\n' ':')
 
             # darwin xcode
             unset DEVELOPER_DIR
