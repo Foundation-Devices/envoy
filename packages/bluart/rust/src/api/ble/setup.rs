@@ -23,9 +23,9 @@ pub extern "C" fn JNI_OnLoad(vm: jni::JavaVM, res: *const std::os::raw::c_void) 
 #[cfg(target_os = "ios")]
 mod ios;
 
+use log::info;
 use std::sync::OnceLock;
 use tokio::runtime::Runtime;
-use log::info;
 
 pub static RUNTIME: OnceLock<Runtime> = OnceLock::new();
 // use super::Error;
