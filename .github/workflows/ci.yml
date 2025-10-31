@@ -10,7 +10,7 @@ env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 jobs:
   nix-check-and-build:
-    runs-on: [ self-hosted, Linux, X64, nix ]
+    runs-on: [ self-hosted, Linux, X64 ]
     steps:
       - uses: actions/checkout@v3
 
