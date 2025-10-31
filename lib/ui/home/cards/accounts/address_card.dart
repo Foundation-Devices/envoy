@@ -6,20 +6,22 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
+import 'package:envoy/ui/components/envoy_bar.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
-import 'package:envoy/ui/home/cards/envoy_text_button.dart';
+import 'package:envoy/ui/home/cards/buy_bitcoin_account_selection.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -56,31 +58,31 @@ class _AddressCardState extends ConsumerState<AddressCard> {
       padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
       child:
           Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Padding(
+          padding: const EdgeInsets.only(
+            left: EnvoySpacing.medium2,
+            right: EnvoySpacing.medium2,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: QrTab(
+                    title: widget.account.name,
+                    subtitle: S().manage_account_address_card_subheading,
+                    account: widget.account,
+                    qr: EnvoyQR(
+                      data: address,
+                    )),
+              ),
+            ],
+          ),
+        ),
         Expanded(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: EnvoySpacing.medium2,
-                  right: EnvoySpacing.medium2,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: QrTab(
-                          title: widget.account.name,
-                          subtitle: S().manage_account_address_card_subheading,
-                          account: widget.account,
-                          qr: EnvoyQR(
-                            data: address,
-                          )),
-                    ),
-                  ],
-                ),
-              ),
               Padding(
                 padding: EdgeInsets.only(
                   top: context.isSmallScreen
@@ -97,48 +99,71 @@ class _AddressCardState extends ConsumerState<AddressCard> {
             ],
           ),
         ),
-        Container(
-          margin: const EdgeInsets.only(
-            left: EnvoySpacing.medium2,
-            right: EnvoySpacing.medium2,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(
-                left: EnvoySpacing.large2,
-                right: EnvoySpacing.large2,
-                bottom: EnvoySpacing.large1),
+
+        // TODO: add other buttons/link texts !!!
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              if (mounted) {
+                showEnvoyDialog(
+                  context: context,
+                  blurColor: Colors.black,
+                  useRootNavigator: true,
+                  linearGradient: true,
+                  dialog: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: VerifyAddressDialog(
+                      address: address,
+                      accountName: account.name,
+                    ),
+                  ),
+                );
+              }
+            },
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                IconButton(
-                    onPressed: () {
-                      _copyAddressToClipboard(context, address);
-                    },
-                    icon: const EnvoyIcon(
-                      EnvoyIcons.copy,
-                      color: EnvoyColors.accentPrimary,
-                    )),
-                EnvoyTextButton(
-                  onTap: () {
-                    GoRouter.of(context).pop();
-                  },
-                  label: S().component_ok,
+                EnvoyIcon(
+                  EnvoyIcons.qr_scan,
+                  color: EnvoyColors.accentPrimary,
                 ),
-                IconButton(
-                    onPressed: () {
-                      SharePlus.instance.share(ShareParams(
-                        text: "bitcoin:$address",
-                      ));
-                    },
-                    icon: const EnvoyIcon(
-                      EnvoyIcons.externalLink,
-                      color: EnvoyColors.accentPrimary,
-                    )),
+                const SizedBox(width: EnvoySpacing.small),
+                Text(
+                  S().buy_bitcoin_accountSelection_verify,
+                  textAlign: TextAlign.center,
+                  style: EnvoyTypography.button.copyWith(
+                    color: EnvoyColors.accentPrimary,
+                  ),
+                ),
               ],
             ),
           ),
         ),
+        EnvoyBar(
+          items: [
+            EnvoyBarItem(
+              icon: EnvoyIcons.envelope,
+              text: S().receive_qr_signMessage,
+              onTap: () {
+                // TODO: add "Sign Message" code
+              },
+            ),
+            EnvoyBarItem(
+              icon: EnvoyIcons.copy,
+              text: S().receive_qr_copy,
+              onTap: () => _copyAddressToClipboard(context, address),
+            ),
+            EnvoyBarItem(
+              icon: EnvoyIcons.externalLink,
+              text: S().receive_qr_share,
+              onTap: () => SharePlus.instance.share(
+                ShareParams(text: "bitcoin:$address"),
+              ),
+            ),
+          ],
+        )
       ]),
     );
   }
