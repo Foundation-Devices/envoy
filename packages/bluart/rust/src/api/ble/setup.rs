@@ -25,6 +25,7 @@ mod ios;
 
 use std::sync::OnceLock;
 use tokio::runtime::Runtime;
+use log::info;
 
 pub static RUNTIME: OnceLock<Runtime> = OnceLock::new();
 // use super::Error;
