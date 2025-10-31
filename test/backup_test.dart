@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+// ignore_for_file: depend_on_referenced_packages
 import 'dart:io';
 
 import 'package:backup/backup.dart';

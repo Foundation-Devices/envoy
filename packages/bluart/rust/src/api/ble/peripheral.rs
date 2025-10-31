@@ -8,11 +8,10 @@ use btleplug::api::{Characteristic, ValueNotification, WriteType};
 use btleplug::{api::Peripheral as _, platform::PeripheralId};
 use futures::Stream;
 use log::{debug, info};
-use std::future::Future;
 use std::pin::Pin;
 use std::time::Duration;
 use tokio::time;
-use tokio::time::{Instant, Timeout};
+use tokio::time::Instant;
 use uuid::Uuid;
 
 pub const WRITE_CHARACTERISTIC_UUID: Uuid = Uuid::from_u128(0x6E400002_B5A3_F393_E0A9_E50E24DCCA9E);
