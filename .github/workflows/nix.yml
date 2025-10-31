@@ -33,6 +33,9 @@ jobs:
       - run: nix develop --command reuse lint
         name: Check license headers
 
+      - run: nix develop --command flutter pub get
+        name: Get Flutter dependencies
+
       - run: nix develop --command dart format --output=none --set-exit-if-changed .
         name: Check Dart formatting
 
