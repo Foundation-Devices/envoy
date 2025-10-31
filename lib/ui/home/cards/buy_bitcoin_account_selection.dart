@@ -8,6 +8,7 @@ import 'package:envoy/ui/components/account_selector.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_loader.dart';
+import 'package:envoy/ui/home/cards/purchase_completed.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -24,7 +25,7 @@ import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:envoy/business/stripe.dart';
+import 'package:envoy/ui/shield.dart';
 import 'accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
 
@@ -238,17 +239,19 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                                   isRampOpen = true;
                                 });
                                 Navigator.pop(context);
-                                // TODO: add some loading circle while waiting for launchOnrampSession
-                                await launchOnrampSession(
-                                  context,
-                                  address!,
-                                  selectedAccount: selectedAccount!,
-                                  onRampOpenChanged: (isOpen) {
-                                    setState(() {
-                                      isRampOpen = isOpen;
-                                    });
-                                  },
-                                );
+
+                                if (context.mounted) {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .push(
+                                    MaterialPageRoute(builder: (context) {
+                                      return MediaQuery.removePadding(
+                                          context: context,
+                                          child: fullScreenShield(
+                                              PurchaseComplete(
+                                                  selectedAccount!, address!)));
+                                    }),
+                                  );
+                                }
                               },
                               icon: EnvoyIcons.info,
                               checkBoxText: S().component_dontShowAgain,
@@ -264,19 +267,17 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                               });
                         } else {
                           if (context.mounted) {
-                            // TODO: add some loading circle while waiting for launchOnrampSession
                             setState(() {
                               isRampOpen = true;
                             });
-                            await launchOnrampSession(
-                              context,
-                              address!,
-                              selectedAccount: selectedAccount!,
-                              onRampOpenChanged: (isOpen) {
-                                setState(() {
-                                  isRampOpen = isOpen;
-                                });
-                              },
+
+                            Navigator.of(context, rootNavigator: true).push(
+                              MaterialPageRoute(builder: (context) {
+                                return MediaQuery.removePadding(
+                                    context: context,
+                                    child: fullScreenShield(PurchaseComplete(
+                                        selectedAccount!, address!)));
+                              }),
                             );
                           }
                         }

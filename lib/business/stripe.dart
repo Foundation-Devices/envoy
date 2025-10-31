@@ -11,7 +11,10 @@ import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'dart:async';
+import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/generated/l10n.dart';
 
+// TODO: Check do we need this class
 class StripeSessionMonitor {
   static final StripeSessionMonitor _instance =
       StripeSessionMonitor._internal();
@@ -194,51 +197,6 @@ Future<OnrampSessionInfo?> createOnrampSession(
   }
 }
 
-Future<void> launchOnrampSession(
-  BuildContext context,
-  String address, {
-  required EnvoyAccount selectedAccount,
-  required Function(bool) onRampOpenChanged,
-}) async {
-  final session = await createOnrampSession(address, selectedAccount.id);
-
-  if (session == null) {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to create Onramp session')),
-      );
-    }
-    return;
-  }
-
-  if (session.redirectUrl != null && session.redirectUrl!.isNotEmpty) {
-    final uri = Uri.parse(session.redirectUrl!);
-
-    if (await canLaunchUrl(uri)) {
-      if (context.mounted) {
-        onRampOpenChanged(true);
-      }
-
-      await launchUrl(
-        uri,
-        mode: LaunchMode.inAppWebView,
-      );
-    } else {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not launch ${session.redirectUrl}')),
-        );
-      }
-    }
-  } else {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No redirect URL provided for session')),
-      );
-    }
-  }
-}
-
 Future<void> checkAllOnrampSessionStatuses() async {
   // Retrieve all stored sessions
   final sessions = await EnvoyStorage().getAllOnrampSessions();
@@ -319,7 +277,7 @@ Future<void> checkAllOnrampSessionStatuses() async {
           case 'fulfillment_processing':
             if (destinationAmount != null) {
               int amountInSats = (destinationAmount * 100000000).toInt();
-              EnvoyStorage().addPendingTx(
+              await EnvoyStorage().addPendingTx(
                 session.id,
                 session.accountId,
                 DateTime.now(),
@@ -327,27 +285,32 @@ Future<void> checkAllOnrampSessionStatuses() async {
                 amountInSats,
                 0,
                 walletAddress ?? 'unknown',
+                note: S().stripe_note,
+                stripeId: session.id,
               );
             }
             kPrint('Session $sessionId is being processed.');
             break;
 
           case 'fulfillment_complete':
-            // TODO: remove this(just for test)
-            int amountInSats = (destinationAmount! * 100000000).toInt();
-            kPrint("amount in sats: $amountInSats");
-            EnvoyStorage().addPendingTx(
-              session.id,
-              session.accountId,
-              DateTime.now(),
-              TransactionType.stripe,
-              amountInSats,
-              0,
-              walletAddress ?? 'unknown',
-              note: "Stripe Purchase",
-              // TODO: loclaazy
-              stripeId: session.id,
-            );
+            EnvoyTransaction? pendingTx =
+                await EnvoyStorage().getPendingTx(session.id);
+            if (pendingTx == null) {
+              // TODO: check is this here necessary
+              int amountInSats = (destinationAmount! * 100000000).toInt();
+              await EnvoyStorage().addPendingTx(
+                session.id,
+                session.accountId,
+                DateTime.now(),
+                TransactionType.stripe,
+                amountInSats,
+                0,
+                walletAddress ?? 'unknown',
+                note: S().stripe_note,
+                stripeId: session.id,
+              );
+            }
+
             break;
 
           default:
@@ -366,6 +329,7 @@ Future<void> checkAllOnrampSessionStatuses() async {
 
           if (code == 'resource_missing') {
             await EnvoyStorage().deleteOnrampSession(sessionId);
+            EnvoyStorage().deletePendingTx(sessionId);
             kPrint('Removed missing session $sessionId from local storage.');
           }
         } else {
@@ -376,5 +340,141 @@ Future<void> checkAllOnrampSessionStatuses() async {
     } catch (e) {
       kPrint('Error checking Onramp session $sessionId: $e');
     }
+  }
+}
+
+Future<String?> waitForOnrampSessionCompletion(String sessionId) async {
+  const pollInterval = Duration(seconds: 5);
+  const timeout = Duration(minutes: 5);
+  final endTime = DateTime.now().add(timeout);
+
+  while (DateTime.now().isBefore(endTime)) {
+    try {
+      final url = 'https://api.stripe.com/v1/crypto/onramp_sessions/$sessionId';
+      final response = await HttpTor().get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $stripeSecretKey',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+
+      kPrint("Responseeee !!!!!!!!!!!!!!!!11111");
+      kPrint(response.statusCode);
+
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        final status = json['status'] as String?;
+        final details = json['transaction_details'] as Map<String, dynamic>?;
+
+        String? transactionId;
+        double? destinationAmount;
+        double? networkFee;
+        double? transactionFee;
+        String? walletAddress;
+        String? sourceCurrency;
+
+        if (details != null) {
+          transactionId = details['transaction_id'];
+          destinationAmount =
+              double.tryParse(details['destination_amount'] ?? '');
+          walletAddress = details['wallet_address'] as String?;
+          sourceCurrency = details['source_currency'] as String?;
+
+          if (details['fees'] != null) {
+            final fees = details['fees'] as Map;
+            networkFee = double.tryParse(fees['network_fee_amount'] ?? '');
+            transactionFee =
+                double.tryParse(fees['transaction_fee_amount'] ?? '');
+          }
+        }
+
+        // Update local storage with session info
+        await EnvoyStorage().updateOnrampSession(
+          sessionId,
+          status: status,
+          transactionId: transactionId,
+          destinationAmount: destinationAmount,
+          networkFee: networkFee,
+          transactionFee: transactionFee,
+          walletAddress: walletAddress,
+          sourceCurrency: sourceCurrency,
+        );
+
+        if (status == 'fulfillment_processing' ||
+            status == 'fulfillment_complete') {
+          return 'success';
+        } else if (status == 'rejected') {
+          kPrint("oh something here");
+          return 'failed';
+        }
+      } else {
+        await EnvoyStorage().deleteOnrampSession(sessionId);
+        await EnvoyStorage().deletePendingTx(sessionId);
+        return 'failed';
+      }
+    } catch (e) {
+      kPrint('Error checking Onramp session $sessionId: $e');
+      //return 'failed';
+    }
+
+    await Future.delayed(pollInterval);
+  }
+
+  return 'timeout';
+}
+
+Future<bool> launchOnrampSession(
+  BuildContext context,
+  String address, {
+  required EnvoyAccount selectedAccount,
+}) async {
+  final session = await createOnrampSession(address, selectedAccount.id);
+
+  if (session == null ||
+      session.redirectUrl == null ||
+      session.redirectUrl!.isEmpty) {
+    kPrint('❌ Failed to create Onramp session');
+    return false;
+  }
+
+  final uri = Uri.parse(session.redirectUrl!);
+
+  // Launch external app
+  final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  if (!launched) {
+    kPrint('❌ Could not launch ${session.redirectUrl}');
+    return false;
+  }
+
+  // Poll for session status (blocks until success/fail/timeout)
+  final result = await waitForOnrampSessionCompletion(session.id);
+
+  final updatedSession =
+      await EnvoyStorage().getStoredOnrampSession(session.id);
+
+  if (result == 'success' && updatedSession != null) {
+    kPrint('✅ Onramp session ${updatedSession.id} succeeded.');
+    EnvoyTransaction? pendingTx =
+        await EnvoyStorage().getPendingTx(updatedSession.id);
+    if (pendingTx == null && updatedSession.destinationAmount != null) {
+      int amountInSats =
+          (updatedSession.destinationAmount! * 100000000).toInt();
+      await EnvoyStorage().addPendingTx(
+        updatedSession.id,
+        updatedSession.accountId,
+        DateTime.now(),
+        TransactionType.stripe,
+        amountInSats,
+        0,
+        address,
+        note: S().stripe_note,
+        stripeId: session.id,
+      );
+    }
+    return true;
+  } else {
+    kPrint('❌ Onramp session ${session.id} failed with status: $result');
+    return false;
   }
 }

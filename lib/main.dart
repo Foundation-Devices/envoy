@@ -43,7 +43,6 @@ import 'package:tor/tor.dart';
 import 'business/feed_manager.dart';
 import 'business/fees.dart';
 import 'business/scv_server.dart';
-import 'business/stripe.dart';
 import 'generated/l10n.dart';
 
 Future<void> main() async {
@@ -133,7 +132,6 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   FeedManager.init();
   MapData.init();
   ConnectivityManager.init();
-  StripeSessionMonitor().init();
 }
 
 class EnvoyApp extends StatefulWidget {

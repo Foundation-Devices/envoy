@@ -252,7 +252,7 @@ class _TransactionsDetailsWidgetState
       (value) => value?.note ?? tx.note ?? "",
     ));
 
-    if (!tx.isConfirmed && (tx is RampTransaction || tx is StripeTransaction)) {
+    if (!tx.isConfirmed && (tx is RampTransaction)) {
       final noteFromStorage = ref.watch(txNoteFromStorageProvider(tx.txId));
 
       note = noteFromStorage.maybeWhen(
@@ -589,7 +589,7 @@ class _TransactionsDetailsWidgetState
                     ),
                   if (tx is StripeTransaction && tx.stripeId != null)
                     EnvoyInfoCardListItem(
-                      title: "Stripe ID", // todo: localazy,
+                      title: S().coindetails_overlay_stripeID,
                       centerSingleLineTitle: true,
                       icon: const EnvoyIcon(
                         EnvoyIcons.stripe,
@@ -611,7 +611,7 @@ class _TransactionsDetailsWidgetState
                     ),
                   if (tx is StripeTransaction)
                     EnvoyInfoCardListItem(
-                      title: "Stripe Fee", // TODO: localazy
+                      title: S().coindetails_overlay_stripeFee,
                       centerSingleLineTitle: true,
                       icon: const EnvoyIcon(
                         EnvoyIcons.stripe,
@@ -632,7 +632,7 @@ class _TransactionsDetailsWidgetState
                                           AmountWidgetStyle.normal),
                                 if (tx.stripeFee == null)
                                   Text(
-                                    "${(onRampSessionInfo?.networkFee ?? 0.0) + (onRampSessionInfo?.transactionFee ?? 0)} ${onRampSessionInfo?.sourceCurrency}",
+                                    "${((onRampSessionInfo?.networkFee ?? 0.0) + (onRampSessionInfo?.transactionFee ?? 0)).toStringAsFixed(2)} ${onRampSessionInfo?.sourceCurrency}",
                                     style: EnvoyTypography.body.copyWith(
                                       color: EnvoyColors.textPrimary,
                                     ),

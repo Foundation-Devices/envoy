@@ -429,7 +429,8 @@ class EnvoyStorage {
               stripeId: e['stripeId'] as String?,
               vsize: BigInt.zero,
               feeRate: BigInt.zero,
-              stripeFee: e['stripeFee'] as int?);
+              stripeFee: e['stripeFee'] as int?,
+              note: e['note'] as String?);
         }
         if (type == wallet.TransactionType.btcPay) {
           return BtcPayTransaction(
@@ -556,6 +557,15 @@ class EnvoyStorage {
         .map((records) {
       return transformPendingTxRecords(records);
     });
+  }
+
+  Future<EnvoyTransaction?> getPendingTx(String key) async {
+    final record = await pendingTxStore.record(key).getSnapshot(_db);
+    if (record == null) {
+      return null;
+    }
+
+    return transformPendingTxRecords([record]).first;
   }
 
   Future<bool> deletePendingTx(String key) async {

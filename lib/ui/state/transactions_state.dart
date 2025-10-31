@@ -441,6 +441,7 @@ Future prunePendingTransactions(
       );
       EnvoyStorage().deleteTxNote(pendingTx.address);
       EnvoyStorage().deletePendingTx(pendingTx.txId);
+      EnvoyStorage().deleteOnrampSession(pendingTx.txId);
     });
   }
 
