@@ -52,7 +52,10 @@ jobs:
         name: Analyze Dart project source
 
       - run: nix develop --command ./scripts/build_ffi_android.sh
-        name: Build legacy FFI libs
+        name: Build legacy FFI libs for Android
+
+      - run: nix develop --command cargo build
+        name: Build Rust libs
 
       - run: nix develop --command flutter test
         name: Run Dart tests
