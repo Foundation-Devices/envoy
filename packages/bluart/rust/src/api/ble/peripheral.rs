@@ -11,7 +11,7 @@ use log::{debug, info};
 use std::pin::Pin;
 use std::time::Duration;
 use tokio::time;
-use tokio::time::Instant;
+use tokio::time::{Instant};
 use uuid::Uuid;
 
 pub const WRITE_CHARACTERISTIC_UUID: Uuid = Uuid::from_u128(0x6E400002_B5A3_F393_E0A9_E50E24DCCA9E);
@@ -142,7 +142,7 @@ impl Device {
         Ok(duration.as_micros())
     }
 
-    fn get_uart_write_characteristic(&self) -> Characteristic {
+    pub(crate) fn get_uart_write_characteristic(&self) -> Characteristic {
         let characteristics = self.peripheral.characteristics();
         let uart_characteristic = characteristics
             .iter()

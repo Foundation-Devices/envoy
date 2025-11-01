@@ -16,12 +16,11 @@ fi
 echo "using flutter $FLUTTER"
 # Define packages that need FRB generation
 PACKAGES=(
-    "packages/foundation_api"
-    "packages/ngwallet"
-    "packages/backup"
+#    "packages/foundation_api"
+#    "packages/ngwallet"
     "packages/bluart"
-    "packages/shards"
-    "packages/http_tor"
+#    "packages/shards"
+#    "packages/http_tor"
 )
 
 for PACKAGE_DIR in "${PACKAGES[@]}"; do

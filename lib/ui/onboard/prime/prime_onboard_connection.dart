@@ -16,6 +16,7 @@ import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/components/button.dart';
@@ -28,7 +29,7 @@ class PrimeOnboardParing extends ConsumerStatefulWidget {
   @override
   ConsumerState<PrimeOnboardParing> createState() => _PrimeOnboardParingState();
 }
-
+XidDocument? primeXid;
 class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   bool canPop = false;
 
@@ -41,9 +42,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       try {
-        // await Permission.bluetooth.request();
-        // await Permission.bluetoothConnect.request();
-        _connectBLE();
+       _connectBLE();
       } catch (e) {
         if (mounted && context.mounted) {
           //TODO: fix this dialog
@@ -82,9 +81,25 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
       String id = LocalStorage().prefs.getString(primeSerialPref) ?? "";
       device = BleDevice(id: id, name: "Passport Prime", connected: false);
       kPrint("Connecting to Prime with ID: $id");
+
+      if(primeXid != null){
+        try {
+          final pairResult = await BluetoothManager().pair(primeXid!);
+        } catch (e,stack) {
+          debugPrintStack(
+            stackTrace: stack
+          );
+          print("Error pairing with Prime: $e");
+          setState(() {
+            canPop = true;
+          });
+          await bleStepNotifier.updateStep(
+              "Unable to pair", EnvoyStepState.ERROR);
+          return;
+        }
+      }
       await bleStepNotifier.updateStep(
           "Connecting to Prime", EnvoyStepState.LOADING);
-      //  await BluetoothManager().connect(id: id);
       ref.read(primeBleIdProvider.notifier).state = id;
       setState(() {
         device = BleDevice(id: id, name: "Passport Prime", connected: true);

@@ -1294,11 +1294,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "1bf7ecb41e62d490578ccfd0b5d59d39cba05725"
-      resolved-ref: "1bf7ecb41e62d490578ccfd0b5d59d39cba05725"
-      url: "https://github.com/foundation-devices/qr_code_scanner.git"
+      ref: d313918fee125f49221868fe7930d0d5dc7f3235
+      resolved-ref: d313918fee125f49221868fe7930d0d5dc7f3235
+      url: "https://github.com/Foundation-Devices/qr_code_scanner.git"
     source: git
-    version: "2.0.12"
+    version: "2.0.14"
   qr_flutter:
     dependency: "direct main"
     description:
@@ -1319,18 +1319,18 @@ packages:
     dependency: "direct main"
     description:
       name: rive
-      sha256: "78d4d7014a30fd69b1c0802d77fbeb621ecdf043eec3a412ee54d6a5945aa92a"
+      sha256: "20d91e17b1bae5f4030d252336227f990782c942cb44e41685a13ae5f885e641"
       url: "https://pub.dev"
     source: hosted
-    version: "0.14.0-dev.8"
+    version: "0.14.0-dev.13"
   rive_native:
     dependency: transitive
     description:
       name: rive_native
-      sha256: b63bee17e27616b49d113998a982866dab9449f0726f7c78fe4028e361c3c6b0
+      sha256: "1b65b473939b008feb30c1f43785996063cefaf4ceddfa1a2ffe6051201e8d3a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.11"
+    version: "0.0.16"
   riverpod:
     dependency: transitive
     description:

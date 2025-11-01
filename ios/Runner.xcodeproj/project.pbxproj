@@ -10,6 +10,7 @@
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		4BAFFFE02D0994DD00DAA96C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78ABDD292C46ED4500677063 /* CoreBluetooth.framework */; };
+		69F1741D2EB4C0F00017F73A /* BluetoothChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F1741C2EB4C0E30017F73A /* BluetoothChannel.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		787400C02955C8010097D2C3 /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BC2955C8010097D2C3 /* libur_ffi.a */; };
 		78CFC742291BC27600A3AFDC /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760C27F831AC005559E4 /* libur_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -27,6 +28,7 @@
 		3DA4EC771EE965AE36EF94E9 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		4BAFFFDA2D098D6900DAA96C /* bluart.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = bluart.framework; path = "../../../../../../../../envoy-dev/ios/build/Release-iphoneos/bluart.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		53ACD787AE4F9E7EDE3068CD /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
+		69F1741C2EB4C0E30017F73A /* BluetoothChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothChannel.swift; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		787400BA2955C8010097D2C3 /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet_ffi.a; path = "../target/aarch64-apple-ios-sim/debug/libwallet_ffi.a"; sourceTree = "<group>"; };
@@ -81,6 +83,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		69F1741B2EB4C0DB0017F73A /* Ble */ = {
+			isa = PBXGroup;
+			children = (
+				69F1741C2EB4C0E30017F73A /* BluetoothChannel.swift */,
+			);
+			path = Ble;
+			sourceTree = "<group>";
+		};
 		908B40D4A37F60A75D094BD8 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -124,6 +134,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				69F1741B2EB4C0DB0017F73A /* Ble */,
 				788D58E02795A8DC00CD47BA /* Runner.entitlements */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
@@ -234,9 +245,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -288,9 +303,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -305,6 +324,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				69F1741D2EB4C0F00017F73A /* BluetoothChannel.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -397,7 +417,7 @@
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = Runner/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -544,7 +564,7 @@
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = Runner/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -599,7 +619,7 @@
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphoneos*]" = "";
 				INFOPLIST_FILE = Runner/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

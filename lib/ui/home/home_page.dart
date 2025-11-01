@@ -18,6 +18,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/components/bottom_navigation.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
@@ -120,7 +121,7 @@ class HomePageState extends ConsumerState<HomePage>
   Timer? _backupWarningTimer;
   bool _backupWarningDisplayedMoreThan2minAgo = true;
 
-  void _resetTorWarningTimer() {
+  void _resetTorWarningTimer() async {
     _torWarningTimer = Timer.periodic(const Duration(minutes: 5), (_) async {
       _torWarningDisplayedMoreThan5minAgo = true;
     });

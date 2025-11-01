@@ -20,6 +20,7 @@ import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
+import 'package:envoy/ui/onboard/prime/prime_onboard_connection.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -710,13 +711,11 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                   Navigator.pop(context);
                 }
 
+                primeXid = payload;
                 await Future.delayed(const Duration(milliseconds: 200));
-
                 if (!context.mounted) return;
                 context.goNamed(ONBOARD_PRIME_PAIR);
-
-                kPrint("XID payload: $payload");
-                await pairWithPrime(payload);
+                await Future.delayed(const Duration(milliseconds: 300));
               },
             ),
           );
