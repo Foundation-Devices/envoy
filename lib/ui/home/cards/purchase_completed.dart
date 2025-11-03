@@ -15,6 +15,7 @@ import 'package:envoy/business/stripe.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 class PurchaseComplete extends ConsumerStatefulWidget {
   const PurchaseComplete(this.account, this.address, {super.key});
@@ -31,6 +32,7 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
   rive.RiveWidgetController? _controller;
   bool _isInitialized = false;
   bool? _isPaymentSuccess;
+  String? sessionId;
 
   @override
   void initState() {
@@ -74,7 +76,7 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
   Future<void> _startPaymentFlow() async {
     if (!mounted) return;
 
-    final success = await launchOnrampSession(
+    final (success, session) = await launchOnrampSession(
       context,
       widget.address,
       selectedAccount: widget.account,
@@ -84,6 +86,7 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
 
     setState(() {
       _isPaymentSuccess = success;
+      sessionId = session?.id;
     });
 
     // Update Rive animation state based on result
@@ -167,9 +170,8 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
                     height: EnvoySpacing.medium3,
                   ),
                   if (_isPaymentSuccess == false)
-                    // TODO: add ID
                     Text(
-                      "${S().buy_bitcoin_purchaseError_purchaseID} xxx",
+                      "${S().buy_bitcoin_purchaseError_purchaseID} $sessionId",
                       style: EnvoyTypography.body
                           .copyWith(color: EnvoyColors.textTertiary),
                       textAlign: TextAlign.center,
@@ -199,6 +201,33 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
                               ROUTE_ACCOUNT_DETAIL,
                               extra: widget.account,
                             );
+                          }
+                          await Future.delayed(
+                              const Duration(milliseconds: 50));
+                        },
+                      );
+                    },
+                  ),
+                ),
+              // TODO: need Figma design for exit
+              if (_isPaymentSuccess == null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.medium1,
+                  ),
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      return EnvoyButton(
+                        S().component_cancel,
+                        backgroundColor: EnvoyColors.danger,
+                        borderRadius:
+                            BorderRadius.circular(EnvoySpacing.medium1),
+                        onTap: () async {
+                          await EnvoyStorage()
+                              .deleteOnrampSession(sessionId ?? "");
+                          await EnvoyStorage().deletePendingTx(sessionId ?? "");
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
                           }
                           await Future.delayed(
                               const Duration(milliseconds: 50));

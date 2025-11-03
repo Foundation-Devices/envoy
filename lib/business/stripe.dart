@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import 'package:envoy/business/keys_manager.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:http_tor/http_tor.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,7 +15,8 @@ import 'dart:async';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/generated/l10n.dart';
 
-// TODO: Check do we need this class
+const stripeApiUrl = 'https://api.stripe.com/v1/crypto/onramp_sessions';
+
 class StripeSessionMonitor {
   static final StripeSessionMonitor _instance =
       StripeSessionMonitor._internal();
@@ -25,7 +27,7 @@ class StripeSessionMonitor {
 
   Timer? _timer;
 
-  void init({Duration interval = const Duration(seconds: 10)}) {
+  void init({Duration interval = const Duration(minutes: 1)}) {
     if (_timer?.isActive ?? false) return;
 
     _checkAllSessions();
@@ -155,15 +157,13 @@ class OnrampSessionInfo {
 
 Future<OnrampSessionInfo?> createOnrampSession(
     String address, String accountId) async {
-  const url = 'https://api.stripe.com/v1/crypto/onramp_sessions';
-
   final body = 'wallet_addresses[bitcoin]=$address'
       '&destination_currency=btc'
       '&destination_network=bitcoin';
 
   try {
     final response = await HttpTor().post(
-      url,
+      stripeApiUrl,
       headers: {
         'Authorization': 'Bearer $stripeSecretKey',
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -198,19 +198,15 @@ Future<OnrampSessionInfo?> createOnrampSession(
 }
 
 Future<void> checkAllOnrampSessionStatuses() async {
-  // Retrieve all stored sessions
   final sessions = await EnvoyStorage().getAllOnrampSessions();
 
   if (sessions.isEmpty) {
-    kPrint('No Onramp sessions found.');
     return;
   }
 
-  kPrint('Checking status for ${sessions.length} Onramp sessions...');
-
   for (final session in sessions) {
     final sessionId = session.id;
-    final url = 'https://api.stripe.com/v1/crypto/onramp_sessions/$sessionId';
+    final url = '$stripeApiUrl/$sessionId';
 
     try {
       final response = await HttpTor().get(
@@ -267,6 +263,8 @@ Future<void> checkAllOnrampSessionStatuses() async {
             break;
 
           case 'rejected':
+            await EnvoyStorage().deleteOnrampSession(sessionId);
+            await EnvoyStorage().deletePendingTx(sessionId);
             kPrint('Session $sessionId was rejected.');
             break;
 
@@ -275,8 +273,10 @@ Future<void> checkAllOnrampSessionStatuses() async {
             break;
 
           case 'fulfillment_processing':
-            if (destinationAmount != null) {
-              int amountInSats = (destinationAmount * 100000000).toInt();
+            EnvoyTransaction? pendingTx =
+                await EnvoyStorage().getPendingTx(session.id);
+            if (pendingTx == null) {
+              int amountInSats = (destinationAmount! * 100000000).toInt();
               await EnvoyStorage().addPendingTx(
                 session.id,
                 session.accountId,
@@ -296,7 +296,6 @@ Future<void> checkAllOnrampSessionStatuses() async {
             EnvoyTransaction? pendingTx =
                 await EnvoyStorage().getPendingTx(session.id);
             if (pendingTx == null) {
-              // TODO: check is this here necessary
               int amountInSats = (destinationAmount! * 100000000).toInt();
               await EnvoyStorage().addPendingTx(
                 session.id,
@@ -327,11 +326,10 @@ Future<void> checkAllOnrampSessionStatuses() async {
 
           kPrint('❗ Stripe error for session $sessionId: [$code] $message');
 
-          if (code == 'resource_missing') {
-            await EnvoyStorage().deleteOnrampSession(sessionId);
-            EnvoyStorage().deletePendingTx(sessionId);
-            kPrint('Removed missing session $sessionId from local storage.');
-          }
+          await EnvoyStorage().deleteOnrampSession(sessionId);
+          await EnvoyStorage().deletePendingTx(sessionId);
+          EnvoyReport().log("Stripe",
+              'Stripe error for session $sessionId: [$code] $message');
         } else {
           kPrint(
               'Failed to check session $sessionId: ${response.statusCode} ${response.body}');
@@ -343,14 +341,14 @@ Future<void> checkAllOnrampSessionStatuses() async {
   }
 }
 
-Future<String?> waitForOnrampSessionCompletion(String sessionId) async {
+Future<bool> waitForOnrampSessionCompletion(String sessionId) async {
   const pollInterval = Duration(seconds: 5);
-  const timeout = Duration(minutes: 5);
+  const timeout = Duration(minutes: 10);
   final endTime = DateTime.now().add(timeout);
 
   while (DateTime.now().isBefore(endTime)) {
     try {
-      final url = 'https://api.stripe.com/v1/crypto/onramp_sessions/$sessionId';
+      final url = '$stripeApiUrl/$sessionId';
       final response = await HttpTor().get(
         url,
         headers: {
@@ -358,9 +356,6 @@ Future<String?> waitForOnrampSessionCompletion(String sessionId) async {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       );
-
-      kPrint("Responseeee !!!!!!!!!!!!!!!!11111");
-      kPrint(response.statusCode);
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
@@ -403,28 +398,26 @@ Future<String?> waitForOnrampSessionCompletion(String sessionId) async {
 
         if (status == 'fulfillment_processing' ||
             status == 'fulfillment_complete') {
-          return 'success';
+          return true;
         } else if (status == 'rejected') {
-          kPrint("oh something here");
-          return 'failed';
+          return false;
         }
       } else {
         await EnvoyStorage().deleteOnrampSession(sessionId);
         await EnvoyStorage().deletePendingTx(sessionId);
-        return 'failed';
+        return false;
       }
     } catch (e) {
       kPrint('Error checking Onramp session $sessionId: $e');
-      //return 'failed';
     }
 
     await Future.delayed(pollInterval);
   }
 
-  return 'timeout';
+  return false;
 }
 
-Future<bool> launchOnrampSession(
+Future<(bool, OnrampSessionInfo?)> launchOnrampSession(
   BuildContext context,
   String address, {
   required EnvoyAccount selectedAccount,
@@ -435,7 +428,7 @@ Future<bool> launchOnrampSession(
       session.redirectUrl == null ||
       session.redirectUrl!.isEmpty) {
     kPrint('❌ Failed to create Onramp session');
-    return false;
+    return (false, session);
   }
 
   final uri = Uri.parse(session.redirectUrl!);
@@ -444,16 +437,16 @@ Future<bool> launchOnrampSession(
   final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
   if (!launched) {
     kPrint('❌ Could not launch ${session.redirectUrl}');
-    return false;
+    return (false, session);
   }
 
   // Poll for session status (blocks until success/fail/timeout)
-  final result = await waitForOnrampSessionCompletion(session.id);
+  final success = await waitForOnrampSessionCompletion(session.id);
 
   final updatedSession =
       await EnvoyStorage().getStoredOnrampSession(session.id);
 
-  if (result == 'success' && updatedSession != null) {
+  if (success && updatedSession != null) {
     kPrint('✅ Onramp session ${updatedSession.id} succeeded.');
     EnvoyTransaction? pendingTx =
         await EnvoyStorage().getPendingTx(updatedSession.id);
@@ -472,9 +465,9 @@ Future<bool> launchOnrampSession(
         stripeId: session.id,
       );
     }
-    return true;
+    return (true, updatedSession);
   } else {
-    kPrint('❌ Onramp session ${session.id} failed with status: $result');
-    return false;
+    kPrint('❌ Onramp session ${session.id} failed.');
+    return (false, session);
   }
 }
