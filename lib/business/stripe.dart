@@ -7,13 +7,13 @@ import 'package:envoy/business/keys_manager.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:http_tor/http_tor.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'dart:async';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 const stripeApiUrl = 'https://api.stripe.com/v1/crypto/onramp_sessions';
 
@@ -431,10 +431,7 @@ Future<(bool, OnrampSessionInfo?)> launchOnrampSession(
     return (false, session);
   }
 
-  final uri = Uri.parse(session.redirectUrl!);
-
-  // Launch external app
-  final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  final launched = await launchUrlString(session.redirectUrl!);
   if (!launched) {
     kPrint('❌ Could not launch ${session.redirectUrl}');
     return (false, session);

@@ -33,6 +33,7 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
   bool _isInitialized = false;
   bool? _isPaymentSuccess;
   String? sessionId;
+  bool _launched = false;
 
   @override
   void initState() {
@@ -75,6 +76,12 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
 
   Future<void> _startPaymentFlow() async {
     if (!mounted) return;
+
+    Future.delayed(const Duration(seconds: 3), () {
+      setState(() {
+        _launched = true;
+      });
+    });
 
     final (success, session) = await launchOnrampSession(
       context,
@@ -183,7 +190,7 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
               if (_isPaymentSuccess != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium1,
+                    horizontal: EnvoySpacing.small,
                   ),
                   child: Consumer(
                     builder: (context, ref, child) {
@@ -209,33 +216,57 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
                     },
                   ),
                 ),
-              // TODO: need Figma design for exit
-              if (_isPaymentSuccess == null)
+
+              if (_isPaymentSuccess == null && _launched)
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium1,
-                  ),
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      return EnvoyButton(
-                        S().component_cancel,
-                        backgroundColor: EnvoyColors.danger,
-                        borderRadius:
-                            BorderRadius.circular(EnvoySpacing.medium1),
-                        onTap: () async {
-                          await EnvoyStorage()
-                              .deleteOnrampSession(sessionId ?? "");
-                          await EnvoyStorage().deletePendingTx(sessionId ?? "");
-                          if (context.mounted) {
-                            Navigator.of(context).pop();
-                          }
-                          await Future.delayed(
-                              const Duration(milliseconds: 50));
-                        },
-                      );
-                    },
-                  ),
-                ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.small,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        EnvoyButton(
+                          S().component_cancel,
+                          type: EnvoyButtonTypes.secondary,
+                          borderRadius:
+                              BorderRadius.circular(EnvoySpacing.medium1),
+                          onTap: () async {
+                            await EnvoyStorage()
+                                .deleteOnrampSession(sessionId ?? "");
+                            await EnvoyStorage()
+                                .deletePendingTx(sessionId ?? "");
+
+                            if (context.mounted) {
+                              final router = GoRouter.of(context);
+                              Navigator.of(context).pop();
+
+                              router.go(ROUTE_BUY_BITCOIN);
+                            }
+                            await Future.delayed(
+                                const Duration(milliseconds: 50));
+                          },
+                        ),
+                        SizedBox(
+                          height: EnvoySpacing.medium1,
+                        ),
+                        EnvoyButton(
+                          S().component_retry,
+                          borderRadius:
+                              BorderRadius.circular(EnvoySpacing.medium1),
+                          onTap: () async {
+                            await EnvoyStorage()
+                                .deleteOnrampSession(sessionId ?? "");
+                            await EnvoyStorage()
+                                .deletePendingTx(sessionId ?? "");
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                            }
+                            await Future.delayed(
+                                const Duration(milliseconds: 50));
+                          },
+                        ),
+                      ],
+                    )),
             ],
           ),
         ),
