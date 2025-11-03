@@ -76,6 +76,7 @@ class _TransactionsDetailsWidgetState
     extends ConsumerState<TransactionsDetailsWidget> {
   bool showTxIdExpanded = false;
   bool showAddressExpanded = false;
+  bool showStripeIdExpanded = false;
   bool showPaymentId = false;
   bool _checkingBoost = true;
   bool _checkingCancel = true;
@@ -395,6 +396,7 @@ class _TransactionsDetailsWidgetState
                           showAddressExpanded = !showAddressExpanded;
                           showTxIdExpanded = false;
                           showPaymentId = false;
+                          showStripeIdExpanded = false;
                         });
                       },
                       child: TweenAnimationBuilder(
@@ -436,6 +438,7 @@ class _TransactionsDetailsWidgetState
                             showTxIdExpanded = !showTxIdExpanded;
                             showAddressExpanded = false;
                             showPaymentId = false;
+                            showStripeIdExpanded = false;
                           });
                         }
                       },
@@ -522,6 +525,7 @@ class _TransactionsDetailsWidgetState
                               showPaymentId = !showPaymentId;
                               showTxIdExpanded = false;
                               showAddressExpanded = false;
+                              showStripeIdExpanded = false;
                             });
                           },
                           child: TweenAnimationBuilder(
@@ -601,11 +605,29 @@ class _TransactionsDetailsWidgetState
                         onLongPress: () {
                           copyTxId(context, tx.stripeId!, tx);
                         },
-                        child: Text(
-                          tx.stripeId!,
-                          style: idTextStyle,
-                          textAlign: TextAlign.end,
-                          overflow: TextOverflow.ellipsis,
+                        onTap: () {
+                          setState(() {
+                            showAddressExpanded = false;
+                            showTxIdExpanded = false;
+                            showPaymentId = false;
+                            showStripeIdExpanded = !showStripeIdExpanded;
+                          });
+                        },
+                        child: TweenAnimationBuilder(
+                          curve: EnvoyEasing.easeInOut,
+                          tween: Tween<double>(
+                              begin: 0, end: showStripeIdExpanded ? 1 : 0),
+                          duration: const Duration(milliseconds: 200),
+                          builder: (context, value, child) {
+                            return Text(
+                                truncateWithEllipsisInCenter(
+                                    tx.stripeId!,
+                                    lerpDouble(16, tx.stripeId!.length, value)!
+                                        .toInt()),
+                                style: idTextStyle,
+                                textAlign: TextAlign.end,
+                                maxLines: 4);
+                          },
                         ),
                       ),
                     ),
