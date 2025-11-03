@@ -14,7 +14,26 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Check if Nix is installed
+        id: check-nix
+        run: |
+          if [ -d "/nix/var/nix/profiles/default/bin" ]; then
+            echo "installed=true" >> $GITHUB_OUTPUT
+          else
+            echo "installed=false" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
+      - name: Setup Nix daemon
+        if: steps.check-nix.outputs.installed == 'true'
+        run: |
+          export PATH=/nix/var/nix/profiles/default/bin:$PATH
+          echo "PATH=/nix/var/nix/profiles/default/bin:$PATH" >> $GITHUB_ENV
+          nix --version
+          echo "Using existing Nix daemon"
+
       - name: Setup nix
+        if: steps.check-nix.outputs.installed == 'false'
         uses: DeterminateSystems/nix-installer-action@main
 
 #      - uses: actions/cache@v4
@@ -32,6 +51,14 @@ jobs:
 
 #      - run: mkdir -p ~/.cargo/registry ~/.cargo/git
 #        name: Make sure cache directories exist
+
+      - name: Debug - Check user and Nix daemon
+        run: |
+          whoami
+          id
+          systemctl status nix-daemon
+          ls -l /nix/var/nix/db/big-lock
+        shell: bash
 
       - run: nix develop --command reuse lint
         name: Check license headers
