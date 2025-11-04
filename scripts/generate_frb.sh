@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
 #
@@ -18,6 +18,7 @@ echo "using flutter $FLUTTER"
 PACKAGES=(
     "packages/foundation_api"
     "packages/ngwallet"
+    "packages/backup"
     "packages/bluart"
     "packages/shards"
     "packages/http_tor"

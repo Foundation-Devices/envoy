@@ -9,6 +9,7 @@ analyzer:
     - 'lib/generated*'
     - 'lib/business/*.freezed.*'
     - 'packages/ngwallet/**'
+    - 'packages/backup/**'
     - 'packages/shards/**'
     - 'packages/bluart/**'
     - 'packages/http_tor/**'

@@ -20,6 +20,7 @@ import 'package:rive/rive.dart' as rive;
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
+import 'package:envoy/ui/envoy_button.dart';
 
 class MagicSetupGenerate extends StatefulWidget {
   const MagicSetupGenerate({super.key});
@@ -268,31 +269,41 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      bottom: EnvoySpacing.medium3, top: EnvoySpacing.large2),
-                  child: Container(
-                    constraints:
-                        BoxConstraints.tight(const Size.fromHeight(184)),
-                    child: Image.asset(
-                      "assets/images/onboarding_info.png",
-                      height: 184,
-                    ),
-                  ),
-                ),
                 Expanded(
                   child: SingleChildScrollView(
-                      child: isAndroid
-                          ? _androidBackUPInfo(context)
-                          : _recoverStepsInfo(context)),
+                    child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: EnvoySpacing.medium3,
+                                top: EnvoySpacing.large2),
+                            child: Container(
+                              constraints: BoxConstraints.tight(
+                                  const Size.fromHeight(184)),
+                              child: Image.asset(
+                                "assets/images/onboarding_info.png",
+                                height: 184,
+                              ),
+                            ),
+                          ),
+                          isAndroid
+                              ? _androidBackUPInfo(context)
+                              : _recoverStepsInfo(context),
+                        ]),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
                       bottom: EnvoySpacing.medium2,
                       left: EnvoySpacing.xs,
                       right: EnvoySpacing.xs),
-                  child: OnboardingButton(
-                    label: S().component_continue,
+                  child: EnvoyButton(
+                    S().component_continue,
+                    type: EnvoyButtonTypes.primary,
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
                     onTap: () {
                       if (isAndroid && _androidBackupInfoPage == 0) {
                         setState(() {
@@ -324,16 +335,16 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
       padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(S().recovery_scenario_heading,
               textAlign: TextAlign.center, style: EnvoyTypography.heading),
-          const SizedBox(height: EnvoySpacing.medium2),
+          const SizedBox(height: EnvoySpacing.medium3),
           Text(
             S().recovery_scenario_subheading,
             textAlign: TextAlign.center,
             style:
-                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 13),
+                EnvoyTypography.body.copyWith(color: EnvoyColors.textSecondary),
           ),
           const SizedBox(height: EnvoySpacing.medium3),
           ListTile(
@@ -344,13 +355,12 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                   vertical: EnvoySpacing.xs, horizontal: EnvoySpacing.small),
               decoration: BoxDecoration(
                 color: EnvoyColors.accentPrimary,
-                borderRadius: BorderRadius.circular(EnvoySpacing.xs),
+                borderRadius: BorderRadius.circular(EnvoySpacing.small),
               ),
               child: Text(
                 "1",
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white,
-                    ),
+                style: EnvoyTypography.body
+                    .copyWith(color: EnvoyColors.textPrimaryInverse),
               ),
             ),
             title: Text(
@@ -358,10 +368,11 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                   ? S().recovery_scenario_Android_instruction1
                   : S().recovery_scenario_ios_instruction1,
               textAlign: TextAlign.start,
-              style:
-                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
+              style: EnvoyTypography.info
+                  .copyWith(color: EnvoyColors.textSecondary),
             ),
           ),
+          const SizedBox(height: EnvoySpacing.medium1),
           ListTile(
             minLeadingWidth: 20,
             dense: true,
@@ -370,23 +381,22 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                   vertical: EnvoySpacing.xs, horizontal: EnvoySpacing.small),
               decoration: BoxDecoration(
                 color: EnvoyColors.accentPrimary,
-                borderRadius: BorderRadius.circular(EnvoySpacing.xs),
+                borderRadius: BorderRadius.circular(EnvoySpacing.small),
               ),
               child: Text(
                 "2",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Colors.white),
+                style: EnvoyTypography.body
+                    .copyWith(color: EnvoyColors.textPrimaryInverse),
               ),
             ),
             title: Text(
               S().recovery_scenario_instruction2,
               textAlign: TextAlign.start,
-              style:
-                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
+              style: EnvoyTypography.info
+                  .copyWith(color: EnvoyColors.textSecondary),
             ),
           ),
+          const SizedBox(height: EnvoySpacing.medium1),
           ListTile(
             minLeadingWidth: 20,
             dense: true,
@@ -395,19 +405,19 @@ class _MagicRecoveryInfoState extends ConsumerState<MagicRecoveryInfo> {
                   vertical: EnvoySpacing.xs, horizontal: EnvoySpacing.small),
               decoration: BoxDecoration(
                 color: EnvoyColors.accentPrimary,
-                borderRadius: BorderRadius.circular(EnvoySpacing.xs),
+                borderRadius: BorderRadius.circular(EnvoySpacing.small),
               ),
-              child: Text("3",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: Colors.white)),
+              child: Text(
+                "3",
+                style: EnvoyTypography.body
+                    .copyWith(color: EnvoyColors.textPrimaryInverse),
+              ),
             ),
             title: Text(
               S().recovery_scenario_ios_instruction3,
               textAlign: TextAlign.start,
-              style:
-                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
+              style: EnvoyTypography.info
+                  .copyWith(color: EnvoyColors.textSecondary),
             ),
           ),
         ],

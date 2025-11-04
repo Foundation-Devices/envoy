@@ -165,7 +165,6 @@ class _EnvoyAppState extends State<EnvoyApp> {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         systemStatusBarContrastEnforced: false,
         systemNavigationBarContrastEnforced: false,
-        statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarDividerColor: Colors.transparent,
         systemNavigationBarIconBrightness: Brightness.dark,

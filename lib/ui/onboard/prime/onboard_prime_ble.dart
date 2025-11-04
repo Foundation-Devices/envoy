@@ -677,8 +677,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     );
   }
 
-  Future<void> pairWithPrime(XidDocument payload) async {
-    await BluetoothManager().pair(payload);
+  Future<bool> pairWithPrime(XidDocument payload) async {
+    return await BluetoothManager().pair(payload);
   }
 
   Future<void> showCommunicationModal(BuildContext context) async {

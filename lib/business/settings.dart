@@ -6,6 +6,7 @@
 
 import 'dart:math';
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/node_url.dart';
@@ -281,12 +282,16 @@ class Settings extends ChangeNotifier {
       case Environment.staging:
         return "https://staging.envoy.foundation.xyz";
       case Environment.production:
-        return "https://envoy-new.foundation.xyz";
+        return "https://envoy.foundation.xyz";
     }
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  String nguServerAddress = "https://ngu.foundation.xyz";
+  String get nguServerAddress {
+    return usingTor
+        ? "http://sz6grlqwcmxw5rxqc7jtep76gn4psaei2tdxcd4kxdfwjg3xdoaiqvqd.onion"
+        : "https://ngu.foundation.xyz";
+  }
 
   @JsonKey(defaultValue: true)
   bool syncToCloudSetting = true;
@@ -409,6 +414,59 @@ class Settings extends ChangeNotifier {
 
   static Future<Settings> init() async {
     var singleton = Settings._instance;
+
+    //ENV-2474 fix for issue due to new personalElectrumAddress field
+    //introduced in 2.1.1, 2.2.0 will be using defaultTorServers array,
+    //ENV-2474 only affects 2.1.0 users only
+    final mainnetOnionElectrumServer =
+        "mocmguuik7rws4bclpcoz2ldfzesjolatrzggaxfl37hjpreap777yqd.onion:50001";
+    if (singleton.personalElectrumAddress.isEmpty) {
+      final currentNode = singleton.selectedElectrumAddress;
+      final isDiyNodes = PublicServer.diyNodes.address == currentNode;
+      final isBlockstreamNodes =
+          PublicServer.blockstream.address == currentNode;
+      final isFoundationNodes = [
+            ...getDefaultFulcrumServers(),
+            getDefaultFulcrumServers(ssl: true)
+          ].contains(currentNode) ||
+          currentNode == mainnetOnionElectrumServer;
+
+      if (!isDiyNodes && !isBlockstreamNodes && !isFoundationNodes) {
+        singleton.personalElectrumAddress = currentNode;
+        singleton.usingDefaultElectrumServer = false;
+        await singleton.store();
+      }
+    }
+    //if the personalElectrumAddress is set to default onion server,
+    //this is probably due to 2.1.0 bug, so reset it to selectedElectrumAddress
+    else if (singleton.personalElectrumAddress == mainnetOnionElectrumServer) {
+      if (singleton.selectedElectrumAddress != mainnetOnionElectrumServer) {
+        singleton.personalElectrumAddress = singleton.selectedElectrumAddress;
+        singleton.usingDefaultElectrumServer = false;
+        await singleton.store();
+      }
+    }
+
+    // ENV-2224
+    // Normalize default Electrum server: if current is not one of our defaults, pick a fresh one.
+    if (singleton.usingDefaultElectrumServer) {
+      final current = singleton.selectedElectrumAddress;
+
+      // All current clearnet defaults (both tcp and ssl, though we prefer ssl when selecting)
+      final allowedDefaults = <String>{
+        ...getDefaultFulcrumServers(ssl: true),
+        ...getDefaultFulcrumServers(ssl: false),
+      };
+
+      if (!allowedDefaults.contains(current)) {
+        final newDefault =
+            selectRandomServerFrom(getDefaultFulcrumServers(ssl: true));
+        currentDefaultServer = newDefault; // update static default
+        singleton.selectedElectrumAddress =
+            newDefault; // persist chosen default
+        await singleton.store();
+      }
+    }
 
     return singleton;
   }

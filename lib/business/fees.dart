@@ -8,6 +8,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -92,28 +93,39 @@ class Fees {
   static const String FEE_RATE_PREFS = "fees";
   static final Fees _instance = Fees._internal();
 
-  static const mempoolFoundationInstance = "https://mempool.foundation.xyz";
+  static const mempoolFoundationUrl = "https://mempool.foundation.xyz";
 
-  static const testnet4MempoolFoundationInstance =
-      "https://mempool.foundation.xyz/testnet4";
-  static const _mempoolRecommendedFeesEndpoints = {
-    Network.bitcoin: "$mempoolFoundationInstance/api/v1/fees/recommended",
-    Network.testnet:
-        "$testnet4MempoolFoundationInstance/api/v1/fees/recommended",
-    Network.testnet4:
-        "$testnet4MempoolFoundationInstance/api/v1/fees/recommended",
-    Network.signet: "$signetMempoolFoundationInstance/api/v1/fees/recommended"
-  };
-  static const signetMempoolFoundationInstance =
-      "https://mempool.foundation.xyz/signet";
+  static String get mempoolFoundationInstance {
+    return Settings().usingTor
+        ? "http://3pd56qzgyg7p4sk7rlcxrrsbx7nfucdckautxjqbre7uw7kr3ah53byd.onion"
+        : mempoolFoundationUrl;
+  }
 
-  static const _mempoolBlocksFeesEndpoints = {
-    Network.bitcoin: "$mempoolFoundationInstance/api/v1/fees/mempool-blocks",
-    Network.testnet:
-        "$testnet4MempoolFoundationInstance/api/v1/fees/mempool-blocks",
-    Network.signet:
-        "$signetMempoolFoundationInstance/api/v1/fees/mempool-blocks"
-  };
+  static String get testnet4MempoolFoundationInstance {
+    return "$mempoolFoundationInstance/testnet4";
+  }
+
+  static String get signetMempoolFoundationInstance =>
+      "$mempoolFoundationInstance/signet";
+
+  static Map<Network, String> get _mempoolRecommendedFeesEndpoints => {
+        Network.bitcoin: "$mempoolFoundationInstance/api/v1/fees/recommended",
+        Network.testnet:
+            "$testnet4MempoolFoundationInstance/api/v1/fees/recommended",
+        Network.testnet4:
+            "$testnet4MempoolFoundationInstance/api/v1/fees/recommended",
+        Network.signet:
+            "$signetMempoolFoundationInstance/api/v1/fees/recommended"
+      };
+
+  static Map<Network, String> get _mempoolBlocksFeesEndpoints => {
+        Network.bitcoin:
+            "$mempoolFoundationInstance/api/v1/fees/mempool-blocks",
+        Network.testnet:
+            "$testnet4MempoolFoundationInstance/api/v1/fees/mempool-blocks",
+        Network.signet:
+            "$signetMempoolFoundationInstance/api/v1/fees/mempool-blocks"
+      };
 
   factory Fees() {
     return _instance;
