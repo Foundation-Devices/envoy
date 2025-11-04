@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use anyhow::anyhow;
+use anyhow::bail;
 use anyhow::Context;
 use anyhow::Result;
 use bc_envelope::prelude::CBOREncodable;
@@ -11,6 +12,8 @@ use bc_ur::prelude::{CBORCase, CBOR};
 use bc_xid::XIDDocument;
 use btp::{chunk, Chunk, MasterDechunker};
 use flutter_rust_bridge::frb;
+use foundation_api::backup::BackupChunk;
+use foundation_api::backup::SeedFingerprint;
 use foundation_api::firmware::{split_update_into_chunks, FirmwareFetchEvent};
 use foundation_api::message::{EnvoyMessage, PassportMessage, QuantumLinkMessage};
 use foundation_api::quantum_link::{ARIDCache, QuantumLink, QuantumLinkIdentity};
@@ -200,13 +203,63 @@ pub async fn generate_ql_identity() -> QuantumLinkIdentity {
     identity
 }
 
+pub struct InProgressBackupChunks {
+    pub seed_fingerprint: SeedFingerprint,
+    pub total_chunks: usize,
+    pub next_chunk_index: usize,
+    pub data: Vec<u8>,
+}
+
+pub struct PrimeBackupFile {
+    pub data: Vec<u8>,
+    pub seed_fingerprint: SeedFingerprint,
+}
+
+impl InProgressBackupChunks {
+    pub fn new(seed_fingerprint: SeedFingerprint, total_chunks: u32) -> Self {
+        Self {
+            seed_fingerprint,
+            total_chunks: total_chunks as usize,
+            next_chunk_index: 0,
+            data: Vec::new(),
+        }
+    }
+
+    pub fn push_chunk(&mut self, chunk: BackupChunk) -> anyhow::Result<Option<PrimeBackupFile>> {
+        if self.next_chunk_index == self.total_chunks {
+            bail!("all chunks already received")
+        }
+
+        if self.next_chunk_index != chunk.chunk_index as usize {
+            bail!(
+                "invalid chunk index, expected {} got {}",
+                self.next_chunk_index,
+                chunk.chunk_index
+            );
+        }
+
+        let is_last = chunk.is_last();
+
+        self.next_chunk_index += 1;
+        self.data.extend(chunk.data);
+
+        if is_last {
+            Ok(Some(PrimeBackupFile {
+                data: self.data.clone(),
+                seed_fingerprint: self.seed_fingerprint,
+            }))
+        } else {
+            Ok(None)
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use anyhow::Result;
-    use tokio::test;
 
-    #[test]
+    #[tokio::test]
     async fn test_generate_identity() -> Result<()> {
         let identity = QuantumLinkIdentity::generate();
         println!("{:?}", identity);
@@ -228,6 +281,78 @@ mod tests {
             original_cbor, deserialized_cbor,
             "CBOR mismatch after serialization/deserialization"
         );
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_in_progress_backup_chunks() -> Result<()> {
+        let seed_fp = [1u8; 32];
+        let mut in_progress = InProgressBackupChunks::new(seed_fp, 3);
+
+        let chunk1 = BackupChunk {
+            chunk_index: 0,
+            total_chunks: 3,
+            data: vec![1, 2, 3],
+        };
+        assert!(in_progress.push_chunk(chunk1)?.is_none());
+        assert_eq!(in_progress.next_chunk_index, 1);
+
+        let chunk2 = BackupChunk {
+            chunk_index: 1,
+            total_chunks: 3,
+            data: vec![4, 5, 6],
+        };
+        assert!(in_progress.push_chunk(chunk2)?.is_none());
+        assert_eq!(in_progress.next_chunk_index, 2);
+
+        let chunk3 = BackupChunk {
+            chunk_index: 2,
+            total_chunks: 3,
+            data: vec![7, 8, 9],
+        };
+        let result = in_progress.push_chunk(chunk3)?;
+        assert!(result.is_some());
+        let file = result.unwrap();
+        assert_eq!(file.data, vec![1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        assert_eq!(file.seed_fingerprint, seed_fp);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_in_progress_backup_chunks_wrong_index() -> Result<()> {
+        let seed_fp = [1u8; 32];
+        let mut in_progress = InProgressBackupChunks::new(seed_fp, 3);
+
+        let chunk = BackupChunk {
+            chunk_index: 1,
+            total_chunks: 3,
+            data: vec![1, 2, 3],
+        };
+        assert!(in_progress.push_chunk(chunk).is_err());
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_in_progress_backup_chunks_too_many() -> Result<()> {
+        let seed_fp = [1u8; 32];
+        let mut in_progress = InProgressBackupChunks::new(seed_fp, 1);
+
+        let chunk1 = BackupChunk {
+            chunk_index: 0,
+            total_chunks: 1,
+            data: vec![1, 2, 3],
+        };
+        assert!(in_progress.push_chunk(chunk1)?.is_some());
+
+        let chunk2 = BackupChunk {
+            chunk_index: 1,
+            total_chunks: 1,
+            data: vec![4, 5, 6],
+        };
+        assert!(in_progress.push_chunk(chunk2).is_err());
 
         Ok(())
     }

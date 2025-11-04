@@ -76,6 +76,7 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   api.EnvoyMasterDechunker? _decoder;
   api.XidDocument? _recipientXid;
+  // map <device -> InProgressBackup>
 
   bool connected = false;
 
