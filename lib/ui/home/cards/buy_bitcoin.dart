@@ -198,7 +198,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                             _updateState(BuyBitcoinCardState.buyInEnvoy);
                           }
                         },
-                        poweredByIcons: const [EnvoyIcons.ramp],
+                        poweredByIcons: const [EnvoyIcons.stripe_text],
                       ),
                       const SizedBox(
                         height: EnvoySpacing.medium2,
