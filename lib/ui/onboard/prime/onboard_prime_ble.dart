@@ -653,18 +653,11 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               //   },
               // ),
               const SizedBox(height: EnvoySpacing.medium1),
-              LinkText(
-                text: S().component_learnMore,
-                textStyle: EnvoyTypography.button.copyWith(
-                  color: EnvoyColors.accentPrimary,
-                ),
-                linkStyle: EnvoyTypography.button
-                    .copyWith(color: EnvoyColors.accentPrimary),
-                onTap: () {
-                  launchUrl(Uri.parse(
-                      "https://foundation.xyz/2025/01/quantumlink-reinventing-secure-wireless-communication/"));
-                },
-              ),
+              EnvoyButton(S().component_learnMore,
+                  type: EnvoyButtonTypes.tertiary, onTap: () {
+                launchUrl(Uri.parse(
+                    "https://foundation.xyz/2025/01/quantumlink-reinventing-secure-wireless-communication/"));
+              }),
               const SizedBox(height: EnvoySpacing.medium1),
               EnvoyButton(S().onboarding_bluetoothIntro_connect, onTap: () {
                 showCommunicationModal(context);
@@ -782,7 +775,7 @@ class _QuantumLinkCommunicationInfoState
                       //TODO: copy update
                       "The Communication is Secured",
                       textAlign: TextAlign.center,
-                      style: EnvoyTypography.info,
+                      style: EnvoyTypography.heading,
                     )),
                 Padding(
                     padding: const EdgeInsets.symmetric(
@@ -965,18 +958,11 @@ class OnboardBluetoothDenied extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               const SizedBox(height: EnvoySpacing.medium1),
-              LinkText(
-                text: S().component_learnMore,
-                textStyle: EnvoyTypography.button.copyWith(
-                  color: EnvoyColors.accentPrimary,
-                ),
-                linkStyle: EnvoyTypography.button
-                    .copyWith(color: EnvoyColors.accentPrimary),
-                onTap: () {
-                  launchUrl(Uri.parse(
-                      "https://foundation.xyz/2025/01/quantumlink-reinventing-secure-wireless-communication/"));
-                },
-              ),
+              EnvoyButton(S().component_learnMore,
+                  type: EnvoyButtonTypes.tertiary, onTap: () {
+                launchUrl(Uri.parse(
+                    "https://foundation.xyz/2025/01/quantumlink-reinventing-secure-wireless-communication/"));
+              }),
               const SizedBox(height: EnvoySpacing.medium1),
               EnvoyButton(S().onboarding_bluetoothDisabled_enable, onTap: () {
                 context.pop();

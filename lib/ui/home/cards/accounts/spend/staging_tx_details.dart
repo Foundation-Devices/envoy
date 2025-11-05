@@ -19,7 +19,6 @@ import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_w
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/indicator_shield.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/send_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -33,7 +32,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:envoy/ui/envoy_button.dart';
 
 class StagingTxDetails extends ConsumerStatefulWidget {
   final bool isRBFSpend;
@@ -368,24 +368,13 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                             .copyWith(color: EnvoyColors.solidWhite),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                      child: SizedBox(
-                        height: 40,
-                        width: 200,
-                        child: LinkText(
-                          text: S()
-                              .coincontrol_tx_detail_high_fee_info_overlay_learnMore,
-                          textAlign: TextAlign.center,
-                          linkStyle: EnvoyTypography.button
-                              .copyWith(color: EnvoyColors.solidWhite),
-                          onTap: () {
-                            launchUrlString(
-                                "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions");
-                          },
-                        ),
-                      ),
-                    )
+                    const SizedBox(height: EnvoySpacing.xs),
+                    EnvoyButton(
+                        S().coincontrol_tx_detail_high_fee_info_overlay_learnMore,
+                        type: EnvoyButtonTypes.tertiary, onTap: () {
+                      launchUrl(Uri.parse(
+                          "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
+                    }),
                   ]
                 ],
               ),
