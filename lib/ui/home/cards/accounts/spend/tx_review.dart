@@ -547,8 +547,8 @@ class _TransactionReviewScreenState
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
         _initTxStream();
-        final isConnected = ref.read(isPrimeConnectedProvider(
-            ref.read(selectedAccountProvider)?.deviceSerial ?? ""));
+        final isConnected =
+            ref.read(connectedDeviceProvider).value?.connected ?? false;
         final EnvoyAccount? account = ref.read(selectedAccountProvider);
         final Device? device =
             Devices().getDeviceBySerial(account?.deviceSerial ?? "");
@@ -635,7 +635,7 @@ class _TransactionReviewScreenState
         Devices().getDeviceBySerial(account.deviceSerial ?? "");
     bool isPrime = device?.type == DeviceType.passportPrime;
     final bool isConnected =
-        ref.watch(isPrimeConnectedProvider(device?.bleId ?? ""));
+        ref.watch(connectedDeviceProvider).value?.connected ?? false;
     if (isConnected) {
       _primeConnectionState = StepModel(
           stepName: S().onboarding_connectionIntro_connectedToPrime,
@@ -646,17 +646,13 @@ class _TransactionReviewScreenState
           state: EnvoyStepState.LOADING);
     }
 
-    ref.listen(isPrimeConnectedProvider(device?.bleId ?? ""), (previous, next) {
+    ref.listen(connectedDeviceProvider, (previous, next) {
       if (isPrime) {
-        if (next == false) {
+        if (next.value?.connected == false) {
           ref.read(primeConnectedStateProvider.notifier).updateStep(
                 "Reconnecting to Passport", // todo: localazy
                 EnvoyStepState.LOADING,
               );
-          // try to connect to prime
-          if (device != null) {
-            BluetoothManager().connect(id: device.bleId);
-          }
         } else {
           ref.read(primeConnectedStateProvider.notifier).updateStep(
               S().onboarding_connectionIntro_connectedToPrime,

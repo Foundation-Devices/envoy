@@ -19,7 +19,7 @@ cd "$CARGOKIT_TOOL_TEMP_DIR"
 BUILD_TOOL_PKG_DIR="$BASEDIR/build_tool"
 
 if [[ -z $FLUTTER_ROOT ]]; then # not defined
-  DART=dart
+  DART=fvm dart
 else
   DART="$FLUTTER_ROOT/bin/cache/dart-sdk/bin/dart"
 fi

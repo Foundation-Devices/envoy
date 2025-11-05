@@ -52,8 +52,8 @@ dependencies:
   #  # qr_code_scanner fork
   qr_code_scanner_plus:
     git:
-      url: https://github.com/foundation-devices/qr_code_scanner.git
-      ref: 1bf7ecb41e62d490578ccfd0b5d59d39cba05725
+      url: https://github.com/Foundation-Devices/qr_code_scanner.git
+      ref: d313918fee125f49221868fe7930d0d5dc7f3235
 
   # flutter_vlc_player fork
   flutter_vlc_player:
