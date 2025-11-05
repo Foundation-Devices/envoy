@@ -998,7 +998,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
         sink(connectionData)
         print(
-            "Connection Event -> Flutter: connected=\(finalConnectionStatus), peripheral=\(peripheralName ?? peripheralId)"
+            "Connection Event -> Flutter: connected=\(connected), peripheral=\(peripheralName ?? peripheralId)"
         )
         if let error = error {
             print("   Error: \(error)")

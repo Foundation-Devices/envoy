@@ -351,7 +351,6 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   Future<List<Uint8List>> encodeMessage(
       {required api.QuantumLinkMessage message}) async {
-    kPrint("Encoding Message timestamp: abotu");
     DateTime dateTime = DateTime.now();
     try {
       dateTime = await NTP.now(timeout: const Duration(seconds: 1));
