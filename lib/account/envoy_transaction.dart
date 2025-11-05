@@ -119,6 +119,31 @@ class RampTransaction extends EnvoyTransaction {
       super.outputs = const []});
 }
 
+class StripeTransaction extends EnvoyTransaction {
+  final String? stripeId;
+  final int? stripeFee;
+  final DateTime timestamp;
+
+  StripeTransaction(
+      {required super.txId,
+      required super.accountId,
+      required this.timestamp,
+      required super.amount,
+      required super.fee,
+      required super.feeRate,
+      required super.address,
+      required this.stripeFee,
+      required this.stripeId,
+      required super.vsize,
+      super.blockHeight = 0,
+      super.isConfirmed = false,
+      super.confirmations = 0,
+      super.inputs = const [],
+      super.date,
+      super.note = "",
+      super.outputs = const []});
+}
+
 class BtcPayTransaction extends EnvoyTransaction {
   String? pullPaymentId;
   final String? currencyAmount;

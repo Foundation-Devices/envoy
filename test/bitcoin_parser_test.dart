@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // ignore_for_file: depend_on_referenced_packages
+import 'dart:io';
+
 import 'package:envoy/business/bitcoin_parser.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:ngwallet/ngwallet.dart';
@@ -11,8 +13,8 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 void main() async {
   setUpAll(() async => await RustLib.init(
-      externalLibrary:
-          ExternalLibrary.open('target/debug/librust_lib_ngwallet.so')));
+      externalLibrary: ExternalLibrary.open(
+          'target/debug/librust_lib_ngwallet.${Platform.isMacOS ? "dylib" : "so"}')));
 
   test("Test valid address and amount", () async {
     var pasted =

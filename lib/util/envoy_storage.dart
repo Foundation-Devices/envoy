@@ -31,6 +31,7 @@ import 'package:sembast/sembast_io.dart';
 import 'package:sembast/src/type.dart';
 import 'package:sembast/utils/sembast_import_export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:envoy/business/stripe.dart';
 
 class Action {
   Action({
@@ -89,6 +90,11 @@ final watchedVideoStreamProvider = StreamProvider.family<bool, String>(
 final txNoteFromStorageProvider = StreamProvider.family<String, String>(
     (ref, txId) => EnvoyStorage().getTxNotesStream(txId));
 
+final onrampSessionStreamProvider =
+    StreamProvider.family<OnrampSessionInfo?, String>((ref, sessionId) {
+  return EnvoyStorage().getOnrampSessionStream(sessionId);
+});
+
 const String txNotesStoreName = "tx_notes";
 const String videosStoreName = "videos";
 const String pendingTxStoreName = "pending_tx";
@@ -106,6 +112,7 @@ const String selectedCountryStoreName = "countries";
 const String apiKeysStoreName = "api_keys";
 const String primeDataStoreName = "prime";
 const String quantumLinkIdentityStoreName = "ql_identity";
+const String stripeStoreName = "stripe";
 
 ///keeps track of the prime account full scan status, and migration,
 ///no backup for this store
@@ -142,6 +149,8 @@ class EnvoyStorage {
       StoreRef<String, Map<String, dynamic>>(inputTagHistoryStoreName);
 
   StoreRef<int, Map> firmwareStore = StoreRef<int, Map>(firmwareStoreName);
+
+  final onrampSessionStore = stringMapStoreFactory.store(stripeStoreName);
 
   StoreRef<String, bool> utxoBlockState = StoreRef(utxoBlockStateStoreName);
   StoreRef<String, Map<String, Object?>> tagStore = StoreRef(tagsStoreName);
@@ -343,6 +352,8 @@ class EnvoyStorage {
     String? rampId,
     int? rampFee,
     String? note,
+    int? stripeFee,
+    String? stripeId,
   }) async {
     await pendingTxStore.record(key).put(_db, {
       'account': accountId,
@@ -360,6 +371,8 @@ class EnvoyStorage {
       'rampId': rampId,
       'rampFee': rampFee,
       'note': note,
+      'stripeFee': stripeFee,
+      'stripeId': stripeId
     });
     return true;
   }
@@ -403,6 +416,21 @@ class EnvoyStorage {
               vsize: BigInt.zero,
               feeRate: BigInt.zero,
               rampFee: e['rampFee'] as int?);
+        }
+        if (type == wallet.TransactionType.stripe) {
+          return StripeTransaction(
+              txId: e.key as String,
+              accountId: e["account"] as String,
+              timestamp:
+                  DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
+              fee: BigInt.from((e["fee"] as int? ?? 0)),
+              amount: e["amount"] as int,
+              address: e["address"] as String,
+              stripeId: e['stripeId'] as String?,
+              vsize: BigInt.zero,
+              feeRate: BigInt.zero,
+              stripeFee: e['stripeFee'] as int?,
+              note: e['note'] as String?);
         }
         if (type == wallet.TransactionType.btcPay) {
           return BtcPayTransaction(
@@ -471,6 +499,7 @@ class EnvoyStorage {
     String? rampId,
     int? rampFee,
     String? note,
+    int? stripeFee,
   }) async {
     // Retrieve the existing record
     final existingRecord = await pendingTxStore.record(key).get(_db);
@@ -509,6 +538,10 @@ class EnvoyStorage {
       updateData['note'] = note;
     }
 
+    if (stripeFee != null) {
+      updateData['stripeFee'] = stripeFee;
+    }
+
     // Update the record with the new data
     await pendingTxStore.record(key).update(_db, updateData);
     return true;
@@ -524,6 +557,15 @@ class EnvoyStorage {
         .map((records) {
       return transformPendingTxRecords(records);
     });
+  }
+
+  Future<EnvoyTransaction?> getPendingTx(String key) async {
+    final record = await pendingTxStore.record(key).getSnapshot(_db);
+    if (record == null) {
+      return null;
+    }
+
+    return transformPendingTxRecords([record]).first;
   }
 
   Future<bool> deletePendingTx(String key) async {
@@ -638,6 +680,85 @@ class EnvoyStorage {
         .map((firmwares) {
       return transformFirmware(firmwares);
     });
+  }
+
+  /// Add or overwrite a session
+  Future<bool> addNewOnrampSession(OnrampSessionInfo session) async {
+    await onrampSessionStore.record(session.id).put(_db, session.toMap());
+    return true;
+  }
+
+  /// Get a stored session by ID
+  Future<OnrampSessionInfo?> getStoredOnrampSession(String sessionId) async {
+    final record = await onrampSessionStore.record(sessionId).get(_db);
+    if (record == null) return null;
+    return OnrampSessionInfo.fromMap(Map<String, dynamic>.from(record));
+  }
+
+  /// Get all stored sessions
+  Future<List<OnrampSessionInfo>> getAllOnrampSessions() async {
+    final records = await onrampSessionStore.find(_db);
+    return records
+        .map((r) => OnrampSessionInfo.fromMap(
+              Map<String, dynamic>.from(r.value),
+            ))
+        .toList();
+  }
+
+  /// Watch all sessions (stream updates)
+  Stream<List<OnrampSessionInfo>> getSessionsStream() {
+    return onrampSessionStore
+        .query()
+        .onSnapshots(_db)
+        .map((snapshots) => snapshots
+            .map((r) => OnrampSessionInfo.fromMap(
+                  Map<String, dynamic>.from(r.value),
+                ))
+            .toList());
+  }
+
+  Stream<OnrampSessionInfo?> getOnrampSessionStream(String sessionId) {
+    final finder = Finder(filter: Filter.byKey(sessionId));
+    return onrampSessionStore
+        .query(finder: finder)
+        .onSnapshots(_db)
+        .map((records) {
+      if (records.isEmpty) return null;
+      return OnrampSessionInfo.fromMap(
+          Map<String, dynamic>.from(records.first.value));
+    });
+  }
+
+  Future<void> updateOnrampSession(
+    String sessionId, {
+    String? status,
+    String? transactionId,
+    double? destinationAmount,
+    double? networkFee,
+    double? transactionFee,
+    String? walletAddress,
+    String? sourceCurrency,
+  }) async {
+    final updateData = <String, dynamic>{};
+
+    if (status != null) updateData['status'] = status;
+    if (transactionId != null) updateData['transactionId'] = transactionId;
+    if (destinationAmount != null) {
+      updateData['destinationAmount'] = destinationAmount;
+    }
+    if (networkFee != null) updateData['networkFee'] = networkFee;
+    if (transactionFee != null) updateData['transactionFee'] = transactionFee;
+    if (walletAddress != null) updateData['walletAddress'] = walletAddress;
+    if (sourceCurrency != null) updateData['sourceCurrency'] = sourceCurrency;
+
+    if (updateData.isNotEmpty) {
+      await onrampSessionStore.record(sessionId).update(_db, updateData);
+    }
+  }
+
+  /// Delete a session (optional)
+  Future<void> deleteOnrampSession(String sessionId) async {
+    await onrampSessionStore.record(sessionId).delete(_db);
   }
 
   Map<String, dynamic> _packageActionToMap(PackageAction action) {

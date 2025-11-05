@@ -47,6 +47,8 @@ String getTransactionSubtitleText(EnvoyTransaction transaction, Locale locale) {
     return S().btcpay_pendingVoucher;
   } else if (transaction is RampTransaction) {
     return S().ramp_pendingVoucher;
+  } else if (transaction is StripeTransaction) {
+    return S().stripe_pendingVoucher;
   } else if (transaction.isOnChain() && transaction.isConfirmed) {
     if (transaction.date == null) {
       return S().receive_tx_list_awaitingConfirmation;
