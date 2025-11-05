@@ -7,7 +7,7 @@ resolver = "2"
 members = [
     "packages/http_tor/rust",
     "packages/ur/native/*",
-    "packages/backup/native/*",
+    "packages/backup/rust",
     "packages/bluart/rust",
     "packages/shards/rust", 
     "packages/foundation_api/rust",

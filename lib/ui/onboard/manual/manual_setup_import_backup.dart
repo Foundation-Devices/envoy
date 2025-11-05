@@ -251,8 +251,15 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
   Future<void> checkForCloudBackup(String seed) async {
     List<String> seedList = widget.seed.split(" ");
     try {
-      data = await Backup.restore(
-          seed, Settings().envoyServerAddress, Tor.instance);
+      try {
+        final backUpPayload = await Backup.getBackup(
+            seedWords: seed,
+            serverUrl: Settings().envoyServerAddress,
+            proxyPort: Tor.instance.port);
+        data = EnvoySeed.extractDataFromPayload(backUpPayload);
+      } catch (_) {
+        data = null;
+      }
       setState(() {
         if (data != null) {
           showEnvoyPopUp(

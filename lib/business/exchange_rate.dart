@@ -294,8 +294,12 @@ class ExchangeRate extends ChangeNotifier {
   }
 
   // SATS to FIAT
-  String getFormattedAmount(int amountSats,
-      {bool includeSymbol = true, Network? network, double? displayFiat}) {
+  String getFormattedAmount(
+    int amountSats, {
+    bool includeSymbol = true,
+    Network? network,
+    double? displayFiat,
+  }) {
     // Hide test coins on production builds only
     if (!kDebugMode && network != null && network != Network.bitcoin) {
       return "";
@@ -305,12 +309,8 @@ class ExchangeRate extends ChangeNotifier {
       return "";
     }
 
-    if (_selectedCurrencyRate == null) {
-      return "";
-    }
-
-    NumberFormat currencyFormatter = NumberFormat.currency(
-        locale: currentLocale, symbol: "", name: Settings().selectedFiat);
+    // Formats numbers using the locale's decimal and grouping rules (no currency symbol)
+    final currencyFormatter = NumberFormat.decimalPattern(currentLocale);
 
     String formattedAmount;
 

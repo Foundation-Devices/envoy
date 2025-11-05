@@ -116,27 +116,28 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           }
         });
       }
-    } on BackupNotFound {
-      if (mounted) {
-        setState(() {
-          _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
-        });
-      }
-    } on SeedNotFound {
-      if (mounted) {
-        setState(() {
-          _magicRecoverWalletState = MagicRecoveryWalletState.seedNotFound;
-        });
-      }
-    } on ServerUnreachable {
-      if (mounted) {
-        setState(() {
-          _magicRecoverWalletState =
-              MagicRecoveryWalletState.serverNotReachable;
-        });
-      }
     } catch (e) {
       if (mounted) {
+        if (e is GetBackupException) {
+          if (e == GetBackupException.backupNotFound) {
+            setState(() {
+              _magicRecoverWalletState =
+                  MagicRecoveryWalletState.backupNotFound;
+            });
+            return;
+          } else if (e == GetBackupException.seedNotFound) {
+            setState(() {
+              _magicRecoverWalletState = MagicRecoveryWalletState.seedNotFound;
+            });
+            return;
+          } else if (e == GetBackupException.serverUnreachable) {
+            setState(() {
+              _magicRecoverWalletState =
+                  MagicRecoveryWalletState.serverNotReachable;
+            });
+            return;
+          }
+        }
         setState(() {
           _magicRecoverWalletState =
               MagicRecoveryWalletState.unableToDecryptBackup;
@@ -327,27 +328,33 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           });
         }
       });
-    } on BackupNotFound {
-      _setUnhappyState();
-      setState(() {
-        _magicRecoverWalletState = MagicRecoveryWalletState.backupNotFound;
-      });
-    } on SeedNotFound {
-      _setUnhappyState();
-      setState(() {
-        _magicRecoverWalletState = MagicRecoveryWalletState.seedNotFound;
-      });
-    } on ServerUnreachable {
-      _setUnhappyState();
-      setState(() {
-        _magicRecoverWalletState = MagicRecoveryWalletState.serverNotReachable;
-      });
     } catch (e) {
-      _setUnhappyState();
-      setState(() {
-        _magicRecoverWalletState =
-            MagicRecoveryWalletState.unableToDecryptBackup;
-      });
+      if (mounted) {
+        if (e is GetBackupException) {
+          if (e == GetBackupException.backupNotFound) {
+            setState(() {
+              _magicRecoverWalletState =
+                  MagicRecoveryWalletState.backupNotFound;
+            });
+            return;
+          } else if (e == GetBackupException.seedNotFound) {
+            setState(() {
+              _magicRecoverWalletState = MagicRecoveryWalletState.seedNotFound;
+            });
+            return;
+          } else if (e == GetBackupException.serverUnreachable) {
+            setState(() {
+              _magicRecoverWalletState =
+                  MagicRecoveryWalletState.serverNotReachable;
+            });
+            return;
+          }
+        }
+        setState(() {
+          _magicRecoverWalletState =
+              MagicRecoveryWalletState.unableToDecryptBackup;
+        });
+      }
     }
   }
 
@@ -430,10 +437,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
             OnboardingButton(
               label: S().manual_setup_import_backup_CTA2,
               type: EnvoyButtonTypes.secondary,
-              onTap: () {
+              onTap: () async {
                 _openExternalBackUpFile(context, onFailure: () {
                   showRestoreFailedDialog(context);
-                });
+                }, seed: _seed);
               },
             ),
             OnboardingButton(

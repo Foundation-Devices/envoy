@@ -18,8 +18,10 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(_current != null,
-        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    assert(
+      _current != null,
+      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
+    );
     return _current!;
   }
 
@@ -41,8 +43,10 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(instance != null,
-        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    assert(
+      instance != null,
+      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
+    );
     return instance!;
   }
 
@@ -52,14 +56,13 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `Secondary action`
+  // skipped getter for the 'Pull to scan' key
+
+  // skipped getter for the 'Pull to sync' key
+
+  /// `Insufficient Funds`
   String get _ {
-    return Intl.message(
-      'Secondary action',
-      name: '_',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Insufficient Funds', name: '_', desc: '', args: []);
   }
 
   /// `App Version`
@@ -94,12 +97,7 @@ class S {
 
   /// `Show`
   String get about_show {
-    return Intl.message(
-      'Show',
-      name: 'about_show',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Show', name: 'about_show', desc: '', args: []);
   }
 
   /// `Terms of Use`
@@ -262,6 +260,16 @@ class S {
     );
   }
 
+  /// `Loading Account…`
+  String get accounts_loading_loadingAccount {
+    return Intl.message(
+      'Loading Account…',
+      name: 'accounts_loading_loadingAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Envoy`
   String get accounts_screen_walletType_Envoy {
     return Intl.message(
@@ -307,6 +315,16 @@ class S {
     return Intl.message(
       'Passphrase',
       name: 'accounts_switchPassphrase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Update - See what’s new.`
+  String get accounts_toastNewUpdate_content {
+    return Intl.message(
+      'New Update - See what’s new.',
+      name: 'accounts_toastNewUpdate_content',
       desc: '',
       args: [],
     );
@@ -464,12 +482,7 @@ class S {
 
   /// `Sent`
   String get activity_sent {
-    return Intl.message(
-      'Sent',
-      name: 'activity_sent',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Sent', name: 'activity_sent', desc: '', args: []);
   }
 
   /// `Sent (Boosted)`
@@ -924,12 +937,7 @@ class S {
 
   /// `Learn`
   String get bottomNav_learn {
-    return Intl.message(
-      'Learn',
-      name: 'bottomNav_learn',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Learn', name: 'bottomNav_learn', desc: '', args: []);
   }
 
   /// `Privacy`
@@ -1554,10 +1562,10 @@ class S {
     );
   }
 
-  /// `Finalization may take some time depending on\npayment method and network congestion.`
+  /// `Finalization may take some time depending on payment method and network congestion.`
   String get buy_bitcoin_purchaseComplete_subheading {
     return Intl.message(
-      'Finalization may take some time depending on\npayment method and network congestion.',
+      'Finalization may take some time depending on payment method and network congestion.',
       name: 'buy_bitcoin_purchaseComplete_subheading',
       desc: '',
       args: [],
@@ -1569,6 +1577,16 @@ class S {
     return Intl.message(
       'Please contact Ramp for support.',
       name: 'buy_bitcoin_purchaseError_contactRamp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please contact Stripe for support.`
+  String get buy_bitcoin_purchaseError_contactStripe {
+    return Intl.message(
+      'Please contact Stripe for support.',
+      name: 'buy_bitcoin_purchaseError_contactStripe',
       desc: '',
       args: [],
     );
@@ -1656,12 +1674,7 @@ class S {
 
   /// `of`
   String get card_label_of {
-    return Intl.message(
-      'of',
-      name: 'card_label_of',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('of', name: 'card_label_of', desc: '', args: []);
   }
 
   /// `Choose a Tag`
@@ -1974,10 +1987,10 @@ class S {
     );
   }
 
-  /// `Updating your fee may have changed\nyour coin selection. Please review.`
+  /// `Updating your fee may change your coin selection. Please review afterwards.`
   String get coincontrol_tx_detail_feeChange_information {
     return Intl.message(
-      'Updating your fee may have changed\nyour coin selection. Please review.',
+      'Updating your fee may change your coin selection. Please review afterwards.',
       name: 'coincontrol_tx_detail_feeChange_information',
       desc: '',
       args: [],
@@ -2004,11 +2017,31 @@ class S {
     );
   }
 
+  /// `Fast`
+  String get coincontrol_tx_detail_fee_fast {
+    return Intl.message(
+      'Fast',
+      name: 'coincontrol_tx_detail_fee_fast',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Faster`
   String get coincontrol_tx_detail_fee_faster {
     return Intl.message(
       'Faster',
       name: 'coincontrol_tx_detail_fee_faster',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Slow`
+  String get coincontrol_tx_detail_fee_slow {
+    return Intl.message(
+      'Slow',
+      name: 'coincontrol_tx_detail_fee_slow',
       desc: '',
       args: [],
     );
@@ -2034,10 +2067,10 @@ class S {
     );
   }
 
-  /// `[[Learn more]]`
+  /// `Learn more`
   String get coincontrol_tx_detail_high_fee_info_overlay_learnMore {
     return Intl.message(
-      '[[Learn more]]',
+      'Learn more',
       name: 'coincontrol_tx_detail_high_fee_info_overlay_learnMore',
       desc: '',
       args: [],
@@ -2144,10 +2177,10 @@ class S {
     );
   }
 
-  /// `Address`
+  /// `Change Address`
   String get coindetails_overlay_address {
     return Intl.message(
-      'Address',
+      'Change Address',
       name: 'coindetails_overlay_address',
       desc: '',
       args: [],
@@ -2434,6 +2467,26 @@ class S {
     );
   }
 
+  /// `Stripe Fees`
+  String get coindetails_overlay_stripeFee {
+    return Intl.message(
+      'Stripe Fees',
+      name: 'coindetails_overlay_stripeFee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stripe ID`
+  String get coindetails_overlay_stripeID {
+    return Intl.message(
+      'Stripe ID',
+      name: 'coindetails_overlay_stripeID',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Tag`
   String get coindetails_overlay_tag {
     return Intl.message(
@@ -2466,12 +2519,7 @@ class S {
 
   /// `Apply`
   String get component_Apply {
-    return Intl.message(
-      'Apply',
-      name: 'component_Apply',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Apply', name: 'component_Apply', desc: '', args: []);
   }
 
   /// `Advanced`
@@ -2486,9 +2534,14 @@ class S {
 
   /// `Apply`
   String get component_apply {
+    return Intl.message('Apply', name: 'component_apply', desc: '', args: []);
+  }
+
+  /// `Are you sure?`
+  String get component_areYouSure {
     return Intl.message(
-      'Apply',
-      name: 'component_apply',
+      'Are you sure?',
+      name: 'component_areYouSure',
       desc: '',
       args: [],
     );
@@ -2496,22 +2549,12 @@ class S {
 
   /// `Back`
   String get component_back {
-    return Intl.message(
-      'Back',
-      name: 'component_back',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Back', name: 'component_back', desc: '', args: []);
   }
 
   /// `Cancel`
   String get component_cancel {
-    return Intl.message(
-      'Cancel',
-      name: 'component_cancel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Cancel', name: 'component_cancel', desc: '', args: []);
   }
 
   /// `Confirm`
@@ -2546,22 +2589,12 @@ class S {
 
   /// `Delete`
   String get component_delete {
-    return Intl.message(
-      'Delete',
-      name: 'component_delete',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Delete', name: 'component_delete', desc: '', args: []);
   }
 
   /// `Device`
   String get component_device {
-    return Intl.message(
-      'Device',
-      name: 'component_device',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Device', name: 'component_device', desc: '', args: []);
   }
 
   /// `Dismiss`
@@ -2576,12 +2609,7 @@ class S {
 
   /// `Done`
   String get component_done {
-    return Intl.message(
-      'Done',
-      name: 'component_done',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Done', name: 'component_done', desc: '', args: []);
   }
 
   /// `Don’t show again`
@@ -2596,12 +2624,7 @@ class S {
 
   /// `Filter`
   String get component_filter {
-    return Intl.message(
-      'Filter',
-      name: 'component_filter',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Filter', name: 'component_filter', desc: '', args: []);
   }
 
   /// `All`
@@ -2646,32 +2669,17 @@ class S {
 
   /// `Next`
   String get component_next {
-    return Intl.message(
-      'Next',
-      name: 'component_next',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Next', name: 'component_next', desc: '', args: []);
   }
 
   /// `No`
   String get component_no {
-    return Intl.message(
-      'No',
-      name: 'component_no',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('No', name: 'component_no', desc: '', args: []);
   }
 
   /// `OK`
   String get component_ok {
-    return Intl.message(
-      'OK',
-      name: 'component_ok',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('OK', name: 'component_ok', desc: '', args: []);
   }
 
   /// `Recover`
@@ -2686,22 +2694,12 @@ class S {
 
   /// `Redeem`
   String get component_redeem {
-    return Intl.message(
-      'Redeem',
-      name: 'component_redeem',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Redeem', name: 'component_redeem', desc: '', args: []);
   }
 
   /// `Reset`
   String get component_reset {
-    return Intl.message(
-      'Reset',
-      name: 'component_reset',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Reset', name: 'component_reset', desc: '', args: []);
   }
 
   /// `Reset filter`
@@ -2726,22 +2724,12 @@ class S {
 
   /// `Retry`
   String get component_retry {
-    return Intl.message(
-      'Retry',
-      name: 'component_retry',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Retry', name: 'component_retry', desc: '', args: []);
   }
 
   /// `Save`
   String get component_save {
-    return Intl.message(
-      'Save',
-      name: 'component_save',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Save', name: 'component_save', desc: '', args: []);
   }
 
   /// `Searching`
@@ -2756,12 +2744,7 @@ class S {
 
   /// `Skip`
   String get component_skip {
-    return Intl.message(
-      'Skip',
-      name: 'component_skip',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Skip', name: 'component_skip', desc: '', args: []);
   }
 
   /// `Sort by`
@@ -2786,12 +2769,7 @@ class S {
 
   /// `Update`
   String get component_update {
-    return Intl.message(
-      'Update',
-      name: 'component_update',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Update', name: 'component_update', desc: '', args: []);
   }
 
   /// `Warning`
@@ -2806,12 +2784,7 @@ class S {
 
   /// `Yes`
   String get component_yes {
-    return Intl.message(
-      'Yes',
-      name: 'component_yes',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Yes', name: 'component_yes', desc: '', args: []);
   }
 
   /// `Contact Ramp for support`
@@ -2819,6 +2792,16 @@ class S {
     return Intl.message(
       'Contact Ramp for support',
       name: 'contactRampForSupport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact Stripe for support`
+  String get contactStripeForSupport {
+    return Intl.message(
+      'Contact Stripe for support',
+      name: 'contactStripeForSupport',
       desc: '',
       args: [],
     );
@@ -4456,14 +4439,9 @@ class S {
     );
   }
 
-  /// `Newest first`
+  /// `~ `
   String get filter_sortBy_newest {
-    return Intl.message(
-      'Newest first',
-      name: 'filter_sortBy_newest',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('~ ', name: 'filter_sortBy_newest', desc: '', args: []);
   }
 
   /// `Oldest first`
@@ -6388,62 +6366,32 @@ class S {
 
   /// `About`
   String get menu_about {
-    return Intl.message(
-      'About',
-      name: 'menu_about',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('About', name: 'menu_about', desc: '', args: []);
   }
 
   /// `Backups`
   String get menu_backups {
-    return Intl.message(
-      'Backups',
-      name: 'menu_backups',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Backups', name: 'menu_backups', desc: '', args: []);
   }
 
   /// `ENVOY`
   String get menu_heading {
-    return Intl.message(
-      'ENVOY',
-      name: 'menu_heading',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('ENVOY', name: 'menu_heading', desc: '', args: []);
   }
 
   /// `Privacy`
   String get menu_privacy {
-    return Intl.message(
-      'Privacy',
-      name: 'menu_privacy',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Privacy', name: 'menu_privacy', desc: '', args: []);
   }
 
   /// `Settings`
   String get menu_settings {
-    return Intl.message(
-      'Settings',
-      name: 'menu_settings',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Settings', name: 'menu_settings', desc: '', args: []);
   }
 
   /// `Support`
   String get menu_support {
-    return Intl.message(
-      'Support',
-      name: 'menu_support',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Support', name: 'menu_support', desc: '', args: []);
   }
 
   /// `From version 2.0.0, all address types are now accessible under a single account card.\n\nThe default receive address type can be changed in Settings.`
@@ -7370,12 +7318,7 @@ class S {
 
   /// `Node`
   String get privacy_node_title {
-    return Intl.message(
-      'Node',
-      name: 'privacy_node_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Node', name: 'privacy_node_title', desc: '', args: []);
   }
 
   /// `Better \nPerformance`
@@ -7530,12 +7473,7 @@ class S {
 
   /// `Ramp Purchase`
   String get ramp_note {
-    return Intl.message(
-      'Ramp Purchase',
-      name: 'ramp_note',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Ramp Purchase', name: 'ramp_note', desc: '', args: []);
   }
 
   /// `Pending Ramp Purchase`
@@ -7558,6 +7496,26 @@ class S {
     );
   }
 
+  /// `Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account here.`
+  String get receive_mobileWallet_multiplePassportContent {
+    return Intl.message(
+      'Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account here.',
+      name: 'receive_mobileWallet_multiplePassportContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  tap here.`
+  String get receive_mobileWallet_singlePassportContent {
+    return Intl.message(
+      'Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  tap here.',
+      name: 'receive_mobileWallet_singlePassportContent',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `RECEIVE`
   String get receive_qr_code_heading {
     return Intl.message(
@@ -7570,9 +7528,14 @@ class S {
 
   /// `Copy`
   String get receive_qr_copy {
+    return Intl.message('Copy', name: 'receive_qr_copy', desc: '', args: []);
+  }
+
+  /// `Rescan Account`
+  String get receive_qr_rescanAccount {
     return Intl.message(
-      'Copy',
-      name: 'receive_qr_copy',
+      'Rescan Account',
+      name: 'receive_qr_rescanAccount',
       desc: '',
       args: [],
     );
@@ -7580,12 +7543,7 @@ class S {
 
   /// `Share`
   String get receive_qr_share {
-    return Intl.message(
-      'Share',
-      name: 'receive_qr_share',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Share', name: 'receive_qr_share', desc: '', args: []);
   }
 
   /// `Sign Message`
@@ -7655,6 +7613,26 @@ class S {
       name: 'receive_tx_list_transfer',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Navigate to {AccountName} on Passport, choose ‘Account Tools’ then ‘Verify Address’ and scan the QR code below.`
+  String receive_verifyModalCore_content(Object AccountName) {
+    return Intl.message(
+      'Navigate to $AccountName on Passport, choose ‘Account Tools’ then ‘Verify Address’ and scan the QR code below.',
+      name: 'receive_verifyModalCore_content',
+      desc: '',
+      args: [AccountName],
+    );
+  }
+
+  /// `Tap the Account {AccountName} on Passport, choose ‘Verify Address’ and scan the QR code below.`
+  String receive_verifyModalPrime_content(Object AccountName) {
+    return Intl.message(
+      'Tap the Account $AccountName on Passport, choose ‘Verify Address’ and scan the QR code below.',
+      name: 'receive_verifyModalPrime_content',
+      desc: '',
+      args: [AccountName],
     );
   }
 
@@ -7958,6 +7936,26 @@ class S {
     );
   }
 
+  /// `Transactions Removed`
+  String get replaceByFee_modal_deletedInactiveTX_stripe_heading {
+    return Intl.message(
+      'Transactions Removed',
+      name: 'replaceByFee_modal_deletedInactiveTX_stripe_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Incomplete purchases with the following Stripe IDs were removed from activity after 5 days.`
+  String get replaceByFee_modal_deletedInactiveTX_stripe_subheading {
+    return Intl.message(
+      'Incomplete purchases with the following Stripe IDs were removed from activity after 5 days.',
+      name: 'replaceByFee_modal_deletedInactiveTX_stripe_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `New Transaction Fee `
   String get replaceByFee_newFee_modal_heading {
     return Intl.message(
@@ -8008,11 +8006,281 @@ class S {
     );
   }
 
+  /// `Pull to sync`
+  String get rescanAccount_pullToSync_pullToSync {
+    return Intl.message(
+      'Pull to sync',
+      name: 'rescanAccount_pullToSync_pullToSync',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rescanning your account. Please do not close Envoy.`
+  String get rescanAccount_rescanning_rescanningAccount {
+    return Intl.message(
+      'Rescanning your account. Please do not close Envoy.',
+      name: 'rescanAccount_rescanning_rescanningAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1000 Addresses (~10 min)`
+  String get rescanAccount_sizeModal_1000Addresses {
+    return Intl.message(
+      '1000 Addresses (~10 min)',
+      name: 'rescanAccount_sizeModal_1000Addresses',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `300 Addresses (~3 min)`
+  String get rescanAccount_sizeModal_300Addresses {
+    return Intl.message(
+      '300 Addresses (~3 min)',
+      name: 'rescanAccount_sizeModal_300Addresses',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `500 Addresses (~5 min)`
+  String get rescanAccount_sizeModal_500Addresses {
+    return Intl.message(
+      '500 Addresses (~5 min)',
+      name: 'rescanAccount_sizeModal_500Addresses',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `100 addresses were previously scanned. If missing funds, try a higher scan value.`
+  String get rescanAccount_sizeModal_content {
+    return Intl.message(
+      '100 addresses were previously scanned. If missing funds, try a higher scan value.',
+      name: 'rescanAccount_sizeModal_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rescan Account`
+  String get rescanAccount_sizeModal_header {
+    return Intl.message(
+      'Rescan Account',
+      name: 'rescanAccount_sizeModal_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ensure you are scanning a security check QR code from Passport.`
+  String get scv_cameraModalUnexpectedQrFormat_content {
+    return Intl.message(
+      'Ensure you are scanning a security check QR code from Passport.',
+      name: 'scv_cameraModalUnexpectedQrFormat_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unexpected QR Format`
+  String get scv_cameraModalUnexpectedQrFormat_header {
+    return Intl.message(
+      'Unexpected QR Format',
+      name: 'scv_cameraModalUnexpectedQrFormat_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Checking Device Security`
   String get scv_checkingDeviceSecurity {
     return Intl.message(
       'Checking Device Security',
       name: 'scv_checkingDeviceSecurity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Details`
+  String get send_QrReview_viewDetails {
+    return Intl.message(
+      'View Details',
+      name: 'send_QrReview_viewDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save to File`
+  String get send_QrScan_saveToFile {
+    return Intl.message(
+      'Save to File',
+      name: 'send_QrScan_saveToFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction transfered`
+  String get send_QuantumReview_transactionTransferred {
+    return Intl.message(
+      'Transaction transfered',
+      name: 'send_QuantumReview_transactionTransferred',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount`
+  String get send_build_amount {
+    return Intl.message(
+      'Amount',
+      name: 'send_build_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check Transaction Details`
+  String get send_build_header {
+    return Intl.message(
+      'Check Transaction Details',
+      name: 'send_build_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm the transaction details are correct before continuing.`
+  String get send_build_subheader {
+    return Intl.message(
+      'Confirm the transaction details are correct before continuing.',
+      name: 'send_build_subheader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View and Edit Details`
+  String get send_build_viewEditDetails {
+    return Intl.message(
+      'View and Edit Details',
+      name: 'send_build_viewEditDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check that the connected node can facilitate fee rates below 1 sat/vb before continuing.`
+  String get send_editTxDetailsSubsatModal_content {
+    return Intl.message(
+      'Check that the connected node can facilitate fee rates below 1 sat/vb before continuing.',
+      name: 'send_editTxDetailsSubsatModal_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sub 1 sat/vb Fee Rates`
+  String get send_editTxDetailsSubsatModal_header {
+    return Intl.message(
+      'Sub 1 sat/vb Fee Rates',
+      name: 'send_editTxDetailsSubsatModal_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `i.e. Bought P2P Bitcoin`
+  String get send_editTxDetails_addNoteExample {
+    return Intl.message(
+      'i.e. Bought P2P Bitcoin',
+      name: 'send_editTxDetails_addNoteExample',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apply Change Tag`
+  String get send_editTxDetails_applyChangeTag {
+    return Intl.message(
+      'Apply Change Tag',
+      name: 'send_editTxDetails_applyChangeTag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apply Changes`
+  String get send_editTxDetails_applyChanges {
+    return Intl.message(
+      'Apply Changes',
+      name: 'send_editTxDetails_applyChanges',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Address`
+  String get send_editTxDetails_changeAddress {
+    return Intl.message(
+      'Change Address',
+      name: 'send_editTxDetails_changeAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Amount`
+  String get send_editTxDetails_changeAmount {
+    return Intl.message(
+      'Change Amount',
+      name: 'send_editTxDetails_changeAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No estimate possible`
+  String get send_editTxDetails_feeNoEstimatePossible {
+    return Intl.message(
+      'No estimate possible',
+      name: 'send_editTxDetails_feeNoEstimatePossible',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Spending from Account`
+  String get send_editTxDetails_spendingFromAccount {
+    return Intl.message(
+      'Spending from Account',
+      name: 'send_editTxDetails_spendingFromAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Spent from`
+  String get send_editTxDetails_spentFrom {
+    return Intl.message(
+      'Spent from',
+      name: 'send_editTxDetails_spentFrom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tag Details`
+  String get send_editTxDetails_tagDetails {
+    return Intl.message(
+      'Tag Details',
+      name: 'send_editTxDetails_tagDetails',
       desc: '',
       args: [],
     );
@@ -8048,10 +8316,10 @@ class S {
     );
   }
 
-  /// `Insufficient funds`
+  /// `Insufficient Funds`
   String get send_keyboard_amount_insufficient_funds_info {
     return Intl.message(
-      'Insufficient funds',
+      'Insufficient Funds',
       name: 'send_keyboard_amount_insufficient_funds_info',
       desc: '',
       args: [],
@@ -8090,9 +8358,84 @@ class S {
 
   /// `To:`
   String get send_keyboard_to {
+    return Intl.message('To:', name: 'send_keyboard_to', desc: '', args: []);
+  }
+
+  /// `Scan signed Transaction`
+  String get send_qrReview_scanSignedTransaction {
     return Intl.message(
-      'To:',
-      name: 'send_keyboard_to',
+      'Scan signed Transaction',
+      name: 'send_qrReview_scanSignedTransaction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Details`
+  String get send_qrReview_viewDetails {
+    return Intl.message(
+      'View Details',
+      name: 'send_qrReview_viewDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scan this QR with Passport`
+  String get send_qrScan_header {
+    return Intl.message(
+      'Scan this QR with Passport',
+      name: 'send_qrScan_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scan QR with Passport first`
+  String get send_qrScan_scanQrWithPassportFirst {
+    return Intl.message(
+      'Scan QR with Passport first',
+      name: 'send_qrScan_scanQrWithPassportFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It contains the transaction for you to sign on your Passport.`
+  String get send_qrScan_subheader {
+    return Intl.message(
+      'It contains the transaction for you to sign on your Passport.',
+      name: 'send_qrScan_subheader',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify on Passport`
+  String get send_qrScan_verifyOnPassport {
+    return Intl.message(
+      'Verify on Passport',
+      name: 'send_qrScan_verifyOnPassport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction ready to be sent`
+  String get send_qrSend_header {
+    return Intl.message(
+      'Transaction ready to be sent',
+      name: 'send_qrSend_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy will send the transaction to the Bitcoin network.`
+  String get send_qrSend_subheader {
+    return Intl.message(
+      'Envoy will send the transaction to the Bitcoin network.',
+      name: 'send_qrSend_subheader',
       desc: '',
       args: [],
     );
@@ -8128,11 +8471,121 @@ class S {
     );
   }
 
-  /// `Sending Max: \nFees are deducted from amount being sent.`
+  /// `To continue make sure your Passport Prime is powered on, in range and unlocked.`
+  String get send_quantumBuildOutOfRange_makeSureInRangeUnlocked {
+    return Intl.message(
+      'To continue make sure your Passport Prime is powered on, in range and unlocked.',
+      name: 'send_quantumBuildOutOfRange_makeSureInRangeUnlocked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for Passport`
+  String get send_quantumBuildOutOfRange_waitingForPassport {
+    return Intl.message(
+      'Waiting for Passport',
+      name: 'send_quantumBuildOutOfRange_waitingForPassport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign with Passport`
+  String get send_quantumBuild_signWithPassport {
+    return Intl.message(
+      'Sign with Passport',
+      name: 'send_quantumBuild_signWithPassport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connected to Passport`
+  String get send_quantumReview_connectedToPassport {
+    return Intl.message(
+      'Connected to Passport',
+      name: 'send_quantumReview_connectedToPassport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction transferred`
+  String get send_quantumReview_transactionTransferred {
+    return Intl.message(
+      'Transaction transferred',
+      name: 'send_quantumReview_transactionTransferred',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transferring Transaction `
+  String get send_quantumReview_transferringTransaction {
+    return Intl.message(
+      'Transferring Transaction ',
+      name: 'send_quantumReview_transferringTransaction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wait for Signing `
+  String get send_quantumReview_waitForSigning {
+    return Intl.message(
+      'Wait for Signing ',
+      name: 'send_quantumReview_waitForSigning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for Signing `
+  String get send_quantumReview_waitingForSigning {
+    return Intl.message(
+      'Waiting for Signing ',
+      name: 'send_quantumReview_waitingForSigning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction ready`
+  String get send_quantumSend_transactionready {
+    return Intl.message(
+      'Transaction ready',
+      name: 'send_quantumSend_transactionready',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sending Max – Fees are deducted from amount being sent.`
   String get send_reviewScreen_sendMaxWarning {
     return Intl.message(
-      'Sending Max: \nFees are deducted from amount being sent.',
+      'Sending Max – Fees are deducted from amount being sent.',
       name: 'send_reviewScreen_sendMaxWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify Transaction Details`
+  String get send_review_header {
+    return Intl.message(
+      'Verify Transaction Details',
+      name: 'send_review_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check these details match those being displayed by your Passport.`
+  String get send_review_subheader {
+    return Intl.message(
+      'Check these details match those being displayed by your Passport.',
+      name: 'send_review_subheader',
       desc: '',
       args: [],
     );
@@ -8428,10 +8881,10 @@ class S {
     );
   }
 
-  /// `Scan the QR with your Passport`
+  /// `Scan the QR with Passport`
   String get signMessage_qr_header {
     return Intl.message(
-      'Scan the QR with your Passport',
+      'Scan the QR with Passport',
       name: 'signMessage_qr_header',
       desc: '',
       args: [],
@@ -8543,6 +8996,26 @@ class S {
     return Intl.message(
       'This might take a few seconds',
       name: 'stalls_before_sending_tx_scanning_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stripe Purchase`
+  String get stripe_note {
+    return Intl.message(
+      'Stripe Purchase',
+      name: 'stripe_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending Stripe Purchase`
+  String get stripe_pendingVoucher {
+    return Intl.message(
+      'Pending Stripe Purchase',
+      name: 'stripe_pendingVoucher',
       desc: '',
       args: [],
     );

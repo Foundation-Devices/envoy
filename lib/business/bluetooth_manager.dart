@@ -419,7 +419,7 @@ class BluetoothManager extends WidgetsBindingObserver {
     );
   }
 
-  Future<void> pair(api.XidDocument recipient) async {
+  Future<bool> pair(api.XidDocument recipient) async {
     _recipientXid = recipient;
     kPrint("pair: $hashCode");
 
@@ -429,27 +429,29 @@ class BluetoothManager extends WidgetsBindingObserver {
     final recipientXid =
         await api.serializeXidDocument(xidDocument: _recipientXid!);
 
-    await writeMessage(api.QuantumLinkMessage.pairingRequest(
+    await Future.delayed(Duration(milliseconds: 1500));
+    final success = await writeMessage(api.QuantumLinkMessage.pairingRequest(
         api.PairingRequest(xidDocument: xid)));
 
     // Listen for response
     listen(id: bleId);
     //Future.delayed(Duration(seconds: 2));
-
-    // TODO: handle this in same place
-    PrimeDevice prime = PrimeDevice(bleId, recipientXid);
-    await EnvoyStorage().savePrime(prime);
-
-    connected = true;
+    if (success) {
+      // TODO: handle this in same place
+      PrimeDevice prime = PrimeDevice(bleId, recipientXid);
+      await EnvoyStorage().savePrime(prime);
+      connected = true;
+    }
+    return success;
   }
 
-  Future<void> writeMessage(api.QuantumLinkMessage message) async {
+  Future<bool> writeMessage(api.QuantumLinkMessage message) async {
     kPrint("Sending message: $message");
 
     final encoded = await encodeMessage(message: message);
     kPrint("Encoded message!");
 
-    await _writeWithProgress(encoded);
+    return await _writeWithProgress(encoded);
   }
 
   Future<void> addDevice(String serialNumber, String firmwareVersion,
@@ -603,7 +605,9 @@ class BluetoothManager extends WidgetsBindingObserver {
       _sendingData = true;
       final exchangeRate = ExchangeRate();
       final currentExchange = exchangeRate.usdRate!;
-
+      if (Devices().getPrimeDevices.isEmpty) {
+        return;
+      }
       // Only send if price actually changed
       if (_lastSentBtcPrice != null && _lastSentBtcPrice == currentExchange) {
         return;
@@ -667,7 +671,7 @@ class BluetoothManager extends WidgetsBindingObserver {
         patchIndex: patchIndex,
         totalPatches: patches.length,
         patchBytes: patch,
-        chunkSize: BigInt.from(100000),
+        chunkSize: BigInt.from(10000),
       );
       allChunks.addAll(chunksForPatch);
     }
