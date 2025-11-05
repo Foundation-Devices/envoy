@@ -13,6 +13,7 @@ use bc_xid::XIDDocument;
 use btp::{chunk, Chunk, MasterDechunker};
 use flutter_rust_bridge::frb;
 use foundation_api::backup::BackupChunk;
+use foundation_api::backup::BackupMetadata;
 use foundation_api::backup::RestoreMagicBackupEvent;
 use foundation_api::backup::SeedFingerprint;
 use foundation_api::firmware::{split_update_into_chunks, FirmwareFetchEvent};
@@ -176,6 +177,12 @@ pub async fn split_fw_update_into_chunks(
 pub fn split_backup_into_chunks(backup: &[u8], chunk_size: usize) -> Vec<QuantumLinkMessage> {
     let chunks = backup.chunks(chunk_size);
     let total_chunks = chunks.len() as u32;
+    let mut messages = Vec::with_capacity(chunks.len() + 1);
+
+    messages.push(QuantumLinkMessage::RestoreMagicBackupEvent(
+        RestoreMagicBackupEvent::Starting(BackupMetadata { total_chunks }),
+    ));
+
     chunks
         .enumerate()
         .map(move |(chunk_index, chunk_data)| {
@@ -187,7 +194,9 @@ pub fn split_backup_into_chunks(backup: &[u8], chunk_size: usize) -> Vec<Quantum
                 },
             ))
         })
-        .collect()
+        .for_each(|msg| messages.push(msg));
+
+    messages
 }
 
 pub async fn encode(
