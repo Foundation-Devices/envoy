@@ -230,60 +230,62 @@ pub async fn generate_ql_identity() -> QuantumLinkIdentity {
     identity
 }
 
-pub struct InProgressBackupChunks {
+#[frb(opaque)]
+pub struct CollectBackupChunks {
     pub seed_fingerprint: SeedFingerprint,
     pub total_chunks: usize,
     pub next_chunk_index: usize,
     pub data: Vec<u8>,
 }
 
+#[frb(opaque)]
 pub struct PrimeBackupFile {
     pub data: Vec<u8>,
     pub seed_fingerprint: SeedFingerprint,
 }
 
-impl InProgressBackupChunks {
-    pub fn new(seed_fingerprint: SeedFingerprint, total_chunks: u32) -> Self {
-        Self {
-            seed_fingerprint,
-            total_chunks: total_chunks as usize,
-            next_chunk_index: 0,
-            data: Vec::new(),
-        }
-    }
 
-    pub fn push_chunk(&mut self, chunk: BackupChunk) -> anyhow::Result<Option<PrimeBackupFile>> {
-        if self.next_chunk_index == self.total_chunks {
-            bail!("all chunks already received")
-        }
-
-        if self.next_chunk_index != chunk.chunk_index as usize {
-            bail!(
-                "invalid chunk index, expected {} got {}",
-                self.next_chunk_index,
-                chunk.chunk_index
-            );
-        }
-
-        let is_last = chunk.is_last();
-
-        self.next_chunk_index += 1;
-        self.data.extend(chunk.data);
-
-        if is_last {
-            Ok(Some(PrimeBackupFile {
-                data: self.data.clone(),
-                seed_fingerprint: self.seed_fingerprint,
-            }))
-        } else {
-            Ok(None)
-        }
+pub fn collect_backup_chunks(seed_fingerprint: SeedFingerprint, total_chunks: u32) -> CollectBackupChunks {
+    CollectBackupChunks {
+        seed_fingerprint,
+        total_chunks: total_chunks as usize,
+        next_chunk_index: 0,
+        data: Vec::new(),
     }
 }
 
+
+pub fn push_backup_chunk(this: &mut   CollectBackupChunks, chunk: BackupChunk) -> anyhow::Result<Option<PrimeBackupFile>> {
+    if this.next_chunk_index == this.total_chunks {
+        bail!("all chunks already received")
+    }
+
+    if this.next_chunk_index != chunk.chunk_index as usize {
+        bail!(
+                "invalid chunk index, expected {} got {}",
+                this.next_chunk_index,
+                chunk.chunk_index
+            );
+    }
+
+    let is_last = chunk.is_last();
+
+    this.next_chunk_index += 1;
+    this.data.extend(chunk.data);
+
+    if is_last {
+        Ok(Some(PrimeBackupFile {
+            data: this.data.clone(),
+            seed_fingerprint: this.seed_fingerprint,
+        }))
+    } else {
+        Ok(None)
+    }
+}
+
+
 #[cfg(test)]
 mod tests {
-    use super::*;
     use anyhow::Result;
 
     #[tokio::test]

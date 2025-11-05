@@ -402,6 +402,18 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
         break;
       case OnboardingState.completed:
+        if (pairingResponse != null) {
+          final deviceColor =
+              pairingResponse!.passportColor == PassportColor.dark
+                  ? DeviceColor.dark
+                  : DeviceColor.light;
+          await BluetoothManager().addDevice(
+              pairingResponse!.passportSerial.field0,
+              pairingResponse!.passportFirmwareVersion.field0,
+              BluetoothManager().bleId,
+              deviceColor);
+          kPrint("Got a pairing AccountUpdate device!");
+        }
         resetOnboardingPrimeProviders(ref);
         mainRouter.go(ROUTE_ACCOUNTS_HOME);
         _notifyAfterOnboardingTutorial(context);

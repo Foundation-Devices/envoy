@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:backup/backup.dart' as backup_lib;
 import 'package:bluart/bluart.dart' as bluart;
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/devices.dart';
@@ -28,6 +29,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:ngwallet/ngwallet.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:tor/tor.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_value.dart';
 
@@ -60,6 +62,7 @@ class BluetoothManager extends WidgetsBindingObserver {
       UuidValue.fromString("6E400002B5A3F393E0A9E50E24DCCA9E");
 
   api.EnvoyAridCache? _aridCache;
+  api.CollectBackupChunks? _collectBackupChunks;
 
   // Persist this across sessions
   api.QuantumLinkIdentity? _qlIdentity;
@@ -72,6 +75,7 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   api.EnvoyMasterDechunker? _decoder;
   api.XidDocument? _recipientXid;
+
   // map <device -> InProgressBackup>
 
   bool _sendingData = false;
@@ -137,6 +141,7 @@ class BluetoothManager extends WidgetsBindingObserver {
     await restoreQuantumLinkIdentity();
     _aridCache = await api.getAridCache();
     kPrint("QL Identity: $_qlIdentity");
+    initBluetooth();
   }
 
   Future<void> initBluetooth() async {
@@ -151,8 +156,7 @@ class BluetoothManager extends WidgetsBindingObserver {
       //
       // });
     } else {
-      events = bluart.init().asBroadcastStream();
-
+      // events = bluart.init().asBroadcastStream();
       // Add a small delay to ensure Rust library is fully initialized
       await Future.delayed(const Duration(milliseconds: 300));
     }
@@ -469,7 +473,7 @@ class BluetoothManager extends WidgetsBindingObserver {
     _decoder = await api.getDecoder();
     if (Platform.isIOS || Platform.isAndroid) {
       _bluetoothChannel.listenToDataEvents().listen((payload) {
-        decode(payload).then((value) {
+        decode(payload).then((value) async {
           if (value != null) {
             _passportMessageStream.add(value);
             kPrint(
@@ -478,6 +482,73 @@ class BluetoothManager extends WidgetsBindingObserver {
                 case api.QuantumLinkMessage_BroadcastTransaction transaction) {
               kPrint("Got the Broadcast Transaction");
               _transactionStream.add(transaction);
+            }
+            if (value.message
+                case api.QuantumLinkMessage_CreateMagicBackupEvent
+                    createEvent) {
+              final event = createEvent.field0;
+              switch (event) {
+                case api.CreateMagicBackupEvent_Start():
+                  final payload = event.field0;
+                  kPrint("Magic Backup Start Event: $payload");
+                  _collectBackupChunks = await api.collectBackupChunks(
+                    seedFingerprint: payload.seedFingerprint,
+                    totalChunks: payload.totalChunks,
+                  );
+                case api.CreateMagicBackupEvent_Chunk():
+                  final payload = event.field0;
+                  kPrint(
+                      "Magic Backup Chunk Event: index ${payload.chunkIndex} of ${_collectBackupChunks?.totalChunks}");
+                  if (_collectBackupChunks != null) {
+                    try {
+                      final api.PrimeBackupFile? file =
+                          await api.pushBackupChunk(
+                              chunk: payload, this_: _collectBackupChunks!);
+                      if (file != null) {
+                        kPrint(
+                            "Collected all backup chunks! Uploading... with seed hash ${file.seedFingerprint}");
+                        kPrint(
+                            "Collected all backup $file data length: ${file.data.length}");
+                        final result =
+                            await backup_lib.Backup.performPrimeBackup(
+                                serverUrl: Settings().envoyServerAddress,
+                                proxyPort: Tor.instance.port,
+                                seedHash: file.seedFingerprint,
+                                payload: file.data);
+                        kPrint("Magic Backup Completed! $result");
+                        _collectBackupChunks = null;
+                      }
+                    } catch (e, stack) {
+                      kPrint("Error collecting backup chunk: $e",
+                          stackTrace: stack);
+                    }
+                  } else {
+                    kPrint("No active backup collection!");
+                  }
+              }
+            }
+            if (value.message
+                case api.QuantumLinkMessage_RestoreMagicBackupRequest
+                    createEvent) {
+              try {
+                final event = createEvent.field0;
+                final fingerPrint = event.seedFingerprint;
+                final payloadRes = await backup_lib.Backup.getPrimeBackup(
+                  serverUrl: Settings().envoyServerAddress,
+                  proxyPort: Tor.instance.port,
+                  hash: fingerPrint,
+                );
+                if (payloadRes.isNotEmpty) {
+                  final chunks = await api.splitBackupIntoChunks(
+                      backup: payloadRes, chunkSize: BigInt.from(10000));
+                  for (final chunk in chunks) {
+                    kPrint("Sending restore magic backup chunk ");
+                    await writeMessage(chunk);
+                  }
+                }
+              } catch (e, stack) {
+                kPrint("Error restoring magic backup: $e", stackTrace: stack);
+              }
             }
           }
         }, onError: (e) {
@@ -486,22 +557,26 @@ class BluetoothManager extends WidgetsBindingObserver {
       });
       // _bluetoothChannel.listenToDeviceConnectionEvents().listen((event) {});
     } else {
-      _subscription = bluart.read(id: id).listen((bleData) {
-        decode(bleData).then((value) {
-          if (value != null) {
-            _passportMessageStream.add(value);
-            kPrint(
-                "Got Passport message type: ${value.message.runtimeType} ${value.message}");
-            if (value.message
-                case api.QuantumLinkMessage_BroadcastTransaction transaction) {
-              kPrint("Got the Broadcast Transaction");
-              _transactionStream.add(transaction);
-            }
-          }
-        }, onError: (e) {
-          kPrint("Error decoding: $e");
-        });
-      });
+      // _subscription = bluart.read(id: id).listen((bleData) {
+      //   decode(bleData).then((value) {
+      //     if (value != null) {
+      //       _passportMessageStream.add(value);
+      //       kPrint(
+      //           "Got Passport message type: ${value.message.runtimeType} ${value.message}");
+      //       if (value.message
+      //           case api.QuantumLinkMessage_BroadcastTransaction transaction) {
+      //         kPrint("Got the Broadcast Transaction");
+      //         _transactionStream.add(transaction);
+      //       }  if (value.message
+      //           case api.QuantumLinkMessage_BroadcastTransaction transaction) {
+      //         kPrint("Got the Broadcast Transaction");
+      //         _transactionStream.add(transaction);
+      //       }
+      //     }
+      //   }, onError: (e) {
+      //     kPrint("Error decoding: $e");
+      //   });
+      // });
     }
   }
 
@@ -582,6 +657,7 @@ class BluetoothManager extends WidgetsBindingObserver {
   }
 
   Future<void> sendExchangeRate() async {
+    return;
     if (_sendingData && Devices().getPrimeDevices.isEmpty) return;
 
     try {
