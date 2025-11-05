@@ -50,15 +50,21 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m11(amount, total_amount) =>
       "Re-syncing your accounts.\nPlease do not close Envoy.\n\n${amount} of ${total_amount} synced";
 
-  static String m12(AccountName) =>
+  static String m12(passport_color) => "Color: ${passport_color}";
+
+  static String m13(firmware_version) => "Firmware: ${firmware_version}";
+
+  static String m14(serial_number) => "Serial Number: ${serial_number}";
+
+  static String m15(AccountName) =>
       "Navigate to ${AccountName} on Passport, choose ‘Account Tools’ then ‘Verify Address’ and scan the QR code below.";
 
-  static String m13(AccountName) =>
+  static String m16(AccountName) =>
       "Tap the Account ${AccountName} on Passport, choose ‘Verify Address’ and scan the QR code below.";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Insufficient Funds"),
+        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage(
           "Versão da Aplicação",
         ),
@@ -1497,6 +1503,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Toca em qualquer um dos cartões representados para receber Bitcoin.",
         ),
+        "invalid_qr_heading": MessageLookupByLibrary.simpleMessage(
+          "Invalid QR Code",
+        ),
+        "invalid_qr_subheading": MessageLookupByLibrary.simpleMessage(
+          "QR code does not contain a valid Bitcoin transaction (PSBT). Please check and try again.",
+        ),
         "launch_screen_faceID_fail_CTA": MessageLookupByLibrary.simpleMessage(
           "Tentar Novamente",
         ),
@@ -2199,6 +2211,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "A Envoy oferece uma configuração segura do Passport, actualizações fáceis de firmware e uma experiência de carteira Bitcoin serena.",
         ),
+        "prime_info_color": m12,
+        "prime_info_firmware": m13,
+        "prime_info_serialNumber": m14,
         "privacySetting_nodeConnected": MessageLookupByLibrary.simpleMessage(
           "Nó Ligado",
         ),
@@ -2340,8 +2355,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "receive_tx_list_transfer": MessageLookupByLibrary.simpleMessage(
           "Transfer",
         ),
-        "receive_verifyModalCore_content": m12,
-        "receive_verifyModalPrime_content": m13,
+        "receive_verifyModalCore_content": m15,
+        "receive_verifyModalPrime_content": m16,
         "recovery_scenario_Android_instruction1":
             MessageLookupByLibrary.simpleMessage(
           "Inicia sessão no Google e restaura os dados da tua cópia de segurança",

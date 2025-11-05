@@ -93,6 +93,7 @@ enum EnvoyIcons {
   quantum,
   stripe,
   stripe_text,
+  prime_v2,
 }
 
 class EnvoyIcon extends StatelessWidget {
