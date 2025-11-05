@@ -42,7 +42,6 @@ final connectedDeviceProvider = StreamProvider<DeviceStatus>((ref) {
   return BluetoothChannel().deviceStatusStream;
 });
 
-
 class BluetoothManager extends WidgetsBindingObserver {
   StreamSubscription? _subscription;
   StreamSubscription? _writeProgressSubscription;
@@ -73,8 +72,6 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   api.EnvoyMasterDechunker? _decoder;
   api.XidDocument? _recipientXid;
-
-  bool connected = false;
 
   bool _sendingData = false;
 
@@ -157,37 +154,6 @@ class BluetoothManager extends WidgetsBindingObserver {
 
       // Add a small delay to ensure Rust library is fully initialized
       await Future.delayed(const Duration(milliseconds: 300));
-
-      events?.listen((bluart.Event event) async {
-        if (event is bluart.Event_DeviceConnected) {
-          _updateConnectionStatus(event.field0);
-          connected = true;
-        }
-
-        if (event is bluart.Event_DeviceDisconnected) {
-          _updateConnectionStatus(event.field0);
-          connected = false;
-        }
-
-        if (event is bluart.Event_ScanResult) {
-          if (event.field0.isEmpty) {
-            kPrint("received empty scan result");
-          }
-
-          for (final device in event.field0) {
-            _updateConnectionStatus(device);
-            // TODO: don't autoconnect in onboarding
-            // TODO: need some way to know if we're in OB
-            if (bleId.isNotEmpty && device.id == bleId && !connected) {
-              kPrint("Autoconnecting to: ${device.id}");
-              await connect(id: device.id);
-              await listen(id: bleId);
-            }
-          }
-        }
-      });
-
-      await scan();
     }
 
     if (_qlIdentity == null) {
@@ -197,18 +163,6 @@ class BluetoothManager extends WidgetsBindingObserver {
     _listenForAccountUpdate();
     _listenForShardMessages();
     _listenToWriteProgress();
-  }
-
-  void _updateConnectionStatus(bluart.BleDevice device) {
-    if (device.connected) {
-      //kPrint("Event Device connected: ${device.id} ${device.name}");
-      _connectedDevices.add(device);
-    } else {
-      if (_connectedDevices.any((d) => d.id == device.id)) {
-        _connectedDevices.removeWhere((d) => d.id == device.id);
-      }
-    }
-    _connectedDevicesStream.sink.add(_connectedDevices);
   }
 
   void _listenToWriteProgress() {
@@ -395,15 +349,6 @@ class BluetoothManager extends WidgetsBindingObserver {
     }
   }
 
-  Future scan() async {
-    return;
-    bool isDenied = await isBluetoothDenied();
-    if (Platform.isLinux || !isDenied) {
-      kPrint("Scanning...");
-      await bluart.scan(filter: ["6E400001-B5A3-F393-E0A9-E50E24DCCA9E"]);
-    }
-  }
-
   Future<List<Uint8List>> encodeMessage(
       {required api.QuantumLinkMessage message}) async {
     kPrint("Encoding Message timestamp: abotu");
@@ -446,7 +391,6 @@ class BluetoothManager extends WidgetsBindingObserver {
     final success = await writeMessage(api.QuantumLinkMessage.pairingRequest(
         api.PairingRequest(xidDocument: xid)));
 
-    print("Pairing success: $success");
     if (!success) {
       throw Exception("Failed to send pairing request");
     }
@@ -457,7 +401,6 @@ class BluetoothManager extends WidgetsBindingObserver {
     PrimeDevice prime = PrimeDevice(bleId, recipientXid);
     await EnvoyStorage().savePrime(prime);
 
-    connected = true;
     return true;
   }
 
@@ -478,19 +421,15 @@ class BluetoothManager extends WidgetsBindingObserver {
   }
 
   Future<void> removeConnectedDevice() async {
-    if (connected) {
-      disconnect();
-    }
+    await EnvoyStorage().deletePrimeByBleId(bleId);
 
-    EnvoyStorage().deletePrimeByBleId(bleId);
-
+    BluetoothChannel().disconnect();
     bleId = "";
     _recipientXid = null;
   }
 
   Future disconnect() async {
     await bluart.disconnect(id: bleId);
-    connected = false;
   }
 
   Future<void> sendPsbt(String accountId, Uint8List psbt) async {
@@ -523,7 +462,6 @@ class BluetoothManager extends WidgetsBindingObserver {
     kPrint("Connection event: $connectionEvent");
     await Future.delayed(const Duration(milliseconds: 900));
     bleId = id;
-    connected = true;
     return true;
   }
 
@@ -644,8 +582,7 @@ class BluetoothManager extends WidgetsBindingObserver {
   }
 
   Future<void> sendExchangeRate() async {
-    return;
-    if (_sendingData) return;
+    if (_sendingData && Devices().getPrimeDevices.isEmpty) return;
 
     try {
       _sendingData = true;
@@ -678,10 +615,8 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   void setupExchangeRateListener() {
     ExchangeRate().addListener(() async {
-      if (connected) {
-        kPrint("Sending exchange rate to Prime ...");
-        await sendExchangeRate();
-      }
+      kPrint("Sending exchange rate to Prime ...");
+      await sendExchangeRate();
     });
   }
 

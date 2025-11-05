@@ -60,7 +60,8 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
     if (mounted) {
       // Get the initial bleId from the router (if available)
       bleId = GoRouter.of(context).state.uri.queryParameters["p"];
-      if(GoRouter.of(context).state.uri.queryParameters["p"] == null && _bleIdCache != null){
+      if (GoRouter.of(context).state.uri.queryParameters["p"] == null &&
+          _bleIdCache != null) {
         bleId = _bleIdCache;
       }
       _bleIdCache = bleId;
@@ -109,35 +110,11 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         } else {
           await BluetoothManager().getPermissions();
         }
-       final connectionStatus = await BluetoothManager().connect(id: bleId!);
-        // await BluetoothManager().getPermissions();
-        // kPrint("Connecting to Prime with ID: $bleId");
-        //
-        // await BluetoothManager().scan();
-        // final found =
-        //     await BluetoothManager().events?.any((bluart.Event event) {
-        //   if (event is bluart.Event_ScanResult) {
-        //     for (final device in event.field0) {
-        //       print("Found device: ${device.name} (${device.id})");
-        //       if (device.name.contains("Prime")) {
-        //         bleId = device.id;
-        //         return true;
-        //       }
-        //     }
-        //   }
-        //
-        //   return false;
-        // }).timeout(const Duration(seconds: 10), onTimeout: () {
-        //   return false;
-        // });
-        // if (found != true) {
-        //   throw Exception("Prime device not found."
-        //       " Please ensure it is powered on and in range.");
-        // }
-        // await BluetoothManager().connect(id: bleId!);
-        await LocalStorage().prefs.setString(primeSerialPref, bleId!);
+        final connectionStatus = await BluetoothManager().connect(id: bleId!);
+        //TODO: Maybe this is not needed ?
+        await LocalStorage().prefs.setString(primeSerialPref, bleId);
 
-        if(!connectionStatus){
+        if (!connectionStatus) {
           throw Exception("Failed to connect to Prime device.");
         }
         if (mounted && connectionStatus) {

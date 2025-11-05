@@ -180,14 +180,8 @@ class BluetoothChannel {
     });
   }
 
-  /// Extract Uint8List data from BLE event
-  /// Returns null if data is not available or not in expected format
-  Uint8List? extractDataFromEvent(Map<dynamic, dynamic> event) {
-    final payload = event['data'];
-    if (payload is Uint8List) {
-      return payload;
-    }
-    return null;
+  Future<void> disconnect() async {
+    await bleMethodChannel.invokeMethod("disconnect");
   }
 
   /// Dispose of stream subscriptions

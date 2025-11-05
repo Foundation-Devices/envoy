@@ -174,10 +174,11 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             "with_response"
         }
 
+
         // Get effective payload size (MTU - 3 bytes for ATT overhead)
         val payloadPerPacket = maxOf(1, currentMtu - 3)
 
-        Log.d(TAG, "MTU: $currentMtu, payload: $payloadPerPacket, data: ${data.size} bytes")
+        Log.d(TAG, "MTU: $currentMtu, payload: $payloadPerPacket, data: ${data.size} bytes, writeType: $writeTypeString")
 
         if (data.size <= payloadPerPacket) {
             // Store data for potential retry

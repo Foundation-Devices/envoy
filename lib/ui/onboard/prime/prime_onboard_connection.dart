@@ -29,7 +29,9 @@ class PrimeOnboardParing extends ConsumerStatefulWidget {
   @override
   ConsumerState<PrimeOnboardParing> createState() => _PrimeOnboardParingState();
 }
+
 XidDocument? primeXid;
+
 class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   bool canPop = false;
 
@@ -42,7 +44,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       try {
-       _connectBLE();
+        _connectBLE();
       } catch (e) {
         if (mounted && context.mounted) {
           //TODO: fix this dialog
@@ -82,14 +84,14 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
       device = BleDevice(id: id, name: "Passport Prime", connected: false);
       kPrint("Connecting to Prime with ID: $id");
 
-      if(primeXid != null){
+      if (primeXid != null) {
         try {
           final pairResult = await BluetoothManager().pair(primeXid!);
-        } catch (e,stack) {
-          debugPrintStack(
-            stackTrace: stack
-          );
-          print("Error pairing with Prime: $e");
+          if (pairResult == false) {
+            throw Exception("Pairing failed");
+          }
+        } catch (e, stack) {
+          debugPrintStack(stackTrace: stack);
           setState(() {
             canPop = true;
           });

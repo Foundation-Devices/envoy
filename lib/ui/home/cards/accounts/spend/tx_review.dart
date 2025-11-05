@@ -547,7 +547,8 @@ class _TransactionReviewScreenState
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
         _initTxStream();
-        final isConnected = ref.read(connectedDeviceProvider).value?.connected ?? false;
+        final isConnected =
+            ref.read(connectedDeviceProvider).value?.connected ?? false;
         final EnvoyAccount? account = ref.read(selectedAccountProvider);
         final Device? device =
             Devices().getDeviceBySerial(account?.deviceSerial ?? "");

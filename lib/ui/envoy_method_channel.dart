@@ -30,7 +30,7 @@ Future openAndroidSettings() async {
 Future<String> getConnectedPeripheralID() async {
   if (Platform.isIOS) {
     return await _platformChannel.invokeMethod("get_connected_peripheral_id");
-  }else{
+  } else {
     return "";
   }
 }
