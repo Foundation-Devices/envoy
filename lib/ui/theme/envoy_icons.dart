@@ -91,6 +91,8 @@ enum EnvoyIcons {
   prime,
   passphrase_shield,
   quantum,
+  stripe,
+  stripe_text,
 }
 
 class EnvoyIcon extends StatelessWidget {
