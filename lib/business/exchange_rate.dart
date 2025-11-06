@@ -93,6 +93,7 @@ class ExchangeRate extends ChangeNotifier {
   bool _isFetchingData = false;
 
   double? get usdRate => _usdRate;
+
   DateTime? get usdRateTimestamp => _usdRateTimestamp;
   FiatCurrency? _selectedCurrency;
 
@@ -299,6 +300,7 @@ class ExchangeRate extends ChangeNotifier {
     bool includeSymbol = true,
     Network? network,
     double? displayFiat,
+    bool inSendScreen = false,
   }) {
     // Hide test coins on production builds only
     if (!kDebugMode && network != null && network != Network.bitcoin) {
@@ -309,8 +311,11 @@ class ExchangeRate extends ChangeNotifier {
       return "";
     }
 
-    // Formats numbers using the locale's decimal and grouping rules (no currency symbol)
-    final currencyFormatter = NumberFormat.decimalPattern(currentLocale);
+    // special case "inSendScreen" for bottom fiat amount
+    final currencyFormatter = inSendScreen
+        ? NumberFormat.currency(
+            locale: currentLocale, symbol: "", name: Settings().selectedFiat)
+        : NumberFormat.decimalPattern(currentLocale);
 
     String formattedAmount;
 
