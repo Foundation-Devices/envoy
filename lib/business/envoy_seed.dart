@@ -19,6 +19,7 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/migrations/migration_manager.dart';
@@ -500,6 +501,7 @@ class EnvoySeed {
           List<BlogPost?> blogs = await EnvoyStorage().getAllBlogPosts() ?? [];
 
           await EnvoyStorage().restore(data[EnvoyStorage.dbName]!);
+          UpdatesManager().fetchUpdates();
 
           await EnvoyStorage().insertMediaItems(videos);
           await EnvoyStorage().insertMediaItems(blogs);
