@@ -92,7 +92,7 @@ enum EnvoyIcons {
   passphrase_shield,
   quantum,
   envelope,
-  qr_scan
+  qr_scan,
   stripe,
   stripe_text,
 }
