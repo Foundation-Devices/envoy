@@ -50,15 +50,21 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m11(amount, total_amount) =>
       "Re-syncing your accounts.\nPlease do not close Envoy.\n\n${amount} of ${total_amount} synced";
 
-  static String m12(AccountName) =>
+  static String m12(passport_color) => "Color: ${passport_color}";
+
+  static String m13(firmware_version) => "Firmware: ${firmware_version}";
+
+  static String m14(serial_number) => "Serial Number: ${serial_number}";
+
+  static String m15(AccountName) =>
       "Navigate to ${AccountName} on Passport, choose ‘Account Tools’ then ‘Verify Address’ and scan the QR code below.";
 
-  static String m13(AccountName) =>
+  static String m16(AccountName) =>
       "Tap the Account ${AccountName} on Passport, choose ‘Verify Address’ and scan the QR code below.";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Insufficient Funds"),
+        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences": MessageLookupByLibrary.simpleMessage(
           "Open Source Licences",
@@ -678,7 +684,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Unlocking coins will make them available for use in transactions.",
         ),
         "coindetails_overlay_address": MessageLookupByLibrary.simpleMessage(
-          "Change Address",
+          "Address",
         ),
         "coindetails_overlay_at": MessageLookupByLibrary.simpleMessage("at"),
         "coindetails_overlay_block":
@@ -1287,7 +1293,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "exploreAdresses_activityOptions_signMessage":
             MessageLookupByLibrary.simpleMessage("Sign Message"),
         "export_backup_modal_subheading": MessageLookupByLibrary.simpleMessage(
-          "This encrypted file contains useful wallet data such as labels, accounts, and settings.\n\nThis file is encrypted with your Envoy Seed. Ensure your seed is backed up securely. ",
+          "This encrypted file contains useful wallet data such as labels, accounts, and settings.\nThis file is encrypted with your Mobile Wallet Seed. Ensure your seed is backed up securely. ",
         ),
         "export_backup_send_CTA1": MessageLookupByLibrary.simpleMessage(
           "Download Backup File",
@@ -1466,6 +1472,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt":
             MessageLookupByLibrary.simpleMessage(
           "Tap any of the above cards to receive Bitcoin.",
+        ),
+        "invalid_qr_heading": MessageLookupByLibrary.simpleMessage(
+          "Invalid QR Code",
+        ),
+        "invalid_qr_subheading": MessageLookupByLibrary.simpleMessage(
+          "QR code does not contain a valid Bitcoin transaction (PSBT). Please check and try again.",
         ),
         "launch_screen_faceID_fail_CTA": MessageLookupByLibrary.simpleMessage(
           "Try Again",
@@ -2140,6 +2152,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Envoy offers secure Passport setup, easy firmware updates, and a zen-like Bitcoin wallet experience.",
         ),
+        "prime_info_color": m12,
+        "prime_info_firmware": m13,
+        "prime_info_serialNumber": m14,
         "privacySetting_nodeConnected": MessageLookupByLibrary.simpleMessage(
           "Node Connected",
         ),
@@ -2279,8 +2294,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "receive_tx_list_transfer": MessageLookupByLibrary.simpleMessage(
           "Transfer",
         ),
-        "receive_verifyModalCore_content": m12,
-        "receive_verifyModalPrime_content": m13,
+        "receive_verifyModalCore_content": m15,
+        "receive_verifyModalPrime_content": m16,
         "recovery_scenario_Android_instruction1":
             MessageLookupByLibrary.simpleMessage(
           "Sign into Google and restore your backup data",
