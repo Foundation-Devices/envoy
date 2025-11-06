@@ -392,6 +392,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         // TODO: Handle writing down seed words
         break;
       case OnboardingState.connectingWallet:
+        ref.read(backUpMasterKeyProvider.notifier).updateStep(
+            S().finalize_catchAll_masterKeyBackedUp, EnvoyStepState.FINISHED);
         ref.read(connectAccountProvider.notifier).updateStep(
             S().finalize_catchAll_connectingAccount, EnvoyStepState.LOADING);
         break;
@@ -677,8 +679,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     );
   }
 
-  Future<void> pairWithPrime(XidDocument payload) async {
-    await BluetoothManager().pair(payload);
+  Future<bool> pairWithPrime(XidDocument payload) async {
+    return await BluetoothManager().pair(payload);
   }
 
   Future<void> showCommunicationModal(BuildContext context) async {

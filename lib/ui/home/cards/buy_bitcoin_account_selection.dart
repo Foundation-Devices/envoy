@@ -8,6 +8,7 @@ import 'package:envoy/ui/components/account_selector.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_loader.dart';
+import 'package:envoy/ui/home/cards/purchase_completed.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -21,10 +22,10 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/ui/components/pop_up.dart';
-import 'package:envoy/ui/components/ramp_widget.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/ui/shield.dart';
 import 'accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
 
@@ -233,13 +234,24 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                                   .buy_bitcoin_accountSelection_modal_heading,
                               S().buy_bitcoin_accountSelection_modal_subheading,
                               S().send_keyboard_address_confirm,
-                              (BuildContext context) {
+                              (BuildContext context) async {
                                 setState(() {
                                   isRampOpen = true;
                                 });
                                 Navigator.pop(context);
-                                RampWidget.showRamp(
-                                    context, selectedAccount!, address!);
+
+                                if (context.mounted) {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .push(
+                                    MaterialPageRoute(builder: (context) {
+                                      return MediaQuery.removePadding(
+                                          context: context,
+                                          child: fullScreenShield(
+                                              PurchaseComplete(
+                                                  selectedAccount!, address!)));
+                                    }),
+                                  );
+                                }
                               },
                               icon: EnvoyIcons.info,
                               checkBoxText: S().component_dontShowAgain,
@@ -258,8 +270,15 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                             setState(() {
                               isRampOpen = true;
                             });
-                            RampWidget.showRamp(
-                                context, selectedAccount!, address!);
+
+                            Navigator.of(context, rootNavigator: true).push(
+                              MaterialPageRoute(builder: (context) {
+                                return MediaQuery.removePadding(
+                                    context: context,
+                                    child: fullScreenShield(PurchaseComplete(
+                                        selectedAccount!, address!)));
+                              }),
+                            );
                           }
                         }
                       },

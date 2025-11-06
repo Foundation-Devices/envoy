@@ -88,6 +88,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   Widget build(BuildContext context) {
     final bool isOnboardingComplete =
         LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
+
     return PopScope(
       child: EnvoyPatternScaffold(
         appBar: AppBar(

@@ -7,8 +7,9 @@ use anyhow::Result;
 use btleplug::api::{Characteristic, ValueNotification, WriteType};
 use btleplug::{api::Peripheral as _, platform::PeripheralId};
 use futures::Stream;
-use log::debug;
+use log::{debug, info};
 use std::pin::Pin;
+use std::time::Duration;
 use tokio::time;
 use tokio::time::Instant;
 use uuid::Uuid;
@@ -87,9 +88,23 @@ impl Device {
         let start = Instant::now();
         let total = data.len();
         for (i, chunk) in data.into_iter().enumerate() {
-            self.peripheral
-                .write(&uart_characteristic, &chunk, WriteType::WithoutResponse)
-                .await?;
+            loop {
+                match tokio::time::timeout(
+                    Duration::from_secs(1),
+                    self.peripheral
+                        .write(&uart_characteristic, &chunk, WriteType::WithoutResponse),
+                )
+                .await
+                {
+                    Ok(res) => {
+                        res?;
+                        break;
+                    }
+                    Err(_) => {
+                        info!("write_all: retrying!");
+                    }
+                }
+            }
 
             let progress = (i + 1) as f64 / total as f64;
             let _ = sink.add(progress);

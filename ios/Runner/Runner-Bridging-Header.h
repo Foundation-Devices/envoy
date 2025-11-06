@@ -12,4 +12,3 @@ char *ur_decoder();
 const struct CharArray *ur_decoder_receive(char *decoder, const char *value);
 
 void tor_hello();
-void backup_hello();

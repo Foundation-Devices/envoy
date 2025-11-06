@@ -5,10 +5,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
-
-// Cache the inapp-country availability
-bool? _isAllowed;
+import 'package:envoy/util/envoy_storage.dart';
 
 class AllowedRegions {
   static Future<Map<String, Map<String, dynamic>>> allowedRegions() async {
@@ -43,24 +40,32 @@ class AllowedRegions {
 
   static const buyDisabled = ["IN", "GB", "IND", "GBR"];
 
-  //returns true if buy is disabled
+  static bool? _buyDisabled;
+
   static Future<bool> checkBuyDisabled() async {
     try {
-      if (_isAllowed != null) {
-        return _isAllowed!;
+      // Return cached result if available
+      if (_buyDisabled != null) return _buyDisabled!;
+
+      final country = await EnvoyStorage().getCountry();
+      if (country == null) {
+        _buyDisabled = false;
+        return _buyDisabled!;
       }
-      if (!(await InAppPurchase.instance.isAvailable())) {
-        return false;
-      }
-      try {
-        String? countryCode = await InAppPurchase.instance.countryCode();
-        _isAllowed = buyDisabled.contains(countryCode.toUpperCase());
-      } catch (e) {
-        _isAllowed = false;
-      }
+
+      final countryCode = country.code.toUpperCase();
+      final canBuy =
+          await AllowedRegions.isRegionAllowed(country.code, country.division);
+
+      // Disable if either region is not allowed or country code is in buyDisabled
+      final isDisabled = !canBuy || buyDisabled.contains(countryCode);
+
+      _buyDisabled = isDisabled;
+      return _buyDisabled!;
     } catch (e) {
-      rethrow;
+      // If something goes wrong, assume not disabled (safe fallback)
+      _buyDisabled = false;
+      return _buyDisabled!;
     }
-    return _isAllowed!;
   }
 }

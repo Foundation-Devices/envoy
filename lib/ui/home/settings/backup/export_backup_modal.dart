@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ui/envoy_button.dart';
-import 'package:flutter/material.dart';
-import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/button.dart';
+import 'package:flutter/material.dart';
 
 class ExportBackupModal extends StatefulWidget {
   final Function? onExport;
@@ -17,6 +17,8 @@ class ExportBackupModal extends StatefulWidget {
 }
 
 class _ExportBackupModalState extends State<ExportBackupModal> {
+  bool _isExporting = false;
+
   @override
   Widget build(BuildContext context) {
     var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -69,8 +71,9 @@ class _ExportBackupModalState extends State<ExportBackupModal> {
               child: Column(
                 children: [
                   EnvoyButton(
-                    S().export_backup_send_CTA2,
-                    type: EnvoyButtonTypes.secondary,
+                    label: S().export_backup_send_CTA2,
+                    type: ButtonType.secondary,
+                    height: 40,
                     onTap: () {
                       Navigator.of(context).pop();
                     },
@@ -78,11 +81,20 @@ class _ExportBackupModalState extends State<ExportBackupModal> {
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: EnvoyButton(
-                      S().export_backup_send_CTA1,
-                      type: EnvoyButtonTypes.primaryModal,
+                      label: S().export_backup_send_CTA1,
+                      type: ButtonType.primary,
+                      height: 40,
+                      state: _isExporting
+                          ? ButtonState.loading
+                          : ButtonState.defaultState,
                       onTap: () async {
-                        Navigator.of(context).pop();
+                        setState(() {
+                          _isExporting = true;
+                        });
                         await EnvoySeed().saveOfflineData();
+                        if (context.mounted) {
+                          Navigator.of(context).pop();
+                        }
                         if (widget.onExport != null) {
                           widget.onExport!();
                         }
