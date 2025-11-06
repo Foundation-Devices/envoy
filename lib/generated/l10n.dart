@@ -60,9 +60,9 @@ class S {
 
   // skipped getter for the 'Pull to sync' key
 
-  /// `Insufficient Funds`
+  /// `Secondary action`
   String get _ {
-    return Intl.message('Insufficient Funds', name: '_', desc: '', args: []);
+    return Intl.message('Secondary action', name: '_', desc: '', args: []);
   }
 
   /// `App Version`
@@ -1392,7 +1392,7 @@ class S {
 
   /// `Non-custodial, peer-to-peer Bitcoin purchases.`
   String
-      get buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl_subheading {
+  get buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl_subheading {
     return Intl.message(
       'Non-custodial, peer-to-peer Bitcoin purchases.',
       name:
@@ -2177,10 +2177,10 @@ class S {
     );
   }
 
-  /// `Change Address`
+  /// `Address`
   String get coindetails_overlay_address {
     return Intl.message(
-      'Change Address',
+      'Address',
       name: 'coindetails_overlay_address',
       desc: '',
       args: [],
@@ -4329,10 +4329,10 @@ class S {
     );
   }
 
-  /// `This encrypted file contains useful wallet data such as labels, accounts, and settings.\n\nThis file is encrypted with your Envoy Seed. Ensure your seed is backed up securely. `
+  /// `This encrypted file contains useful wallet data such as labels, accounts, and settings.\nThis file is encrypted with your Mobile Wallet Seed. Ensure your seed is backed up securely. `
   String get export_backup_modal_subheading {
     return Intl.message(
-      'This encrypted file contains useful wallet data such as labels, accounts, and settings.\n\nThis file is encrypted with your Envoy Seed. Ensure your seed is backed up securely. ',
+      'This encrypted file contains useful wallet data such as labels, accounts, and settings.\nThis file is encrypted with your Mobile Wallet Seed. Ensure your seed is backed up securely. ',
       name: 'export_backup_modal_subheading',
       desc: '',
       args: [],
@@ -4956,11 +4956,31 @@ class S {
 
   /// `Tap any of the above cards to receive Bitcoin.`
   String
-      get hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt {
+  get hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt {
     return Intl.message(
       'Tap any of the above cards to receive Bitcoin.',
       name:
           'hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid QR Code`
+  String get invalid_qr_heading {
+    return Intl.message(
+      'Invalid QR Code',
+      name: 'invalid_qr_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `QR code does not contain a valid Bitcoin transaction (PSBT). Please check and try again.`
+  String get invalid_qr_subheading {
+    return Intl.message(
+      'QR code does not contain a valid Bitcoin transaction (PSBT). Please check and try again.',
+      name: 'invalid_qr_subheading',
       desc: '',
       args: [],
     );
@@ -5678,7 +5698,7 @@ class S {
 
   /// `Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again.`
   String
-      get manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading {
+  get manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading {
     return Intl.message(
       'Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again.',
       name:
@@ -5970,7 +5990,7 @@ class S {
 
   /// `If you continue without a backup file, your wallet settings, additional accounts, Tags and Notes will not be restored.`
   String
-      get manual_setup_recovery_import_backup_modal_fail_connectivity_subheading {
+  get manual_setup_recovery_import_backup_modal_fail_connectivity_subheading {
     return Intl.message(
       'If you continue without a backup file, your wallet settings, additional accounts, Tags and Notes will not be restored.',
       name:
@@ -6032,7 +6052,7 @@ class S {
 
   /// `Carefully re-type your passphrase so Envoy can open your Envoy Backup File.`
   String
-      get manual_setup_recovery_import_backup_re_enter_passphrase_subheading {
+  get manual_setup_recovery_import_backup_re_enter_passphrase_subheading {
     return Intl.message(
       'Carefully re-type your passphrase so Envoy can open your Envoy Backup File.',
       name:
@@ -6124,7 +6144,7 @@ class S {
 
   /// `Passphrases are case and space sensitive. Enter with care.`
   String
-      get manual_setup_verify_seed_12_words_enter_passphrase_modal_subheading {
+  get manual_setup_verify_seed_12_words_enter_passphrase_modal_subheading {
     return Intl.message(
       'Passphrases are case and space sensitive. Enter with care.',
       name:
@@ -6136,7 +6156,7 @@ class S {
 
   /// `[[Passphrases]] are an advanced feature.`
   String
-      get manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2 {
+  get manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2 {
     return Intl.message(
       '[[Passphrases]] are an advanced feature.',
       name:
@@ -6148,7 +6168,7 @@ class S {
 
   /// `If you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.`
   String
-      get manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading {
+  get manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading {
     return Intl.message(
       'If you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.',
       name:
@@ -6170,7 +6190,7 @@ class S {
 
   /// `Please carefully re-enter your passphrase.`
   String
-      get manual_setup_verify_seed_12_words_verify_passphrase_modal_subheading {
+  get manual_setup_verify_seed_12_words_verify_passphrase_modal_subheading {
     return Intl.message(
       'Please carefully re-enter your passphrase.',
       name:
@@ -6332,7 +6352,7 @@ class S {
 
   /// `Pending Android Auto Backup (once daily)`
   String
-      get manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup {
+  get manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup {
     return Intl.message(
       'Pending Android Auto Backup (once daily)',
       name:
@@ -6344,7 +6364,7 @@ class S {
 
   /// `Pending backup to iCloud Keychain`
   String
-      get manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup {
+  get manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup {
     return Intl.message(
       'Pending backup to iCloud Keychain',
       name:
@@ -6413,8 +6433,6 @@ class S {
       args: [],
     );
   }
-
-  // skipped getter for the 'onboarding.connectionChecking.forUpdates' key
 
   /// `If you continue without Magic Backups, you will be responsible for storing your own seed words and backup data.`
   String get onboarding_advancedModal_content {
@@ -7133,6 +7151,36 @@ class S {
       name: 'passport_welcome_screen_subheading',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Color: {passport_color}`
+  String prime_info_color(Object passport_color) {
+    return Intl.message(
+      'Color: $passport_color',
+      name: 'prime_info_color',
+      desc: '',
+      args: [passport_color],
+    );
+  }
+
+  /// `Firmware: {firmware_version}`
+  String prime_info_firmware(Object firmware_version) {
+    return Intl.message(
+      'Firmware: $firmware_version',
+      name: 'prime_info_firmware',
+      desc: '',
+      args: [firmware_version],
+    );
+  }
+
+  /// `Serial Number: {serial_number}`
+  String prime_info_serialNumber(Object serial_number) {
+    return Intl.message(
+      'Serial Number: $serial_number',
+      name: 'prime_info_serialNumber',
+      desc: '',
+      args: [serial_number],
     );
   }
 
