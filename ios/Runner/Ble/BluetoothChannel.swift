@@ -203,13 +203,15 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
         // Ensure we're on the main thread for UI operations
         Task { @MainActor in
-            await presentAccessoryPicker()
+            await presentAccessoryPicker(call: call)
         }
     }
 
     @MainActor
-    private func presentAccessoryPicker() async {
+    private func presentAccessoryPicker(call: FlutterMethodCall) async {
 
+        let arguments = call.arguments as? [String: Any] ?? [:]
+        let isMidnight = (arguments["c"] as? Int ?? 1) == 1
         let passportDescriptor = ASDiscoveryDescriptor()
         passportDescriptor.bluetoothServiceUUID = primeUUID
         passportDescriptor.bluetoothNameSubstring = "Prime"
@@ -218,7 +220,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         passportDescriptor.bluetoothRange = ASDiscoveryDescriptor.Range.default
         // Create picker display item
         //TODO: based on QR show color of the device
-        let productImage = UIImage(named: "prime") ?? UIImage()
+        let productImage = UIImage(named:isMidnight ?  "prime_dark_midgnight_bronze" : "prime_light_arctic_copper") ?? UIImage()
         let passportDisplayItem = ASPickerDisplayItem(
             name: "Passport Prime",
             productImage: productImage,
@@ -250,10 +252,12 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             saveAccessory(accessory: accessory)
         case .activated:
 
-            // Handle session activation - check for existing accessories
             guard let accessory = session.accessories.first else { return }
             saveAccessory(accessory: accessory)
-      
+            if(setupResult != nil){
+                    setupResult!(true)
+                    setupResult = nil
+            }
         case .accessoryRemoved:
             handleAccessoryRemoved()
 
@@ -263,10 +267,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
         case .pickerDidDismiss:
             isPickerPresented = false
-            if(primeAccessory == nil && setupResult != nil){
-                    setupResult!(false)
-                    setupResult = nil
-            }
+          
             print("Accessory picker dismissed")
 
         default:

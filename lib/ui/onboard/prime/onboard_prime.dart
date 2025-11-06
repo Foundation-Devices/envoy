@@ -40,10 +40,17 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   final s = Settings();
   BleConnectState bleConnectState = BleConnectState.idle;
   final regex = RegExp(r'^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$');
+  int colorWay = 1;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        colorWay =
+            GoRouter.of(context).state.uri.queryParameters["c"] as int? ?? 1;
+      });
+    });
   }
 
   Future<void> _connectToPrime() async {
@@ -110,7 +117,8 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         } else {
           await BluetoothManager().getPermissions();
         }
-        final connectionStatus = await BluetoothManager().connect(id: bleId!);
+        final connectionStatus =
+            await BluetoothManager().connect(id: bleId!, colorWay: colorWay);
         //TODO: Maybe this is not needed ?
         await LocalStorage().prefs.setString(primeSerialPref, bleId);
 
@@ -196,8 +204,9 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
           child: Transform.translate(
             offset: const Offset(0, 85),
             child: Image.asset(
-              //TODO: change prime product image based on scanned QR
-              "assets/images/prime_artic_copper.png",
+              colorWay == 1
+                  ? "assets/images/prime_midnight_bronze.png"
+                  : "assets/images/prime_artic_copper.png",
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width * 0.8,
               height: MediaQuery.of(context).size.height * 0.8,
