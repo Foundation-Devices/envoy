@@ -158,7 +158,7 @@ class BluetoothManager extends WidgetsBindingObserver {
     } else {
       // events = bluart.init().asBroadcastStream();
       // Add a small delay to ensure Rust library is fully initialized
-      await Future.delayed(const Duration(milliseconds: 300));
+      // await Future.delayed(const Duration(milliseconds: 300));
     }
 
     if (_qlIdentity == null) {
@@ -516,9 +516,23 @@ class BluetoothManager extends WidgetsBindingObserver {
                                 seedHash: file.seedFingerprint,
                                 payload: file.data);
                         kPrint("Magic Backup Completed! $result");
+                        if (result == true) {
+                          await writeMessage(
+                              api.QuantumLinkMessage_RestoreMagicBackupResult(
+                                  api.RestoreMagicBackupResult.success()));
+                        } else {
+                          await writeMessage(
+                              api.QuantumLinkMessage_RestoreMagicBackupResult(
+                                  api.RestoreMagicBackupResult.error(
+                                      "Failed to upload backup")));
+                        }
                         _collectBackupChunks = null;
                       }
                     } catch (e, stack) {
+                      await writeMessage(
+                          api.QuantumLinkMessage_RestoreMagicBackupResult(
+                              api.RestoreMagicBackupResult.error(
+                                  e.toString())));
                       kPrint("Error collecting backup chunk: $e",
                           stackTrace: stack);
                     }

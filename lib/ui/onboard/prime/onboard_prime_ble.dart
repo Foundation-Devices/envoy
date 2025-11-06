@@ -413,6 +413,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               BluetoothManager().bleId,
               deviceColor);
           kPrint("Got a pairing AccountUpdate device!");
+        }else {
+          kPrint("No pairing response on completed state!");
         }
         resetOnboardingPrimeProviders(ref);
         mainRouter.go(ROUTE_ACCOUNTS_HOME);
