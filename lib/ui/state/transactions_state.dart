@@ -59,8 +59,11 @@ final filteredTransactionsProvider =
 
   List<EnvoyTransaction> transactions = [];
 
-  transactions.addAll(confirmedTransactions.reversed);
-  transactions.addAll(pendingTransactions.reversed);
+  transactions.addAll(pendingTransactions);
+  transactions.addAll(confirmedTransactions);
+
+  // use custom compareTx through compareTo
+  transactions.sort((a, b) => a.compareTo(b));
 
   if (txFilterState.contains(TransactionFilters.sent) &&
       txFilterState.contains(TransactionFilters.received)) {
@@ -78,7 +81,7 @@ final filteredTransactionsProvider =
 
   switch (txSortState) {
     case TransactionSortTypes.newestFirst:
-      transactions = transactions.reversed.toList();
+      // Already sorted by compareTo above
       break;
 
     case TransactionSortTypes.oldestFirst:
@@ -106,64 +109,6 @@ final filteredTransactionsProvider =
 
   return transactions;
 });
-
-// for Activity screen
-final filteredAllTransactionsProvider = Provider<List<EnvoyTransaction>>((ref) {
-  // Global lists for all accounts
-  List<EnvoyTransaction> allPending = [];
-  List<EnvoyTransaction> allConfirmed = [];
-
-  // Iterate through all accounts
-  for (var account in NgAccountManager().accounts) {
-    final accountTxs = ref.watch(transactionsProvider(account.id));
-
-    // Split by confirmation
-    final pending = accountTxs.where((tx) => tx.confirmations < 3).toList();
-    final confirmed = accountTxs.where((tx) => tx.confirmations >= 3).toList();
-
-    // Sort each group by your custom compareTo
-    pending.sort((a, b) => a.compareTo(b));
-    confirmed.sort((a, b) => a.compareTo(b));
-
-    // Merge into global lists (keep them sorted)
-    allPending = _mergeSortedTransactions(allPending, pending);
-    allConfirmed = _mergeSortedTransactions(allConfirmed, confirmed);
-  }
-
-  // Final list: pending first, confirmed below
-  List<EnvoyTransaction> finalList = [];
-  finalList.addAll(allPending);
-  finalList.addAll(allConfirmed);
-
-  return finalList;
-});
-
-/// Merges two sorted transaction lists (based on compareTo)
-List<EnvoyTransaction> _mergeSortedTransactions(
-  List<EnvoyTransaction> existing,
-  List<EnvoyTransaction> incoming,
-) {
-  // Both are sorted ascending according to compareTo
-  final merged = <EnvoyTransaction>[];
-  int i = 0, j = 0;
-
-  while (i < existing.length && j < incoming.length) {
-    final comparison = existing[i].compareTo(incoming[j]);
-    if (comparison <= 0) {
-      merged.add(existing[i]);
-      i++;
-    } else {
-      merged.add(incoming[j]);
-      j++;
-    }
-  }
-
-  // Append any remaining transactions
-  if (i < existing.length) merged.addAll(existing.sublist(i));
-  if (j < incoming.length) merged.addAll(incoming.sublist(j));
-
-  return merged;
-}
 
 //We keep a cache of RBFed transactions so that we can remove the original tx from the list unless they are confirmed
 final rbfBroadCastedTxProvider = StateProvider<List<String>>((ref) => []);
@@ -199,12 +144,7 @@ final allTxProvider = Provider<List<EnvoyTransaction>>((ref) {
     allTransactions.addAll(transactions);
   }
 
-  allTransactions.sort((a, b) {
-    if (a.date == null && b.date == null) return 0;
-    if (a.date == null) return -1;
-    if (b.date == null) return 1;
-    return b.date!.compareTo(a.date!);
-  });
+  allTransactions.sort((a, b) => a.compareTo(b));
 
   return allTransactions;
 });
