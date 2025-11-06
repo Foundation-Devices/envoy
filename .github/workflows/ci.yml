@@ -7,7 +7,8 @@ on:
   workflow_call:
   workflow_dispatch:
 env:
-  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  NIX_CONFIG: access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 jobs:
   nix-check-and-build:
     runs-on: [ self-hosted, Linux, X64 ]
@@ -75,7 +76,11 @@ jobs:
       - run: nix develop --command cargo fmt --all --check
         name: Check Rust formatting
 
-      - run: nix develop --command cargo build
+      - run: |
+          nix develop --command bash -c '
+            git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/";
+            cargo build
+          '
         name: Build Rust libs
 
       - run: nix develop --command flutter test
