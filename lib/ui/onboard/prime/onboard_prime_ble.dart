@@ -655,12 +655,43 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               const SizedBox(height: EnvoySpacing.medium1),
               EnvoyButton(S().component_learnMore,
                   type: EnvoyButtonTypes.tertiary, onTap: () {
-                launchUrl(Uri.parse(
-                    "https://foundation.xyz/2025/01/quantumlink-reinventing-secure-wireless-communication/"));
+                launchUrl(
+                    Uri.parse("https://docs.foundation.xyz/prime/quantumlink"));
               }),
               const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton(S().onboarding_bluetoothIntro_connect, onTap: () {
-                showCommunicationModal(context);
+              EnvoyButton(S().onboarding_bluetoothIntro_connect,
+                  onTap: () async {
+                final qrDecoder = await getQrDecoder();
+
+                if (!context.mounted) return;
+
+                await showScannerDialog(
+                  showInfoDialog: true,
+                  context: context,
+                  onBackPressed: (ctx) {
+                    if (ctx.mounted) Navigator.pop(ctx);
+                  },
+                  decoder: PrimeQlPayloadDecoder(
+                    decoder: qrDecoder,
+                    onScan: (XidDocument payload) async {
+                      // TODO: process XidDocument for connection
+
+                      if (!context.mounted) return;
+
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+
+                      await Future.delayed(const Duration(milliseconds: 200));
+
+                      if (!context.mounted) return;
+                      context.goNamed(ONBOARD_PRIME_PAIR);
+
+                      kPrint("XID payload: $payload");
+                      await pairWithPrime(payload);
+                    },
+                  ),
+                );
               }),
               const SizedBox(height: EnvoySpacing.small),
             ],
@@ -672,174 +703,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
   Future<bool> pairWithPrime(XidDocument payload) async {
     return await BluetoothManager().pair(payload);
-  }
-
-  Future<void> showCommunicationModal(BuildContext context) async {
-    if (!context.mounted) return;
-
-    showEnvoyDialog(
-      context: context,
-      dismissible: false,
-      dialog: QuantumLinkCommunicationInfo(
-        onContinue: () async {
-          final qrDecoder = await getQrDecoder();
-
-          if (!context.mounted) return;
-
-          await showScannerDialog(
-            showInfoDialog: true,
-            context: context,
-            onBackPressed: (ctx) {
-              if (ctx.mounted) Navigator.pop(ctx);
-            },
-            decoder: PrimeQlPayloadDecoder(
-              decoder: qrDecoder,
-              onScan: (XidDocument payload) async {
-                // TODO: process XidDocument for connection
-
-                if (!context.mounted) return;
-
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                }
-
-                await Future.delayed(const Duration(milliseconds: 200));
-
-                if (!context.mounted) return;
-                context.goNamed(ONBOARD_PRIME_PAIR);
-
-                kPrint("XID payload: $payload");
-                await pairWithPrime(payload);
-              },
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-//TODO: implement platform specific copy with appropriate
-class QuantumLinkCommunicationInfo extends StatefulWidget {
-  final GestureTapCallback onContinue;
-
-  const QuantumLinkCommunicationInfo({super.key, required this.onContinue});
-
-  @override
-  State<QuantumLinkCommunicationInfo> createState() =>
-      _QuantumLinkCommunicationInfoState();
-}
-
-class _QuantumLinkCommunicationInfoState
-    extends State<QuantumLinkCommunicationInfo> {
-  final PageController _pageController = PageController();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.8,
-      //TODO: test for different sizes
-      height: 550,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-                child: IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            ),
-            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-            Column(
-              children: [
-                SvgPicture.asset(
-                  "assets/images/bluetooth_communication_info.svg",
-                  height: 100,
-                ),
-                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-                Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.small,
-                        horizontal: EnvoySpacing.xs),
-                    child: Text(
-                      //TODO: copy update
-                      "The Communication is Secured",
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.heading,
-                    )),
-                Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.small,
-                        horizontal: EnvoySpacing.medium1),
-                    child: Container(
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height *
-                            0.6, // max size of PageView
-                      ),
-                      child: SingleChildScrollView(
-                        child: ExpandablePageView(
-                          controller: _pageController,
-                          children: [
-                            LinkText(
-                              text: Platform.isAndroid
-                                  ? S()
-                                      .wallet_security_modal_1_4_android_subheading
-                                  : S()
-                                      .wallet_security_modal_1_4_ios_subheading,
-                              linkStyle: EnvoyTypography.info.copyWith(
-                                color: EnvoyColors.accentPrimary,
-                              ),
-                              onTap: () => launchUrl(
-                                Uri.parse(
-                                  Platform.isAndroid
-                                      ? "https://developer.android.com/guide/topics/data/autobackup"
-                                      : "https://support.apple.com/en-us/HT202303",
-                                ),
-                              ),
-                            ),
-                            Text(
-                              S().backups_erase_wallets_and_backups_modal_2_2_subheading,
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.info,
-                            ),
-                          ],
-                        ),
-                      ),
-                    )),
-                DotsIndicator(
-                  totalPages: 2,
-                  pageController: _pageController,
-                ),
-              ],
-            ),
-            OnboardingButton(
-                type: EnvoyButtonTypes.tertiary,
-                label: S().component_cancel,
-                onTap: () {
-                  context.pop(context);
-                }),
-            OnboardingButton(
-                type: EnvoyButtonTypes.primaryModal,
-                label: S().component_continue,
-                onTap: () {
-                  context.pop();
-                  widget.onContinue();
-                }),
-            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          ],
-        ),
-      ),
-    );
   }
 }
 
@@ -960,8 +823,8 @@ class OnboardBluetoothDenied extends StatelessWidget {
               const SizedBox(height: EnvoySpacing.medium1),
               EnvoyButton(S().component_learnMore,
                   type: EnvoyButtonTypes.tertiary, onTap: () {
-                launchUrl(Uri.parse(
-                    "https://foundation.xyz/2025/01/quantumlink-reinventing-secure-wireless-communication/"));
+                launchUrl(
+                    Uri.parse("https://docs.foundation.xyz/prime/quantumlink"));
               }),
               const SizedBox(height: EnvoySpacing.medium1),
               EnvoyButton(S().onboarding_bluetoothDisabled_enable, onTap: () {
