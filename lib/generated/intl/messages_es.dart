@@ -53,10 +53,16 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m11(amount, total_amount) =>
       "Re-sincronizando tus cuentas.\nPor favor, no cierres Envoy.\n\n${amount} de ${total_amount} sincronizado";
 
-  static String m12(AccountName) =>
+  static String m12(passport_color) => "Color: ${passport_color}";
+
+  static String m13(firmware_version) => "Firmware: ${firmware_version}";
+
+  static String m14(serial_number) => "Serial Number: ${serial_number}";
+
+  static String m15(AccountName) =>
       "Navigate to ${AccountName} on Passport, choose ‘Account Tools’ then ‘Verify Address’ and scan the QR code below.";
 
-  static String m13(AccountName) =>
+  static String m16(AccountName) =>
       "Tap the Account ${AccountName} on Passport, choose ‘Verify Address’ and scan the QR code below.";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -1505,6 +1511,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Pulsa cualquiera de las tarjetas anteriores para recibir Bitcoin.",
         ),
+        "invalid_qr_heading": MessageLookupByLibrary.simpleMessage(
+          "Invalid QR Code",
+        ),
+        "invalid_qr_subheading": MessageLookupByLibrary.simpleMessage(
+          "QR code does not contain a valid Bitcoin transaction (PSBT). Please check and try again.",
+        ),
         "launch_screen_faceID_fail_CTA": MessageLookupByLibrary.simpleMessage(
           "Intentar de Nuevo",
         ),
@@ -2222,6 +2234,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Envoy ofrece una configuración segura de Passport, actualizaciones de firmware sencillas y una experiencia de cartera Bitcoin muy zen.",
         ),
+        "prime_info_color": m12,
+        "prime_info_firmware": m13,
+        "prime_info_serialNumber": m14,
         "privacySetting_nodeConnected": MessageLookupByLibrary.simpleMessage(
           "Nodo Conectado",
         ),
@@ -2368,8 +2383,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "receive_tx_list_transfer": MessageLookupByLibrary.simpleMessage(
           "Transferir",
         ),
-        "receive_verifyModalCore_content": m12,
-        "receive_verifyModalPrime_content": m13,
+        "receive_verifyModalCore_content": m15,
+        "receive_verifyModalPrime_content": m16,
         "recovery_scenario_Android_instruction1":
             MessageLookupByLibrary.simpleMessage(
           "Inicia sesión en Google y restaura tus datos de copia de seguridad",
