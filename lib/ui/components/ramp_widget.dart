@@ -14,8 +14,6 @@ import 'package:ramp_flutter/onramp_purchase.dart';
 import 'package:ramp_flutter/ramp_flutter.dart';
 import 'package:ramp_flutter/send_crypto_payload.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/ui/home/cards/purchase_completed.dart';
-import 'package:envoy/ui/shield.dart';
 import 'package:envoy/generated/l10n.dart';
 
 class RampWidget {
@@ -76,15 +74,15 @@ class RampWidget {
         rampFee: rampFee,
         note: S().ramp_note);
 
-    if (context.mounted) {
-      Navigator.of(context, rootNavigator: true).push(
-        MaterialPageRoute(builder: (context) {
-          return MediaQuery.removePadding(
-              context: context,
-              child: fullScreenShield(PurchaseComplete(account)));
-        }),
-      );
-    }
+    // if (context.mounted) {
+    //   Navigator.of(context, rootNavigator: true).push(
+    //     MaterialPageRoute(builder: (context) {
+    //       return MediaQuery.removePadding(
+    //           context: context,
+    //           child: fullScreenShield(PurchaseComplete(account)));
+    //     }),
+    //   );
+    // }
   }
 
   static void onSendCryptoRequested(SendCryptoPayload payload) {
