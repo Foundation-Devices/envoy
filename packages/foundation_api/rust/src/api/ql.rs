@@ -20,7 +20,6 @@ use foundation_api::firmware::{split_update_into_chunks, FirmwareFetchEvent};
 use foundation_api::message::{EnvoyMessage, PassportMessage, QuantumLinkMessage};
 use foundation_api::quantum_link::{ARIDCache, QuantumLink, QuantumLinkIdentity};
 use log::debug;
-use sha2::Sha256;
 
 #[frb(opaque)]
 pub struct EnvoyMasterDechunker {
@@ -275,19 +274,15 @@ pub fn push_backup_chunk(
 
     let is_last = chunk.is_last();
 
-    let mut hasher = Sha256::new();
-    hasher.update(chunk);
-    let hash = hasher.finalize();
-    let hash_hex = hash
-        .iter()
-        .map(|b| format!("{:02x}", b))
-        .collect::<String>();
-    log::info!("pushed backup chunk {} {hash_hex}", this.next_chunk_index);
+    let hash = hash_data(&chunk.data);
+    log::info!("pushed backup chunk {} {hash}", this.next_chunk_index);
 
     this.data.extend(chunk.data);
     this.next_chunk_index += 1;
 
     if is_last {
+        let hash = hash_data(&this.data);
+        log::info!("full backup hash {hash}");
         Ok(Some(PrimeBackupFile {
             data: this.data.clone(),
             seed_fingerprint: this.seed_fingerprint,
@@ -295,6 +290,17 @@ pub fn push_backup_chunk(
     } else {
         Ok(None)
     }
+}
+
+fn hash_data(data: &[u8]) -> String {
+    use sha2::Digest;
+    use sha2::Sha256;
+    let mut hasher = Sha256::new();
+    hasher.update(data);
+    let hash = hasher.finalize();
+    hash.iter()
+        .map(|b| format!("{:02x}", b))
+        .collect::<String>()
 }
 
 #[cfg(test)]
