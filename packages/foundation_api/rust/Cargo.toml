@@ -20,6 +20,7 @@ btp = { git = "https://github.com/Foundation-Devices/foundation-api", tag = "3.8
 foundation-ur = { git = "https://github.com/Foundation-Devices/foundation-rs" }
 #minicbor = { version = "0.24.2", features = ["alloc"] }
 bc-xid = "0.5.0"
+sha2 = "0.10"
 
 bc-envelope = { version = "0.23.0", default-features = false, features = [
     "multithreaded",

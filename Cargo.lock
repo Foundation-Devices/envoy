@@ -3494,6 +3494,7 @@ dependencies = [
  "foundation-ur 0.4.0 (git+https://github.com/Foundation-Devices/foundation-rs)",
  "gstp",
  "log",
+ "sha2",
  "tokio",
 ]
 

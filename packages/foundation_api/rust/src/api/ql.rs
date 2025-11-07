@@ -20,6 +20,7 @@ use foundation_api::firmware::{split_update_into_chunks, FirmwareFetchEvent};
 use foundation_api::message::{EnvoyMessage, PassportMessage, QuantumLinkMessage};
 use foundation_api::quantum_link::{ARIDCache, QuantumLink, QuantumLinkIdentity};
 use log::debug;
+use sha2::Sha256;
 
 #[frb(opaque)]
 pub struct EnvoyMasterDechunker {
@@ -244,8 +245,10 @@ pub struct PrimeBackupFile {
     pub seed_fingerprint: SeedFingerprint,
 }
 
-
-pub fn collect_backup_chunks(seed_fingerprint: SeedFingerprint, total_chunks: u32) -> CollectBackupChunks {
+pub fn collect_backup_chunks(
+    seed_fingerprint: SeedFingerprint,
+    total_chunks: u32,
+) -> CollectBackupChunks {
     CollectBackupChunks {
         seed_fingerprint,
         total_chunks: total_chunks as usize,
@@ -254,24 +257,35 @@ pub fn collect_backup_chunks(seed_fingerprint: SeedFingerprint, total_chunks: u3
     }
 }
 
-
-pub fn push_backup_chunk(this: &mut   CollectBackupChunks, chunk: BackupChunk) -> anyhow::Result<Option<PrimeBackupFile>> {
+pub fn push_backup_chunk(
+    this: &mut CollectBackupChunks,
+    chunk: BackupChunk,
+) -> anyhow::Result<Option<PrimeBackupFile>> {
     if this.next_chunk_index == this.total_chunks {
         bail!("all chunks already received")
     }
 
     if this.next_chunk_index != chunk.chunk_index as usize {
         bail!(
-                "invalid chunk index, expected {} got {}",
-                this.next_chunk_index,
-                chunk.chunk_index
-            );
+            "invalid chunk index, expected {} got {}",
+            this.next_chunk_index,
+            chunk.chunk_index
+        );
     }
 
     let is_last = chunk.is_last();
 
-    this.next_chunk_index += 1;
+    let mut hasher = Sha256::new();
+    hasher.update(chunk);
+    let hash = hasher.finalize();
+    let hash_hex = hash
+        .iter()
+        .map(|b| format!("{:02x}", b))
+        .collect::<String>();
+    log::info!("pushed backup chunk {} {hash_hex}", this.next_chunk_index);
+
     this.data.extend(chunk.data);
+    this.next_chunk_index += 1;
 
     if is_last {
         Ok(Some(PrimeBackupFile {
@@ -282,7 +296,6 @@ pub fn push_backup_chunk(this: &mut   CollectBackupChunks, chunk: BackupChunk) -
         Ok(None)
     }
 }
-
 
 #[cfg(test)]
 mod tests {
