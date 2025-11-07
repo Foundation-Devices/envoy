@@ -275,7 +275,11 @@ pub fn push_backup_chunk(
     let is_last = chunk.is_last();
 
     let hash = hash_data(&chunk.data);
-    log::info!("pushed backup chunk {} {hash}", this.next_chunk_index);
+    log::info!(
+        "pushed backup chunk {} of {} chunks {hash} ",
+        this.next_chunk_index,
+        this.total_chunks
+    );
 
     this.data.extend(chunk.data);
     this.next_chunk_index += 1;
