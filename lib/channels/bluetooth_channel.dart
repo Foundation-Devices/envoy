@@ -118,9 +118,10 @@ class BluetoothChannel {
   /// Returns the BluetoothConnectionStatus after pairing and connecting
   /// on IOS this will show the accessory setup sheet
   /// on Android this will initiate the android bonding dialog
-  Future<DeviceStatus> connect(String deviceId) async {
+  Future<DeviceStatus> connect(String deviceId, int colorWay) async {
     if (Platform.isIOS) {
-      final result = await bleMethodChannel.invokeMethod("showAccessorySetup");
+      final result = await bleMethodChannel
+          .invokeMethod("showAccessorySetup", {"c": colorWay});
       if (result != true) {
         throw Exception("User cancelled accessory setup");
       }

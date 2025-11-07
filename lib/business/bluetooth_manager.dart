@@ -451,7 +451,7 @@ class BluetoothManager extends WidgetsBindingObserver {
     }
   }
 
-  Future<bool> connect({required String id}) async {
+  Future<bool> connect({required String id, int colorWay = 1}) async {
     if (_qlIdentity == null) {
       await _generateQlIdentity();
     }
@@ -462,7 +462,7 @@ class BluetoothManager extends WidgetsBindingObserver {
     // });
 
     // final pid = await _bluetoothChannel.getConnectedPeripheralID();
-    final connectionEvent = await BluetoothChannel().connect(id);
+    final connectionEvent = await BluetoothChannel().connect(id, colorWay);
     kPrint("Connection event: $connectionEvent");
     await Future.delayed(const Duration(milliseconds: 900));
     bleId = id;

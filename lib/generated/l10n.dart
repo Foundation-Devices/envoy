@@ -60,9 +60,9 @@ class S {
 
   // skipped getter for the 'Pull to sync' key
 
-  /// `Insufficient Funds`
+  /// `Secondary action`
   String get _ {
-    return Intl.message('Insufficient Funds', name: '_', desc: '', args: []);
+    return Intl.message('Secondary action', name: '_', desc: '', args: []);
   }
 
   /// `App Version`
@@ -2177,10 +2177,10 @@ class S {
     );
   }
 
-  /// `Change Address`
+  /// `Address`
   String get coindetails_overlay_address {
     return Intl.message(
-      'Change Address',
+      'Address',
       name: 'coindetails_overlay_address',
       desc: '',
       args: [],
@@ -4329,10 +4329,10 @@ class S {
     );
   }
 
-  /// `This encrypted file contains useful wallet data such as labels, accounts, and settings.\n\nThis file is encrypted with your Envoy Seed. Ensure your seed is backed up securely. `
+  /// `This encrypted file contains useful wallet data such as labels, accounts, and settings.\nThis file is encrypted with your Mobile Wallet Seed. Ensure your seed is backed up securely. `
   String get export_backup_modal_subheading {
     return Intl.message(
-      'This encrypted file contains useful wallet data such as labels, accounts, and settings.\n\nThis file is encrypted with your Envoy Seed. Ensure your seed is backed up securely. ',
+      'This encrypted file contains useful wallet data such as labels, accounts, and settings.\nThis file is encrypted with your Mobile Wallet Seed. Ensure your seed is backed up securely. ',
       name: 'export_backup_modal_subheading',
       desc: '',
       args: [],
@@ -4961,6 +4961,26 @@ class S {
       'Tap any of the above cards to receive Bitcoin.',
       name:
           'hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid QR Code`
+  String get invalid_qr_heading {
+    return Intl.message(
+      'Invalid QR Code',
+      name: 'invalid_qr_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `QR code does not contain a valid Bitcoin transaction (PSBT). Please check and try again.`
+  String get invalid_qr_subheading {
+    return Intl.message(
+      'QR code does not contain a valid Bitcoin transaction (PSBT). Please check and try again.',
+      name: 'invalid_qr_subheading',
       desc: '',
       args: [],
     );
@@ -6414,8 +6434,6 @@ class S {
     );
   }
 
-  // skipped getter for the 'onboarding.connectionChecking.forUpdates' key
-
   /// `If you continue without Magic Backups, you will be responsible for storing your own seed words and backup data.`
   String get onboarding_advancedModal_content {
     return Intl.message(
@@ -7133,6 +7151,36 @@ class S {
       name: 'passport_welcome_screen_subheading',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Color: {passport_color}`
+  String prime_info_color(Object passport_color) {
+    return Intl.message(
+      'Color: $passport_color',
+      name: 'prime_info_color',
+      desc: '',
+      args: [passport_color],
+    );
+  }
+
+  /// `Firmware: {firmware_version}`
+  String prime_info_firmware(Object firmware_version) {
+    return Intl.message(
+      'Firmware: $firmware_version',
+      name: 'prime_info_firmware',
+      desc: '',
+      args: [firmware_version],
+    );
+  }
+
+  /// `Serial Number: {serial_number}`
+  String prime_info_serialNumber(Object serial_number) {
+    return Intl.message(
+      'Serial Number: $serial_number',
+      name: 'prime_info_serialNumber',
+      desc: '',
+      args: [serial_number],
     );
   }
 
