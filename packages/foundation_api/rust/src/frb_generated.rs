@@ -45,7 +45,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 334658129;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 797499272;
 
 // Section: executor
 
@@ -53,6 +53,52 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
+fn wire__crate__api__ql__CollectBackupChunks_auto_accessor_get_backup_hash_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "CollectBackupChunks_auto_accessor_get_backup_hash",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CollectBackupChunks>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok(api_that_guard.backup_hash.clone())?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
 fn wire__crate__api__ql__CollectBackupChunks_auto_accessor_get_data_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -232,6 +278,57 @@ fn wire__crate__api__ql__CollectBackupChunks_auto_accessor_get_total_chunks_impl
                 }
                 let api_that_guard = api_that_guard.unwrap();
                 let output_ok = Result::<_, ()>::Ok(api_that_guard.total_chunks.clone())?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__ql__CollectBackupChunks_auto_accessor_set_backup_hash_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "CollectBackupChunks_auto_accessor_set_backup_hash",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CollectBackupChunks>,
+            >>::sse_decode(&mut deserializer);
+            let api_backup_hash = <[u8; 32]>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, true,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                        _ => unreachable!(),
+                    }
+                }
+                let mut api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok({
+                    {
+                        api_that_guard.backup_hash = api_backup_hash;
+                    };
+                })?;
                 Ok(output_ok)
             })())
         },
@@ -659,12 +756,14 @@ fn wire__crate__api__ql__collect_backup_chunks_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_seed_fingerprint = <[u8; 32]>::sse_decode(&mut deserializer);
             let api_total_chunks = <u32>::sse_decode(&mut deserializer);
+            let api_backup_hash = <[u8; 32]>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
                     let output_ok = Result::<_, ()>::Ok(crate::api::ql::collect_backup_chunks(
                         api_seed_fingerprint,
                         api_total_chunks,
+                        api_backup_hash,
                     ))?;
                     Ok(output_ok)
                 })())
@@ -1825,7 +1924,6 @@ const _: fn() = || {
         foundation_api::api::backup::RestoreMagicBackupEvent::Starting(field0) => {
             let _: foundation_api::api::backup::BackupMetadata = field0;
         }
-        foundation_api::api::backup::RestoreMagicBackupEvent::Downloading => {}
         foundation_api::api::backup::RestoreMagicBackupEvent::Chunk(field0) => {
             let _: foundation_api::api::backup::BackupChunk = field0;
         }
@@ -1884,6 +1982,7 @@ const _: fn() = || {
         let StartMagicBackup = None::<foundation_api::api::backup::StartMagicBackup>.unwrap();
         let _: [u8; 32] = StartMagicBackup.seed_fingerprint;
         let _: u32 = StartMagicBackup.total_chunks;
+        let _: [u8; 32] = StartMagicBackup.hash;
     }
     match None::<foundation_api::api::scv::VerificationResult>.unwrap() {
         foundation_api::api::scv::VerificationResult::Success => {}
@@ -3002,14 +3101,11 @@ impl SseDecode for foundation_api::api::backup::RestoreMagicBackupEvent {
                 return foundation_api::api::backup::RestoreMagicBackupEvent::Starting(var_field0);
             }
             2 => {
-                return foundation_api::api::backup::RestoreMagicBackupEvent::Downloading;
-            }
-            3 => {
                 let mut var_field0 =
                     <foundation_api::api::backup::BackupChunk>::sse_decode(deserializer);
                 return foundation_api::api::backup::RestoreMagicBackupEvent::Chunk(var_field0);
             }
-            4 => {
+            3 => {
                 let mut var_field0 = <String>::sse_decode(deserializer);
                 return foundation_api::api::backup::RestoreMagicBackupEvent::Error(var_field0);
             }
@@ -3139,9 +3235,11 @@ impl SseDecode for foundation_api::api::backup::StartMagicBackup {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_seedFingerprint = <[u8; 32]>::sse_decode(deserializer);
         let mut var_totalChunks = <u32>::sse_decode(deserializer);
+        let mut var_hash = <[u8; 32]>::sse_decode(deserializer);
         return foundation_api::api::backup::StartMagicBackup {
             seed_fingerprint: var_seedFingerprint,
             total_chunks: var_totalChunks,
+            hash: var_hash,
         };
     }
 }
@@ -3222,26 +3320,26 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        13 => wire__crate__api__ql__collect_backup_chunks_impl(port, ptr, rust_vec_len, data_len),
-        14 => wire__crate__api__ql__decode_impl(port, ptr, rust_vec_len, data_len),
-        15 => wire__crate__api__qr__decode_ble_message_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire__crate__api__qr__decode_qr_impl(port, ptr, rust_vec_len, data_len),
-        17 => wire__crate__api__ql__deserialize_ql_identity_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire__crate__api__ql__deserialize_xid_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire__crate__api__ql__encode_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire__crate__api__ql__generate_ql_identity_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire__crate__api__ql__get_arid_cache_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire__crate__api__ql__get_decoder_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire__crate__api__qr__get_qr_decoder_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire__crate__api__qr__init_app_impl(port, ptr, rust_vec_len, data_len),
-        26 => wire__crate__api__ql__push_backup_chunk_impl(port, ptr, rust_vec_len, data_len),
-        27 => wire__crate__api__ql__serialize_ql_identity_impl(port, ptr, rust_vec_len, data_len),
-        28 => wire__crate__api__ql__serialize_xid_impl(port, ptr, rust_vec_len, data_len),
-        29 => wire__crate__api__ql__serialize_xid_document_impl(port, ptr, rust_vec_len, data_len),
-        30 => {
+        15 => wire__crate__api__ql__collect_backup_chunks_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire__crate__api__ql__decode_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire__crate__api__qr__decode_ble_message_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire__crate__api__qr__decode_qr_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire__crate__api__ql__deserialize_ql_identity_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire__crate__api__ql__deserialize_xid_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire__crate__api__ql__encode_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire__crate__api__ql__generate_ql_identity_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire__crate__api__ql__get_arid_cache_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire__crate__api__ql__get_decoder_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire__crate__api__qr__get_qr_decoder_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire__crate__api__qr__init_app_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire__crate__api__ql__push_backup_chunk_impl(port, ptr, rust_vec_len, data_len),
+        29 => wire__crate__api__ql__serialize_ql_identity_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire__crate__api__ql__serialize_xid_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire__crate__api__ql__serialize_xid_document_impl(port, ptr, rust_vec_len, data_len),
+        32 => {
             wire__crate__api__ql__split_backup_into_chunks_impl(port, ptr, rust_vec_len, data_len)
         }
-        31 => wire__crate__api__ql__split_fw_update_into_chunks_impl(
+        33 => wire__crate__api__ql__split_fw_update_into_chunks_impl(
             port,
             ptr,
             rust_vec_len,
@@ -3259,67 +3357,77 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_get_data_impl(
+        1 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_get_backup_hash_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        2 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_get_next_chunk_index_impl(
+        2 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_get_data_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        3 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_get_seed_fingerprint_impl(
+        3 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_get_next_chunk_index_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        4 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_get_total_chunks_impl(
+        4 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_get_seed_fingerprint_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        5 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_set_data_impl(
+        5 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_get_total_chunks_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        6 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_set_next_chunk_index_impl(
+        6 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_set_backup_hash_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        7 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_set_seed_fingerprint_impl(
+        7 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_set_data_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_set_total_chunks_impl(
+        8 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_set_next_chunk_index_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        9 => wire__crate__api__ql__PrimeBackupFile_auto_accessor_get_data_impl(
+        9 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_set_seed_fingerprint_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        10 => wire__crate__api__ql__PrimeBackupFile_auto_accessor_get_seed_fingerprint_impl(
+        10 => wire__crate__api__ql__CollectBackupChunks_auto_accessor_set_total_chunks_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        11 => wire__crate__api__ql__PrimeBackupFile_auto_accessor_set_data_impl(
+        11 => wire__crate__api__ql__PrimeBackupFile_auto_accessor_get_data_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        12 => wire__crate__api__ql__PrimeBackupFile_auto_accessor_set_seed_fingerprint_impl(
+        12 => wire__crate__api__ql__PrimeBackupFile_auto_accessor_get_seed_fingerprint_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        24 => wire__crate__api__qr__greet_impl(ptr, rust_vec_len, data_len),
+        13 => wire__crate__api__ql__PrimeBackupFile_auto_accessor_set_data_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        14 => wire__crate__api__ql__PrimeBackupFile_auto_accessor_set_seed_fingerprint_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        26 => wire__crate__api__qr__greet_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -4493,14 +4601,11 @@ impl flutter_rust_bridge::IntoDart
             foundation_api::api::backup::RestoreMagicBackupEvent::Starting(field0) => {
                 [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
-            foundation_api::api::backup::RestoreMagicBackupEvent::Downloading => {
-                [2.into_dart()].into_dart()
-            }
             foundation_api::api::backup::RestoreMagicBackupEvent::Chunk(field0) => {
-                [3.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+                [2.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
             foundation_api::api::backup::RestoreMagicBackupEvent::Error(field0) => {
-                [4.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+                [3.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
             _ => {
                 unimplemented!("");
@@ -4703,6 +4808,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::backup::S
         [
             self.0.seed_fingerprint.into_into_dart().into_dart(),
             self.0.total_chunks.into_into_dart().into_dart(),
+            self.0.hash.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -5647,15 +5753,12 @@ impl SseEncode for foundation_api::api::backup::RestoreMagicBackupEvent {
                 <i32>::sse_encode(1, serializer);
                 <foundation_api::api::backup::BackupMetadata>::sse_encode(field0, serializer);
             }
-            foundation_api::api::backup::RestoreMagicBackupEvent::Downloading => {
-                <i32>::sse_encode(2, serializer);
-            }
             foundation_api::api::backup::RestoreMagicBackupEvent::Chunk(field0) => {
-                <i32>::sse_encode(3, serializer);
+                <i32>::sse_encode(2, serializer);
                 <foundation_api::api::backup::BackupChunk>::sse_encode(field0, serializer);
             }
             foundation_api::api::backup::RestoreMagicBackupEvent::Error(field0) => {
-                <i32>::sse_encode(4, serializer);
+                <i32>::sse_encode(3, serializer);
                 <String>::sse_encode(field0, serializer);
             }
             _ => {
@@ -5764,6 +5867,7 @@ impl SseEncode for foundation_api::api::backup::StartMagicBackup {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <[u8; 32]>::sse_encode(self.seed_fingerprint, serializer);
         <u32>::sse_encode(self.total_chunks, serializer);
+        <[u8; 32]>::sse_encode(self.hash, serializer);
     }
 }
 

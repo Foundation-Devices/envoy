@@ -4,7 +4,6 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:backup/backup.dart' as backup_lib;
 import 'package:bluart/bluart.dart' as bluart;
@@ -30,7 +29,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:ngwallet/ngwallet.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tor/tor.dart';
 import 'package:uuid/uuid.dart';
@@ -509,23 +507,17 @@ class BluetoothManager extends WidgetsBindingObserver {
                   final payload = event.field0;
                   kPrint("Magic Backup Start Event: $payload");
                   _collectBackupChunks = await api.collectBackupChunks(
-                    seedFingerprint: payload.seedFingerprint,
-                    totalChunks: payload.totalChunks,
-                  );
+                      seedFingerprint: payload.seedFingerprint,
+                      totalChunks: payload.totalChunks,
+                      backupHash: payload.hash);
                 case api.CreateMagicBackupEvent_Chunk():
                   final payload = event.field0;
-                  kPrint(
-                      "Magic Backup Chunk Event: index ${payload.chunkIndex} of ${_collectBackupChunks?.totalChunks}");
                   if (_collectBackupChunks != null) {
                     try {
                       final api.PrimeBackupFile? file =
                           await api.pushBackupChunk(
                               chunk: payload, this_: _collectBackupChunks!);
                       if (file != null) {
-                        kPrint(
-                            "Collected all backup chunks! Uploading... with seed hash ${file.seedFingerprint}");
-                        kPrint(
-                            "Collected all backup $file data length: ${file.data.length}");
                         final result =
                             await backup_lib.Backup.performPrimeBackup(
                                 serverUrl: Settings().envoyServerAddress,
@@ -533,8 +525,6 @@ class BluetoothManager extends WidgetsBindingObserver {
                                 seedHash: file.seedFingerprint,
                                 payload: file.data);
                         final digest = sha256.convert(file.data);
-                        kPrint("🔥 Magic Backup Completed! $result"
-                            "Sha256: ${digest.toString()},");
                         if (result == true) {
                           await writeMessage(
                               api.QuantumLinkMessage_RestoreMagicBackupResult(

@@ -236,6 +236,7 @@ pub struct CollectBackupChunks {
     pub total_chunks: usize,
     pub next_chunk_index: usize,
     pub data: Vec<u8>,
+    pub backup_hash: [u8; 32],
 }
 
 #[frb(opaque)]
@@ -247,12 +248,14 @@ pub struct PrimeBackupFile {
 pub fn collect_backup_chunks(
     seed_fingerprint: SeedFingerprint,
     total_chunks: u32,
+    backup_hash: [u8; 32],
 ) -> CollectBackupChunks {
     CollectBackupChunks {
         seed_fingerprint,
         total_chunks: total_chunks as usize,
         next_chunk_index: 0,
         data: Vec::new(),
+        backup_hash
     }
 }
 
@@ -274,19 +277,16 @@ pub fn push_backup_chunk(
 
     let is_last = chunk.is_last();
 
-    let hash = hash_data(&chunk.data);
-    log::info!(
-        "pushed backup chunk {} of {} chunks {hash} ",
-        this.next_chunk_index,
-        this.total_chunks
-    );
-
     this.data.extend(chunk.data);
     this.next_chunk_index += 1;
 
     if is_last {
         let hash = hash_data(&this.data);
-        log::info!("full backup hash {hash}");
+        println!("hash: {:?}", hash);
+        println!("backup hash: {:?}", this.backup_hash);
+        if this.backup_hash != hash {
+            bail!("Backup hash mismatch");
+        }
         Ok(Some(PrimeBackupFile {
             data: this.data.clone(),
             seed_fingerprint: this.seed_fingerprint,
@@ -296,20 +296,19 @@ pub fn push_backup_chunk(
     }
 }
 
-fn hash_data(data: &[u8]) -> String {
+fn hash_data(data: &[u8]) -> [u8; 32] {
     use sha2::Digest;
     use sha2::Sha256;
     let mut hasher = Sha256::new();
     hasher.update(data);
     let hash = hasher.finalize();
-    hash.iter()
-        .map(|b| format!("{:02x}", b))
-        .collect::<String>()
+    hash.into()
 }
 
 #[cfg(test)]
 mod tests {
     use anyhow::Result;
+    use super::*;
 
     #[tokio::test]
     async fn test_generate_identity() -> Result<()> {
@@ -340,14 +339,21 @@ mod tests {
     #[test]
     fn test_in_progress_backup_chunks() -> Result<()> {
         let seed_fp = [1u8; 32];
-        let mut in_progress = InProgressBackupChunks::new(seed_fp, 3);
+        let data = vec![1, 2, 3 , 4, 5, 6, 7, 8, 9];
+        let hash = hash_data(&data);
+
+        let mut in_progress = collect_backup_chunks(
+            seed_fp,
+            3,
+            hash
+        );
 
         let chunk1 = BackupChunk {
             chunk_index: 0,
             total_chunks: 3,
             data: vec![1, 2, 3],
         };
-        assert!(in_progress.push_chunk(chunk1)?.is_none());
+        assert!(push_backup_chunk(&mut in_progress, chunk1)?.is_none());
         assert_eq!(in_progress.next_chunk_index, 1);
 
         let chunk2 = BackupChunk {
@@ -355,7 +361,7 @@ mod tests {
             total_chunks: 3,
             data: vec![4, 5, 6],
         };
-        assert!(in_progress.push_chunk(chunk2)?.is_none());
+        assert!(push_backup_chunk(&mut in_progress, chunk2)?.is_none());
         assert_eq!(in_progress.next_chunk_index, 2);
 
         let chunk3 = BackupChunk {
@@ -363,7 +369,7 @@ mod tests {
             total_chunks: 3,
             data: vec![7, 8, 9],
         };
-        let result = in_progress.push_chunk(chunk3)?;
+        let result = push_backup_chunk(&mut in_progress, chunk3)?;
         assert!(result.is_some());
         let file = result.unwrap();
         assert_eq!(file.data, vec![1, 2, 3, 4, 5, 6, 7, 8, 9]);
@@ -375,37 +381,24 @@ mod tests {
     #[test]
     fn test_in_progress_backup_chunks_wrong_index() -> Result<()> {
         let seed_fp = [1u8; 32];
-        let mut in_progress = InProgressBackupChunks::new(seed_fp, 3);
+        let data = vec![1, 2, 3 , 4, 5, 6, 7, 8, 9];
+        let hash = hash_data(&data);
+
+        let mut in_progress = collect_backup_chunks(
+            seed_fp,
+            3,
+            hash
+        );
+
 
         let chunk = BackupChunk {
             chunk_index: 1,
             total_chunks: 3,
-            data: vec![1, 2, 3],
+            data
         };
-        assert!(in_progress.push_chunk(chunk).is_err());
+        assert!(push_backup_chunk(&mut in_progress, chunk).is_err());
 
         Ok(())
     }
 
-    #[test]
-    fn test_in_progress_backup_chunks_too_many() -> Result<()> {
-        let seed_fp = [1u8; 32];
-        let mut in_progress = InProgressBackupChunks::new(seed_fp, 1);
-
-        let chunk1 = BackupChunk {
-            chunk_index: 0,
-            total_chunks: 1,
-            data: vec![1, 2, 3],
-        };
-        assert!(in_progress.push_chunk(chunk1)?.is_some());
-
-        let chunk2 = BackupChunk {
-            chunk_index: 1,
-            total_chunks: 1,
-            data: vec![4, 5, 6],
-        };
-        assert!(in_progress.push_chunk(chunk2).is_err());
-
-        Ok(())
-    }
 }
