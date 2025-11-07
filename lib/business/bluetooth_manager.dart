@@ -4,9 +4,11 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:backup/backup.dart' as backup_lib;
 import 'package:bluart/bluart.dart' as bluart;
+import 'package:crypto/crypto.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
@@ -28,6 +30,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:ngwallet/ngwallet.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tor/tor.dart';
 import 'package:uuid/uuid.dart';
@@ -138,7 +141,7 @@ class BluetoothManager extends WidgetsBindingObserver {
 
     kPrint("QL Identity: $_qlIdentity");
 
-    await restoreQuantumLinkIdentity();
+    // await restoreQuantumLinkIdentity();
     _aridCache = await api.getAridCache();
     kPrint("QL Identity: $_qlIdentity");
     initBluetooth();
@@ -168,6 +171,17 @@ class BluetoothManager extends WidgetsBindingObserver {
     _listenForAccountUpdate();
     _listenForShardMessages();
     _listenToWriteProgress();
+
+    Devices().getPrimeDevices.forEach((Device device) async {
+      if (device.xid != null) {
+        kPrint("Restoring device XID for device ${device.name}");
+        final api.XidDocument recipientXid = await api.deserializeXid(
+          data: device.xid!,
+        );
+        _recipientXid = recipientXid;
+        kPrint("Xid restored: $_recipientXid");
+      }
+    });
   }
 
   void _listenToWriteProgress() {
@@ -419,9 +433,12 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   Future<void> addDevice(String serialNumber, String firmwareVersion,
       String bleId, DeviceColor deviceColor) async {
+    final recipientXid =
+        await api.serializeXidDocument(xidDocument: _recipientXid!);
+
     Devices().add(Device("Prime", DeviceType.passportPrime, serialNumber,
         DateTime.now(), firmwareVersion, EnvoyColors.listAccountTileColors[0],
-        bleId: bleId, deviceColor: deviceColor));
+        bleId: bleId, deviceColor: deviceColor, xid: recipientXid));
   }
 
   Future<void> removeConnectedDevice() async {
@@ -515,7 +532,9 @@ class BluetoothManager extends WidgetsBindingObserver {
                                 proxyPort: Tor.instance.port,
                                 seedHash: file.seedFingerprint,
                                 payload: file.data);
-                        kPrint("Magic Backup Completed! $result");
+                        final digest = sha256.convert(file.data);
+                        kPrint("🔥 Magic Backup Completed! $result"
+                            "Sha256: ${digest.toString()},");
                         if (result == true) {
                           await writeMessage(
                               api.QuantumLinkMessage_RestoreMagicBackupResult(
@@ -552,6 +571,9 @@ class BluetoothManager extends WidgetsBindingObserver {
                   proxyPort: Tor.instance.port,
                   hash: fingerPrint,
                 );
+                final digest = sha256.convert(payloadRes);
+                kPrint("🔥 RESTORE "
+                    "Sha256: ${digest.toString()} ,\n");
                 if (payloadRes.isNotEmpty) {
                   final chunks = await api.splitBackupIntoChunks(
                       backup: payloadRes, chunkSize: BigInt.from(10000));
@@ -659,14 +681,6 @@ class BluetoothManager extends WidgetsBindingObserver {
       }
     } catch (e) {
       kPrint('Error deserializing XidDocument: $e');
-    }
-  }
-
-  Future<void> restoreQuantumLinkIdentity() async {
-    try {
-      _qlIdentity = await EnvoyStorage().getQuantumLinkIdentity();
-    } catch (e) {
-      kPrint('Error deserializing QL id: $e');
     }
   }
 

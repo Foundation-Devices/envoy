@@ -62,17 +62,17 @@ class SyncManager {
   }
 
   void startSync() {
-    _syncTimer =
-        Timer.periodic(const Duration(seconds: _syncInterval), (timer) {
-      if (NgAccountManager().accounts.isEmpty) {
-        return;
-      }
-      _syncAll();
-
-      if (!isTest) {
-        dumpProgress();
-      }
-    });
+    // _syncTimer =
+    //     Timer.periodic(const Duration(seconds: _syncInterval), (timer) {
+    //   if (NgAccountManager().accounts.isEmpty) {
+    //     return;
+    //   }
+    //   _syncAll();
+    //
+    //   if (!isTest) {
+    //     dumpProgress();
+    //   }
+    // });
   }
 
   // Expose sync for integration tests
