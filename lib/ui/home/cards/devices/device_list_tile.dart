@@ -119,7 +119,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 20.0),
                               child: Image.asset(
-                                getProductImage(widget.device.type),
+                                getProductImage(widget.device),
                                 height: 200,
                               ),
                             ),
@@ -294,14 +294,19 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
     );
   }
 
-  String getProductImage(DeviceType type) {
-    switch (type) {
+  String getProductImage(Device device) {
+    switch (device.type) {
       case DeviceType.passportGen1:
         return "assets/passport1.png";
       case DeviceType.passportGen12:
         return "assets/passport12.png";
       case DeviceType.passportPrime:
-        return "assets/prime_device_tile.png";
+        switch (device.deviceColor) {
+          case DeviceColor.light:
+            return "assets/prime_device_tile.png";
+          case DeviceColor.dark:
+            return "assets/prime_device_tile_dark.png";
+        }
     }
   }
 }
