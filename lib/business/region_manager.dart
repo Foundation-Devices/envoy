@@ -44,9 +44,6 @@ class AllowedRegions {
 
   static Future<bool> checkBuyDisabled() async {
     try {
-      // Return cached result if available
-      if (_buyDisabled != null) return _buyDisabled!;
-
       final country = await EnvoyStorage().getCountry();
       if (country == null) {
         _buyDisabled = false;
