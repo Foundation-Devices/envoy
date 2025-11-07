@@ -46,6 +46,8 @@ class AccountsCard extends ConsumerStatefulWidget {
 // Unfortunately it seems to only work with TabView
 class _AccountsCardState extends ConsumerState<AccountsCard>
     with AutomaticKeepAliveClientMixin<AccountsCard> {
+  bool? _buyDisabled;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -93,8 +95,9 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
                 bool countryRestricted =
                     snapshot.data != null && snapshot.data!;
                 //if there are no mainnet accounts or the future is still loading, disable the button
-                bool disabled = mainNetAccounts.isEmpty ||
-                    snapshot.connectionState == ConnectionState.waiting;
+                bool disabled = mainNetAccounts.isEmpty || _buyDisabled == null;
+
+                _buyDisabled = snapshot.data;
 
                 if (countryRestricted || !allowBuyInEnvoy) {
                   return const SizedBox.shrink();
