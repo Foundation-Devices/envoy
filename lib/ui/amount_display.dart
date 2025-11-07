@@ -181,7 +181,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                                         displayFiat: widget.displayFiat,
                                         network: widget.account?.network,
                                         includeSymbol: false,
-                                        inSendScreen: true)
+                                        useFiatFormatting: true)
                                     : (Settings().displayUnit == DisplayUnit.btc
                                         ? getDisplayAmount(
                                             widget.amountSats ?? 0,

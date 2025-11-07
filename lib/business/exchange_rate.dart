@@ -300,7 +300,7 @@ class ExchangeRate extends ChangeNotifier {
     bool includeSymbol = true,
     Network? network,
     double? displayFiat,
-    bool inSendScreen = false,
+    bool useFiatFormatting = false,
   }) {
     // Hide test coins on production builds only
     if (!kDebugMode && network != null && network != Network.bitcoin) {
@@ -311,8 +311,7 @@ class ExchangeRate extends ChangeNotifier {
       return "";
     }
 
-    // special case "inSendScreen" for bottom fiat amount
-    final currencyFormatter = inSendScreen
+    final currencyFormatter = useFiatFormatting
         ? NumberFormat.currency(
             locale: currentLocale, symbol: "", name: Settings().selectedFiat)
         : NumberFormat.decimalPattern(currentLocale);
