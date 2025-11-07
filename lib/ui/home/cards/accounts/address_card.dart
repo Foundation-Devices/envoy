@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
@@ -41,6 +43,11 @@ class _AddressCardState extends ConsumerState<AddressCard> {
     String address = "";
     final isTaprootEnabled = Settings().enableTaprootSetting == true;
     final noTaprootXpub = accountHasNoTaprootXpub(account!);
+    final Device? device =
+        Devices().getDeviceBySerial(account.deviceSerial ?? "");
+    bool isPrime = device?.type == DeviceType.passportPrime;
+    final bool isPrimeConnected =
+        ref.watch(isPrimeConnectedProvider(device?.bleId ?? ""));
 
     if (isTaprootEnabled && noTaprootXpub) {
       final segwitAddressRecord = account.nextAddress.firstWhere(
@@ -104,20 +111,24 @@ class _AddressCardState extends ConsumerState<AddressCard> {
         Expanded(
           child: GestureDetector(
             onTap: () {
-              if (mounted) {
-                showEnvoyDialog(
-                  context: context,
-                  blurColor: Colors.black,
-                  useRootNavigator: true,
-                  linearGradient: true,
-                  dialog: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: VerifyAddressDialog(
-                      address: address,
-                      accountName: account.name,
+              if (isPrimeConnected) {
+                // TODO: if prime is connected via ble, verify address via QL
+              } else {
+                if (mounted) {
+                  showEnvoyDialog(
+                    context: context,
+                    blurColor: Colors.black,
+                    useRootNavigator: true,
+                    linearGradient: true,
+                    dialog: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: VerifyAddressDialog(
+                        address: address,
+                        accountName: account.name,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               }
             },
             child: Row(
@@ -126,7 +137,9 @@ class _AddressCardState extends ConsumerState<AddressCard> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 EnvoyIcon(
-                  EnvoyIcons.qr_scan,
+                  widget.account.isHot || isPrime
+                      ? EnvoyIcons.quantum
+                      : EnvoyIcons.qr_scan,
                   color: EnvoyColors.accentPrimary,
                 ),
                 const SizedBox(width: EnvoySpacing.small),
