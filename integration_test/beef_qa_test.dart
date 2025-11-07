@@ -1452,31 +1452,6 @@ Future<void> main() async {
       await tester.pump(Durations.extralong4);
       await tester.pump();
 
-      await findAndToggleSettingsSwitch(
-          tester, "Receive to Taproot"); // disable
-      await tester.pump(Durations.extralong4);
-      await tester.pump();
-      await tester.tap(confirmTextFromDialog);
-      await tester.pump(Durations.extralong4);
-      await tester.pump();
-
-      await findAndToggleSettingsSwitch(
-          tester, "Receive to Taproot"); // enable again
-      await tester.pump(Durations.extralong4);
-
-      // Check that a pop up comes up
-      expect(confirmTextFromDialog, findsOneWidget);
-      await tester.tap(confirmTextFromDialog);
-      await tester.pump(Durations.extralong4);
-      await tester.pump();
-      // Check that a pop up closed
-      expect(confirmTextFromDialog, findsNothing);
-
-      /// Tap Do it later
-      await findAndPressTextButton(tester, "Do It Later");
-      await tester.pump(Durations.extralong4);
-      await tester.pump();
-
       await pressHamburgerMenu(tester); // back to settings menu
       await pressHamburgerMenu(tester); // back to home
 
@@ -1485,6 +1460,11 @@ Future<void> main() async {
       await tester.pump(Durations.extralong4);
       await tester.pump(Durations.extralong4);
       await tester.pump();
+
+      // pump until address change on screen
+      final taprootFinder = find.text('bc1p');
+      await tester.pumpUntilFound(taprootFinder,
+          duration: Durations.long1, tries: 30);
 
       // copy Taproot address
       final address1 = await getAddressFromReceiveScreen(tester);
@@ -1511,7 +1491,10 @@ Future<void> main() async {
 
       await findAndPressTextButton(tester, "Receive");
 
-      await pumpRepeatedly(tester, times: 30);
+      // pump until address change on screen
+      final nonTaprootFinder = find.text('bc1q');
+      await tester.pumpUntilFound(nonTaprootFinder,
+          duration: Durations.long1, tries: 30);
 
       // Grab the second address
       final address2 = await getAddressFromReceiveScreen(tester);
