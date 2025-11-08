@@ -60,12 +60,6 @@ class BluetoothChannel {
   Stream<DeviceStatus> get listenToDeviceConnectionEvents =>
       deviceStatusStream.where((status) => status.isConnectionEvent);
 
-  Stream<DeviceStatus> get listenToScanEvents =>
-      deviceStatusStream.where((status) => status.isScanEvent);
-
-  Stream<DeviceStatus> get listenToBondingEvents =>
-      deviceStatusStream.where((status) => status.isBondingEvent);
-
   BluetoothChannel._internal() {
     bleReadChannel.setMessageHandler((ByteData? message) async {
       if (message != null) {
@@ -73,6 +67,14 @@ class BluetoothChannel {
         _readController.add(data);
       }
       return ByteData(0);
+    });
+
+    _deviceStatusStatusStream.listen((DeviceStatus event) {
+      if (event is Map<dynamic, dynamic>) {
+        debugPrint(
+            "BLE Connection Event: connected=${event.connected}, bonded=${event.bonded}, "
+            "peripheralId=${event.peripheralId}");
+      }
     });
   }
 
@@ -131,6 +133,9 @@ class BluetoothChannel {
     }
     final connect = await listenToDeviceConnectionEvents.firstWhere(
       (event) {
+        if (Platform.isAndroid) {
+          return event.bonded && event.connected;
+        }
         return event.connected;
       },
     ).timeout(

@@ -11,15 +11,12 @@ enum BluetoothConnectionEventType {
   scanError,
   connectionAttempt,
   connectionError,
-  bondingStarted,
-  bondingInProgress,
-  bondingError,
-  alreadyBonded,
 }
 
 class DeviceStatus {
   final BluetoothConnectionEventType? type;
   final bool connected;
+  final bool bonded;
   final String? peripheralId;
   final String? peripheralName;
   final String? error;
@@ -32,6 +29,7 @@ class DeviceStatus {
     this.peripheralName,
     this.error,
     this.rssi,
+    this.bonded = false,
   });
 
   factory DeviceStatus.fromMap(Map<dynamic, dynamic> map) {
@@ -42,6 +40,7 @@ class DeviceStatus {
       peripheralName: map['peripheralName']?.toString(),
       error: map['error']?.toString(),
       rssi: map['rssi'],
+      bonded: map['bonded'] ?? false,
     );
   }
 
@@ -66,14 +65,6 @@ class DeviceStatus {
         return BluetoothConnectionEventType.connectionAttempt;
       case 'connection_error':
         return BluetoothConnectionEventType.connectionError;
-      case 'bonding_started':
-        return BluetoothConnectionEventType.bondingStarted;
-      case 'bonding_in_progress':
-        return BluetoothConnectionEventType.bondingInProgress;
-      case 'bonding_error':
-        return BluetoothConnectionEventType.bondingError;
-      case 'already_bonded':
-        return BluetoothConnectionEventType.alreadyBonded;
       default:
         return null;
     }
@@ -87,21 +78,6 @@ class DeviceStatus {
         type == BluetoothConnectionEventType.connectionError;
   }
 
-  /// Check if this is a scan-related event
-  bool get isScanEvent {
-    return type == BluetoothConnectionEventType.deviceFound ||
-        type == BluetoothConnectionEventType.scanStarted ||
-        type == BluetoothConnectionEventType.scanStopped ||
-        type == BluetoothConnectionEventType.scanError;
-  }
-
-  /// Check if this is a bonding/pairing-related event
-  bool get isBondingEvent {
-    return type == BluetoothConnectionEventType.bondingStarted ||
-        type == BluetoothConnectionEventType.bondingInProgress ||
-        type == BluetoothConnectionEventType.bondingError ||
-        type == BluetoothConnectionEventType.alreadyBonded;
-  }
 
   bool get hasError => error != null;
 
@@ -111,6 +87,7 @@ class DeviceStatus {
         'type: $type, '
         'connected: $connected, '
         'device: ${peripheralName ?? 'Unknown'}, '
+        'bonded: ${bonded ?? 'Unknown'}, '
         '${error != null ? ', error: $error' : ''}'
         ' }';
   }
