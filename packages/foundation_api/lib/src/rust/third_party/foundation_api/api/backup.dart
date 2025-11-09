@@ -142,8 +142,6 @@ sealed class RestoreMagicBackupEvent with _$RestoreMagicBackupEvent {
   const factory RestoreMagicBackupEvent.starting(
     BackupMetadata field0,
   ) = RestoreMagicBackupEvent_Starting;
-  const factory RestoreMagicBackupEvent.downloading() =
-      RestoreMagicBackupEvent_Downloading;
   const factory RestoreMagicBackupEvent.chunk(
     BackupChunk field0,
   ) = RestoreMagicBackupEvent_Chunk;
@@ -240,14 +238,17 @@ class Shard {
 class StartMagicBackup {
   final U8Array32 seedFingerprint;
   final int totalChunks;
+  final U8Array32 hash;
 
   const StartMagicBackup({
     required this.seedFingerprint,
     required this.totalChunks,
+    required this.hash,
   });
 
   @override
-  int get hashCode => seedFingerprint.hashCode ^ totalChunks.hashCode;
+  int get hashCode =>
+      seedFingerprint.hashCode ^ totalChunks.hashCode ^ hash.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -255,5 +256,6 @@ class StartMagicBackup {
       other is StartMagicBackup &&
           runtimeType == other.runtimeType &&
           seedFingerprint == other.seedFingerprint &&
-          totalChunks == other.totalChunks;
+          totalChunks == other.totalChunks &&
+          hash == other.hash;
 }

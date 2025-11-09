@@ -85,7 +85,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 669149196;
+  int get rustContentHash => 797499272;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -96,6 +96,53 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
+  U8Array32 crateApiQlCollectBackupChunksAutoAccessorGetBackupHash(
+      {required CollectBackupChunks that});
+
+  Uint8List crateApiQlCollectBackupChunksAutoAccessorGetData(
+      {required CollectBackupChunks that});
+
+  BigInt crateApiQlCollectBackupChunksAutoAccessorGetNextChunkIndex(
+      {required CollectBackupChunks that});
+
+  U8Array32 crateApiQlCollectBackupChunksAutoAccessorGetSeedFingerprint(
+      {required CollectBackupChunks that});
+
+  BigInt crateApiQlCollectBackupChunksAutoAccessorGetTotalChunks(
+      {required CollectBackupChunks that});
+
+  void crateApiQlCollectBackupChunksAutoAccessorSetBackupHash(
+      {required CollectBackupChunks that, required U8Array32 backupHash});
+
+  void crateApiQlCollectBackupChunksAutoAccessorSetData(
+      {required CollectBackupChunks that, required Uint8List data});
+
+  void crateApiQlCollectBackupChunksAutoAccessorSetNextChunkIndex(
+      {required CollectBackupChunks that, required BigInt nextChunkIndex});
+
+  void crateApiQlCollectBackupChunksAutoAccessorSetSeedFingerprint(
+      {required CollectBackupChunks that, required U8Array32 seedFingerprint});
+
+  void crateApiQlCollectBackupChunksAutoAccessorSetTotalChunks(
+      {required CollectBackupChunks that, required BigInt totalChunks});
+
+  Uint8List crateApiQlPrimeBackupFileAutoAccessorGetData(
+      {required PrimeBackupFile that});
+
+  U8Array32 crateApiQlPrimeBackupFileAutoAccessorGetSeedFingerprint(
+      {required PrimeBackupFile that});
+
+  void crateApiQlPrimeBackupFileAutoAccessorSetData(
+      {required PrimeBackupFile that, required Uint8List data});
+
+  void crateApiQlPrimeBackupFileAutoAccessorSetSeedFingerprint(
+      {required PrimeBackupFile that, required U8Array32 seedFingerprint});
+
+  Future<CollectBackupChunks> crateApiQlCollectBackupChunks(
+      {required U8Array32 seedFingerprint,
+      required int totalChunks,
+      required U8Array32 backupHash});
+
   Future<DecoderStatus> crateApiQlDecode(
       {required List<int> data,
       required EnvoyMasterDechunker decoder,
@@ -129,6 +176,9 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiQrInitApp();
 
+  Future<PrimeBackupFile?> crateApiQlPushBackupChunk(
+      {required CollectBackupChunks this_, required BackupChunk chunk});
+
   Future<Uint8List> crateApiQlSerializeQlIdentity(
       {required QuantumLinkIdentity quantumLinkIdentity});
 
@@ -137,6 +187,9 @@ abstract class RustLibApi extends BaseApi {
 
   Future<Uint8List> crateApiQlSerializeXidDocument(
       {required XidDocument xidDocument});
+
+  Future<List<QuantumLinkMessage>> crateApiQlSplitBackupIntoChunks(
+      {required List<int> backup, required BigInt chunkSize});
 
   Future<List<QuantumLinkMessage>> crateApiQlSplitFwUpdateIntoChunks(
       {required int patchIndex,
@@ -152,6 +205,15 @@ abstract class RustLibApi extends BaseApi {
 
   CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_ArcMutexDecoderPtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_CollectBackupChunks;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_CollectBackupChunks;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_CollectBackupChunksPtr;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_EnvoyAridCache;
@@ -170,6 +232,15 @@ abstract class RustLibApi extends BaseApi {
 
   CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_EnvoyMasterDechunkerPtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_PrimeBackupFile;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_PrimeBackupFile;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_PrimeBackupFilePtr;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_QuantumLinkIdentity;
@@ -198,6 +269,430 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
+  U8Array32 crateApiQlCollectBackupChunksAutoAccessorGetBackupHash(
+      {required CollectBackupChunks that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_8_array_32,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorGetBackupHashConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorGetBackupHashConstMeta =>
+          const TaskConstMeta(
+            debugName: "CollectBackupChunks_auto_accessor_get_backup_hash",
+            argNames: ["that"],
+          );
+
+  @override
+  Uint8List crateApiQlCollectBackupChunksAutoAccessorGetData(
+      {required CollectBackupChunks that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlCollectBackupChunksAutoAccessorGetDataConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorGetDataConstMeta =>
+          const TaskConstMeta(
+            debugName: "CollectBackupChunks_auto_accessor_get_data",
+            argNames: ["that"],
+          );
+
+  @override
+  BigInt crateApiQlCollectBackupChunksAutoAccessorGetNextChunkIndex(
+      {required CollectBackupChunks that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_usize,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorGetNextChunkIndexConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorGetNextChunkIndexConstMeta =>
+          const TaskConstMeta(
+            debugName: "CollectBackupChunks_auto_accessor_get_next_chunk_index",
+            argNames: ["that"],
+          );
+
+  @override
+  U8Array32 crateApiQlCollectBackupChunksAutoAccessorGetSeedFingerprint(
+      {required CollectBackupChunks that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_8_array_32,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorGetSeedFingerprintConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorGetSeedFingerprintConstMeta =>
+          const TaskConstMeta(
+            debugName: "CollectBackupChunks_auto_accessor_get_seed_fingerprint",
+            argNames: ["that"],
+          );
+
+  @override
+  BigInt crateApiQlCollectBackupChunksAutoAccessorGetTotalChunks(
+      {required CollectBackupChunks that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_usize,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorGetTotalChunksConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorGetTotalChunksConstMeta =>
+          const TaskConstMeta(
+            debugName: "CollectBackupChunks_auto_accessor_get_total_chunks",
+            argNames: ["that"],
+          );
+
+  @override
+  void crateApiQlCollectBackupChunksAutoAccessorSetBackupHash(
+      {required CollectBackupChunks that, required U8Array32 backupHash}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        sse_encode_u_8_array_32(backupHash, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorSetBackupHashConstMeta,
+      argValues: [that, backupHash],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorSetBackupHashConstMeta =>
+          const TaskConstMeta(
+            debugName: "CollectBackupChunks_auto_accessor_set_backup_hash",
+            argNames: ["that", "backupHash"],
+          );
+
+  @override
+  void crateApiQlCollectBackupChunksAutoAccessorSetData(
+      {required CollectBackupChunks that, required Uint8List data}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        sse_encode_list_prim_u_8_strict(data, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlCollectBackupChunksAutoAccessorSetDataConstMeta,
+      argValues: [that, data],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorSetDataConstMeta =>
+          const TaskConstMeta(
+            debugName: "CollectBackupChunks_auto_accessor_set_data",
+            argNames: ["that", "data"],
+          );
+
+  @override
+  void crateApiQlCollectBackupChunksAutoAccessorSetNextChunkIndex(
+      {required CollectBackupChunks that, required BigInt nextChunkIndex}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        sse_encode_usize(nextChunkIndex, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorSetNextChunkIndexConstMeta,
+      argValues: [that, nextChunkIndex],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorSetNextChunkIndexConstMeta =>
+          const TaskConstMeta(
+            debugName: "CollectBackupChunks_auto_accessor_set_next_chunk_index",
+            argNames: ["that", "nextChunkIndex"],
+          );
+
+  @override
+  void crateApiQlCollectBackupChunksAutoAccessorSetSeedFingerprint(
+      {required CollectBackupChunks that, required U8Array32 seedFingerprint}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        sse_encode_u_8_array_32(seedFingerprint, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorSetSeedFingerprintConstMeta,
+      argValues: [that, seedFingerprint],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorSetSeedFingerprintConstMeta =>
+          const TaskConstMeta(
+            debugName: "CollectBackupChunks_auto_accessor_set_seed_fingerprint",
+            argNames: ["that", "seedFingerprint"],
+          );
+
+  @override
+  void crateApiQlCollectBackupChunksAutoAccessorSetTotalChunks(
+      {required CollectBackupChunks that, required BigInt totalChunks}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            that, serializer);
+        sse_encode_usize(totalChunks, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlCollectBackupChunksAutoAccessorSetTotalChunksConstMeta,
+      argValues: [that, totalChunks],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiQlCollectBackupChunksAutoAccessorSetTotalChunksConstMeta =>
+          const TaskConstMeta(
+            debugName: "CollectBackupChunks_auto_accessor_set_total_chunks",
+            argNames: ["that", "totalChunks"],
+          );
+
+  @override
+  Uint8List crateApiQlPrimeBackupFileAutoAccessorGetData(
+      {required PrimeBackupFile that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlPrimeBackupFileAutoAccessorGetDataConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlPrimeBackupFileAutoAccessorGetDataConstMeta =>
+      const TaskConstMeta(
+        debugName: "PrimeBackupFile_auto_accessor_get_data",
+        argNames: ["that"],
+      );
+
+  @override
+  U8Array32 crateApiQlPrimeBackupFileAutoAccessorGetSeedFingerprint(
+      {required PrimeBackupFile that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_8_array_32,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlPrimeBackupFileAutoAccessorGetSeedFingerprintConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiQlPrimeBackupFileAutoAccessorGetSeedFingerprintConstMeta =>
+          const TaskConstMeta(
+            debugName: "PrimeBackupFile_auto_accessor_get_seed_fingerprint",
+            argNames: ["that"],
+          );
+
+  @override
+  void crateApiQlPrimeBackupFileAutoAccessorSetData(
+      {required PrimeBackupFile that, required Uint8List data}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+            that, serializer);
+        sse_encode_list_prim_u_8_strict(data, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlPrimeBackupFileAutoAccessorSetDataConstMeta,
+      argValues: [that, data],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlPrimeBackupFileAutoAccessorSetDataConstMeta =>
+      const TaskConstMeta(
+        debugName: "PrimeBackupFile_auto_accessor_set_data",
+        argNames: ["that", "data"],
+      );
+
+  @override
+  void crateApiQlPrimeBackupFileAutoAccessorSetSeedFingerprint(
+      {required PrimeBackupFile that, required U8Array32 seedFingerprint}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+            that, serializer);
+        sse_encode_u_8_array_32(seedFingerprint, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 14)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiQlPrimeBackupFileAutoAccessorSetSeedFingerprintConstMeta,
+      argValues: [that, seedFingerprint],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiQlPrimeBackupFileAutoAccessorSetSeedFingerprintConstMeta =>
+          const TaskConstMeta(
+            debugName: "PrimeBackupFile_auto_accessor_set_seed_fingerprint",
+            argNames: ["that", "seedFingerprint"],
+          );
+
+  @override
+  Future<CollectBackupChunks> crateApiQlCollectBackupChunks(
+      {required U8Array32 seedFingerprint,
+      required int totalChunks,
+      required U8Array32 backupHash}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_u_8_array_32(seedFingerprint, serializer);
+        sse_encode_u_32(totalChunks, serializer);
+        sse_encode_u_8_array_32(backupHash, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 15, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlCollectBackupChunksConstMeta,
+      argValues: [seedFingerprint, totalChunks, backupHash],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlCollectBackupChunksConstMeta =>
+      const TaskConstMeta(
+        debugName: "collect_backup_chunks",
+        argNames: ["seedFingerprint", "totalChunks", "backupHash"],
+      );
+
+  @override
   Future<DecoderStatus> crateApiQlDecode(
       {required List<int> data,
       required EnvoyMasterDechunker decoder,
@@ -214,7 +709,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
             aridCache, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 1, port: port_);
+            funcId: 16, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_decoder_status,
@@ -239,7 +734,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_prim_u_8_loose(data, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 2, port: port_);
+            funcId: 17, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_passport_message,
@@ -266,7 +761,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
             decoder, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 3, port: port_);
+            funcId: 18, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_qr_decoder_status,
@@ -291,7 +786,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_prim_u_8_loose(data, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
+            funcId: 19, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -317,7 +812,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_prim_u_8_loose(data, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 5, port: port_);
+            funcId: 20, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -349,7 +844,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
             recipient, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 21, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_list_prim_u_8_strict,
@@ -372,7 +867,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 7, port: port_);
+            funcId: 22, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -397,7 +892,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 8, port: port_);
+            funcId: 23, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -421,7 +916,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 9, port: port_);
+            funcId: 24, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -445,7 +940,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 10, port: port_);
+            funcId: 25, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -469,7 +964,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 26)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -492,7 +987,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 12, port: port_);
+            funcId: 27, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -510,6 +1005,34 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<PrimeBackupFile?> crateApiQlPushBackupChunk(
+      {required CollectBackupChunks this_, required BackupChunk chunk}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+            this_, serializer);
+        sse_encode_box_autoadd_backup_chunk(chunk, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 28, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiQlPushBackupChunkConstMeta,
+      argValues: [this_, chunk],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlPushBackupChunkConstMeta => const TaskConstMeta(
+        debugName: "push_backup_chunk",
+        argNames: ["this_", "chunk"],
+      );
+
+  @override
   Future<Uint8List> crateApiQlSerializeQlIdentity(
       {required QuantumLinkIdentity quantumLinkIdentity}) {
     return handler.executeNormal(NormalTask(
@@ -518,7 +1041,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
             quantumLinkIdentity, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 13, port: port_);
+            funcId: 29, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -545,7 +1068,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
             quantumLinkIdentity, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 14, port: port_);
+            funcId: 30, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -571,7 +1094,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
             xidDocument, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 15, port: port_);
+            funcId: 31, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -590,6 +1113,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<List<QuantumLinkMessage>> crateApiQlSplitBackupIntoChunks(
+      {required List<int> backup, required BigInt chunkSize}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(backup, serializer);
+        sse_encode_usize(chunkSize, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 32, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_quantum_link_message,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiQlSplitBackupIntoChunksConstMeta,
+      argValues: [backup, chunkSize],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlSplitBackupIntoChunksConstMeta =>
+      const TaskConstMeta(
+        debugName: "split_backup_into_chunks",
+        argNames: ["backup", "chunkSize"],
+      );
+
+  @override
   Future<List<QuantumLinkMessage>> crateApiQlSplitFwUpdateIntoChunks(
       {required int patchIndex,
       required int totalPatches,
@@ -603,7 +1153,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_list_prim_u_8_loose(patchBytes, serializer);
         sse_encode_usize(chunkSize, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 16, port: port_);
+            funcId: 33, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_quantum_link_message,
@@ -630,6 +1180,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder;
 
   RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_CollectBackupChunks => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_CollectBackupChunks => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks;
+
+  RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_EnvoyAridCache => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache;
 
@@ -644,6 +1202,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RustArcDecrementStrongCountFnType
       get rust_arc_decrement_strong_count_EnvoyMasterDechunker => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyMasterDechunker;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_PrimeBackupFile => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_PrimeBackupFile => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_QuantumLinkIdentity => wire
@@ -676,6 +1242,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CollectBackupChunks
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   EnvoyAridCache
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
           dynamic raw) {
@@ -689,6 +1263,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return EnvoyMasterDechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  PrimeBackupFile
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -708,6 +1290,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CollectBackupChunks
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   EnvoyAridCache
       dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
           dynamic raw) {
@@ -724,11 +1314,35 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PrimeBackupFile
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   ArcMutexDecoder
       dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return ArcMutexDecoderImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  CollectBackupChunks
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  PrimeBackupFile
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -756,6 +1370,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CollectBackupChunks
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   EnvoyAridCache
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
           dynamic raw) {
@@ -769,6 +1391,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return EnvoyMasterDechunkerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  PrimeBackupFile
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -870,6 +1500,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   bool dco_decode_bool(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as bool;
+  }
+
+  @protected
+  PrimeBackupFile
+      dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+        raw);
   }
 
   @protected
@@ -1494,6 +2133,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PrimeBackupFile?
+      dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null
+        ? null
+        : dco_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+            raw);
+  }
+
+  @protected
   XidDocument?
       dco_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           dynamic raw) {
@@ -1754,12 +2404,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_box_autoadd_backup_metadata(raw[1]),
         );
       case 2:
-        return RestoreMagicBackupEvent_Downloading();
-      case 3:
         return RestoreMagicBackupEvent_Chunk(
           dco_decode_box_autoadd_backup_chunk(raw[1]),
         );
-      case 4:
+      case 3:
         return RestoreMagicBackupEvent_Error(
           dco_decode_String(raw[1]),
         );
@@ -1876,11 +2524,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   StartMagicBackup dco_decode_start_magic_backup(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 2)
-      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
     return StartMagicBackup(
       seedFingerprint: dco_decode_u_8_array_32(arr[0]),
       totalChunks: dco_decode_u_32(arr[1]),
+      hash: dco_decode_u_8_array_32(arr[2]),
     );
   }
 
@@ -1958,6 +2607,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CollectBackupChunks
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
   EnvoyAridCache
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
           SseDeserializer deserializer) {
@@ -1972,6 +2630,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return EnvoyMasterDechunkerImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  PrimeBackupFile
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -1994,6 +2661,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CollectBackupChunks
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
   EnvoyAridCache
       sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
           SseDeserializer deserializer) {
@@ -2012,11 +2688,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PrimeBackupFile
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
   ArcMutexDecoder
       sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return ArcMutexDecoderImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  CollectBackupChunks
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  PrimeBackupFile
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -2048,6 +2751,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  CollectBackupChunks
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return CollectBackupChunksImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
   EnvoyAridCache
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
           SseDeserializer deserializer) {
@@ -2062,6 +2774,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return EnvoyMasterDechunkerImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  PrimeBackupFile
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return PrimeBackupFileImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -2153,6 +2874,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   bool sse_decode_bool(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
+  PrimeBackupFile
+      sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+        deserializer));
   }
 
   @protected
@@ -2805,6 +3535,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PrimeBackupFile?
+      sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   XidDocument?
       sse_decode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           SseDeserializer deserializer) {
@@ -3044,11 +3788,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_box_autoadd_backup_metadata(deserializer);
         return RestoreMagicBackupEvent_Starting(var_field0);
       case 2:
-        return RestoreMagicBackupEvent_Downloading();
-      case 3:
         var var_field0 = sse_decode_box_autoadd_backup_chunk(deserializer);
         return RestoreMagicBackupEvent_Chunk(var_field0);
-      case 4:
+      case 3:
         var var_field0 = sse_decode_String(deserializer);
         return RestoreMagicBackupEvent_Error(var_field0);
       default:
@@ -3155,8 +3897,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_seedFingerprint = sse_decode_u_8_array_32(deserializer);
     var var_totalChunks = sse_decode_u_32(deserializer);
+    var var_hash = sse_decode_u_8_array_32(deserializer);
     return StartMagicBackup(
-        seedFingerprint: var_seedFingerprint, totalChunks: var_totalChunks);
+        seedFingerprint: var_seedFingerprint,
+        totalChunks: var_totalChunks,
+        hash: var_hash);
   }
 
   @protected
@@ -3237,6 +3982,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          CollectBackupChunks self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as CollectBackupChunksImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
           EnvoyAridCache self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3252,6 +4007,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as EnvoyMasterDechunkerImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          PrimeBackupFile self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as PrimeBackupFileImpl).frbInternalSseEncode(move: true),
         serializer);
   }
 
@@ -3276,6 +4041,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          CollectBackupChunks self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as CollectBackupChunksImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
       sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
           EnvoyAridCache self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3296,11 +4071,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          PrimeBackupFile self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as PrimeBackupFileImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
       sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder(
           ArcMutexDecoder self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as ArcMutexDecoderImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          CollectBackupChunks self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as CollectBackupChunksImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          PrimeBackupFile self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as PrimeBackupFileImpl).frbInternalSseEncode(move: false),
         serializer);
   }
 
@@ -3336,6 +4141,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerCollectBackupChunks(
+          CollectBackupChunks self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as CollectBackupChunksImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEnvoyARIDCache(
           EnvoyAridCache self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3351,6 +4166,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as EnvoyMasterDechunkerImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          PrimeBackupFile self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as PrimeBackupFileImpl).frbInternalSseEncode(move: null),
         serializer);
   }
 
@@ -3432,6 +4257,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_bool(bool self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
+  void
+      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          PrimeBackupFile self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+        self, serializer);
   }
 
   @protected
@@ -4018,6 +4852,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          PrimeBackupFile? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPrimeBackupFile(
+          self, serializer);
+    }
+  }
+
+  @protected
+  void
       sse_encode_opt_box_autoadd_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
           XidDocument? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4222,13 +5069,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case RestoreMagicBackupEvent_Starting(field0: final field0):
         sse_encode_i_32(1, serializer);
         sse_encode_box_autoadd_backup_metadata(field0, serializer);
-      case RestoreMagicBackupEvent_Downloading():
-        sse_encode_i_32(2, serializer);
       case RestoreMagicBackupEvent_Chunk(field0: final field0):
-        sse_encode_i_32(3, serializer);
+        sse_encode_i_32(2, serializer);
         sse_encode_box_autoadd_backup_chunk(field0, serializer);
       case RestoreMagicBackupEvent_Error(field0: final field0):
-        sse_encode_i_32(4, serializer);
+        sse_encode_i_32(3, serializer);
         sse_encode_String(field0, serializer);
     }
   }
@@ -4313,6 +5158,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_u_8_array_32(self.seedFingerprint, serializer);
     sse_encode_u_32(self.totalChunks, serializer);
+    sse_encode_u_8_array_32(self.hash, serializer);
   }
 
   @protected
@@ -4391,6 +5237,72 @@ class ArcMutexDecoderImpl extends RustOpaque implements ArcMutexDecoder {
 }
 
 @sealed
+class CollectBackupChunksImpl extends RustOpaque
+    implements CollectBackupChunks {
+  // Not to be used by end users
+  CollectBackupChunksImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  CollectBackupChunksImpl.frbInternalSseDecode(
+      BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount: RustLib
+        .instance.api.rust_arc_increment_strong_count_CollectBackupChunks,
+    rustArcDecrementStrongCount: RustLib
+        .instance.api.rust_arc_decrement_strong_count_CollectBackupChunks,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance.api.rust_arc_decrement_strong_count_CollectBackupChunksPtr,
+  );
+
+  U8Array32 get backupHash => RustLib.instance.api
+          .crateApiQlCollectBackupChunksAutoAccessorGetBackupHash(
+        that: this,
+      );
+
+  Uint8List get data =>
+      RustLib.instance.api.crateApiQlCollectBackupChunksAutoAccessorGetData(
+        that: this,
+      );
+
+  BigInt get nextChunkIndex => RustLib.instance.api
+          .crateApiQlCollectBackupChunksAutoAccessorGetNextChunkIndex(
+        that: this,
+      );
+
+  U8Array32 get seedFingerprint => RustLib.instance.api
+          .crateApiQlCollectBackupChunksAutoAccessorGetSeedFingerprint(
+        that: this,
+      );
+
+  BigInt get totalChunks => RustLib.instance.api
+          .crateApiQlCollectBackupChunksAutoAccessorGetTotalChunks(
+        that: this,
+      );
+
+  set backupHash(U8Array32 backupHash) => RustLib.instance.api
+      .crateApiQlCollectBackupChunksAutoAccessorSetBackupHash(
+          that: this, backupHash: backupHash);
+
+  set data(Uint8List data) => RustLib.instance.api
+      .crateApiQlCollectBackupChunksAutoAccessorSetData(that: this, data: data);
+
+  set nextChunkIndex(BigInt nextChunkIndex) => RustLib.instance.api
+      .crateApiQlCollectBackupChunksAutoAccessorSetNextChunkIndex(
+          that: this, nextChunkIndex: nextChunkIndex);
+
+  set seedFingerprint(U8Array32 seedFingerprint) => RustLib.instance.api
+      .crateApiQlCollectBackupChunksAutoAccessorSetSeedFingerprint(
+          that: this, seedFingerprint: seedFingerprint);
+
+  set totalChunks(BigInt totalChunks) => RustLib.instance.api
+      .crateApiQlCollectBackupChunksAutoAccessorSetTotalChunks(
+          that: this, totalChunks: totalChunks);
+}
+
+@sealed
 class EnvoyAridCacheImpl extends RustOpaque implements EnvoyAridCache {
   // Not to be used by end users
   EnvoyAridCacheImpl.frbInternalDcoDecode(List<dynamic> wire)
@@ -4430,6 +5342,43 @@ class EnvoyMasterDechunkerImpl extends RustOpaque
     rustArcDecrementStrongCountPtr: RustLib
         .instance.api.rust_arc_decrement_strong_count_EnvoyMasterDechunkerPtr,
   );
+}
+
+@sealed
+class PrimeBackupFileImpl extends RustOpaque implements PrimeBackupFile {
+  // Not to be used by end users
+  PrimeBackupFileImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  PrimeBackupFileImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_PrimeBackupFile,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_PrimeBackupFile,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_PrimeBackupFilePtr,
+  );
+
+  Uint8List get data =>
+      RustLib.instance.api.crateApiQlPrimeBackupFileAutoAccessorGetData(
+        that: this,
+      );
+
+  U8Array32 get seedFingerprint => RustLib.instance.api
+          .crateApiQlPrimeBackupFileAutoAccessorGetSeedFingerprint(
+        that: this,
+      );
+
+  set data(Uint8List data) => RustLib.instance.api
+      .crateApiQlPrimeBackupFileAutoAccessorSetData(that: this, data: data);
+
+  set seedFingerprint(U8Array32 seedFingerprint) => RustLib.instance.api
+      .crateApiQlPrimeBackupFileAutoAccessorSetSeedFingerprint(
+          that: this, seedFingerprint: seedFingerprint);
 }
 
 @sealed

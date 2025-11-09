@@ -37,6 +37,8 @@ class Device {
   final String serial;
   @JsonKey(defaultValue: "")
   final String bleId;
+  @JsonKey(defaultValue: null)
+  final Uint8List? xid;
   final DateTime datePaired;
   String firmwareVersion;
   List<String>? pairedAccountIds;
@@ -45,8 +47,8 @@ class Device {
   final Color color;
 
   Device(this.name, this.type, this.serial, this.datePaired,
-      this.firmwareVersion, this.color,
-      {this.deviceColor = DeviceColor.light, this.bleId = ""});
+      this.firmwareVersion, this.color
+  ,{this.deviceColor = DeviceColor.light, this.bleId = "", this.xid});
 
   // Serialisation
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);

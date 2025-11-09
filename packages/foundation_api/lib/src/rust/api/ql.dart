@@ -20,6 +20,8 @@ import '../third_party/foundation_api/api/scv.dart';
 import '../third_party/foundation_api/api/status.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// These functions are ignored because they are not marked as `pub`: `hash_data`
+
 Future<EnvoyMasterDechunker> getDecoder() =>
     RustLib.instance.api.crateApiQlGetDecoder();
 
@@ -68,6 +70,11 @@ Future<List<QuantumLinkMessage>> splitFwUpdateIntoChunks(
         patchBytes: patchBytes,
         chunkSize: chunkSize);
 
+Future<List<QuantumLinkMessage>> splitBackupIntoChunks(
+        {required List<int> backup, required BigInt chunkSize}) =>
+    RustLib.instance.api
+        .crateApiQlSplitBackupIntoChunks(backup: backup, chunkSize: chunkSize);
+
 Future<List<Uint8List>> encode(
         {required EnvoyMessage message,
         required QuantumLinkIdentity sender,
@@ -78,11 +85,58 @@ Future<List<Uint8List>> encode(
 Future<QuantumLinkIdentity> generateQlIdentity() =>
     RustLib.instance.api.crateApiQlGenerateQlIdentity();
 
+Future<CollectBackupChunks> collectBackupChunks(
+        {required U8Array32 seedFingerprint,
+        required int totalChunks,
+        required U8Array32 backupHash}) =>
+    RustLib.instance.api.crateApiQlCollectBackupChunks(
+        seedFingerprint: seedFingerprint,
+        totalChunks: totalChunks,
+        backupHash: backupHash);
+
+Future<PrimeBackupFile?> pushBackupChunk(
+        {required CollectBackupChunks this_, required BackupChunk chunk}) =>
+    RustLib.instance.api.crateApiQlPushBackupChunk(this_: this_, chunk: chunk);
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<CollectBackupChunks>>
+abstract class CollectBackupChunks implements RustOpaqueInterface {
+  U8Array32 get backupHash;
+
+  Uint8List get data;
+
+  BigInt get nextChunkIndex;
+
+  U8Array32 get seedFingerprint;
+
+  BigInt get totalChunks;
+
+  set backupHash(U8Array32 backupHash);
+
+  set data(Uint8List data);
+
+  set nextChunkIndex(BigInt nextChunkIndex);
+
+  set seedFingerprint(U8Array32 seedFingerprint);
+
+  set totalChunks(BigInt totalChunks);
+}
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyARIDCache>>
 abstract class EnvoyAridCache implements RustOpaqueInterface {}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EnvoyMasterDechunker>>
 abstract class EnvoyMasterDechunker implements RustOpaqueInterface {}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PrimeBackupFile>>
+abstract class PrimeBackupFile implements RustOpaqueInterface {
+  Uint8List get data;
+
+  U8Array32 get seedFingerprint;
+
+  set data(Uint8List data);
+
+  set seedFingerprint(U8Array32 seedFingerprint);
+}
 
 class DecoderStatus {
   final double progress;
