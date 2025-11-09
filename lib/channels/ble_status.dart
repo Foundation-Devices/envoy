@@ -78,7 +78,6 @@ class DeviceStatus {
         type == BluetoothConnectionEventType.connectionError;
   }
 
-
   bool get hasError => error != null;
 
   @override
@@ -87,7 +86,7 @@ class DeviceStatus {
         'type: $type, '
         'connected: $connected, '
         'device: ${peripheralName ?? 'Unknown'}, '
-        'bonded: ${bonded ?? 'Unknown'}, '
+        'bonded: $bonded, '
         '${error != null ? ', error: $error' : ''}'
         ' }';
   }

@@ -581,7 +581,8 @@ class BluetoothManager extends WidgetsBindingObserver {
   }
 
   Future<void> sendExchangeRate() async {
-    if (_sendingData && Devices().getPrimeDevices.isEmpty) return;
+    if (_sendingData) return;
+    if (Devices().getPrimeDevices.isEmpty) return;
 
     try {
       _sendingData = true;

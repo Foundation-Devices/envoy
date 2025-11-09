@@ -70,6 +70,10 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
     private val writeProgressEventChannel: EventChannel =
         EventChannel(binaryMessenger, BLE_WRITE_PROGRESS_STREAM_NAME)
 
+
+    private var knownPrimeDevicesMAC: MutableSet<String> = mutableSetOf()
+
+
     private val bluetoothManager: BluetoothManager =
         context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
     private val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
@@ -166,11 +170,13 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             Log.w(TAG, "Bonding state change received but device is null")
             return
         }
-        val deviceUUIDS = device.uuids?.toList()?.map { it.uuid } ?: emptyList()
-        if (device.name?.contains("prime", ignoreCase = true) != true
-            && !deviceUUIDS.contains(PRIME_SERVICE_UUID)
-        ) {
-            Log.w(TAG, "Non  Prime device bonding event ignored: ${device.name}")
+        val foundMAC = knownPrimeDevicesMAC.find { device.address == it } != null
+        val foundName = device.alias?.contains("Prime", ignoreCase = true) ?: false
+        if (!foundMAC && !foundName) {
+            Log.w(
+                TAG, "Non  Prime device bonding event ignored: ${device.name} " +
+                        "(${device.address} ${device.alias} ${device})"
+            )
             return
         }
 
@@ -321,17 +327,32 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             reply.reply(successBuffer)
         } else {
             val chunks = data.chunked(payloadPerPacket)
-
+            Log.d(
+                TAG,
+                "Writing chunks ${chunks.size}: ${
+                    chunks.map { chunks.size }.reduce { acc, i -> acc + i }
+                } bytes"
+            )
             for ((index, chunk) in chunks.withIndex()) {
-                Log.d(TAG, "Writing chunk ${index + 1}/${chunks.size}: ${chunk.size} bytes")
 
                 // Send progress update
                 val progress = (index + 1).toFloat() / chunks.size.toFloat()
                 sendWriteProgress(progress)
 
-                writeChar.writeType = writeType
-                writeChar.value = chunk
-                val writeResult = gatt.writeCharacteristic(writeChar)
+                Log.i(TAG, "handleBinaryWrite: progress $progress")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    gatt.writeCharacteristic(
+                        writeChar,
+                        chunk,
+                        writeType
+                    )
+                } else {
+                    writeChar.writeType = writeType
+                    @Suppress("DEPRECATION")
+                    writeChar.value = chunk
+                    @Suppress("DEPRECATION")
+                    gatt.writeCharacteristic(writeChar)
+                }
 
                 if (writeType == BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE && index < chunks.size - 1) {
                     Thread.sleep(10)
@@ -395,12 +416,10 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         }
 
         val deviceId = call.argument<String>("deviceId")
-
-        if (deviceId.isNullOrEmpty()) {
-            startDeviceScan(result)
-        } else {
-            connectToDevice(deviceId, result)
+        if (!deviceId.isNullOrBlank()) {
+            knownPrimeDevicesMAC.add(deviceId)
         }
+        startDeviceScan(result)
     }
 
     @SuppressLint("MissingPermission")
@@ -427,12 +446,20 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             Log.w(TAG, "No ongoing scan to stop: ${e.message}")
         }
 
-        val scanFilters = listOf(
+        var scanFilters = knownPrimeDevicesMAC.map { bleMac ->
             ScanFilter.Builder()
+                .setDeviceName("Passport Prime")
+                .setDeviceAddress(bleMac)
                 .setServiceUuid(ParcelUuid(PRIME_SERVICE_UUID))
                 .build()
-        )
-
+        }
+        if (scanFilters.isEmpty()) {
+            scanFilters = listOf(
+                ScanFilter.Builder()
+                    .setServiceUuid(ParcelUuid(PRIME_SERVICE_UUID))
+                    .build()
+            )
+        }
         val scanSettings = ScanSettings.Builder()
             .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
             .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
@@ -457,7 +484,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                 } catch (e: Exception) {
                     Log.w(TAG, "Error stopping scan: ${e.message}")
                 }
-            }, 30000) // 30 seconds
+            }, 15000) // 15 seconds
 
         } catch (e: SecurityException) {
             Log.e(TAG, "Security exception during scan: ${e.message}")
@@ -499,7 +526,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         override fun onBatchScanResults(results: MutableList<android.bluetooth.le.ScanResult>?) {
 
             results?.forEach { result ->
-                onScanResult(android.bluetooth.le.ScanSettings.CALLBACK_TYPE_ALL_MATCHES, result)
+                onScanResult(ScanSettings.CALLBACK_TYPE_ALL_MATCHES, result)
             }
         }
 
@@ -521,33 +548,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                     bonded = false
                 ).toMap()
             )
-        }
-    }
-
-    private fun connectToDevice(deviceAddress: String, result: MethodChannel.Result) {
-        if (!checkBluetoothPermissions()) {
-            result.error("PERMISSION_ERROR", "Bluetooth connect permission not granted", null)
-            return
-        }
-        Log.i(TAG, "connectToDevice: Connecting to $deviceAddress")
-        try {
-            val device = bluetoothAdapter?.getRemoteDevice(deviceAddress)
-            if (device == null) {
-                result.error(
-                    "DEVICE_NOT_FOUND",
-                    "Device with address $deviceAddress not found",
-                    null
-                )
-                return
-            }
-
-            connectAndBondDevice(device)
-            result.success(mapOf("connecting" to true, "deviceAddress" to deviceAddress))
-
-        } catch (e: IllegalArgumentException) {
-            result.error("INVALID_ADDRESS", "Invalid device address: $deviceAddress", null)
-        } catch (e: Exception) {
-            result.error("CONNECTION_ERROR", "Failed to connect: ${e.message}", null)
         }
     }
 
@@ -594,62 +594,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                 return
             }
 
-            // Initiate bonding (pairing) if not already bonded
-            when (device.bondState) {
-                BluetoothDevice.BOND_NONE -> {
-                    val bondResult = device.createBond()
-                    if (bondResult) {
-
-                        sendConnectionEvent(
-                            BluetoothConnectionStatus(
-                                type = BluetoothConnectionEventType.CONNECTION_ATTEMPT,
-                                connected = false,
-                                peripheralId = device.address,
-                                peripheralName = device.name ?: "Unknown Device",
-                                bonded = device.bondState == BluetoothDevice.BOND_BONDED
-                            ).toMap()
-                        )
-                    } else {
-                        Log.e(TAG, "Failed to start bonding")
-                        sendConnectionEvent(
-                            BluetoothConnectionStatus(
-                                type = BluetoothConnectionEventType.CONNECTION_ERROR,
-                                connected = false,
-                                peripheralId = device.address,
-                                bonded = device.bondState == BluetoothDevice.BOND_BONDED,
-                                error = "Failed to start bonding"
-                            ).toMap()
-                        )
-                    }
-                }
-
-                BluetoothDevice.BOND_BONDING -> {
-
-                    sendConnectionEvent(
-                        BluetoothConnectionStatus(
-                            type = BluetoothConnectionEventType.CONNECTION_ATTEMPT,
-                            connected = false,
-                            peripheralId = device.address,
-                            bonded = device.bondState == BluetoothDevice.BOND_BONDED,
-                            peripheralName = device.name ?: "Unknown Device"
-                        ).toMap()
-                    )
-                }
-
-                BluetoothDevice.BOND_BONDED -> {
-
-                    sendConnectionEvent(
-                        BluetoothConnectionStatus(
-                            type = BluetoothConnectionEventType.DEVICE_CONNECTED,
-                            connected = false,
-                            peripheralId = device.address,
-                            bonded = device.bondState == BluetoothDevice.BOND_BONDED,
-                            peripheralName = device.name ?: "Unknown Device"
-                        ).toMap()
-                    )
-                }
-            }
-
         } catch (e: SecurityException) {
             Log.e(TAG, "Security exception during connection: ${e.message}")
             sendConnectionEvent(
@@ -684,6 +628,10 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
 
     private fun sendWriteProgress(progress: Float) {
         scope.launch {
+            if(writeProgressEventSink == null){
+                Log.i(TAG, "sendWriteProgress: sink is not available")
+                return@launch
+            }
             writeProgressEventSink?.success(progress)
         }
     }
@@ -708,7 +656,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                 val directBuffer = getPooledBuffer(data.size)
                 directBuffer.put(data)
 
-                bleReadChannel.send(directBuffer) { reply ->
+                bleReadChannel.send(directBuffer) { _ ->
                 }
             } catch (e: Exception) {
                 Log.e(TAG, " Error sending binary data: ${e.message}")
@@ -761,6 +709,67 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                     // Discover services
                     if (checkBluetoothPermissions()) {
                         gatt?.discoverServices()
+                    }
+
+                    if (connectedDevice == null) {
+                        Log.i(TAG, "onConnectionStateChange: ")
+                        return;
+                    }
+                    val device = connectedDevice
+                    // Initiate bonding (pairing) if not already bonded
+                    when (device?.bondState) {
+                        BluetoothDevice.BOND_NONE -> {
+                            val bondResult = device.createBond()
+                            if (bondResult) {
+
+                                sendConnectionEvent(
+                                    BluetoothConnectionStatus(
+                                        type = BluetoothConnectionEventType.CONNECTION_ATTEMPT,
+                                        connected = false,
+                                        peripheralId = device.address,
+                                        peripheralName = device.name ?: "Unknown Device",
+                                        bonded = device.bondState == BluetoothDevice.BOND_BONDED
+                                    ).toMap()
+                                )
+                            } else {
+                                Log.e(TAG, "Failed to start bonding")
+                                sendConnectionEvent(
+                                    BluetoothConnectionStatus(
+                                        type = BluetoothConnectionEventType.CONNECTION_ERROR,
+                                        connected = false,
+                                        peripheralId = device.address,
+                                        bonded = device.bondState == BluetoothDevice.BOND_BONDED,
+                                        error = "Failed to start bonding"
+                                    ).toMap()
+                                )
+                            }
+                        }
+
+                        BluetoothDevice.BOND_BONDING -> {
+
+                            sendConnectionEvent(
+                                BluetoothConnectionStatus(
+                                    type = BluetoothConnectionEventType.CONNECTION_ATTEMPT,
+                                    connected = false,
+                                    peripheralId = device.address,
+                                    bonded = device.bondState == BluetoothDevice.BOND_BONDED,
+                                    peripheralName = device.name ?: "Unknown Device"
+                                ).toMap()
+                            )
+                        }
+
+                        BluetoothDevice.BOND_BONDED -> {
+
+                            sendConnectionEvent(
+                                BluetoothConnectionStatus(
+                                    type = BluetoothConnectionEventType.DEVICE_CONNECTED,
+                                    connected = false,
+                                    peripheralId = device.address,
+                                    bonded = device.bondState == BluetoothDevice.BOND_BONDED,
+                                    peripheralName = device.name ?: "Unknown Device"
+                                ).toMap()
+                            )
+                        }
                     }
                 }
 
@@ -892,8 +901,21 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                     )
 
                     mainHandler.postDelayed({
-                        characteristic.value = pendingWriteData
-                        gatt.writeCharacteristic(characteristic)
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                            // Below API 33 - use deprecated method
+                            @Suppress("DEPRECATION")
+                            if (characteristic.value == null) {
+                                Log.w(TAG, " Notification received but data is null")
+                            } else {
+                                val data = characteristic.value
+                                sendBinaryData(data)
+                            }
+                        } else {
+                            gatt.writeCharacteristic(
+                                characteristic, pendingWriteData!!,
+                                characteristic.writeType
+                            )
+                        }
                     }, RETRY_DELAY_MS)
                     return
                 }
@@ -957,7 +979,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                 Log.w(TAG, "Notification received but data is null")
                 return
             }
-            Log.d(TAG, "BLE PACKET RECEIVED: - Data length: ${value.size} bytes")
             sendBinaryData(value)
         }
 
@@ -974,7 +995,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                     return
                 } else {
                     val data = characteristic.value
-                    Log.d(TAG, "BLE PACKET RECEIVED:  - Data length: ${data.size} bytes")
                     sendBinaryData(data)
                 }
             }
