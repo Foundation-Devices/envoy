@@ -22,6 +22,7 @@ import 'package:envoy/ui/shield.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 const ROUTE_SPLASH = 'onboard';
 const WALLET_SUCCESS = "wallet_ready";
@@ -61,17 +62,27 @@ final GoRouter mainRouter = GoRouter(
 
   /// this is a redirect to check if the user is onboarded or not
   /// null means no redirect
-  redirect: (context, state) {
+  redirect: (context, state) async {
     final uri = state.uri;
     // Check if this is a Bitcoin URI
     if (uri.scheme == 'bitcoin') {
       return null;
     }
-    if (state.fullPath == ROUTE_ACCOUNTS_HOME) {
-      if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
-        return state.namedLocation(ROUTE_SPLASH);
-      } else {}
+
+    final bool isOnboardingComplete =
+        LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
+
+    // If user tries to access home but hasn't onboarded yet → redirect to onboarding
+    if (state.fullPath == ROUTE_ACCOUNTS_HOME && !isOnboardingComplete) {
+      await WakelockPlus.enable(); // keep screen awake during onboarding
+      return state.namedLocation(ROUTE_SPLASH);
     }
+
+    // If user has completed onboarding and goes to home → disable wakelock
+    if (isOnboardingComplete && state.fullPath == ROUTE_ACCOUNTS_HOME) {
+      await WakelockPlus.disable();
+    }
+
     return null;
   },
   routes: <RouteBase>[
