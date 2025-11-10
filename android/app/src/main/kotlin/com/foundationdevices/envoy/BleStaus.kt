@@ -42,7 +42,6 @@ data class BluetoothConnectionStatus(
     val error: String? = null,
     val rssi: Int? = null
 ) {
-
     /**
      * Convert BluetoothConnectionStatus to Map for platform channel communication
      */

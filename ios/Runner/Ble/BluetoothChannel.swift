@@ -333,7 +333,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         sendConnectionEvent(
             connected: false,
             peripheralId: peripheralId,
-            peripheralName: peripheralName
+            peripheralName: peripheralName,
+            type: "device_disconnected",
         )
 
     }
@@ -490,6 +491,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 connected: false,
                 peripheralId: "bluetooth_system",
                 peripheralName: "Bluetooth System",
+                type: nil,
                 error: "Bluetooth access unauthorized"
             )
 
@@ -499,6 +501,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 connected: false,
                 peripheralId: "bluetooth_system",
                 peripheralName: "Bluetooth System",
+                type: nil,
                 error: "Bluetooth not supported"
             )
 
@@ -515,6 +518,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 connected: false,
                 peripheralId: "bluetooth_system",
                 peripheralName: "Bluetooth System",
+                type: nil,
                 error: "Unknown Bluetooth state"
             )
         }
@@ -527,6 +531,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             connected: false,
             peripheralId: "bluetooth_system",
             peripheralName: "Passport Prime",
+            type: nil,
             error: nil
         )
 
@@ -558,6 +563,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 connected: false,
                 peripheralId: peripheral.identifier.uuidString,
                 peripheralName: peripheral.name,
+                type: nil,
                 error: "Bluetooth powered off"
             )
         } else {
@@ -566,6 +572,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 connected: false,
                 peripheralId: "bluetooth_system",
                 peripheralName: "Bluetooth System",
+                type: nil,
                 error: "Bluetooth powered off"
             )
         }
@@ -593,7 +600,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             sendConnectionEvent(
                 connected: true,
                 peripheralId: peripheral.identifier.uuidString,
-                peripheralName: peripheral.name
+                peripheralName: peripheral.name,
+                type: "device_connected"
             )
         } else {
             print("Attempting to reconnect to restored peripheral...")
@@ -650,7 +658,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         sendConnectionEvent(
             connected: true,
             peripheralId: peripheral.identifier.uuidString,
-            peripheralName: peripheral.name
+            peripheralName: peripheral.name,
+            type:"device_connected"
         )
     }
 
@@ -662,7 +671,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         connectedPeripheral = nil
         deviceReady = false
         sendConnectionEvent(
-            connected: false, peripheralId: peripheral.identifier.uuidString,
+            connected: false,
+            peripheralId: peripheral.identifier.uuidString,
             peripheralName: peripheral.name, error: error?.localizedDescription)
     }
 
@@ -683,6 +693,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             connected: false,
             peripheralId: peripheral.identifier.uuidString,
             peripheralName: peripheral.name,
+            type:"device_disconnected",
             error: error?.localizedDescription
         )
     }
@@ -979,11 +990,15 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     }
 
     func sendConnectionEvent(
-        connected: Bool, peripheralId: String, peripheralName: String? = nil, error: String? = nil
+        connected: Bool,
+        peripheralId: String,
+        peripheralName: String? = nil,
+        type: String? = nil,
+        error: String? = nil
     ) {
 
         let connectionData: [String: Any] = [
-            "type": connected ? "device_connected" : "device_disconnected",
+            "type": type,
             "connected": connected,
             "peripheralId": peripheralId,
             "peripheralName": peripheralName ?? NSNull(),
