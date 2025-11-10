@@ -239,7 +239,6 @@ class EnvoyStorage {
       txNotesStoreName: txNotesStore,
       pendingTxStoreName: pendingTxStore,
       dismissedPromptsStoreName: dismissedPromptsStore,
-      firmwareStoreName: firmwareStore,
       tagsStoreName: tagStore,
       utxoBlockStateStoreName: utxoBlockState,
       preferencesStoreName: preferencesStore,
@@ -811,6 +810,13 @@ class EnvoyStorage {
     var map = jsonDecode(json) as Map;
     if (map.isEmpty) {
       return;
+    }
+
+    // Remove 'firmware' store if it exists
+    if (map['stores'] is List) {
+      map['stores'] = (map['stores'] as List)
+          .where((store) => store['name'] != 'firmware')
+          .toList();
     }
 
     final appDocumentDir = await getApplicationDocumentsDirectory();
