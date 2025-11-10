@@ -33,6 +33,7 @@ import 'package:flutter/services.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:tor/tor.dart';
 import 'package:uuid/uuid.dart';
+import 'package:envoy/ui/routes/routes.dart';
 
 const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
@@ -505,7 +506,11 @@ class EnvoySeed {
           await EnvoyStorage().insertMediaItems(blogs);
         }
 
-        await _restoreSingletons();
+        final bool hasExistingSetup = Devices().devices.isNotEmpty &&
+            (LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false);
+        if (!hasExistingSetup) {
+          await _restoreSingletons();
+        }
         if (Settings().usingTor) {
           try {
             if (!Tor.instance.started) {
