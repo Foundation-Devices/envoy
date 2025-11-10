@@ -7,17 +7,20 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    fenix.url = "github:nix-community/fenix";
   };
 
   outputs = {
     nixpkgs,
     flake-utils,
+    fenix,
     ...
   }:
     flake-utils.lib.eachDefaultSystem (
       system: let
         pkgs = import nixpkgs {
           inherit system;
+          overlays = [fenix.overlays.default];
           config = {
             allowUnfree = true;
             android_sdk.accept_license = true;
@@ -56,15 +59,15 @@
             (xcodeenv.composeXcodeWrapper {versions = ["16.0"];})
           ];
 
+        rustToolchain = pkgs.fenix.fromToolchainFile {
+          file = ./rust-toolchain.toml;
+          sha256 = "sha256-SJwZ8g0zF2WrKDVmHrVG3pD2RGoQeo24MEXnNx5FyuI=";
+        };
+
         buildInputs = with pkgs;
           [
             # Rust tools
-            rustup
-            rustc
-            cargo
-            rustfmt
-            clippy
-            rust-analyzer
+            rustToolchain
             rust-bindgen
 
             # Flutter
@@ -188,10 +191,12 @@
             # Flutter setup
             export FLUTTER_ROOT="${pkgs.flutter}"
             export PATH="$FLUTTER_ROOT/bin:$PATH"
+            
+            # Remove rustup from PATH to use Nix Rust
+            export PATH=$(echo $PATH | tr ':' '\n' | grep -v ".cargo/bin" | tr '\n' ':')
 
             # darwin xcode
-            unset DEVELOPER_DIR
-            unset SDKROOT
+            ${lib.optionalString pkgs.stdenv.isDarwin "unset DEVELOPER_DIR && unset SDKROOT"}
             ${lib.optionalString pkgs.stdenv.isDarwin "export DEVELOPER_DIR=\"$(xcode-select -p)\""}
 
             # Android SDK and NDK configuration
