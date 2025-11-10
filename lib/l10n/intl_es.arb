@@ -72,6 +72,7 @@
   "backups_downloadBIP329BackupFile": "Exportar Notas y Etiquetas (BIP-329)",
   "backups_downloadSettingsDataBackupFile": "Descargar Copia de Seguridad de Configuración y Datos",
   "backups_downloadSettingsMetadataBackupFile": "Descargar Copia de Seguridad de Metadatos",
+  "backups_erase_mobile_wallet": "Erase Mobile Wallet",
   "backups_erase_wallets_and_backups": "Eliminar Carteras y Copias de Seguridad",
   "backups_erase_wallets_and_backups_modal_1_2_android_subheading": "Estás a punto de eliminar permanentemente tu Cartera Envoy. \n\nSi utilizas la Copia de Seguridad Mágica, tu Semilla Envoy también se eliminará de la Copia de Seguridad de Android. ",
   "backups_erase_wallets_and_backups_modal_1_2_ios_subheading": "Estás a punto de eliminar permanentemente tu Cartera Envoy.\n\nSi utilizas la Copia de Seguridad Mágica, tu Semilla Envoy también se eliminará del llavero iCloud. ",
