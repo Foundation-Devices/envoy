@@ -255,7 +255,7 @@ pub fn collect_backup_chunks(
         total_chunks: total_chunks as usize,
         next_chunk_index: 0,
         data: Vec::new(),
-        backup_hash
+        backup_hash,
     }
 }
 
@@ -282,8 +282,6 @@ pub fn push_backup_chunk(
 
     if is_last {
         let hash = hash_data(&this.data);
-        println!("hash: {:?}", hash);
-        println!("backup hash: {:?}", this.backup_hash);
         if this.backup_hash != hash {
             bail!("Backup hash mismatch");
         }
@@ -307,8 +305,8 @@ fn hash_data(data: &[u8]) -> [u8; 32] {
 
 #[cfg(test)]
 mod tests {
-    use anyhow::Result;
     use super::*;
+    use anyhow::Result;
 
     #[tokio::test]
     async fn test_generate_identity() -> Result<()> {
@@ -339,14 +337,10 @@ mod tests {
     #[test]
     fn test_in_progress_backup_chunks() -> Result<()> {
         let seed_fp = [1u8; 32];
-        let data = vec![1, 2, 3 , 4, 5, 6, 7, 8, 9];
+        let data = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
         let hash = hash_data(&data);
 
-        let mut in_progress = collect_backup_chunks(
-            seed_fp,
-            3,
-            hash
-        );
+        let mut in_progress = collect_backup_chunks(seed_fp, 3, hash);
 
         let chunk1 = BackupChunk {
             chunk_index: 0,
@@ -381,24 +375,18 @@ mod tests {
     #[test]
     fn test_in_progress_backup_chunks_wrong_index() -> Result<()> {
         let seed_fp = [1u8; 32];
-        let data = vec![1, 2, 3 , 4, 5, 6, 7, 8, 9];
+        let data = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
         let hash = hash_data(&data);
 
-        let mut in_progress = collect_backup_chunks(
-            seed_fp,
-            3,
-            hash
-        );
-
+        let mut in_progress = collect_backup_chunks(seed_fp, 3, hash);
 
         let chunk = BackupChunk {
             chunk_index: 1,
             total_chunks: 3,
-            data
+            data,
         };
         assert!(push_backup_chunk(&mut in_progress, chunk).is_err());
 
         Ok(())
     }
-
 }

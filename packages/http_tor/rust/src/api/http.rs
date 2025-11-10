@@ -180,5 +180,20 @@ pub fn get_ip(tor_port: i32) -> Result<String> {
 #[flutter_rust_bridge::frb(init)]
 pub fn init_app() {
     // Default utilities - feel free to customize
-    flutter_rust_bridge::setup_default_user_utils();
+    setup_log_to_console();
+}
+
+fn setup_log_to_console() {
+    #[cfg(target_os = "android")]
+    let _ = android_logger::init_once(
+        android_logger::Config::default().with_max_level(log::LevelFilter::Info),
+    );
+
+    #[cfg(target_os = "ios")]
+    let _ = oslog::OsLogger::new("frb_user")
+        .level_filter(log::LevelFilter::Info)
+        .init();
+
+    #[cfg(target_family = "wasm")]
+    let _ = crate::misc::web_utils::WebConsoleLogger::init();
 }

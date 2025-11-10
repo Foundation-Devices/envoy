@@ -7,10 +7,10 @@ use bdk::bitcoin::hashes::hex::FromHex;
 use bdk::bitcoin::hashes::Hash;
 use bdk::keys::bip39;
 use bdk::keys::bip39::Mnemonic;
-use flutter_rust_bridge::frb;
 use curve25519_parser::StaticSecret;
 use flutter_rust_bridge::for_generated::anyhow;
 use flutter_rust_bridge::for_generated::anyhow::{anyhow, Context};
+use flutter_rust_bridge::frb;
 use lazy_static::lazy_static;
 use mla::config::{ArchiveReaderConfig, ArchiveWriterConfig};
 use mla::{ArchiveReader, ArchiveWriter};
@@ -195,30 +195,20 @@ impl Backup {
 
         let hash: String = hex::encode(&seed_hash);
 
-        let post_success = Self::post_backup_async(
-            server_url,
-            proxy_port,
-            challenge,
-            solution,
-            hash,
-            payload,
-        )
-            .await;
+        let post_success =
+            Self::post_backup_async(server_url, proxy_port, challenge, solution, hash, payload)
+                .await;
         match post_success {
             Ok(success) => Ok(success),
             Err(e) => Err(anyhow!("Failed to post backup: {}", e)),
         }
     }
 
-
-
-
     pub async fn get_prime_backup(
         hash: Vec<u8>,
         server_url: &str,
         proxy_port: i32,
     ) -> Result<Vec<u8>, GetBackupException> {
-
         if server_url.is_empty() {
             return Err(GetBackupException::InvalidServer);
         }
@@ -256,7 +246,6 @@ impl Backup {
 
         Ok(parsed)
     }
-
 
     pub fn get_backup_offline(
         seed_words: &str,
