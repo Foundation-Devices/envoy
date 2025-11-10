@@ -7,12 +7,13 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:animations/animations.dart';
-import 'package:bluart/bluart.dart';
-import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/server.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/channels/ble_status.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
@@ -257,10 +258,11 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
   void _startBluetoothDisconnectionListener(BuildContext context) {
     _connectionMonitorSubscription
-        ?.cancel(); // Cancel any existing subsciption to avoid duplicates
+        ?.cancel(); // Cancel any existing subscription to avoid duplicates
 
-    _connectionMonitorSubscription = BluetoothManager().events?.listen((event) {
-      if (event is Event_DeviceDisconnected) {
+    _connectionMonitorSubscription =
+        BluetoothChannel().deviceStatusStream.listen((event) {
+      if (event.type == BluetoothConnectionEventType.deviceDisconnected) {
         if (context.mounted) {
           showEnvoyDialog(
             context: context,
@@ -421,7 +423,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
         resetOnboardingPrimeProviders(ref);
         mainRouter.go(ROUTE_ACCOUNTS_HOME);
-        _notifyAfterOnboardingTutorial(context);
+        if (mounted) {
+          _notifyAfterOnboardingTutorial(context);
+        }
         break;
       case OnboardingState.securityChecked:
         break;

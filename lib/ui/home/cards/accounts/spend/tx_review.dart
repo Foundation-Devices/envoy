@@ -6,7 +6,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:animations/animations.dart';
-import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';

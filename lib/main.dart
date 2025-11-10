@@ -6,7 +6,7 @@
 import 'dart:async';
 
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
@@ -140,6 +140,13 @@ class EnvoyApp extends StatefulWidget {
 
   @override
   State<EnvoyApp> createState() => _EnvoyAppState();
+}
+
+final _appContainer = ProviderContainer();
+ProviderContainer get appContainer => _appContainer;
+
+void disposeAppContainer() {
+  _appContainer.dispose();
 }
 
 class _EnvoyAppState extends State<EnvoyApp> {

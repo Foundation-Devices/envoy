@@ -33,10 +33,17 @@ class BluetoothChannel {
   final bleConnectionEventChannel =
       const EventChannel('envoy/bluetooth/connection/stream');
 
-  final _readController = StreamController<Uint8List>();
+  final _readController = StreamController<Uint8List>.broadcast();
+  final _writeProgressController = StreamController<double>.broadcast();
 
-  StreamSubscription? _eventSubscription;
-  StreamSubscription? _connectionSubscription;
+  Stream<Uint8List> get dataStream => listenToDataEvents();
+
+  Stream<double> get writeProgressStream => _writeProgressController.stream;
+
+  Stream<DeviceStatus> get deviceStatusStream => _deviceStatusStatusStream;
+
+  StreamSubscription? _deviceStatusSubscription;
+  StreamSubscription? _writeProgressSubscription;
 
   static final BluetoothChannel _instance = BluetoothChannel._internal();
 
@@ -53,10 +60,6 @@ class BluetoothChannel {
     }
   });
 
-  Stream<Uint8List> get dataStream => listenToDataEvents();
-
-  Stream<DeviceStatus> get deviceStatusStream => _deviceStatusStatusStream;
-
   Stream<DeviceStatus> get listenToDeviceConnectionEvents =>
       deviceStatusStream.where((status) => status.isConnectionEvent);
 
@@ -68,11 +71,22 @@ class BluetoothChannel {
       }
       return ByteData(0);
     });
+    _writeProgressSubscription =
+        writeProgressChannel.receiveBroadcastStream().listen((dynamic event) {
+      if (event is double) {
+        _writeProgressController.add(event);
+      } else if (event is int) {
+        _writeProgressController.add(event.toDouble());
+      } else {
+        _writeProgressController.add(0.0);
+      }
+    });
 
-    _deviceStatusStatusStream.listen((DeviceStatus event) {
+    _deviceStatusSubscription =
+        _deviceStatusStatusStream.listen((DeviceStatus event) {
       if (event is Map<dynamic, dynamic>) {
         debugPrint(
-            "BLE Connection Event: connected=${event.connected}, bonded=${event.bonded}, "
+            "Ble Connection Event: connected=${event.connected}, bonded=${event.bonded}, "
             "peripheralId=${event.peripheralId}");
       }
     });
@@ -138,11 +152,6 @@ class BluetoothChannel {
         }
         return event.connected;
       },
-    ).timeout(
-      const Duration(seconds: 30),
-      onTimeout: () {
-        throw Exception("Timeout waiting for device to connect after pairing");
-      },
     );
     return connect;
   }
@@ -170,29 +179,13 @@ class BluetoothChannel {
     return _readController.stream;
   }
 
-  /// Returns a stream of write progress ( 0 to 1)
-  Stream<double> writeProgressStream() {
-    if (!Platform.isIOS && !Platform.isAndroid) {
-      return Stream.empty();
-    }
-    return writeProgressChannel.receiveBroadcastStream().map((dynamic event) {
-      if (event is double) {
-        return event;
-      } else if (event is int) {
-        return event.toDouble();
-      } else {
-        return 0.0;
-      }
-    });
-  }
-
   Future<void> disconnect() async {
     await bleMethodChannel.invokeMethod("disconnect");
   }
 
   /// Dispose of stream subscriptions
   void dispose() {
-    _eventSubscription?.cancel();
-    _connectionSubscription?.cancel();
+    _deviceStatusSubscription?.cancel();
+    _writeProgressSubscription?.cancel();
   }
 }

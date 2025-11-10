@@ -4,7 +4,7 @@
 
 import 'dart:io';
 
-import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
@@ -47,8 +47,9 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        colorWay =
-            GoRouter.of(context).state.uri.queryParameters["c"] as int? ?? 1;
+        final param =
+            GoRouter.of(context).state.uri.queryParameters["c"] ?? "1";
+        colorWay = int.tryParse(param) ?? 1;
       });
     });
   }
@@ -57,6 +58,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
     // Check Bluetooth permissions
     bool isDenied = false;
     if (Platform.isAndroid) {
+      await BluetoothManager().getPermissions();
       isDenied = await BluetoothManager.isBluetoothDenied();
       if (!isDenied) {
         await BluetoothManager().getPermissions();

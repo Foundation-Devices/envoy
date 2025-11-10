@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/util/color_serializer.dart';
@@ -37,7 +37,7 @@ class Device {
   final String serial;
   @JsonKey(defaultValue: "")
   final String bleId;
-  @JsonKey(defaultValue: null)
+  @Uint8ListConverter()
   final Uint8List? xid;
   final DateTime datePaired;
   String firmwareVersion;
@@ -47,8 +47,8 @@ class Device {
   final Color color;
 
   Device(this.name, this.type, this.serial, this.datePaired,
-      this.firmwareVersion, this.color
-  ,{this.deviceColor = DeviceColor.light, this.bleId = "", this.xid});
+      this.firmwareVersion, this.color,
+      {this.deviceColor = DeviceColor.light, this.bleId = "", this.xid});
 
   // Serialisation
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);
@@ -214,5 +214,29 @@ class Devices extends ChangeNotifier {
 
   Device? getDeviceBySerial(String serialNumber) {
     return devices.firstWhereOrNull((device) => device.serial == serialNumber);
+  }
+}
+
+class Uint8ListConverter implements JsonConverter<Uint8List?, List<int>?> {
+  /// Create a new instance of [Uint8ListConverter].
+  const Uint8ListConverter();
+
+  @override
+  Uint8List? fromJson(List<dynamic>? json) {
+    if (json == null) return null;
+
+    try {
+      final list = json.map((e) => e as int).toList();
+      return Uint8List.fromList(list);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  List<int>? toJson(Uint8List? object) {
+    if (object == null) return null;
+
+    return object.toList();
   }
 }

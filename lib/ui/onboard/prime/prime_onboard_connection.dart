@@ -20,7 +20,7 @@ import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/components/button.dart';
-import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 
 class PrimeOnboardParing extends ConsumerStatefulWidget {
@@ -47,7 +47,6 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
         _connectBLE();
       } catch (e) {
         if (mounted && context.mounted) {
-          //TODO: fix this dialog
           showDialog(
             context: context,
             builder: (context) {
