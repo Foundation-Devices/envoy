@@ -11,7 +11,7 @@ env:
   NIX_CONFIG: access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 jobs:
   nix-check-and-build:
-    runs-on: [ self-hosted, Linux, X64 ]
+    runs-on: [ self-hosted, Linux, X64, nix ]
     steps:
       - uses: actions/checkout@v3
 
