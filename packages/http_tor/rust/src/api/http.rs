@@ -124,7 +124,7 @@ pub fn request(
     verb: Verb,
     url: String,
     tor_port: i32,
-    body: Option<String>,
+    body: Option<Vec<u8>>,
     headers: HashMap<String, String>,
 ) -> Result<Response> {
     let client: reqwest::blocking::Client = if tor_port > 0 {
