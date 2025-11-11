@@ -37,6 +37,12 @@ jobs:
         if: steps.check-nix.outputs.installed == 'false'
         uses: DeterminateSystems/nix-installer-action@main
 
+      - name: Build Nix devShell
+        run: |
+          export PATH=/nix/var/nix/profiles/default/bin:$PATH
+          nix develop --command echo "Dev shell built successfully"
+        shell: bash
+
 #      - uses: actions/cache@v4
 #        id: cache-cargo
 #        with:
@@ -62,24 +68,15 @@ jobs:
         shell: bash
 
       - run: |
-          nix develop --command bash -c '
-            echo "=== Shell rustc ==="
+          nix develop --ignore-environment --command bash -c '
+            echo "=== Rust toolchain verification ==="
             which rustc
             rustc --version
-            echo "=== Cargo rustc ==="
-            cargo --version
-            cargo rustc -- --version
-            echo "=== Environment ==="
-            env | grep -i rust || true
+            cargo --version -v
+            echo "=== Expected rustc version from rust-toolchain.toml ==="
+            grep "channel" rust-toolchain.toml
           '
-        name: Debug Rust versions
-
-      - run: |
-          nix develop --command bash -c '
-            unset RUSTUP_TOOLCHAIN RUSTUP_HOME
-            which -a rustc cargo  # See all versions in PATH
-            cargo --version -v  # What rustc will cargo actually use?
-            cargo clippy -- -Dwarnings -A clippy::missing_safety_doc'
+        name: Verify Rust version
 
       - run: nix develop --ignore-environment --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
         name: Run Clippy
