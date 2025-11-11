@@ -73,7 +73,7 @@ jobs:
       - run: nix develop --command flutter analyze
         name: Analyze Dart project source
 
-      - run: nix develop --command cargo fmt --all --check
+      - run: nix develop --ignore-environment --command cargo fmt --all --check
         name: Check Rust formatting
 
       - run: |
@@ -86,7 +86,7 @@ jobs:
       - run: nix develop --command flutter test
         name: Run Dart tests
 
-      - run: nix develop --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
+      - run: nix develop --ignore-environment --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
         name: Run Clippy
 
       - run: nix develop --command cargo test
