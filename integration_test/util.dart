@@ -732,76 +732,76 @@ Future<void> onboardingAndEnterSeed(
 
   /// 24 word err test ENV-2315 ////////////////////////////////////////////////////
 
-  //await findAndPressTextButton(tester, '24 Word Seed');
+  await findAndPressTextButton(tester, '24 Word Seed');
 
   final mnemonicInput = find.byType(MnemonicInput);
-//
-// // Enter first 12 words
-//   for (int i = 0; i < 12; i++) {
-//     await tester.tap(mnemonicInput.at(i), warnIfMissed: false);
-//     await tester.pump(Durations.long2);
-//
-//     await tester.enterText(mnemonicInput.at(i), "bacon");
-//     await tester.pump(Durations.long2);
-//   }
-//
-// // Wait before continuing
-//   await pumpRepeatedly(tester, times: 30);
-//
-// // Enter remaining 12 words (mnemonicInput goes from 0 to 11 !!!)
-//   for (int i = 0; i < 12; i++) {
-//     await tester.tap(mnemonicInput.at(i), warnIfMissed: false);
-//     await tester.pump(Durations.long2);
-//
-//     final word = (i == 11) ? "hour" : "bacon";
-//     await tester.enterText(mnemonicInput.at(i), word);
-//     await tester.pump(Durations.long2);
-//   }
-//
-//   // just tap somewhere on screen after entering seed
-//   await findAndPressTextButton(tester, 'Enter Your Seed');
-//   await tester.pump(const Duration(milliseconds: 1500));
-//
-//   await findAndPressTextButton(tester, 'Done');
-//   await tester.pump(const Duration(milliseconds: 500));
-//
-//   await findPopUpText(tester,
-//       "That seed appears to be invalid. Please check the words entered, including the order they are in and try again.");
-//
-//   await findAndTapPopUpText(tester, "Back");
-//
-//   await findAndPressIcon(tester, Icons.arrow_back_ios_rounded);
-//
-//   /// ///////////////////////////////////////////////////////////////////////////////
-//
-//   ///   /// 12 word err test ENV-2315 ////////////////////////////////////////////////////
-//
-//   await findAndPressTextButton(tester, '12 Word Seed');
-//
-//   for (int i = 0; i < 12; i++) {
-//     await tester.tap(mnemonicInput.at(i), warnIfMissed: false);
-//     await tester.pump(Durations.long2);
-//
-//     final word =
-//         (i == 11) ? "hour" : "bacon"; // first 23 "bacon", last is "hour"
-//     await tester.enterText(mnemonicInput.at(i), word);
-//
-//     await tester.pump(Durations.long2);
-//   }
-//
-//   // just tap somewhere on screen after entering seed
-//   await findAndPressTextButton(tester, 'Enter Your Seed');
-//   await tester.pump(const Duration(milliseconds: 1500));
-//
-//   await findAndPressTextButton(tester, 'Done');
-//   await tester.pump(const Duration(milliseconds: 500));
-//
-//   await findPopUpText(tester,
-//       "That seed appears to be invalid. Please check the words entered, including the order they are in and try again.");
-//
-//   await findAndTapPopUpText(tester, "Back");
-//
-//   await findAndPressIcon(tester, Icons.arrow_back_ios_rounded);
+
+// Enter first 12 words
+  for (int i = 0; i < 12; i++) {
+    await tester.tap(mnemonicInput.at(i), warnIfMissed: false);
+    await tester.pump(Durations.long2);
+
+    await tester.enterText(mnemonicInput.at(i), "bacon");
+    await tester.pump(Durations.long2);
+  }
+
+// Wait before continuing
+  await pumpRepeatedly(tester, times: 30);
+
+// Enter remaining 12 words (mnemonicInput goes from 0 to 11 !!!)
+  for (int i = 0; i < 12; i++) {
+    await tester.tap(mnemonicInput.at(i), warnIfMissed: false);
+    await tester.pump(Durations.long2);
+
+    final word = (i == 11) ? "hour" : "bacon";
+    await tester.enterText(mnemonicInput.at(i), word);
+    await tester.pump(Durations.long2);
+  }
+
+  // just tap somewhere on screen after entering seed
+  await findAndPressTextButton(tester, 'Enter Your Seed');
+  await tester.pump(const Duration(milliseconds: 1500));
+
+  await findAndPressTextButton(tester, 'Done');
+  await tester.pump(const Duration(milliseconds: 500));
+
+  await findPopUpText(tester,
+      "That seed appears to be invalid. Please check the words entered, including the order they are in and try again.");
+
+  await findAndTapPopUpText(tester, "Back");
+
+  await findAndPressIcon(tester, Icons.arrow_back_ios_rounded);
+
+  /// ///////////////////////////////////////////////////////////////////////////////
+
+  ///   /// 12 word err test ENV-2315 ////////////////////////////////////////////////////
+
+  await findAndPressTextButton(tester, '12 Word Seed');
+
+  for (int i = 0; i < 12; i++) {
+    await tester.tap(mnemonicInput.at(i), warnIfMissed: false);
+    await tester.pump(Durations.long2);
+
+    final word =
+        (i == 11) ? "hour" : "bacon"; // first 23 "bacon", last is "hour"
+    await tester.enterText(mnemonicInput.at(i), word);
+
+    await tester.pump(Durations.long2);
+  }
+
+  // just tap somewhere on screen after entering seed
+  await findAndPressTextButton(tester, 'Enter Your Seed');
+  await tester.pump(const Duration(milliseconds: 1500));
+
+  await findAndPressTextButton(tester, 'Done');
+  await tester.pump(const Duration(milliseconds: 500));
+
+  await findPopUpText(tester,
+      "That seed appears to be invalid. Please check the words entered, including the order they are in and try again.");
+
+  await findAndTapPopUpText(tester, "Back");
+
+  await findAndPressIcon(tester, Icons.arrow_back_ios_rounded);
 
   /// ///////////////////////////////////////////////////////////////////////////////
 
