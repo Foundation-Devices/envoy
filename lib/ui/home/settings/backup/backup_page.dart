@@ -53,10 +53,6 @@ class _BackupPageState extends ConsumerState<BackupPage>
   double? bottomPhoneOffset;
   bool _isExportInProgress = false;
 
-  //TODO: implement prime backup logic
-  final bool _disabledDeleteBackup = false;
-  final bool _primeBackupEnabled = false;
-
   @override
   void initState() {
     super.initState();
@@ -146,6 +142,8 @@ class _BackupPageState extends ConsumerState<BackupPage>
 
     final Locale activeLocale = Localizations.localeOf(context);
 
+    bool hasAnyPrimeBackupEnabled = ref.watch(primeBackupEnabledProvider);
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (bool didPop, _) async {
@@ -183,7 +181,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                               if (value) {
                                 showEnablingBackupDialog(context);
                               } else {
-                                if (_primeBackupEnabled) {
+                                if (hasAnyPrimeBackupEnabled) {
                                   showDisableErrorDialog(context);
                                 } else {
                                   showDisableBackupDialog(context, () {
@@ -387,14 +385,14 @@ class _BackupPageState extends ConsumerState<BackupPage>
                             ? S().backups_erase_wallets_and_backups
                             : S().backups_erase_mobile_wallet,
                         textStyle: TextStyle(
-                          color: _disabledDeleteBackup
+                          color: hasAnyPrimeBackupEnabled
                               ? EnvoyColors.textTertiary
                               : EnvoyColors.danger,
                           fontWeight: FontWeight.w900,
                         ),
                         type: EnvoyButtonTypes.tertiary,
                         onTap: () {
-                          if (_disabledDeleteBackup) return;
+                          if (hasAnyPrimeBackupEnabled) return;
                           globalState.state = GlobalState.nuclearDelete;
                           showEraseWalletsAndBackupsWarning(context);
                         },
@@ -419,7 +417,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
         BackupSectionTitle(
           title: S().backups_primeMagicBackups(device.name),
           icon: EnvoyIcons.prime,
-          switchValue: _primeBackupEnabled,
+          switchValue: device.primeBackupEnabled == true,
           onSwitch: null,
           onIconTap: () {
             showEnvoyPopUp(
@@ -435,7 +433,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
             );
           },
         ),
-        if (_primeBackupEnabled)
+        if (device.primeBackupEnabled == true)
           Padding(
             padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
             child: AnimatedContainer(
