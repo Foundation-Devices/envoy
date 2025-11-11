@@ -13,13 +13,14 @@ crate-type = ["cdylib", "staticlib"]
 [dependencies]
 flutter_rust_bridge = "=2.11.1"
 
-foundation-api = { git = "https://github.com/Foundation-Devices/foundation-api", tag= "3.8.0", features = ["envoy"] }
-btp = { git = "https://github.com/Foundation-Devices/foundation-api", tag = "3.8.0" }
+foundation-api = { git = "https://github.com/Foundation-Devices/foundation-api", tag= "3.9.0", features = ["envoy"] }
+btp = { git = "https://github.com/Foundation-Devices/foundation-api", tag = "3.9.0" }
 
 
 foundation-ur = { git = "https://github.com/Foundation-Devices/foundation-rs" }
 #minicbor = { version = "0.24.2", features = ["alloc"] }
 bc-xid = "0.5.0"
+sha2 = "0.10"
 
 bc-envelope = { version = "0.23.0", default-features = false, features = [
     "multithreaded",

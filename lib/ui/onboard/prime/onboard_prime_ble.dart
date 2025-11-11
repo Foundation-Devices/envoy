@@ -3,20 +3,25 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:animations/animations.dart';
-import 'package:bluart/bluart.dart';
-import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/server.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/channels/ble_status.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
+import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
+import 'package:envoy/ui/onboard/prime/prime_onboard_connection.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -27,6 +32,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
+import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/prime_ql_payload_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/ui/widgets/tutorial_page.dart';
@@ -34,6 +40,7 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -125,10 +132,11 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                     ? DeviceColor.dark
                     : DeviceColor.light;
             await BluetoothManager().addDevice(
-                pairingResponse!.passportSerial.field0,
-                pairingResponse!.passportFirmwareVersion.field0,
-                BluetoothManager().bleId,
-                deviceColor);
+              pairingResponse!.passportSerial.field0,
+              pairingResponse!.passportFirmwareVersion.field0,
+              BluetoothManager().bleId,
+              deviceColor,
+            );
             kPrint("Got a pairing AccountUpdate device!");
             break;
           }
@@ -250,10 +258,11 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
   void _startBluetoothDisconnectionListener(BuildContext context) {
     _connectionMonitorSubscription
-        ?.cancel(); // Cancel any existing subsciption to avoid duplicates
+        ?.cancel(); // Cancel any existing subscription to avoid duplicates
 
-    _connectionMonitorSubscription = BluetoothManager().events?.listen((event) {
-      if (event is Event_DeviceDisconnected) {
+    _connectionMonitorSubscription =
+        BluetoothChannel().deviceStatusStream.listen((event) {
+      if (event.type == BluetoothConnectionEventType.deviceDisconnected) {
         if (context.mounted) {
           showEnvoyDialog(
             context: context,
@@ -398,9 +407,25 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
         break;
       case OnboardingState.completed:
+        if (pairingResponse != null) {
+          final deviceColor =
+              pairingResponse!.passportColor == PassportColor.dark
+                  ? DeviceColor.dark
+                  : DeviceColor.light;
+          await BluetoothManager().addDevice(
+              pairingResponse!.passportSerial.field0,
+              pairingResponse!.passportFirmwareVersion.field0,
+              BluetoothManager().bleId,
+              deviceColor);
+          kPrint("Got a pairing AccountUpdate device!");
+        } else {
+          kPrint("No pairing response on completed state!");
+        }
         resetOnboardingPrimeProviders(ref);
         mainRouter.go(ROUTE_ACCOUNTS_HOME);
-        _notifyAfterOnboardingTutorial(context);
+        if (mounted) {
+          _notifyAfterOnboardingTutorial(context);
+        }
         break;
       case OnboardingState.securityChecked:
         break;
@@ -700,6 +725,172 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
   Future<bool> pairWithPrime(XidDocument payload) async {
     return await BluetoothManager().pair(payload);
+  }
+
+  Future<void> showCommunicationModal(BuildContext context) async {
+    if (!context.mounted) return;
+
+    showEnvoyDialog(
+      context: context,
+      dismissible: false,
+      dialog: QuantumLinkCommunicationInfo(
+        onContinue: () async {
+          final qrDecoder = await getQrDecoder();
+
+          if (!context.mounted) return;
+
+          await showScannerDialog(
+            showInfoDialog: true,
+            context: context,
+            onBackPressed: (ctx) {
+              if (ctx.mounted) Navigator.pop(ctx);
+            },
+            decoder: PrimeQlPayloadDecoder(
+              decoder: qrDecoder,
+              onScan: (XidDocument payload) async {
+                // TODO: process XidDocument for connection
+
+                if (!context.mounted) return;
+
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
+
+                primeXid = payload;
+                await Future.delayed(const Duration(milliseconds: 200));
+                if (!context.mounted) return;
+                context.goNamed(ONBOARD_PRIME_PAIR);
+                await Future.delayed(const Duration(milliseconds: 300));
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+//TODO: implement platform specific copy with appropriate
+class QuantumLinkCommunicationInfo extends StatefulWidget {
+  final GestureTapCallback onContinue;
+
+  const QuantumLinkCommunicationInfo({super.key, required this.onContinue});
+
+  @override
+  State<QuantumLinkCommunicationInfo> createState() =>
+      _QuantumLinkCommunicationInfoState();
+}
+
+class _QuantumLinkCommunicationInfoState
+    extends State<QuantumLinkCommunicationInfo> {
+  final PageController _pageController = PageController();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.8,
+      //TODO: test for different sizes
+      height: 550,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+            Column(
+              children: [
+                SvgPicture.asset(
+                  "assets/images/bluetooth_communication_info.svg",
+                  height: 100,
+                ),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.small,
+                        horizontal: EnvoySpacing.xs),
+                    child: Text(
+                      //TODO: copy update
+                      "The Communication is Secured",
+                      textAlign: TextAlign.center,
+                      style: EnvoyTypography.info,
+                    )),
+                Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.small,
+                        horizontal: EnvoySpacing.medium1),
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height *
+                            0.6, // max size of PageView
+                      ),
+                      child: SingleChildScrollView(
+                        child: ExpandablePageView(
+                          controller: _pageController,
+                          children: [
+                            LinkText(
+                              text: Platform.isAndroid
+                                  ? S()
+                                      .wallet_security_modal_1_4_android_subheading
+                                  : S()
+                                      .wallet_security_modal_1_4_ios_subheading,
+                              linkStyle: EnvoyTypography.info.copyWith(
+                                color: EnvoyColors.accentPrimary,
+                              ),
+                              onTap: () => launchUrl(
+                                Uri.parse(
+                                  Platform.isAndroid
+                                      ? "https://developer.android.com/guide/topics/data/autobackup"
+                                      : "https://support.apple.com/en-us/HT202303",
+                                ),
+                              ),
+                            ),
+                            Text(
+                              S().backups_erase_wallets_and_backups_modal_2_2_subheading,
+                              textAlign: TextAlign.center,
+                              style: EnvoyTypography.info,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
+                DotsIndicator(
+                  totalPages: 2,
+                  pageController: _pageController,
+                ),
+              ],
+            ),
+            OnboardingButton(
+                type: EnvoyButtonTypes.tertiary,
+                label: S().component_cancel,
+                onTap: () {
+                  context.pop(context);
+                }),
+            OnboardingButton(
+                type: EnvoyButtonTypes.primaryModal,
+                label: S().component_continue,
+                onTap: () {
+                  context.pop();
+                  widget.onContinue();
+                }),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          ],
+        ),
+      ),
+    );
   }
 }
 

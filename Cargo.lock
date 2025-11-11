@@ -779,7 +779,7 @@ dependencies = [
 [[package]]
 name = "btp"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.8.0#c27be2bcfc6eb836b2790b563335fad2cf17cb5c"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.9.0#b91f688fbc19c5165d66fb3dc52cd1139a4f5fcf"
 dependencies = [
  "bytemuck",
  "consts",
@@ -1570,7 +1570,7 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "2.0.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.8.0#c27be2bcfc6eb836b2790b563335fad2cf17cb5c"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.9.0#b91f688fbc19c5165d66fb3dc52cd1139a4f5fcf"
 dependencies = [
  "anyhow",
  "bc-components",
@@ -3234,7 +3234,7 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.8.0#c27be2bcfc6eb836b2790b563335fad2cf17cb5c"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.9.0#b91f688fbc19c5165d66fb3dc52cd1139a4f5fcf"
 dependencies = [
  "quote",
  "syn 2.0.107",
@@ -3494,6 +3494,7 @@ dependencies = [
  "foundation-ur 0.4.0 (git+https://github.com/Foundation-Devices/foundation-rs)",
  "gstp",
  "log",
+ "sha2",
  "tokio",
 ]
 
@@ -3501,11 +3502,13 @@ dependencies = [
 name = "rust_lib_http_tor"
 version = "0.1.0"
 dependencies = [
+ "android_logger 0.15.1",
  "anyhow",
  "flutter_rust_bridge",
  "lazy_static",
  "log",
  "openssl",
+ "oslog 0.2.0",
  "reqwest",
  "tokio",
 ]

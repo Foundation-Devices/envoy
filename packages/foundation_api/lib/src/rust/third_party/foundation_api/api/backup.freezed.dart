@@ -1028,7 +1028,6 @@ mixin _$RestoreMagicBackupEvent {
   TResult when<TResult extends Object?>({
     required TResult Function() noBackupFound,
     required TResult Function(BackupMetadata field0) starting,
-    required TResult Function() downloading,
     required TResult Function(BackupChunk field0) chunk,
     required TResult Function(String field0) error,
   }) =>
@@ -1037,7 +1036,6 @@ mixin _$RestoreMagicBackupEvent {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? noBackupFound,
     TResult? Function(BackupMetadata field0)? starting,
-    TResult? Function()? downloading,
     TResult? Function(BackupChunk field0)? chunk,
     TResult? Function(String field0)? error,
   }) =>
@@ -1046,7 +1044,6 @@ mixin _$RestoreMagicBackupEvent {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? noBackupFound,
     TResult Function(BackupMetadata field0)? starting,
-    TResult Function()? downloading,
     TResult Function(BackupChunk field0)? chunk,
     TResult Function(String field0)? error,
     required TResult orElse(),
@@ -1057,8 +1054,6 @@ mixin _$RestoreMagicBackupEvent {
     required TResult Function(RestoreMagicBackupEvent_NoBackupFound value)
         noBackupFound,
     required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
-    required TResult Function(RestoreMagicBackupEvent_Downloading value)
-        downloading,
     required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
     required TResult Function(RestoreMagicBackupEvent_Error value) error,
   }) =>
@@ -1068,7 +1063,6 @@ mixin _$RestoreMagicBackupEvent {
     TResult? Function(RestoreMagicBackupEvent_NoBackupFound value)?
         noBackupFound,
     TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult? Function(RestoreMagicBackupEvent_Downloading value)? downloading,
     TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult? Function(RestoreMagicBackupEvent_Error value)? error,
   }) =>
@@ -1078,7 +1072,6 @@ mixin _$RestoreMagicBackupEvent {
     TResult Function(RestoreMagicBackupEvent_NoBackupFound value)?
         noBackupFound,
     TResult Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult Function(RestoreMagicBackupEvent_Downloading value)? downloading,
     TResult Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult Function(RestoreMagicBackupEvent_Error value)? error,
     required TResult orElse(),
@@ -1156,7 +1149,6 @@ class _$RestoreMagicBackupEvent_NoBackupFoundImpl
   TResult when<TResult extends Object?>({
     required TResult Function() noBackupFound,
     required TResult Function(BackupMetadata field0) starting,
-    required TResult Function() downloading,
     required TResult Function(BackupChunk field0) chunk,
     required TResult Function(String field0) error,
   }) {
@@ -1168,7 +1160,6 @@ class _$RestoreMagicBackupEvent_NoBackupFoundImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? noBackupFound,
     TResult? Function(BackupMetadata field0)? starting,
-    TResult? Function()? downloading,
     TResult? Function(BackupChunk field0)? chunk,
     TResult? Function(String field0)? error,
   }) {
@@ -1180,7 +1171,6 @@ class _$RestoreMagicBackupEvent_NoBackupFoundImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? noBackupFound,
     TResult Function(BackupMetadata field0)? starting,
-    TResult Function()? downloading,
     TResult Function(BackupChunk field0)? chunk,
     TResult Function(String field0)? error,
     required TResult orElse(),
@@ -1197,8 +1187,6 @@ class _$RestoreMagicBackupEvent_NoBackupFoundImpl
     required TResult Function(RestoreMagicBackupEvent_NoBackupFound value)
         noBackupFound,
     required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
-    required TResult Function(RestoreMagicBackupEvent_Downloading value)
-        downloading,
     required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
     required TResult Function(RestoreMagicBackupEvent_Error value) error,
   }) {
@@ -1211,7 +1199,6 @@ class _$RestoreMagicBackupEvent_NoBackupFoundImpl
     TResult? Function(RestoreMagicBackupEvent_NoBackupFound value)?
         noBackupFound,
     TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult? Function(RestoreMagicBackupEvent_Downloading value)? downloading,
     TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult? Function(RestoreMagicBackupEvent_Error value)? error,
   }) {
@@ -1224,7 +1211,6 @@ class _$RestoreMagicBackupEvent_NoBackupFoundImpl
     TResult Function(RestoreMagicBackupEvent_NoBackupFound value)?
         noBackupFound,
     TResult Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult Function(RestoreMagicBackupEvent_Downloading value)? downloading,
     TResult Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult Function(RestoreMagicBackupEvent_Error value)? error,
     required TResult orElse(),
@@ -1319,7 +1305,6 @@ class _$RestoreMagicBackupEvent_StartingImpl
   TResult when<TResult extends Object?>({
     required TResult Function() noBackupFound,
     required TResult Function(BackupMetadata field0) starting,
-    required TResult Function() downloading,
     required TResult Function(BackupChunk field0) chunk,
     required TResult Function(String field0) error,
   }) {
@@ -1331,7 +1316,6 @@ class _$RestoreMagicBackupEvent_StartingImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? noBackupFound,
     TResult? Function(BackupMetadata field0)? starting,
-    TResult? Function()? downloading,
     TResult? Function(BackupChunk field0)? chunk,
     TResult? Function(String field0)? error,
   }) {
@@ -1343,7 +1327,6 @@ class _$RestoreMagicBackupEvent_StartingImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? noBackupFound,
     TResult Function(BackupMetadata field0)? starting,
-    TResult Function()? downloading,
     TResult Function(BackupChunk field0)? chunk,
     TResult Function(String field0)? error,
     required TResult orElse(),
@@ -1360,8 +1343,6 @@ class _$RestoreMagicBackupEvent_StartingImpl
     required TResult Function(RestoreMagicBackupEvent_NoBackupFound value)
         noBackupFound,
     required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
-    required TResult Function(RestoreMagicBackupEvent_Downloading value)
-        downloading,
     required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
     required TResult Function(RestoreMagicBackupEvent_Error value) error,
   }) {
@@ -1374,7 +1355,6 @@ class _$RestoreMagicBackupEvent_StartingImpl
     TResult? Function(RestoreMagicBackupEvent_NoBackupFound value)?
         noBackupFound,
     TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult? Function(RestoreMagicBackupEvent_Downloading value)? downloading,
     TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult? Function(RestoreMagicBackupEvent_Error value)? error,
   }) {
@@ -1387,7 +1367,6 @@ class _$RestoreMagicBackupEvent_StartingImpl
     TResult Function(RestoreMagicBackupEvent_NoBackupFound value)?
         noBackupFound,
     TResult Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult Function(RestoreMagicBackupEvent_Downloading value)? downloading,
     TResult Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult Function(RestoreMagicBackupEvent_Error value)? error,
     required TResult orElse(),
@@ -1413,141 +1392,6 @@ abstract class RestoreMagicBackupEvent_Starting
   _$$RestoreMagicBackupEvent_StartingImplCopyWith<
           _$RestoreMagicBackupEvent_StartingImpl>
       get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$RestoreMagicBackupEvent_DownloadingImplCopyWith<$Res> {
-  factory _$$RestoreMagicBackupEvent_DownloadingImplCopyWith(
-          _$RestoreMagicBackupEvent_DownloadingImpl value,
-          $Res Function(_$RestoreMagicBackupEvent_DownloadingImpl) then) =
-      __$$RestoreMagicBackupEvent_DownloadingImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$RestoreMagicBackupEvent_DownloadingImplCopyWithImpl<$Res>
-    extends _$RestoreMagicBackupEventCopyWithImpl<$Res,
-        _$RestoreMagicBackupEvent_DownloadingImpl>
-    implements _$$RestoreMagicBackupEvent_DownloadingImplCopyWith<$Res> {
-  __$$RestoreMagicBackupEvent_DownloadingImplCopyWithImpl(
-      _$RestoreMagicBackupEvent_DownloadingImpl _value,
-      $Res Function(_$RestoreMagicBackupEvent_DownloadingImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of RestoreMagicBackupEvent
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$RestoreMagicBackupEvent_DownloadingImpl
-    extends RestoreMagicBackupEvent_Downloading {
-  const _$RestoreMagicBackupEvent_DownloadingImpl() : super._();
-
-  @override
-  String toString() {
-    return 'RestoreMagicBackupEvent.downloading()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$RestoreMagicBackupEvent_DownloadingImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() noBackupFound,
-    required TResult Function(BackupMetadata field0) starting,
-    required TResult Function() downloading,
-    required TResult Function(BackupChunk field0) chunk,
-    required TResult Function(String field0) error,
-  }) {
-    return downloading();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? noBackupFound,
-    TResult? Function(BackupMetadata field0)? starting,
-    TResult? Function()? downloading,
-    TResult? Function(BackupChunk field0)? chunk,
-    TResult? Function(String field0)? error,
-  }) {
-    return downloading?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? noBackupFound,
-    TResult Function(BackupMetadata field0)? starting,
-    TResult Function()? downloading,
-    TResult Function(BackupChunk field0)? chunk,
-    TResult Function(String field0)? error,
-    required TResult orElse(),
-  }) {
-    if (downloading != null) {
-      return downloading();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(RestoreMagicBackupEvent_NoBackupFound value)
-        noBackupFound,
-    required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
-    required TResult Function(RestoreMagicBackupEvent_Downloading value)
-        downloading,
-    required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
-    required TResult Function(RestoreMagicBackupEvent_Error value) error,
-  }) {
-    return downloading(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreMagicBackupEvent_NoBackupFound value)?
-        noBackupFound,
-    TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult? Function(RestoreMagicBackupEvent_Downloading value)? downloading,
-    TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
-    TResult? Function(RestoreMagicBackupEvent_Error value)? error,
-  }) {
-    return downloading?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestoreMagicBackupEvent_NoBackupFound value)?
-        noBackupFound,
-    TResult Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult Function(RestoreMagicBackupEvent_Downloading value)? downloading,
-    TResult Function(RestoreMagicBackupEvent_Chunk value)? chunk,
-    TResult Function(RestoreMagicBackupEvent_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (downloading != null) {
-      return downloading(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class RestoreMagicBackupEvent_Downloading
-    extends RestoreMagicBackupEvent {
-  const factory RestoreMagicBackupEvent_Downloading() =
-      _$RestoreMagicBackupEvent_DownloadingImpl;
-  const RestoreMagicBackupEvent_Downloading._() : super._();
 }
 
 /// @nodoc
@@ -1626,7 +1470,6 @@ class _$RestoreMagicBackupEvent_ChunkImpl
   TResult when<TResult extends Object?>({
     required TResult Function() noBackupFound,
     required TResult Function(BackupMetadata field0) starting,
-    required TResult Function() downloading,
     required TResult Function(BackupChunk field0) chunk,
     required TResult Function(String field0) error,
   }) {
@@ -1638,7 +1481,6 @@ class _$RestoreMagicBackupEvent_ChunkImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? noBackupFound,
     TResult? Function(BackupMetadata field0)? starting,
-    TResult? Function()? downloading,
     TResult? Function(BackupChunk field0)? chunk,
     TResult? Function(String field0)? error,
   }) {
@@ -1650,7 +1492,6 @@ class _$RestoreMagicBackupEvent_ChunkImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? noBackupFound,
     TResult Function(BackupMetadata field0)? starting,
-    TResult Function()? downloading,
     TResult Function(BackupChunk field0)? chunk,
     TResult Function(String field0)? error,
     required TResult orElse(),
@@ -1667,8 +1508,6 @@ class _$RestoreMagicBackupEvent_ChunkImpl
     required TResult Function(RestoreMagicBackupEvent_NoBackupFound value)
         noBackupFound,
     required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
-    required TResult Function(RestoreMagicBackupEvent_Downloading value)
-        downloading,
     required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
     required TResult Function(RestoreMagicBackupEvent_Error value) error,
   }) {
@@ -1681,7 +1520,6 @@ class _$RestoreMagicBackupEvent_ChunkImpl
     TResult? Function(RestoreMagicBackupEvent_NoBackupFound value)?
         noBackupFound,
     TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult? Function(RestoreMagicBackupEvent_Downloading value)? downloading,
     TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult? Function(RestoreMagicBackupEvent_Error value)? error,
   }) {
@@ -1694,7 +1532,6 @@ class _$RestoreMagicBackupEvent_ChunkImpl
     TResult Function(RestoreMagicBackupEvent_NoBackupFound value)?
         noBackupFound,
     TResult Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult Function(RestoreMagicBackupEvent_Downloading value)? downloading,
     TResult Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult Function(RestoreMagicBackupEvent_Error value)? error,
     required TResult orElse(),
@@ -1797,7 +1634,6 @@ class _$RestoreMagicBackupEvent_ErrorImpl
   TResult when<TResult extends Object?>({
     required TResult Function() noBackupFound,
     required TResult Function(BackupMetadata field0) starting,
-    required TResult Function() downloading,
     required TResult Function(BackupChunk field0) chunk,
     required TResult Function(String field0) error,
   }) {
@@ -1809,7 +1645,6 @@ class _$RestoreMagicBackupEvent_ErrorImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? noBackupFound,
     TResult? Function(BackupMetadata field0)? starting,
-    TResult? Function()? downloading,
     TResult? Function(BackupChunk field0)? chunk,
     TResult? Function(String field0)? error,
   }) {
@@ -1821,7 +1656,6 @@ class _$RestoreMagicBackupEvent_ErrorImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? noBackupFound,
     TResult Function(BackupMetadata field0)? starting,
-    TResult Function()? downloading,
     TResult Function(BackupChunk field0)? chunk,
     TResult Function(String field0)? error,
     required TResult orElse(),
@@ -1838,8 +1672,6 @@ class _$RestoreMagicBackupEvent_ErrorImpl
     required TResult Function(RestoreMagicBackupEvent_NoBackupFound value)
         noBackupFound,
     required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
-    required TResult Function(RestoreMagicBackupEvent_Downloading value)
-        downloading,
     required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
     required TResult Function(RestoreMagicBackupEvent_Error value) error,
   }) {
@@ -1852,7 +1684,6 @@ class _$RestoreMagicBackupEvent_ErrorImpl
     TResult? Function(RestoreMagicBackupEvent_NoBackupFound value)?
         noBackupFound,
     TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult? Function(RestoreMagicBackupEvent_Downloading value)? downloading,
     TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult? Function(RestoreMagicBackupEvent_Error value)? error,
   }) {
@@ -1865,7 +1696,6 @@ class _$RestoreMagicBackupEvent_ErrorImpl
     TResult Function(RestoreMagicBackupEvent_NoBackupFound value)?
         noBackupFound,
     TResult Function(RestoreMagicBackupEvent_Starting value)? starting,
-    TResult Function(RestoreMagicBackupEvent_Downloading value)? downloading,
     TResult Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult Function(RestoreMagicBackupEvent_Error value)? error,
     required TResult orElse(),

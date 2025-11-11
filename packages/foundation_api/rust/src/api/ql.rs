@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use anyhow::anyhow;
+use anyhow::bail;
 use anyhow::Context;
 use anyhow::Result;
 use bc_envelope::prelude::CBOREncodable;
@@ -11,6 +12,10 @@ use bc_ur::prelude::{CBORCase, CBOR};
 use bc_xid::XIDDocument;
 use btp::{chunk, Chunk, MasterDechunker};
 use flutter_rust_bridge::frb;
+use foundation_api::backup::BackupChunk;
+use foundation_api::backup::BackupMetadata;
+use foundation_api::backup::RestoreMagicBackupEvent;
+use foundation_api::backup::SeedFingerprint;
 use foundation_api::firmware::{split_update_into_chunks, FirmwareFetchEvent};
 use foundation_api::message::{EnvoyMessage, PassportMessage, QuantumLinkMessage};
 use foundation_api::quantum_link::{ARIDCache, QuantumLink, QuantumLinkIdentity};
@@ -169,6 +174,31 @@ pub async fn split_fw_update_into_chunks(
         .collect()
 }
 
+pub fn split_backup_into_chunks(backup: &[u8], chunk_size: usize) -> Vec<QuantumLinkMessage> {
+    let chunks = backup.chunks(chunk_size);
+    let total_chunks = chunks.len() as u32;
+    let mut messages = Vec::with_capacity(chunks.len() + 1);
+
+    messages.push(QuantumLinkMessage::RestoreMagicBackupEvent(
+        RestoreMagicBackupEvent::Starting(BackupMetadata { total_chunks }),
+    ));
+
+    chunks
+        .enumerate()
+        .map(move |(chunk_index, chunk_data)| {
+            QuantumLinkMessage::RestoreMagicBackupEvent(RestoreMagicBackupEvent::Chunk(
+                BackupChunk {
+                    chunk_index: chunk_index as u32,
+                    total_chunks,
+                    data: chunk_data.to_vec(),
+                },
+            ))
+        })
+        .for_each(|msg| messages.push(msg));
+
+    messages
+}
+
 pub async fn encode(
     message: EnvoyMessage,
     sender: &QuantumLinkIdentity,
@@ -200,13 +230,85 @@ pub async fn generate_ql_identity() -> QuantumLinkIdentity {
     identity
 }
 
+#[frb(opaque)]
+pub struct CollectBackupChunks {
+    pub seed_fingerprint: SeedFingerprint,
+    pub total_chunks: usize,
+    pub next_chunk_index: usize,
+    pub data: Vec<u8>,
+    pub backup_hash: [u8; 32],
+}
+
+#[frb(opaque)]
+pub struct PrimeBackupFile {
+    pub data: Vec<u8>,
+    pub seed_fingerprint: SeedFingerprint,
+}
+
+pub fn collect_backup_chunks(
+    seed_fingerprint: SeedFingerprint,
+    total_chunks: u32,
+    backup_hash: [u8; 32],
+) -> CollectBackupChunks {
+    CollectBackupChunks {
+        seed_fingerprint,
+        total_chunks: total_chunks as usize,
+        next_chunk_index: 0,
+        data: Vec::new(),
+        backup_hash,
+    }
+}
+
+pub fn push_backup_chunk(
+    this: &mut CollectBackupChunks,
+    chunk: BackupChunk,
+) -> anyhow::Result<Option<PrimeBackupFile>> {
+    if this.next_chunk_index == this.total_chunks {
+        bail!("all chunks already received")
+    }
+
+    if this.next_chunk_index != chunk.chunk_index as usize {
+        bail!(
+            "invalid chunk index, expected {} got {}",
+            this.next_chunk_index,
+            chunk.chunk_index
+        );
+    }
+
+    let is_last = chunk.is_last();
+
+    this.data.extend(chunk.data);
+    this.next_chunk_index += 1;
+
+    if is_last {
+        let hash = hash_data(&this.data);
+        if this.backup_hash != hash {
+            bail!("Backup hash mismatch");
+        }
+        Ok(Some(PrimeBackupFile {
+            data: this.data.clone(),
+            seed_fingerprint: this.seed_fingerprint,
+        }))
+    } else {
+        Ok(None)
+    }
+}
+
+fn hash_data(data: &[u8]) -> [u8; 32] {
+    use sha2::Digest;
+    use sha2::Sha256;
+    let mut hasher = Sha256::new();
+    hasher.update(data);
+    let hash = hasher.finalize();
+    hash.into()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use anyhow::Result;
-    use tokio::test;
 
-    #[test]
+    #[tokio::test]
     async fn test_generate_identity() -> Result<()> {
         let identity = QuantumLinkIdentity::generate();
         println!("{:?}", identity);
@@ -228,6 +330,62 @@ mod tests {
             original_cbor, deserialized_cbor,
             "CBOR mismatch after serialization/deserialization"
         );
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_in_progress_backup_chunks() -> Result<()> {
+        let seed_fp = [1u8; 32];
+        let data = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
+        let hash = hash_data(&data);
+
+        let mut in_progress = collect_backup_chunks(seed_fp, 3, hash);
+
+        let chunk1 = BackupChunk {
+            chunk_index: 0,
+            total_chunks: 3,
+            data: vec![1, 2, 3],
+        };
+        assert!(push_backup_chunk(&mut in_progress, chunk1)?.is_none());
+        assert_eq!(in_progress.next_chunk_index, 1);
+
+        let chunk2 = BackupChunk {
+            chunk_index: 1,
+            total_chunks: 3,
+            data: vec![4, 5, 6],
+        };
+        assert!(push_backup_chunk(&mut in_progress, chunk2)?.is_none());
+        assert_eq!(in_progress.next_chunk_index, 2);
+
+        let chunk3 = BackupChunk {
+            chunk_index: 2,
+            total_chunks: 3,
+            data: vec![7, 8, 9],
+        };
+        let result = push_backup_chunk(&mut in_progress, chunk3)?;
+        assert!(result.is_some());
+        let file = result.unwrap();
+        assert_eq!(file.data, vec![1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        assert_eq!(file.seed_fingerprint, seed_fp);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_in_progress_backup_chunks_wrong_index() -> Result<()> {
+        let seed_fp = [1u8; 32];
+        let data = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
+        let hash = hash_data(&data);
+
+        let mut in_progress = collect_backup_chunks(seed_fp, 3, hash);
+
+        let chunk = BackupChunk {
+            chunk_index: 1,
+            total_chunks: 3,
+            data,
+        };
+        assert!(push_backup_chunk(&mut in_progress, chunk).is_err());
 
         Ok(())
     }
