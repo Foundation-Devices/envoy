@@ -63,7 +63,7 @@ final filteredTransactionsProvider =
   transactions.addAll(confirmedTransactions);
 
   // use custom compareTx through compareTo
-  transactions.sort((a, b) => a.compareTo(b));
+  transactions.sort();
 
   if (txFilterState.contains(TransactionFilters.sent) &&
       txFilterState.contains(TransactionFilters.received)) {
@@ -75,7 +75,7 @@ final filteredTransactionsProvider =
       transactions = transactions.where((e) => e.amount > 0).toList();
     } else {
       // use custom compareTx through compareTo
-      transactions.sort((a, b) => a.compareTo(b));
+      transactions.sort();
     }
   }
 
@@ -85,8 +85,8 @@ final filteredTransactionsProvider =
       break;
 
     case TransactionSortTypes.oldestFirst:
-      confirmedTransactions.sort((a, b) => a.compareTo(b));
-      pendingTransactions.sort((a, b) => a.compareTo(b));
+      confirmedTransactions.sort();
+      pendingTransactions.sort();
       transactions.clear();
       transactions.addAll(confirmedTransactions.reversed);
       transactions.addAll(pendingTransactions.reversed);
@@ -144,7 +144,7 @@ final allTxProvider = Provider<List<EnvoyTransaction>>((ref) {
     allTransactions.addAll(transactions);
   }
 
-  allTransactions.sort((a, b) => a.compareTo(b));
+  allTransactions.sort();
 
   return allTransactions;
 });
