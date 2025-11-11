@@ -142,7 +142,7 @@ impl Device {
         Ok(duration.as_micros())
     }
 
-    fn get_uart_write_characteristic(&self) -> Characteristic {
+    pub(crate) fn get_uart_write_characteristic(&self) -> Characteristic {
         let characteristics = self.peripheral.characteristics();
         let uart_characteristic = characteristics
             .iter()

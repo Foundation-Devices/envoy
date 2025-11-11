@@ -534,7 +534,6 @@ class _AndroidBackupWarningState extends State<AndroidBackupWarning> {
 
   @override
   Widget build(BuildContext context) {
-    bool iphoneSE = MediaQuery.of(context).size.height < 700;
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -549,88 +548,93 @@ class _AndroidBackupWarningState extends State<AndroidBackupWarning> {
           hasScrollBody: false,
           child: Material(
               color: Colors.transparent,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const SizedBox(height: EnvoySpacing.large3),
-                      SizedBox(
-                        height: iphoneSE ? 220 : 184,
-                        child: Image.asset(
-                          "assets/images/onboarding_info.png",
-                          height: 184,
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: EnvoySpacing.medium3),
-                          Text(
-                            S().android_backup_info_heading,
-                            textAlign: TextAlign.center,
-                            style: EnvoyTypography.heading,
-                          ),
-                          const SizedBox(height: EnvoySpacing.medium3),
-                          LinkText(
-                            text: S()
-                                .delete_wallet_for_good_instant_android_subheading,
-                            onTap: () {
-                              openAndroidSettings();
-                            },
-                            linkStyle: EnvoyTypography.button
-                                .copyWith(color: EnvoyColors.accentPrimary),
-                            textStyle: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(bottom: EnvoySpacing.medium2),
-                    child: Column(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.medium2),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Consumer(
-                          builder: (context, ref, child) {
-                            return OnboardingButton(
-                              type: EnvoyButtonTypes.secondary,
-                              label: S().component_skip,
-                              onTap: () async {
-                                if (widget.skipSuccess) {
-                                  context.go("/");
-                                } else {
-                                  context.goNamed(WALLET_SUCCESS);
-                                }
-                                ref
-                                    .read(homePageBackgroundProvider.notifier)
-                                    .state = HomePageBackgroundState.hidden;
-                                ref.read(homePageTabProvider.notifier).state =
-                                    HomePageTabState.accounts;
-                                ref.read(homePageTitleProvider.notifier).state =
-                                    "";
-                                await Future.delayed(
-                                    const Duration(milliseconds: 100));
-                              },
-                            );
-                          },
+                        const SizedBox(height: EnvoySpacing.xl),
+                        SizedBox(
+                          height: 184,
+                          child: Image.asset(
+                            "assets/images/onboarding_info.png",
+                            height: 184,
+                          ),
                         ),
-                        OnboardingButton(
-                          label: S().component_goToSettings,
-                          onTap: () {
-                            openAndroidSettings();
-                          },
+                        const SizedBox(height: EnvoySpacing.medium3),
+                        Text(
+                          S().android_backup_info_heading,
+                          textAlign: TextAlign.center,
+                          style: EnvoyTypography.heading,
+                        ),
+                        const SizedBox(height: EnvoySpacing.medium3),
+                        LinkText(
+                          text: S()
+                              .delete_wallet_for_good_instant_android_subheading,
+                          linkStyle: EnvoyTypography.body
+                              .copyWith(color: EnvoyColors.textSecondary),
+                          textStyle: EnvoyTypography.body
+                              .copyWith(color: EnvoyColors.textSecondary),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: EnvoySpacing.medium2,
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: EnvoySpacing.medium1),
+                            child: Consumer(
+                              builder: (context, ref, child) {
+                                return EnvoyButton(
+                                  S().component_skip,
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(EnvoySpacing.medium1)),
+                                  type: EnvoyButtonTypes.secondary,
+                                  onTap: () async {
+                                    if (widget.skipSuccess) {
+                                      context.go("/");
+                                    } else {
+                                      context.goNamed(WALLET_SUCCESS);
+                                    }
+                                    ref
+                                        .read(
+                                            homePageBackgroundProvider.notifier)
+                                        .state = HomePageBackgroundState.hidden;
+                                    ref
+                                        .read(homePageTabProvider.notifier)
+                                        .state = HomePageTabState.accounts;
+                                    ref
+                                        .read(homePageTitleProvider.notifier)
+                                        .state = "";
+                                    await Future.delayed(
+                                        const Duration(milliseconds: 100));
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                          EnvoyButton(
+                            S().component_goToSettings,
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(EnvoySpacing.medium1)),
+                            onTap: () {
+                              openAndroidSettings();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               )),
         ),
       ),

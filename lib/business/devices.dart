@@ -5,9 +5,8 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:bluart/bluart.dart' as bluart;
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/util/color_serializer.dart';
@@ -38,6 +37,8 @@ class Device {
   final String serial;
   @JsonKey(defaultValue: "")
   final String bleId;
+  @Uint8ListConverter()
+  final Uint8List? xid;
   final DateTime datePaired;
   String firmwareVersion;
   List<String>? pairedAccountIds;
@@ -47,7 +48,7 @@ class Device {
 
   Device(this.name, this.type, this.serial, this.datePaired,
       this.firmwareVersion, this.color,
-      {this.deviceColor = DeviceColor.light, this.bleId = ""});
+      {this.deviceColor = DeviceColor.light, this.bleId = "", this.xid});
 
   // Serialisation
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);
@@ -84,35 +85,20 @@ class Devices extends ChangeNotifier {
     }
     await BluetoothManager().getPermissions();
     //wait for the bluetooth manager to initialize
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
     kPrint("Connecting to ${getPrimeDevices.length} primes");
     for (var device in getPrimeDevices) {
       if (device.bleId.isNotEmpty) {
         await BluetoothManager().restorePrimeDevice(device.bleId);
-        await BluetoothManager().getPermissions();
-        final foundPrime =
-            await BluetoothManager().events?.any((bluart.Event event) {
-          if (event is bluart.Event_ScanResult) {
-            for (final bleDevice in event.field0) {
-              if (bleDevice.id == device.bleId) {
-                kPrint(
-                    "Found device ${device.name} with id ${bleDevice.id}, connecting...");
-                return true;
-              }
-            }
-          }
-          return false;
-        }).timeout(Duration(seconds: 10), onTimeout: () {
-          kPrint("Timeout while scanning for device ${device.name}");
-          return false;
-        });
-        kPrint("Scan finished...");
-        if (foundPrime == true) {
-          await BluetoothManager().connect(id: device.bleId);
-        } else {
+        final denied = await BluetoothManager.isBluetoothDenied();
+        if (denied) {
           kPrint(
-              "Device ${device.name} with id ${device.bleId} not found during scan");
+              "Bluetooth permissions denied, cannot connect to device ${device.name}");
+          await BluetoothManager().getPermissions();
         }
+        //OS will try to reconnect to bonded device automatically,
+        //but we call connect to ensure our app connects to it
+        await BluetoothManager().connect(id: device.bleId);
       }
     }
   }
@@ -228,5 +214,29 @@ class Devices extends ChangeNotifier {
 
   Device? getDeviceBySerial(String serialNumber) {
     return devices.firstWhereOrNull((device) => device.serial == serialNumber);
+  }
+}
+
+class Uint8ListConverter implements JsonConverter<Uint8List?, List<int>?> {
+  /// Create a new instance of [Uint8ListConverter].
+  const Uint8ListConverter();
+
+  @override
+  Uint8List? fromJson(List<dynamic>? json) {
+    if (json == null) return null;
+
+    try {
+      final list = json.map((e) => e as int).toList();
+      return Uint8List.fromList(list);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  List<int>? toJson(Uint8List? object) {
+    if (object == null) return null;
+
+    return object.toList();
   }
 }

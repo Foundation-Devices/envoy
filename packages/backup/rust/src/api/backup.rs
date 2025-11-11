@@ -10,6 +10,7 @@ use bdk::keys::bip39::Mnemonic;
 use curve25519_parser::StaticSecret;
 use flutter_rust_bridge::for_generated::anyhow;
 use flutter_rust_bridge::for_generated::anyhow::{anyhow, Context};
+use flutter_rust_bridge::frb;
 use lazy_static::lazy_static;
 use mla::config::{ArchiveReaderConfig, ArchiveWriterConfig};
 use mla::{ArchiveReader, ArchiveWriter};
@@ -22,6 +23,7 @@ use tokio::runtime::{Builder, Runtime};
 use tokio::sync::broadcast::{Receiver, Sender};
 
 #[derive(Deserialize)]
+#[frb(ignore)]
 pub struct ChallengeResponse {
     pub challenge: effort::Challenge,
     pub(crate) timestamp: u64,
@@ -172,6 +174,79 @@ impl Backup {
         }
     }
 
+    pub async fn perform_prime_backup(
+        server_url: &str,
+        proxy_port: i32,
+        seed_hash: Vec<u8>,
+        payload: Vec<u8>,
+    ) -> anyhow::Result<bool> {
+        let (tx, mut _rx): (Sender<u128>, Receiver<u128>) = tokio::sync::broadcast::channel(4);
+
+        if server_url.is_empty() {
+            anyhow::bail!("Server URL cannot be empty");
+        }
+        let challenge = match Self::get_challenge_async(server_url, proxy_port).await {
+            None => {
+                anyhow::bail!("Unable to get challenge from server");
+            }
+            Some(c) => c,
+        };
+        let solution = effort::solve_challenge(&challenge.challenge, &tx).await;
+
+        let hash: String = hex::encode(&seed_hash);
+
+        let post_success =
+            Self::post_backup_async(server_url, proxy_port, challenge, solution, hash, payload)
+                .await;
+        match post_success {
+            Ok(success) => Ok(success),
+            Err(e) => Err(anyhow!("Failed to post backup: {}", e)),
+        }
+    }
+
+    pub async fn get_prime_backup(
+        hash: Vec<u8>,
+        server_url: &str,
+        proxy_port: i32,
+    ) -> Result<Vec<u8>, GetBackupException> {
+        if server_url.is_empty() {
+            return Err(GetBackupException::InvalidServer);
+        }
+        let client = Self::get_reqwest_client(proxy_port);
+
+        let hash_string: String = hex::encode(&hash);
+        let url = server_url.to_owned() + "/backup?key=" + &hash_string;
+        // Send request and map network errors
+        let res = match client.get(url).send().await {
+            Ok(r) => r,
+            Err(_) => return Err(GetBackupException::ServerUnreachable),
+        };
+
+        let status = res.status();
+        if status.as_u16() == 400 {
+            return Err(GetBackupException::SeedNotFound);
+        }
+        if status.as_u16() == 404 {
+            return Err(GetBackupException::BackupNotFound);
+        }
+        if !status.is_success() {
+            return Err(GetBackupException::ServerUnreachable);
+        }
+        // Parse response JSON
+        let response: GetBackupResponse = match res.json().await {
+            Ok(r) => r,
+            Err(_) => return Err(GetBackupException::ServerUnreachable),
+        };
+
+        // Decode hex and decrypt backup, mapping failures to BackupNotFound
+        let parsed = match FromHex::from_hex(&response.backup) {
+            Ok(p) => p,
+            Err(_) => return Err(GetBackupException::BackupNotFound),
+        };
+
+        Ok(parsed)
+    }
+
     pub fn get_backup_offline(
         seed_words: &str,
         file_path: &str,
@@ -189,6 +264,8 @@ impl Backup {
             Err(_) => Err(GetBackupException::BackupNotFound),
         }
     }
+
+    #[frb(ignore)]
     pub async fn get_challenge_async(
         server_url: &str,
         proxy_port: i32,
@@ -331,21 +408,6 @@ impl Backup {
         Ok(data)
     }
 
-    pub async fn get_backup_async(
-        server_url: &str,
-        proxy_port: i32,
-        seed: String,
-    ) -> Result<GetBackupResponse, reqwest::Error> {
-        let client = Self::get_reqwest_client(proxy_port);
-        let hash = bitcoin::hashes::sha256::Hash::hash(seed.as_bytes()).to_string();
-        let response = client
-            .get(server_url.to_owned() + "/backup?key=" + &*hash)
-            .send()
-            .await?;
-
-        response.json().await
-    }
-
     pub fn encrypt_backup(files: Vec<(String, String)>, secret: &StaticSecret) -> Vec<u8> {
         // Create an MLA Archive - Output only needs the Write trait
         let mut buf = Vec::new();
@@ -378,6 +440,7 @@ impl Backup {
         Ok(StaticSecret::from(entropy_32))
     }
 
+    #[frb(ignore)]
     pub async fn post_backup_async(
         server_url: &str,
         proxy_port: i32,

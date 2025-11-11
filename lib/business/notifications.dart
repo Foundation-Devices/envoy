@@ -203,7 +203,7 @@ class Notifications {
         final newVersion = await UpdatesManager()
             .getStoredFirmwareVersionString(device.type.index);
         for (var notification in notifications) {
-          if (notification.body == newVersion!) {
+          if (notification.body == newVersion) {
             fwUpdateAvailable = false;
           }
         }

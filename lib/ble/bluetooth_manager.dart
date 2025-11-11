@@ -4,31 +4,39 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:bluart/bluart.dart' as bluart;
-import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/ble/handlers/onboard_handler.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
-import 'package:envoy/business/prime_shard.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/server.dart';
-import 'package:envoy/business/settings.dart';
+import 'package:envoy/channels/ble_status.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/ui/envoy_colors.dart';
-import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/ntp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
-import 'package:ngwallet/ngwallet.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:uuid/uuid.dart';
-import 'package:uuid/uuid_value.dart';
+
+import 'handlers/account_handler.dart';
+import 'handlers/magic_backup_handler.dart';
+import 'handlers/shards_handler.dart';
+import 'quantum_link_router.dart';
+
+final connectedDevicesProvider = StreamProvider<DeviceStatus>((ref) {
+  return BluetoothChannel().deviceStatusStream;
+});
+
+final isPrimeConnectedProvider = Provider.family<bool, String>((ref, bleId) {
+  DeviceStatus? status = ref.watch(connectedDevicesProvider).valueOrNull;
+  status ??= BluetoothChannel().lastDeviceStatus;
+  return status.connected == true;
+});
 
 final sendProgressProvider =
     StateNotifierProvider<SendProgressNotifier, double>(
@@ -36,48 +44,54 @@ final sendProgressProvider =
 );
 
 final remainingTimeProvider = StateProvider<Duration>((ref) => Duration.zero);
-final connectedDevicesProvider = StreamProvider<Set<bluart.BleDevice>>((ref) {
-  return BluetoothManager().connectedDevicesStream;
+
+final connectedDeviceProvider = StreamProvider<DeviceStatus>((ref) {
+  return BluetoothChannel().deviceStatusStream;
 });
 
-final isPrimeConnectedProvider = Provider.family<bool, String>((ref, bleId) {
-  final devices = ref.watch(connectedDevicesProvider).valueOrNull ?? {};
-  kPrint("Connected devices: $devices");
-  return devices.any((d) => d.id == bleId);
-});
-
-class BluetoothManager extends WidgetsBindingObserver {
+class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   StreamSubscription? _subscription;
   StreamSubscription? _writeProgressSubscription;
-  final Set<bluart.BleDevice> _connectedDevices = {};
+  final _bluetoothChannel = BluetoothChannel();
 
-  final StreamController<Set<bluart.BleDevice>> _connectedDevicesStream =
-      StreamController<Set<bluart.BleDevice>>.broadcast();
+  //holds registered handlers.
+  final PassportMessageRouter _messageRouter = PassportMessageRouter();
 
-  Set<bluart.BleDevice> get connectedDevices => _connectedDevices;
+  //Handlers.
+  //Handles various types of messages received from the Passport device.
+  //can be exposed to UI through BluetoothManager instance.
+  late final BleMagicBackupHandler _bleMagicBackupHandler =
+      BleMagicBackupHandler(this);
+  late final BleAccountHandler _bleAccountHandler = BleAccountHandler(this);
+  late final ShardsHandler _bleShardsHandler = ShardsHandler(this);
+  late final BleOnboardHandler _bleOnboardHandler = BleOnboardHandler(this);
 
-  Stream<Set<bluart.BleDevice>> get connectedDevicesStream =>
-      _connectedDevicesStream.stream.asBroadcastStream();
+  //
+  BleMagicBackupHandler get magicBackupHandler => _bleMagicBackupHandler;
+
+  BleAccountHandler get bleAccountHandler => _bleAccountHandler;
+
+  BleOnboardHandler get bleOnboardHandler => _bleOnboardHandler;
 
   static final BluetoothManager _instance = BluetoothManager._internal();
-  UuidValue rxCharacteristic =
-      UuidValue.fromString("6E400002B5A3F393E0A9E50E24DCCA9E");
 
   api.EnvoyAridCache? _aridCache;
 
   // Persist this across sessions
   api.QuantumLinkIdentity? _qlIdentity;
   final StreamController<api.PassportMessage> _passportMessageStream =
-      StreamController<api.PassportMessage>();
+      StreamController<api.PassportMessage>.broadcast();
 
   final StreamController<api.QuantumLinkMessage_BroadcastTransaction>
       _transactionStream =
       StreamController<api.QuantumLinkMessage_BroadcastTransaction>.broadcast();
 
   api.EnvoyMasterDechunker? _decoder;
+
+  //TODO: support multiple devices
   api.XidDocument? _recipientXid;
 
-  bool connected = false;
+  // map <device -> InProgressBackup>
 
   bool _sendingData = false;
 
@@ -120,8 +134,6 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   String bleId = "";
 
-  Stream<bluart.Event>? events;
-
   static Future<BluetoothManager> init() async {
     var singleton = BluetoothManager._instance;
     return singleton;
@@ -134,75 +146,54 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   Future _init() async {
     await api.RustLib.init();
-    await bluart.RustLib.init();
 
+    _messageRouter.registerHandler(_bleMagicBackupHandler);
+    _messageRouter.registerHandler(_bleShardsHandler);
+    _messageRouter.registerHandler(_bleAccountHandler);
+    _messageRouter.registerHandler(_bleOnboardHandler);
+
+    await listen(id: bleId);
     kPrint("QL Identity: $_qlIdentity");
-
     await restoreQuantumLinkIdentity();
+    await restorePrimes();
     _aridCache = await api.getAridCache();
     kPrint("QL Identity: $_qlIdentity");
+    initBluetooth();
+  }
+
+  Future<void> restoreQuantumLinkIdentity() async {
+    final qlIdentity = await EnvoyStorage().getQuantumLinkIdentity();
+
+    if (qlIdentity == null) {
+      kPrint("No QL Identity found, generating new one.");
+      await _generateQlIdentity();
+    } else {
+      kPrint("QL Identity found, restoring.");
+      _qlIdentity = qlIdentity;
+    }
+  }
+
+  // Restores XidDocuments for all Prime devices
+  // TODO: support multiple devices
+  Future<void> restorePrimes() async {
+    for (Device device in Devices().getPrimeDevices) {
+      if (device.xid != null) {
+        final api.XidDocument recipientXid = await api.deserializeXid(
+          data: device.xid!,
+        );
+        _recipientXid = recipientXid;
+        kPrint("Restored XID for device ${device.name}");
+      } else {
+        kPrint("No XID found for device ${device.name}");
+      }
+    }
   }
 
   Future<void> initBluetooth() async {
-    if (events != null) {
-      kPrint("Bluetooth already initialized");
-      return;
-    }
-
-    events = bluart.init().asBroadcastStream();
-
-    // Add a small delay to ensure Rust library is fully initialized
-    await Future.delayed(const Duration(milliseconds: 300));
-
-    events?.listen((bluart.Event event) async {
-      if (event is bluart.Event_DeviceConnected) {
-        _updateConnectionStatus(event.field0);
-        connected = true;
-      }
-
-      if (event is bluart.Event_DeviceDisconnected) {
-        _updateConnectionStatus(event.field0);
-        connected = false;
-      }
-
-      if (event is bluart.Event_ScanResult) {
-        if (event.field0.isEmpty) {
-          kPrint("received empty scan result");
-        }
-
-        for (final device in event.field0) {
-          _updateConnectionStatus(device);
-          // TODO: don't autoconnect in onboarding
-          // TODO: need some way to know if we're in OB
-          if (bleId.isNotEmpty && device.id == bleId && !connected) {
-            kPrint("Autoconnecting to: ${device.id}");
-            await connect(id: device.id);
-            await listen(id: bleId);
-          }
-        }
-      }
-    });
-
     if (_qlIdentity == null) {
       await _generateQlIdentity();
     }
-
-    await scan();
-    _listenForAccountUpdate();
-    _listenForShardMessages();
     _listenToWriteProgress();
-  }
-
-  void _updateConnectionStatus(bluart.BleDevice device) {
-    if (device.connected) {
-      //kPrint("Event Device connected: ${device.id} ${device.name}");
-      _connectedDevices.add(device);
-    } else {
-      if (_connectedDevices.any((d) => d.id == device.id)) {
-        _connectedDevices.removeWhere((d) => d.id == device.id);
-      }
-    }
-    _connectedDevicesStream.sink.add(_connectedDevices);
   }
 
   void _listenToWriteProgress() {
@@ -211,126 +202,18 @@ class BluetoothManager extends WidgetsBindingObserver {
     });
   }
 
-  void _listenForAccountUpdate() {
-    passportMessageStream.listen((api.PassportMessage message) async {
-      if (message.message
-          case api.QuantumLinkMessage_AccountUpdate accountUpdate) {
-        kPrint("Got account update!");
-        final payload = accountUpdate.field0.update;
-        kPrint("Got payload! ${payload.length}");
-        final config = await EnvoyAccountHandler.getConfigFromRemote(
-            remoteUpdate: payload);
-        kPrint(
-            "Got config ${config.id} ${config.descriptors.map((e) => e.external_)}");
-        final fingerprint =
-            NgAccountManager.getFingerprint(config.descriptors.first.internal);
-        if (fingerprint == null) {
-          throw Exception("Invalid fingerprint $fingerprint");
-        }
-        final dir = NgAccountManager.getAccountDirectory(
-            deviceSerial: config.deviceSerial ?? "prime",
-            network: config.network.toString(),
-            fingerprint: fingerprint,
-            number: config.index);
-        kPrint("Account path! ${dir.path}");
-
-        if (await dir.exists()) {
-          EnvoyReport().log("AccountManager",
-              "Failed to create account directory for ${config.name}:${config.deviceSerial}, already exists: ${dir.path}");
-
-          final acc = NgAccountManager()
-              .accounts
-              .firstWhereOrNull((a) => a.id == config.id);
-          kPrint("Account already exists, updating handler $acc");
-
-          if (acc != null) {
-            kPrint("Account already exists, updating handler");
-            final handler = acc.handler;
-            if (handler != null) {
-              await handler.renameAccount(name: config.name);
-              kPrint("Account updated!");
-              return;
-            }
-          }
-        } else {
-          await dir.create(recursive: true);
-        }
-
-        final accountHandler = await EnvoyAccountHandler.addAccountFromConfig(
-            dbPath: dir.path, config: config);
-        await NgAccountManager()
-            .addAccount(await accountHandler.state(), accountHandler);
-        kPrint("Account added!");
-      }
-    });
-  }
-
-  void _listenForShardMessages() {
-    passportMessageStream.listen((api.PassportMessage message) async {
-      if (message.message is api.QuantumLinkMessage_MagicBackupEnabledRequest) {
-        kPrint("Got magic backup enabled request!");
-        writeMessage(api.QuantumLinkMessage.magicBackupEnabledResponse(
-            api.MagicBackupEnabledResponse(enabled: Settings().syncToCloud)));
-      }
-
-      if (message.message
-          case api.QuantumLinkMessage_BackupShardRequest request) {
-        kPrint("Got shard backup request!");
-        final shard = request.field0.field0;
-
-        // TODO: add shard ids to API
-        try {
-          await PrimeShard().addShard(shard: shard.payload);
-          writeMessage(api.QuantumLinkMessage.backupShardResponse(
-              api.BackupShardResponse_Success()));
-          kPrint("Shard backed up!");
-        } catch (e, _) {
-          kPrint("Shard backup failure: $e");
-          writeMessage(api.QuantumLinkMessage.backupShardResponse(
-              api.BackupShardResponse_Success()));
-        }
-      }
-
-      if (message.message
-          case api.QuantumLinkMessage_RestoreShardRequest request) {
-        kPrint("Got shard restore request!");
-        final fingerprint = request.field0.seedFingerprint;
-
-        try {
-          final shard = await PrimeShard()
-              .getShard(fingerprint: Uint8List.fromList(fingerprint));
-          if (shard == null) {
-            throw Exception("Shard not found!");
-          }
-
-          writeMessage(api.QuantumLinkMessage.restoreShardResponse(
-              api.RestoreShardResponse_Success(
-                  api.Shard(payload: shard.shard))));
-          kPrint("Shard restored!");
-        } catch (e, _) {
-          kPrint("Shard restore failure: $e");
-          writeMessage(api.QuantumLinkMessage.backupShardResponse(
-              api.BackupShardResponse_Error(e.toString())));
-        }
-      }
-    });
-  }
-
   Future getPermissions() async {
-    try {
-      kPrint("Getting permissions...");
-      await Permission.bluetooth.request();
-      await Permission.bluetoothConnect.request();
-      // TODO: remove this
-      // Envoy will be getting the BT addresses via QR
-      await Permission.bluetoothScan.request();
-      kPrint("Scanning...");
-      bool denied = await isBluetoothDenied();
-      if (!denied) {
-        await initBluetooth();
-      }
-    } catch (e, stack) {
-      kPrint("Error getting permissions: $e", stackTrace: stack);
+    // return;
+    kPrint("Getting permissions...");
+    await Permission.bluetooth.request();
+    await Permission.bluetoothConnect.request();
+    // TODO: remove this
+    // Envoy will be getting the BT addresses via QR
+    await Permission.bluetoothScan.request();
+    kPrint("Scanning...");
+    bool denied = await isBluetoothDenied();
+    if (!denied) {
+      await initBluetooth();
     }
   }
 
@@ -351,10 +234,6 @@ class BluetoothManager extends WidgetsBindingObserver {
   }
 
   static Future<bool> isBluetoothDenied() async {
-    if (Platform.isLinux) {
-      return false;
-    }
-
     bool isDenied = true;
     if (Platform.isAndroid) {
       isDenied = await Permission.bluetooth.isDenied ||
@@ -369,49 +248,23 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   //checks connected devices.
   // if a device is connected and its not in the list of prime devices, disconnect from it
-  Future<void> checkDeviceStates() async {
-    kPrint("Checking device states...");
-    try {
-      kPrint(
-          "Connected devices: ${connectedDevices.map((d) => "${d.id} :: ${d.name}").join(", name")}");
-      if (connectedDevices.isNotEmpty) {
-        bool foundDevice = false;
-        for (var device in Devices().getPrimeDevices) {
-          if (device.type == DeviceType.passportPrime &&
-              connectedDevices.map((d) => d.id).contains(device.bleId)) {
-            foundDevice = true;
-
-            await restorePrimeDevice(device.bleId);
-            break;
-          }
-        }
-        //found a device, devices has not completed onboarding
-        if (!foundDevice) {
-          kPrint("Disconnecting from Prime");
-          await BluetoothManager().removeConnectedDevice();
-        }
-      }
-    } catch (e, stack) {
-      kPrint("Error checking device states: $e", stackTrace: stack);
-    }
-  }
-
-  Future scan() async {
-    bool isDenied = await isBluetoothDenied();
-    if (Platform.isLinux || !isDenied) {
-      kPrint("Scanning...");
-      await bluart.scan(filter: ["6E400001-B5A3-F393-E0A9-E50E24DCCA9E"]);
-    }
-  }
 
   Future<List<Uint8List>> encodeMessage(
       {required api.QuantumLinkMessage message}) async {
-    DateTime dateTime = await NTP.now();
+    DateTime dateTime = DateTime.now();
+    try {
+      dateTime = await NTP.now(timeout: const Duration(seconds: 1));
+    } catch (e) {
+      kPrint("NTP error: $e");
+    }
     final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
+    kPrint("Encoding Message timestamp: $timestampSeconds");
 
     api.EnvoyMessage envoyMessage =
         api.EnvoyMessage(message: message, timestamp: timestampSeconds);
+    kPrint("Encoded Message $timestampSeconds");
 
+    kPrint("Encoding message: $envoyMessage");
     return await api.encode(
       message: envoyMessage,
       sender: _qlIdentity!,
@@ -422,6 +275,11 @@ class BluetoothManager extends WidgetsBindingObserver {
   Future<bool> pair(api.XidDocument recipient) async {
     _recipientXid = recipient;
     kPrint("pair: $hashCode");
+    listen(id: bleId);
+
+    if (_qlIdentity == null) {
+      await _generateQlIdentity();
+    }
 
     kPrint("Pairing...");
     final xid = await api.serializeXid(quantumLinkIdentity: _qlIdentity!);
@@ -429,52 +287,54 @@ class BluetoothManager extends WidgetsBindingObserver {
     final recipientXid =
         await api.serializeXidDocument(xidDocument: _recipientXid!);
 
-    await Future.delayed(Duration(milliseconds: 1500));
     final success = await writeMessage(api.QuantumLinkMessage.pairingRequest(
         api.PairingRequest(xidDocument: xid)));
+    kPrint("Pairing... success ?  $success");
 
-    // Listen for response
-    listen(id: bleId);
-    //Future.delayed(Duration(seconds: 2));
-    if (success) {
-      // TODO: handle this in same place
-      PrimeDevice prime = PrimeDevice(bleId, recipientXid);
-      await EnvoyStorage().savePrime(prime);
-      connected = true;
+    if (!success) {
+      throw Exception("Failed to send pairing request");
     }
-    return success;
+    // Listen for response
+    //Future.delayed(Duration(seconds: 2));
+
+    // TODO: handle this in same place
+    PrimeDevice prime = PrimeDevice(bleId, recipientXid);
+    await EnvoyStorage().savePrime(prime);
+
+    return true;
   }
 
+  @override
   Future<bool> writeMessage(api.QuantumLinkMessage message) async {
     kPrint("Sending message: $message");
-
-    final encoded = await encodeMessage(message: message);
-    kPrint("Encoded message!");
-
-    return await _writeWithProgress(encoded);
+    final writeStream = await _writeWithProgress(message);
+    final writeFinished = await writeStream
+        .firstWhere((progress) => progress >= 1, orElse: () => 0.0)
+        .timeout(const Duration(seconds: 30), onTimeout: () {
+      throw Exception("Timeout waiting for message write to complete");
+    });
+    return writeFinished == 1.0;
   }
 
   Future<void> addDevice(String serialNumber, String firmwareVersion,
       String bleId, DeviceColor deviceColor) async {
+    final recipientXid =
+        await api.serializeXidDocument(xidDocument: _recipientXid!);
     Devices().add(Device("Prime", DeviceType.passportPrime, serialNumber,
         DateTime.now(), firmwareVersion, EnvoyColors.listAccountTileColors[0],
-        bleId: bleId, deviceColor: deviceColor));
+        bleId: bleId, deviceColor: deviceColor, xid: recipientXid));
   }
 
   Future<void> removeConnectedDevice() async {
-    if (connected) {
-      disconnect();
-    }
+    await EnvoyStorage().deletePrimeByBleId(bleId);
 
-    EnvoyStorage().deletePrimeByBleId(bleId);
-
+    await disconnect();
     bleId = "";
     _recipientXid = null;
   }
 
   Future disconnect() async {
-    await bluart.disconnect(id: bleId);
-    connected = false;
+    await BluetoothChannel().disconnect();
   }
 
   Future<void> sendPsbt(String accountId, Uint8List psbt) async {
@@ -492,34 +352,61 @@ class BluetoothManager extends WidgetsBindingObserver {
     }
   }
 
-  Future<void> connect({required String id}) async {
-    kPrint("Connecting to: $id");
-
+  Future<bool> connect({required String id, int colorWay = 1}) async {
+    if (_qlIdentity == null) {
+      await _generateQlIdentity();
+    }
+    // final pid = await _bluetoothChannel.getConnectedPeripheralID();
+    final connectionEvent = await BluetoothChannel().connect(id, colorWay);
+    kPrint("Connection event: $connectionEvent");
+    await Future.delayed(const Duration(milliseconds: 900));
     bleId = id;
-    await bluart.connect(id: id);
-    connected = true;
-
-    await Future.delayed(const Duration(seconds: 1));
+    return true;
   }
 
   Future<void> listen({required String id}) async {
     _decoder = await api.getDecoder();
-    _subscription = bluart.read(id: id).listen((bleData) {
-      decode(bleData).then((value) {
-        if (value != null) {
-          _passportMessageStream.add(value);
-          kPrint(
-              "Got Passport message type: ${value.message.runtimeType} ${value.message}");
-          if (value.message
-              case api.QuantumLinkMessage_BroadcastTransaction transaction) {
-            kPrint("Got the Broadcast Transaction");
-            _transactionStream.add(transaction);
+    if (Platform.isIOS || Platform.isAndroid) {
+      _bluetoothChannel.listenToDataEvents().listen((payload) {
+        decode(payload).then((value) async {
+          if (value != null) {
+            unawaited(_messageRouter.dispatch(value.message));
+            _passportMessageStream.add(value);
+            kPrint(
+                "Got Passport message type: ${value.message.runtimeType} ${value.message}");
+            if (value.message
+                case api.QuantumLinkMessage_BroadcastTransaction transaction) {
+              kPrint("Got the Broadcast Transaction");
+              _transactionStream.add(transaction);
+            }
           }
-        }
-      }, onError: (e) {
-        kPrint("Error decoding: $e");
+        }, onError: (e) {
+          kPrint("Error decoding: $e");
+        });
       });
-    });
+      // _bluetoothChannel.listenToDeviceConnectionEvents().listen((event) {});
+    } else {
+      // _subscription = bluart.read(id: id).listen((bleData) {
+      //   decode(bleData).then((value) {
+      //     if (value != null) {
+      //       _passportMessageStream.add(value);
+      //       kPrint(
+      //           "Got Passport message type: ${value.message.runtimeType} ${value.message}");
+      //       if (value.message
+      //           case api.QuantumLinkMessage_BroadcastTransaction transaction) {
+      //         kPrint("Got the Broadcast Transaction");
+      //         _transactionStream.add(transaction);
+      //       }  if (value.message
+      //           case api.QuantumLinkMessage_BroadcastTransaction transaction) {
+      //         kPrint("Got the Broadcast Transaction");
+      //         _transactionStream.add(transaction);
+      //       }
+      //     }
+      //   }, onError: (e) {
+      //     kPrint("Error decoding: $e");
+      //   });
+      // });
+    }
   }
 
   Future<api.PassportMessage?> decode(Uint8List bleData) async {
@@ -564,25 +451,21 @@ class BluetoothManager extends WidgetsBindingObserver {
     await writeMessage(api.QuantumLinkMessage.securityCheck(message));
   }
 
-  Future<void> restorePrimeDevice(String bluetoothId) async {
+  Future<void> restorePrimeDevice(String serial) async {
     try {
-      List<PrimeDevice> primes = await EnvoyStorage().getAllPrimes();
+      List<Device> primes = Devices().getPrimeDevices;
 
       if (primes.isEmpty) {
         return;
       }
-
       for (final prime in primes) {
-        if (prime.bleId == bluetoothId) {
-          // Convert the xidDocument to a List<int>
-          final List<int> xidBytes = prime.xidDocument.toList();
-
-          final api.XidDocument recipientXid = await api.deserializeXid(
-            data: xidBytes,
+        kPrint("Restoring Prime device XID for $prime");
+        if (prime.xid != null) {
+          _recipientXid = await api.deserializeXid(
+            data: prime.xid!,
           );
-
-          _recipientXid = recipientXid;
-          bleId = prime.bleId;
+        } else {
+          kPrint("No XID found for device ${prime.name}");
         }
       }
     } catch (e) {
@@ -590,24 +473,19 @@ class BluetoothManager extends WidgetsBindingObserver {
     }
   }
 
-  Future<void> restoreQuantumLinkIdentity() async {
-    try {
-      _qlIdentity = await EnvoyStorage().getQuantumLinkIdentity();
-    } catch (e) {
-      kPrint('Error deserializing QL id: $e');
-    }
-  }
-
   Future<void> sendExchangeRate() async {
     if (_sendingData) return;
 
+    if (Devices().getPrimeDevices.isEmpty || _recipientXid == null) {
+      return;
+    }
+    kPrint(
+        "Preparing to send exchange rate to Prime... $_sendingData devices ${Devices().getPrimeDevices.length}");
     try {
       _sendingData = true;
       final exchangeRate = ExchangeRate();
       final currentExchange = exchangeRate.usdRate!;
-      if (Devices().getPrimeDevices.isEmpty) {
-        return;
-      }
+
       // Only send if price actually changed
       if (_lastSentBtcPrice != null && _lastSentBtcPrice == currentExchange) {
         return;
@@ -634,10 +512,8 @@ class BluetoothManager extends WidgetsBindingObserver {
 
   void setupExchangeRateListener() {
     ExchangeRate().addListener(() async {
-      if (connected) {
-        kPrint("Sending exchange rate to Prime ...");
-        await sendExchangeRate();
-      }
+      kPrint("Sending exchange rate to Prime ...");
+      await sendExchangeRate();
     });
   }
 
@@ -671,7 +547,7 @@ class BluetoothManager extends WidgetsBindingObserver {
         patchIndex: patchIndex,
         totalPatches: patches.length,
         patchBytes: patch,
-        chunkSize: BigInt.from(10000),
+        chunkSize: BigInt.from(200000),
       );
       allChunks.addAll(chunksForPatch);
     }
@@ -701,13 +577,24 @@ class BluetoothManager extends WidgetsBindingObserver {
     }
   }
 
-  Future<bool> _writeWithProgress(List<Uint8List> data) {
-    final completer = Completer<bool>();
+  Future<Stream<double>> _writeWithProgress(
+      api.QuantumLinkMessage message) async {
     _sendingData = true;
-
-    final writeStream = bluart.writeAll(id: bleId, data: data);
-
     _writeProgressSubscription?.cancel();
+    final data = await encodeMessage(message: message);
+    kPrint("Encoded message! Size: ${data.length}");
+
+    var writeStream = Stream.value(0.0);
+    if (Platform.isIOS || Platform.isAndroid) {
+      writeStream = _bluetoothChannel.writeProgressStream;
+      final result = await _bluetoothChannel.writeAll(data);
+      if (!result) {
+        kPrint("Failed to write data to Bluetooth channel");
+      }
+    } else {
+      throw UnimplementedError(
+          "Bluetooth write not implemented for this platform");
+    }
     _writeProgressSubscription = writeStream.listen(
       (progress) {
         if (_isUpdatingFirmware && _totalFirmwareChunks > 0) {
@@ -724,9 +611,6 @@ class BluetoothManager extends WidgetsBindingObserver {
           _sentFirmwareChunks++;
         }
         _sendingData = false;
-        if (!completer.isCompleted) {
-          completer.complete(true);
-        }
       },
       onError: (e) {
         kPrint("Progress stream errored out!");
@@ -735,23 +619,26 @@ class BluetoothManager extends WidgetsBindingObserver {
         }
         _sendingData = false;
         _writeProgressController.addError(e);
-        if (!completer.isCompleted) {
-          completer.complete(false);
-        }
       },
     );
-
-    return completer.future;
+    return writeStream;
   }
 
   void dispose() {
     _subscription?.cancel();
     _writeProgressSubscription?.cancel();
+    _bluetoothChannel.dispose();
   }
 
   Future sendAccountUpdate(api.AccountUpdate update) async {
     kPrint("Sending account update to Prime");
     await writeMessage(api.QuantumLinkMessage.accountUpdate(update));
+  }
+
+  @override
+  Future<Stream<double>> writeMessageWithProgress(
+      api.QuantumLinkMessage message) async {
+    return _writeWithProgress(message);
   }
 }
 

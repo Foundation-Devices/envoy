@@ -1,0 +1,143 @@
+# SPDX-FileCopyrightText: 2024 Foundation Devices, Inc. <hello@foundation.xyz>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: CI
+on:
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  NIX_CONFIG: access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+jobs:
+  nix-check-and-build:
+    runs-on: [ self-hosted, Linux, X64 ]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check if Nix is installed
+        id: check-nix
+        run: |
+          if [ -d "/nix/var/nix/profiles/default/bin" ]; then
+            echo "installed=true" >> $GITHUB_OUTPUT
+          else
+            echo "installed=false" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
+      - name: Setup Nix daemon
+        if: steps.check-nix.outputs.installed == 'true'
+        run: |
+          export PATH=/nix/var/nix/profiles/default/bin:$PATH
+          echo "PATH=/nix/var/nix/profiles/default/bin:$PATH" >> $GITHUB_ENV
+          nix --version
+          echo "Using existing Nix daemon"
+
+      - name: Setup nix
+        if: steps.check-nix.outputs.installed == 'false'
+        uses: DeterminateSystems/nix-installer-action@main
+
+#      - uses: actions/cache@v4
+#        id: cache-cargo
+#        with:
+#          path: |
+#            ~/.cargo/registry/index/
+#            ~/.cargo/registry/cache/
+#            ~/.cargo/git/db/
+#            target/
+#          key: ${{ github.workflow }}-cache-${{ hashFiles('rust-toolchain.toml') }}-${{ hashFiles('Cargo.lock') }}
+#          restore-keys: |
+#            ${{ github.workflow }}-cache-${{ hashFiles('rust-toolchain.toml') }}
+#        name: Cache cargo registry and target
+
+#      - run: mkdir -p ~/.cargo/registry ~/.cargo/git
+#        name: Make sure cache directories exist
+
+      - name: Debug - Check user and Nix daemon
+        run: |
+          whoami
+          id
+          systemctl status nix-daemon
+          ls -l /nix/var/nix/db/big-lock
+        shell: bash
+
+      - run: nix develop --command reuse lint
+        name: Check license headers
+
+      - run: nix develop --command flutter pub get
+        name: Get Flutter dependencies
+
+      - run: nix develop --command dart format --output=none --set-exit-if-changed .
+        name: Check Dart formatting
+
+      - run: nix develop --command flutter analyze
+        name: Analyze Dart project source
+
+      - run: nix develop --command cargo fmt --all --check
+        name: Check Rust formatting
+
+      - run: |
+          nix develop --command bash -c '
+            git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/";
+            cargo build
+          '
+        name: Build Rust libs
+
+      - run: nix develop --command flutter test
+        name: Run Dart tests
+
+      - run: nix develop --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
+        name: Run Clippy
+
+      - run: nix develop --command cargo test
+        name: Run Rust tests
+
+      - run: nix develop --command ./scripts/build_ffi_android.sh
+        name: Build legacy FFI libs for Android
+
+      - run:  echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build apk --release --target-platform android-arm64
+        name: Build Envoy APK
+        env:
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - run: echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build aab --release --target-platform android-arm64
+        name: Build Envoy AAB
+        env:
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - run: git diff -I 'rustflags = ' --exit-code
+        name: Check if any file (e.g. Cargo.lock) is changed during build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-release.aab
+          path: build/app/outputs/flutter-apk/app-release.aab
+
+  beef-qa:
+    needs: nix-check-and-build
+    runs-on: [ self-hosted, macOS, ARM64 ]
+
+    steps:
+      - uses: extractions/setup-just@v1
+      - uses: actions/checkout@v4
+
+
+      - name: Install bindgen-cli (for aws-lc-sys)
+        run: cargo install --force --locked bindgen-cli
+
+      - name: Build ffi
+        run: ./scripts/build_ffi_ios.sh
+
+      - name: Run BeefQA Tests
+        run: just qa

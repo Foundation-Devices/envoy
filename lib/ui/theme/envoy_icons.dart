@@ -91,6 +91,8 @@ enum EnvoyIcons {
   prime,
   passphrase_shield,
   quantum,
+  envelope,
+  qr_scan,
   stripe,
   stripe_text,
   prime_v2,
