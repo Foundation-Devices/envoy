@@ -6,12 +6,9 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `backup_payload_to_hashmap`, `post_backup_async`
-// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `BackupRequest`, `RUNTIME`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `BackupRequest`, `ChallengeResponse`, `GetBackupResponse`, `RUNTIME`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `deref`, `initialize`
-
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ChallengeResponse>>
-abstract class ChallengeResponse implements RustOpaqueInterface {}
+// These functions are ignored (category: IgnoreBecauseExplicitAttribute): `get_challenge_async`, `post_backup_async`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner< Client>>
 abstract class Client implements RustOpaqueInterface {}
@@ -62,22 +59,17 @@ class Backup {
       RustLib.instance.api.crateApiBackupBackupGetBackup(
           seedWords: seedWords, serverUrl: serverUrl, proxyPort: proxyPort);
 
-  static Future<GetBackupResponse> getBackupAsync(
-          {required String serverUrl,
-          required int proxyPort,
-          required String seed}) =>
-      RustLib.instance.api.crateApiBackupBackupGetBackupAsync(
-          serverUrl: serverUrl, proxyPort: proxyPort, seed: seed);
-
   static Future<List<(String, String)>> getBackupOffline(
           {required String seedWords, required String filePath}) =>
       RustLib.instance.api.crateApiBackupBackupGetBackupOffline(
           seedWords: seedWords, filePath: filePath);
 
-  static Future<ChallengeResponse?> getChallengeAsync(
-          {required String serverUrl, required int proxyPort}) =>
-      RustLib.instance.api.crateApiBackupBackupGetChallengeAsync(
-          serverUrl: serverUrl, proxyPort: proxyPort);
+  static Future<Uint8List> getPrimeBackup(
+          {required List<int> hash,
+          required String serverUrl,
+          required int proxyPort}) =>
+      RustLib.instance.api.crateApiBackupBackupGetPrimeBackup(
+          hash: hash, serverUrl: serverUrl, proxyPort: proxyPort);
 
   static Future<Client> getReqwestClient({required int proxyPort}) =>
       RustLib.instance.api
@@ -108,6 +100,17 @@ class Backup {
           required String path}) =>
       RustLib.instance.api.crateApiBackupBackupPerformBackupOffline(
           payload: payload, seedWords: seedWords, path: path);
+
+  static Future<bool> performPrimeBackup(
+          {required String serverUrl,
+          required int proxyPort,
+          required List<int> seedHash,
+          required List<int> payload}) =>
+      RustLib.instance.api.crateApiBackupBackupPerformPrimeBackup(
+          serverUrl: serverUrl,
+          proxyPort: proxyPort,
+          seedHash: seedHash,
+          payload: payload);
 
   @override
   int get hashCode => 0;
@@ -147,22 +150,4 @@ enum GetBackupException {
   invalidServer,
   invalidBackupFile,
   ;
-}
-
-class GetBackupResponse {
-  final String backup;
-
-  const GetBackupResponse({
-    required this.backup,
-  });
-
-  @override
-  int get hashCode => backup.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is GetBackupResponse &&
-          runtimeType == other.runtimeType &&
-          backup == other.backup;
 }

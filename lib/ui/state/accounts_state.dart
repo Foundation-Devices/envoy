@@ -6,9 +6,12 @@ import 'package:async/async.dart';
 import 'package:collection/collection.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/sync_manager.dart';
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/business/devices.dart';
 
@@ -156,6 +159,44 @@ final accountsZeroBalanceProvider = Provider<bool>((ref) {
 });
 
 final showDefaultAccountProvider = StateProvider<bool>((ref) => true);
+
+/// Stores the current passphrase fingerprint (XFP) for Prime devices.
+/// Key: device serial, Value: XFP (null if no passphrase)
+final primePassphraseFingerprintProvider =
+    StateProvider<Map<String, String?>>((ref) => {});
+
+/// Listens to ApplyPassphrase events from Prime and auto-switches view
+final _passphraseEventStreamProvider =
+    StreamProvider<api.ApplyPassphrase>((ref) {
+  return BluetoothManager().passphraseEventStream;
+});
+
+/// Provider that handles ApplyPassphrase events and updates UI state
+final passphraseEventHandlerProvider = Provider<void>((ref) {
+  ref.listen(_passphraseEventStreamProvider, (previous, next) {
+    final event = next.valueOrNull;
+    if (event == null) return;
+
+    final fingerprint = event.fingerprint;
+    kPrint("ApplyPassphrase event received in UI: fingerprint=$fingerprint");
+
+    // Update the fingerprint map
+    final currentMap = ref.read(primePassphraseFingerprintProvider);
+    final updatedMap = {...currentMap, 'prime': fingerprint};
+    ref.read(primePassphraseFingerprintProvider.notifier).state = updatedMap;
+
+    // Auto-switch view based on passphrase state
+    if (fingerprint != null) {
+      // Prime applied a passphrase - switch to passphrase view
+      kPrint("Auto-switching to passphrase view");
+      ref.read(showDefaultAccountProvider.notifier).state = false;
+    } else {
+      // Prime cleared passphrase - switch to default view
+      kPrint("Auto-switching to default view");
+      ref.read(showDefaultAccountProvider.notifier).state = true;
+    }
+  });
+});
 
 final primePassphraseAccountsProvider = Provider<List<EnvoyAccount>>((ref) {
   final accounts = ref.watch(accountsProvider);

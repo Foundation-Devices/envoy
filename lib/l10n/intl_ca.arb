@@ -72,6 +72,7 @@
   "backups_downloadBIP329BackupFile": "Export Tags & Labels (BIP-329)",
   "backups_downloadSettingsDataBackupFile": "Download Settings & Data Backup File",
   "backups_downloadSettingsMetadataBackupFile": "Download Settings & Metadata Backup File",
+  "backups_erase_mobile_wallet": "Erase Mobile Wallet",
   "backups_erase_wallets_and_backups": "Esborra Carteres i Còpies de Seguretat",
   "backups_erase_wallets_and_backups_modal_1_2_android_subheading": "Esteu a punt de suprimir permanentment la vostra cartera Envoy.\n\nSi utilitzeu Magic Backups, la vostra Envoy Seed també es suprimirà d'Android Auto Backup.",
   "backups_erase_wallets_and_backups_modal_1_2_ios_subheading": "Esteu a punt de suprimir permanentment la vostra cartera Envoy. Si utilitzeu Còpies de Seguretat Màgiques, la vostra clau privada d'Envoy també s'eliminarà del Clauer d'iCloud.",

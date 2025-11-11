@@ -80,7 +80,6 @@ pub async fn decode_ble_message(_data: Vec<u8>) -> PassportMessage {
 mod tests {
     use super::*;
     use anyhow::Result;
-    use tokio::test;
 
     fn get_test_array() -> Vec<String> {
         vec!(

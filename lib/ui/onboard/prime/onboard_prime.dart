@@ -2,10 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:bluart/bluart.dart' as bluart;
-import 'package:envoy/business/bluetooth_manager.dart';
+import 'dart:io';
+
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
@@ -32,24 +34,46 @@ const String primeSerialPref = "prime_serial";
 
 enum BleConnectState { idle, invalidId, connecting, connected }
 
+String? _bleIdCache;
+
 class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   final s = Settings();
   BleConnectState bleConnectState = BleConnectState.idle;
+  final regex = RegExp(r'^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$');
+  int colorWay = 1;
 
   @override
   void initState() {
     super.initState();
-    BluetoothManager().getPermissions();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        final param =
+            GoRouter.of(context).state.uri.queryParameters["c"] ?? "1";
+        colorWay = int.tryParse(param) ?? 1;
+      });
+    });
   }
 
   Future<void> _connectToPrime() async {
     // Check Bluetooth permissions
-    bool isDenied = await BluetoothManager.isBluetoothDenied();
+    bool isDenied = false;
+    if (Platform.isAndroid) {
+      await BluetoothManager().getPermissions();
+      isDenied = await BluetoothManager.isBluetoothDenied();
+      if (!isDenied) {
+        await BluetoothManager().getPermissions();
+      }
+    }
     String? bleId;
 
     if (mounted) {
       // Get the initial bleId from the router (if available)
       bleId = GoRouter.of(context).state.uri.queryParameters["p"];
+      if (GoRouter.of(context).state.uri.queryParameters["p"] == null &&
+          _bleIdCache != null) {
+        bleId = _bleIdCache;
+      }
+      _bleIdCache = bleId;
     }
 
     if (isDenied && mounted) {
@@ -75,33 +99,35 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
 
     try {
       final regex = RegExp(r'^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$');
-      kPrint("bleId $bleId");
+      // kPrint("bleId $bleId");
       if (regex.hasMatch(bleId ?? "")) {
-        await BluetoothManager().getPermissions();
-        kPrint("Connecting to Prime with ID: $bleId");
-        final found =
-            await BluetoothManager().events?.any((bluart.Event event) {
-          if (event is bluart.Event_ScanResult) {
-            for (final device in event.field0) {
-              if (device.name.contains("Prime")) {
-                bleId = device.id;
-                return true;
+        if (Platform.isIOS) {
+          final bleId = GoRouter.of(context).state.uri.queryParameters["p"];
+          if (regex.hasMatch(bleId ?? "")) {
+            final setUpSuccess = await BluetoothChannel().showAccessorySetup();
+            if (setUpSuccess) {
+              if (mounted) {
+                setState(() {
+                  bleConnectState = BleConnectState.connected;
+                });
+              }
+              if (context.mounted && mounted) {
+                context.goNamed(ONBOARD_PRIME_BLUETOOTH);
               }
             }
           }
-
-          return false;
-        }).timeout(const Duration(seconds: 10), onTimeout: () {
-          return false;
-        });
-        if (found != true) {
-          throw Exception("Prime device not found."
-              " Please ensure it is powered on and in range.");
+        } else {
+          await BluetoothManager().getPermissions();
         }
-        await BluetoothManager().connect(id: bleId!);
-        await LocalStorage().prefs.setString(primeSerialPref, bleId!);
+        final connectionStatus =
+            await BluetoothManager().connect(id: bleId!, colorWay: colorWay);
+        //TODO: Maybe this is not needed ?
+        await LocalStorage().prefs.setString(primeSerialPref, bleId);
 
-        if (mounted) {
+        if (!connectionStatus) {
+          throw Exception("Failed to connect to Prime device.");
+        }
+        if (mounted && connectionStatus) {
           setState(() {
             bleConnectState = BleConnectState.connected;
           });
@@ -180,8 +206,9 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
           child: Transform.translate(
             offset: const Offset(0, 85),
             child: Image.asset(
-              //TODO: change prime product image based on scanned QR
-              "assets/images/prime_artic_copper.png",
+              colorWay == 1
+                  ? "assets/images/prime_midnight_bronze.png"
+                  : "assets/images/prime_artic_copper.png",
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width * 0.8,
               height: MediaQuery.of(context).size.height * 0.8,

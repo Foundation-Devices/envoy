@@ -120,7 +120,7 @@ class HomePageState extends ConsumerState<HomePage>
   Timer? _backupWarningTimer;
   bool _backupWarningDisplayedMoreThan2minAgo = true;
 
-  void _resetTorWarningTimer() {
+  void _resetTorWarningTimer() async {
     _torWarningTimer = Timer.periodic(const Duration(minutes: 5), (_) async {
       _torWarningDisplayedMoreThan5minAgo = true;
     });

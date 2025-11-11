@@ -72,6 +72,7 @@
   "backups_downloadBIP329BackupFile": "Descarregar Cópia de Segurança BIP-329",
   "backups_downloadSettingsDataBackupFile": "Download Settings & Data Backup File",
   "backups_downloadSettingsMetadataBackupFile": "Download Settings & Metadata Backup File",
+  "backups_erase_mobile_wallet": "Erase Mobile Wallet",
   "backups_erase_wallets_and_backups": "Apagar Carteiras e Cópias de Segurança",
   "backups_erase_wallets_and_backups_modal_1_2_android_subheading": "Estás prestes a eliminar permanentemente a tua Carteira Envoy.\n\nSe estás a utilizar a Cópia Mágica de Segurança, a tua Semente Envoy também vai ser eliminada da Cópia de Segurança do Android.",
   "backups_erase_wallets_and_backups_modal_1_2_ios_subheading": "Estás prestes a eliminar permanentemente a tua Carteira Envoy.\n\nSe estás a utilizar a Cópia Mágica de Segurança, a tua Semente Envoy também vai ser eliminada do Porta-chaves iCloud.",

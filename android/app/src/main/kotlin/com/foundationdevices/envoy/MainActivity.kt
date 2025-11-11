@@ -1,21 +1,15 @@
 package com.foundationdevices.envoy
 
-import android.app.Activity
 import android.app.backup.BackupManager
 import android.content.ComponentName
 import android.content.Intent
-import android.content.pm.verify.domain.DomainVerificationManager
-import android.content.pm.verify.domain.DomainVerificationUserState
 import android.os.Build
-import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
-import android.os.PersistableBundle
 import android.provider.DocumentsContract
 import android.provider.Settings
 import android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
 import android.system.Os
-import android.util.Log
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import io.flutter.embedding.android.FlutterFragmentActivity
@@ -24,12 +18,12 @@ import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
 
-
 class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
     private val CHANNEL = "envoy"
     private val SD_CARD_EVENT_CHANNEL = "sd_card_events"
 
     private var sdCardEventSink: EventChannel.EventSink? = null
+    private var bluetoothChannel: BluetoothChannel? = null
 
     private var sdCard: File? = null
     private var firmware: File? = null
@@ -122,6 +116,9 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
 
         EventChannel(flutterEngine.dartExecutor.binaryMessenger, SD_CARD_EVENT_CHANNEL)
             .setStreamHandler(this)
+
+        // Initialize BluetoothChannel
+        bluetoothChannel = BluetoothChannel(this, flutterEngine.dartExecutor.binaryMessenger)
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
@@ -219,5 +216,10 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
         if (!Environment.isExternalStorageManager()) {
             startActivity(Intent(ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION))
         }
+    }
+
+    override fun onDestroy() {
+        bluetoothChannel?.cleanup()
+        super.onDestroy()
     }
 }

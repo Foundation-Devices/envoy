@@ -72,5 +72,18 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
+    <key>NSAccessorySetupKitSupports</key>
+    <array>
+      <string>Bluetooth</string>
+    </array>
+    <key>NSAccessorySetupBluetoothServices</key>
+    <array>
+      <string>6E400001-B5A3-F393-E0A9-E50E24DCCA9E</string>
+    </array>
+    <key>NSAccessorySetupBluetoothNames</key>
+    <array>
+      <string>Passport Prime</string>
+      <string>Prime</string>
+    </array>
 </dict>
 </plist>

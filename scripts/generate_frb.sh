@@ -18,7 +18,6 @@ echo "using flutter $FLUTTER"
 PACKAGES=(
     "packages/foundation_api"
     "packages/ngwallet"
-    "packages/backup"
     "packages/bluart"
     "packages/shards"
     "packages/http_tor"

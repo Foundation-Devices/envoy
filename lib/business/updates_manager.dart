@@ -27,13 +27,13 @@ class UpdatesManager {
 
   UpdatesManager._internal() {
     kPrint("Instance of UpdatesManager created!");
-    _fetchUpdates();
-    Timer.periodic(const Duration(hours: 1), (_) => _fetchUpdates());
+    fetchUpdates();
+    Timer.periodic(const Duration(hours: 1), (_) => fetchUpdates());
   }
 
   static Future<UpdatesManager> init() async => _instance;
 
-  void _fetchUpdates() {
+  void fetchUpdates() {
     for (var device in [DeviceType.passportGen1, DeviceType.passportGen12]) {
       Server()
           .fetchFirmwareUpdateInfo(device.id)

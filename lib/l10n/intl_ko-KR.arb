@@ -72,7 +72,8 @@
   "backups_downloadBIP329BackupFile": "Export Tags & Labels (BIP-329)",
   "backups_downloadSettingsDataBackupFile": "Download Settings & Data Backup File",
   "backups_downloadSettingsMetadataBackupFile": "Download Settings & Metadata Backup File",
-  "backups_erase_wallets_and_backups": "Erase Wallets and Backups",
+  "backups_erase_mobile_wallet": "Erase Mobile Wallet",
+  "backups_erase_wallets_and_backups": "Erase Mobile Wallet and Backups",
   "backups_erase_wallets_and_backups_modal_1_2_android_subheading": "You’re about to permanently delete your Envoy Wallet. \n\nIf you are using Magic Backups, your Envoy Seed will also be deleted from Android Auto Backup. ",
   "backups_erase_wallets_and_backups_modal_1_2_ios_subheading": "You’re about to permanently delete your Envoy Wallet.\n\nIf you are using Magic Backups, your Envoy Seed will also be deleted from iCloud Keychain. ",
   "backups_erase_wallets_and_backups_modal_2_2_subheading": "Any connected Passport accounts will not be removed as part of this process.\n\nBefore deleting your Envoy Wallet, let’s ensure your Seed and Backup File are saved.\n",

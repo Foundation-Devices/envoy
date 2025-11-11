@@ -268,6 +268,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Download Settings & Metadata Backup File",
         ),
+        "backups_erase_mobile_wallet": MessageLookupByLibrary.simpleMessage(
+          "Erase Mobile Wallet",
+        ),
         "backups_erase_wallets_and_backups":
             MessageLookupByLibrary.simpleMessage(
           "Apagar Carteiras e Cópias de Segurança",

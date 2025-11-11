@@ -26,3 +26,11 @@ Future disableSecureScreen() async {
 Future openAndroidSettings() async {
   if (Platform.isAndroid) await _platformChannel.invokeMethod("open_settings");
 }
+
+Future<String> getConnectedPeripheralID() async {
+  if (Platform.isIOS) {
+    return await _platformChannel.invokeMethod("get_connected_peripheral_id");
+  } else {
+    return "";
+  }
+}

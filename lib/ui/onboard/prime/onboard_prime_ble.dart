@@ -7,12 +7,13 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:animations/animations.dart';
-import 'package:bluart/bluart.dart';
-import 'package:envoy/business/bluetooth_manager.dart';
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/server.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/channels/ble_status.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
@@ -20,6 +21,7 @@ import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
+import 'package:envoy/ui/onboard/prime/prime_onboard_connection.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -130,10 +132,11 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                     ? DeviceColor.dark
                     : DeviceColor.light;
             await BluetoothManager().addDevice(
-                pairingResponse!.passportSerial.field0,
-                pairingResponse!.passportFirmwareVersion.field0,
-                BluetoothManager().bleId,
-                deviceColor);
+              pairingResponse!.passportSerial.field0,
+              pairingResponse!.passportFirmwareVersion.field0,
+              BluetoothManager().bleId,
+              deviceColor,
+            );
             kPrint("Got a pairing AccountUpdate device!");
             break;
           }
@@ -255,10 +258,11 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
   void _startBluetoothDisconnectionListener(BuildContext context) {
     _connectionMonitorSubscription
-        ?.cancel(); // Cancel any existing subsciption to avoid duplicates
+        ?.cancel(); // Cancel any existing subscription to avoid duplicates
 
-    _connectionMonitorSubscription = BluetoothManager().events?.listen((event) {
-      if (event is Event_DeviceDisconnected) {
+    _connectionMonitorSubscription =
+        BluetoothChannel().deviceStatusStream.listen((event) {
+      if (event.type == BluetoothConnectionEventType.deviceDisconnected) {
         if (context.mounted) {
           showEnvoyDialog(
             context: context,
@@ -403,9 +407,25 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         }
         break;
       case OnboardingState.completed:
+        if (pairingResponse != null) {
+          final deviceColor =
+              pairingResponse!.passportColor == PassportColor.dark
+                  ? DeviceColor.dark
+                  : DeviceColor.light;
+          await BluetoothManager().addDevice(
+              pairingResponse!.passportSerial.field0,
+              pairingResponse!.passportFirmwareVersion.field0,
+              BluetoothManager().bleId,
+              deviceColor);
+          kPrint("Got a pairing AccountUpdate device!");
+        } else {
+          kPrint("No pairing response on completed state!");
+        }
         resetOnboardingPrimeProviders(ref);
         mainRouter.go(ROUTE_ACCOUNTS_HOME);
-        _notifyAfterOnboardingTutorial(context);
+        if (mounted) {
+          _notifyAfterOnboardingTutorial(context);
+        }
         break;
       case OnboardingState.securityChecked:
         break;
@@ -655,21 +675,45 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               //   },
               // ),
               const SizedBox(height: EnvoySpacing.medium1),
-              LinkText(
-                text: S().component_learnMore,
-                textStyle: EnvoyTypography.button.copyWith(
-                  color: EnvoyColors.accentPrimary,
-                ),
-                linkStyle: EnvoyTypography.button
-                    .copyWith(color: EnvoyColors.accentPrimary),
-                onTap: () {
-                  launchUrl(Uri.parse(
-                      "https://foundation.xyz/2025/01/quantumlink-reinventing-secure-wireless-communication/"));
-                },
-              ),
+              EnvoyButton(S().component_learnMore,
+                  type: EnvoyButtonTypes.tertiary, onTap: () {
+                launchUrl(
+                    Uri.parse("https://docs.foundation.xyz/prime/quantumlink"));
+              }),
               const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton(S().onboarding_bluetoothIntro_connect, onTap: () {
-                showCommunicationModal(context);
+              EnvoyButton(S().onboarding_bluetoothIntro_connect,
+                  onTap: () async {
+                final qrDecoder = await getQrDecoder();
+
+                if (!context.mounted) return;
+
+                await showScannerDialog(
+                  showInfoDialog: true,
+                  context: context,
+                  onBackPressed: (ctx) {
+                    if (ctx.mounted) Navigator.pop(ctx);
+                  },
+                  decoder: PrimeQlPayloadDecoder(
+                    decoder: qrDecoder,
+                    onScan: (XidDocument payload) async {
+                      // TODO: process XidDocument for connection
+
+                      if (!context.mounted) return;
+
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+
+                      await Future.delayed(const Duration(milliseconds: 200));
+
+                      if (!context.mounted) return;
+                      context.goNamed(ONBOARD_PRIME_PAIR);
+
+                      kPrint("XID payload: $payload");
+                      await pairWithPrime(payload);
+                    },
+                  ),
+                );
               }),
               const SizedBox(height: EnvoySpacing.small),
             ],
@@ -712,13 +756,11 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                   Navigator.pop(context);
                 }
 
+                primeXid = payload;
                 await Future.delayed(const Duration(milliseconds: 200));
-
                 if (!context.mounted) return;
                 context.goNamed(ONBOARD_PRIME_PAIR);
-
-                kPrint("XID payload: $payload");
-                await pairWithPrime(payload);
+                await Future.delayed(const Duration(milliseconds: 300));
               },
             ),
           );
@@ -967,18 +1009,11 @@ class OnboardBluetoothDenied extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               const SizedBox(height: EnvoySpacing.medium1),
-              LinkText(
-                text: S().component_learnMore,
-                textStyle: EnvoyTypography.button.copyWith(
-                  color: EnvoyColors.accentPrimary,
-                ),
-                linkStyle: EnvoyTypography.button
-                    .copyWith(color: EnvoyColors.accentPrimary),
-                onTap: () {
-                  launchUrl(Uri.parse(
-                      "https://foundation.xyz/2025/01/quantumlink-reinventing-secure-wireless-communication/"));
-                },
-              ),
+              EnvoyButton(S().component_learnMore,
+                  type: EnvoyButtonTypes.tertiary, onTap: () {
+                launchUrl(
+                    Uri.parse("https://docs.foundation.xyz/prime/quantumlink"));
+              }),
               const SizedBox(height: EnvoySpacing.medium1),
               EnvoyButton(S().onboarding_bluetoothDisabled_enable, onTap: () {
                 context.pop();
