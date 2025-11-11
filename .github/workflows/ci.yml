@@ -78,29 +78,16 @@ jobs:
 
       - run: |
           nix develop --command bash -c '
-            # Unset rustup environment variables to ensure Nix Rust is used
-            unset RUSTUP_TOOLCHAIN
-            unset RUSTUP_HOME
-            unset CARGO_HOME
-
             echo "Verifying Rust version..."
-            which rustc
             rustc --version
-            which cargo
             cargo --version
-
-            echo "Cleaning target directory and cargo cache to ensure fresh build..."
+            echo "Cleaning target directory to ensure fresh build..."
             cargo clean
-            rm -rf ~/.cargo/registry/cache
-            rm -rf ~/.cargo/git/db
           '
         name: Verify Rust version and clean cache
 
       - run: |
           nix develop --command bash -c '
-            unset RUSTUP_TOOLCHAIN
-            unset RUSTUP_HOME
-            unset CARGO_HOME
             git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/";
             cargo build
           '
@@ -109,22 +96,10 @@ jobs:
       - run: nix develop --command flutter test
         name: Run Dart tests
 
-      - run: |
-          nix develop --command bash -c '
-            unset RUSTUP_TOOLCHAIN
-            unset RUSTUP_HOME
-            unset CARGO_HOME
-            cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
-          '
+      - run: nix develop --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
         name: Run Clippy
 
-      - run: |
-          nix develop --command bash -c '
-            unset RUSTUP_TOOLCHAIN
-            unset RUSTUP_HOME
-            unset CARGO_HOME
-            cargo test
-          '
+      - run: nix develop --command cargo test
         name: Run Rust tests
 
       - run: nix develop --command ./scripts/build_ffi_android.sh
