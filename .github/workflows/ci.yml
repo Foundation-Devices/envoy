@@ -78,16 +78,6 @@ jobs:
 
       - run: |
           nix develop --command bash -c '
-            echo "Verifying Rust version..."
-            rustc --version
-            cargo --version
-            echo "Cleaning target directory to ensure fresh build..."
-            cargo clean
-          '
-        name: Verify Rust version and clean cache
-
-      - run: |
-          nix develop --command bash -c '
             git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/";
             cargo build
           '
