@@ -51,7 +51,9 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    // ignore: unused_local_variable
+
+    // Watch passphrase event handler to enable auto-switching
+    ref.watch(passphraseEventHandlerProvider);
 
     final mainNetAccounts = ref.watch(mainnetAccountsProvider(null));
     final allowBuyInEnvoy = ref.watch(allowBuyInEnvoyProvider);
