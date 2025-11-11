@@ -116,12 +116,21 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.securityCheck(
     SecurityCheck field0,
   ) = QuantumLinkMessage_SecurityCheck;
-  const factory QuantumLinkMessage.magicBackupEnabledRequest(
-    MagicBackupEnabledRequest field0,
-  ) = QuantumLinkMessage_MagicBackupEnabledRequest;
-  const factory QuantumLinkMessage.magicBackupEnabledResponse(
-    MagicBackupEnabledResponse field0,
-  ) = QuantumLinkMessage_MagicBackupEnabledResponse;
+  const factory QuantumLinkMessage.envoyMagicBackupEnabledRequest(
+    EnvoyMagicBackupEnabledRequest field0,
+  ) = QuantumLinkMessage_EnvoyMagicBackupEnabledRequest;
+  const factory QuantumLinkMessage.envoyMagicBackupEnabledResponse(
+    EnvoyMagicBackupEnabledResponse field0,
+  ) = QuantumLinkMessage_EnvoyMagicBackupEnabledResponse;
+  const factory QuantumLinkMessage.primeMagicBackupEnabled(
+    PrimeMagicBackupEnabled field0,
+  ) = QuantumLinkMessage_PrimeMagicBackupEnabled;
+  const factory QuantumLinkMessage.primeMagicBackupStatusRequest(
+    PrimeMagicBackupStatusRequest field0,
+  ) = QuantumLinkMessage_PrimeMagicBackupStatusRequest;
+  const factory QuantumLinkMessage.primeMagicBackupStatusResponse(
+    PrimeMagicBackupStatusResponse field0,
+  ) = QuantumLinkMessage_PrimeMagicBackupStatusResponse;
   const factory QuantumLinkMessage.backupShardRequest(
     BackupShardRequest field0,
   ) = QuantumLinkMessage_BackupShardRequest;

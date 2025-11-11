@@ -18,10 +18,9 @@ class BleMagicBackupHandler extends PassportMessageHandler {
 
   @override
   bool canHandle(api.QuantumLinkMessage message) {
-    return message is api.QuantumLinkMessage_MagicBackupEnabledRequest ||
+    return message is api.QuantumLinkMessage_EnvoyMagicBackupEnabledRequest ||
         message is api.QuantumLinkMessage_CreateMagicBackupEvent ||
-        message is api.QuantumLinkMessage_RestoreMagicBackupRequest ||
-        message is api.QuantumLinkMessage_MagicBackupEnabledRequest;
+        message is api.QuantumLinkMessage_RestoreMagicBackupRequest;
   }
 
   @override
@@ -34,8 +33,13 @@ class BleMagicBackupHandler extends PassportMessageHandler {
         case api.QuantumLinkMessage_RestoreMagicBackupRequest restoreRequest) {
       await _restoreMagicBackup(restoreRequest.field0);
     } else if (message
-        case api.QuantumLinkMessage_MagicBackupEnabledRequest enabledRequest) {
+        case api.QuantumLinkMessage_EnvoyMagicBackupEnabledRequest
+            enabledRequest) {
       await _handleMagicBackupEnabledRequest(enabledRequest.field0);
+    } else if (message
+        case api.QuantumLinkMessage_PrimeMagicBackupStatusRequest
+            enabledRequest) {
+      await _handleStatusRequest(enabledRequest.field0);
     }
   }
 
@@ -114,10 +118,15 @@ class BleMagicBackupHandler extends PassportMessageHandler {
   }
 
   Future _handleMagicBackupEnabledRequest(
-      api.MagicBackupEnabledRequest _) async {
+      api.EnvoyMagicBackupEnabledRequest _) async {
     kPrint(
         "Got magic backup enabled request! sending response enabled=${Settings().syncToCloud}");
-    await writer.writeMessage(api.QuantumLinkMessage.magicBackupEnabledResponse(
-        api.MagicBackupEnabledResponse(enabled: Settings().syncToCloud)));
+    await writer.writeMessage(
+        api.QuantumLinkMessage.envoyMagicBackupEnabledResponse(
+            api.EnvoyMagicBackupEnabledResponse(
+                enabled: Settings().syncToCloud)));
   }
+
+  Future<void> _handleStatusRequest(
+      api.PrimeMagicBackupStatusRequest statusRequest) async {}
 }

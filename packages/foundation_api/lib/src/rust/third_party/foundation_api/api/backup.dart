@@ -103,8 +103,8 @@ sealed class CreateMagicBackupResult with _$CreateMagicBackupResult {
   ) = CreateMagicBackupResult_Error;
 }
 
-class MagicBackupEnabledRequest {
-  const MagicBackupEnabledRequest();
+class EnvoyMagicBackupEnabledRequest {
+  const EnvoyMagicBackupEnabledRequest();
 
   @override
   int get hashCode => 0;
@@ -112,13 +112,14 @@ class MagicBackupEnabledRequest {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MagicBackupEnabledRequest && runtimeType == other.runtimeType;
+      other is EnvoyMagicBackupEnabledRequest &&
+          runtimeType == other.runtimeType;
 }
 
-class MagicBackupEnabledResponse {
+class EnvoyMagicBackupEnabledResponse {
   final bool enabled;
 
-  const MagicBackupEnabledResponse({
+  const EnvoyMagicBackupEnabledResponse({
     required this.enabled,
   });
 
@@ -128,9 +129,66 @@ class MagicBackupEnabledResponse {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MagicBackupEnabledResponse &&
+      other is EnvoyMagicBackupEnabledResponse &&
           runtimeType == other.runtimeType &&
           enabled == other.enabled;
+}
+
+class PrimeMagicBackupEnabled {
+  final bool enabled;
+  final U8Array32 seedFingerprint;
+
+  const PrimeMagicBackupEnabled({
+    required this.enabled,
+    required this.seedFingerprint,
+  });
+
+  @override
+  int get hashCode => enabled.hashCode ^ seedFingerprint.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PrimeMagicBackupEnabled &&
+          runtimeType == other.runtimeType &&
+          enabled == other.enabled &&
+          seedFingerprint == other.seedFingerprint;
+}
+
+class PrimeMagicBackupStatusRequest {
+  final U8Array32 seedFingerprint;
+
+  const PrimeMagicBackupStatusRequest({
+    required this.seedFingerprint,
+  });
+
+  @override
+  int get hashCode => seedFingerprint.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PrimeMagicBackupStatusRequest &&
+          runtimeType == other.runtimeType &&
+          seedFingerprint == other.seedFingerprint;
+}
+
+class PrimeMagicBackupStatusResponse {
+  final bool shardBackupFound;
+
+  const PrimeMagicBackupStatusResponse({
+    required this.shardBackupFound,
+  });
+
+  @override
+  int get hashCode => shardBackupFound.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PrimeMagicBackupStatusResponse &&
+          runtimeType == other.runtimeType &&
+          shardBackupFound == other.shardBackupFound;
 }
 
 @freezed
