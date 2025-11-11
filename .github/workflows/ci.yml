@@ -61,6 +61,19 @@ jobs:
           ls -l /nix/var/nix/db/big-lock
         shell: bash
 
+      - run: |
+          nix develop --command bash -c '
+            echo "=== Shell rustc ==="
+            which rustc
+            rustc --version
+            echo "=== Cargo rustc ==="
+            cargo --version
+            cargo rustc -- --version
+            echo "=== Environment ==="
+            env | grep -i rust || true
+          '
+        name: Debug Rust versions
+
       - run: nix develop --command reuse lint
         name: Check license headers
 
