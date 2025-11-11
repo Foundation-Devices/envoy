@@ -32,10 +32,8 @@ class BluetoothChannel {
   final bleConnectionEventChannel =
       const EventChannel('envoy/bluetooth/connection/stream');
 
-
   var _lastDeviceStatus = DeviceStatus(connected: false);
   DeviceStatus get lastDeviceStatus => _lastDeviceStatus;
-
 
   final _readController = StreamController<Uint8List>.broadcast();
   final _writeProgressController = StreamController<double>.broadcast();

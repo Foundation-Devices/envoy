@@ -28,14 +28,14 @@ class BleOnboardHandler extends PassportMessageHandler {
   void _handlePairingResponse(api.PairingResponse response) async {
     try {
       final deviceColor = pairingResponse!.passportColor == PassportColor.dark
-              ? DeviceColor.dark
-              : DeviceColor.light;
+          ? DeviceColor.dark
+          : DeviceColor.light;
       await BluetoothManager().addDevice(
-            pairingResponse!.passportSerial.field0,
-            pairingResponse!.passportFirmwareVersion.field0,
-            BluetoothManager().bleId,
-            deviceColor,
-          );
+        pairingResponse!.passportSerial.field0,
+        pairingResponse!.passportFirmwareVersion.field0,
+        BluetoothManager().bleId,
+        deviceColor,
+      );
     } catch (e) {
       kPrint("Error handling pairing response: $e");
     }

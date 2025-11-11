@@ -28,25 +28,19 @@ import 'handlers/magic_backup_handler.dart';
 import 'handlers/shards_handler.dart';
 import 'quantum_link_router.dart';
 
-
-final connectedDevicesProvider =
-StreamProvider<DeviceStatus>((ref) {
+final connectedDevicesProvider = StreamProvider<DeviceStatus>((ref) {
   return BluetoothChannel().deviceStatusStream;
 });
 
-
 final isPrimeConnectedProvider = Provider.family<bool, String>((ref, bleId) {
-  DeviceStatus? status = ref
-      .watch(connectedDevicesProvider)
-      .valueOrNull;
+  DeviceStatus? status = ref.watch(connectedDevicesProvider).valueOrNull;
   status ??= BluetoothChannel().lastDeviceStatus;
   return status.connected == true;
 });
 
-
 final sendProgressProvider =
-StateNotifierProvider<SendProgressNotifier, double>(
-      (ref) => SendProgressNotifier(ref),
+    StateNotifierProvider<SendProgressNotifier, double>(
+  (ref) => SendProgressNotifier(ref),
 );
 
 final remainingTimeProvider = StateProvider<Duration>((ref) => Duration.zero);
@@ -67,7 +61,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   //Handles various types of messages received from the Passport device.
   //can be exposed to UI through BluetoothManager instance.
   late final BleMagicBackupHandler _bleMagicBackupHandler =
-  BleMagicBackupHandler(this);
+      BleMagicBackupHandler(this);
   late final BleAccountHandler _bleAccountHandler = BleAccountHandler(this);
   late final ShardsHandler _bleShardsHandler = ShardsHandler(this);
   late final BleOnboardHandler _bleOnboardHandler = BleOnboardHandler(this);
@@ -86,11 +80,11 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   // Persist this across sessions
   api.QuantumLinkIdentity? _qlIdentity;
   final StreamController<api.PassportMessage> _passportMessageStream =
-  StreamController<api.PassportMessage>.broadcast();
+      StreamController<api.PassportMessage>.broadcast();
 
   final StreamController<api.QuantumLinkMessage_BroadcastTransaction>
-  _transactionStream =
-  StreamController<api.QuantumLinkMessage_BroadcastTransaction>.broadcast();
+      _transactionStream =
+      StreamController<api.QuantumLinkMessage_BroadcastTransaction>.broadcast();
 
   api.EnvoyMasterDechunker? _decoder;
 
@@ -108,7 +102,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   }
 
   late final Stream<api.PassportMessage> _broadcastPassportStream =
-  _passportMessageStream.stream.asBroadcastStream();
+      _passportMessageStream.stream.asBroadcastStream();
 
   Stream<api.PassportMessage> get passportMessageStream =>
       _broadcastPassportStream;
@@ -117,7 +111,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       _transactionStream.stream.asBroadcastStream();
 
   final StreamController<double> _writeProgressController =
-  StreamController<double>.broadcast();
+      StreamController<double>.broadcast();
 
   Stream<double> get writeProgressStream => _writeProgressController.stream;
 
@@ -267,7 +261,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     kPrint("Encoding Message timestamp: $timestampSeconds");
 
     api.EnvoyMessage envoyMessage =
-    api.EnvoyMessage(message: message, timestamp: timestampSeconds);
+        api.EnvoyMessage(message: message, timestamp: timestampSeconds);
     kPrint("Encoded Message $timestampSeconds");
 
     kPrint("Encoding message: $envoyMessage");
@@ -291,7 +285,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     final xid = await api.serializeXid(quantumLinkIdentity: _qlIdentity!);
 
     final recipientXid =
-    await api.serializeXidDocument(xidDocument: _recipientXid!);
+        await api.serializeXidDocument(xidDocument: _recipientXid!);
 
     final success = await writeMessage(api.QuantumLinkMessage.pairingRequest(
         api.PairingRequest(xidDocument: xid)));
@@ -325,7 +319,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   Future<void> addDevice(String serialNumber, String firmwareVersion,
       String bleId, DeviceColor deviceColor) async {
     final recipientXid =
-    await api.serializeXidDocument(xidDocument: _recipientXid!);
+        await api.serializeXidDocument(xidDocument: _recipientXid!);
     Devices().add(Device("Prime", DeviceType.passportPrime, serialNumber,
         DateTime.now(), firmwareVersion, EnvoyColors.listAccountTileColors[0],
         bleId: bleId, deviceColor: deviceColor, xid: recipientXid));
@@ -379,10 +373,9 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
             unawaited(_messageRouter.dispatch(value.message));
             _passportMessageStream.add(value);
             kPrint(
-                "Got Passport message type: ${value.message.runtimeType} ${value
-                    .message}");
+                "Got Passport message type: ${value.message.runtimeType} ${value.message}");
             if (value.message
-            case api.QuantumLinkMessage_BroadcastTransaction transaction) {
+                case api.QuantumLinkMessage_BroadcastTransaction transaction) {
               kPrint("Got the Broadcast Transaction");
               _transactionStream.add(transaction);
             }
@@ -487,8 +480,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       return;
     }
     kPrint(
-        "Preparing to send exchange rate to Prime... $_sendingData devices ${Devices()
-            .getPrimeDevices.length}");
+        "Preparing to send exchange rate to Prime... $_sendingData devices ${Devices().getPrimeDevices.length}");
     try {
       _sendingData = true;
       final exchangeRate = ExchangeRate();
@@ -500,9 +492,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       }
 
       final timestamp = exchangeRate.usdRateTimestamp?.millisecondsSinceEpoch ??
-          DateTime
-              .now()
-              .millisecondsSinceEpoch;
+          DateTime.now().millisecondsSinceEpoch;
 
       final exchangeRateMessage = api.ExchangeRate(
         currencyCode: "USD",
@@ -606,7 +596,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
           "Bluetooth write not implemented for this platform");
     }
     _writeProgressSubscription = writeStream.listen(
-          (progress) {
+      (progress) {
         if (_isUpdatingFirmware && _totalFirmwareChunks > 0) {
           final overallProgress =
               (_sentFirmwareChunks + progress) / _totalFirmwareChunks;
@@ -664,7 +654,7 @@ class SendProgressNotifier extends StateNotifier<double> {
 
   void _listen() {
     _sub = BluetoothManager().writeProgressStream.listen(
-          (progress) {
+      (progress) {
         if (_startTime == null && progress > 0) {
           _startTime = DateTime.now();
           _elapsed = Duration.zero;
@@ -680,29 +670,21 @@ class SendProgressNotifier extends StateNotifier<double> {
           if (progress > 0 && progress < 1 && elapsedSeconds > 0) {
             final speed = progress / elapsedSeconds;
             final remainingSeconds =
-            ((1.0 - progress) / speed).clamp(0, double.infinity);
-            ref
-                .read(remainingTimeProvider.notifier)
-                .state =
+                ((1.0 - progress) / speed).clamp(0, double.infinity);
+            ref.read(remainingTimeProvider.notifier).state =
                 Duration(seconds: remainingSeconds.round());
           } else {
-            ref
-                .read(remainingTimeProvider.notifier)
-                .state = Duration.zero;
+            ref.read(remainingTimeProvider.notifier).state = Duration.zero;
           }
         }
       },
       onDone: () {
         state = 0.0;
-        ref
-            .read(remainingTimeProvider.notifier)
-            .state = Duration.zero;
+        ref.read(remainingTimeProvider.notifier).state = Duration.zero;
       },
       onError: (_) {
         state = 0.0;
-        ref
-            .read(remainingTimeProvider.notifier)
-            .state = Duration.zero;
+        ref.read(remainingTimeProvider.notifier).state = Duration.zero;
       },
     );
   }

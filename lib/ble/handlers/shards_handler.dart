@@ -46,9 +46,8 @@ class ShardsHandler extends PassportMessageHandler {
         final shard = await PrimeShard()
             .getShard(fingerprint: Uint8List.fromList(fingerprint));
         if (shard == null) {
-          await writer.writeMessage(
-              api.QuantumLinkMessage.restoreShardResponse(
-                  api.RestoreShardResponse_NotFound("Shard not found")));
+          await writer.writeMessage(api.QuantumLinkMessage.restoreShardResponse(
+              api.RestoreShardResponse_NotFound("Shard not found")));
           throw Exception("Shard not found!");
         }
 
@@ -60,9 +59,8 @@ class ShardsHandler extends PassportMessageHandler {
         kPrint("Shard restored! success ? $result");
       } catch (e, _) {
         kPrint("Shard restore failure: $e");
-        await writer.writeMessage(
-            api.QuantumLinkMessage.backupShardResponse(
-                api.BackupShardResponse_Error(e.toString())));
+        await writer.writeMessage(api.QuantumLinkMessage.backupShardResponse(
+            api.BackupShardResponse_Error(e.toString())));
       }
     }
   }
