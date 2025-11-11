@@ -36,6 +36,5 @@ export CC="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/$NDK_HOST/bin/aarch64-linu
 export CXX="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/$NDK_HOST/bin/aarch64-linux-android$API_LEVEL-clang++"
 export AR="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/$NDK_HOST/bin/llvm-ar"
 
-rustup target add aarch64-linux-android
 cargo build --target=aarch64-linux-android
 cargo build --target=aarch64-linux-android --release
