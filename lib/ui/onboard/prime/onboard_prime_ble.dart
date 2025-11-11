@@ -675,21 +675,45 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               //   },
               // ),
               const SizedBox(height: EnvoySpacing.medium1),
-              LinkText(
-                text: S().component_learnMore,
-                textStyle: EnvoyTypography.button.copyWith(
-                  color: EnvoyColors.accentPrimary,
-                ),
-                linkStyle: EnvoyTypography.button
-                    .copyWith(color: EnvoyColors.accentPrimary),
-                onTap: () {
-                  launchUrl(Uri.parse(
-                      "https://foundation.xyz/2025/01/quantumlink-reinventing-secure-wireless-communication/"));
-                },
-              ),
+              EnvoyButton(S().component_learnMore,
+                  type: EnvoyButtonTypes.tertiary, onTap: () {
+                launchUrl(
+                    Uri.parse("https://docs.foundation.xyz/prime/quantumlink"));
+              }),
               const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton(S().onboarding_bluetoothIntro_connect, onTap: () {
-                showCommunicationModal(context);
+              EnvoyButton(S().onboarding_bluetoothIntro_connect,
+                  onTap: () async {
+                final qrDecoder = await getQrDecoder();
+
+                if (!context.mounted) return;
+
+                await showScannerDialog(
+                  showInfoDialog: true,
+                  context: context,
+                  onBackPressed: (ctx) {
+                    if (ctx.mounted) Navigator.pop(ctx);
+                  },
+                  decoder: PrimeQlPayloadDecoder(
+                    decoder: qrDecoder,
+                    onScan: (XidDocument payload) async {
+                      // TODO: process XidDocument for connection
+
+                      if (!context.mounted) return;
+
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+
+                      await Future.delayed(const Duration(milliseconds: 200));
+
+                      if (!context.mounted) return;
+                      context.goNamed(ONBOARD_PRIME_PAIR);
+
+                      kPrint("XID payload: $payload");
+                      await pairWithPrime(payload);
+                    },
+                  ),
+                );
               }),
               const SizedBox(height: EnvoySpacing.small),
             ],
@@ -702,7 +726,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   Future<bool> pairWithPrime(XidDocument payload) async {
     return await BluetoothManager().pair(payload);
   }
-
+    
   Future<void> showCommunicationModal(BuildContext context) async {
     if (!context.mounted) return;
 
@@ -985,18 +1009,11 @@ class OnboardBluetoothDenied extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               const SizedBox(height: EnvoySpacing.medium1),
-              LinkText(
-                text: S().component_learnMore,
-                textStyle: EnvoyTypography.button.copyWith(
-                  color: EnvoyColors.accentPrimary,
-                ),
-                linkStyle: EnvoyTypography.button
-                    .copyWith(color: EnvoyColors.accentPrimary),
-                onTap: () {
-                  launchUrl(Uri.parse(
-                      "https://foundation.xyz/2025/01/quantumlink-reinventing-secure-wireless-communication/"));
-                },
-              ),
+              EnvoyButton(S().component_learnMore,
+                  type: EnvoyButtonTypes.tertiary, onTap: () {
+                launchUrl(
+                    Uri.parse("https://docs.foundation.xyz/prime/quantumlink"));
+              }),
               const SizedBox(height: EnvoySpacing.medium1),
               EnvoyButton(S().onboarding_bluetoothDisabled_enable, onTap: () {
                 context.pop();

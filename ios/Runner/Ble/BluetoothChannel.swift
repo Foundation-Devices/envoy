@@ -104,19 +104,16 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
         bleWriteChannel?.setMessageHandler({ [weak self] (message, reply) in
             guard let self = self else {
-                reply(
-                    FlutterError(
-                        code: "INTERNAL_ERROR", message: "BluetoothChannel deallocated",
-                        details: nil))
+                // Send failure buffer (0 bytes) when deallocated
+                reply(Data())
                 return
             }
 
             if let data = message as? Data {
                 self.handleBinaryWrite(data: data, reply: reply)
             } else {
-                reply(
-                    FlutterError(
-                        code: "INVALID_DATA", message: "Expected binary data", details: nil))
+                // Send failure buffer (0 bytes) for invalid data
+                reply(Data())
             }
         })
 
@@ -362,46 +359,27 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private func handleBinaryWrite(data: Data, reply: @escaping FlutterReply) {
         // Check if device is connected and ready
         guard let peripheral = connectedPeripheral else {
-            reply(
-                FlutterError(
-                    code: "NOT_CONNECTED",
-                    message: "No Bluetooth device available",
-                    details: nil))
+            // Send failure buffer (0 bytes)
+            reply(Data())
             return
         }
 
         guard peripheral.state == .connected && deviceReady else {
-            reply(
-                FlutterError(
-                    code: "NOT_READY",
-                    message:
-                        "Bluetooth device is not ready (connected: \(peripheral.state == .connected), ready: \(deviceReady))",
-                    details: nil))
+            // Send failure buffer (0 bytes)
+            reply(Data())
             return
         }
 
         guard let writeChar = writeCharacteristic else {
-            reply(
-                FlutterError(
-                    code: "NO_WRITE_CHARACTERISTIC",
-                    message: "No write characteristic available",
-                    details: nil))
+            // Send failure buffer (0 bytes)
+            reply(Data())
             return
         }
 
         // Validate data size
         if data.count < 8 {
-            reply(
-                FlutterError(
-                    code: "DATA_TOO_SMALL",
-                    message:
-                        "Data size (\(data.count) bytes) is less than required minimum (8 bytes)",
-                    details: [
-                        "dataSize": data.count,
-                        "minimumSize": 8,
-                        "hexData": data.map { String(format: "%02x", $0) }.joined(separator: " "),
-                    ]
-                ))
+            // Send failure buffer (0 bytes)
+            reply(Data())
             return
         }
 

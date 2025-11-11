@@ -86,7 +86,7 @@ class DeviceStatus {
         'type: $type, '
         'connected: $connected, '
         'device: ${peripheralName ?? 'Unknown'}, '
-        'bonded: $bonded, '
+        'bonded: $bonded '
         '${error != null ? ', error: $error' : ''}'
         ' }';
   }

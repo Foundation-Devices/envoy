@@ -369,13 +369,13 @@ class _BackupPageState extends ConsumerState<BackupPage>
                       ),
                     ),
                   ),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: EnvoySpacing.large1),
-                    child: Column(
-                      children: [
-                        if (s.syncToCloud)
-                          EnvoyButton(
+                  Column(
+                    children: [
+                      if (s.syncToCloud)
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.large1),
+                          child: EnvoyButton(
                             _isBackupInProgress
                                 ? S().manual_toggle_on_seed_backingup
                                 : S()
@@ -386,23 +386,24 @@ class _BackupPageState extends ConsumerState<BackupPage>
                               showBackupDialog(context);
                             },
                           ),
-                        const SizedBox(height: EnvoySpacing.medium1),
-                        EnvoyButton(
-                          S().backups_erase_wallets_and_backups,
-                          textStyle: const TextStyle(
-                            color: EnvoyColors.danger,
-                            fontWeight: FontWeight.w900,
-                          ),
-                          type: EnvoyButtonTypes.tertiary,
-                          onTap: () {
-                            globalState.state = GlobalState.nuclearDelete;
-                            showEraseWalletsAndBackupsWarning(context);
-                          },
                         ),
-                        SizedBox(
-                            height: bottomPhoneOffset! + EnvoySpacing.small),
-                      ],
-                    ),
+                      const SizedBox(height: EnvoySpacing.medium1),
+                      EnvoyButton(
+                        s.syncToCloud
+                            ? S().backups_erase_wallets_and_backups
+                            : S().backups_erase_mobile_wallet,
+                        textStyle: const TextStyle(
+                          color: EnvoyColors.danger,
+                          fontWeight: FontWeight.w900,
+                        ),
+                        type: EnvoyButtonTypes.tertiary,
+                        onTap: () {
+                          globalState.state = GlobalState.nuclearDelete;
+                          showEraseWalletsAndBackupsWarning(context);
+                        },
+                      ),
+                      SizedBox(height: bottomPhoneOffset! + EnvoySpacing.small),
+                    ],
                   ),
                 ],
               ))),

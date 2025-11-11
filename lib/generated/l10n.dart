@@ -756,10 +756,20 @@ class S {
     );
   }
 
-  /// `Erase Wallets and Backups`
+  /// `Erase Mobile Wallet`
+  String get backups_erase_mobile_wallet {
+    return Intl.message(
+      'Erase Mobile Wallet',
+      name: 'backups_erase_mobile_wallet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Erase Mobile Wallet and Backups`
   String get backups_erase_wallets_and_backups {
     return Intl.message(
-      'Erase Wallets and Backups',
+      'Erase Mobile Wallet and Backups',
       name: 'backups_erase_wallets_and_backups',
       desc: '',
       args: [],

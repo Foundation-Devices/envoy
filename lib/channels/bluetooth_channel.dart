@@ -14,7 +14,6 @@ import 'package:flutter/services.dart';
 class BluetoothChannel {
   // Method channel for BLE operations (setup/control operations)
   final bleMethodChannel = const MethodChannel("envoy/bluetooth");
-
   final writeProgressChannel = const EventChannel('envoy/ble/write/progress');
 
   // Binary message channel for BLE data (incoming data from device)
@@ -32,6 +31,11 @@ class BluetoothChannel {
   // Event channel for BLE connection state events
   final bleConnectionEventChannel =
       const EventChannel('envoy/bluetooth/connection/stream');
+
+
+  var _lastDeviceStatus = DeviceStatus(connected: false);
+  DeviceStatus get lastDeviceStatus => _lastDeviceStatus;
+
 
   final _readController = StreamController<Uint8List>.broadcast();
   final _writeProgressController = StreamController<double>.broadcast();
@@ -58,7 +62,7 @@ class BluetoothChannel {
     } else {
       return DeviceStatus(connected: false);
     }
-  });
+  }).asBroadcastStream();
 
   Stream<DeviceStatus> get listenToDeviceConnectionEvents =>
       deviceStatusStream.where((status) => status.isConnectionEvent);
@@ -84,11 +88,10 @@ class BluetoothChannel {
 
     _deviceStatusSubscription =
         _deviceStatusStatusStream.listen((DeviceStatus event) {
-      if (event is Map<dynamic, dynamic>) {
-        debugPrint(
-            "Ble Connection Event: connected=${event.connected}, bonded=${event.bonded}, "
-            "peripheralId=${event.peripheralId}");
-      }
+      _lastDeviceStatus = event;
+      debugPrint(
+          "Ble Connection Event: connected=${event.connected}, bonded=${event.bonded}, "
+          "peripheralId=${event.peripheralId}");
     });
   }
 

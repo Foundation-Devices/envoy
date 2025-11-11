@@ -432,6 +432,8 @@ class ActionText extends StatelessWidget {
   }
 }
 
+// This only works with long texts that need link text button
+// , do not use it for standalone buttons
 class LinkText extends StatelessWidget {
   final String text;
   final Function? onTap;

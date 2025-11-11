@@ -19,6 +19,7 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/notifications.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/migrations/migration_manager.dart';
@@ -33,6 +34,7 @@ import 'package:flutter/services.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:tor/tor.dart';
 import 'package:uuid/uuid.dart';
+import 'package:envoy/ui/routes/routes.dart';
 
 const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
@@ -500,12 +502,17 @@ class EnvoySeed {
           List<BlogPost?> blogs = await EnvoyStorage().getAllBlogPosts() ?? [];
 
           await EnvoyStorage().restore(data[EnvoyStorage.dbName]!);
+          UpdatesManager().fetchUpdates();
 
           await EnvoyStorage().insertMediaItems(videos);
           await EnvoyStorage().insertMediaItems(blogs);
         }
 
-        await _restoreSingletons();
+        final bool hasExistingSetup = Devices().devices.isNotEmpty &&
+            (LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false);
+        if (!hasExistingSetup) {
+          await _restoreSingletons();
+        }
         if (Settings().usingTor) {
           try {
             if (!Tor.instance.started) {
