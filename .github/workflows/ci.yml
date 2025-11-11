@@ -111,7 +111,9 @@ jobs:
 
       - run: |
           nix develop --command bash -c '
-            cargo clean && 
+            unset RUSTUP_TOOLCHAIN
+            unset RUSTUP_HOME
+            unset CARGO_HOME
             cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
           '
         name: Run Clippy
