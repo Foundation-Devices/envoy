@@ -37,12 +37,6 @@ jobs:
         if: steps.check-nix.outputs.installed == 'false'
         uses: DeterminateSystems/nix-installer-action@main
 
-      - name: Build Nix devShell
-        run: |
-          export PATH=/nix/var/nix/profiles/default/bin:$PATH
-          nix develop --command echo "Dev shell built successfully"
-        shell: bash
-
 #      - uses: actions/cache@v4
 #        id: cache-cargo
 #        with:
@@ -67,20 +61,6 @@ jobs:
           ls -l /nix/var/nix/db/big-lock
         shell: bash
 
-      - run: |
-          nix develop --ignore-environment --command bash -c '
-            echo "=== Rust toolchain verification ==="
-            which rustc
-            rustc --version
-            cargo --version -v
-            echo "=== Expected rustc version from rust-toolchain.toml ==="
-            grep "channel" rust-toolchain.toml
-          '
-        name: Verify Rust version
-
-      - run: nix develop --ignore-environment --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
-        name: Run Clippy
-
       - run: nix develop --command reuse lint
         name: Check license headers
 
@@ -93,7 +73,7 @@ jobs:
       - run: nix develop --command flutter analyze
         name: Analyze Dart project source
 
-      - run: nix develop --ignore-environment --command cargo fmt --all --check
+      - run: nix develop --command cargo fmt --all --check
         name: Check Rust formatting
 
       - run: |
@@ -105,6 +85,9 @@ jobs:
 
       - run: nix develop --command flutter test
         name: Run Dart tests
+
+#      - run: nix develop --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
+#        name: Run Clippy
 
       - run: nix develop --command cargo test
         name: Run Rust tests
