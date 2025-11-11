@@ -78,7 +78,8 @@ jobs:
           nix develop --command bash -c '
             unset RUSTUP_TOOLCHAIN RUSTUP_HOME
             which -a rustc cargo  # See all versions in PATH
-            cargo rustc -- --version  # What rustc will cargo actually use?'
+            cargo --version -v  # What rustc will cargo actually use?
+            cargo clippy -- -Dwarnings -A clippy::missing_safety_doc'
 
       - run: nix develop --ignore-environment --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
         name: Run Clippy
