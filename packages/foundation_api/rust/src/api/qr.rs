@@ -69,6 +69,7 @@ pub async fn decode_ble_message(_data: Vec<u8>) -> PassportMessage {
         passport_firmware_version: PassportFirmwareVersion("1.0.0".to_string()),
         passport_serial: PassportSerial("abc".to_string()),
         passport_color: PassportColor::Dark,
+        onboarding_complete: false,
     });
     PassportMessage::new(
         msg,

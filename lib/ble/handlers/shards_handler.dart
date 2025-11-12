@@ -16,7 +16,10 @@ class ShardsHandler extends PassportMessageHandler {
   @override
   bool canHandle(api.QuantumLinkMessage message) {
     return message is api.QuantumLinkMessage_BackupShardRequest ||
-        message is api.QuantumLinkMessage_RestoreShardRequest;
+        message is api.QuantumLinkMessage_SecurityCheck ||
+        message is api.QuantumLinkMessage_RestoreShardRequest ||
+        //checks if shard backup is enabled
+        message is api.QuantumLinkMessage_PrimeMagicBackupStatusRequest;
   }
 
   @override
@@ -35,6 +38,25 @@ class ShardsHandler extends PassportMessageHandler {
         kPrint("Shard backup failure: $e");
         writer.writeMessage(api.QuantumLinkMessage.backupShardResponse(
             api.BackupShardResponse_Success()));
+      }
+    }
+    if (message
+        case api.QuantumLinkMessage_PrimeMagicBackupStatusRequest request) {
+      kPrint("Got shard health check request!");
+      final fingerprint = request.field0.seedFingerprint;
+      try {
+        final shard = await PrimeShard()
+            .getShard(fingerprint: Uint8List.fromList(fingerprint));
+        await writer.writeMessage(
+            api.QuantumLinkMessage.primeMagicBackupStatusResponse(
+                api.PrimeMagicBackupStatusResponse(
+                    shardBackupFound: shard != null)));
+        kPrint("Shard health checked! found ? ${shard != null}");
+      } catch (e, _) {
+        kPrint("Shard health check failure: $e");
+        await writer.writeMessage(
+            api.QuantumLinkMessage.primeMagicBackupStatusResponse(
+                api.PrimeMagicBackupStatusResponse(shardBackupFound: false)));
       }
     }
 

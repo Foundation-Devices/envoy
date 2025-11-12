@@ -256,6 +256,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   DeviceStatus dco_decode_box_autoadd_device_status(dynamic raw);
 
   @protected
+  EnvoyMagicBackupEnabledRequest
+      dco_decode_box_autoadd_envoy_magic_backup_enabled_request(dynamic raw);
+
+  @protected
+  EnvoyMagicBackupEnabledResponse
+      dco_decode_box_autoadd_envoy_magic_backup_enabled_response(dynamic raw);
+
+  @protected
   EnvoyMessage dco_decode_box_autoadd_envoy_message(dynamic raw);
 
   @protected
@@ -294,14 +302,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
-  MagicBackupEnabledRequest dco_decode_box_autoadd_magic_backup_enabled_request(
-      dynamic raw);
-
-  @protected
-  MagicBackupEnabledResponse
-      dco_decode_box_autoadd_magic_backup_enabled_response(dynamic raw);
-
-  @protected
   PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw);
 
   @protected
@@ -309,6 +309,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PassportMessage dco_decode_box_autoadd_passport_message(dynamic raw);
+
+  @protected
+  PrimeMagicBackupEnabled dco_decode_box_autoadd_prime_magic_backup_enabled(
+      dynamic raw);
+
+  @protected
+  PrimeMagicBackupStatusRequest
+      dco_decode_box_autoadd_prime_magic_backup_status_request(dynamic raw);
+
+  @protected
+  PrimeMagicBackupStatusResponse
+      dco_decode_box_autoadd_prime_magic_backup_status_response(dynamic raw);
 
   @protected
   RawData dco_decode_box_autoadd_raw_data(dynamic raw);
@@ -370,6 +382,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   DeviceStatus dco_decode_device_status(dynamic raw);
+
+  @protected
+  EnvoyMagicBackupEnabledRequest dco_decode_envoy_magic_backup_enabled_request(
+      dynamic raw);
+
+  @protected
+  EnvoyMagicBackupEnabledResponse
+      dco_decode_envoy_magic_backup_enabled_response(dynamic raw);
 
   @protected
   EnvoyMessage dco_decode_envoy_message(dynamic raw);
@@ -437,14 +457,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw);
 
   @protected
-  MagicBackupEnabledRequest dco_decode_magic_backup_enabled_request(
-      dynamic raw);
-
-  @protected
-  MagicBackupEnabledResponse dco_decode_magic_backup_enabled_response(
-      dynamic raw);
-
-  @protected
   OnboardingState dco_decode_onboarding_state(dynamic raw);
 
   @protected
@@ -486,6 +498,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PricePoint dco_decode_price_point(dynamic raw);
+
+  @protected
+  PrimeMagicBackupEnabled dco_decode_prime_magic_backup_enabled(dynamic raw);
+
+  @protected
+  PrimeMagicBackupStatusRequest dco_decode_prime_magic_backup_status_request(
+      dynamic raw);
+
+  @protected
+  PrimeMagicBackupStatusResponse dco_decode_prime_magic_backup_status_response(
+      dynamic raw);
 
   @protected
   QrDecoderStatus dco_decode_qr_decoder_status(dynamic raw);
@@ -750,6 +773,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  EnvoyMagicBackupEnabledRequest
+      sse_decode_box_autoadd_envoy_magic_backup_enabled_request(
+          SseDeserializer deserializer);
+
+  @protected
+  EnvoyMagicBackupEnabledResponse
+      sse_decode_box_autoadd_envoy_magic_backup_enabled_response(
+          SseDeserializer deserializer);
+
+  @protected
   EnvoyMessage sse_decode_box_autoadd_envoy_message(
       SseDeserializer deserializer);
 
@@ -795,15 +828,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  MagicBackupEnabledRequest sse_decode_box_autoadd_magic_backup_enabled_request(
-      SseDeserializer deserializer);
-
-  @protected
-  MagicBackupEnabledResponse
-      sse_decode_box_autoadd_magic_backup_enabled_response(
-          SseDeserializer deserializer);
-
-  @protected
   PairingRequest sse_decode_box_autoadd_pairing_request(
       SseDeserializer deserializer);
 
@@ -814,6 +838,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   PassportMessage sse_decode_box_autoadd_passport_message(
       SseDeserializer deserializer);
+
+  @protected
+  PrimeMagicBackupEnabled sse_decode_box_autoadd_prime_magic_backup_enabled(
+      SseDeserializer deserializer);
+
+  @protected
+  PrimeMagicBackupStatusRequest
+      sse_decode_box_autoadd_prime_magic_backup_status_request(
+          SseDeserializer deserializer);
+
+  @protected
+  PrimeMagicBackupStatusResponse
+      sse_decode_box_autoadd_prime_magic_backup_status_response(
+          SseDeserializer deserializer);
 
   @protected
   RawData sse_decode_box_autoadd_raw_data(SseDeserializer deserializer);
@@ -883,6 +921,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   DeviceStatus sse_decode_device_status(SseDeserializer deserializer);
+
+  @protected
+  EnvoyMagicBackupEnabledRequest sse_decode_envoy_magic_backup_enabled_request(
+      SseDeserializer deserializer);
+
+  @protected
+  EnvoyMagicBackupEnabledResponse
+      sse_decode_envoy_magic_backup_enabled_response(
+          SseDeserializer deserializer);
 
   @protected
   EnvoyMessage sse_decode_envoy_message(SseDeserializer deserializer);
@@ -957,14 +1004,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  MagicBackupEnabledRequest sse_decode_magic_backup_enabled_request(
-      SseDeserializer deserializer);
-
-  @protected
-  MagicBackupEnabledResponse sse_decode_magic_backup_enabled_response(
-      SseDeserializer deserializer);
-
-  @protected
   OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer);
 
   @protected
@@ -1008,6 +1047,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PricePoint sse_decode_price_point(SseDeserializer deserializer);
+
+  @protected
+  PrimeMagicBackupEnabled sse_decode_prime_magic_backup_enabled(
+      SseDeserializer deserializer);
+
+  @protected
+  PrimeMagicBackupStatusRequest sse_decode_prime_magic_backup_status_request(
+      SseDeserializer deserializer);
+
+  @protected
+  PrimeMagicBackupStatusResponse sse_decode_prime_magic_backup_status_response(
+      SseDeserializer deserializer);
 
   @protected
   QrDecoderStatus sse_decode_qr_decoder_status(SseDeserializer deserializer);
@@ -1282,6 +1333,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       DeviceStatus self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_envoy_magic_backup_enabled_request(
+      EnvoyMagicBackupEnabledRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_envoy_magic_backup_enabled_response(
+      EnvoyMagicBackupEnabledResponse self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_envoy_message(
       EnvoyMessage self, SseSerializer serializer);
 
@@ -1326,14 +1385,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FirmwareUpdateResult self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_magic_backup_enabled_request(
-      MagicBackupEnabledRequest self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_box_autoadd_magic_backup_enabled_response(
-      MagicBackupEnabledResponse self, SseSerializer serializer);
-
-  @protected
   void sse_encode_box_autoadd_pairing_request(
       PairingRequest self, SseSerializer serializer);
 
@@ -1344,6 +1395,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_passport_message(
       PassportMessage self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_prime_magic_backup_enabled(
+      PrimeMagicBackupEnabled self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_prime_magic_backup_status_request(
+      PrimeMagicBackupStatusRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_prime_magic_backup_status_response(
+      PrimeMagicBackupStatusResponse self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_raw_data(RawData self, SseSerializer serializer);
@@ -1415,6 +1478,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_device_status(DeviceStatus self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_envoy_magic_backup_enabled_request(
+      EnvoyMagicBackupEnabledRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_envoy_magic_backup_enabled_response(
+      EnvoyMagicBackupEnabledResponse self, SseSerializer serializer);
 
   @protected
   void sse_encode_envoy_message(EnvoyMessage self, SseSerializer serializer);
@@ -1491,14 +1562,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<QuantumLinkMessage> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_magic_backup_enabled_request(
-      MagicBackupEnabledRequest self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_magic_backup_enabled_response(
-      MagicBackupEnabledResponse self, SseSerializer serializer);
-
-  @protected
   void sse_encode_onboarding_state(
       OnboardingState self, SseSerializer serializer);
 
@@ -1547,6 +1610,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_price_point(PricePoint self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_prime_magic_backup_enabled(
+      PrimeMagicBackupEnabled self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_prime_magic_backup_status_request(
+      PrimeMagicBackupStatusRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_prime_magic_backup_status_response(
+      PrimeMagicBackupStatusResponse self, SseSerializer serializer);
 
   @protected
   void sse_encode_qr_decoder_status(

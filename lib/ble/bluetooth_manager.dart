@@ -297,8 +297,10 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     final recipientXid =
         await api.serializeXidDocument(xidDocument: _recipientXid!);
 
+    final deviceName = await BluetoothChannel().getDeviceName();
+
     final success = await writeMessage(api.QuantumLinkMessage.pairingRequest(
-        api.PairingRequest(xidDocument: xid)));
+        api.PairingRequest(xidDocument: xid, deviceName: deviceName)));
     kPrint("Pairing... success ?  $success");
 
     if (!success) {
@@ -327,12 +329,17 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   }
 
   Future<void> addDevice(String serialNumber, String firmwareVersion,
-      String bleId, DeviceColor deviceColor) async {
+      String bleId, DeviceColor deviceColor,
+      {bool onboardingComplete = false}) async {
     final recipientXid =
         await api.serializeXidDocument(xidDocument: _recipientXid!);
-    Devices().add(Device("Prime", DeviceType.passportPrime, serialNumber,
+    final device = Device("Prime", DeviceType.passportPrime, serialNumber,
         DateTime.now(), firmwareVersion, EnvoyColors.listAccountTileColors[0],
-        bleId: bleId, deviceColor: deviceColor, xid: recipientXid));
+        bleId: bleId,
+        deviceColor: deviceColor,
+        xid: recipientXid,
+        onboardingComplete: onboardingComplete);
+    Devices().add(device);
   }
 
   Future<void> removeConnectedDevice() async {

@@ -33,6 +33,7 @@ class BluetoothChannel {
       const EventChannel('envoy/bluetooth/connection/stream');
 
   var _lastDeviceStatus = DeviceStatus(connected: false);
+
   DeviceStatus get lastDeviceStatus => _lastDeviceStatus;
 
   final _readController = StreamController<Uint8List>.broadcast();
@@ -129,6 +130,12 @@ class BluetoothChannel {
           label: "Error writing binary data over BLE: $e", stackTrace: stack);
       return false;
     }
+  }
+
+  /// Get the device name of the  Host device (iOS and Android)
+  Future<String> getDeviceName() async {
+    final String name = await bleMethodChannel.invokeMethod('deviceName');
+    return name;
   }
 
   /// Pair with a BLE device (iOS and Android)
