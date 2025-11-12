@@ -779,7 +779,7 @@ dependencies = [
 [[package]]
 name = "btp"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=e814aae96d829f684c3830f4eb27f593f642354d#e814aae96d829f684c3830f4eb27f593f642354d"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=4.0.2#f3f640522cf664444c4593f56d0cf7f99b1e1200"
 dependencies = [
  "bytemuck",
  "consts",
@@ -1570,7 +1570,7 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "2.0.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=e814aae96d829f684c3830f4eb27f593f642354d#e814aae96d829f684c3830f4eb27f593f642354d"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=4.0.2#f3f640522cf664444c4593f56d0cf7f99b1e1200"
 dependencies = [
  "anyhow",
  "bc-components",
@@ -3234,7 +3234,7 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?rev=e814aae96d829f684c3830f4eb27f593f642354d#e814aae96d829f684c3830f4eb27f593f642354d"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=4.0.2#f3f640522cf664444c4593f56d0cf7f99b1e1200"
 dependencies = [
  "quote",
  "syn 2.0.107",

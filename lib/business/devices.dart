@@ -37,6 +37,8 @@ class Device {
   final String serial;
   @JsonKey(defaultValue: "")
   final String bleId;
+  @JsonKey(defaultValue: false)
+  final bool onboardingComplete;
   @Uint8ListConverter()
   final Uint8List? xid;
   final DateTime datePaired;
@@ -48,7 +50,10 @@ class Device {
 
   Device(this.name, this.type, this.serial, this.datePaired,
       this.firmwareVersion, this.color,
-      {this.deviceColor = DeviceColor.light, this.bleId = "", this.xid});
+      {this.deviceColor = DeviceColor.light,
+      this.bleId = "",
+      this.onboardingComplete = false,
+      this.xid});
 
   // Serialisation
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);

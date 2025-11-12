@@ -128,5 +128,7 @@ class BleMagicBackupHandler extends PassportMessageHandler {
   }
 
   Future<void> _handleStatusRequest(
-      api.PrimeMagicBackupStatusRequest statusRequest) async {}
+      api.PrimeMagicBackupStatusRequest statusRequest) async {
+    //TODO: implement
+  }
 }

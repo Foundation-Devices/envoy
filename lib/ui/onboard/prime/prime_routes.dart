@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
+import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime_ble.dart';
-import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update.dart';
 import 'package:envoy/ui/onboard/prime/prime_magic_backup.dart';
 import 'package:envoy/ui/onboard/prime/prime_onboard_connection.dart';
+import 'package:envoy/ui/onboard/prime/prime_reconnect.dart';
 import 'package:envoy/ui/onboard/prime/setup/prime_continuing_setup.dart';
 import 'package:envoy/ui/onboard/wallet_setup_success.dart';
 import 'package:go_router/go_router.dart';
@@ -20,6 +21,7 @@ const ONBOARD_PRIME_MAGIC_BACKUP = "magic";
 const ONBOARD_PRIME_CONTINUING_SETUP = "continuing_setup";
 const ONBOARD_PRIME_CONNECTED_SUCCESS = "connected_success";
 const ONBOARD_BLUETOOTH_DENIED = "bluetooth_denied";
+const ONBOARD_REPAIRING = "prime_repair";
 
 final primeRoutes = GoRoute(
   path: "prime",
@@ -61,7 +63,13 @@ final primeRoutes = GoRoute(
                 )),
       ],
       builder: (context, state) => const OnboardPrimeBluetooth(),
-    )
+    ),
+    GoRoute(
+        path: "repair",
+        name: ONBOARD_REPAIRING,
+        builder: (context, state) {
+          return const PrimeReconnect();
+        }),
   ],
   builder: (context, state) => const OnboardPrimeWelcome(),
 );

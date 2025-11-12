@@ -1798,6 +1798,7 @@ const _: fn() = || {
     {
         let PairingRequest = None::<foundation_api::api::pairing::PairingRequest>.unwrap();
         let _: Vec<u8> = PairingRequest.xid_document;
+        let _: String = PairingRequest.device_name;
     }
     {
         let PairingResponse = None::<foundation_api::api::pairing::PairingResponse>.unwrap();
@@ -2795,8 +2796,10 @@ impl SseDecode for foundation_api::api::pairing::PairingRequest {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_xidDocument = <Vec<u8>>::sse_decode(deserializer);
+        let mut var_deviceName = <String>::sse_decode(deserializer);
         return foundation_api::api::pairing::PairingRequest {
             xid_document: var_xidDocument,
+            device_name: var_deviceName,
         };
     }
 }
@@ -4369,7 +4372,11 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::onboardin
 // Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::pairing::PairingRequest> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        [self.0.xid_document.into_into_dart().into_dart()].into_dart()
+        [
+            self.0.xid_document.into_into_dart().into_dart(),
+            self.0.device_name.into_into_dart().into_dart(),
+        ]
+        .into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
@@ -5660,6 +5667,7 @@ impl SseEncode for foundation_api::api::pairing::PairingRequest {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<u8>>::sse_encode(self.xid_document, serializer);
+        <String>::sse_encode(self.device_name, serializer);
     }
 }
 

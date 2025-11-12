@@ -5,12 +5,12 @@
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
-import 'package:envoy/ui/onboard/prime/onboard_prime_ble.dart';
 import 'package:envoy/util/console.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:foundation_api/foundation_api.dart';
 
-class BleOnboardHandler extends PassportMessageHandler {
+class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
   BleOnboardHandler(super.writer);
 
   @override
@@ -27,17 +27,18 @@ class BleOnboardHandler extends PassportMessageHandler {
 
   void _handlePairingResponse(api.PairingResponse response) async {
     try {
-      final deviceColor = pairingResponse!.passportColor == PassportColor.dark
+      final deviceColor = response.passportColor == PassportColor.dark
           ? DeviceColor.dark
           : DeviceColor.light;
       await BluetoothManager().addDevice(
-        pairingResponse!.passportSerial.field0,
-        pairingResponse!.passportFirmwareVersion.field0,
+        response.passportSerial.field0,
+        response.passportFirmwareVersion.field0,
         BluetoothManager().bleId,
         deviceColor,
+        onboardingComplete: response.onboardingComplete,
       );
-    } catch (e) {
-      kPrint("Error handling pairing response: $e");
+    } catch (e, stack) {
+      kPrint("Error handling pairing response: $e", stackTrace: stack);
     }
   }
 }
