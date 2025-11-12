@@ -510,9 +510,9 @@ class EnvoySeed {
 
         final bool hasExistingSetup = Devices().devices.isNotEmpty &&
             (LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false);
-        if (!hasExistingSetup) {
-          await _restoreSingletons();
-        }
+
+        await _restoreSingletons(hasExistingSetup);
+
         if (Settings().usingTor) {
           try {
             if (!Tor.instance.started) {
@@ -658,12 +658,16 @@ class EnvoySeed {
     }
   }
 
-  Future _restoreSingletons() async {
-    await Settings.restore(fromBackup: true);
-    await Settings().store();
-    Devices().restore();
-    ExchangeRate().restore();
-    Notifications().restoreNotifications();
+  Future _restoreSingletons(bool hasExistingSetup) async {
+    if (!hasExistingSetup) {
+      await Settings.restore(fromBackup: true);
+      await Settings().store();
+      Notifications().restoreNotifications();
+      ExchangeRate().restore();
+    }
+
+    // sad je to u sembastu !!!!!
+    Devices().restore(hasExitingSetup: hasExistingSetup);
   }
 
   List<LegacyAccount> getLegacyAccountsFromMBJson(Map<String, String> data) {
