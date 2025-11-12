@@ -221,7 +221,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         let passportDisplayItem = ASPickerDisplayItem(
             name: "Passport Prime",
             productImage: productImage,
-            descriptor: passportDescriptor,
+            descriptor: passportDescriptor
         )
 
         do {
@@ -331,7 +331,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             connected: false,
             peripheralId: peripheralId,
             peripheralName: peripheralName,
-            type: "device_disconnected",
+            type: "device_disconnected"
         )
 
     }
