@@ -86,8 +86,8 @@ jobs:
       - run: nix develop --command flutter test
         name: Run Dart tests
 
-#      - run: nix develop --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
-#        name: Run Clippy
+      - run: nix develop --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
+        name: Run Clippy
 
       - run: nix develop --command cargo test
         name: Run Rust tests
@@ -95,7 +95,7 @@ jobs:
       - run: nix develop --command ./scripts/build_ffi_android.sh
         name: Build legacy FFI libs for Android
 
-      - run:  echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build apk --release --target-platform android-arm64
+      - run:  echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build apk --release --target-platform android-arm64 --verbose
         name: Build Envoy APK
         env:
           KEY_JKS: ${{ secrets.KEY_JKS }}
