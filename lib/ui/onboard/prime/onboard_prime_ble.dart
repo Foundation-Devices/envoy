@@ -98,20 +98,19 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       switch (message.message) {
         case QuantumLinkMessage_PairingResponse(field0: final response):
           pairingResponse = response;
-        // uncomment this to add prime to devices list, to test ble reconnect.
-        // if (pairingResponse != null) {
-        //   final deviceColor =
-        //       pairingResponse!.passportColor == PassportColor.dark
-        //           ? DeviceColor.dark
-        //           : DeviceColor.light;
-        //   BluetoothManager().addDevice(
-        //       pairingResponse!.passportSerial.field0,
-        //       pairingResponse!.passportFirmwareVersion.field0,
-        //       BluetoothManager().bleId,
-        //       deviceColor);
-        //   kPrint("Got a pairing AccountUpdate device!");
-        //   break;
-        // }
+          if (pairingResponse != null) {
+            final deviceColor =
+                pairingResponse!.passportColor == PassportColor.dark
+                    ? DeviceColor.dark
+                    : DeviceColor.light;
+            BluetoothManager().addDevice(
+                pairingResponse!.passportSerial.field0,
+                pairingResponse!.passportFirmwareVersion.field0,
+                BluetoothManager().bleId,
+                deviceColor);
+
+            break;
+          }
 
         //  final response = message.message as QuantumLinkMessage_PairingResponse;
         // Create the thing that I'm gonna reveal later
@@ -384,6 +383,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       case OnboardingState.magicBackupCreated:
         ref.read(backUpMasterKeyProvider.notifier).updateStep(
             S().finalize_catchAll_masterKeyBackedUp, EnvoyStepState.FINISHED);
+        Devices().updatePrimeBackupStatus(BluetoothManager().bleId, true);
         break;
       case OnboardingState.creatingManualBackup:
         ref.read(backUpMasterKeyProvider.notifier).updateStep(

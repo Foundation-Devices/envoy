@@ -228,9 +228,9 @@ class Devices extends ChangeNotifier {
     return devices.firstWhereOrNull((device) => device.serial == serialNumber);
   }
 
-  void updatePrimeBackupStatus(String serial, bool isEnabled) {
+  void updatePrimeBackupStatus(String bleId, bool isEnabled) {
     for (var device in devices) {
-      if (device.serial == serial && device.type == DeviceType.passportPrime) {
+      if (device.bleId == bleId && device.type == DeviceType.passportPrime) {
         device.primeBackupEnabled = isEnabled;
         storeDevices();
         notifyListeners();

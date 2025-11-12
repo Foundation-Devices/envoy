@@ -5,7 +5,9 @@
 
 import 'package:backup/backup.dart' as backup_lib;
 import 'package:envoy/ble/quantum_link_router.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
@@ -18,14 +20,15 @@ class BleMagicBackupHandler extends PassportMessageHandler {
 
   @override
   bool canHandle(api.QuantumLinkMessage message) {
-    return message is api.QuantumLinkMessage_MagicBackupEnabledRequest ||
+    return message is api.QuantumLinkMessage_EnvoyMagicBackupEnabledRequest ||
         message is api.QuantumLinkMessage_CreateMagicBackupEvent ||
         message is api.QuantumLinkMessage_RestoreMagicBackupRequest ||
-        message is api.QuantumLinkMessage_MagicBackupEnabledRequest;
+        message is api.QuantumLinkMessage_PrimeMagicBackupEnabled;
   }
 
   @override
-  Future<void> handleMessage(api.QuantumLinkMessage message) async {
+  Future<void> handleMessage(
+      api.QuantumLinkMessage message, String bleId) async {
     if (message
         case api.QuantumLinkMessage_CreateMagicBackupEvent createEvent) {
       final event = createEvent.field0;
@@ -34,8 +37,13 @@ class BleMagicBackupHandler extends PassportMessageHandler {
         case api.QuantumLinkMessage_RestoreMagicBackupRequest restoreRequest) {
       await _restoreMagicBackup(restoreRequest.field0);
     } else if (message
-        case api.QuantumLinkMessage_MagicBackupEnabledRequest enabledRequest) {
-      await _handleMagicBackupEnabledRequest(enabledRequest.field0);
+        case api.QuantumLinkMessage_EnvoyMagicBackupEnabledRequest
+            enabledRequest) {
+      await _handleMagicBackupEnabledRequest(enabledRequest.field0, bleId);
+    } else if (message
+        case api.QuantumLinkMessage_PrimeMagicBackupEnabled enabled) {
+      // TODO: enable/disable prime backup
+      Devices().updatePrimeBackupStatus(bleId, enabled.field0.enabled);
     }
   }
 
@@ -114,10 +122,16 @@ class BleMagicBackupHandler extends PassportMessageHandler {
   }
 
   Future _handleMagicBackupEnabledRequest(
-      api.MagicBackupEnabledRequest _) async {
+      api.EnvoyMagicBackupEnabledRequest _, String bleId) async {
     kPrint(
         "Got magic backup enabled request! sending response enabled=${Settings().syncToCloud}");
-    await writer.writeMessage(api.QuantumLinkMessage.magicBackupEnabledResponse(
-        api.MagicBackupEnabledResponse(enabled: Settings().syncToCloud)));
+    await writer.writeMessage(
+        api.QuantumLinkMessage.envoyMagicBackupEnabledResponse(
+            api.EnvoyMagicBackupEnabledResponse(
+                enabled: Settings().syncToCloud)));
+
+    if (Settings().syncToCloud) {
+      Devices().updatePrimeBackupStatus(bleId, true);
+    }
   }
 }
