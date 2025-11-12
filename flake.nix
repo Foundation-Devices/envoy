@@ -182,6 +182,8 @@
           shellHook = ''
             echo "Envoy Development Environment"
             echo "==========================================="
+            export RUSTC_VERSION="${rustToolchain.toolchain.channel or "stable"}"
+            export IN_NIX_SHELL=1
             echo "Rust: $(rustc --version)"
             echo "Flutter: $(flutter --version | head -1)"
             echo "Dart: $(dart --version)"
