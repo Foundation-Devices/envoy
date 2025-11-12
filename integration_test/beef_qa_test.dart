@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:envoy/main.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
@@ -2009,6 +2010,8 @@ Future<void> main() async {
     testWidgets('<Boost screen>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
+      final coinLockKey = GlobalKey<CoinLockButtonState>();
+
       await goBackHome(tester);
 
       await disableAllNetworks(tester);
@@ -2076,6 +2079,16 @@ Future<void> main() async {
         // If there's a CoinTagSwitch, lock all of the Coins by tapping the CoinLockButton
         await findAndTapCoinLockButton(tester);
         await findAndPressTextButton(tester, 'Lock');
+
+        // 🕒 Wait for the Rive animation/state to reflect locked status
+        await tester.pumpUntilCondition(
+          tries: 100,
+          duration: const Duration(milliseconds: 200),
+          condition: () {
+            final isLocked = coinLockKey.currentState?.isLocked ?? false;
+            return isLocked == true; // ✅ Stop when actually locked
+          },
+        );
       }
 
       // go to activity
@@ -2093,6 +2106,16 @@ Future<void> main() async {
         // If there's a CoinTagSwitch, lock all of the Coins by tapping the CoinLockButton
         await findAndTapCoinLockButton(tester);
         await findAndPressTextButton(tester, 'Lock');
+
+        // 🕒 Wait for the Rive animation/state to reflect locked status
+        await tester.pumpUntilCondition(
+          tries: 100,
+          duration: const Duration(milliseconds: 200),
+          condition: () {
+            final isLocked = coinLockKey.currentState?.isLocked ?? false;
+            return isLocked == true; // ✅ Stop when actually locked
+          },
+        );
       }
 
       // go to Activity
@@ -2143,9 +2166,22 @@ Future<void> main() async {
         // Unlock it for the next test
         await findAndTapCoinLockButton(tester);
         await findAndPressTextButton(tester, 'Unlock');
-        // wait for unlocking coins
-        await pumpRepeatedly(tester, times: 30);
+
+        // Wait for the lock animation/state to finish unlocking
+        await tester.pumpUntilCondition(
+          tries: 100,
+          duration: const Duration(milliseconds: 200),
+          condition: () {
+            // Re-check the Rive widget state dynamically each try
+            final isLocked = coinLockKey.currentState?.isLocked ?? true;
+            return isLocked == false; // stop when unlocked
+          },
+        );
       }
+
+      // go home, fix to refresh home page
+      await tester.pump(Durations.long2);
+      await findAndPressTextButton(tester, "Accounts");
 
       stopwatch.stop();
       debugPrint(
