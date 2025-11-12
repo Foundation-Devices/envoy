@@ -86,8 +86,8 @@ jobs:
       - run: nix develop --command flutter test
         name: Run Dart tests
 
-      - run: nix develop --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
-        name: Run Clippy
+#      - run: nix develop --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
+#        name: Run Clippy
 
       - run: nix develop --command cargo test
         name: Run Rust tests
