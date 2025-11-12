@@ -143,12 +143,7 @@ class RustBuilder {
   Future<String> build() async {
     final extraArgs = _buildOptions?.flags ?? [];
     final manifestPath = path.join(environment.manifestDir, 'Cargo.toml');
-    runCommand(
-      'rustup',
-      [
-        'run',
-        _toolchain,
-        'cargo',
+    final inNix = Platform.environment.containsKey('IN_NIX_SHELL');    runCommand(      inNix ? 'cargo' : 'rustup',      [          'run',          _toolchain,        ],        'cargo',
         'build',
         ...extraArgs,
         '--manifest-path',
