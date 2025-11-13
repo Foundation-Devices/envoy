@@ -782,7 +782,8 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                     Log.i(TAG, "onConnectionStateChange: requestMtu $requestMtu")
                     // Discover services
                     if (checkBluetoothPermissions()) {
-                        gatt?.discoverServices()
+                        Log.i(TAG, "BLE permissions a-OK")
+                        Handler(Looper.getMainLooper()).postDelayed({gatt?.discoverServices()}, 500)
                     }
 
                     if (connectedDevice == null) {
@@ -867,6 +868,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
 
         @SuppressLint("MissingPermission")
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
+           Log.d(TAG, "onServicesDiscovered")
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.d(TAG, "Services discovered successfully")
 
