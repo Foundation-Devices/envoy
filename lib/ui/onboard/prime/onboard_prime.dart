@@ -41,14 +41,16 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   BleConnectState bleConnectState = BleConnectState.idle;
   final regex = RegExp(r'^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$');
   int colorWay = 1;
+  bool onboardingComplete = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final params = GoRouter.of(context).state.uri.queryParameters;
       setState(() {
-        final param =
-            GoRouter.of(context).state.uri.queryParameters["c"] ?? "1";
+        final param = params["c"] ?? "1";
+        onboardingComplete = int.tryParse(params["o"] ?? "0") == 1;
         colorWay = int.tryParse(param) ?? 1;
       });
     });
@@ -112,7 +114,8 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                 });
               }
               if (context.mounted && mounted) {
-                context.goNamed(ONBOARD_PRIME_BLUETOOTH);
+                context.goNamed(ONBOARD_PRIME_BLUETOOTH,
+                    extra: onboardingComplete);
               }
             }
           }
@@ -121,8 +124,6 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         }
         final connectionStatus =
             await BluetoothManager().connect(id: bleId!, colorWay: colorWay);
-        //TODO: Maybe this is not needed ?
-        await LocalStorage().prefs.setString(primeSerialPref, bleId);
 
         if (!connectionStatus) {
           throw Exception("Failed to connect to Prime device.");
@@ -131,9 +132,9 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
           setState(() {
             bleConnectState = BleConnectState.connected;
           });
-        }
-        if (context.mounted && mounted) {
-          context.goNamed(ONBOARD_PRIME_BLUETOOTH);
+          if (context.mounted && mounted) {
+            context.goNamed(ONBOARD_PRIME_BLUETOOTH, extra: onboardingComplete);
+          }
         }
       } else {
         throw Exception("Invalid Prime Serial");

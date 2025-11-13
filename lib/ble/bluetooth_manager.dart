@@ -25,6 +25,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'handlers/account_handler.dart';
 import 'handlers/magic_backup_handler.dart';
+import 'handlers/passphrase_handler.dart';
 import 'handlers/shards_handler.dart';
 import 'quantum_link_router.dart';
 
@@ -65,6 +66,8 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   late final BleAccountHandler _bleAccountHandler = BleAccountHandler(this);
   late final ShardsHandler _bleShardsHandler = ShardsHandler(this);
   late final BleOnboardHandler _bleOnboardHandler = BleOnboardHandler(this);
+  late final BlePassphraseHandler _blePassphraseHandler =
+      BlePassphraseHandler(this, _passphraseEventStream);
 
   //
   BleMagicBackupHandler get magicBackupHandler => _bleMagicBackupHandler;
@@ -85,6 +88,9 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   final StreamController<api.QuantumLinkMessage_BroadcastTransaction>
       _transactionStream =
       StreamController<api.QuantumLinkMessage_BroadcastTransaction>.broadcast();
+
+  final StreamController<api.ApplyPassphrase> _passphraseEventStream =
+      StreamController<api.ApplyPassphrase>.broadcast();
 
   api.EnvoyMasterDechunker? _decoder;
 
@@ -109,6 +115,9 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 
   Stream<api.QuantumLinkMessage_BroadcastTransaction> get transactionStream =>
       _transactionStream.stream.asBroadcastStream();
+
+  Stream<api.ApplyPassphrase> get passphraseEventStream =>
+      _passphraseEventStream.stream.asBroadcastStream();
 
   final StreamController<double> _writeProgressController =
       StreamController<double>.broadcast();
@@ -151,6 +160,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     _messageRouter.registerHandler(_bleShardsHandler);
     _messageRouter.registerHandler(_bleAccountHandler);
     _messageRouter.registerHandler(_bleOnboardHandler);
+    _messageRouter.registerHandler(_blePassphraseHandler);
 
     await listen(id: bleId);
     kPrint("QL Identity: $_qlIdentity");
@@ -287,8 +297,10 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     final recipientXid =
         await api.serializeXidDocument(xidDocument: _recipientXid!);
 
+    final deviceName = await BluetoothChannel().getDeviceName();
+
     final success = await writeMessage(api.QuantumLinkMessage.pairingRequest(
-        api.PairingRequest(xidDocument: xid)));
+        api.PairingRequest(xidDocument: xid, deviceName: deviceName)));
     kPrint("Pairing... success ?  $success");
 
     if (!success) {
@@ -317,12 +329,17 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   }
 
   Future<void> addDevice(String serialNumber, String firmwareVersion,
-      String bleId, DeviceColor deviceColor) async {
+      String bleId, DeviceColor deviceColor,
+      {bool onboardingComplete = false}) async {
     final recipientXid =
         await api.serializeXidDocument(xidDocument: _recipientXid!);
-    Devices().add(Device("Prime", DeviceType.passportPrime, serialNumber,
+    final device = Device("Prime", DeviceType.passportPrime, serialNumber,
         DateTime.now(), firmwareVersion, EnvoyColors.listAccountTileColors[0],
-        bleId: bleId, deviceColor: deviceColor, xid: recipientXid));
+        bleId: bleId,
+        deviceColor: deviceColor,
+        xid: recipientXid,
+        onboardingComplete: onboardingComplete);
+    Devices().add(device);
   }
 
   Future<void> removeConnectedDevice() async {

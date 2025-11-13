@@ -33,6 +33,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 import java.util.UUID
@@ -48,6 +49,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         private const val BLE_WRITE_CHANNEL_NAME = "envoy/ble/write"
         private const val BLE_CONNECTION_STREAM_NAME = "envoy/bluetooth/connection/stream"
         private const val BLE_WRITE_PROGRESS_STREAM_NAME = "envoy/ble/write/progress"
+        private const val BLUETOOTH_DISCOVERY_DELAY_MS = 500L
 
         // Service UUID for Prime device
         private val PRIME_SERVICE_UUID = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E")
@@ -218,11 +220,16 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         when (call.method) {
             "pair" -> pairWithDevice(call, result)
             "stopScan" -> stopDeviceScan(result)
+            "deviceName" -> getDeviceName(result)
             "disconnect" -> disconnectDevice(result)
             "getConnectedPeripheralId" -> result.success(getConnectedPeripheralId())
             "isConnected" -> result.success(isConnected())
             else -> result.notImplemented()
         }
+    }
+
+    private fun getDeviceName(result: MethodChannel.Result) {
+        result.success(bluetoothAdapter?.name ?: "Envoy ")
     }
 
     @SuppressLint("MissingPermission")
@@ -671,7 +678,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
 
     private fun sendWriteProgress(progress: Float) {
         scope.launch {
-            if(writeProgressEventSink == null){
+            if (writeProgressEventSink == null) {
                 return@launch
             }
             writeProgressEventSink?.success(progress)
@@ -782,7 +789,10 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                     Log.i(TAG, "onConnectionStateChange: requestMtu $requestMtu")
                     // Discover services
                     if (checkBluetoothPermissions()) {
-                        gatt?.discoverServices()
+                        scope.launch {
+                            delay(BLUETOOTH_DISCOVERY_DELAY_MS)
+                            gatt?.discoverServices()
+                        }
                     }
 
                     if (connectedDevice == null) {
@@ -973,9 +983,8 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                         TAG,
                         "Retrying write operation (attempt $writeRetryCount/$MAX_WRITE_RETRIES)"
                     )
-
-                    mainHandler.postDelayed({
-
+                    scope.launch {
+                        delay(RETRY_DELAY_MS)
                         val writeSuccess =
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                                 // API 33+
@@ -1001,7 +1010,11 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                                 @Suppress("DEPRECATION")
                                 gatt.writeCharacteristic(characteristic)
                             }
-                    }, RETRY_DELAY_MS)
+                        if (!writeSuccess) {
+                            Log.e(TAG, "Failed to write characteristic on retry")
+                        }
+                    }
+
                     return
                 }
 

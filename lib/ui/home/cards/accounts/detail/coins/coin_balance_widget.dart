@@ -453,18 +453,16 @@ class CoinLockButton extends StatefulWidget {
       {super.key, required this.locked, required this.gestureTapCallback});
 
   @override
-  State<CoinLockButton> createState() => _CoinLockButtonState();
+  State<CoinLockButton> createState() => CoinLockButtonState();
 }
 
-class _CoinLockButtonState extends State<CoinLockButton> {
+class CoinLockButtonState extends State<CoinLockButton> {
   bool _isInitialized = false;
   rive.RiveWidgetController? _controller;
-  late rive.File riveFile;
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  /// 👇 Public getter so tests (via GlobalKey) can read the current lock state
+  bool get isLocked =>
+      _controller?.stateMachine.boolean("Lock")?.value ?? widget.locked;
 
   void _initRive(rive.File riveFile) {
     if (_controller == null) {
@@ -489,41 +487,32 @@ class _CoinLockButtonState extends State<CoinLockButton> {
   }
 
   @override
-  void dispose() {
-    _controller?.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     _controller?.stateMachine.boolean("Lock")?.value = widget.locked;
 
     return Consumer(builder: (context, ref, child) {
-      rive.File? riveFile = ref.watch(coinLockRiveProvider);
+      final riveFile = ref.watch(coinLockRiveProvider);
 
       if (riveFile != null && !_isInitialized) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            _initRive(riveFile);
-          }
+          if (mounted) _initRive(riveFile);
         });
       }
 
       return GestureDetector(
-          onTap: widget.gestureTapCallback,
-          behavior: HitTestBehavior.opaque,
-          child: Container(
-              height: 38,
-              width: 50,
-              color: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-                child: riveFile != null && _isInitialized && _controller != null
-                    ? rive.RiveWidget(
-                        controller: _controller!,
-                      )
-                    : const SizedBox.shrink(),
-              )));
+        onTap: widget.gestureTapCallback,
+        behavior: HitTestBehavior.opaque,
+        child: SizedBox(
+          height: 38,
+          width: 50,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+            child: riveFile != null && _isInitialized && _controller != null
+                ? rive.RiveWidget(controller: _controller!)
+                : const SizedBox.shrink(),
+          ),
+        ),
+      );
     });
   }
 }

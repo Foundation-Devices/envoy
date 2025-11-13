@@ -20,7 +20,6 @@
       system: let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [fenix.overlays.default];
           config = {
             allowUnfree = true;
             android_sdk.accept_license = true;
@@ -59,7 +58,7 @@
             (xcodeenv.composeXcodeWrapper {versions = ["16.0"];})
           ];
 
-        rustToolchain = pkgs.fenix.fromToolchainFile {
+        rustToolchain = fenix.packages.${system}.fromToolchainFile {
           file = ./rust-toolchain.toml;
           sha256 = "sha256-SJwZ8g0zF2WrKDVmHrVG3pD2RGoQeo24MEXnNx5FyuI=";
         };
