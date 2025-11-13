@@ -666,7 +666,6 @@ class EnvoySeed {
       ExchangeRate().restore();
     }
 
-    // sad je to u sembastu !!!!!
     Devices().restore(hasExitingSetup: hasExistingSetup);
   }
 

@@ -166,6 +166,8 @@ class Devices extends ChangeNotifier {
         }
       }
     }
+    storeDevices();
+    notifyListeners();
   }
 
   void renameDevice(Device device, String newName) {
