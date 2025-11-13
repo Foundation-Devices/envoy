@@ -25,23 +25,74 @@ class EnvoyBarItem {
 /// Each item is centered and tappable.
 class EnvoyBar extends StatelessWidget {
   final List<EnvoyBarItem> items;
+  final bool showDividers;
+  final double bottomPadding;
+  final bool enabled;
 
-  const EnvoyBar({super.key, required this.items});
+  const EnvoyBar(
+      {super.key,
+      required this.items,
+      this.showDividers = false,
+      this.enabled = true,
+      this.bottomPadding = EnvoySpacing.large2});
 
   @override
   Widget build(BuildContext context) {
+    // Build the row’s children with optional dividers
+    final List<Widget> children = [];
+    for (int i = 0; i < items.length; i++) {
+      children.add(
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
+            child: GestureDetector(
+              onTap: enabled ? items[i].onTap : null,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  EnvoyIcon(
+                    items[i].icon,
+                    color: enabled
+                        ? EnvoyColors.accentPrimary
+                        : EnvoyColors.textInactive,
+                  ),
+                  const SizedBox(height: EnvoySpacing.xs),
+                  Text(
+                    items[i].text,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.info.copyWith(
+                      color: enabled
+                          ? EnvoyColors.accentPrimary
+                          : EnvoyColors.textInactive,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      // Add vertical dividers if enabled
+      if (showDividers && (i == 0 || i == items.length - 2)) {
+        children.add(_buildDivider());
+      }
+    }
+
     return Padding(
-      padding: const EdgeInsets.only(
-          bottom: EnvoySpacing.large2,
-          left: EnvoySpacing.medium1,
-          right: EnvoySpacing.medium1),
+      padding: EdgeInsets.only(
+        bottom: bottomPadding,
+        left: EnvoySpacing.medium1,
+        right: EnvoySpacing.medium1,
+      ),
       child: Container(
         padding: const EdgeInsets.symmetric(
-          vertical: EnvoySpacing.small,
           horizontal: EnvoySpacing.medium1,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: EnvoyColors.textPrimaryInverse,
           borderRadius: BorderRadius.circular(28),
           boxShadow: [
             BoxShadow(
@@ -52,37 +103,22 @@ class EnvoyBar extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: items
-              .map(
-                (item) => Expanded(
-                  child: GestureDetector(
-                    onTap: item.onTap,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        EnvoyIcon(
-                          item.icon,
-                          color: EnvoyColors.accentPrimary,
-                        ),
-                        const SizedBox(height: EnvoySpacing.xs),
-                        Text(
-                          item.text,
-                          textAlign: TextAlign.center,
-                          style: EnvoyTypography.info.copyWith(
-                            color: EnvoyColors.accentPrimary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              )
-              .toList(),
+        child: IntrinsicHeight(
+          // makes dividers stretch to full height
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: children,
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Container(
+      width: 1,
+      color: EnvoyColors.border2,
+      margin: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
     );
   }
 }
