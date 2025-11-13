@@ -15,6 +15,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:envoy/generated/l10n.dart';
 
 final shouldUpdateProvider =
     FutureProvider.family<bool, Device>((ref, device) async {
@@ -156,11 +157,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                           Text(
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
-                                            widget.device.type ==
-                                                    DeviceType.passportGen12
-                                                ? "Passport" // TODO: FIGMA
-                                                : "Founder's Edition",
-                                            // TODO: FIGMA
+                                            getDeviceLabel(widget.device.type),
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall!
@@ -307,6 +304,17 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
           case DeviceColor.dark:
             return "assets/prime_device_tile_dark.png";
         }
+    }
+  }
+
+  String getDeviceLabel(DeviceType type) {
+    switch (type) {
+      case DeviceType.passportGen1:
+        return "Founder's Edition";
+      case DeviceType.passportGen12:
+        return S().learning_center_device_passportCore;
+      case DeviceType.passportPrime:
+        return S().learning_center_device_passportPrime;
     }
   }
 }

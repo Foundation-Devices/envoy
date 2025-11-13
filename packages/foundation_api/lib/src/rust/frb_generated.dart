@@ -2185,10 +2185,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PairingRequest dco_decode_pairing_request(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 1)
-      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
     return PairingRequest(
       xidDocument: dco_decode_list_prim_u_8_strict(arr[0]),
+      deviceName: dco_decode_String(arr[1]),
     );
   }
 
@@ -3673,7 +3674,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PairingRequest sse_decode_pairing_request(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_xidDocument = sse_decode_list_prim_u_8_strict(deserializer);
-    return PairingRequest(xidDocument: var_xidDocument);
+    var var_deviceName = sse_decode_String(deserializer);
+    return PairingRequest(
+        xidDocument: var_xidDocument, deviceName: var_deviceName);
   }
 
   @protected
@@ -5053,6 +5056,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       PairingRequest self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_prim_u_8_strict(self.xidDocument, serializer);
+    sse_encode_String(self.deviceName, serializer);
   }
 
   @protected

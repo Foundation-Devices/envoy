@@ -38,6 +38,8 @@ class Device {
   final String serial;
   @JsonKey(defaultValue: "")
   final String bleId;
+  @JsonKey(defaultValue: false)
+  final bool onboardingComplete;
   @Uint8ListConverter()
   final Uint8List? xid;
   final DateTime datePaired;
@@ -60,6 +62,7 @@ class Device {
     this.xid,
     this.pairedAccountIds,
     this.primeBackupEnabled,
+    this.onboardingComplete = false,
   });
 
   // Serialisation

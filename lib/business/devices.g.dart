@@ -22,6 +22,7 @@ Device _$DeviceFromJson(Map<String, dynamic> json) => Device(
           ?.map((e) => e as String)
           .toList(),
       primeBackupEnabled: json['primeBackupEnabled'] as bool?,
+      onboardingComplete: json['onboardingComplete'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
@@ -30,6 +31,7 @@ Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
       'deviceColor': _$DeviceColorEnumMap[instance.deviceColor]!,
       'serial': instance.serial,
       'bleId': instance.bleId,
+      'onboardingComplete': instance.onboardingComplete,
       'xid': const Uint8ListConverter().toJson(instance.xid),
       'datePaired': instance.datePaired.toIso8601String(),
       'firmwareVersion': instance.firmwareVersion,

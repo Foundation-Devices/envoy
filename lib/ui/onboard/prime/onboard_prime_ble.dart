@@ -67,6 +67,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     with SingleTickerProviderStateMixin {
   final s = Settings();
   bool scanForPayload = false;
+  bool onboardingCompleted = false;
 
   Completer<QuantumLinkMessage_BroadcastTransaction>? _completer;
 
@@ -90,6 +91,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   void _listenForPassportMessages() {
+    onboardingCompleted = GoRouter.of(context).state.extra as bool? ?? false;
     _passportMessagesSubscription = BluetoothManager()
         .passportMessageStream
         .listen((PassportMessage message) async {
@@ -706,11 +708,17 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
                       await Future.delayed(const Duration(milliseconds: 200));
 
-                      if (!context.mounted) return;
-                      context.goNamed(ONBOARD_PRIME_PAIR);
-
-                      kPrint("XID payload: $payload");
-                      await pairWithPrime(payload);
+                      if (!onboardingCompleted) {
+                        if (!context.mounted) return;
+                        context.goNamed(ONBOARD_PRIME_PAIR);
+                        await pairWithPrime(payload);
+                      } else {
+                        if (context.mounted) {
+                          context.goNamed(ONBOARD_REPAIRING);
+                        }
+                        await Future.delayed(Duration(milliseconds: 400));
+                        await pairWithPrime(payload);
+                      }
                     },
                   ),
                 );

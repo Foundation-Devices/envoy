@@ -9,20 +9,23 @@ import 'passport.dart';
 
 class PairingRequest {
   final Uint8List xidDocument;
+  final String deviceName;
 
   const PairingRequest({
     required this.xidDocument,
+    required this.deviceName,
   });
 
   @override
-  int get hashCode => xidDocument.hashCode;
+  int get hashCode => xidDocument.hashCode ^ deviceName.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is PairingRequest &&
           runtimeType == other.runtimeType &&
-          xidDocument == other.xidDocument;
+          xidDocument == other.xidDocument &&
+          deviceName == other.deviceName;
 }
 
 class PairingResponse {
