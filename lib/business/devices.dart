@@ -243,7 +243,7 @@ class Devices extends ChangeNotifier {
   }
 }
 
-class Uint8ListConverter implements JsonConverter<Uint8List?, List<int>?> {
+class Uint8ListConverter implements JsonConverter<Uint8List?, List<dynamic>?> {
   /// Create a new instance of [Uint8ListConverter].
   const Uint8ListConverter();
 

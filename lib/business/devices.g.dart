@@ -17,7 +17,7 @@ Device _$DeviceFromJson(Map<String, dynamic> json) => Device(
           $enumDecodeNullable(_$DeviceColorEnumMap, json['deviceColor']) ??
               DeviceColor.light,
       bleId: json['bleId'] as String? ?? '',
-      xid: const Uint8ListConverter().fromJson(json['xid'] as List<int>?),
+      xid: const Uint8ListConverter().fromJson(json['xid'] as List?),
       pairedAccountIds: (json['pairedAccountIds'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
