@@ -203,15 +203,12 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Download Settings & Data Backup File"),
         "backups_downloadSettingsMetadataBackupFile":
             MessageLookupByLibrary.simpleMessage(
-          "Download Settings & Metadata Backup File",
-        ),
-        "backups_erase_mobile_wallet": MessageLookupByLibrary.simpleMessage(
-          "Erase Mobile Wallet",
-        ),
+                "Download Settings & Metadata Backup File"),
+        "backups_erase_mobile_wallet":
+            MessageLookupByLibrary.simpleMessage("Erase Mobile Wallet"),
         "backups_erase_wallets_and_backups":
             MessageLookupByLibrary.simpleMessage(
-          "Erase Mobile Wallet and Backups",
-        ),
+                "Erase Mobile Wallet and Backups"),
         "backups_erase_wallets_and_backups_modal_1_2_android_subheading":
             MessageLookupByLibrary.simpleMessage(
                 "You’re about to permanently delete your Envoy Wallet. \n\nIf you are using Magic Backups, your Envoy Seed will also be deleted from Android Auto Backup. "),

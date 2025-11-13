@@ -71,6 +71,9 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
     init(flutterController: FlutterViewController) {
         super.init()
+        
+        print(UIDevice.current.name)
+        
         self.flutterController = flutterController
 
         // Set up event channel for streaming Bluetooth metadata (connection status, errors, etc.)
@@ -141,6 +144,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             case "disconnect":
                 self.disconnectPeripheral()
                 result(true)
+            case "deviceName":
+                result(UIDevice.current.name)
             default:
                 result(FlutterMethodNotImplemented)
             }

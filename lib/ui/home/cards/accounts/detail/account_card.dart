@@ -882,7 +882,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                           if (device != null &&
                               device.type == DeviceType.passportPrime &&
                               account?.id != null) {
-                            await BluetoothManager().sendAccountUpdate(
+                            BluetoothManager().sendAccountUpdate(
                                 api.AccountUpdate(
                                     accountId: account!.id,
                                     update: (await handler.toRemoteUpdate())));
