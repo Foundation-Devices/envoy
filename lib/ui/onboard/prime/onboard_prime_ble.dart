@@ -708,17 +708,17 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
                       await Future.delayed(const Duration(milliseconds: 200));
 
-                      if (!onboardingCompleted) {
+                      // if (!onboardingCompleted) {
                         if (!context.mounted) return;
                         context.goNamed(ONBOARD_PRIME_PAIR);
                         await pairWithPrime(payload);
-                      } else {
+/*                      } else {
                         if (context.mounted) {
                           context.goNamed(ONBOARD_REPAIRING);
                         }
                         await Future.delayed(Duration(milliseconds: 400));
                         await pairWithPrime(payload);
-                      }
+                      }*/
                     },
                   ),
                 );
