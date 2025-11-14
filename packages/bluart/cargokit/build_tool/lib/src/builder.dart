@@ -144,8 +144,11 @@ class RustBuilder {
     final extraArgs = _buildOptions?.flags ?? [];
     final manifestPath = path.join(environment.manifestDir, 'Cargo.toml');
     runCommand(
-      'cargo',
+      'rustup',
       [
+        'run',
+        _toolchain,
+        'cargo',
         'build',
         ...extraArgs,
         '--manifest-path',
