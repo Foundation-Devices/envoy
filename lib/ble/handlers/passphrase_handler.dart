@@ -22,7 +22,8 @@ class BlePassphraseHandler extends PassportMessageHandler {
   }
 
   @override
-  Future<void> handleMessage(api.QuantumLinkMessage message) async {
+  Future<void> handleMessage(
+      api.QuantumLinkMessage message, String bleId) async {
     if (message case api.QuantumLinkMessage_ApplyPassphrase applyPassphrase) {
       kPrint(
           "Got ApplyPassphrase message: fingerprint=${applyPassphrase.field0.fingerprint}");

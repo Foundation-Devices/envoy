@@ -387,7 +387,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       _bluetoothChannel.listenToDataEvents().listen((payload) {
         decode(payload).then((value) async {
           if (value != null) {
-            unawaited(_messageRouter.dispatch(value.message));
+            unawaited(_messageRouter.dispatch(value.message, id));
             _passportMessageStream.add(value);
             kPrint(
                 "Got Passport message type: ${value.message.runtimeType} ${value.message}");
