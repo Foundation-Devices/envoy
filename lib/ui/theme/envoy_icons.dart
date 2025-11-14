@@ -95,7 +95,9 @@ enum EnvoyIcons {
   qr_scan,
   stripe,
   stripe_text,
-  refresh
+  refresh,
+  prime_front,
+
 }
 
 class EnvoyIcon extends StatelessWidget {

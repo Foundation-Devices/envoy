@@ -17,12 +17,13 @@ Device _$DeviceFromJson(Map<String, dynamic> json) => Device(
           $enumDecodeNullable(_$DeviceColorEnumMap, json['deviceColor']) ??
               DeviceColor.light,
       bleId: json['bleId'] as String? ?? '',
-      xid: json['xid'] == null
-          ? null
-          : const Uint8ListConverter().fromJson(json['xid']),
-    )..pairedAccountIds = (json['pairedAccountIds'] as List<dynamic>?)
-        ?.map((e) => e as String)
-        .toList();
+      xid: const Uint8ListConverter().fromJson(json['xid'] as List?),
+      pairedAccountIds: (json['pairedAccountIds'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      primeBackupEnabled: json['primeBackupEnabled'] as bool?,
+      onboardingComplete: json['onboardingComplete'] as bool? ?? false,
+    );
 
 Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
       'name': instance.name,
@@ -30,10 +31,12 @@ Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
       'deviceColor': _$DeviceColorEnumMap[instance.deviceColor]!,
       'serial': instance.serial,
       'bleId': instance.bleId,
-      'xid': Uint8ListConverter().toJson(instance.xid),
+      'onboardingComplete': instance.onboardingComplete,
+      'xid': const Uint8ListConverter().toJson(instance.xid),
       'datePaired': instance.datePaired.toIso8601String(),
       'firmwareVersion': instance.firmwareVersion,
       'pairedAccountIds': instance.pairedAccountIds,
+      'primeBackupEnabled': instance.primeBackupEnabled,
       'color': colorToJson(instance.color),
     };
 
