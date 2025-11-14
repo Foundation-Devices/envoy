@@ -155,15 +155,24 @@ class Devices extends ChangeNotifier {
     _ls.prefs.setString(DEVICES_PREFS, json);
   }
 
-  void restore() {
-    devices.clear();
+  void restore({bool hasExitingSetup = false}) {
+    if (!hasExitingSetup) {
+      devices.clear();
+    }
 
     if (_ls.prefs.containsKey(DEVICES_PREFS)) {
       var storedDevices = jsonDecode(_ls.prefs.getString(DEVICES_PREFS)!);
-      for (var device in storedDevices) {
-        devices.add(Device.fromJson(device));
+      for (var deviceData in storedDevices) {
+        var newDevice = Device.fromJson(deviceData);
+
+        bool alreadyExists = devices.any((d) => d.serial == newDevice.serial);
+        if (!alreadyExists) {
+          devices.add(newDevice);
+        }
       }
     }
+    storeDevices();
+    notifyListeners();
   }
 
   void renameDevice(Device device, String newName) {
