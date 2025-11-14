@@ -14,6 +14,7 @@ import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
@@ -333,15 +334,15 @@ class BadgeIcon extends StatelessWidget {
         colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
       );
     }
-    if (account.deviceSerial == "prime") {
-      return SvgPicture.asset(
-        "assets/icons/ic_wallet_coins.svg",
-        height: 24,
-        width: 24,
-        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-      );
-    }
     if (!account.isHot) {
+      Device? device = Devices().getDeviceBySerial(account.deviceSerial ?? "");
+      if (device != null && device.type == DeviceType.passportPrime) {
+        return EnvoyIcon(
+          EnvoyIcons.prime_front,
+          color: EnvoyColors.solidWhite,
+        );
+      }
+
       return SvgPicture.asset(
         "assets/icons/ic_passport_account.svg",
         height: 24,
