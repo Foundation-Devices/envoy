@@ -13,6 +13,7 @@ import 'package:envoy/util/color_serializer.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'devices.g.dart';
@@ -44,16 +45,25 @@ class Device {
   final DateTime datePaired;
   String firmwareVersion;
   List<String>? pairedAccountIds;
+  bool? primeBackupEnabled;
 
   @JsonKey(toJson: colorToJson, fromJson: colorFromJson)
   final Color color;
 
-  Device(this.name, this.type, this.serial, this.datePaired,
-      this.firmwareVersion, this.color,
-      {this.deviceColor = DeviceColor.light,
-      this.bleId = "",
-      this.onboardingComplete = false,
-      this.xid});
+  Device(
+    this.name,
+    this.type,
+    this.serial,
+    this.datePaired,
+    this.firmwareVersion,
+    this.color, {
+    this.deviceColor = DeviceColor.light,
+    this.bleId = "",
+    this.xid,
+    this.pairedAccountIds,
+    this.primeBackupEnabled,
+    this.onboardingComplete = false,
+  });
 
   // Serialisation
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);
@@ -220,9 +230,20 @@ class Devices extends ChangeNotifier {
   Device? getDeviceBySerial(String serialNumber) {
     return devices.firstWhereOrNull((device) => device.serial == serialNumber);
   }
+
+  void updatePrimeBackupStatus(String bleId, bool isEnabled) {
+    for (var device in devices) {
+      if (device.bleId == bleId && device.type == DeviceType.passportPrime) {
+        device.primeBackupEnabled = isEnabled;
+        storeDevices();
+        notifyListeners();
+        return;
+      }
+    }
+  }
 }
 
-class Uint8ListConverter implements JsonConverter<Uint8List?, List<int>?> {
+class Uint8ListConverter implements JsonConverter<Uint8List?, List<dynamic>?> {
   /// Create a new instance of [Uint8ListConverter].
   const Uint8ListConverter();
 
@@ -245,3 +266,18 @@ class Uint8ListConverter implements JsonConverter<Uint8List?, List<int>?> {
     return object.toList();
   }
 }
+
+final devicesProvider = ChangeNotifierProvider<Devices>((ref) {
+  return Devices();
+});
+
+// Provider that checks if any Prime device has backup enabled
+final primeBackupEnabledProvider = Provider<bool>((ref) {
+  final devices = ref.watch(devicesProvider).devices;
+
+  return devices.any(
+    (device) =>
+        device.type == DeviceType.passportPrime &&
+        device.primeBackupEnabled == true,
+  );
+});
