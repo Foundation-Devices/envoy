@@ -428,7 +428,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                 Navigator.pop(context);
               },
               title: device.name,
-              icon: EnvoyIcons.prime_v2,
+              icon: EnvoyIcons.prime_front,
               showCloseButton: false,
             );
           },

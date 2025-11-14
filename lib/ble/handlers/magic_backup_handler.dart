@@ -78,12 +78,12 @@ class BleMagicBackupHandler extends PassportMessageHandler {
                   "Prime Magic Backup upload: ${result ? "✔︎success" : "✖︎ failure"}");
               if (result == true) {
                 await writer.writeMessage(
-                    api.QuantumLinkMessage_RestoreMagicBackupResult(
-                        api.RestoreMagicBackupResult.success()));
+                    api.QuantumLinkMessage_CreateMagicBackupResult(
+                        api.CreateMagicBackupResult.success()));
               } else {
                 await writer.writeMessage(
-                    api.QuantumLinkMessage_RestoreMagicBackupResult(
-                        api.RestoreMagicBackupResult.error(
+                    api.QuantumLinkMessage_CreateMagicBackupResult(
+                        api.CreateMagicBackupResult.error(
                             "Failed to upload backup")));
               }
               _collectBackupChunks = null;
