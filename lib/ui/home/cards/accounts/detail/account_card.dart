@@ -174,7 +174,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                 HomePageState.of(context)?.toggleOptions();
               }
             },
-            child: CustomPullToRefresh(
+            child: EnvoyPullToRefresh(
               onRefresh: () async {
                 // TODO: implement refresh here, ref's and so on!!!
                 await Future.delayed(const Duration(seconds: 2));
@@ -1071,7 +1071,7 @@ class _MenuItem extends StatelessWidget {
   }
 }
 
-class CustomPullToRefresh extends StatefulWidget {
+class EnvoyPullToRefresh extends StatefulWidget {
   final Widget child;
   final Future<void> Function() onRefresh;
 
@@ -1081,7 +1081,7 @@ class CustomPullToRefresh extends StatefulWidget {
   /// shown when refreshing begins
   final Widget refreshIndicator;
 
-  const CustomPullToRefresh({
+  const EnvoyPullToRefresh({
     super.key,
     required this.child,
     required this.onRefresh,
@@ -1090,10 +1090,10 @@ class CustomPullToRefresh extends StatefulWidget {
   });
 
   @override
-  State<CustomPullToRefresh> createState() => _CustomPullToRefreshState();
+  State<EnvoyPullToRefresh> createState() => _EnvoyPullToRefreshState();
 }
 
-class _CustomPullToRefreshState extends State<CustomPullToRefresh>
+class _EnvoyPullToRefreshState extends State<EnvoyPullToRefresh>
     with TickerProviderStateMixin {
   double _dragOffset = 0;
   bool _refreshing = false;
