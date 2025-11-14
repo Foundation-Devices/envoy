@@ -155,13 +155,8 @@ class Devices extends ChangeNotifier {
       for (var deviceData in storedDevices) {
         var newDevice = Device.fromJson(deviceData);
 
-        // If has existing setup, avoid adding duplicates
-        if (hasExitingSetup) {
-          bool alreadyExists = devices.any((d) => d.serial == newDevice.serial);
-          if (!alreadyExists) {
-            devices.add(newDevice);
-          }
-        } else {
+        bool alreadyExists = devices.any((d) => d.serial == newDevice.serial);
+        if (!alreadyExists) {
           devices.add(newDevice);
         }
       }
