@@ -674,7 +674,7 @@ class _TransactionReviewScreenState
             100)
         .round();
 
-    final enableButton = !transactionModel.loading &&
+    final enableButton = (!transactionModel.loading && !isPrime) ||
         ((account.isHot || transactionModel.isFinalized) ||
             (isPrime && isConnected));
     return EnvoyScaffold(
