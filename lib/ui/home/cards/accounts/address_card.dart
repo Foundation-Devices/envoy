@@ -135,8 +135,8 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                     children: [
                       EnvoyIcon(
                         widget.account.isHot || isPrime
-                            ? EnvoyIcons.qr_scan
-                            : EnvoyIcons.quantum,
+                            ? EnvoyIcons.quantum
+                            : EnvoyIcons.qr_scan,
                         color: EnvoyColors.accentPrimary,
                       ),
                       const SizedBox(width: EnvoySpacing.small),

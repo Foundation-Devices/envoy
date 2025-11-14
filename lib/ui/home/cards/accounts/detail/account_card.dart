@@ -775,7 +775,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
         onTap: () => navigator.pop(),
         // close when tapping outside
         child: Container(
-          color: Colors.black.applyOpacity(0.4), // gray transparent background
+          color: Colors.black.applyOpacity(0.4),
         ),
       ),
       Padding(
@@ -783,250 +783,157 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
         child: Align(
           alignment: Alignment.topRight,
           child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius:
-                  BorderRadius.circular(EnvoySpacing.medium1), // adjust radius
-            ),
-            width: 250,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: EnvoySpacing.xs),
-                GestureDetector(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium1, vertical: 12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          S().exploreAdresses_activityOptions_showDescriptor,
-                          style: EnvoyTypography.body
-                              .copyWith(color: EnvoyColors.textPrimary),
-                        ),
-                        EnvoyIcon(
-                          EnvoyIcons.info,
-                          color: EnvoyColors.textPrimary,
-                        ),
-                      ],
-                    ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
+              ),
+              width: 250,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: EnvoySpacing.xs),
+                  _MenuItem(
+                    label: S().exploreAdresses_activityOptions_showDescriptor,
+                    icon: EnvoyIcons.info,
+                    onTap: () {
+                      navigator.pop();
+                      if (accountHasNoTaprootXpub(widget.account) &&
+                          Settings().taprootEnabled()) {
+                        showEnvoyPopUp(
+                          context,
+                          icon: EnvoyIcons.info,
+                          showCloseButton: true,
+                          title: S().taproot_passport_dialog_heading,
+                          S().taproot_passport_dialog_subheading,
+                          S().taproot_passport_dialog_reconnect,
+                          (modalContext) {
+                            Navigator.pop(modalContext);
+                            HomePageState.of(context)?.toggleOptions();
+                            scanForDevice(context);
+                          },
+                          secondaryButtonLabel:
+                              S().taproot_passport_dialog_later,
+                          onSecondaryButtonTap: (modalContext) {
+                            Navigator.pop(modalContext);
+                            HomePageState.of(context)?.toggleOptions();
+                            context.go(ROUTE_ACCOUNT_DESCRIPTOR,
+                                extra: widget.account.id);
+                          },
+                        );
+                      } else {
+                        HomePageState.of(context)?.toggleOptions();
+                        context.go(ROUTE_ACCOUNT_DESCRIPTOR,
+                            extra: widget.account.id);
+                      }
+                    },
                   ),
-                  onTap: () {
-                    navigator.pop();
-                    if (accountHasNoTaprootXpub(widget.account) &&
-                        Settings().taprootEnabled()) {
-                      showEnvoyPopUp(
-                        context,
-                        icon: EnvoyIcons.info,
-                        showCloseButton: true,
-                        title: S().taproot_passport_dialog_heading,
-                        S().taproot_passport_dialog_subheading,
-                        S().taproot_passport_dialog_reconnect,
-                        (BuildContext modalContext) {
-                          Navigator.pop(modalContext);
-                          HomePageState.of(context)?.toggleOptions();
-                          scanForDevice(context);
-                        },
-                        secondaryButtonLabel: S().taproot_passport_dialog_later,
-                        onSecondaryButtonTap: (BuildContext modalContext) {
-                          Navigator.pop(modalContext);
-                          HomePageState.of(context)?.toggleOptions();
-                          context.go(ROUTE_ACCOUNT_DESCRIPTOR,
-                              extra: widget.account.id);
-                        },
+                  _MenuItem(
+                    label: S().exploreAdresses_activityOptions_editAccountName,
+                    icon: EnvoyIcons.edit,
+                    onTap: () {
+                      navigator.pop();
+                      ref
+                          .read(homePageOptionsVisibilityProvider.notifier)
+                          .state = false;
+
+                      bool isKeyboardShown = false;
+                      textEntry = TextEntry(
+                        focusNode: focusNode,
+                        maxLength: 20,
+                        placeholder: account?.name ?? "",
                       );
-                    } else {
-                      HomePageState.of(context)?.toggleOptions();
-                      context.go(ROUTE_ACCOUNT_DESCRIPTOR,
-                          extra: widget.account.id);
-                    }
-                  },
-                ),
-                const Divider(height: 0),
-                GestureDetector(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium1, vertical: 12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          S().exploreAdresses_activityOptions_editAccountName,
-                          style: EnvoyTypography.body
-                              .copyWith(color: EnvoyColors.textPrimary),
-                        ),
-                        EnvoyIcon(
-                          EnvoyIcons.edit,
-                          color: EnvoyColors.textPrimary,
-                        ),
-                      ],
-                    ),
-                  ),
-                  onTap: () {
-                    navigator.pop();
-                    ref.read(homePageOptionsVisibilityProvider.notifier).state =
-                        false;
-                    bool isKeyboardShown = false;
-                    textEntry = TextEntry(
-                      focusNode: focusNode,
-                      maxLength: 20,
-                      placeholder: account?.name ?? "",
-                    );
-                    showEnvoyDialog(
-                      context: context,
-                      dialog: Builder(
-                        builder: (context) {
-                          if (!isKeyboardShown) {
-                            Future.delayed(const Duration(milliseconds: 200))
-                                .then((_) {
-                              if (context.mounted) {
-                                FocusScope.of(context).requestFocus(focusNode);
-                              }
-                            });
-                            isKeyboardShown = true;
-                          }
-                          return EnvoyDialog(
-                            title: S().manage_account_rename_heading,
-                            content: textEntry,
-                            actions: [
-                              EnvoyButton(
-                                S().component_save,
-                                onTap: () async {
-                                  navigator.pop();
-                                  Device? device = Devices().getDeviceBySerial(
-                                      widget.account.deviceSerial ?? "");
-                                  final handler = account?.handler;
-                                  if (handler == null) {
-                                    return;
-                                  }
-                                  await handler.renameAccount(
-                                      name: textEntry.enteredText);
 
-                                  if (device != null &&
-                                      device.type == DeviceType.passportPrime &&
-                                      account?.id != null) {
-                                    BluetoothManager().sendAccountUpdate(
-                                        api.AccountUpdate(
-                                            accountId: account!.id,
-                                            update: (await handler
-                                                .toRemoteUpdate())));
-                                  }
-                                  navigator.pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-                const Divider(height: 0),
-                GestureDetector(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium1, vertical: 12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          S().exploreAdresses_activityOptions_exploreAddresses,
-                          style: EnvoyTypography.body
-                              .copyWith(color: EnvoyColors.textPrimary),
-                        ),
-                        EnvoyIcon(
-                          EnvoyIcons.list,
-                          color: EnvoyColors.textPrimary,
-                        ),
-                      ],
-                    ),
-                  ),
-                  onTap: () {
-                    navigator.pop();
-                    // TODO
-                  },
-                ),
-                const Divider(height: 0),
-                GestureDetector(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium1, vertical: 12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          S().receive_qr_signMessage,
-                          style: EnvoyTypography.body
-                              .copyWith(color: EnvoyColors.textPrimary),
-                        ),
-                        EnvoyIcon(
-                          EnvoyIcons.envelope,
-                          color: EnvoyColors.textPrimary,
-                        ),
-                      ],
-                    ),
-                  ),
-                  onTap: () {
-                    navigator.pop();
-
-                    // TODO
-                  },
-                ),
-                const Divider(height: 0),
-                GestureDetector(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium1, vertical: 12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          S().receive_qr_rescanAccount,
-                          style: EnvoyTypography.body
-                              .copyWith(color: EnvoyColors.textPrimary),
-                        ),
-                        EnvoyIcon(
-                          EnvoyIcons.refresh,
-                          size: EnvoyIconSize.normal,
-                          color: EnvoyColors.textPrimary,
-                        ),
-                      ],
-                    ),
-                  ),
-                  onTap: () {
-                    navigator.pop();
-
-                    // TODO
-                  },
-                ),
-                const Divider(height: 0),
-                GestureDetector(
-                  child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium1, vertical: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            S().exploreAdresses_activityOptions_deleteAccount,
-                            style: EnvoyTypography.body
-                                .copyWith(color: EnvoyColors.accentSecondary),
-                          ),
-                          EnvoyIcon(
-                            EnvoyIcons.close,
-                            color: EnvoyColors.accentSecondary,
-                          ),
-                        ],
-                      )),
-                  onTap: () {
-                    navigator.pop();
-                    ref.read(homePageOptionsVisibilityProvider.notifier).state =
-                        false;
-                    if (!widget.account.isHot) {
                       showEnvoyDialog(
+                        context: context,
+                        dialog: Builder(
+                          builder: (context) {
+                            if (!isKeyboardShown) {
+                              Future.delayed(const Duration(milliseconds: 200))
+                                  .then((_) {
+                                if (context.mounted) {
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
+                                }
+                              });
+                              isKeyboardShown = true;
+                            }
+                            return EnvoyDialog(
+                              title: S().manage_account_rename_heading,
+                              content: textEntry,
+                              actions: [
+                                EnvoyButton(
+                                  S().component_save,
+                                  onTap: () async {
+                                    navigator.pop();
+                                    Device? device = Devices()
+                                        .getDeviceBySerial(
+                                            widget.account.deviceSerial ?? "");
+                                    final handler = account?.handler;
+                                    if (handler == null) return;
+
+                                    await handler.renameAccount(
+                                        name: textEntry.enteredText);
+
+                                    if (device != null &&
+                                        device.type ==
+                                            DeviceType.passportPrime &&
+                                        account?.id != null) {
+                                      BluetoothManager().sendAccountUpdate(
+                                        api.AccountUpdate(
+                                          accountId: account!.id,
+                                          update:
+                                              await handler.toRemoteUpdate(),
+                                        ),
+                                      );
+                                    }
+                                    navigator.pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  _MenuItem(
+                    label: S().exploreAdresses_activityOptions_exploreAddresses,
+                    icon: EnvoyIcons.list,
+                    onTap: () {
+                      navigator.pop();
+                      // TODO
+                    },
+                  ),
+                  _MenuItem(
+                    label: S().receive_qr_signMessage,
+                    icon: EnvoyIcons.envelope,
+                    onTap: () {
+                      navigator.pop();
+                      // TODO
+                    },
+                  ),
+                  _MenuItem(
+                    label: S().receive_qr_rescanAccount,
+                    icon: EnvoyIcons.refresh,
+                    onTap: () {
+                      navigator.pop();
+                      // TODO
+                    },
+                  ),
+                  _MenuItem(
+                    label: S().exploreAdresses_activityOptions_deleteAccount,
+                    icon: EnvoyIcons.close,
+                    color: EnvoyColors.accentSecondary,
+                    useDivider: false,
+                    onTap: () {
+                      navigator.pop();
+                      ref
+                          .read(homePageOptionsVisibilityProvider.notifier)
+                          .state = false;
+
+                      if (!widget.account.isHot) {
+                        showEnvoyDialog(
                           context: context,
                           dialog: EnvoyPopUp(
                             icon: EnvoyIcons.alert,
@@ -1040,17 +947,13 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                                   style: EnvoyTypography.info,
                                   textAlign: TextAlign.center,
                                 ),
-                                const SizedBox(
-                                  height: EnvoySpacing.medium1,
-                                ),
+                                const SizedBox(height: EnvoySpacing.medium1),
                                 Text(
                                   S().manage_account_remove_subheading,
                                   style: EnvoyTypography.info,
                                   textAlign: TextAlign.center,
                                 ),
-                                const SizedBox(
-                                  height: EnvoySpacing.medium1,
-                                ),
+                                const SizedBox(height: EnvoySpacing.medium1),
                               ],
                             ),
                             primaryButtonLabel: S().component_delete,
@@ -1062,21 +965,68 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                               await NgAccountManager()
                                   .deleteAccount(widget.account);
                             },
-                          ));
-                    } else {
-                      ref.read(homePageBackgroundProvider.notifier).state =
-                          HomePageBackgroundState.backups;
-                      GoRouter.of(context).pop();
-                    }
-                  },
-                ),
-                const SizedBox(height: EnvoySpacing.xs),
-              ],
-            ),
-          ),
+                          ),
+                        );
+                      } else {
+                        ref.read(homePageBackgroundProvider.notifier).state =
+                            HomePageBackgroundState.backups;
+                        navigator.pop();
+                      }
+                    },
+                  ),
+                  const SizedBox(height: EnvoySpacing.xs),
+                ],
+              )),
         ),
       ),
     ]);
+  }
+}
+
+class _MenuItem extends StatelessWidget {
+  final String label;
+  final EnvoyIcons icon;
+  final Color color;
+  final VoidCallback onTap;
+  final bool useDivider;
+
+  const _MenuItem(
+      {required this.label,
+      required this.icon,
+      required this.onTap,
+      this.color = EnvoyColors.textPrimary,
+      this.useDivider = true});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      type: MaterialType.transparency,
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.medium1,
+                vertical: 12,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    label,
+                    style: EnvoyTypography.body.copyWith(color: color),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  EnvoyIcon(icon, color: color),
+                ],
+              ),
+            ),
+          ),
+          useDivider ? const Divider(height: 0) : const SizedBox()
+        ],
+      ),
+    );
   }
 }
 
