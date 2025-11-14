@@ -14,6 +14,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/envoy_bar.dart';
+import 'package:envoy/ui/components/envoy_loader.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
@@ -167,61 +168,99 @@ class _AccountCardState extends ConsumerState<AccountCard>
       removeRight: true,
       child: Scaffold(
         body: PopScope(
-          canPop: !isMenuOpen,
-          onPopInvokedWithResult: (bool didPop, _) async {
-            if (!didPop) {
-              HomePageState.of(context)?.toggleOptions();
-            }
-          },
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 20,
-                  bottom: 0,
-                  left: 20,
-                  right: 20,
-                ),
-                child: AccountListTile(account, onTap: () {
-                  Navigator.pop(context);
-                  ref.read(homePageAccountsProvider.notifier).state =
-                      HomePageAccountsState(
-                          HomePageAccountsNavigationState.list);
-                }),
-              ),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                child: (transactions.isNotEmpty || txFiltersEnabled)
-                    ? Container(
+            canPop: !isMenuOpen,
+            onPopInvokedWithResult: (bool didPop, _) async {
+              if (!didPop) {
+                HomePageState.of(context)?.toggleOptions();
+              }
+            },
+            child: CustomPullToRefresh(
+              onRefresh: () async {
+                // TODO: implement refresh here, ref's and so on!!!
+                await Future.delayed(const Duration(seconds: 2));
+              },
+              pullIndicator: (progress) {
+                return Column(
+                  key: ValueKey("pull"),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    EnvoyIcon(
+                      EnvoyIcons.refresh,
+                      color: EnvoyColors.textTertiary,
+                    ),
+                    const SizedBox(height: EnvoySpacing.small),
+                    Opacity(
+                      opacity: progress,
+                      child: Text(
+                        S().rescanAccount_pullToSync_pullToSync,
+                        style: TextStyle(color: EnvoyColors.textTertiary),
+                      ),
+                    ),
+                  ],
+                );
+              },
+              // TODO: find the right animation here
+              refreshIndicator: const EnvoyLoader(key: ValueKey("refresh")),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: double.infinity,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 20,
+                        bottom: 0,
+                        left: 20,
+                        right: 20,
+                      ),
+                      child: AccountListTile(
+                        account,
+                        onTap: () {
+                          Navigator.pop(context);
+                          ref.read(homePageAccountsProvider.notifier).state =
+                              HomePageAccountsState(
+                                  HomePageAccountsNavigationState.list);
+                        },
+                      ),
+                    ),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      child: (transactions.isNotEmpty || txFiltersEnabled)
+                          ? Container(
+                              padding: const EdgeInsets.only(
+                                top: EnvoySpacing.medium2,
+                                bottom: EnvoySpacing.small,
+                              ),
+                              child: const FilterOptions(),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                    Expanded(
+                      child: Padding(
                         padding: const EdgeInsets.only(
-                            top: EnvoySpacing.medium2,
-                            bottom: EnvoySpacing.small),
-                        child: const FilterOptions(),
-                      )
-                    : const SizedBox.shrink(),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-
-                      ///proper padding to align with top sections, based on UI design
-                      left: 20,
-                      right: 20,
-                      top: EnvoySpacing.small),
-                  child: account.dateSynced == null
-                      ? ListView.builder(
-                          padding: EdgeInsets.zero,
-                          itemCount: 4,
-                          itemBuilder: (BuildContext context, int index) {
-                            return const GhostListTile();
-                          },
-                        )
-                      : _getMainWidget(context, transactions, txFiltersEnabled),
+                          ///proper padding to align with top sections, based on UI design
+                          left: 20,
+                          right: 20,
+                          top: EnvoySpacing.small,
+                        ),
+                        child: account.dateSynced == null
+                            ? ListView.builder(
+                                padding: EdgeInsets.zero,
+                                itemCount: 4,
+                                itemBuilder: (_, __) => const GhostListTile(),
+                              )
+                            : _getMainWidget(
+                                context,
+                                // TODO: fix transactions can be seen under EnvoyBar while scrolling
+                                transactions,
+                                txFiltersEnabled,
+                              ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
+            )),
         bottomNavigationBar: Consumer(
             builder: (context, ref, child) {
               bool hide = ref.watch(showSpendRequirementOverlayProvider);
@@ -525,6 +564,7 @@ class TransactionListTile extends ConsumerWidget {
       currency = (transaction as BtcPayTransaction).currency;
     }
     return BlurContainerTransform(
+      // TODO: fix blur moving while refresh
       useRootNavigator: true,
       closedBuilder: (context, action) {
         return GestureDetector(
@@ -1018,6 +1058,7 @@ class _MenuItem extends StatelessWidget {
                     style: EnvoyTypography.body.copyWith(color: color),
                     overflow: TextOverflow.ellipsis,
                   ),
+                  const SizedBox(width: EnvoySpacing.xs),
                   EnvoyIcon(icon, color: color),
                 ],
               ),
@@ -1026,6 +1067,138 @@ class _MenuItem extends StatelessWidget {
           useDivider ? const Divider(height: 0) : const SizedBox()
         ],
       ),
+    );
+  }
+}
+
+class CustomPullToRefresh extends StatefulWidget {
+  final Widget child;
+  final Future<void> Function() onRefresh;
+
+  /// shown during pull (receives progress 0-1)
+  final Widget Function(double progress) pullIndicator;
+
+  /// shown when refreshing begins
+  final Widget refreshIndicator;
+
+  const CustomPullToRefresh({
+    super.key,
+    required this.child,
+    required this.onRefresh,
+    required this.pullIndicator,
+    required this.refreshIndicator,
+  });
+
+  @override
+  State<CustomPullToRefresh> createState() => _CustomPullToRefreshState();
+}
+
+class _CustomPullToRefreshState extends State<CustomPullToRefresh>
+    with TickerProviderStateMixin {
+  double _dragOffset = 0;
+  bool _refreshing = false;
+
+  static const double triggerDistance = 100;
+  static const double maxIndicatorPull = 80;
+
+  late AnimationController _springController;
+  late Animation<double> _springAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _springController = AnimationController(vsync: this);
+    _springController.addListener(() {
+      setState(() {
+        _dragOffset = _springAnimation.value;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _springController.dispose();
+    super.dispose();
+  }
+
+  double get _progress => (_dragOffset / triggerDistance).clamp(0, 1);
+
+  void _animateBack({double to = 0}) {
+    _springAnimation = Tween<double>(
+      begin: _dragOffset,
+      end: to,
+    ).animate(
+      CurvedAnimation(
+        parent: _springController,
+        curve: Curves.easeOutBack,
+      ),
+    );
+
+    _springController.duration = const Duration(milliseconds: 350);
+    _springController.forward(from: 0);
+  }
+
+  Future<void> _triggerRefresh() async {
+    setState(() => _refreshing = true);
+
+    _animateBack(to: maxIndicatorPull);
+
+    await widget.onRefresh();
+
+    setState(() => _refreshing = false);
+    _animateBack(to: 0);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        // INDICATOR
+        Positioned(
+          top: -maxIndicatorPull + _dragOffset.clamp(0, maxIndicatorPull),
+          left: 0,
+          right: 0,
+          height: 95,
+          child: Center(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 150),
+              child: _refreshing
+                  ? widget.refreshIndicator
+                  : widget.pullIndicator(_progress),
+            ),
+          ),
+        ),
+
+        // CONTENT
+        GestureDetector(
+          onVerticalDragStart: (_) {
+            if (_refreshing) return;
+            _springController.stop();
+          },
+          onVerticalDragUpdate: (details) {
+            if (_refreshing) return;
+            if (details.delta.dy < 0) return; // only downward pull
+
+            setState(() {
+              _dragOffset += details.delta.dy / 2;
+              if (_dragOffset > triggerDistance) {
+                _dragOffset = triggerDistance;
+              }
+            });
+          },
+          onVerticalDragEnd: (_) {
+            if (_dragOffset >= triggerDistance && !_refreshing) {
+              _triggerRefresh();
+            } else {
+              _animateBack(to: 0);
+            }
+          },
+          child: Transform.translate(
+            offset: Offset(0, _dragOffset),
+            child: widget.child,
+          ),
+        ),
+      ],
     );
   }
 }
