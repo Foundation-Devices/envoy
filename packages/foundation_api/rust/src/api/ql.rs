@@ -223,6 +223,60 @@ pub async fn encode(
     chunks
 }
 
+
+pub async fn encode_to_file(
+    payload:  &[u8],
+    sender: &QuantumLinkIdentity,
+    recipient: &XIDDocument,
+    path: &str,
+    chunk_size: usize,
+    timestamp: u32,
+) -> anyhow::Result<bool> {
+    use std::fs::File;
+    use std::io::Write;
+
+    debug!("SENDER: {:?}", sender.xid_document);
+    debug!("RECEIVER: {:?}", recipient);
+
+    let mut file = File::create(path)?;
+
+    let messages: Vec<EnvoyMessage> = split_backup_into_chunks(payload, chunk_size)
+        .into_iter()
+        .map(|msg| {
+            EnvoyMessage::new(
+                msg,
+                timestamp
+            )
+        })
+        .collect();
+
+    for message in messages {
+        let envelope = QuantumLink::seal(
+            &message,
+            (sender.private_keys.as_ref().unwrap(), &sender.xid_document),
+            recipient,
+        );
+
+        let cbor = envelope.to_cbor_data();
+
+        let message_chunks: Vec<Vec<u8>> = chunk(&cbor)
+            .map(|chunk| chunk.to_vec())
+            .collect();
+
+        file.write_all(&(message_chunks.len() as u32).to_be_bytes())?;
+
+        for chunk_data in message_chunks {
+            file.write_all(&(chunk_data.len() as u32).to_be_bytes())?;
+            // Write chunk bytes
+            file.write_all(&chunk_data)?;
+        }
+    }
+
+    file.flush()?;
+    anyhow::Ok(true)
+}
+
+
 pub async fn generate_ql_identity() -> QuantumLinkIdentity {
     debug!("Generating identity");
     let identity = QuantumLinkIdentity::generate();

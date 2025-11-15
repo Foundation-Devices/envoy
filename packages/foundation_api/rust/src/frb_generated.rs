@@ -45,7 +45,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 797499272;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -985292633;
 
 // Section: executor
 
@@ -1108,6 +1108,91 @@ fn wire__crate__api__ql__encode_impl(
                             )
                             .await,
                         )?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__ql__encode_to_file_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "encode_to_file",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_payload = <Vec<u8>>::sse_decode(&mut deserializer);
+            let api_sender = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>,
+            >>::sse_decode(&mut deserializer);
+            let api_recipient = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<XIDDocument>,
+            >>::sse_decode(&mut deserializer);
+            let api_path = <String>::sse_decode(&mut deserializer);
+            let api_chunk_size = <usize>::sse_decode(&mut deserializer);
+            let api_timestamp = <u32>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let mut api_sender_guard = None;
+                        let mut api_recipient_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_sender,
+                                        0,
+                                        false,
+                                    ),
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_recipient,
+                                        1,
+                                        false,
+                                    ),
+                                ],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => {
+                                    api_sender_guard =
+                                        Some(api_sender.lockable_decode_async_ref().await)
+                                }
+                                1 => {
+                                    api_recipient_guard =
+                                        Some(api_recipient.lockable_decode_async_ref().await)
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_sender_guard = api_sender_guard.unwrap();
+                        let api_recipient_guard = api_recipient_guard.unwrap();
+                        let output_ok = crate::api::ql::encode_to_file(
+                            &api_payload,
+                            &*api_sender_guard,
+                            &*api_recipient_guard,
+                            &api_path,
+                            api_chunk_size,
+                            api_timestamp,
+                        )
+                        .await?;
                         Ok(output_ok)
                     })()
                     .await,
@@ -3417,19 +3502,20 @@ fn pde_ffi_dispatcher_primary_impl(
         19 => wire__crate__api__ql__deserialize_ql_identity_impl(port, ptr, rust_vec_len, data_len),
         20 => wire__crate__api__ql__deserialize_xid_impl(port, ptr, rust_vec_len, data_len),
         21 => wire__crate__api__ql__encode_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire__crate__api__ql__generate_ql_identity_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire__crate__api__ql__get_arid_cache_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire__crate__api__ql__get_decoder_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire__crate__api__qr__get_qr_decoder_impl(port, ptr, rust_vec_len, data_len),
-        27 => wire__crate__api__qr__init_app_impl(port, ptr, rust_vec_len, data_len),
-        28 => wire__crate__api__ql__push_backup_chunk_impl(port, ptr, rust_vec_len, data_len),
-        29 => wire__crate__api__ql__serialize_ql_identity_impl(port, ptr, rust_vec_len, data_len),
-        30 => wire__crate__api__ql__serialize_xid_impl(port, ptr, rust_vec_len, data_len),
-        31 => wire__crate__api__ql__serialize_xid_document_impl(port, ptr, rust_vec_len, data_len),
-        32 => {
+        22 => wire__crate__api__ql__encode_to_file_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire__crate__api__ql__generate_ql_identity_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire__crate__api__ql__get_arid_cache_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire__crate__api__ql__get_decoder_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire__crate__api__qr__get_qr_decoder_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire__crate__api__qr__init_app_impl(port, ptr, rust_vec_len, data_len),
+        29 => wire__crate__api__ql__push_backup_chunk_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire__crate__api__ql__serialize_ql_identity_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire__crate__api__ql__serialize_xid_impl(port, ptr, rust_vec_len, data_len),
+        32 => wire__crate__api__ql__serialize_xid_document_impl(port, ptr, rust_vec_len, data_len),
+        33 => {
             wire__crate__api__ql__split_backup_into_chunks_impl(port, ptr, rust_vec_len, data_len)
         }
-        33 => wire__crate__api__ql__split_fw_update_into_chunks_impl(
+        34 => wire__crate__api__ql__split_fw_update_into_chunks_impl(
             port,
             ptr,
             rust_vec_len,
@@ -3517,7 +3603,7 @@ fn pde_ffi_dispatcher_sync_impl(
             rust_vec_len,
             data_len,
         ),
-        26 => wire__crate__api__qr__greet_impl(ptr, rust_vec_len, data_len),
+        27 => wire__crate__api__qr__greet_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
