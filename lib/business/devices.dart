@@ -113,7 +113,7 @@ class Devices extends ChangeNotifier {
         }
         //OS will try to reconnect to bonded device automatically,
         //but we call connect to ensure our app connects to it
-        await BluetoothManager().connect(id: device.bleId);
+        await BluetoothManager().reconnect(id: device.bleId);
       }
     }
   }

@@ -92,6 +92,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
   void _listenForPassportMessages() {
     onboardingCompleted = GoRouter.of(context).state.extra as bool? ?? false;
+
     _passportMessagesSubscription = BluetoothManager()
         .passportMessageStream
         .listen((PassportMessage message) async {

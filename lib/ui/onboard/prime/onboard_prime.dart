@@ -123,7 +123,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
           await BluetoothManager().getPermissions();
         }
         final connectionStatus =
-            await BluetoothManager().connect(id: bleId!, colorWay: colorWay);
+            await BluetoothManager().setupBle(id: bleId!, colorWay: colorWay);
 
         if (!connectionStatus) {
           throw Exception("Failed to connect to Prime device.");

@@ -4,11 +4,14 @@
 // ignore_for_file: constant_identifier_names///
 
 import 'package:backup/backup.dart' as backup_lib;
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:tor/tor.dart';
 
@@ -102,6 +105,7 @@ class BleMagicBackupHandler extends PassportMessageHandler {
 
   Future<void> _restoreMagicBackup(api.RestoreMagicBackupRequest event) async {
     try {
+      kPrint("RestoreMagicBackupRequest received...");
       final fingerPrint = event.seedFingerprint;
       final payloadRes = await backup_lib.Backup.getPrimeBackup(
         serverUrl: Settings().envoyServerAddress,
@@ -109,16 +113,17 @@ class BleMagicBackupHandler extends PassportMessageHandler {
         hash: fingerPrint,
       );
       if (payloadRes.isNotEmpty) {
-        final chunks = await api.splitBackupIntoChunks(
-            backup: payloadRes, chunkSize: BigInt.from(10000));
-        for (final chunk in chunks) {
-          kPrint("Sending restore magic backup chunk ");
-          await writer.writeMessage(chunk);
-        }
+        final tempFile = await BluetoothChannel.getBleCacheFile(
+            payloadRes.hashCode.toString());
+        await BluetoothManager().encodeToFile(
+            message: payloadRes, filePath: tempFile.path, chunkSize: 10000);
+        await BluetoothChannel().transmitFromFile(tempFile.path);
+        kPrint("Restore magic backup file sent!");
       }
     } catch (e, stack) {
-      writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupResult(
-          api.RestoreMagicBackupResult.error(e.toString())));
+      debugPrintStack(stackTrace: stack);
+      writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
+          api.RestoreMagicBackupEvent.error("$e")));
       EnvoyReport().log("PrimeMagicBackup", "Error restoring magic backup: $e",
           stackTrace: stack);
     }

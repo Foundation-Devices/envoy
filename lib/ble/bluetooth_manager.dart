@@ -282,6 +282,32 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     );
   }
 
+  Future<bool> encodeToFile(
+      {required Uint8List message,
+      required String filePath,
+      required int chunkSize}) async {
+    DateTime dateTime = DateTime.now();
+    try {
+      dateTime = await NTP.now(timeout: const Duration(seconds: 1));
+    } catch (e) {
+      kPrint("NTP error: $e");
+    }
+    final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
+    kPrint("Encoding Message timestamp: $timestampSeconds");
+    //
+    // List<api.EnvoyMessage> envoyMessages = messages.map((message) =>
+    //     api.EnvoyMessage(message: message, timestamp: timestampSeconds)).toList();
+    // kPrint("Encoded Message $timestampSeconds");
+    kPrint("Encoding message: $message to file: $filePath");
+    return await api.encodeToFile(
+        payload: message,
+        sender: _qlIdentity!,
+        recipient: _recipientXid!,
+        path: filePath,
+        chunkSize: BigInt.from(chunkSize),
+        timestamp: timestampSeconds);
+  }
+
   Future<bool> pair(api.XidDocument recipient) async {
     _recipientXid = recipient;
     kPrint("pair: $hashCode");
@@ -319,13 +345,8 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   @override
   Future<bool> writeMessage(api.QuantumLinkMessage message) async {
     kPrint("Sending message: $message");
-    final writeStream = await _writeWithProgress(message);
-    final writeFinished = await writeStream
-        .firstWhere((progress) => progress >= 1, orElse: () => 0.0)
-        .timeout(const Duration(seconds: 30), onTimeout: () {
-      throw Exception("Timeout waiting for message write to complete");
-    });
-    return writeFinished == 1.0;
+    await _writeWithProgress(message);
+    return true;
   }
 
   Future<void> addDevice(String serialNumber, String firmwareVersion,
@@ -369,14 +390,13 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     }
   }
 
-  Future<bool> connect({required String id, int colorWay = 1}) async {
+  Future<bool> setupBle({required String id, int colorWay = 1}) async {
     if (_qlIdentity == null) {
       await _generateQlIdentity();
     }
     // final pid = await _bluetoothChannel.getConnectedPeripheralID();
-    final connectionEvent = await BluetoothChannel().connect(id, colorWay);
+    final connectionEvent = await BluetoothChannel().setupBle(id, colorWay);
     kPrint("Connection event: $connectionEvent");
-    await Future.delayed(const Duration(milliseconds: 900));
     bleId = id;
     return true;
   }
@@ -597,48 +617,41 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   Future<Stream<double>> _writeWithProgress(
       api.QuantumLinkMessage message) async {
     _sendingData = true;
-    _writeProgressSubscription?.cancel();
     final data = await encodeMessage(message: message);
     kPrint("Encoded message! Size: ${data.length}");
-
-    var writeStream = Stream.value(0.0);
     if (Platform.isIOS || Platform.isAndroid) {
-      writeStream = _bluetoothChannel.writeProgressStream;
-      final result = await _bluetoothChannel.writeAll(data);
-      if (!result) {
-        kPrint("Failed to write data to Bluetooth channel");
-      }
+      await _bluetoothChannel.writeAll(data);
     } else {
       throw UnimplementedError(
           "Bluetooth write not implemented for this platform");
     }
-    _writeProgressSubscription = writeStream.listen(
-      (progress) {
-        if (_isUpdatingFirmware && _totalFirmwareChunks > 0) {
-          final overallProgress =
-              (_sentFirmwareChunks + progress) / _totalFirmwareChunks;
-          _writeProgressController.add(overallProgress.clamp(0.0, 1.0));
-        } else {
-          _writeProgressController.add(progress);
-        }
-      },
-      onDone: () {
-        kPrint("Progress stream done!");
-        if (_isUpdatingFirmware) {
-          _sentFirmwareChunks++;
-        }
-        _sendingData = false;
-      },
-      onError: (e) {
-        kPrint("Progress stream errored out!");
-        if (_isUpdatingFirmware) {
-          endFirmwareUpdate();
-        }
-        _sendingData = false;
-        _writeProgressController.addError(e);
-      },
-    );
-    return writeStream;
+    // _writeProgressSubscription = writeStream.listen(
+    //   (progress) {
+    //     if (_isUpdatingFirmware && _totalFirmwareChunks > 0) {
+    //       final overallProgress =
+    //           (_sentFirmwareChunks + progress) / _totalFirmwareChunks;
+    //       _writeProgressController.add(overallProgress.clamp(0.0, 1.0));
+    //     } else {
+    //       _writeProgressController.add(progress);
+    //     }
+    //   },
+    //   onDone: () {
+    //     kPrint("Progress stream done!");
+    //     if (_isUpdatingFirmware) {
+    //       _sentFirmwareChunks++;
+    //     }
+    //     _sendingData = false;
+    //   },
+    //   onError: (e) {
+    //     kPrint("Progress stream errored out!");
+    //     if (_isUpdatingFirmware) {
+    //       endFirmwareUpdate();
+    //     }
+    //     _sendingData = false;
+    //     _writeProgressController.addError(e);
+    //   },
+    // );
+    return Stream.value(1.0);
   }
 
   void dispose() {
@@ -657,6 +670,8 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       api.QuantumLinkMessage message) async {
     return _writeWithProgress(message);
   }
+
+  Future<void> reconnect({required String id}) async {}
 }
 
 class SendProgressNotifier extends StateNotifier<double> {

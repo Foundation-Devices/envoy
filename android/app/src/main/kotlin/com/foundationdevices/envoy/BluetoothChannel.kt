@@ -35,7 +35,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileInputStream
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.util.UUID
 
 
@@ -113,7 +117,12 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
 
         // Set up binary write channel handler
         bleWriteChannel.setMessageHandler { message, reply ->
-            handleBinaryWrite(message, reply)
+            scope.launch(Dispatchers.IO) {
+                val response = handleBinaryWrite(message)
+                withContext(Dispatchers.Main) {
+                    reply.reply(response)
+                }
+            }
         }
 
         bluetoothLeScanner = bluetoothAdapter?.bluetoothLeScanner
@@ -220,11 +229,91 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         when (call.method) {
             "pair" -> pairWithDevice(call, result)
             "stopScan" -> stopDeviceScan(result)
+            "transmitFromFile" -> transmitFromFile(call, result)
             "deviceName" -> getDeviceName(result)
             "disconnect" -> disconnectDevice(result)
             "getConnectedPeripheralId" -> result.success(getConnectedPeripheralId())
             "isConnected" -> result.success(isConnected())
             else -> result.notImplemented()
+        }
+    }
+
+    private fun transmitFromFile(call: MethodCall, result: MethodChannel.Result) {
+        val path = call.argument<String?>("path")
+
+        if (path.isNullOrEmpty()) {
+            result.error("INVALID_PATH", "File path is null or empty", null)
+            return
+        }
+
+        val file = File(path)
+        if (!file.exists()) {
+            result.error("FILE_NOT_FOUND", "File does not exist: $path", null)
+            return
+        }
+
+        scope.launch(Dispatchers.IO) {
+            try {
+                val fileSize = file.length()
+                var bytesProcessed = 0L
+
+                FileInputStream(file).use { fis ->
+                    val intBuffer = ByteArray(4)
+                    val intByteBuffer = ByteBuffer.wrap(intBuffer).order(ByteOrder.BIG_ENDIAN)
+
+                    while (true) {
+                        val lengthBytesRead = fis.read(intBuffer)
+                        if (lengthBytesRead < 4) break
+
+                        bytesProcessed += lengthBytesRead
+                        intByteBuffer.rewind()
+                        val innerLength = intByteBuffer.int
+
+                        Log.d(TAG, "Consuming inner list of length $innerLength")
+
+                        repeat(innerLength) {
+                            val itemLengthBytesRead = fis.read(intBuffer)
+                            if (itemLengthBytesRead < 4) return@use
+
+                            bytesProcessed += itemLengthBytesRead
+                            intByteBuffer.rewind()
+                            val itemLength = intByteBuffer.int
+
+                            val itemBytes = ByteArray(itemLength)
+                            val bytesRead = fis.read(itemBytes)
+                            if (bytesRead < itemLength) return@use
+
+                            bytesProcessed += bytesRead
+
+                            // Send progress update
+                            val progress = bytesProcessed.toFloat() / fileSize.toFloat()
+                            sendWriteProgress(progress, path)
+
+                            val buffer = ByteBuffer.wrap(itemBytes)
+                            handleBinaryWrite(message = buffer)
+                            delay(10)
+                        }
+                    }
+                }
+
+                // Send final progress update
+                sendWriteProgress(1.0f, path)
+
+                file.delete()
+                withContext(Dispatchers.Main) {
+                    result.success(
+                        mapOf(
+                            "success" to true,
+                            "message" to "Large data processed successfully"
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error reading large data file: ${e.message}", e)
+                withContext(Dispatchers.Main) {
+                    result.error("FILE_READ_ERROR", "Failed to read file: ${e.message}", null)
+                }
+            }
         }
     }
 
@@ -235,14 +324,13 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
     @SuppressLint("MissingPermission")
     private fun handleBinaryWrite(
         message: ByteBuffer?,
-        reply: BasicMessageChannel.Reply<ByteBuffer>
-    ) {
+    ): ByteBuffer {
         val failureBuffer = createDirectByteBuffer(0)
 
         if (message == null) {
             Log.e(TAG, "Message is null, sending FAILURE (0)")
-            reply.reply(failureBuffer)
-            return
+
+            return failureBuffer
         }
 
         val data = ByteArray(message.remaining())
@@ -250,30 +338,26 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
 
         if (!checkBluetoothPermissions()) {
             Log.e(TAG, "Missing Bluetooth permissions for binary write")
-            reply.reply(failureBuffer)
-            return
+            return failureBuffer
         }
 
         val gatt = bluetoothGatt
         if (gatt == null) {
             Log.e(TAG, "No active Bluetooth connection for binary write")
-            reply.reply(createDirectByteBuffer(0))
-            return
+            return failureBuffer
         }
 
         val writeChar = writeCharacteristic
         if (writeChar == null) {
             Log.e(TAG, "No write characteristic available for binary write")
-            reply.reply(createDirectByteBuffer(0))
-            return
+            return failureBuffer
         }
         if (data.size < 8) {
             Log.e(
                 TAG,
                 "ERROR: Binary data size (${data.size} bytes) is less than required minimum (8 bytes)"
             )
-            reply.reply(createDirectByteBuffer(0))
-            return
+            return failureBuffer
         }
         val writeType =
             if (writeChar.properties and BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE != 0) {
@@ -303,8 +387,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             writeRetryCount = 0
 
             // Send progress update for single packet (100%)
-            sendWriteProgress(1.0f)
-
 
             val writeSuccess = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 // API 33+
@@ -324,17 +406,12 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             }
 
             if (!writeSuccess) {
-                Log.e(TAG, "Failed to write characteristic")
-            }
-
-            if (!writeSuccess) {
                 Log.e(TAG, " Failed to initiate binary write operation")
-                reply.reply(createDirectByteBuffer(0))
-                return
+                return failureBuffer
             }
 
             val successBuffer = createDirectByteBuffer(1)
-            reply.reply(successBuffer)
+            return successBuffer
         } else {
             val chunks = data.chunked(payloadPerPacket)
             Log.d(
@@ -344,11 +421,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                 } bytes"
             )
             for ((index, chunk) in chunks.withIndex()) {
-
-                // Send progress update
-                val progress = (index + 1).toFloat() / chunks.size.toFloat()
-                sendWriteProgress(progress)
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     gatt.writeCharacteristic(
                         writeChar,
@@ -369,7 +441,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             }
 
             val successBuffer = createDirectByteBuffer(1)
-            reply.reply(successBuffer)
+            return successBuffer
         }
     }
 
@@ -676,12 +748,17 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         }
     }
 
-    private fun sendWriteProgress(progress: Float) {
+    private fun sendWriteProgress(progress: Float, id: String) {
         scope.launch {
             if (writeProgressEventSink == null) {
                 return@launch
             }
-            writeProgressEventSink?.success(progress)
+            writeProgressEventSink?.success(
+                mapOf<String, Any>(
+                    "progress" to progress,
+                    "id" to id
+                )
+            )
         }
     }
 
@@ -774,16 +851,20 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                     }
 
                     val requestMtu = bluetoothGatt?.requestMtu(247)
+                    if (requestMtu == true) {
+                        Log.i(TAG, "onConnectionStateChange: MTU request sent 247")
+                    }
                     bluetoothGatt?.apply {
                         //TODO: use method channel to enable high priority connection from flutter side
                         //use only for large data transfers
-                        requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH)
+                        requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_BALANCED)
 
                         setPreferredPhy(
-                            BluetoothDevice.PHY_LE_1M_MASK or BluetoothDevice.PHY_LE_2M_MASK,  // txPhy
-                            BluetoothDevice.PHY_LE_1M_MASK or BluetoothDevice.PHY_LE_2M_MASK,  // rxPhy
-                            BluetoothDevice.PHY_OPTION_NO_PREFERRED
+                            BluetoothDevice.PHY_LE_2M,  // txPhy
+                            BluetoothDevice.PHY_LE_2M,  // rxPhy
+                            BluetoothDevice.PHY_LE_2M
                         )
+                        Log.i(TAG, "onConnectionStateChange: setPreferredPhy 2M")
 
                     }
                     Log.i(TAG, "onConnectionStateChange: requestMtu $requestMtu")
