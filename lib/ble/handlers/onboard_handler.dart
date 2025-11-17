@@ -5,6 +5,7 @@
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
@@ -31,11 +32,13 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
       final deviceColor = response.passportColor == PassportColor.dark
           ? DeviceColor.dark
           : DeviceColor.light;
+      final peripheralId = BluetoothChannel().lastDeviceStatus.peripheralId;
       await BluetoothManager().addDevice(
         response.passportSerial.field0,
         response.passportFirmwareVersion.field0,
         BluetoothManager().bleId,
         deviceColor,
+        peripheralId: peripheralId ?? "",
         onboardingComplete: response.onboardingComplete,
       );
     } catch (e, stack) {

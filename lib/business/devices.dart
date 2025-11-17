@@ -38,6 +38,8 @@ class Device {
   final String serial;
   @JsonKey(defaultValue: "")
   final String bleId;
+  @JsonKey(defaultValue: "")
+  final String peripheralId;
   @JsonKey(defaultValue: false)
   final bool onboardingComplete;
   @Uint8ListConverter()
@@ -59,6 +61,7 @@ class Device {
     this.color, {
     this.deviceColor = DeviceColor.light,
     this.bleId = "",
+    this.peripheralId = "",
     this.xid,
     this.pairedAccountIds,
     this.primeBackupEnabled,
@@ -111,9 +114,10 @@ class Devices extends ChangeNotifier {
               "Bluetooth permissions denied, cannot connect to device ${device.name}");
           await BluetoothManager().getPermissions();
         }
+
         //OS will try to reconnect to bonded device automatically,
         //but we call connect to ensure our app connects to it
-        await BluetoothManager().connect(id: device.bleId);
+        await BluetoothManager().reconnect(device);
       }
     }
   }

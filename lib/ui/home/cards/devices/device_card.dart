@@ -2,8 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
+
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/channels/accessory.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -18,6 +22,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -77,8 +82,6 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
   @override
   Widget build(BuildContext context) {
     final Locale activeLocale = Localizations.localeOf(context);
-    final isConnected =
-        ref.watch(isPrimeConnectedProvider(widget.device.bleId));
 
     return PopScope(
       canPop: !ref.watch(homePageOptionsVisibilityProvider),
@@ -117,15 +120,91 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
               child: Text(
                   "${S().manage_device_details_devicePaired} ${timeago.format(widget.device.datePaired, locale: activeLocale.languageCode)}"),
             ),
-            if (widget.device.type == DeviceType.passportPrime)
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0, left: 35.0),
-                child: Text(
-                    isConnected ? "Device connected" : "Device disconnected"),
-              ),
+            PrimeOptionsWidget(
+              device: widget.device,
+            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class PrimeOptionsWidget extends ConsumerStatefulWidget {
+  final Device device;
+
+  const PrimeOptionsWidget({super.key, required this.device});
+
+  @override
+  ConsumerState createState() => _PrimeOptionsWidgetState();
+}
+
+class _PrimeOptionsWidgetState extends ConsumerState<PrimeOptionsWidget> {
+  //IOS
+  AccessoryInfo? accessoryInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      loadAccessoryInfo();
+    });
+  }
+
+  Future loadAccessoryInfo() async {
+    if (Platform.isIOS) {
+      try {
+        final accessories = await BluetoothChannel().getAccessories();
+
+        final accessory = accessories.firstWhereOrNull((accessory) =>
+            accessory.peripheralId == widget.device.peripheralId);
+        setState(() {
+          accessoryInfo = accessory;
+        });
+      } catch (e) {
+        // Handle error if needed
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isConnected =
+        ref.watch(isPrimeConnectedProvider(widget.device.bleId));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 10.0, left: 35.0),
+          child: Text(
+            isConnected ? "Device connected" : "Device disconnected",
+            textAlign: TextAlign.start,
+          ),
+        ),
+        if (Platform.isIOS)
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0, left: 35.0),
+            child: Text(accessoryInfo == null
+                ? "Accessory removed. please repair with prime"
+                : accessoryInfo!.peripheralName),
+          ),
+        if (Platform.isIOS && accessoryInfo == null)
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10,
+              horizontal: 35,
+            ),
+            child: EnvoyButton(
+              "Re-Pair With Prime",
+              type: EnvoyButtonTypes.primaryModal,
+              onTap: () async {
+                await BluetoothChannel().setupBle(widget.device.bleId,
+                    widget.device.color == Colors.black ? 0 : 1);
+                await loadAccessoryInfo();
+              },
+            ),
+          ),
+      ],
     );
   }
 }
