@@ -206,8 +206,7 @@ class BluetoothChannel {
         debugPrint(
             "BLE Write Progress: id=${progress.id}, progress=${progress.progress}");
       });
-      await bleMethodChannel
-          .invokeMethod("transmitFromFile", {"path": path});
+      await bleMethodChannel.invokeMethod("transmitFromFile", {"path": path});
       return true;
     } catch (e, stack) {
       debugPrintStack(label: "Error sending large data: $e", stackTrace: stack);
