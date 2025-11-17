@@ -219,13 +219,11 @@ pub async fn encode(
     for chunk in chunk(&cbor) {
         chunks.push(chunk.to_vec());
     }
-
     chunks
 }
 
-
 pub async fn encode_to_file(
-    payload:  &[u8],
+    payload: &[u8],
     sender: &QuantumLinkIdentity,
     recipient: &XIDDocument,
     path: &str,
@@ -242,12 +240,7 @@ pub async fn encode_to_file(
 
     let messages: Vec<EnvoyMessage> = split_backup_into_chunks(payload, chunk_size)
         .into_iter()
-        .map(|msg| {
-            EnvoyMessage::new(
-                msg,
-                timestamp
-            )
-        })
+        .map(|msg| EnvoyMessage::new(msg, timestamp))
         .collect();
 
     for message in messages {
@@ -259,9 +252,7 @@ pub async fn encode_to_file(
 
         let cbor = envelope.to_cbor_data();
 
-        let message_chunks: Vec<Vec<u8>> = chunk(&cbor)
-            .map(|chunk| chunk.to_vec())
-            .collect();
+        let message_chunks: Vec<Vec<u8>> = chunk(&cbor).map(|chunk| chunk.to_vec()).collect();
 
         file.write_all(&(message_chunks.len() as u32).to_be_bytes())?;
 
@@ -275,7 +266,6 @@ pub async fn encode_to_file(
     file.flush()?;
     anyhow::Ok(true)
 }
-
 
 pub async fn generate_ql_identity() -> QuantumLinkIdentity {
     debug!("Generating identity");

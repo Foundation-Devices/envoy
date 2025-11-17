@@ -555,7 +555,7 @@ class _TransactionReviewScreenState
         if (!isConnected &&
             device != null &&
             device.type == DeviceType.passportPrime) {
-          BluetoothManager().reconnect(id: device.bleId);
+          BluetoothManager().reconnect(device);
         }
       },
     );
@@ -881,7 +881,7 @@ class _TransactionReviewScreenState
             EnvoyStepState.LOADING,
           );
       // try to connect to prime
-      BluetoothManager().reconnect(id: device.bleId);
+      BluetoothManager().reconnect(device);
     }
   }
 

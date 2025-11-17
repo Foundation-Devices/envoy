@@ -5,7 +5,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:envoy/business/devices.dart';
+import 'package:envoy/channels/accessory.dart';
 import 'package:envoy/channels/ble_status.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -140,8 +143,11 @@ class BluetoothChannel {
   /// on Android this will initiate the android bonding dialog
   Future<DeviceStatus> setupBle(String deviceId, int colorWay) async {
     if (Platform.isIOS) {
-      await bleMethodChannel
+      final status = await bleMethodChannel
           .invokeMethod("showAccessorySetup", {"c": colorWay});
+      if (status is bool && !status) {
+        return DeviceStatus(connected: false);
+      }
     } else {
       //Android will wait for event after initiating pairing
       unawaited(bleMethodChannel.invokeMethod("pair", {"deviceId": deviceId}));
@@ -200,7 +206,7 @@ class BluetoothChannel {
         debugPrint(
             "BLE Write Progress: id=${progress.id}, progress=${progress.progress}");
       });
-      final result = await bleMethodChannel
+      await bleMethodChannel
           .invokeMethod("transmitFromFile", {"path": path});
       return true;
     } catch (e, stack) {
@@ -222,7 +228,30 @@ class BluetoothChannel {
     return file;
   }
 
-  Future reconnect(String bleId) async {
-    await bleMethodChannel.invokeMethod("reconnect", {"bleId": bleId});
+  Future reconnect(Device device) async {
+    final bluetoothId = Platform.isIOS ? device.peripheralId : device.bleId;
+    await bleMethodChannel.invokeMethod("reconnect", {"bleId": bluetoothId});
+  }
+
+  //IOS only
+  Future<List<AccessoryInfo>> getAccessories() async {
+    if (!Platform.isIOS) {
+      throw Exception("getAccessories is only supported on iOS");
+    }
+    try {
+      final result = await bleMethodChannel.invokeMethod('getAccessories');
+
+      if (result is List) {
+        return result
+            .map((item) =>
+                AccessoryInfo.fromMap(Map<String, dynamic>.from(item)))
+            .toList();
+      }
+
+      return [];
+    } catch (e, stack) {
+      kPrint('Error getting accessories: $e', stackTrace: stack);
+      return [];
+    }
   }
 }

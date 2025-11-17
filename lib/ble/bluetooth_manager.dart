@@ -124,21 +124,22 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 
   Stream<double> get writeProgressStream => _writeProgressController.stream;
 
-  int _totalFirmwareChunks = 0;
-  int _sentFirmwareChunks = 0;
-  bool _isUpdatingFirmware = false;
+  //TODO: firmware update progress tracking with new progress stream
+  // int _totalFirmwareChunks = 0;
+  // int _sentFirmwareChunks = 0;
+  // bool _isUpdatingFirmware = false;
 
   void startFirmwareUpdate({required int totalChunks}) {
-    _totalFirmwareChunks = totalChunks;
-    _sentFirmwareChunks = 0;
-    _isUpdatingFirmware = true;
+    // _totalFirmwareChunks = totalChunks;
+    // _sentFirmwareChunks = 0;
+    // _isUpdatingFirmware = true;
     _writeProgressController.add(0.0);
   }
 
   void endFirmwareUpdate() {
-    _isUpdatingFirmware = false;
-    _totalFirmwareChunks = 0;
-    _sentFirmwareChunks = 0;
+    // _isUpdatingFirmware = false;
+    // _totalFirmwareChunks = 0;
+    // _sentFirmwareChunks = 0;
   }
 
   String bleId = "";
@@ -351,7 +352,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 
   Future<void> addDevice(String serialNumber, String firmwareVersion,
       String bleId, DeviceColor deviceColor,
-      {bool onboardingComplete = false}) async {
+      {bool onboardingComplete = false, String peripheralId = ""}) async {
     final recipientXid =
         await api.serializeXidDocument(xidDocument: _recipientXid!);
     final device = Device("Prime", DeviceType.passportPrime, serialNumber,
@@ -359,6 +360,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
         bleId: bleId,
         deviceColor: deviceColor,
         xid: recipientXid,
+        peripheralId: peripheralId,
         onboardingComplete: onboardingComplete);
     Devices().add(device);
   }
@@ -394,11 +396,10 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     if (_qlIdentity == null) {
       await _generateQlIdentity();
     }
-    // final pid = await _bluetoothChannel.getConnectedPeripheralID();
     final connectionEvent = await BluetoothChannel().setupBle(id, colorWay);
     kPrint("Connection event: $connectionEvent");
     bleId = id;
-    return true;
+    return connectionEvent.connected;
   }
 
   Future<void> listen({required String id}) async {
@@ -671,7 +672,9 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     return _writeWithProgress(message);
   }
 
-  Future<void> reconnect({required String id}) async {}
+  Future<void> reconnect(Device device) async {
+    await BluetoothChannel().reconnect(device);
+  }
 }
 
 class SendProgressNotifier extends StateNotifier<double> {

@@ -125,8 +125,14 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         final connectionStatus =
             await BluetoothManager().setupBle(id: bleId!, colorWay: colorWay);
 
-        if (!connectionStatus) {
-          throw Exception("Failed to connect to Prime device.");
+        if (!connectionStatus && mounted) {
+          setState(() {
+            bleConnectState = BleConnectState.idle;
+          });
+          //on ios accessory setup handles connection failures
+          if (!Platform.isIOS) {
+            throw Exception("Failed to connect to Prime device.");
+          }
         }
         if (mounted && connectionStatus) {
           setState(() {

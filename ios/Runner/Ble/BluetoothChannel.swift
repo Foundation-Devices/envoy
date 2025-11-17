@@ -64,7 +64,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         CBConnectPeripheralOptionNotifyOnConnectionKey: true,
         CBConnectPeripheralOptionNotifyOnDisconnectionKey: true,
         CBConnectPeripheralOptionNotifyOnNotificationKey: true,
-        CBConnectPeripheralOptionStartDelayKey: 0,  // Minimize connection delay
+        CBConnectPeripheralOptionStartDelayKey: 0,
     ]
 
     // MARK: - Initialization
@@ -142,6 +142,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 result(self.getConnectedPeripheralId())
             case "isConnected":
                 result(self.isConnected())
+            case "reconnect":
+                reconnect( result: result)
             case "disconnect":
                 self.disconnectPeripheral()
                 result(true)
@@ -149,6 +151,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 result(UIDevice.current.name)
             case "transmitFromFile":
                 self.transmitFromFile(call: call, result: result)
+            case "getAccessories":
+                self.getAccessories(result: result)
             default:
                 result(FlutterMethodNotImplemented)
             }
@@ -175,6 +179,13 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 CBCentralManagerOptionRestoreIdentifierKey: restoreIdentifier
             ]
         )
+    }
+
+    private func reconnect(result: @escaping FlutterResult ) {
+      
+        session.accessories.forEach { accessory in
+            print("Connecting to \(accessory.bluetoothIdentifier?.uuidString ?? "Unknown")")
+        }
     }
 
     private func transmitFromFile(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -246,7 +257,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         
                         let writeResult = self.handleBinaryWrite(data: itemData)
                         
-                        Thread.sleep(forTimeInterval: 0.01) // 10 milliseconds
+                        Thread.sleep(forTimeInterval: 0.015) // 10 milliseconds
                     }
                 }
                 
@@ -288,6 +299,38 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             return peripheral.identifier.uuidString
         }
         return nil
+    }
+
+    func getAccessories(result: @escaping FlutterResult) {
+        // Get all accessories from the session
+        let accessories = session.accessories
+        
+        if accessories.isEmpty {
+            // No accessories paired
+            result([])
+            return
+        }
+        
+        // Build list of accessory info
+        var accessoryList: [[String: Any]] = []
+        
+        for accessory in accessories {
+            let peripheralId = accessory.bluetoothIdentifier?.uuidString ?? ""
+            let isConnected = accessory.bluetoothIdentifier != nil && 
+                             connectedPeripheral?.identifier == accessory.bluetoothIdentifier &&
+                             connectedPeripheral?.state == .connected
+            
+            let accessoryInfo: [String: Any] = [
+                "peripheralId": peripheralId,
+                "peripheralName": accessory.displayName,
+                "isConnected": isConnected,
+                "state": accessory.state.rawValue
+            ]
+            
+            accessoryList.append(accessoryInfo)
+        }
+        
+        result(accessoryList)
     }
 
     func showAccessorySetup(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -355,25 +398,16 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             guard let accessory = event.accessory else { return }
             saveAccessory(accessory: accessory)
         case .activated:
-
-            guard let accessory = session.accessories.first else { return }
-            saveAccessory(accessory: accessory)
-            if(setupResult != nil){
-                    setupResult!(true)
-                    setupResult = nil
-            }
+            print("Accessory discovery session activated .")
         case .accessoryRemoved:
             handleAccessoryRemoved()
-
         case .pickerDidPresent:
-            isPickerPresented = true
             print("Accessory picker presented")
-
         case .pickerDidDismiss:
-            isPickerPresented = false
-          
-            print("Accessory picker dismissed")
-
+            if(setupResult != nil){
+                setupResult!(false)
+                setupResult = nil
+            }
         default:
             print("Received accessory event type: \(event.eventType)")
         }
@@ -764,6 +798,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             type:"device_disconnected",
             error: error?.localizedDescription
         )
+      
     }
 
     // MARK: - CBPeripheralDelegate
