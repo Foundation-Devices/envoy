@@ -487,6 +487,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
 
     @SuppressLint("MissingPermission")
     private fun pairWithDevice(call: MethodCall, result: MethodChannel.Result) {
+        requireBonding = true;
         if (!checkBluetoothPermissions()) {
             result.error(
                 "PERMISSION_ERROR", "Bluetooth permissions not granted", null
@@ -1138,6 +1139,9 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
     }
 
     private fun isConnected(): Boolean {
+        if(connectedDevice == null){
+            return false
+        }
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             bluetoothManager.getConnectionState(
                 connectedDevice,

@@ -155,7 +155,7 @@ class BluetoothChannel {
     final connect = await listenToDeviceConnectionEvents.firstWhere(
       (event) {
         if (Platform.isAndroid) {
-          return event.bonded && event.connected;
+          return  event.connected;
         }
         return event.connected;
       },
