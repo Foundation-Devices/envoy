@@ -82,14 +82,29 @@ Future<List<Uint8List>> encode(
     RustLib.instance.api.crateApiQlEncode(
         message: message, sender: sender, recipient: recipient);
 
-Future<bool> encodeToFile(
+Future<bool> encodeToMagicBackupFile(
         {required List<int> payload,
         required QuantumLinkIdentity sender,
         required XidDocument recipient,
         required String path,
         required BigInt chunkSize,
         required int timestamp}) =>
-    RustLib.instance.api.crateApiQlEncodeToFile(
+    RustLib.instance.api.crateApiQlEncodeToMagicBackupFile(
+        payload: payload,
+        sender: sender,
+        recipient: recipient,
+        path: path,
+        chunkSize: chunkSize,
+        timestamp: timestamp);
+
+Future<bool> encodeToUpdateFile(
+        {required List<Uint8List> payload,
+        required QuantumLinkIdentity sender,
+        required XidDocument recipient,
+        required String path,
+        required BigInt chunkSize,
+        required int timestamp}) =>
+    RustLib.instance.api.crateApiQlEncodeToUpdateFile(
         payload: payload,
         sender: sender,
         recipient: recipient,

@@ -85,7 +85,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -985292633;
+  int get rustContentHash => 1452120919;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -164,8 +164,16 @@ abstract class RustLibApi extends BaseApi {
       required QuantumLinkIdentity sender,
       required XidDocument recipient});
 
-  Future<bool> crateApiQlEncodeToFile(
+  Future<bool> crateApiQlEncodeToMagicBackupFile(
       {required List<int> payload,
+      required QuantumLinkIdentity sender,
+      required XidDocument recipient,
+      required String path,
+      required BigInt chunkSize,
+      required int timestamp});
+
+  Future<bool> crateApiQlEncodeToUpdateFile(
+      {required List<Uint8List> payload,
       required QuantumLinkIdentity sender,
       required XidDocument recipient,
       required String path,
@@ -870,7 +878,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<bool> crateApiQlEncodeToFile(
+  Future<bool> crateApiQlEncodeToMagicBackupFile(
       {required List<int> payload,
       required QuantumLinkIdentity sender,
       required XidDocument recipient,
@@ -895,14 +903,60 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeSuccessData: sse_decode_bool,
         decodeErrorData: sse_decode_AnyhowException,
       ),
-      constMeta: kCrateApiQlEncodeToFileConstMeta,
+      constMeta: kCrateApiQlEncodeToMagicBackupFileConstMeta,
       argValues: [payload, sender, recipient, path, chunkSize, timestamp],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiQlEncodeToFileConstMeta => const TaskConstMeta(
-        debugName: "encode_to_file",
+  TaskConstMeta get kCrateApiQlEncodeToMagicBackupFileConstMeta =>
+      const TaskConstMeta(
+        debugName: "encode_to_magic_backup_file",
+        argNames: [
+          "payload",
+          "sender",
+          "recipient",
+          "path",
+          "chunkSize",
+          "timestamp"
+        ],
+      );
+
+  @override
+  Future<bool> crateApiQlEncodeToUpdateFile(
+      {required List<Uint8List> payload,
+      required QuantumLinkIdentity sender,
+      required XidDocument recipient,
+      required String path,
+      required BigInt chunkSize,
+      required int timestamp}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_list_prim_u_8_strict(payload, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+            sender, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+            recipient, serializer);
+        sse_encode_String(path, serializer);
+        sse_encode_usize(chunkSize, serializer);
+        sse_encode_u_32(timestamp, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 23, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiQlEncodeToUpdateFileConstMeta,
+      argValues: [payload, sender, recipient, path, chunkSize, timestamp],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlEncodeToUpdateFileConstMeta =>
+      const TaskConstMeta(
+        debugName: "encode_to_update_file",
         argNames: [
           "payload",
           "sender",
@@ -919,7 +973,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 23, port: port_);
+            funcId: 24, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -944,7 +998,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 24, port: port_);
+            funcId: 25, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -968,7 +1022,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 25, port: port_);
+            funcId: 26, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -992,7 +1046,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 26, port: port_);
+            funcId: 27, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -1016,7 +1070,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 27)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 28)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1039,7 +1093,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 28, port: port_);
+            funcId: 29, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1066,7 +1120,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             this_, serializer);
         sse_encode_box_autoadd_backup_chunk(chunk, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 29, port: port_);
+            funcId: 30, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -1093,7 +1147,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
             quantumLinkIdentity, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 30, port: port_);
+            funcId: 31, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -1120,7 +1174,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
             quantumLinkIdentity, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 31, port: port_);
+            funcId: 32, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -1146,7 +1200,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
             xidDocument, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 32, port: port_);
+            funcId: 33, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -1173,7 +1227,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_list_prim_u_8_loose(backup, serializer);
         sse_encode_usize(chunkSize, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 33, port: port_);
+            funcId: 34, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_quantum_link_message,
@@ -1205,7 +1259,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_list_prim_u_8_loose(patchBytes, serializer);
         sse_encode_usize(chunkSize, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 34, port: port_);
+            funcId: 35, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_quantum_link_message,
@@ -2070,8 +2124,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_box_autoadd_firmware_chunk(raw[1]),
         );
       case 4:
-        return FirmwareFetchEvent_Complete();
-      case 5:
         return FirmwareFetchEvent_Error(
           dco_decode_String(raw[1]),
         );
@@ -3521,8 +3573,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_box_autoadd_firmware_chunk(deserializer);
         return FirmwareFetchEvent_Chunk(var_field0);
       case 4:
-        return FirmwareFetchEvent_Complete();
-      case 5:
         var var_field0 = sse_decode_String(deserializer);
         return FirmwareFetchEvent_Error(var_field0);
       default:
@@ -4928,10 +4978,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case FirmwareFetchEvent_Chunk(field0: final field0):
         sse_encode_i_32(3, serializer);
         sse_encode_box_autoadd_firmware_chunk(field0, serializer);
-      case FirmwareFetchEvent_Complete():
-        sse_encode_i_32(4, serializer);
       case FirmwareFetchEvent_Error(field0: final field0):
-        sse_encode_i_32(5, serializer);
+        sse_encode_i_32(4, serializer);
         sse_encode_String(field0, serializer);
     }
   }

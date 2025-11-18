@@ -154,9 +154,6 @@ class BluetoothChannel {
     }
     final connect = await listenToDeviceConnectionEvents.firstWhere(
       (event) {
-        if (Platform.isAndroid) {
-          return  event.connected;
-        }
         return event.connected;
       },
     );
@@ -195,17 +192,20 @@ class BluetoothChannel {
     _deviceStatusSubscription?.cancel();
   }
 
+  Stream<WriteProgress> writeProgressStream() {
+    return _writeProgressStream;
+  }
+
   Stream<WriteProgress> getWriteProgress(String id) {
-    return _writeProgressStream.where((progress) => progress.id == id);
+    kPrint("Getting write progress for id: $id");
+    return _writeProgressStream
+        .where((progress) => progress.id == id)
+        .asBroadcastStream();
   }
 
   /// Send large data by writing to file and passing path to host platform
   Future<bool> transmitFromFile(String path) async {
     try {
-      getWriteProgress(path).listen((WriteProgress progress) {
-        debugPrint(
-            "BLE Write Progress: id=${progress.id}, progress=${progress.progress}");
-      });
       await bleMethodChannel.invokeMethod("transmitFromFile", {"path": path});
       return true;
     } catch (e, stack) {

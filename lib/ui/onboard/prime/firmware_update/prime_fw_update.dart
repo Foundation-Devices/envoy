@@ -388,9 +388,9 @@ class _PrimeFwDownloadProgressState
               ),
               const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
               Consumer(builder: (context, ref, child) {
-                final progress = ref.watch(sendProgressProvider);
+                // final progress = ref.watch(sendProgressProvider);
+                final progressNew = ref.watch(fwTransmitProgress);
                 var timeRemaining = ref.watch(remainingTimeProvider);
-
                 String formatDuration(Duration d) {
                   final totalSeconds = d.inSeconds;
 
@@ -405,7 +405,7 @@ class _PrimeFwDownloadProgressState
                 return Column(
                   children: [
                     EnvoyGradientProgress(
-                      progress: progress,
+                      progress: progressNew,
                     ),
                     const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
                     if (ref.watch(fwDownloadStateProvider).state ==

@@ -59,6 +59,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     // Connection state tracking
     private var isPickerPresented = false
     private var deviceReady = false
+    
+    private let bleQueue = DispatchQueue(label: "com.envoy.ble", qos: .userInteractive)
 
     let connectOptions: [String: Any] = [
         CBConnectPeripheralOptionNotifyOnConnectionKey: true,
@@ -170,8 +172,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     }
 
     private func setupBluetoothManager() {
-        // Use a dedicated queue for BLE operations to avoid main thread blocking
-        let bleQueue = DispatchQueue(label: "com.envoy.ble", qos: .userInteractive)
+        // Use the shared BLE queue for all BLE operations
         centralManager = CBCentralManager(
             delegate: self,
             queue: bleQueue,  
@@ -251,13 +252,16 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         
                         bytesProcessed += Int64(itemData.count)
                         
-                        // Write updates
+                        // Send progress update
                         let progress = fileSize > 0 ? Float(bytesProcessed) / Float(fileSize) : 0.0
                         self.sendWriteProgress(progress, id: path)
                         
-                        let writeResult = self.handleBinaryWrite(data: itemData)
+                        self.bleQueue.sync {
+                            let _ = self.handleBinaryWrite(data: itemData)
+                        }
                         
-                        Thread.sleep(forTimeInterval: 0.015) // 10 milliseconds
+                        //  10 milliseconds between writes
+                        Thread.sleep(forTimeInterval: 0.01)
                     }
                 }
                 

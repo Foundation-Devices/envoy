@@ -22,7 +22,6 @@ mixin _$FirmwareFetchEvent {
     required TResult Function(FirmwareUpdateAvailable field0) starting,
     required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
-    required TResult Function() complete,
     required TResult Function(String field0) error,
   }) =>
       throw _privateConstructorUsedError;
@@ -32,7 +31,6 @@ mixin _$FirmwareFetchEvent {
     TResult? Function(FirmwareUpdateAvailable field0)? starting,
     TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
-    TResult? Function()? complete,
     TResult? Function(String field0)? error,
   }) =>
       throw _privateConstructorUsedError;
@@ -42,7 +40,6 @@ mixin _$FirmwareFetchEvent {
     TResult Function(FirmwareUpdateAvailable field0)? starting,
     TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
-    TResult Function()? complete,
     TResult Function(String field0)? error,
     required TResult orElse(),
   }) =>
@@ -54,7 +51,6 @@ mixin _$FirmwareFetchEvent {
     required TResult Function(FirmwareFetchEvent_Starting value) starting,
     required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
     required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
-    required TResult Function(FirmwareFetchEvent_Complete value) complete,
     required TResult Function(FirmwareFetchEvent_Error value) error,
   }) =>
       throw _privateConstructorUsedError;
@@ -65,7 +61,6 @@ mixin _$FirmwareFetchEvent {
     TResult? Function(FirmwareFetchEvent_Starting value)? starting,
     TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
     TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) =>
       throw _privateConstructorUsedError;
@@ -76,7 +71,6 @@ mixin _$FirmwareFetchEvent {
     TResult Function(FirmwareFetchEvent_Starting value)? starting,
     TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult Function(FirmwareFetchEvent_Complete value)? complete,
     TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) =>
@@ -154,7 +148,6 @@ class _$FirmwareFetchEvent_UpdateNotAvailableImpl
     required TResult Function(FirmwareUpdateAvailable field0) starting,
     required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
-    required TResult Function() complete,
     required TResult Function(String field0) error,
   }) {
     return updateNotAvailable();
@@ -167,7 +160,6 @@ class _$FirmwareFetchEvent_UpdateNotAvailableImpl
     TResult? Function(FirmwareUpdateAvailable field0)? starting,
     TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
-    TResult? Function()? complete,
     TResult? Function(String field0)? error,
   }) {
     return updateNotAvailable?.call();
@@ -180,7 +172,6 @@ class _$FirmwareFetchEvent_UpdateNotAvailableImpl
     TResult Function(FirmwareUpdateAvailable field0)? starting,
     TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
-    TResult Function()? complete,
     TResult Function(String field0)? error,
     required TResult orElse(),
   }) {
@@ -198,7 +189,6 @@ class _$FirmwareFetchEvent_UpdateNotAvailableImpl
     required TResult Function(FirmwareFetchEvent_Starting value) starting,
     required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
     required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
-    required TResult Function(FirmwareFetchEvent_Complete value) complete,
     required TResult Function(FirmwareFetchEvent_Error value) error,
   }) {
     return updateNotAvailable(this);
@@ -212,7 +202,6 @@ class _$FirmwareFetchEvent_UpdateNotAvailableImpl
     TResult? Function(FirmwareFetchEvent_Starting value)? starting,
     TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
     TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) {
     return updateNotAvailable?.call(this);
@@ -226,7 +215,6 @@ class _$FirmwareFetchEvent_UpdateNotAvailableImpl
     TResult Function(FirmwareFetchEvent_Starting value)? starting,
     TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult Function(FirmwareFetchEvent_Complete value)? complete,
     TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) {
@@ -320,7 +308,6 @@ class _$FirmwareFetchEvent_StartingImpl extends FirmwareFetchEvent_Starting {
     required TResult Function(FirmwareUpdateAvailable field0) starting,
     required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
-    required TResult Function() complete,
     required TResult Function(String field0) error,
   }) {
     return starting(field0);
@@ -333,7 +320,6 @@ class _$FirmwareFetchEvent_StartingImpl extends FirmwareFetchEvent_Starting {
     TResult? Function(FirmwareUpdateAvailable field0)? starting,
     TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
-    TResult? Function()? complete,
     TResult? Function(String field0)? error,
   }) {
     return starting?.call(field0);
@@ -346,7 +332,6 @@ class _$FirmwareFetchEvent_StartingImpl extends FirmwareFetchEvent_Starting {
     TResult Function(FirmwareUpdateAvailable field0)? starting,
     TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
-    TResult Function()? complete,
     TResult Function(String field0)? error,
     required TResult orElse(),
   }) {
@@ -364,7 +349,6 @@ class _$FirmwareFetchEvent_StartingImpl extends FirmwareFetchEvent_Starting {
     required TResult Function(FirmwareFetchEvent_Starting value) starting,
     required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
     required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
-    required TResult Function(FirmwareFetchEvent_Complete value) complete,
     required TResult Function(FirmwareFetchEvent_Error value) error,
   }) {
     return starting(this);
@@ -378,7 +362,6 @@ class _$FirmwareFetchEvent_StartingImpl extends FirmwareFetchEvent_Starting {
     TResult? Function(FirmwareFetchEvent_Starting value)? starting,
     TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
     TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) {
     return starting?.call(this);
@@ -392,7 +375,6 @@ class _$FirmwareFetchEvent_StartingImpl extends FirmwareFetchEvent_Starting {
     TResult Function(FirmwareFetchEvent_Starting value)? starting,
     TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult Function(FirmwareFetchEvent_Complete value)? complete,
     TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) {
@@ -467,7 +449,6 @@ class _$FirmwareFetchEvent_DownloadingImpl
     required TResult Function(FirmwareUpdateAvailable field0) starting,
     required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
-    required TResult Function() complete,
     required TResult Function(String field0) error,
   }) {
     return downloading();
@@ -480,7 +461,6 @@ class _$FirmwareFetchEvent_DownloadingImpl
     TResult? Function(FirmwareUpdateAvailable field0)? starting,
     TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
-    TResult? Function()? complete,
     TResult? Function(String field0)? error,
   }) {
     return downloading?.call();
@@ -493,7 +473,6 @@ class _$FirmwareFetchEvent_DownloadingImpl
     TResult Function(FirmwareUpdateAvailable field0)? starting,
     TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
-    TResult Function()? complete,
     TResult Function(String field0)? error,
     required TResult orElse(),
   }) {
@@ -511,7 +490,6 @@ class _$FirmwareFetchEvent_DownloadingImpl
     required TResult Function(FirmwareFetchEvent_Starting value) starting,
     required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
     required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
-    required TResult Function(FirmwareFetchEvent_Complete value) complete,
     required TResult Function(FirmwareFetchEvent_Error value) error,
   }) {
     return downloading(this);
@@ -525,7 +503,6 @@ class _$FirmwareFetchEvent_DownloadingImpl
     TResult? Function(FirmwareFetchEvent_Starting value)? starting,
     TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
     TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) {
     return downloading?.call(this);
@@ -539,7 +516,6 @@ class _$FirmwareFetchEvent_DownloadingImpl
     TResult Function(FirmwareFetchEvent_Starting value)? starting,
     TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult Function(FirmwareFetchEvent_Complete value)? complete,
     TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) {
@@ -632,7 +608,6 @@ class _$FirmwareFetchEvent_ChunkImpl extends FirmwareFetchEvent_Chunk {
     required TResult Function(FirmwareUpdateAvailable field0) starting,
     required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
-    required TResult Function() complete,
     required TResult Function(String field0) error,
   }) {
     return chunk(field0);
@@ -645,7 +620,6 @@ class _$FirmwareFetchEvent_ChunkImpl extends FirmwareFetchEvent_Chunk {
     TResult? Function(FirmwareUpdateAvailable field0)? starting,
     TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
-    TResult? Function()? complete,
     TResult? Function(String field0)? error,
   }) {
     return chunk?.call(field0);
@@ -658,7 +632,6 @@ class _$FirmwareFetchEvent_ChunkImpl extends FirmwareFetchEvent_Chunk {
     TResult Function(FirmwareUpdateAvailable field0)? starting,
     TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
-    TResult Function()? complete,
     TResult Function(String field0)? error,
     required TResult orElse(),
   }) {
@@ -676,7 +649,6 @@ class _$FirmwareFetchEvent_ChunkImpl extends FirmwareFetchEvent_Chunk {
     required TResult Function(FirmwareFetchEvent_Starting value) starting,
     required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
     required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
-    required TResult Function(FirmwareFetchEvent_Complete value) complete,
     required TResult Function(FirmwareFetchEvent_Error value) error,
   }) {
     return chunk(this);
@@ -690,7 +662,6 @@ class _$FirmwareFetchEvent_ChunkImpl extends FirmwareFetchEvent_Chunk {
     TResult? Function(FirmwareFetchEvent_Starting value)? starting,
     TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
     TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) {
     return chunk?.call(this);
@@ -704,7 +675,6 @@ class _$FirmwareFetchEvent_ChunkImpl extends FirmwareFetchEvent_Chunk {
     TResult Function(FirmwareFetchEvent_Starting value)? starting,
     TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult Function(FirmwareFetchEvent_Complete value)? complete,
     TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) {
@@ -727,144 +697,6 @@ abstract class FirmwareFetchEvent_Chunk extends FirmwareFetchEvent {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$FirmwareFetchEvent_ChunkImplCopyWith<_$FirmwareFetchEvent_ChunkImpl>
       get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$FirmwareFetchEvent_CompleteImplCopyWith<$Res> {
-  factory _$$FirmwareFetchEvent_CompleteImplCopyWith(
-          _$FirmwareFetchEvent_CompleteImpl value,
-          $Res Function(_$FirmwareFetchEvent_CompleteImpl) then) =
-      __$$FirmwareFetchEvent_CompleteImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$FirmwareFetchEvent_CompleteImplCopyWithImpl<$Res>
-    extends _$FirmwareFetchEventCopyWithImpl<$Res,
-        _$FirmwareFetchEvent_CompleteImpl>
-    implements _$$FirmwareFetchEvent_CompleteImplCopyWith<$Res> {
-  __$$FirmwareFetchEvent_CompleteImplCopyWithImpl(
-      _$FirmwareFetchEvent_CompleteImpl _value,
-      $Res Function(_$FirmwareFetchEvent_CompleteImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of FirmwareFetchEvent
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$FirmwareFetchEvent_CompleteImpl extends FirmwareFetchEvent_Complete {
-  const _$FirmwareFetchEvent_CompleteImpl() : super._();
-
-  @override
-  String toString() {
-    return 'FirmwareFetchEvent.complete()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$FirmwareFetchEvent_CompleteImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() updateNotAvailable,
-    required TResult Function(FirmwareUpdateAvailable field0) starting,
-    required TResult Function() downloading,
-    required TResult Function(FirmwareChunk field0) chunk,
-    required TResult Function() complete,
-    required TResult Function(String field0) error,
-  }) {
-    return complete();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? updateNotAvailable,
-    TResult? Function(FirmwareUpdateAvailable field0)? starting,
-    TResult? Function()? downloading,
-    TResult? Function(FirmwareChunk field0)? chunk,
-    TResult? Function()? complete,
-    TResult? Function(String field0)? error,
-  }) {
-    return complete?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? updateNotAvailable,
-    TResult Function(FirmwareUpdateAvailable field0)? starting,
-    TResult Function()? downloading,
-    TResult Function(FirmwareChunk field0)? chunk,
-    TResult Function()? complete,
-    TResult Function(String field0)? error,
-    required TResult orElse(),
-  }) {
-    if (complete != null) {
-      return complete();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)
-        updateNotAvailable,
-    required TResult Function(FirmwareFetchEvent_Starting value) starting,
-    required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
-    required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
-    required TResult Function(FirmwareFetchEvent_Complete value) complete,
-    required TResult Function(FirmwareFetchEvent_Error value) error,
-  }) {
-    return complete(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(FirmwareFetchEvent_UpdateNotAvailable value)?
-        updateNotAvailable,
-    TResult? Function(FirmwareFetchEvent_Starting value)? starting,
-    TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
-    TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
-    TResult? Function(FirmwareFetchEvent_Error value)? error,
-  }) {
-    return complete?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)?
-        updateNotAvailable,
-    TResult Function(FirmwareFetchEvent_Starting value)? starting,
-    TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
-    TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult Function(FirmwareFetchEvent_Complete value)? complete,
-    TResult Function(FirmwareFetchEvent_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (complete != null) {
-      return complete(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class FirmwareFetchEvent_Complete extends FirmwareFetchEvent {
-  const factory FirmwareFetchEvent_Complete() =
-      _$FirmwareFetchEvent_CompleteImpl;
-  const FirmwareFetchEvent_Complete._() : super._();
 }
 
 /// @nodoc
@@ -943,7 +775,6 @@ class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
     required TResult Function(FirmwareUpdateAvailable field0) starting,
     required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
-    required TResult Function() complete,
     required TResult Function(String field0) error,
   }) {
     return error(field0);
@@ -956,7 +787,6 @@ class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
     TResult? Function(FirmwareUpdateAvailable field0)? starting,
     TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
-    TResult? Function()? complete,
     TResult? Function(String field0)? error,
   }) {
     return error?.call(field0);
@@ -969,7 +799,6 @@ class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
     TResult Function(FirmwareUpdateAvailable field0)? starting,
     TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
-    TResult Function()? complete,
     TResult Function(String field0)? error,
     required TResult orElse(),
   }) {
@@ -987,7 +816,6 @@ class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
     required TResult Function(FirmwareFetchEvent_Starting value) starting,
     required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
     required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
-    required TResult Function(FirmwareFetchEvent_Complete value) complete,
     required TResult Function(FirmwareFetchEvent_Error value) error,
   }) {
     return error(this);
@@ -1001,7 +829,6 @@ class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
     TResult? Function(FirmwareFetchEvent_Starting value)? starting,
     TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
     TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) {
     return error?.call(this);
@@ -1015,7 +842,6 @@ class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
     TResult Function(FirmwareFetchEvent_Starting value)? starting,
     TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult Function(FirmwareFetchEvent_Complete value)? complete,
     TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) {

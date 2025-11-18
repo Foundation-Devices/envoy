@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:envoy/ble/handlers/fw_update_handler.dart';
 import 'package:envoy/ble/handlers/onboard_handler.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
@@ -43,6 +44,8 @@ final sendProgressProvider =
     StateNotifierProvider<SendProgressNotifier, double>(
   (ref) => SendProgressNotifier(ref),
 );
+//TODO: refactor with new fw update progress tracking
+final fwTransmitProgress = StateProvider<double>((ref) => 0.0);
 
 final remainingTimeProvider = StateProvider<Duration>((ref) => Duration.zero);
 
@@ -69,12 +72,18 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   late final BlePassphraseHandler _blePassphraseHandler =
       BlePassphraseHandler(this, _passphraseEventStream);
 
+  late final FwUpdateHandler _fwUpdateHandler = FwUpdateHandler(
+    this,
+  );
+
   //
   BleMagicBackupHandler get magicBackupHandler => _bleMagicBackupHandler;
 
   BleAccountHandler get bleAccountHandler => _bleAccountHandler;
 
   BleOnboardHandler get bleOnboardHandler => _bleOnboardHandler;
+
+  FwUpdateHandler get fwUpdateHandler => _fwUpdateHandler;
 
   static final BluetoothManager _instance = BluetoothManager._internal();
 
@@ -162,6 +171,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     _messageRouter.registerHandler(_bleAccountHandler);
     _messageRouter.registerHandler(_bleOnboardHandler);
     _messageRouter.registerHandler(_blePassphraseHandler);
+    _messageRouter.registerHandler(_fwUpdateHandler);
 
     await listen(id: bleId);
     kPrint("QL Identity: $_qlIdentity");
@@ -300,7 +310,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     //     api.EnvoyMessage(message: message, timestamp: timestampSeconds)).toList();
     // kPrint("Encoded Message $timestampSeconds");
     kPrint("Encoding message: $message to file: $filePath");
-    return await api.encodeToFile(
+    return await api.encodeToMagicBackupFile(
         payload: message,
         sender: _qlIdentity!,
         recipient: _recipientXid!,
@@ -570,7 +580,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
             changelog: patches.last.changelog,
             patchCount: patches.length)));
 
-    kPrint("TELLING PRIME THERE'S UPDATES");
     await writeMessage(response);
   }
 
@@ -579,40 +588,61 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   }
 
   Future<void> sendFirmwarePayload(List<Uint8List> patches) async {
-    final List<api.QuantumLinkMessage> allChunks = [];
-    for (final (patchIndex, patch) in patches.indexed) {
-      final chunksForPatch = await api.splitFwUpdateIntoChunks(
-        patchIndex: patchIndex,
-        totalPatches: patches.length,
-        patchBytes: patch,
-        chunkSize: BigInt.from(200000),
-      );
-      allChunks.addAll(chunksForPatch);
-    }
+    final tempFile =
+        await BluetoothChannel.getBleCacheFile(patches.hashCode.toString());
 
-    final int totalChunks = allChunks.length;
-    kPrint("Total chunks to send across all patches: $totalChunks");
-
-    if (totalChunks == 0) {
-      kPrint("No chunks to send. Aborting.");
-      return;
-    }
-
+    DateTime dateTime = DateTime.now();
     try {
-      startFirmwareUpdate(totalChunks: totalChunks);
-
-      for (final (chunkIndex, chunk) in allChunks.indexed) {
-        kPrint("Sending overall chunk ${chunkIndex + 1} of $totalChunks");
-        await writeMessage(chunk);
-      }
-
-      await writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(
-        api.FirmwareFetchEvent.complete(),
-      ));
-      kPrint("Firmware payload sent successfully!");
-    } finally {
-      endFirmwareUpdate();
+      dateTime = await NTP.now(timeout: const Duration(seconds: 1));
+    } catch (e) {
+      kPrint("NTP error: $e");
     }
+    final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
+
+    final ready = await api.encodeToUpdateFile(
+        payload: patches,
+        sender: _qlIdentity!,
+        recipient: _recipientXid!,
+        path: tempFile.path,
+        chunkSize: BigInt.from(200000),
+        timestamp: timestampSeconds);
+
+    if (ready) {
+      kPrint("Firmware payload encoded to file: ${tempFile.path}");
+      BluetoothChannel().getWriteProgress(tempFile.path).listen((progress) {
+        // kPrint(
+        //     "Firmware write progress: ${(progress.progress * 100).toStringAsFixed(1)}%");
+      });
+      final bool = await BluetoothChannel().transmitFromFile(tempFile.path);
+      if (!bool) {
+        await writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(
+          api.FirmwareFetchEvent.error("Firmware payload transmission failed!"),
+        ));
+
+        kPrint("Firmware payload transmission failed!");
+        return;
+      }
+      kPrint("Firmware payload sent successfully! $bool");
+    }
+    // if (totalChunks == 0) {
+    //   kPrint("No chunks to send. Aborting.");
+    //   return;
+    // }
+    //
+    // try {
+    //
+    //   for (final (chunkIndex, chunk) in allChunks.indexed) {
+    //     kPrint("Sending overall chunk ${chunkIndex + 1} of $totalChunks");
+    //     await writeMessage(chunk);
+    //   }
+    //
+    //   await writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(
+    //     // api.FirmwareFetchEvent.complete(),
+    //   ));
+    //   kPrint("Firmware payload sent successfully!");
+    // } finally {
+    //   endFirmwareUpdate();
+    // }
   }
 
   Future<Stream<double>> _writeWithProgress(
@@ -679,39 +709,17 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 
 class SendProgressNotifier extends StateNotifier<double> {
   final Ref ref;
-  StreamSubscription<double>? _sub;
+  StreamSubscription<WriteProgress>? _sub;
   DateTime? _startTime;
   Duration _elapsed = Duration.zero;
 
-  SendProgressNotifier(this.ref) : super(0.0) {
-    _listen();
-  }
+  SendProgressNotifier(this.ref) : super(0.0);
 
-  void _listen() {
-    _sub = BluetoothManager().writeProgressStream.listen(
-      (progress) {
-        if (_startTime == null && progress > 0) {
-          _startTime = DateTime.now();
-          _elapsed = Duration.zero;
-        }
-
-        state = progress;
-
-        if (_startTime != null) {
-          final now = DateTime.now();
-          _elapsed = now.difference(_startTime!);
-          final elapsedSeconds = _elapsed.inMilliseconds / 1000.0;
-
-          if (progress > 0 && progress < 1 && elapsedSeconds > 0) {
-            final speed = progress / elapsedSeconds;
-            final remainingSeconds =
-                ((1.0 - progress) / speed).clamp(0, double.infinity);
-            ref.read(remainingTimeProvider.notifier).state =
-                Duration(seconds: remainingSeconds.round());
-          } else {
-            ref.read(remainingTimeProvider.notifier).state = Duration.zero;
-          }
-        }
+  void listen(String path) {
+    _sub = BluetoothChannel().getWriteProgress(path).listen(
+      (event) {
+        final progress = event.progress;
+        setProgress(progress);
       },
       onDone: () {
         state = 0.0;
@@ -728,5 +736,31 @@ class SendProgressNotifier extends StateNotifier<double> {
   void dispose() {
     _sub?.cancel();
     super.dispose();
+  }
+
+  void setProgress(double progress) {
+    state = progress;
+    if (_startTime == null && progress > 0) {
+      _startTime = DateTime.now();
+      _elapsed = Duration.zero;
+    }
+
+    state = progress * 100;
+
+    if (_startTime != null) {
+      final now = DateTime.now();
+      _elapsed = now.difference(_startTime!);
+      final elapsedSeconds = _elapsed.inMilliseconds / 1000.0;
+
+      if (progress > 0 && progress < 1 && elapsedSeconds > 0) {
+        final speed = progress / elapsedSeconds;
+        final remainingSeconds =
+            ((1.0 - progress) / speed).clamp(0, double.infinity);
+        ref.read(remainingTimeProvider.notifier).state =
+            Duration(seconds: remainingSeconds.round());
+      } else {
+        ref.read(remainingTimeProvider.notifier).state = Duration.zero;
+      }
+    }
   }
 }
