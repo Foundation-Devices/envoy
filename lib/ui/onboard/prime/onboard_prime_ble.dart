@@ -523,8 +523,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           PrimeFwUpdateStep.transferring;
 
       try {
-        final tempFile =
-            await BluetoothChannel.getBleCacheFile(patches.hashCode.toString());
         //listen for progress
 
         BluetoothManager().sendFirmwarePayload(patchBinaries);

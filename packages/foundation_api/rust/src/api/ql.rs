@@ -288,7 +288,11 @@ pub async fn encode_to_update_file(
     }
 
     if payload.len() > (u8::MAX as usize) {
-        return Err(anyhow::anyhow!("Too many patches in payload") );
+        return Err(anyhow::anyhow!(
+            "Too many patches in payload: {} exceeds maximum of {}",
+            payload.len(),
+            u8::MAX
+        ));
     }
 
     let total_patches = payload.len() as u8;
@@ -297,9 +301,13 @@ pub async fn encode_to_update_file(
     for (idx, patch_bytes) in payload.iter().enumerate() {
         let patch_index = idx as u8;
 
-        let chunk_messages: Vec<QuantumLinkMessage> =
-            split_fw_update_into_chunks(patch_index, total_patches, patch_bytes.as_slice(), chunk_size)
-                .await;
+        let chunk_messages: Vec<QuantumLinkMessage> = split_fw_update_into_chunks(
+            patch_index,
+            total_patches,
+            patch_bytes.as_slice(),
+            chunk_size,
+        )
+        .await;
 
         for qm in chunk_messages.into_iter() {
             messages.push(EnvoyMessage::new(qm, timestamp));
@@ -329,7 +337,6 @@ pub async fn encode_to_update_file(
     file.flush()?;
     anyhow::Ok(true)
 }
-
 
 pub async fn generate_ql_identity() -> QuantumLinkIdentity {
     debug!("Generating identity");
