@@ -57,7 +57,6 @@ sealed class FirmwareFetchEvent with _$FirmwareFetchEvent {
   const factory FirmwareFetchEvent.chunk(
     FirmwareChunk field0,
   ) = FirmwareFetchEvent_Chunk;
-  const factory FirmwareFetchEvent.complete() = FirmwareFetchEvent_Complete;
   const factory FirmwareFetchEvent.error(
     String field0,
   ) = FirmwareFetchEvent_Error;

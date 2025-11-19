@@ -222,7 +222,7 @@ pub async fn encode(
     chunks
 }
 
-pub async fn encode_to_file(
+pub async fn encode_to_magic_backup_file(
     payload: &[u8],
     sender: &QuantumLinkIdentity,
     recipient: &XIDDocument,
@@ -242,6 +242,77 @@ pub async fn encode_to_file(
         .into_iter()
         .map(|msg| EnvoyMessage::new(msg, timestamp))
         .collect();
+
+    for message in messages {
+        let envelope = QuantumLink::seal(
+            &message,
+            (sender.private_keys.as_ref().unwrap(), &sender.xid_document),
+            recipient,
+        );
+
+        let cbor = envelope.to_cbor_data();
+
+        let message_chunks: Vec<Vec<u8>> = chunk(&cbor).map(|chunk| chunk.to_vec()).collect();
+
+        file.write_all(&(message_chunks.len() as u32).to_be_bytes())?;
+
+        for chunk_data in message_chunks {
+            file.write_all(&(chunk_data.len() as u32).to_be_bytes())?;
+            // Write chunk bytes
+            file.write_all(&chunk_data)?;
+        }
+    }
+
+    file.flush()?;
+    anyhow::Ok(true)
+}
+
+pub async fn encode_to_update_file(
+    payload: Vec<Vec<u8>>,
+    sender: &QuantumLinkIdentity,
+    recipient: &XIDDocument,
+    path: &str,
+    chunk_size: usize,
+    timestamp: u32,
+) -> anyhow::Result<bool> {
+    use std::fs::File;
+    use std::io::Write;
+
+    debug!("SENDER: {:?}", sender.xid_document);
+    debug!("RECEIVER: {:?}", recipient);
+
+    let mut file = File::create(path)?;
+
+    if payload.is_empty() {
+        return Ok(false);
+    }
+
+    if payload.len() > (u8::MAX as usize) {
+        return Err(anyhow::anyhow!(
+            "Too many patches in payload: {} exceeds maximum of {}",
+            payload.len(),
+            u8::MAX
+        ));
+    }
+
+    let total_patches = payload.len() as u8;
+
+    let mut messages: Vec<EnvoyMessage> = Vec::new();
+    for (idx, patch_bytes) in payload.iter().enumerate() {
+        let patch_index = idx as u8;
+
+        let chunk_messages: Vec<QuantumLinkMessage> = split_fw_update_into_chunks(
+            patch_index,
+            total_patches,
+            patch_bytes.as_slice(),
+            chunk_size,
+        )
+        .await;
+
+        for qm in chunk_messages.into_iter() {
+            messages.push(EnvoyMessage::new(qm, timestamp));
+        }
+    }
 
     for message in messages {
         let envelope = QuantumLink::seal(

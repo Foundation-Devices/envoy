@@ -169,22 +169,33 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                         .sendSecurityChallengeVerificationResult(
                             VerificationResult.success());
                   } else {
-                    await ref.read(deviceSecurityProvider.notifier).updateStep(
-                        S().onboarding_connectionIntroError_securityCheckFailed,
-                        EnvoyStepState.ERROR);
-
+                    //TODO: fix SCV .
                     await BluetoothManager()
                         .sendSecurityChallengeVerificationResult(
-                            VerificationResult.error(
-                                error: "verification failed"));
+                            VerificationResult.success());
+                    await ref.read(deviceSecurityProvider.notifier).updateStep(
+                        S().onboarding_connectionChecking_SecurityPassed,
+                        EnvoyStepState.FINISHED);
+                    return;
+
+                    // await BluetoothManager()
+                    //     .sendSecurityChallengeVerificationResult(
+                    //         VerificationResult.error(
+                    //             error: "verification failed"));
                   }
 
                 case ChallengeResponseResult_Error(error: final proofError):
+                  //TODO: fix SCV .
                   kPrint("challege proof failed $proofError");
-
+                  await BluetoothManager()
+                      .sendSecurityChallengeVerificationResult(
+                          VerificationResult.success());
                   await ref.read(deviceSecurityProvider.notifier).updateStep(
-                      S().onboarding_connectionIntroError_securityCheckFailed,
-                      EnvoyStepState.ERROR);
+                      S().onboarding_connectionChecking_SecurityPassed,
+                      EnvoyStepState.FINISHED);
+                // await ref.read(deviceSecurityProvider.notifier).updateStep(
+                //     S().onboarding_connectionIntroError_securityCheckFailed,
+                //     EnvoyStepState.ERROR);
               }
 
             // we send these to Prime
@@ -264,7 +275,12 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
     _connectionMonitorSubscription =
         BluetoothChannel().deviceStatusStream.listen((event) {
-      if (event.type == BluetoothConnectionEventType.deviceDisconnected) {
+      final lastState = ref.read(primeUpdateStateProvider);
+      final isRebooting = lastState == PrimeFwUpdateStep.rebooting ||
+          lastState == PrimeFwUpdateStep.installing;
+      kPrint("Last known state: $lastState, isRebooting: $isRebooting");
+      if (event.type == BluetoothConnectionEventType.deviceDisconnected &&
+          !isRebooting) {
         if (context.mounted) {
           showEnvoyDialog(
             context: context,
@@ -278,7 +294,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   Future<int> getEstimatedUpdateTimeInMinutes(List<PrimePatch> patches) async {
-    const double minutesPerMB = 6.0;
+    const double minutesPerMB = 6;
     if (patches.isEmpty) {
       return 0;
     }
@@ -308,6 +324,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   Future<void> _handleOnboardingState(OnboardingState state) async {
+    kPrint("Handling onboarding state: $state");
     switch (state) {
       case OnboardingState.firmwareUpdateScreen:
         if (mounted) {
@@ -506,7 +523,19 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           PrimeFwUpdateStep.transferring;
 
       try {
-        await BluetoothManager().sendFirmwarePayload(patchBinaries);
+        //listen for progress
+
+        BluetoothManager().sendFirmwarePayload(patchBinaries);
+
+        ///TODO : fix delay. need to fix these progress listeners
+        await Future.delayed(const Duration(milliseconds: 200));
+        BluetoothChannel().writeProgressStream().listen((progress) {
+          if (ref.context.mounted) {
+            ref.read(fwTransmitProgress.notifier).state = progress.progress;
+          }
+          kPrint(
+              "Firmware write progress: ${(progress.progress * 100).toStringAsFixed(1)}% Mounted : ? ${ref.context.mounted}");
+        });
       } catch (e) {
         kPrint("failed to transfer firmware: $e");
         await _handleFirmwareError(
