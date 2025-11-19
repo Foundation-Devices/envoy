@@ -14,7 +14,6 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/envoy_bar.dart';
-import 'package:envoy/ui/components/envoy_loader.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
@@ -60,6 +59,7 @@ import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart' as ngwallet;
 import 'package:ngwallet/ngwallet.dart';
+import 'package:flutter/cupertino.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -199,8 +199,11 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   ],
                 );
               },
-              // TODO: find the right animation here
-              refreshIndicator: const EnvoyLoader(key: ValueKey("refresh")),
+              refreshIndicator: const CupertinoActivityIndicator(
+                key: ValueKey("refresh"),
+                color: Colors.black,
+                radius: 12,
+              ),
               child: SizedBox(
                 height: MediaQuery.of(context).size.height,
                 width: double.infinity,
@@ -1171,6 +1174,7 @@ class _EnvoyPullToRefreshState extends State<EnvoyPullToRefresh>
 
         // CONTENT
         GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onVerticalDragStart: (_) {
             if (_refreshing) return;
             _springController.stop();
