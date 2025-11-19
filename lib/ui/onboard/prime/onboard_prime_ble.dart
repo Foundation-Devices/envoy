@@ -175,8 +175,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
                     await BluetoothManager()
                         .sendSecurityChallengeVerificationResult(
-                        VerificationResult.error(
-                            error: "verification failed"));
+                            VerificationResult.error(
+                                error: "verification failed"));
                   }
 
                 case ChallengeResponseResult_Error(error: final proofError):
