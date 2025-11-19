@@ -13,6 +13,27 @@ enum BluetoothConnectionEventType {
   connectionError,
 }
 
+class WriteProgress {
+  final double progress;
+  final String id;
+
+  WriteProgress({
+    required this.progress,
+    required this.id,
+  });
+
+  factory WriteProgress.fromMap(Map<dynamic, dynamic> map) {
+    return WriteProgress(
+      progress: map['progress'] ?? 0.0,
+      id: map['id']?.toString() ?? '',
+    );
+  }
+  @override
+  String toString() {
+    return 'WriteProgress { progress: $progress, id: $id }';
+  }
+}
+
 class DeviceStatus {
   final BluetoothConnectionEventType? type;
   final bool connected;

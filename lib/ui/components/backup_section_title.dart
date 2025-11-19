@@ -13,6 +13,7 @@ class BackupSectionTitle extends StatelessWidget {
   final ValueChanged<bool>? onSwitch;
   final bool switchValue;
   final EnvoyIcons icon;
+  final Function()? onIconTap;
 
   const BackupSectionTitle({
     super.key,
@@ -20,6 +21,7 @@ class BackupSectionTitle extends StatelessWidget {
     this.onSwitch,
     required this.icon,
     required this.switchValue,
+    this.onIconTap,
   });
 
   @override
@@ -29,9 +31,12 @@ class BackupSectionTitle extends StatelessWidget {
       children: [
         Row(
           children: [
-            EnvoyIcon(
-              icon,
-              color: EnvoyColors.textPrimaryInverse,
+            GestureDetector(
+              onTap: onIconTap,
+              child: EnvoyIcon(
+                icon,
+                color: EnvoyColors.textPrimaryInverse,
+              ),
             ),
             Text(
               title,

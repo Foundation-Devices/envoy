@@ -555,7 +555,7 @@ class _TransactionReviewScreenState
         if (!isConnected &&
             device != null &&
             device.type == DeviceType.passportPrime) {
-          BluetoothManager().connect(id: device.bleId);
+          BluetoothManager().reconnect(device);
         }
       },
     );
@@ -674,7 +674,7 @@ class _TransactionReviewScreenState
             100)
         .round();
 
-    final enableButton = !transactionModel.loading &&
+    final enableButton = (!transactionModel.loading && !isPrime) ||
         ((account.isHot || transactionModel.isFinalized) ||
             (isPrime && isConnected));
     return EnvoyScaffold(
@@ -881,7 +881,7 @@ class _TransactionReviewScreenState
             EnvoyStepState.LOADING,
           );
       // try to connect to prime
-      BluetoothManager().connect(id: device.bleId);
+      BluetoothManager().reconnect(device);
     }
   }
 

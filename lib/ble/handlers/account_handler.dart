@@ -21,7 +21,8 @@ class BleAccountHandler extends PassportMessageHandler {
   }
 
   @override
-  Future<void> handleMessage(api.QuantumLinkMessage message) async {
+  Future<void> handleMessage(
+      api.QuantumLinkMessage message, String bleId) async {
     if (message case api.QuantumLinkMessage_AccountUpdate accountUpdate) {
       kPrint("Got account update message: ${accountUpdate.field0.accountId}");
       _handleAccountUpdate(accountUpdate.field0);

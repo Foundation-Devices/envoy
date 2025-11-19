@@ -1,16 +1,15 @@
 # SPDX-FileCopyrightText: 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-name: CI
+name: Android (Nix)
 on:
-  pull_request:
   workflow_call:
   workflow_dispatch:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   NIX_CONFIG: access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 jobs:
-  nix-check:
+  nix-android-build:
     runs-on: [ self-hosted, Linux, X64 ]
     steps:
       - uses: actions/checkout@v3
@@ -53,42 +52,34 @@ jobs:
 #      - run: mkdir -p ~/.cargo/registry ~/.cargo/git
 #        name: Make sure cache directories exist
 
-      - name: Debug - Check user and Nix daemon
-        run: |
-          whoami
-          id
-          systemctl status nix-daemon
-          ls -l /nix/var/nix/db/big-lock
-        shell: bash
-
-      - run: nix develop --command reuse lint
-        name: Check license headers
-
       - run: nix develop --command flutter pub get
         name: Get Flutter dependencies
 
-      - run: nix develop --command dart format --output=none --set-exit-if-changed .
-        name: Check Dart formatting
+      - run: nix develop --command ./scripts/build_ffi_android.sh
+        name: Build legacy FFI libs for Android
 
-      - run: nix develop --command flutter analyze
-        name: Analyze Dart project source
+      - run:  echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build apk --release --target-platform android-arm64 --verbose
+        name: Build Envoy APK
+        env:
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - run: nix develop --command cargo fmt --all --check
-        name: Check Rust formatting
+      - run: echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build aab --release --target-platform android-arm64
+        name: Build Envoy AAB
+        env:
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - run: |
-          nix develop --command bash -c '
-            git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/";
-            cargo build
-          '
-        name: Build Rust libs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
 
-      - run: nix develop --command flutter test
-        name: Run Dart tests
-
-      - run: nix develop --command cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
-        name: Run Clippy
-
-      - run: nix develop --command cargo test
-        name: Run Rust tests
-
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-release.aab
+          path: build/app/outputs/flutter-apk/app-release.aab
