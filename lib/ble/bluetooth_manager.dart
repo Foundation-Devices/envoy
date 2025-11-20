@@ -696,6 +696,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     if (Platform.isIOS || Platform.isAndroid) {
       await _bluetoothChannel.writeAll(data);
     } else {
+      _sendingData = false;
       throw UnimplementedError(
           "Bluetooth write not implemented for this platform");
     }
@@ -725,6 +726,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     //     _writeProgressController.addError(e);
     //   },
     // );
+    _sendingData = false;
     return Stream.value(1.0);
   }
 
