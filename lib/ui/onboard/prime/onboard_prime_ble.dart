@@ -169,19 +169,14 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                         .sendSecurityChallengeVerificationResult(
                             VerificationResult.success());
                   } else {
-                    //TODO: fix SCV .
+                    await ref.read(deviceSecurityProvider.notifier).updateStep(
+                        S().onboarding_connectionIntroError_securityCheckFailed,
+                        EnvoyStepState.ERROR);
+
                     await BluetoothManager()
                         .sendSecurityChallengeVerificationResult(
-                            VerificationResult.success());
-                    await ref.read(deviceSecurityProvider.notifier).updateStep(
-                        S().onboarding_connectionChecking_SecurityPassed,
-                        EnvoyStepState.FINISHED);
-                    return;
-
-                    // await BluetoothManager()
-                    //     .sendSecurityChallengeVerificationResult(
-                    //         VerificationResult.error(
-                    //             error: "verification failed"));
+                            VerificationResult.error(
+                                error: "verification failed"));
                   }
 
                 case ChallengeResponseResult_Error(error: final proofError):

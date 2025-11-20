@@ -604,7 +604,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 
   void setupExchangeRateListener() {
     ExchangeRate().addListener(() async {
-      kPrint("Sending exchange rate to Prime ...");
       await sendExchangeRate();
     });
   }
