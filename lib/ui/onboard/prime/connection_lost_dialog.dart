@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ble/bluetooth_manager.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
@@ -9,10 +11,13 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter/cupertino.dart';
 
 class ConnectionLostDialog extends StatelessWidget {
   const ConnectionLostDialog({super.key});
@@ -46,37 +51,67 @@ class ConnectionLostModal extends ConsumerStatefulWidget {
 }
 
 class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
-  // bool _isReconnecting = false;
+  bool _isReconnecting = false;
 
-  // Future<void> _attemptReconnect() async {
-  //   setState(() {
-  //     _isReconnecting = true;
-  //   });
-  //
-  //   final bleId = BluetoothManager().bleId;
-  //   BleDevice?
-  //       device; // TODO: how to get the "connected" from Prime, also if it reconnects how is Prime going to continue to do what he was already doing?
-  //
-  //   try {
-  //     await BluetoothManager().connect(id: bleId);
-  //
-  //     // If connection was successful, dismiss the dialog
-  //     if (device!.connected && mounted) {
-  //       Navigator.pop(context);
-  //       // TODO: show a toast/snackbar if reconnected
-  //     }
-  //   } catch (e) {
-  //     // If connection fails, reset the reconnecting state
-  //     kPrint("Reconnect failed: $e");
-  //     if (mounted) {
-  //       setState(() {
-  //         _isReconnecting = false;
-  //       });
-  //     }
-  //
-  //     // TODO: show a toast/snackbar or log error
-  //   }
-  // }
+  Future<void> _attemptReconnect() async {
+    setState(() {
+      _isReconnecting = true;
+    });
+
+    // 👇 Force Flutter to render the new UI state BEFORE reconnect
+    await Future.delayed(Duration.zero);
+
+    final bleId = BluetoothManager().bleId;
+    final device = Devices().getDeviceByBleId(bleId);
+
+    try {
+      await BluetoothManager().reconnect(device!);
+      await Future.delayed(const Duration(
+          milliseconds:
+              3000)); // TODO: add some while to try a few more times if there is no Prime ble?
+
+      final bool connectionNow =
+          ref.read(isPrimeConnectedProvider(device.bleId));
+
+      if (connectionNow && device.type == DeviceType.passportPrime && mounted) {
+        Navigator.pop(context);
+      }
+
+      _displayPrimeConnectedToast(connectionNow);
+    } catch (e) {
+      kPrint("Reconnect failed: $e");
+      _displayPrimeConnectedToast(false);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isReconnecting = false;
+        });
+      }
+    }
+  }
+
+  void _displayPrimeConnectedToast(bool success) {
+    if (context.mounted) {
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        duration:
+            success ? const Duration(seconds: 4) : const Duration(seconds: 3),
+        message: success
+            ? "Prime reconnected successfully." // TODO: FIGMA
+            : "Prime failed to reconnect.",
+        icon: success
+            ? const EnvoyIcon(
+                EnvoyIcons.info,
+                color: EnvoyColors.accentPrimary,
+              )
+            : const EnvoyIcon(
+                EnvoyIcons.alert,
+                color: EnvoyColors.accentSecondary,
+              ),
+      ).show(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,25 +149,26 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
                 onTap: () {
                   resetOnboardingPrimeProviders(ref);
                   Navigator.of(context).pop();
-                  context.go("/");
+                  context.go(
+                      "/"); // TODO: where does the app need to go, can't go home!!!
                 },
               ),
               // TODO: reconnect button
-              // const SizedBox(height: EnvoySpacing.medium1),
-              // EnvoyButton(
-              //   _isReconnecting
-              //       ? S().firmware_updateModalConnectionLost_reconnecting
-              //       : S().firmware_updateModalConnectionLost_tryToReconnect,
-              //   borderRadius: BorderRadius.circular(EnvoySpacing.small),
-              //   type: EnvoyButtonTypes.primaryModal,
-              //   leading: _isReconnecting
-              //       ? const CupertinoActivityIndicator(
-              //           color: EnvoyColors.textPrimaryInverse,
-              //           radius: 12,
-              //         )
-              //       : null,
-              //   onTap: _isReconnecting ? null : _attemptReconnect,
-              // ),
+              const SizedBox(height: EnvoySpacing.medium1),
+              EnvoyButton(
+                _isReconnecting
+                    ? S().firmware_updateModalConnectionLost_reconnecting
+                    : S().firmware_updateModalConnectionLost_tryToReconnect,
+                borderRadius: BorderRadius.circular(EnvoySpacing.small),
+                type: EnvoyButtonTypes.primaryModal,
+                leading: _isReconnecting
+                    ? const CupertinoActivityIndicator(
+                        color: EnvoyColors.textPrimaryInverse,
+                        radius: 12,
+                      )
+                    : null,
+                onTap: _isReconnecting ? null : _attemptReconnect,
+              ),
             ],
           ),
         ],
