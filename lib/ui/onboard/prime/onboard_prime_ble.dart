@@ -284,8 +284,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             dialog: const ConnectionLostDialog(),
           );
         }
-      } else if (event.type == BluetoothConnectionEventType.deviceConnected) {
-        BluetoothManager().sendExchangeRateHistory();
       }
     });
   }
@@ -438,6 +436,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         } else {
           kPrint("No pairing response on completed state!");
         }
+        await BluetoothManager().sendExchangeRateHistory();
         resetOnboardingPrimeProviders(ref);
         mainRouter.go(ROUTE_ACCOUNTS_HOME);
         if (mounted) {

@@ -432,6 +432,12 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
           kPrint("Error decoding: $e");
         });
       });
+
+      _bluetoothChannel.deviceStatusStream.listen((event) {
+        if (event.type == BluetoothConnectionEventType.deviceConnected) {
+          sendExchangeRateHistory();
+        }
+      });
       // _bluetoothChannel.listenToDeviceConnectionEvents().listen((event) {});
     } else {
       // _subscription = bluart.read(id: id).listen((bleData) {

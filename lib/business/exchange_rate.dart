@@ -82,6 +82,7 @@ class ExchangeRate extends ChangeNotifier {
   final String RATE_KEY = "rate";
   final String USD_RATE_KEY = "usdRate";
   final String CURRENCY_KEY = "currency";
+  final String HISTORY_KEY = "history";
 
   double? _selectedCurrencyRate;
 
@@ -166,6 +167,11 @@ class ExchangeRate extends ChangeNotifier {
       _selectedCurrencyRate = storedExchangeRate[RATE_KEY] ?? 0;
       _usdRate = storedExchangeRate[USD_RATE_KEY];
     }
+    if (storedExchangeRate != null && storedExchangeRate[HISTORY_KEY] != null) {
+      _history = ExchangeRateHistory.fromJson(
+        Map<String, dynamic>.from(storedExchangeRate[HISTORY_KEY]),
+      );
+    }
   }
 
   void setCurrency(String? currencyCode) async {
@@ -200,7 +206,8 @@ class ExchangeRate extends ChangeNotifier {
     Map exchangeRateMap = {
       CURRENCY_KEY: currencyCode,
       RATE_KEY: selectedRate,
-      USD_RATE_KEY: usdRate
+      USD_RATE_KEY: usdRate,
+      HISTORY_KEY: _history.toJson(),
     };
 
     EnvoyStorage().setExchangeRate(exchangeRateMap);
