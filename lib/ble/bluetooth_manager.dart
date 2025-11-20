@@ -590,14 +590,13 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
         );
       }).toList();
 
-      // Wrap inside ExchangeRateHistory API object
       final historyMessage = api.ExchangeRateHistory(
         history: apiPoints,
         currencyCode: currency,
       );
 
-      // Send using BLE
-      writeMessage(api.QuantumLinkMessage.exchangeRateHistory(historyMessage));
+      await writeMessage(
+          api.QuantumLinkMessage.exchangeRateHistory(historyMessage));
 
       kPrint(
           "Sent ${apiPoints.length} exchange rate points for currency $currency");
