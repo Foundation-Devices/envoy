@@ -289,6 +289,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             dialog: const ConnectionLostDialog(),
           );
         }
+      } else if (event.type == BluetoothConnectionEventType.deviceConnected) {
+        BluetoothManager().sendExchangeRateHistory();
       }
     });
   }

@@ -558,6 +558,50 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     }
   }
 
+  Future<void> sendExchangeRateHistory() async {
+    if (_sendingData) return;
+
+    if (Devices().getPrimeDevices.isEmpty || _recipientXid == null) {
+      return;
+    }
+
+    try {
+      _sendingData = true;
+
+      final historyPoints = ExchangeRate().history.points;
+      final currency = ExchangeRate().history.currency;
+
+      if (historyPoints.isEmpty) {
+        kPrint("No exchange rate history to send.");
+        return;
+      }
+
+      // Convert Dart RatePoint -> API PricePoint
+      final apiPoints = historyPoints.map((p) {
+        return api.PricePoint(
+          rate: p.price,
+          timestamp: BigInt.from(p.timestamp),
+        );
+      }).toList();
+
+      // Wrap inside ExchangeRateHistory API object
+      final historyMessage = api.ExchangeRateHistory(
+        history: apiPoints,
+        currencyCode: currency,
+      );
+
+      // Send using BLE
+      writeMessage(api.QuantumLinkMessage.exchangeRateHistory(historyMessage));
+
+      kPrint(
+          "Sent ${apiPoints.length} exchange rate points for currency $currency");
+    } catch (e) {
+      kPrint('Failed to send exchange rate history: $e');
+    } finally {
+      _sendingData = false;
+    }
+  }
+
   void setupExchangeRateListener() {
     ExchangeRate().addListener(() async {
       kPrint("Sending exchange rate to Prime ...");

@@ -100,6 +100,10 @@ class ExchangeRate extends ChangeNotifier {
   final HttpTor _http = HttpTor();
   final String _serverAddress = Settings().nguServerAddress;
 
+  ExchangeRateHistory _history = ExchangeRateHistory(currency: "", points: []);
+
+  ExchangeRateHistory get history => _history;
+
   static final ExchangeRate _instance = ExchangeRate._internal();
 
   factory ExchangeRate() {
@@ -220,6 +224,7 @@ class ExchangeRate extends ChangeNotifier {
     try {
       if (selectedCurrencyCode != "USD") {
         selectedRate = await _getRateForCode(selectedCurrencyCode);
+        await _fetchRateHistory(selectedCurrencyCode);
 
         if (selectedCurrencyCode == _selectedCurrency?.code) {
           _selectedCurrencyRate = selectedRate;
@@ -242,6 +247,7 @@ class ExchangeRate extends ChangeNotifier {
 
   Future<void> _getUsdRate() async {
     try {
+      await _fetchRateHistory("USD");
       _usdRate = await _getRateForCode("USD");
       _usdRateTimestamp = DateTime.now();
       _storeRate(_selectedCurrencyRate, _selectedCurrency?.code, _usdRate);
@@ -266,6 +272,28 @@ class ExchangeRate extends ChangeNotifier {
       kPrint("Couldn't get exchange rate: $e");
       ConnectivityManager().nguFailure();
       rethrow;
+    }
+  }
+
+  Future<void> _fetchRateHistory(String currency) async {
+    try {
+      final response = await _http.get('$_serverAddress/history/$currency');
+
+      if (response.statusCode != 200) {
+        kPrint("History fetch failed");
+        return;
+      }
+
+      final jsonData = jsonDecode(response.body);
+
+      _history = ExchangeRateHistory.fromJson({
+        "currency": jsonData['fiat'],
+        "points": jsonData["points"],
+      });
+
+      notifyListeners();
+    } catch (e) {
+      kPrint("Failed to fetch history: $e");
     }
   }
 
@@ -370,4 +398,50 @@ class ExchangeRate extends ChangeNotifier {
     }
     return "";
   }
+}
+
+class RatePoint {
+  final double price;
+  final int timestamp;
+
+  RatePoint({
+    required this.price,
+    required this.timestamp,
+  });
+
+  factory RatePoint.fromJson(Map<String, dynamic> json) {
+    return RatePoint(
+      price: (json["price"] as num).toDouble(),
+      timestamp: json["ts"],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "price": price,
+        "ts": timestamp,
+      };
+}
+
+class ExchangeRateHistory {
+  final String currency;
+  final List<RatePoint> points;
+
+  ExchangeRateHistory({
+    required this.currency,
+    required this.points,
+  });
+
+  factory ExchangeRateHistory.fromJson(Map<String, dynamic> json) {
+    return ExchangeRateHistory(
+      currency: json["currency"],
+      points: (json["points"] as List<dynamic>)
+          .map((e) => RatePoint.fromJson(e))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "currency": currency,
+        "points": points.map((p) => p.toJson()).toList(),
+      };
 }
