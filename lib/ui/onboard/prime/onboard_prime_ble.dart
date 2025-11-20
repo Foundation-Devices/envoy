@@ -436,6 +436,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         } else {
           kPrint("No pairing response on completed state!");
         }
+        await BluetoothManager().sendExchangeRateHistory();
         resetOnboardingPrimeProviders(ref);
         mainRouter.go(ROUTE_ACCOUNTS_HOME);
         if (mounted) {

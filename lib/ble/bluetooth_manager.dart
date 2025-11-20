@@ -432,6 +432,12 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
           kPrint("Error decoding: $e");
         });
       });
+
+      _bluetoothChannel.deviceStatusStream.listen((event) {
+        if (event.type == BluetoothConnectionEventType.deviceConnected) {
+          sendExchangeRateHistory();
+        }
+      });
       // _bluetoothChannel.listenToDeviceConnectionEvents().listen((event) {});
     } else {
       // _subscription = bluart.read(id: id).listen((bleData) {
@@ -558,6 +564,49 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     }
   }
 
+  Future<void> sendExchangeRateHistory() async {
+    if (_sendingData) return;
+
+    if (Devices().getPrimeDevices.isEmpty || _recipientXid == null) {
+      return;
+    }
+
+    try {
+      _sendingData = true;
+
+      final historyPoints = ExchangeRate().history.points;
+      final currency = ExchangeRate().history.currency;
+
+      if (historyPoints.isEmpty) {
+        kPrint("No exchange rate history to send.");
+        return;
+      }
+
+      // Convert Dart RatePoint -> API PricePoint
+      final apiPoints = historyPoints.map((p) {
+        return api.PricePoint(
+          rate: p.price,
+          timestamp: BigInt.from(p.timestamp),
+        );
+      }).toList();
+
+      final historyMessage = api.ExchangeRateHistory(
+        history: apiPoints,
+        currencyCode: currency,
+      );
+
+      await writeMessage(
+          api.QuantumLinkMessage.exchangeRateHistory(historyMessage));
+
+      kPrint(
+          "Sent ${apiPoints.length} exchange rate points for currency $currency");
+    } catch (e) {
+      kPrint('Failed to send exchange rate history: $e');
+    } finally {
+      _sendingData = false;
+    }
+  }
+
   void setupExchangeRateListener() {
     ExchangeRate().addListener(() async {
       await sendExchangeRate();
@@ -652,6 +701,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     if (Platform.isIOS || Platform.isAndroid) {
       await _bluetoothChannel.writeAll(data);
     } else {
+      _sendingData = false;
       throw UnimplementedError(
           "Bluetooth write not implemented for this platform");
     }
@@ -681,6 +731,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     //     _writeProgressController.addError(e);
     //   },
     // );
+    _sendingData = false;
     return Stream.value(1.0);
   }
 
