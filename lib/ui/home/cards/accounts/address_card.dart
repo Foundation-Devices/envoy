@@ -138,9 +138,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             EnvoyIcon(
-                              !widget.account.isHot && isPrime
-                                  ? EnvoyIcons.quantum
-                                  : EnvoyIcons.qr_scan,
+                              isPrime ? EnvoyIcons.quantum : EnvoyIcons.qr_scan,
                               color: EnvoyColors.accentPrimary,
                             ),
                             const SizedBox(width: EnvoySpacing.small),
