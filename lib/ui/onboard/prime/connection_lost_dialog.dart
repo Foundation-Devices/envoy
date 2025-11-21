@@ -58,35 +58,50 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
       _isReconnecting = true;
     });
 
-    // 👇 Force Flutter to render the new UI state BEFORE reconnect
+    // Allow UI to update BEFORE heavy work
     await Future.delayed(Duration.zero);
 
     final bleId = BluetoothManager().bleId;
     final device = Devices().getDeviceByBleId(bleId);
 
-    try {
-      await BluetoothManager().reconnect(device!);
-      await Future.delayed(const Duration(
-          milliseconds:
-              3000)); // TODO: add some while to try a few more times if there is no Prime ble?
+    const int attempts = 5; // total retries
+    const Duration delayPerAttempt = Duration(milliseconds: 500);
+    bool success = false;
 
-      final bool connectionNow =
-          ref.read(isPrimeConnectedProvider(device.bleId));
+    for (int i = 0; i < attempts; i++) {
+      try {
+        await BluetoothManager().reconnect(device!);
 
-      if (connectionNow && device.type == DeviceType.passportPrime && mounted) {
-        Navigator.pop(context);
+        // Wait a bit to allow provider to update
+        await Future.delayed(const Duration(milliseconds: 200));
+
+        final bool isConnected =
+            ref.read(isPrimeConnectedProvider(device.bleId));
+
+        if (isConnected) {
+          success = true;
+          break;
+        }
+      } catch (e) {
+        kPrint("Reconnect attempt ${i + 1} failed: $e");
       }
 
-      _displayPrimeConnectedToast(connectionNow);
-    } catch (e) {
-      kPrint("Reconnect failed: $e");
+      // Wait before next attempt
+      await Future.delayed(delayPerAttempt);
+    }
+
+    // After all attempts:
+    if (success && mounted) {
+      Navigator.pop(context);
+      _displayPrimeConnectedToast(true);
+    } else {
       _displayPrimeConnectedToast(false);
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isReconnecting = false;
-        });
-      }
+    }
+
+    if (mounted) {
+      setState(() {
+        _isReconnecting = false;
+      });
     }
   }
 
@@ -98,8 +113,8 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
         duration:
             success ? const Duration(seconds: 4) : const Duration(seconds: 3),
         message: success
-            ? "Prime reconnected successfully." // TODO: FIGMA
-            : "Prime failed to reconnect.",
+            ? "Passport Prime reconnected successfully." // TODO: FIGMA
+            : "Unable to reconnect to Passport Prime.",
         icon: success
             ? const EnvoyIcon(
                 EnvoyIcons.info,
@@ -153,7 +168,6 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
                       "/"); // TODO: where does the app need to go, can't go home!!!
                 },
               ),
-              // TODO: reconnect button
               const SizedBox(height: EnvoySpacing.medium1),
               EnvoyButton(
                 _isReconnecting
