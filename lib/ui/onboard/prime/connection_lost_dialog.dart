@@ -4,9 +4,11 @@
 
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -93,9 +95,8 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
     // After all attempts:
     if (success && mounted) {
       Navigator.pop(context);
-      _displayPrimeConnectedToast(true);
     } else {
-      _displayPrimeConnectedToast(false);
+      _unableToReconnectPrimeToast();
     }
 
     if (mounted) {
@@ -105,31 +106,27 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
     }
   }
 
-  void _displayPrimeConnectedToast(bool success) {
+  void _unableToReconnectPrimeToast() {
     if (context.mounted) {
       EnvoyToast(
         backgroundColor: Colors.lightBlue,
         replaceExisting: true,
-        duration:
-            success ? const Duration(seconds: 4) : const Duration(seconds: 3),
-        message: success
-            ? "Passport Prime reconnected successfully." // TODO: FIGMA
-            : "Unable to reconnect to Passport Prime.",
-        icon: success
-            ? const EnvoyIcon(
-                EnvoyIcons.info,
-                color: EnvoyColors.accentPrimary,
-              )
-            : const EnvoyIcon(
-                EnvoyIcons.alert,
-                color: EnvoyColors.accentSecondary,
-              ),
+        duration: const Duration(seconds: 3),
+        message: "Unable to reconnect to Passport Prime.",
+        // TODO: S().firmware_updateModalConnectionLostToast_unableToReconnect,
+        icon: const EnvoyIcon(
+          EnvoyIcons.alert,
+          color: EnvoyColors.accentSecondary,
+        ),
       ).show(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isOnboardingComplete =
+        LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
+
     return Padding(
       padding: const EdgeInsets.all(EnvoySpacing.medium2),
       child: Column(
@@ -157,17 +154,18 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
           const SizedBox(height: EnvoySpacing.medium3),
           Column(
             children: [
-              EnvoyButton(
-                S().firmware_updateModalConnectionLost_exit,
-                borderRadius: BorderRadius.circular(EnvoySpacing.small),
-                type: EnvoyButtonTypes.secondary,
-                onTap: () {
-                  resetOnboardingPrimeProviders(ref);
-                  Navigator.of(context).pop();
-                  context.go(
-                      "/"); // TODO: where does the app need to go, can't go home!!!
-                },
-              ),
+              isOnboardingComplete
+                  ? EnvoyButton(
+                      S().firmware_updateModalConnectionLost_exit,
+                      borderRadius: BorderRadius.circular(EnvoySpacing.small),
+                      type: EnvoyButtonTypes.secondary,
+                      onTap: () {
+                        resetOnboardingPrimeProviders(ref);
+                        Navigator.of(context).pop();
+                        context.go("/");
+                      },
+                    )
+                  : SizedBox.shrink(),
               const SizedBox(height: EnvoySpacing.medium1),
               EnvoyButton(
                 _isReconnecting
