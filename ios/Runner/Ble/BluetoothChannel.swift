@@ -313,7 +313,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         
                         // Send progress update
                         let progress = fileSize > 0 ? Float(bytesProcessed) / Float(fileSize) : 0.0
-                        self.sendWriteProgress(progress, id: path)
+                        self.sendWriteProgress(progress, id: path, bytesProcessed: bytesProcessed, totalBytes: fileSize)
                         
                         self.bleQueue.sync {
                             let _ = self.handleBinaryWrite(data: itemData)
@@ -325,7 +325,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 }
                 
                 // Send final progress update
-                self.sendWriteProgress(1.0, id: path)
+                self.sendWriteProgress(1.0, id: path, bytesProcessed: fileSize, totalBytes: fileSize)
                 
                 // Success, delete file after ble transmit
                 do {
@@ -1192,12 +1192,14 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         }
     }
     
-    private func sendWriteProgress(_ progress: Float, id: String) {
+    private func sendWriteProgress(_ progress: Float, id: String, bytesProcessed: Int64 = 0, totalBytes: Int64 = 0) {
         guard let sink = writeStreamSink else { return }
         
         let stateData: [String: Any] = [
             "id": id,
             "progress": progress,
+            "bytes_processed": bytesProcessed,
+            "total_bytes": totalBytes
          ]
     
         sink(stateData)

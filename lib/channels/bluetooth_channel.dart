@@ -68,7 +68,8 @@ class BluetoothChannel {
     if (event is Map<dynamic, dynamic>) {
       return WriteProgress.fromMap(event);
     } else {
-      return WriteProgress(progress: 0.0, id: "");
+      return WriteProgress(
+          progress: 0.0, id: "", totalBytes: 0, bytesProcessed: 0);
     }
   }).asBroadcastStream();
 
