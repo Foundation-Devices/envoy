@@ -553,10 +553,8 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
 
         var scanFilters = knownPrimeDevicesMAC.map { bleMac ->
             ScanFilter.Builder()
-                .setDeviceName("Passport Prime")
                 .setDeviceAddress(bleMac)
                 .setServiceUuid(ParcelUuid(PRIME_SERVICE_UUID))
-                .setDeviceName("Passport Prime")
                 .build()
         }
 
