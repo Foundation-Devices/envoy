@@ -1,4 +1,4 @@
-package com.foundationdevices.envoy
+package com.foundationdevices.envoy.ble
 
 /**
  * Represents different types of BLE connection events

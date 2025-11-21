@@ -1,4 +1,4 @@
-package com.foundationdevices.envoy
+package com.foundationdevices.envoy.ble
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -100,10 +100,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
     private var currentMtu: Int = 247
 
     private val scope = CoroutineScope(Dispatchers.Main)
-
-    // Flag to indicate if bonding is required, during pairing flow this will be true
-    // for reconnect flow this will be false
-    private var requireBonding = true
 
     // BroadcastReceiver for bonding state changes
     private var bondingReceiver: BroadcastReceiver? = null
@@ -226,6 +222,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "pair" -> pairWithDevice(call, result)
+            "bond" -> bond(call, result)
             "stopScan" -> stopDeviceScan(result)
             "transmitFromFile" -> transmitFromFile(call, result)
             "deviceName" -> getDeviceName(result)
@@ -238,8 +235,37 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
     }
 
     private fun reconnect(call: MethodCall, result: MethodChannel.Result) {
-        requireBonding = false;
         pairWithDevice(call, result)
+    }
+    private fun bond(call: MethodCall, result: MethodChannel.Result) {
+        connectedDevice?.let { device ->
+            when (device.bondState) {
+                BluetoothDevice.BOND_NONE -> {
+                    Log.d(TAG, "Starting bonding after GATT connection...")
+                    val bondResult = device.createBond()
+                    if (!bondResult) {
+                        Log.e(TAG, "Failed to start bonding")
+
+                        sendConnectionEvent(
+                            BluetoothConnectionEventType.CONNECTION_ERROR,
+                            error = "Failed to start bonding"
+                        )
+
+                    }
+                }
+
+                BluetoothDevice.BOND_BONDED -> {
+                    Log.d(
+                        TAG,
+                        "Device already bonded, proceeding with service discovery"
+                    )
+                }
+
+                BluetoothDevice.BOND_BONDING -> {
+                    Log.d(TAG, "Bonding in progress, waiting...")
+                }
+            }
+        }
     }
 
     private fun transmitFromFile(call: MethodCall, result: MethodChannel.Result) {
@@ -487,7 +513,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
 
     @SuppressLint("MissingPermission")
     private fun pairWithDevice(call: MethodCall, result: MethodChannel.Result) {
-        requireBonding = true;
         if (!checkBluetoothPermissions()) {
             result.error(
                 "PERMISSION_ERROR", "Bluetooth permissions not granted", null
@@ -789,37 +814,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                             type = BluetoothConnectionEventType.DEVICE_CONNECTED
                         )
                     }
-                    connectedDevice?.let { device ->
-                        when (device.bondState) {
-                            BluetoothDevice.BOND_NONE -> {
-                                Log.d(TAG, "Starting bonding after GATT connection...")
-                                if (requireBonding) {
-                                    val bondResult = device.createBond()
-                                    if (!bondResult) {
-                                        Log.e(TAG, "Failed to start bonding")
-
-                                        sendConnectionEvent(
-                                            BluetoothConnectionEventType.CONNECTION_ERROR,
-                                            error = "Failed to start bonding"
-                                        )
-
-                                    }
-                                }
-
-                            }
-
-                            BluetoothDevice.BOND_BONDED -> {
-                                Log.d(
-                                    TAG,
-                                    "Device already bonded, proceeding with service discovery"
-                                )
-                            }
-
-                            BluetoothDevice.BOND_BONDING -> {
-                                Log.d(TAG, "Bonding in progress, waiting...")
-                            }
-                        }
-                    }
 
                     val requestMtu = bluetoothGatt?.requestMtu(247)
                     if (requestMtu == true) {
@@ -851,35 +845,9 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                         Log.i(TAG, "onConnectionStateChange: ")
                         return;
                     }
-                    val device = connectedDevice
-                    // Initiate bonding (pairing) if not already bonded
-                    if (requireBonding)
-                        when (device?.bondState) {
-                            BluetoothDevice.BOND_NONE -> {
-                                val bondResult = device.createBond()
-                                if (bondResult) {
-                                    sendConnectionEvent(
-                                        BluetoothConnectionEventType.CONNECTION_ATTEMPT,
-                                    )
-                                } else {
-                                    sendConnectionEvent(
-                                        BluetoothConnectionEventType.CONNECTION_ERROR,
-                                        error = "Failed to start bonding"
-                                    )
-                                    Log.e(TAG, "Failed to start bonding")
-                                }
-                            }
-
-                            BluetoothDevice.BOND_BONDING -> {
-                                // Bonding already in progress
-                            }
-
-                            BluetoothDevice.BOND_BONDED -> {
-                                sendConnectionEvent(
-                                    BluetoothConnectionEventType.DEVICE_CONNECTED,
-                                )
-                            }
-                        }
+                    sendConnectionEvent(
+                        BluetoothConnectionEventType.DEVICE_CONNECTED,
+                    )
                 }
 
                 BluetoothProfile.STATE_DISCONNECTED -> {

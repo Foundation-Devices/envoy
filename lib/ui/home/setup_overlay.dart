@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
@@ -244,6 +245,23 @@ void scanForDevice(BuildContext context) async {
         final uri = Uri.parse(payload);
         final params = uri.queryParameters;
         if (params.containsKey("p")) {
+          if (Devices().getPrimeDevices.isNotEmpty) {
+            EnvoyToast(
+              replaceExisting: true,
+              duration: const Duration(seconds: 6),
+              message:
+                  "Please disconnect from your existing Passport Prime before setting up a new one.",
+              isDismissible: true,
+              onActionTap: () {
+                EnvoyToast.dismissPreviousToasts(context);
+              },
+              icon: const Icon(
+                Icons.info_outline,
+                color: EnvoyColors.accentPrimary,
+              ),
+            ).show(context);
+            return;
+          }
           context.pushNamed(ONBOARD_PRIME, queryParameters: params);
         } else if (params.containsKey("t")) {
           context.pushNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);

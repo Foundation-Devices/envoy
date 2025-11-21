@@ -152,8 +152,20 @@ class BluetoothChannel {
       //Android will wait for event after initiating pairing
       unawaited(bleMethodChannel.invokeMethod("pair", {"deviceId": deviceId}));
     }
+    bool initiateBonding = false;
     final connect = await listenToDeviceConnectionEvents.firstWhere(
       (event) {
+        try {
+          if (event.connected && !initiateBonding && !event.bonded) {
+            initiateBonding = true;
+            kPrint("Initiating bonding ");
+            bleMethodChannel.invokeMethod(
+              "bond",
+            );
+          }
+        } catch (e) {
+          debugPrint("Error during bonding initiation: $e");
+        }
         return event.connected;
       },
     );
