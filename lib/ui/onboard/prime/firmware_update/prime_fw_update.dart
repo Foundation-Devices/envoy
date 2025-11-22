@@ -9,14 +9,15 @@ import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
+import 'package:envoy/ui/onboard/prime/onboard_prime_ble.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_gradient_progress.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
-import 'package:envoy/ui/onboard/prime/onboard_prime_ble.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OnboardPrimeFwUpdate extends ConsumerStatefulWidget {
@@ -62,6 +63,26 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
   @override
   Widget build(BuildContext context) {
     final primeUpdateState = ref.watch(primeUpdateStateProvider);
+    ref.listen(primeUpdateStateProvider, (previous, next) {
+      final stateMachine = _controller?.stateMachine;
+      if (stateMachine == null) return;
+
+      switch (next) {
+        case PrimeFwUpdateStep.finished:
+          stateMachine.boolean("indeterminate")?.value = false;
+          stateMachine.boolean("happy")?.value = true;
+          stateMachine.boolean("unhappy")?.value = false;
+        case PrimeFwUpdateStep.error:
+          stateMachine.boolean('indeterminate')?.value = false;
+          stateMachine.boolean("unhappy")?.value = true;
+          stateMachine.boolean("happy")?.value = false;
+        default:
+          stateMachine.boolean('indeterminate')?.value = true;
+          stateMachine.boolean("unhappy")?.value = false;
+          stateMachine.boolean("happy")?.value = false;
+          break;
+      }
+    });
 
     Widget downloadImage = Image.asset(
       "assets/images/fw_download.png",
@@ -86,19 +107,11 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     );
 
     return PopScope(
-      canPop: false,
+      canPop: true,
       child: OnboardPageBackground(
           child: EnvoyScaffold(
         removeAppBarPadding: true,
-        // topBarActions: [
-        //   OnboardingButton(
-        //     label: "Cancel",
-        //     type: EnvoyButtonTypes.secondary,
-        //     onTap: () {
-        //        ref.read(primeUpdateStateProvider.notifier).state = PrimeFwUpdateStep.idle;
-        //     },
-        //   )
-        // ],
+        topBarLeading: CupertinoNavigationBarBackButton(),
         child: Container(
           padding: const EdgeInsets.symmetric(
               horizontal: EnvoySpacing.small, vertical: EnvoySpacing.small),
@@ -169,74 +182,6 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     );
   }
 
-  Future<void> initFWUpdate() async {
-    final primeUpdateNotifier = ref.read(primeUpdateStateProvider.notifier);
-    final fwDownloadNotifier = ref.read(fwDownloadStateProvider.notifier);
-    final fwTransferStateNotifier = ref.read(fwTransferStateProvider.notifier);
-    final fwProgressNotifier = ref.read(fwDownloadProgressProvider.notifier);
-    final primFwVerifyStateNotifier =
-        ref.read(primeFwSigVerifyStateProvider.notifier);
-    final primFwInstallStateNotifier =
-        ref.read(primeFwInstallStateProvider.notifier);
-    final primFwRebootStateNotifier =
-        ref.read(primeFwRebootStateProvider.notifier);
-
-    primeUpdateNotifier.state = PrimeFwUpdateStep.downloading;
-    fwDownloadNotifier.updateStep(
-        S().firmware_updatingDownload_downloading, EnvoyStepState.LOADING);
-    fwProgressNotifier.state = .4;
-    await Future.delayed(const Duration(seconds: 2));
-    fwProgressNotifier.state = .8;
-    await Future.delayed(const Duration(seconds: 2));
-    fwProgressNotifier.state = 1.0;
-    await Future.delayed(const Duration(seconds: 2));
-    fwDownloadNotifier.updateStep(
-        S().firmware_downloadingUpdate_downloaded, EnvoyStepState.FINISHED);
-
-    primeUpdateNotifier.state = PrimeFwUpdateStep.transferring;
-    fwProgressNotifier.state = 0.0;
-    fwTransferStateNotifier.updateStep(
-        S().firmware_downloadingUpdate_transferring, EnvoyStepState.LOADING);
-    await Future.delayed(const Duration(seconds: 1));
-    fwProgressNotifier.state = 0.3;
-    await Future.delayed(const Duration(seconds: 1));
-    fwProgressNotifier.state = .5;
-    await Future.delayed(const Duration(seconds: 2));
-    fwProgressNotifier.state = .8;
-    await Future.delayed(const Duration(seconds: 2));
-    fwProgressNotifier.state = 1.0;
-    fwTransferStateNotifier.updateStep(
-        "Transferred to Passport Prime", EnvoyStepState.FINISHED);
-    await Future.delayed(const Duration(seconds: 2));
-
-    primeUpdateNotifier.state = PrimeFwUpdateStep.verifying;
-    primFwVerifyStateNotifier.updateStep(
-        "Verifying Signatures", EnvoyStepState.LOADING);
-    await Future.delayed(const Duration(seconds: 2));
-    primeUpdateNotifier.state = PrimeFwUpdateStep.installing;
-    primFwVerifyStateNotifier.updateStep(
-        "Signatures verified", EnvoyStepState.FINISHED);
-    primFwInstallStateNotifier.updateStep(
-        "Installing Update", EnvoyStepState.LOADING);
-    await Future.delayed(const Duration(seconds: 2));
-
-    primeUpdateNotifier.state = PrimeFwUpdateStep.rebooting;
-    primFwInstallStateNotifier.updateStep(
-        "Update installed", EnvoyStepState.FINISHED);
-    primFwRebootStateNotifier.updateStep(
-        "Passport Prime is rebooting", EnvoyStepState.LOADING);
-    await Future.delayed(const Duration(seconds: 2));
-    primFwRebootStateNotifier.updateStep(
-        "Passport Prime is rebooting", EnvoyStepState.FINISHED);
-    await Future.delayed(const Duration(seconds: 1));
-
-    _controller?.stateMachine.boolean('indeterminate')?.value = false;
-    _controller?.stateMachine.boolean('happy')?.value = true;
-    _controller?.stateMachine.boolean('unhappy')?.value = false;
-
-    primeUpdateNotifier.state = PrimeFwUpdateStep.finished;
-  }
-
   Widget _updateFinishedWidget(BuildContext context) {
     _controller?.stateMachine.boolean('happy')?.value = true;
     return Column(
@@ -305,7 +250,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
           padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
           child: EnvoyButton(
               S().firmware_updateAvailable_whatsNew(
-                  ref.read(primeDeviceNewVersionProvider)),
+                  BluetoothManager().fwUpdateHandler.newVersion),
               type: EnvoyButtonTypes.secondary, onTap: () {
             launchUrl(Uri.parse(
                 "https://github.com/Foundation-Devices/KeyOS-Releases/releases/tag/${ref.read(primeDeviceNewVersionProvider)}"));
@@ -389,34 +334,29 @@ class _PrimeFwDownloadProgressState
               const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
               Consumer(builder: (context, ref, child) {
                 // final progress = ref.watch(sendProgressProvider);
-                final progressNew = ref.watch(fwTransmitProgress);
-                var timeRemaining = ref.watch(remainingTimeProvider);
-                String formatDuration(Duration d) {
-                  final totalSeconds = d.inSeconds;
-
-                  if (totalSeconds < 60) {
-                    return " ${totalSeconds}s";
-                  } else {
-                    final minutes = (totalSeconds / 60).round();
-                    return " ~${minutes}min";
-                  }
-                }
-
-                return Column(
-                  children: [
-                    EnvoyGradientProgress(
-                      progress: progressNew,
-                    ),
-                    const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-                    if (ref.watch(fwDownloadStateProvider).state ==
-                        EnvoyStepState.FINISHED)
-                      Text(
-                        S().firmware_downloadingUpdate_timeRemaining(
-                            formatDuration(timeRemaining)), //
-                        style: EnvoyTypography.explainer.copyWith(fontSize: 14),
-                      ),
-                  ],
-                );
+                final progressNew = ref.watch(fwTransferProgress);
+                return progressNew.map(
+                    data: (progressNew) {
+                      return Column(
+                        children: [
+                          EnvoyGradientProgress(
+                            progress: progressNew.value.progress,
+                          ),
+                          const Padding(
+                              padding: EdgeInsets.all(EnvoySpacing.small)),
+                          if (ref.watch(fwDownloadStateProvider).state ==
+                              EnvoyStepState.FINISHED)
+                            Text(
+                              S().firmware_downloadingUpdate_timeRemaining(
+                                  progressNew.value.remainingTime), //
+                              style: EnvoyTypography.explainer
+                                  .copyWith(fontSize: 14),
+                            ),
+                        ],
+                      );
+                    },
+                    error: (_) => SizedBox.shrink(),
+                    loading: (_) => SizedBox.shrink());
               })
             ],
           ))

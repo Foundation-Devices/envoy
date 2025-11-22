@@ -3,7 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
+import 'package:envoy/ble/bluetooth_manager.dart';
+import 'package:envoy/ble/handlers/fw_update_handler.dart';
+import 'package:envoy/ble/handlers/onboard_handler.dart';
+import 'package:envoy/ble/handlers/scv_handler.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
@@ -15,90 +20,169 @@ class StepNotifier extends StateNotifier<StepModel> {
   StepNotifier(
       {String stepName = "Loading",
       EnvoyStepState state = EnvoyStepState.HIDDEN})
-      : super(StepModel(stepName: stepName, state: state)) {
-    // TODO: implement StepNotifier
-  }
+      : super(StepModel(stepName: stepName, state: state));
 
   Future<void> updateStep(String stepName, EnvoyStepState state) async {
     this.state = StepModel(stepName: stepName, state: state);
   }
 }
 
-final bleConnectionProvider =
-    StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier();
-});
-
-final deviceSecurityProvider =
-    StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier(
-      stepName: S().onboarding_connectionIntro_checkingDeviceSecurity,
-      state: EnvoyStepState.LOADING);
-});
-
-final firmWareUpdateProvider =
-    StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier(
-    stepName: S().onboarding_connectionIntro_checkForUpdates,
-    state: EnvoyStepState.IDLE,
+final bleConnectionProvider = Provider<StepModel>((ref) {
+  final asyncState = ref.watch(blePairingStreamProvider);
+  return asyncState.when(
+    data: (data) {
+      return StepModel(stepName: data.message, state: data.step);
+    },
+    loading: () {
+      return StepModel(
+          stepName: "Connecting to device", state: EnvoyStepState.IDLE);
+    },
+    error: (err, stack) {
+      return StepModel(
+          stepName: "Unable to connect to device", state: EnvoyStepState.ERROR);
+    },
   );
 });
 
-final creatingPinProvider =
-    StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier(
-      stepName: S().finalize_catchAll_creatingPin,
-      state: EnvoyStepState.LOADING);
+final deviceSecurityProvider = Provider<StepModel>((ref) {
+  final asyncState = ref.watch(scvStateProvider);
+  return asyncState.when(
+    data: (data) {
+      return StepModel(stepName: data.message, state: data.step);
+    },
+    loading: () {
+      return StepModel(
+          stepName: S().onboarding_connectionIntro_checkingDeviceSecurity,
+          state: EnvoyStepState.IDLE);
+    },
+    error: (err, stack) {
+      return StepModel(
+          stepName: S().onboarding_connectionIntroError_securityCheckFailed,
+          state: EnvoyStepState.ERROR);
+    },
+  );
 });
 
-final setUpMasterKeyProvider =
-    StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier(
-      stepName: S().finalize_catchAll_setUpMasterKey,
-      state: EnvoyStepState.IDLE);
+final fwUpdateStreamProvider = StreamProvider<FwUpdateState>((ref) {
+  return BluetoothManager().fwUpdateHandler.fetchStateStream;
 });
 
-final backUpMasterKeyProvider =
-    StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier(
-      stepName: S().finalize_catchAll_backUpMasterKey,
-      state: EnvoyStepState.IDLE);
+final blePairingStreamProvider = StreamProvider<BleConnectionState>((ref) {
+  return BluetoothManager().bleOnboardHandler.blePairingState;
 });
 
-final connectAccountProvider =
-    StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier(
-      stepName: S().finalize_catchAll_connectAccount,
-      state: EnvoyStepState.IDLE);
+final onboardingStateStreamProvider = StreamProvider<OnboardingState>((ref) {
+  return BluetoothManager().bleOnboardHandler.onboardingState;
 });
 
-void resetOnboardingPrimeProviders(WidgetRef ref) {
-  ref.read(deviceSecurityProvider.notifier).updateStep(
-      S().onboarding_connectionIntro_checkingDeviceSecurity,
-      EnvoyStepState.LOADING);
+final scvStateProvider = StreamProvider<ScvUpdateState>((ref) {
+  return BluetoothManager().scvAccountHandler.scvUpdateController;
+});
 
-  ref.read(firmWareUpdateProvider.notifier).updateStep(
-        S().onboarding_connectionIntro_checkForUpdates,
-        EnvoyStepState.IDLE,
-      );
+final fwDownloadStreamProvider = StreamProvider<FwUpdateState>((ref) {
+  return BluetoothManager().fwUpdateHandler.downloadStateStream;
+});
 
-  ref.read(creatingPinProvider.notifier).updateStep(
-        S().finalize_catchAll_creatingPin,
-        EnvoyStepState.LOADING,
-      );
+final fwUpdateStepProvider = StreamProvider<PrimeFwUpdateStep>((ref) {
+  return BluetoothManager().fwUpdateHandler.primeFwUpdate;
+});
 
-  ref.read(setUpMasterKeyProvider.notifier).updateStep(
-        S().finalize_catchAll_setUpMasterKey,
-        EnvoyStepState.IDLE,
-      );
+final fwTransferState = StreamProvider<FwUpdateState>((ref) {
+  return BluetoothManager().fwUpdateHandler.transferStateStream;
+});
 
-  ref.read(backUpMasterKeyProvider.notifier).updateStep(
-        S().finalize_catchAll_backUpMasterKey,
-        EnvoyStepState.IDLE,
-      );
+final firmWareUpdateProvider = Provider<StepModel>((ref) {
+  final asyncState = ref.watch(fwUpdateStreamProvider);
 
-  ref.read(connectAccountProvider.notifier).updateStep(
-        S().finalize_catchAll_connectAccount,
-        EnvoyStepState.IDLE,
-      );
-}
+  return asyncState.when(
+    data: (data) {
+      return StepModel(stepName: data.message, state: data.step);
+    },
+    loading: () {
+      return StepModel(
+          stepName: S().onboarding_connectionIntro_checkForUpdates,
+          state: EnvoyStepState.IDLE);
+    },
+    error: (err, stack) {
+      return StepModel(
+          stepName: S().onboarding_connectionIntro_checkForUpdates,
+          state: EnvoyStepState.ERROR);
+    },
+  );
+});
+
+final creatingPinProvider = Provider<StepModel>((ref) {
+  ref.watch(onboardingStateStreamProvider);
+  final stateHistory = BluetoothManager().bleOnboardHandler.completedSteps;
+  if (stateHistory.contains(OnboardingState.deviceSecured)) {
+    return StepModel(
+        stepName: S().finalize_catchAll_pinCreated,
+        state: EnvoyStepState.FINISHED);
+  } else if (stateHistory.contains(OnboardingState.securingDevice)) {
+    return StepModel(
+        stepName: S().finalize_catchAll_creatingPin,
+        state: EnvoyStepState.LOADING);
+  } else {
+    return StepModel(
+        stepName: S().finalize_catchAll_creatingPin,
+        state: EnvoyStepState.IDLE);
+  }
+});
+
+final setUpMasterKeyProvider = Provider<StepModel>((ref) {
+  ref.watch(onboardingStateStreamProvider);
+  final stateHistory = BluetoothManager().bleOnboardHandler.completedSteps;
+  if (stateHistory.contains(OnboardingState.walletCreated)) {
+    return StepModel(
+        stepName: S().finalize_catchAll_masterKeySetUp,
+        state: EnvoyStepState.FINISHED);
+  } else if (stateHistory.contains(OnboardingState.walletCreationScreen)) {
+    return StepModel(
+        stepName: S().finalize_catchAll_settingUpMasterKey,
+        state: EnvoyStepState.LOADING);
+  } else {
+    return StepModel(
+        stepName: S().finalize_catchAll_setUpMasterKey,
+        state: EnvoyStepState.IDLE);
+  }
+});
+
+final backUpMasterKeyProvider = Provider<StepModel>((ref) {
+  ref.watch(onboardingStateStreamProvider);
+  final stateHistory = BluetoothManager().bleOnboardHandler.completedSteps;
+  if (stateHistory.contains(OnboardingState.magicBackupCreated) ||
+      stateHistory.contains(OnboardingState.connectingWallet)) {
+    return StepModel(
+        stepName: S().finalize_catchAll_masterKeyBackedUp,
+        state: EnvoyStepState.FINISHED);
+  } else if (stateHistory.contains(OnboardingState.magicBackupScreen) ||
+      stateHistory.contains(OnboardingState.creatingManualBackup)) {
+    return StepModel(
+        stepName: S().finalize_catchAll_backingUpMasterKey,
+        state: EnvoyStepState.LOADING);
+  } else {
+    return StepModel(
+        stepName: S().finalize_catchAll_backUpMasterKey,
+        state: EnvoyStepState.IDLE);
+  }
+});
+
+final connectAccountProvider = Provider<StepModel>((ref) {
+  ref.watch(onboardingStateStreamProvider);
+  final stateHistory = BluetoothManager().bleOnboardHandler.completedSteps;
+  if (stateHistory.contains(OnboardingState.walletConected)) {
+    return StepModel(
+        stepName: S().finalize_catchAll_connectingAccount,
+        state: EnvoyStepState.FINISHED);
+  } else if (stateHistory.contains(OnboardingState.connectingWallet)) {
+    return StepModel(
+        stepName: S().finalize_catchAll_connectingAccount,
+        state: EnvoyStepState.LOADING);
+  } else {
+    return StepModel(
+        stepName: S().finalize_catchAll_connectAccount,
+        state: EnvoyStepState.IDLE);
+  }
+});
+
+void resetOnboardingPrimeProviders(WidgetRef ref) {}
