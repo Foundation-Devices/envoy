@@ -232,6 +232,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             "pair" -> pairWithDevice(call, result)
             "bond" -> bond(result)
             "stopScan" -> stopDeviceScan(result)
+            "getCurrentDeviceStatus" -> getCurrentDeviceStatus(result)
             "transmitFromFile" -> transmitFromFile(call, result)
             "deviceName" -> getDeviceName(result)
             "disconnect" -> disconnectDevice(result)
@@ -240,6 +241,27 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             "isConnected" -> result.success(isConnected())
             else -> result.notImplemented()
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getCurrentDeviceStatus(result: MethodChannel.Result) {
+        if (!checkBluetoothPermissions()) {
+            result.error(
+                "PERMISSION_ERROR", "Bluetooth permissions not granted", null
+            )
+            return
+        }
+        result.success(
+            BluetoothConnectionStatus(
+                type = null,
+                connected = isConnected(),
+                peripheralId = connectedDevice?.address,
+                peripheralName = connectedDevice?.name ?: "Unknown Device",
+                bonded = connectedDevice?.bondState == BluetoothDevice.BOND_BONDED,
+                rssi = null,
+                error = null
+            ).toMap()
+        )
     }
 
     private fun reconnect(call: MethodCall, result: MethodChannel.Result) {
@@ -724,7 +746,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         type: BluetoothConnectionEventType,
         error: String? = null
     ) {
-        if(!checkBluetoothPermissions()) {
+        if (!checkBluetoothPermissions()) {
             Log.w(TAG, "Missing Bluetooth permissions for sending connection event")
             return
         }
@@ -1108,17 +1130,18 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
 
     @SuppressLint("MissingPermission")
     private fun isConnected(): Boolean {
-        if (connectedDevice == null && !checkBluetoothPermissions()) {
-            return false
-        }
+        if (!checkBluetoothPermissions()) return false
+
+        val device = connectedDevice ?: return false
+
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             bluetoothManager.getConnectionState(
-                connectedDevice,
+                device,
                 BluetoothProfile.GATT
             ) == BluetoothProfile.STATE_CONNECTED
         } else {
             @Suppress("DEPRECATION")
-            bluetoothGatt?.getConnectionState(connectedDevice) == BluetoothProfile.STATE_CONNECTED
+            bluetoothGatt?.getConnectionState(device) == BluetoothProfile.STATE_CONNECTED
         }
     }
 
