@@ -94,6 +94,23 @@ class BluetoothChannel {
     });
   }
 
+  Future<DeviceStatus> getCurrentDeviceStatus() async {
+    try {
+      final result = await bleMethodChannel
+          .invokeMethod<Map<dynamic, dynamic>>('getCurrentDeviceStatus');
+
+      if (result != null) {
+        return DeviceStatus.fromMap(result);
+      } else {
+        return DeviceStatus(connected: false);
+      }
+    } catch (e, stack) {
+      debugPrintStack(
+          label: "Error getting current device status: $e", stackTrace: stack);
+      return DeviceStatus(connected: false);
+    }
+  }
+
   /// Write all data chunks to the connected BLE device
   /// Returns true if successful, false otherwise
   Future<bool> writeAll(List<Uint8List> data) async {

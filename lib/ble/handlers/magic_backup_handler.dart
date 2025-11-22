@@ -75,7 +75,7 @@ class BleMagicBackupHandler extends PassportMessageHandler {
               final result = await backup_lib.Backup.performPrimeBackup(
                   serverUrl: Settings().envoyServerAddress,
                   proxyPort: Tor.instance.port,
-                  seedHash: file.seedFingerprint,
+                  seedHash: file.seedFingerprint.field0,
                   payload: file.data);
               kPrint(
                   "Prime Magic Backup upload: ${result ? "✔︎success" : "✖︎ failure"}");
@@ -87,14 +87,14 @@ class BleMagicBackupHandler extends PassportMessageHandler {
                 await writer.writeMessage(
                     api.QuantumLinkMessage_CreateMagicBackupResult(
                         api.CreateMagicBackupResult.error(
-                            "Failed to upload backup")));
+                            error: "Failed to upload backup")));
               }
               _collectBackupChunks = null;
             }
           } catch (e, stack) {
             await writer.writeMessage(
                 api.QuantumLinkMessage_RestoreMagicBackupResult(
-                    api.RestoreMagicBackupResult.error(e.toString())));
+                    api.RestoreMagicBackupResult.error(error: e.toString())));
             kPrint("Error prime magic backup: $e", stackTrace: stack);
           }
         } else {
@@ -110,7 +110,7 @@ class BleMagicBackupHandler extends PassportMessageHandler {
       final payloadRes = await backup_lib.Backup.getPrimeBackup(
         serverUrl: Settings().envoyServerAddress,
         proxyPort: Tor.instance.port,
-        hash: fingerPrint,
+        hash: fingerPrint.field0,
       );
       if (payloadRes.isNotEmpty) {
         final tempFile = await BluetoothChannel.getBleCacheFile(
@@ -123,7 +123,7 @@ class BleMagicBackupHandler extends PassportMessageHandler {
     } catch (e, stack) {
       debugPrintStack(stackTrace: stack);
       writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
-          api.RestoreMagicBackupEvent.error("$e")));
+          api.RestoreMagicBackupEvent.error(error: "$e")));
       EnvoyReport().log("PrimeMagicBackup", "Error restoring magic backup: $e",
           stackTrace: stack);
     }

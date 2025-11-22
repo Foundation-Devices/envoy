@@ -7,14 +7,15 @@ import 'dart:io';
 
 import 'package:envoy/ble/handlers/fw_update_handler.dart';
 import 'package:envoy/ble/handlers/onboard_handler.dart';
+import 'package:envoy/ble/handlers/scv_handler.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/scv_server.dart';
-import 'package:envoy/business/server.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/ntp.dart';
@@ -45,12 +46,14 @@ final sendProgressProvider =
   (ref) => SendProgressNotifier(ref),
 );
 //TODO: refactor with new fw update progress tracking
-final fwTransmitProgress = StateProvider<double>((ref) => 0.0);
-
 final remainingTimeProvider = StateProvider<Duration>((ref) => Duration.zero);
 
 final connectedDeviceProvider = StreamProvider<DeviceStatus>((ref) {
   return BluetoothChannel().deviceStatusStream;
+});
+
+final fwTransferProgress = StreamProvider<FwTransferProgress>((ref) {
+  return BluetoothManager().fwUpdateHandler.transferProgress;
 });
 
 class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
@@ -68,6 +71,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       BleMagicBackupHandler(this);
   late final BleAccountHandler _bleAccountHandler = BleAccountHandler(this);
   late final ShardsHandler _bleShardsHandler = ShardsHandler(this);
+  late final ScvHandler _scvAccountHandler = ScvHandler(this);
   late final BleOnboardHandler _bleOnboardHandler = BleOnboardHandler(this);
   late final BlePassphraseHandler _blePassphraseHandler =
       BlePassphraseHandler(this, _passphraseEventStream);
@@ -80,6 +84,8 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   BleMagicBackupHandler get magicBackupHandler => _bleMagicBackupHandler;
 
   BleAccountHandler get bleAccountHandler => _bleAccountHandler;
+
+  ScvHandler get scvAccountHandler => _scvAccountHandler;
 
   BleOnboardHandler get bleOnboardHandler => _bleOnboardHandler;
 
@@ -153,6 +159,9 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 
   String bleId = "";
 
+  api.QuantumLinkIdentity? get qlIdentity => _qlIdentity;
+  api.XidDocument? get recipientXid => _recipientXid;
+
   static Future<BluetoothManager> init() async {
     var singleton = BluetoothManager._instance;
     return singleton;
@@ -172,6 +181,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     _messageRouter.registerHandler(_bleOnboardHandler);
     _messageRouter.registerHandler(_blePassphraseHandler);
     _messageRouter.registerHandler(_fwUpdateHandler);
+    _messageRouter.registerHandler(_scvAccountHandler);
 
     await listen(id: bleId);
     kPrint("QL Identity: $_qlIdentity");
@@ -324,6 +334,9 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     kPrint("pair: $hashCode");
     listen(id: bleId);
 
+    bleOnboardHandler.updateBlePairState(
+        "Connecting to Prime", EnvoyStepState.LOADING);
+
     if (_qlIdentity == null) {
       await _generateQlIdentity();
     }
@@ -341,6 +354,8 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     kPrint("Pairing... success ?  $success");
 
     if (!success) {
+      bleOnboardHandler.updateBlePairState(
+          "Unable to pair", EnvoyStepState.ERROR);
       throw Exception("Failed to send pairing request");
     }
     // Listen for response
@@ -565,85 +580,23 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     });
   }
 
-  Future<void> sendFirmwareUpdateInfo(List<PrimePatch> patches) async {
-    if (patches.isEmpty) {
-      writeMessage(api.QuantumLinkMessage.firmwareUpdateCheckResponse(
-          api.FirmwareUpdateCheckResponse_NotAvailable()));
-      return;
-    }
-
-    final response = api.QuantumLinkMessage.firmwareUpdateCheckResponse(
-        api.FirmwareUpdateCheckResponse.available(api.FirmwareUpdateAvailable(
-            version: patches.last.version,
-            timestamp: patches.last.releaseDate.millisecondsSinceEpoch,
-            totalSize: 100,
-            changelog: patches.last.changelog,
-            patchCount: patches.length)));
-
-    await writeMessage(response);
-  }
-
-  Future<void> sendFirmwareFetchEvent(api.FirmwareFetchEvent event) async {
-    await writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(event));
-  }
-
-  Future<void> sendFirmwarePayload(List<Uint8List> patches) async {
-    final tempFile =
-        await BluetoothChannel.getBleCacheFile(patches.hashCode.toString());
-
-    DateTime dateTime = DateTime.now();
-    try {
-      dateTime = await NTP.now(timeout: const Duration(seconds: 1));
-    } catch (e) {
-      kPrint("NTP error: $e");
-    }
-    final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
-
-    final ready = await api.encodeToUpdateFile(
-        payload: patches,
-        sender: _qlIdentity!,
-        recipient: _recipientXid!,
-        path: tempFile.path,
-        chunkSize: BigInt.from(200000),
-        timestamp: timestampSeconds);
-
-    if (ready) {
-      kPrint("Firmware payload encoded to file: ${tempFile.path}");
-      BluetoothChannel().getWriteProgress(tempFile.path).listen((progress) {
-        // kPrint(
-        //     "Firmware write progress: ${(progress.progress * 100).toStringAsFixed(1)}%");
-      });
-      final bool = await BluetoothChannel().transmitFromFile(tempFile.path);
-      if (!bool) {
-        await writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(
-          api.FirmwareFetchEvent.error("Firmware payload transmission failed!"),
-        ));
-
-        kPrint("Firmware payload transmission failed!");
-        return;
-      }
-      kPrint("Firmware payload sent successfully! $bool");
-    }
-    // if (totalChunks == 0) {
-    //   kPrint("No chunks to send. Aborting.");
-    //   return;
-    // }
-    //
-    // try {
-    //
-    //   for (final (chunkIndex, chunk) in allChunks.indexed) {
-    //     kPrint("Sending overall chunk ${chunkIndex + 1} of $totalChunks");
-    //     await writeMessage(chunk);
-    //   }
-    //
-    //   await writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(
-    //     // api.FirmwareFetchEvent.complete(),
-    //   ));
-    //   kPrint("Firmware payload sent successfully!");
-    // } finally {
-    //   endFirmwareUpdate();
-    // }
-  }
+  // Future<void> sendFirmwareUpdateInfo(List<PrimePatch> patches) async {
+  //   if (patches.isEmpty) {
+  //     writeMessage(api.QuantumLinkMessage.firmwareUpdateCheckResponse(
+  //         api.FirmwareUpdateCheckResponse_NotAvailable()));
+  //     return;
+  //   }
+  //
+  //   final response = api.QuantumLinkMessage.firmwareUpdateCheckResponse(
+  //       api.FirmwareUpdateCheckResponse.available(api.FirmwareUpdateAvailable(
+  //           version: patches.last.version,
+  //           timestamp: patches.last.releaseDate.millisecondsSinceEpoch,
+  //           totalSize: 100,
+  //           changelog: patches.last.changelog,
+  //           patchCount: patches.length)));
+  //
+  //   await writeMessage(response);
+  // }
 
   Future<Stream<double>> _writeWithProgress(
       api.QuantumLinkMessage message) async {
