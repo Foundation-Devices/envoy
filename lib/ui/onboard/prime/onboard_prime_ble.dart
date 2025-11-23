@@ -64,6 +64,7 @@ PairingResponse? pairingResponse;
 class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     with SingleTickerProviderStateMixin {
   final s = Settings();
+  bool dialogShown = false;
   bool scanForPayload = false;
   bool onboardingCompleted = false;
 
@@ -141,7 +142,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     _connectionMonitorSubscription
         ?.cancel(); // Cancel any existing subscription to avoid duplicates
 
-    bool dialogShown = false;
     _connectionMonitorSubscription =
         BluetoothChannel().deviceStatusStream.listen((event) {
       final lastState = ref.read(primeUpdateStateProvider);
@@ -276,6 +276,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         } else {
           kPrint("No pairing response on completed state!");
         }
+        await BluetoothManager().sendExchangeRateHistory();
         resetOnboardingPrimeProviders(ref);
         mainRouter.go(ROUTE_ACCOUNTS_HOME);
         if (mounted) {
