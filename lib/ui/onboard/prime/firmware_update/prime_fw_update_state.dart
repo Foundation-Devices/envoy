@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
@@ -67,22 +68,64 @@ final fwTransferStateProvider =
   }
 });
 
-final primeFwSigVerifyStateProvider =
-    StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  //TODO: copy update
-  return StepNotifier(
-      stepName: "Verifying Signatures", state: EnvoyStepState.IDLE);
+final primeFwSigVerifyStateProvider = Provider<StepModel>((ref) {
+  final update = ref.watch(primeUpdateStateProvider);
+  final completedUpdateStates =
+      BluetoothManager().fwUpdateHandler.completedUpdateStates;
+  if (update == PrimeFwUpdateStep.verifying) {
+    return StepModel(
+        stepName: S().firmware_updatingPrime_verifying,
+        state: EnvoyStepState.LOADING);
+  } else if (completedUpdateStates.contains(PrimeFwUpdateStep.installing) ||
+      completedUpdateStates.contains(PrimeFwUpdateStep.rebooting) ||
+      completedUpdateStates.contains(PrimeFwUpdateStep.finished)) {
+    return StepModel(
+        stepName: S().firmware_updatingPrime_verified,
+        state: EnvoyStepState.FINISHED);
+  } else {
+    return StepModel(
+        //TODO: localization
+        stepName: "Verifying Signatures",
+        state: EnvoyStepState.IDLE);
+  }
 });
 
-final primeFwInstallStateProvider =
-    StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  //TODO: copy update
-  return StepNotifier(stepName: "Install Update", state: EnvoyStepState.IDLE);
+final primeFwInstallStateProvider = Provider<StepModel>((ref) {
+  final update = ref.watch(primeUpdateStateProvider);
+  final completedUpdateStates =
+      BluetoothManager().fwUpdateHandler.completedUpdateStates;
+  if (update == PrimeFwUpdateStep.installing) {
+    return StepModel(
+        stepName: S().firmware_updatingPrime_installingUpdate,
+        state: EnvoyStepState.LOADING);
+  } else if (completedUpdateStates.contains(PrimeFwUpdateStep.installing) ||
+      completedUpdateStates.contains(PrimeFwUpdateStep.rebooting) ||
+      completedUpdateStates.contains(PrimeFwUpdateStep.finished)) {
+    return StepModel(
+        stepName: S().firmware_updatingPrime_updateInstalled,
+        state: EnvoyStepState.FINISHED);
+  } else {
+    return StepModel(
+        stepName: S().firmware_updatingPrime_installUpdate,
+        state: EnvoyStepState.IDLE);
+  }
 });
 
-final primeFwRebootStateProvider =
-    StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  //TODO: copy update
-  return StepNotifier(
-      stepName: "Reboot Passport Prime", state: EnvoyStepState.IDLE);
+final primeFwRebootStateProvider = Provider<StepModel>((ref) {
+  final update = ref.watch(primeUpdateStateProvider);
+  final completedUpdateStates =
+      BluetoothManager().fwUpdateHandler.completedUpdateStates;
+  if (update == PrimeFwUpdateStep.rebooting) {
+    return StepModel(
+        stepName: S().firmware_updatingPrime_primeRestarting,
+        state: EnvoyStepState.LOADING);
+  } else if (completedUpdateStates.contains(PrimeFwUpdateStep.rebooting)) {
+    return StepModel(
+        stepName: S().firmware_updatingPrime_primeRestarting,
+        state: EnvoyStepState.FINISHED);
+  } else {
+    return StepModel(
+        stepName: S().firmware_updatingPrime_restartPrime,
+        state: EnvoyStepState.IDLE);
+  }
 });

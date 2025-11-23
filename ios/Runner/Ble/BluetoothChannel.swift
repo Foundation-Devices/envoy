@@ -294,7 +294,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         return bytes.load(fromByteOffset: 0, as: UInt32.self).bigEndian
                     }
                     for _ in 0..<innerLength {
-                        // Read item length (4 bytes, big endian)
+
                         let itemLengthData = fileHandle.readData(ofLength: 4)
                         guard itemLengthData.count == 4 else {
                             throw NSError(domain: "FileReadError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to read item length"])
@@ -317,12 +317,9 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         let progress = fileSize > 0 ? Float(bytesProcessed) / Float(fileSize) : 0.0
                         self.sendWriteProgress(progress, id: path, bytesProcessed: bytesProcessed, totalBytes: fileSize)
                         
-                        self.bleQueue.sync {
-                            let _ = self.handleBinaryWrite(data: itemData)
-                        }
+                        let _ = self.handleBinaryWrite(data: itemData)
                         
-                        //  10 milliseconds between writes
-                        Thread.sleep(forTimeInterval: 0.01)
+                        Thread.sleep(forTimeInterval: 0.012)
                     }
                 }
                 
@@ -648,7 +645,6 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 }
             }
 
-            // For chunked writes, simulate success after all chunks are sent
             if writeType == .withoutResponse {
                 return Data([1])  // Success indicator
             } else {

@@ -36,6 +36,9 @@ class FwTransferProgress {
 class FwUpdateHandler extends PassportMessageHandler {
   FwUpdateHandler(super.writer);
 
+  final chunkSize = BigInt.from(200000);
+
+  final Set<PrimeFwUpdateStep> _completedUpdateStates = {};
   String newVersion = "";
 
   // Track transfer speed for ETA calculation
@@ -63,10 +66,13 @@ class FwUpdateHandler extends PassportMessageHandler {
   Stream<FwUpdateState> get transferStateStream =>
       _transferState.stream.asBroadcastStream();
 
+  Set<PrimeFwUpdateStep> get completedUpdateStates => _completedUpdateStates;
+
   @override
   bool canHandle(api.QuantumLinkMessage message) {
     return message is api.QuantumLinkMessage_FirmwareUpdateCheckRequest ||
         message is api.QuantumLinkMessage_FirmwareFetchRequest ||
+        message is api.QuantumLinkMessage_FirmwareInstallEvent ||
         message is api.QuantumLinkMessage_OnboardingState;
   }
 
@@ -81,8 +87,9 @@ class FwUpdateHandler extends PassportMessageHandler {
         case api.QuantumLinkMessage_FirmwareFetchRequest fetchRequest) {
       final version = fetchRequest.field0.currentVersion;
       _handleFirmwareFetchRequest(version);
-    } else if (message is api.FirmwareInstallEvent) {
-      _handleOnboardingState(message as api.FirmwareInstallEvent);
+    } else if (message
+        case api.QuantumLinkMessage_FirmwareInstallEvent installEvent) {
+      _handleOnboardingState(installEvent.field0);
     }
   }
 
@@ -171,7 +178,7 @@ class FwUpdateHandler extends PassportMessageHandler {
         sender: BluetoothManager().qlIdentity!,
         recipient: BluetoothManager().recipientXid!,
         path: tempFile.path,
-        chunkSize: BigInt.from(200000),
+        chunkSize: chunkSize,
         timestamp: timestampSeconds);
 
     if (ready) {
@@ -252,6 +259,7 @@ class FwUpdateHandler extends PassportMessageHandler {
   }
 
   void _updateFwUpdateState(PrimeFwUpdateStep step) {
+    _completedUpdateStates.add(step);
     _primeFwUpdate.sink.add(step);
   }
 
@@ -269,6 +277,8 @@ class FwUpdateHandler extends PassportMessageHandler {
     }, success: (event) {
       _updateFwUpdateState(PrimeFwUpdateStep.finished);
     }, error: (event) {
+      EnvoyReport()
+          .log("fw_update_handler", "Firmware install error: ${event.error}");
       _updateFwUpdateState(PrimeFwUpdateStep.error);
     });
   }

@@ -2,21 +2,31 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
+
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime_ble.dart';
+import 'package:envoy/ui/onboard/prime/prime_routes.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_gradient_progress.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation_api/foundation_api.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -60,28 +70,77 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     super.dispose();
   }
 
+  void _updateAnimState(PrimeFwUpdateStep next) async {
+    final stateMachine = _controller?.stateMachine;
+    if (stateMachine == null) return;
+
+    switch (next) {
+      case PrimeFwUpdateStep.finished:
+        stateMachine.boolean("indeterminate")?.value = false;
+        stateMachine.boolean("happy")?.value = true;
+        stateMachine.boolean("unhappy")?.value = false;
+      case PrimeFwUpdateStep.error:
+        //need
+        stateMachine.boolean('indeterminate')?.value = true;
+        stateMachine.boolean("unhappy")?.value = false;
+        stateMachine.boolean("happy")?.value = false;
+        await Future.delayed(const Duration(milliseconds: 500));
+        stateMachine.boolean('indeterminate')?.value = false;
+        stateMachine.boolean("unhappy")?.value = true;
+        stateMachine.boolean("happy")?.value = false;
+      default:
+        stateMachine.boolean('indeterminate')?.value = true;
+        stateMachine.boolean("unhappy")?.value = false;
+        stateMachine.boolean("happy")?.value = false;
+        break;
+    }
+  }
+
+  Future<bool> showExitWarning(BuildContext context) {
+    final Completer<bool> completer = Completer<bool>();
+    showEnvoyDialog(
+      context: context,
+      dismissible: true,
+      dialog: EnvoyPopUp(
+        icon: EnvoyIcons.alert,
+        typeOfMessage: PopUpState.warning,
+        showCloseButton: true,
+        content: "Do you want to exit the onboarding ?",
+        primaryButtonLabel: "Cancel",
+        secondaryButtonLabel: "Exit",
+        onPrimaryButtonTap: (context) async {
+          completer.complete(false);
+          Navigator.pop(context);
+        },
+        onSecondaryButtonTap: (context) async {
+          completer.complete(true);
+          Navigator.pop(context);
+        },
+      ),
+    );
+    return completer.future;
+  }
+
   @override
   Widget build(BuildContext context) {
     final primeUpdateState = ref.watch(primeUpdateStateProvider);
-    ref.listen(primeUpdateStateProvider, (previous, next) {
-      final stateMachine = _controller?.stateMachine;
-      if (stateMachine == null) return;
 
-      switch (next) {
-        case PrimeFwUpdateStep.finished:
-          stateMachine.boolean("indeterminate")?.value = false;
-          stateMachine.boolean("happy")?.value = true;
-          stateMachine.boolean("unhappy")?.value = false;
-        case PrimeFwUpdateStep.error:
-          stateMachine.boolean('indeterminate')?.value = false;
-          stateMachine.boolean("unhappy")?.value = true;
-          stateMachine.boolean("happy")?.value = false;
-        default:
-          stateMachine.boolean('indeterminate')?.value = true;
-          stateMachine.boolean("unhappy")?.value = false;
-          stateMachine.boolean("happy")?.value = false;
-          break;
-      }
+    ref.listen(onboardingStateStreamProvider, (prev, next) {
+      next.whenData((state) {
+        if (state == OnboardingState.firmwareUpdateScreen) {
+          context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
+        } else if (state == OnboardingState.securingDevice) {
+          context.goNamed(ONBOARD_PRIME_CONTINUING_SETUP);
+        } else if (state == OnboardingState.walletConected) {
+          context.goNamed(ONBOARD_PRIME_CONNECTED_SUCCESS);
+        } else if (state == OnboardingState.completed) {
+          context.go(ROUTE_ACCOUNTS_HOME);
+        }
+      });
+    });
+
+    ref.listen(primeUpdateStateProvider, (previous, next) async {
+      _updateAnimState(next);
     });
 
     Widget downloadImage = Image.asset(
@@ -91,27 +150,35 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
       height: 230,
     );
 
-    Widget progressAnimation = Transform.scale(
-      scale: 1.2,
-      child: SizedBox(
-        width: 230,
-        height: 230,
-        child: _isInitialized && _controller != null
-            ? RiveWidget(
+    Widget progressAnimation = SizedBox(
+      width: 220,
+      height: 220,
+      child: _isInitialized && _controller != null
+          ? Transform.scale(
+              scale: 1.6,
+              child: RiveWidget(
                 controller: _controller!,
                 fit: Fit.contain,
                 alignment: Alignment.center,
-              )
-            : const SizedBox(),
-      ),
+              ),
+            )
+          : const SizedBox(),
     );
 
     return PopScope(
-      canPop: true,
+      canPop: false,
+      onPopInvokedWithResult: (_, __) async {
+        final shouldExit = await showExitWarning(context);
+        if (shouldExit && context.mounted) {
+          context.go(ROUTE_ACCOUNTS_HOME);
+        }
+      },
       child: OnboardPageBackground(
           child: EnvoyScaffold(
         removeAppBarPadding: true,
-        topBarLeading: CupertinoNavigationBarBackButton(),
+        topBarLeading: CupertinoNavigationBarBackButton(
+          color: Colors.black,
+        ),
         child: Container(
           padding: const EdgeInsets.symmetric(
               horizontal: EnvoySpacing.small, vertical: EnvoySpacing.small),
@@ -277,9 +344,19 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     };
   }
 
-  //TODO: add error screen
-  SizedBox _updateErrorWidget(BuildContext context) {
-    return const SizedBox.shrink();
+  Widget _updateErrorWidget(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        EnvoyButton(
+          S().common_button_contactSupport,
+          type: EnvoyButtonTypes.secondary,
+          onTap: () {},
+        ),
+        const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+      ],
+    );
   }
 }
 
