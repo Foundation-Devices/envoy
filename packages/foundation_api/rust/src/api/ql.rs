@@ -16,7 +16,7 @@ use foundation_api::bc_envelope::Envelope;
 use foundation_api::bc_xid::XIDDocument;
 use foundation_api::dcbor;
 use foundation_api::dcbor::{CBORCase, CBOR};
-use foundation_api::firmware::{ FirmwareChunk, FirmwareFetchEvent};
+use foundation_api::firmware::{FirmwareChunk, FirmwareFetchEvent};
 use foundation_api::message::{EnvoyMessage, PassportMessage, QuantumLinkMessage};
 use foundation_api::quantum_link::{ARIDCache, QuantumLink, QuantumLinkIdentity};
 use log::debug;
@@ -59,7 +59,7 @@ pub fn serialize_xid_document(xid_document: &XIDDocument) -> Result<Vec<u8>> {
 }
 
 pub fn deserialize_xid(data: Vec<u8>) -> Result<XIDDocument> {
-    let data = CBOR::try_from(data).context("Failed to parse CBOR data")?;
+    let data = CBOR::from(data);
     XIDDocument::try_from(data).context("Failed to convert CBOR to XIDDocument")
 }
 
@@ -241,7 +241,7 @@ pub async fn encode_to_magic_backup_file(
 
     let messages: Vec<EnvoyMessage> = split_backup_into_chunks(payload, chunk_size)
         .into_iter()
-        .map(|message| EnvoyMessage { message , timestamp } )
+        .map(|message| EnvoyMessage { message, timestamp })
         .collect();
 
     for message in messages {
@@ -311,7 +311,7 @@ pub async fn encode_to_update_file(
         .await;
 
         for message in chunk_messages.into_iter() {
-            messages.push(EnvoyMessage { message, timestamp});
+            messages.push(EnvoyMessage { message, timestamp });
         }
     }
 

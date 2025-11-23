@@ -2,15 +2,15 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use flutter_rust_bridge::for_generated::anyhow;
 use foundation_api::bc_envelope::prelude::*;
 use foundation_api::bc_xid::XIDDocument;
-use flutter_rust_bridge::for_generated::anyhow;
 use foundation_api::message::{PassportMessage, QuantumLinkMessage};
 use foundation_api::pairing::PairingResponse;
 use foundation_api::passport::{
     PassportColor, PassportFirmwareVersion, PassportModel, PassportSerial,
 };
-use foundation_api::status::{DeviceStatus};
+use foundation_api::status::DeviceStatus;
 use foundation_ur::{Decoder, UR};
 use std::sync::{Arc, Mutex};
 
@@ -69,9 +69,9 @@ pub async fn decode_ble_message(_data: Vec<u8>) -> PassportMessage {
         passport_color: PassportColor::Dark,
         onboarding_complete: false,
     });
-    PassportMessage{
+    PassportMessage {
         message: msg,
-        status: DeviceStatus{
+        status: DeviceStatus {
             version: "1.0.0".to_string(),
             battery_level: 100,
         },
