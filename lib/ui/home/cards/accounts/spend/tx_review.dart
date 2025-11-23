@@ -56,15 +56,12 @@ final primeConnectedStateProvider =
 final transferTransactionStateProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
   return StepNotifier(
-      stepName: "Transferring Transaction", // TODO: localazy
-      state: EnvoyStepState.IDLE);
+      stepName: "Transferring Transaction", state: EnvoyStepState.IDLE);
 });
 
 final signTransactionStateProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier(
-      stepName: "Wait for Signing", // TODO: localazy
-      state: EnvoyStepState.IDLE);
+  return StepNotifier(stepName: "Wait for Signing", state: EnvoyStepState.IDLE);
 });
 
 //ignore: must_be_immutable

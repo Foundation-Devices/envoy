@@ -6,67 +6,41 @@
 import '../../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-enum DeviceState {
-  normal,
-  updatingFirmware,
-  rebooting,
-  ;
-}
-
 class DeviceStatus {
-  final DeviceState state;
-  final int batteryLevel;
-  final int bleSignal;
   final String version;
+  final int batteryLevel;
 
   const DeviceStatus({
-    required this.state,
-    required this.batteryLevel,
-    required this.bleSignal,
     required this.version,
+    required this.batteryLevel,
   });
 
   @override
-  int get hashCode =>
-      state.hashCode ^
-      batteryLevel.hashCode ^
-      bleSignal.hashCode ^
-      version.hashCode;
+  int get hashCode => version.hashCode ^ batteryLevel.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is DeviceStatus &&
           runtimeType == other.runtimeType &&
-          state == other.state &&
-          batteryLevel == other.batteryLevel &&
-          bleSignal == other.bleSignal &&
-          version == other.version;
-}
-
-enum EnvoyState {
-  normal,
-  downloadingFirmware,
-  ;
+          version == other.version &&
+          batteryLevel == other.batteryLevel;
 }
 
 class EnvoyStatus {
-  final EnvoyState state;
   final String version;
 
   const EnvoyStatus({
-    required this.state,
     required this.version,
   });
 
   @override
-  int get hashCode => state.hashCode ^ version.hashCode;
+  int get hashCode => version.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is EnvoyStatus &&
           runtimeType == other.runtimeType &&
-          state == other.state &&
           version == other.version;
 }

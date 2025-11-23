@@ -3,8 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/ble/bluetooth_manager.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/uniform_resource.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/glow.dart';
 import 'package:envoy/ui/onboard/passport_scanner_screen.dart';
@@ -13,8 +17,10 @@ import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/device_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/pair_decoder.dart';
@@ -22,8 +28,10 @@ import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/haptics.dart';
+import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 
@@ -224,45 +232,111 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
 }
 
 void scanForDevice(BuildContext context) async {
-  // await BluetoothManager().connect(id: ""!);
-  // BluetoothChannel().pair();
-  // // await Future.delayed(const Duration(milliseconds: 500));
-  // context.goNamed(ONBOARD_PRIME_BLUETOOTH);
-  // return;
-  // BluetoothManager().checkDeviceStates();
+  Future pairWithDevice(XidDocument xid) async {
+    if (!context.mounted) return;
+    Navigator.pop(context);
+    final connected = await BluetoothChannel().getCurrentDeviceStatus();
+    if (connected.connected) {
+      final device = Devices().getPrimeDevices.firstWhereOrNull((device) =>
+          device.peripheralId == connected.peripheralId ||
+          device.bleId == connected.peripheralId);
+      if (device != null && context.mounted && device.onboardingComplete) {
+        EnvoyToast(
+          replaceExisting: true,
+          duration: const Duration(seconds: 6),
+          message:
+              "Please disconnect from your existing Passport Prime before setting up a new one.",
+          isDismissible: true,
+          onActionTap: () {
+            EnvoyToast.dismissPreviousToasts(context);
+          },
+          icon: const Icon(
+            Icons.info_outline,
+            color: EnvoyColors.accentPrimary,
+          ),
+        ).show(context);
+        return;
+      } else {
+        await BluetoothManager().pair(xid);
+        if (context.mounted) {
+          context.goNamed(ONBOARD_PRIME_PAIR);
+        }
+      }
+    } else {
+      if (context.mounted) {
+        showEnvoyDialog(
+          context: context,
+          dismissible: true,
+          dialog: EnvoyPopUp(
+            icon: EnvoyIcons.alert,
+            typeOfMessage: PopUpState.warning,
+            showCloseButton: true,
+            content:
+                "Prime not connected. Please turn on your Passport Prime, ensure Bluetooth is enabled, and try again.",
+            primaryButtonLabel: S().component_back,
+            onPrimaryButtonTap: (context) async {
+              Navigator.pop(context);
+            },
+          ),
+        );
+      }
+    }
+  }
+
   showScannerDialog(
       context: context,
       onBackPressed: (context) {
         Navigator.pop(context);
       },
-      decoder: DeviceDecoder(pairPayloadDecoder: PairPayloadDecoder(
-        onScan: (binary) {
-          addPassportAccount(binary, context);
-        },
-      ), onScan: (String payload) {
-        Navigator.pop(context);
-        final uri = Uri.parse(payload);
-        final params = uri.queryParameters;
-        if (params.containsKey("p")) {
-          context.pushNamed(ONBOARD_PRIME, queryParameters: params);
-        } else if (params.containsKey("t")) {
-          context.pushNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
-        } else {
-          EnvoyToast(
-            replaceExisting: true,
-            duration: const Duration(seconds: 6),
-            message: "Invalid QR code",
-            isDismissible: true,
-            onActionTap: () {
-              EnvoyToast.dismissPreviousToasts(context);
+      decoder: DeviceDecoder(
+          pairPayloadDecoder: PairPayloadDecoder(
+            onScan: (binary) {
+              addPassportAccount(binary, context);
             },
-            icon: const Icon(
-              Icons.info_outline,
-              color: EnvoyColors.accentPrimary,
-            ),
-          ).show(context);
-        }
-      }),
+          ),
+          onXidScan: pairWithDevice,
+          onScan: (String payload) {
+            Navigator.pop(context);
+            final uri = Uri.parse(payload);
+            final params = uri.queryParameters;
+            if (params.containsKey("p")) {
+              if (Devices().getPrimeDevices.isNotEmpty && context.mounted) {
+                showEnvoyDialog(
+                  context: context,
+                  dismissible: true,
+                  dialog: EnvoyPopUp(
+                    icon: EnvoyIcons.alert,
+                    typeOfMessage: PopUpState.warning,
+                    showCloseButton: true,
+                    content:
+                        "Please disconnect from your existing Passport Prime before setting up a new one.",
+                    primaryButtonLabel: S().component_back,
+                    onPrimaryButtonTap: (context) async {
+                      Navigator.pop(context);
+                    },
+                  ),
+                );
+                return;
+              }
+              context.pushNamed(ONBOARD_PRIME, queryParameters: params);
+            } else if (params.containsKey("t")) {
+              context.pushNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
+            } else {
+              EnvoyToast(
+                replaceExisting: true,
+                duration: const Duration(seconds: 6),
+                message: "Invalid QR code",
+                isDismissible: true,
+                onActionTap: () {
+                  EnvoyToast.dismissPreviousToasts(context);
+                },
+                icon: const Icon(
+                  Icons.info_outline,
+                  color: EnvoyColors.accentPrimary,
+                ),
+              ).show(context);
+            }
+          }),
       child: LegacyFirmwareAlert());
 }
 

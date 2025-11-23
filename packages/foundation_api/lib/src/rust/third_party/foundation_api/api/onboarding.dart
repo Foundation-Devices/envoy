@@ -7,14 +7,14 @@ import '../../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 enum OnboardingState {
+  securityChecked,
+  securityCheckFailed,
   firmwareUpdateScreen,
-  downloadingUpdate,
-  receivingUpdate,
-  veryfyingSignatures,
-  installingUpdate,
-  rebooting,
-  firmwareUpdated,
+
+  /// pin
   securingDevice,
+
+  /// pin
   deviceSecured,
   walletCreationScreen,
   creatingWallet,
@@ -28,9 +28,5 @@ enum OnboardingState {
   connectingWallet,
   walletConected,
   completed,
-  securityChecked,
-  updateAvailable,
-  updateNotAvailable,
-  securityCheckFailed,
   ;
 }
