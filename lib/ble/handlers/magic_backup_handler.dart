@@ -119,6 +119,9 @@ class BleMagicBackupHandler extends PassportMessageHandler {
             message: payloadRes, filePath: tempFile.path, chunkSize: 10000);
         await BluetoothChannel().transmitFromFile(tempFile.path);
         kPrint("Restore magic backup file sent!");
+      } else {
+        writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
+            api.RestoreMagicBackupEvent.notFound()));
       }
     } catch (e, stack) {
       debugPrintStack(stackTrace: stack);

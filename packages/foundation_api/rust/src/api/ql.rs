@@ -59,8 +59,8 @@ pub fn serialize_xid_document(xid_document: &XIDDocument) -> Result<Vec<u8>> {
 }
 
 pub fn deserialize_xid(data: Vec<u8>) -> Result<XIDDocument> {
-    let data = CBOR::from(data);
-    XIDDocument::try_from(data).context("Failed to convert CBOR to XIDDocument")
+    let xid_cbor = CBOR::try_from_data(data.clone()).context("invalid xid cbor")?;
+    XIDDocument::try_from(xid_cbor).context("Failed to convert CBOR to XIDDocument")
 }
 
 pub async fn serialize_ql_identity(quantum_link_identity: &QuantumLinkIdentity) -> Result<Vec<u8>> {
@@ -423,6 +423,9 @@ fn hash_data(data: &[u8]) -> [u8; 32] {
 mod tests {
     use super::*;
     use anyhow::Result;
+    use foundation_api::bc_envelope::prelude::UREncodable;
+    use foundation_api::bc_envelope::EnvelopeEncodable;
+    use foundation_api::dcbor::CBORTaggedDecodable;
 
     #[tokio::test]
     async fn test_generate_identity() -> Result<()> {
