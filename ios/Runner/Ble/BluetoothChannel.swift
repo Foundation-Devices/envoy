@@ -603,21 +603,14 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         let writeType: CBCharacteristicWriteType =
             writeChar.properties.contains(.writeWithoutResponse) ? .withoutResponse : .withResponse
 
-        print("WRITE OPERATION DETAILS:")
-        print("  - Characteristic: \(writeChar.uuid)")
-        print("  - Total Bytes: \(data.count)")
 
         // Check MTU and split data if necessary
         let mtu = peripheral.maximumWriteValueLength(for: writeType)
-        print(" iOS MTU ANALYSIS:")
-        print("  - iOS maximumWriteValueLength: \(mtu) bytes")
-        print("  - Data length: \(data.count) bytes")
-        print("  - Will use single packet: \(data.count <= mtu)")
+        print("WRITE OPERATION DETAILS: mtu: \(mtu) Size: \(data.count) ")
+
 
         if data.count <= mtu {
-            // Data fits in one packet
-            print("iOS: Data fits in single packet, writing \(data.count) bytes directly")
-
+ 
             // Store data for potential retry
             pendingWriteData = data
             writeRetryCount = 0
@@ -628,7 +621,6 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             if writeType == .withoutResponse {
                 return Data([1])
             } else {
-                // For writeWithResponse, success will be handled in didWriteValueFor callback
                 return Data([1])  // Success indicator
             }
         } else {
@@ -645,11 +637,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 }
             }
 
-            if writeType == .withoutResponse {
-                return Data([1])  // Success indicator
-            } else {
-                return Data([1])
-            }
+            return Data([1])   
         }
     }
 
