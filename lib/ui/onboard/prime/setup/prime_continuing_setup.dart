@@ -29,10 +29,10 @@ class PrimeContinuingSetup extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<PrimeContinuingSetup> createState() =>
-      _PrimeOnboardParingState();
+      _PrimeContinuingSetupState();
 }
 
-class _PrimeOnboardParingState extends ConsumerState<PrimeContinuingSetup> {
+class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
   bool canPop = false;
   rive.File? _riveFile;
   rive.RiveWidgetController? _controller;
@@ -132,20 +132,18 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeContinuingSetup> {
             mainAxisAlignment: MainAxisAlignment.start,
             spacing: 24,
             children: [
-              ColoredBox(
-                color: Colors.transparent,
-                child: SizedBox(
-                  height: 200,
-                  child: _isInitialized && _controller != null
-                      ? Transform.scale(
-                          scale: 1.5,
-                          child: rive.RiveWidget(
-                            controller: _controller!,
-                            fit: rive.Fit.contain,
-                          ),
-                        )
-                      : const SizedBox(),
-                ),
+              SizedBox(
+                width: 220,
+                height: 220,
+                child: _isInitialized && _controller != null
+                    ? Transform.scale(
+                        scale: 1.6,
+                        child: rive.RiveWidget(
+                          controller: _controller!,
+                          fit: rive.Fit.contain,
+                        ),
+                      )
+                    : const SizedBox(),
               ),
               Expanded(
                   child: Padding(

@@ -410,14 +410,13 @@ class _PrimeFwDownloadProgressState
               ),
               const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
               Consumer(builder: (context, ref, child) {
-                // final progress = ref.watch(sendProgressProvider);
-                final progressNew = ref.watch(fwTransferProgress);
-                return progressNew.map(
-                    data: (progressNew) {
+                final progressAsync = ref.watch(fwTransferProgress);
+                return progressAsync.map(
+                    data: (progressAsync) {
                       return Column(
                         children: [
                           EnvoyGradientProgress(
-                            progress: progressNew.value.progress,
+                            progress: progressAsync.value.progress,
                           ),
                           const Padding(
                               padding: EdgeInsets.all(EnvoySpacing.small)),
@@ -425,7 +424,7 @@ class _PrimeFwDownloadProgressState
                               EnvoyStepState.FINISHED)
                             Text(
                               S().firmware_downloadingUpdate_timeRemaining(
-                                  progressNew.value.remainingTime), //
+                                  progressAsync.value.remainingTime), //
                               style: EnvoyTypography.explainer
                                   .copyWith(fontSize: 14),
                             ),

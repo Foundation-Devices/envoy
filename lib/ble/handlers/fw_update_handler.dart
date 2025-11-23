@@ -38,7 +38,7 @@ class FwUpdateHandler extends PassportMessageHandler {
 
   final chunkSize = BigInt.from(200000);
 
-  final Set<PrimeFwUpdateStep> _completedUpdateStates = {};
+  Set<PrimeFwUpdateStep> _completedUpdateStates = {};
   String newVersion = "";
 
   // Track transfer speed for ETA calculation
@@ -98,6 +98,9 @@ class FwUpdateHandler extends PassportMessageHandler {
     List<PrimePatch> patches = [];
 
     try {
+      _completedUpdateStates = {};
+      _transferProgress
+          .add(FwTransferProgress(progress: 0.0, remainingTime: ""));
       _updateFwUpdateState(PrimeFwUpdateStep.downloading);
       _updateDownloadState(
           S().firmware_downloadingUpdate_header, EnvoyStepState.LOADING);
@@ -154,6 +157,9 @@ class FwUpdateHandler extends PassportMessageHandler {
     final tempFile =
         await BluetoothChannel.getBleCacheFile(patches.hashCode.toString());
 
+    _transferStartTime = null;
+    _lastUpdateTime = null;
+
     BluetoothChannel().writeProgressStream().listen((progress) {
       if (progress.id == tempFile.path) {
         _processProgress(progress);
@@ -183,10 +189,6 @@ class FwUpdateHandler extends PassportMessageHandler {
 
     if (ready) {
       kPrint("Firmware payload encoded to file: ${tempFile.path}");
-      BluetoothChannel().getWriteProgress(tempFile.path).listen((progress) {
-        // kPrint(
-        //     "Firmware write progress: ${(progress.progress * 100).toStringAsFixed(1)}%");
-      });
       final bool = await BluetoothChannel().transmitFromFile(tempFile.path);
       if (!bool) {
         await writer.writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(

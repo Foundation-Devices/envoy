@@ -319,7 +319,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         
                         let _ = self.handleBinaryWrite(data: itemData)
                         
-                        Thread.sleep(forTimeInterval: 0.012)
+                        Thread.sleep(forTimeInterval: 0.014)
                     }
                 }
                 
@@ -606,8 +606,6 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
         // Check MTU and split data if necessary
         let mtu = peripheral.maximumWriteValueLength(for: writeType)
-        print("WRITE OPERATION DETAILS: mtu: \(mtu) Size: \(data.count) ")
-
 
         if data.count <= mtu {
  

@@ -85,8 +85,6 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
           canPop = false;
         });
       }
-      // final bleStepNotifier = ref.read(bleConnectionProvider.notifier);
-
       String id = LocalStorage().prefs.getString(primeSerialPref) ?? "";
       device = BleDevice(id: id, name: "Passport Prime", connected: false);
       kPrint("Connecting to Prime with ID: $id");
@@ -109,7 +107,6 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
       }
       // await bleStepNotifier.updateStep(
       //     "Connecting to Prime", EnvoyStepState.LOADING);
-      ref.read(primeBleIdProvider.notifier).state = id;
       setState(() {
         device = BleDevice(id: id, name: "Passport Prime", connected: true);
       });

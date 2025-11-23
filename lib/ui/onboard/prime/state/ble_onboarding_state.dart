@@ -13,8 +13,34 @@ import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
 
-final primeBleIdProvider = StateProvider<String?>((ref) => null);
-final primePublicKeyProvider = StateProvider<XidDocument?>((ref) => null);
+/// Stream Providers for various BLE onboarding states
+final fwUpdateStreamProvider = StreamProvider<FwUpdateState>((ref) {
+  return BluetoothManager().fwUpdateHandler.fetchStateStream;
+});
+
+final blePairingStreamProvider = StreamProvider<BleConnectionState>((ref) {
+  return BluetoothManager().bleOnboardHandler.blePairingState;
+});
+
+final onboardingStateStreamProvider = StreamProvider<OnboardingState>((ref) {
+  return BluetoothManager().bleOnboardHandler.onboardingState;
+});
+
+final scvStateProvider = StreamProvider<ScvUpdateState>((ref) {
+  return BluetoothManager().scvAccountHandler.scvUpdateController;
+});
+
+final fwDownloadStreamProvider = StreamProvider<FwUpdateState>((ref) {
+  return BluetoothManager().fwUpdateHandler.downloadStateStream;
+});
+
+final fwUpdateStepProvider = StreamProvider<PrimeFwUpdateStep>((ref) {
+  return BluetoothManager().fwUpdateHandler.primeFwUpdate;
+});
+
+final fwTransferState = StreamProvider<FwUpdateState>((ref) {
+  return BluetoothManager().fwUpdateHandler.transferStateStream;
+});
 
 class StepNotifier extends StateNotifier<StepModel> {
   StepNotifier(
@@ -61,34 +87,6 @@ final deviceSecurityProvider = Provider<StepModel>((ref) {
           state: EnvoyStepState.ERROR);
     },
   );
-});
-
-final fwUpdateStreamProvider = StreamProvider<FwUpdateState>((ref) {
-  return BluetoothManager().fwUpdateHandler.fetchStateStream;
-});
-
-final blePairingStreamProvider = StreamProvider<BleConnectionState>((ref) {
-  return BluetoothManager().bleOnboardHandler.blePairingState;
-});
-
-final onboardingStateStreamProvider = StreamProvider<OnboardingState>((ref) {
-  return BluetoothManager().bleOnboardHandler.onboardingState;
-});
-
-final scvStateProvider = StreamProvider<ScvUpdateState>((ref) {
-  return BluetoothManager().scvAccountHandler.scvUpdateController;
-});
-
-final fwDownloadStreamProvider = StreamProvider<FwUpdateState>((ref) {
-  return BluetoothManager().fwUpdateHandler.downloadStateStream;
-});
-
-final fwUpdateStepProvider = StreamProvider<PrimeFwUpdateStep>((ref) {
-  return BluetoothManager().fwUpdateHandler.primeFwUpdate;
-});
-
-final fwTransferState = StreamProvider<FwUpdateState>((ref) {
-  return BluetoothManager().fwUpdateHandler.transferStateStream;
 });
 
 final firmWareUpdateProvider = Provider<StepModel>((ref) {

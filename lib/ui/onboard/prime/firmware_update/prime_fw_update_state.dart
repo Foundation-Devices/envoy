@@ -53,8 +53,6 @@ final fwDownloadStateProvider = Provider<StepModel>((ref) {
   );
 });
 
-final fwDownloadProgressProvider = StateProvider<double>((ref) => 0.0);
-
 final fwTransferStateProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
   final updateState = ref.watch(primeUpdateStateProvider);
