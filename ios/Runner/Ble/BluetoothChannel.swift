@@ -157,6 +157,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 self.transmitFromFile(call: call, result: result)
             case "getAccessories":
                 self.getAccessories(result: result)
+            case "getCurrentDeviceStatus":
+                self.getCurrentDeviceStatus(result: result)
             default:
                 result(FlutterMethodNotImplemented)
             }
@@ -394,6 +396,25 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         }
         
         result(accessoryList)
+    }
+    
+    func getCurrentDeviceStatus(result: @escaping FlutterResult) {
+        let peripheralId = connectedPeripheral?.identifier.uuidString
+        let peripheralName = connectedPeripheral?.name ?? primeAccessory?.displayName ?? "Unknown Device"
+        let connected = isConnected()
+        let bonded = primeAccessory != nil
+        
+        let statusData: [String: Any?] = [
+            "type": nil,
+            "connected": connected,
+            "peripheralId": peripheralId,
+            "peripheralName": peripheralName,
+            "bonded": bonded,
+            "rssi": nil,
+            "error": nil
+        ]
+        
+        result(statusData)
     }
 
     func showAccessorySetup(call: FlutterMethodCall, result: @escaping FlutterResult) {
