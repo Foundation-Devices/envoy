@@ -334,6 +334,8 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     kPrint("pair: $hashCode");
     listen(id: bleId);
 
+    //reset onboarding state
+    bleOnboardHandler.reset();
     bleOnboardHandler.updateBlePairState(
         "Connecting to Prime", EnvoyStepState.LOADING);
 
@@ -442,6 +444,8 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
               kPrint("Got the Broadcast Transaction");
               _transactionStream.add(transaction);
             }
+          } else {
+            kPrint("QL Decoded message is null");
           }
         }, onError: (e) {
           kPrint("Error decoding: $e");

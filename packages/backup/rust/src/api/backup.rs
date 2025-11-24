@@ -18,6 +18,7 @@ use reqwest::Response;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::io::Read;
+use std::time::Duration;
 use std::{fs, io};
 use tokio::runtime::{Builder, Runtime};
 use tokio::sync::broadcast::{Receiver, Sender};
@@ -78,9 +79,18 @@ impl Backup {
             let proxy =
                 reqwest::Proxy::all("socks5://127.0.0.1:".to_owned() + &proxy_port.to_string())
                     .unwrap();
-            reqwest::Client::builder().proxy(proxy).build().unwrap()
+            reqwest::Client::builder()
+                .proxy(proxy)
+                .timeout(Duration::from_secs(30))
+                .connect_timeout(Duration::from_secs(30))
+                .build()
+                .unwrap()
         } else {
-            reqwest::Client::builder().build().unwrap()
+            reqwest::Client::builder()
+                .timeout(Duration::from_secs(30))
+                .connect_timeout(Duration::from_secs(30))
+                .build()
+                .unwrap()
         }
     }
 
@@ -450,6 +460,7 @@ impl Backup {
         payload: Vec<u8>,
     ) -> anyhow::Result<bool> {
         let client = Self::get_reqwest_client(proxy_port);
+        println!("Posting backup to {}", server_url);
         let r = client
             .post(server_url.to_owned() + "/backup")
             .json(&BackupRequest {
@@ -463,7 +474,16 @@ impl Backup {
             .send()
             .await;
         match r {
-            Ok(response) => Ok(response.status().is_success()),
+            Ok(response) => {
+                if response.status().is_success() {
+                    Ok(true)
+                } else {
+                    Err(anyhow!(
+                        "Server returned error status: {}",
+                        response.status()
+                    ))
+                }
+            }
             Err(e) => Err(anyhow!("Failed to send backup: {}", e)),
         }
     }

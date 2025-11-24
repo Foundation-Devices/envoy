@@ -26,6 +26,7 @@ class BleConnectionState {
 class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
   BleOnboardHandler(super.writer);
 
+  api.PairingResponse? _pairingResponse;
   final Set<OnboardingState> _completedOnboardingStates = {};
   final StreamController<BleConnectionState> _blePairingState =
       StreamController<BleConnectionState>.broadcast();
@@ -74,7 +75,11 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
 
       updateBlePairState(S().onboarding_connectionIntro_connectedToPrime,
           EnvoyStepState.FINISHED);
-
+      _pairingResponse = response;
+      if (response.onboardingComplete) {
+        //no need to send security challenge if onboarding is already complete
+        return;
+      }
       BluetoothManager().scvAccountHandler.sendSecurityChallenge();
     } catch (e, stack) {
       EnvoyReport().log("BleOnboardHandler", e.toString(), stackTrace: stack);
@@ -94,5 +99,23 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
   void updateBlePairState(String message, EnvoyStepState step) {
     final state = BleConnectionState(message: message, step: step);
     _blePairingState.add(state);
+  }
+
+  Future<api.PairingResponse> waitForPairResponse(
+      {Duration timeout = const Duration(seconds: 15)}) async {
+    final deadline = DateTime.now().add(timeout);
+    while (_pairingResponse == null) {
+      if (DateTime.now().isAfter(deadline)) {
+        throw TimeoutException(
+            'Timed out waiting for pairing response', timeout);
+      }
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+    return _pairingResponse!;
+  }
+
+  void reset() {
+    _pairingResponse = null;
+    _completedOnboardingStates.clear();
   }
 }
