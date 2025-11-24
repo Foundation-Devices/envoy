@@ -474,7 +474,7 @@ impl Backup {
             .send()
             .await;
         match r {
-            Ok(response)=>{
+            Ok(response) => {
                 if response.status().is_success() {
                     Ok(true)
                 } else {
@@ -483,7 +483,7 @@ impl Backup {
                         response.status()
                     ))
                 }
-            },
+            }
             Err(e) => Err(anyhow!("Failed to send backup: {}", e)),
         }
     }
