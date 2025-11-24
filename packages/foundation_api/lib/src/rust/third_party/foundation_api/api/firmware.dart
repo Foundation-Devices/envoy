@@ -57,9 +57,9 @@ sealed class FirmwareFetchEvent with _$FirmwareFetchEvent {
   const factory FirmwareFetchEvent.chunk(
     FirmwareChunk field0,
   ) = FirmwareFetchEvent_Chunk;
-  const factory FirmwareFetchEvent.error(
-    String field0,
-  ) = FirmwareFetchEvent_Error;
+  const factory FirmwareFetchEvent.error({
+    required String error,
+  }) = FirmwareFetchEvent_Error;
 }
 
 class FirmwareFetchRequest {
@@ -78,6 +78,25 @@ class FirmwareFetchRequest {
       other is FirmwareFetchRequest &&
           runtimeType == other.runtimeType &&
           currentVersion == other.currentVersion;
+}
+
+@freezed
+sealed class FirmwareInstallEvent with _$FirmwareInstallEvent {
+  const FirmwareInstallEvent._();
+
+  const factory FirmwareInstallEvent.updateVerified() =
+      FirmwareInstallEvent_UpdateVerified;
+  const factory FirmwareInstallEvent.installing() =
+      FirmwareInstallEvent_Installing;
+  const factory FirmwareInstallEvent.rebooting() =
+      FirmwareInstallEvent_Rebooting;
+  const factory FirmwareInstallEvent.success({
+    required String installedVersion,
+  }) = FirmwareInstallEvent_Success;
+  const factory FirmwareInstallEvent.error({
+    required String error,
+    required InstallErrorStage stage,
+  }) = FirmwareInstallEvent_Error;
 }
 
 class FirmwareUpdateAvailable {
@@ -144,14 +163,9 @@ sealed class FirmwareUpdateCheckResponse with _$FirmwareUpdateCheckResponse {
       FirmwareUpdateCheckResponse_NotAvailable;
 }
 
-@freezed
-sealed class FirmwareUpdateResult with _$FirmwareUpdateResult {
-  const FirmwareUpdateResult._();
-
-  const factory FirmwareUpdateResult.success({
-    required String installedVersion,
-  }) = FirmwareUpdateResult_Success;
-  const factory FirmwareUpdateResult.error(
-    String field0,
-  ) = FirmwareUpdateResult_Error;
+enum InstallErrorStage {
+  download,
+  verify,
+  install,
+  ;
 }

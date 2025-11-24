@@ -64,10 +64,12 @@ class Server {
       if (response.statusCode == 200) {
         return Uint8List.fromList(response.bodyBytes);
       } else {
-        throw Exception('Failed to fetch prime patch');
+        throw Exception(
+            'Failed to fetch prime patch ${response.statusCode} ${response.body}');
       }
     } catch (e) {
-      kPrint("Error fetching prime patches: $e");
+      EnvoyReport()
+          .log("Sever", "Error fetching prime patches: $e : ${patch.url}");
     }
 
     return null;

@@ -68,7 +68,8 @@ class BluetoothChannel {
     if (event is Map<dynamic, dynamic>) {
       return WriteProgress.fromMap(event);
     } else {
-      return WriteProgress(progress: 0.0, id: "");
+      return WriteProgress(
+          progress: 0.0, id: "", totalBytes: 0, bytesProcessed: 0);
     }
   }).asBroadcastStream();
 
@@ -91,6 +92,23 @@ class BluetoothChannel {
           "Ble Connection Event: connected=${event.connected}, bonded=${event.bonded}, "
           "peripheralId=${event.peripheralId}");
     });
+  }
+
+  Future<DeviceStatus> getCurrentDeviceStatus() async {
+    try {
+      final result = await bleMethodChannel
+          .invokeMethod<Map<dynamic, dynamic>>('getCurrentDeviceStatus');
+
+      if (result != null) {
+        return DeviceStatus.fromMap(result);
+      } else {
+        return DeviceStatus(connected: false);
+      }
+    } catch (e, stack) {
+      debugPrintStack(
+          label: "Error getting current device status: $e", stackTrace: stack);
+      return DeviceStatus(connected: false);
+    }
   }
 
   /// Write all data chunks to the connected BLE device
@@ -152,8 +170,20 @@ class BluetoothChannel {
       //Android will wait for event after initiating pairing
       unawaited(bleMethodChannel.invokeMethod("pair", {"deviceId": deviceId}));
     }
+    bool initiateBonding = false;
     final connect = await listenToDeviceConnectionEvents.firstWhere(
       (event) {
+        try {
+          if (event.connected && !initiateBonding && !event.bonded) {
+            initiateBonding = true;
+            kPrint("Initiating bonding ");
+            bleMethodChannel.invokeMethod(
+              "bond",
+            );
+          }
+        } catch (e) {
+          debugPrint("Error during bonding initiation: $e");
+        }
         return event.connected;
       },
     );

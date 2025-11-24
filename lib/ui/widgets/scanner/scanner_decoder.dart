@@ -23,6 +23,8 @@ abstract class ScannerDecoder {
 
   UniformResourceReader get urDecoder => _urDecoder;
 
+  double get progress => _urDecoder.urDecoder.progress;
+
   Function(double progress)? get progressCallBack => _progressCallBack;
 
   Future<void> onDetectBarCode(Barcode barCode);
