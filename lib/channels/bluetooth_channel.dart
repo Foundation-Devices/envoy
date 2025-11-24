@@ -9,6 +9,7 @@ import 'package:envoy/business/devices.dart';
 import 'package:envoy/channels/accessory.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/stream_replay_cache.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -44,7 +45,10 @@ class BluetoothChannel {
 
   Stream<Uint8List> get dataStream => listenToDataEvents();
 
-  Stream<DeviceStatus> get deviceStatusStream => _deviceStatusStatusStream;
+  // Replay stream for device status with latest value caching
+  // New subscribers immediately receive the last known status
+  Stream<DeviceStatus> get deviceStatusStream =>
+      _deviceStatusStatusStream.replayLatest(_lastDeviceStatus);
 
   StreamSubscription? _deviceStatusSubscription;
 

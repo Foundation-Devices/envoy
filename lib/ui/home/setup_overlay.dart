@@ -29,6 +29,7 @@ import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
@@ -232,6 +233,61 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
 }
 
 void scanForDevice(BuildContext context) async {
+  void showRepairProgressDialog() {
+    if (context.mounted) {
+      showEnvoyDialog(
+        context: context,
+        dismissible: true,
+        dialog: Container(
+          width: 240,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(EnvoySpacing.medium2),
+            ),
+            color: EnvoyColors.textPrimaryInverse,
+          ),
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(
+                      padding:
+                          const EdgeInsets.only(top: EnvoySpacing.medium3)),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+                    child: CupertinoActivityIndicator(
+                      color: EnvoyColors.accentPrimary,
+                      radius: 24,
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+                    //TODO: Localize
+                    child: Text("Pairing with Prime...",
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.body.copyWith(
+                          color: EnvoyColors.textPrimary,
+                        )),
+                  ),
+                  Padding(
+                      padding:
+                          const EdgeInsets.only(top: EnvoySpacing.medium3)),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  //if an existing ble connection exists, try to pair with that device
   Future pairWithDevice(XidDocument xid) async {
     if (!context.mounted) return;
     Navigator.pop(context);
@@ -241,25 +297,34 @@ void scanForDevice(BuildContext context) async {
           device.peripheralId == connected.peripheralId ||
           device.bleId == connected.peripheralId);
       if (device != null && context.mounted && device.onboardingComplete) {
-        EnvoyToast(
-          replaceExisting: true,
-          duration: const Duration(seconds: 6),
-          message:
-              "Please disconnect from your existing Passport Prime before setting up a new one.",
-          isDismissible: true,
-          onActionTap: () {
-            EnvoyToast.dismissPreviousToasts(context);
-          },
-          icon: const Icon(
-            Icons.info_outline,
-            color: EnvoyColors.accentPrimary,
+        showEnvoyDialog(
+          context: context,
+          dismissible: true,
+          dialog: EnvoyPopUp(
+            icon: EnvoyIcons.alert,
+            typeOfMessage: PopUpState.warning,
+            showCloseButton: true,
+            content:
+                "Please disconnect from your existing Passport Prime before setting up a new one",
+            primaryButtonLabel: S().component_back,
+            onPrimaryButtonTap: (context) async {
+              Navigator.pop(context);
+            },
           ),
-        ).show(context);
+        );
         return;
       } else {
+        showRepairProgressDialog();
         await BluetoothManager().pair(xid);
+        final paringResponse =
+            await BluetoothManager().bleOnboardHandler.waitForPairResponse();
         if (context.mounted) {
-          context.goNamed(ONBOARD_PRIME_PAIR);
+          Navigator.pop(context); //remove loading dialog
+          if (!paringResponse.onboardingComplete) {
+            context.goNamed(ONBOARD_PRIME_PAIR);
+          } else {
+            context.goNamed(ONBOARD_REPAIRING);
+          }
         }
       }
     } else {
@@ -271,6 +336,7 @@ void scanForDevice(BuildContext context) async {
             icon: EnvoyIcons.alert,
             typeOfMessage: PopUpState.warning,
             showCloseButton: true,
+            //TODO: Localize
             content:
                 "Prime not connected. Please turn on your Passport Prime, ensure Bluetooth is enabled, and try again.",
             primaryButtonLabel: S().component_back,
@@ -369,6 +435,7 @@ void addPassportAccount(Binary binary, BuildContext context) async {
     //pop overlay
     goRouter.pop();
     scaffold.showSnackBar(const SnackBar(
+      //TODO: Localize
       content: Text("Account already connected"), // TODO: FIGMA
     ));
     return;
