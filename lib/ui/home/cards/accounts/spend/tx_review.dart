@@ -46,11 +46,26 @@ import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
 
-final primeConnectedStateProvider =
-    StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier(
-      stepName: S().onboarding_connectionIntro_connectedToPrime,
-      state: EnvoyStepState.FINISHED);
+//TODO: multi device support, pass device id
+final primeConnectedStateProvider = Provider<StepModel>((ref) {
+  final connectionStatus = ref.watch(connectedDevicesProvider);
+  return connectionStatus.maybeMap(
+    data: (data) {
+      final isConnected = data.value.connected;
+      if (isConnected) {
+        return StepModel(
+            stepName: S().onboarding_connectionIntro_connectedToPrime,
+            state: EnvoyStepState.FINISHED);
+      } else {
+        return StepModel(
+            stepName: "Reconnecting to Passport", // TODO: localazy
+            state: EnvoyStepState.LOADING);
+      }
+    },
+    orElse: () => StepModel(
+        stepName: "Reconnecting to Passport", // TODO: localazy
+        state: EnvoyStepState.LOADING),
+  );
 });
 
 final transferTransactionStateProvider =
@@ -160,10 +175,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
   }
 
   void _resetPrimeProviderStates() {
-    ref.read(primeConnectedStateProvider.notifier).updateStep(
-          S().onboarding_connectionIntro_connectedToPrime,
-          EnvoyStepState.FINISHED,
-        );
     ref.read(transferTransactionStateProvider.notifier).updateStep(
           "Transferring Transaction", //TODO: localazy
           EnvoyStepState.IDLE,
@@ -643,21 +654,6 @@ class _TransactionReviewScreenState
           state: EnvoyStepState.LOADING);
     }
 
-    ref.listen(connectedDeviceProvider, (previous, next) {
-      if (isPrime) {
-        if (next.value?.connected == false) {
-          ref.read(primeConnectedStateProvider.notifier).updateStep(
-                "Reconnecting to Passport", // todo: localazy
-                EnvoyStepState.LOADING,
-              );
-        } else {
-          ref.read(primeConnectedStateProvider.notifier).updateStep(
-              S().onboarding_connectionIntro_connectedToPrime,
-              EnvoyStepState.FINISHED);
-        }
-      }
-    });
-
     String header = (account.isHot || transactionModel.isFinalized)
         ? S().coincontrol_tx_detail_heading
         : S().coincontrol_txDetail_heading_passport;
@@ -868,15 +864,7 @@ class _TransactionReviewScreenState
 
   void checkConnectivity(bool isConnected, Device device) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    if (isConnected) {
-      ref.read(primeConnectedStateProvider.notifier).updateStep(
-          S().onboarding_connectionIntro_connectedToPrime,
-          EnvoyStepState.FINISHED);
-    } else if (!isConnected) {
-      ref.read(primeConnectedStateProvider.notifier).updateStep(
-            "Reconnecting to Passport", // todo: localazy
-            EnvoyStepState.LOADING,
-          );
+    if (!isConnected) {
       // try to connect to prime
       BluetoothManager().reconnect(device);
     }
