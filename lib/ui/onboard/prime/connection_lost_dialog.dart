@@ -112,8 +112,7 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
         backgroundColor: Colors.lightBlue,
         replaceExisting: true,
         duration: const Duration(seconds: 3),
-        message: "Unable to reconnect to Passport Prime.",
-        // TODO: S().firmware_updateModalConnectionLostToast_unableToReconnect,
+        message: S().firmware_updateModalConnectionLostToast_unableToReconnect,
         icon: const EnvoyIcon(
           EnvoyIcons.alert,
           color: EnvoyColors.accentSecondary,
