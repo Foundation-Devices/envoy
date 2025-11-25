@@ -5,21 +5,58 @@
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/channels/ble_status.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
-import 'package:envoy/util/console.dart';
-import 'package:flutter/material.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter/cupertino.dart';
+
+/// Flag to track if the dialog is currently being shown
+/// startBluetoothDisconnectionListener, will be hooked to different onboarding pages
+/// but we only want to show one dialog at a time.
+/// this flag will be set to false when the dialog widget get disposed.
+bool _isDialogShowing = false;
+
+/// Starts listening for Bluetooth disconnection events and shows a dialog if disconnected
+void startBluetoothDisconnectionListener(BuildContext context, WidgetRef ref) {
+  ref.listen(deviceConnectionStatusStreamProvider, (previous, next) {
+    final lastState = ref.read(primeUpdateStateProvider);
+    final isRebooting = lastState == PrimeFwUpdateStep.rebooting ||
+        lastState == PrimeFwUpdateStep.installing;
+    if (next.hasValue) {
+      final event = next.value!;
+      if (event.type == BluetoothConnectionEventType.deviceDisconnected &&
+          !isRebooting) {
+        if (context.mounted && !_isDialogShowing) {
+          showEnvoyDialog(
+            context: context,
+            useRootNavigator: true,
+            dismissible: false,
+            dialog: const ConnectionLostDialog(),
+          );
+          _isDialogShowing = true;
+        }
+      } else if (event.type == BluetoothConnectionEventType.deviceConnected) {
+        //maybe handle dialog dismissal??
+      }
+    }
+  });
+}
 
 class ConnectionLostDialog extends StatelessWidget {
   const ConnectionLostDialog({super.key});
@@ -60,64 +97,55 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
       _isReconnecting = true;
     });
 
-    // Allow UI to update BEFORE heavy work
-    await Future.delayed(Duration.zero);
-
-    final bleId = BluetoothManager().bleId;
-    final device = Devices().getDeviceByBleId(bleId);
-
-    const int attempts = 5; // total retries
-    const Duration delayPerAttempt = Duration(milliseconds: 500);
-    bool success = false;
-
-    for (int i = 0; i < attempts; i++) {
-      try {
-        await BluetoothManager().reconnect(device!);
-
-        // Wait a bit to allow provider to update
-        await Future.delayed(const Duration(milliseconds: 200));
-
-        final bool isConnected =
-            ref.read(isPrimeConnectedProvider(device.bleId));
-
-        if (isConnected) {
-          success = true;
-          break;
-        }
-      } catch (e) {
-        kPrint("Reconnect attempt ${i + 1} failed: $e");
+    try {
+      if (Devices().getPrimeDevices.isEmpty) {
+        //TODO: localize
+        throw Exception("No Prime devices available to reconnect");
       }
-
-      // Wait before next attempt
-      await Future.delayed(delayPerAttempt);
-    }
-
-    // After all attempts:
-    if (success && mounted) {
-      Navigator.pop(context);
-    } else {
-      _unableToReconnectPrimeToast();
-    }
-
-    if (mounted) {
-      setState(() {
-        _isReconnecting = false;
+      kPrint(
+          "Attempting to reconnect to device... ${BluetoothChannel().lastDeviceStatus.connected}");
+      BluetoothManager().reconnect(Devices().getPrimeDevices.first);
+      await BluetoothChannel().deviceStatusStream.firstWhere((status) {
+        return status.connected;
+      }).timeout(const Duration(seconds: 10), onTimeout: () {
+        throw Exception("Reconnection timed out");
       });
-    }
-  }
-
-  void _unableToReconnectPrimeToast() {
-    if (context.mounted) {
-      EnvoyToast(
-        backgroundColor: Colors.lightBlue,
-        replaceExisting: true,
-        duration: const Duration(seconds: 3),
-        message: S().firmware_updateModalConnectionLostToast_unableToReconnect,
-        icon: const EnvoyIcon(
-          EnvoyIcons.alert,
-          color: EnvoyColors.accentSecondary,
-        ),
-      ).show(context);
+      if (BluetoothChannel().lastDeviceStatus.connected && mounted) {
+        Navigator.pop(context);
+        EnvoyToast(
+          backgroundColor: Colors.lightBlue,
+          replaceExisting: true,
+          duration: const Duration(seconds: 3),
+          message: S().onboarding_connectionIntro_connectedToPrime,
+          icon: const EnvoyIcon(
+            EnvoyIcons.check,
+            color: EnvoyColors.solidWhite,
+          ),
+        ).show(context);
+      }
+    } catch (e, d) {
+      EnvoyReport().log(
+          "ConnectionLostDialog", "Reconnection attempt failed: $e",
+          stackTrace: d);
+      if (mounted) {
+        EnvoyToast(
+          backgroundColor: Colors.lightBlue,
+          replaceExisting: true,
+          duration: const Duration(seconds: 3),
+          message:
+              S().firmware_updateModalConnectionLostToast_unableToReconnect,
+          icon: const EnvoyIcon(
+            EnvoyIcons.alert,
+            color: EnvoyColors.accentSecondary,
+          ),
+        ).show(context);
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isReconnecting = false;
+        });
+      }
     }
   }
 
@@ -185,5 +213,11 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _isDialogShowing = false;
+    super.dispose();
   }
 }
