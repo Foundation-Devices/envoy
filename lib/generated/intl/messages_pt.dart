@@ -64,7 +64,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Secondary action"),
+        "_": MessageLookupByLibrary.simpleMessage("6:15"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage(
           "Versão da Aplicação",
         ),
@@ -827,6 +827,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Comprar"),
         "component_next": MessageLookupByLibrary.simpleMessage("Próximo"),
         "component_no": MessageLookupByLibrary.simpleMessage("Não"),
+        "component_notificationLink": MessageLookupByLibrary.simpleMessage(
+          "Learn more",
+        ),
         "component_ok": MessageLookupByLibrary.simpleMessage("OK"),
         "component_recover": MessageLookupByLibrary.simpleMessage("Recover"),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Resgatar"),
@@ -1436,6 +1439,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "firmware_updateError_verifyFailed":
             MessageLookupByLibrary.simpleMessage(
           "Failed to Verify",
+        ),
+        "firmware_updateModalConnectionLostToast_unableToReconnect":
+            MessageLookupByLibrary.simpleMessage(
+          "Unable to reconnect to Passport Prime.",
         ),
         "firmware_updateModalConnectionLost_exit":
             MessageLookupByLibrary.simpleMessage("Exit Onboarding"),

@@ -13,6 +13,7 @@ import 'package:envoy/util/color_serializer.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'devices.g.dart';
@@ -37,18 +38,35 @@ class Device {
   final String serial;
   @JsonKey(defaultValue: "")
   final String bleId;
+  @JsonKey(defaultValue: "")
+  final String peripheralId;
+  @JsonKey(defaultValue: false)
+  final bool onboardingComplete;
   @Uint8ListConverter()
   final Uint8List? xid;
   final DateTime datePaired;
   String firmwareVersion;
   List<String>? pairedAccountIds;
+  bool? primeBackupEnabled;
 
   @JsonKey(toJson: colorToJson, fromJson: colorFromJson)
   final Color color;
 
-  Device(this.name, this.type, this.serial, this.datePaired,
-      this.firmwareVersion, this.color,
-      {this.deviceColor = DeviceColor.light, this.bleId = "", this.xid});
+  Device(
+    this.name,
+    this.type,
+    this.serial,
+    this.datePaired,
+    this.firmwareVersion,
+    this.color, {
+    this.deviceColor = DeviceColor.light,
+    this.bleId = "",
+    this.peripheralId = "",
+    this.xid,
+    this.pairedAccountIds,
+    this.primeBackupEnabled,
+    this.onboardingComplete = false,
+  });
 
   // Serialisation
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);
@@ -96,9 +114,10 @@ class Devices extends ChangeNotifier {
               "Bluetooth permissions denied, cannot connect to device ${device.name}");
           await BluetoothManager().getPermissions();
         }
+
         //OS will try to reconnect to bonded device automatically,
         //but we call connect to ensure our app connects to it
-        await BluetoothManager().connect(id: device.bleId);
+        await BluetoothManager().reconnect(device);
       }
     }
   }
@@ -140,15 +159,24 @@ class Devices extends ChangeNotifier {
     _ls.prefs.setString(DEVICES_PREFS, json);
   }
 
-  void restore() {
-    devices.clear();
+  void restore({bool hasExitingSetup = false}) {
+    if (!hasExitingSetup) {
+      devices.clear();
+    }
 
     if (_ls.prefs.containsKey(DEVICES_PREFS)) {
       var storedDevices = jsonDecode(_ls.prefs.getString(DEVICES_PREFS)!);
-      for (var device in storedDevices) {
-        devices.add(Device.fromJson(device));
+      for (var deviceData in storedDevices) {
+        var newDevice = Device.fromJson(deviceData);
+
+        bool alreadyExists = devices.any((d) => d.serial == newDevice.serial);
+        if (!alreadyExists) {
+          devices.add(newDevice);
+        }
       }
     }
+    storeDevices();
+    notifyListeners();
   }
 
   void renameDevice(Device device, String newName) {
@@ -206,6 +234,10 @@ class Devices extends ChangeNotifier {
     return devices.firstWhereOrNull((device) => device.type.index == deviceId);
   }
 
+  Device? getDeviceByBleId(String bleId) {
+    return devices.firstWhereOrNull((device) => device.bleId == bleId);
+  }
+
   List<Device> get getPrimeDevices {
     return devices
         .where((device) => device.type == DeviceType.passportPrime)
@@ -215,9 +247,20 @@ class Devices extends ChangeNotifier {
   Device? getDeviceBySerial(String serialNumber) {
     return devices.firstWhereOrNull((device) => device.serial == serialNumber);
   }
+
+  void updatePrimeBackupStatus(String bleId, bool isEnabled) {
+    for (var device in devices) {
+      if (device.bleId == bleId && device.type == DeviceType.passportPrime) {
+        device.primeBackupEnabled = isEnabled;
+        storeDevices();
+        notifyListeners();
+        return;
+      }
+    }
+  }
 }
 
-class Uint8ListConverter implements JsonConverter<Uint8List?, List<int>?> {
+class Uint8ListConverter implements JsonConverter<Uint8List?, List<dynamic>?> {
   /// Create a new instance of [Uint8ListConverter].
   const Uint8ListConverter();
 
@@ -240,3 +283,18 @@ class Uint8ListConverter implements JsonConverter<Uint8List?, List<int>?> {
     return object.toList();
   }
 }
+
+final devicesProvider = ChangeNotifierProvider<Devices>((ref) {
+  return Devices();
+});
+
+// Provider that checks if any Prime device has backup enabled
+final primeBackupEnabledProvider = Provider<bool>((ref) {
+  final devices = ref.watch(devicesProvider).devices;
+
+  return devices.any(
+    (device) =>
+        device.type == DeviceType.passportPrime &&
+        device.primeBackupEnabled == true,
+  );
+});

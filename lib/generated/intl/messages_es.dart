@@ -832,6 +832,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Comprar"),
         "component_next": MessageLookupByLibrary.simpleMessage("Siguiente"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
+        "component_notificationLink": MessageLookupByLibrary.simpleMessage(
+          "Learn more",
+        ),
         "component_ok": MessageLookupByLibrary.simpleMessage("OK"),
         "component_recover": MessageLookupByLibrary.simpleMessage("Recuperar"),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Canjear"),
@@ -1443,6 +1446,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "firmware_updateError_verifyFailed":
             MessageLookupByLibrary.simpleMessage(
           "Error en la Verificación",
+        ),
+        "firmware_updateModalConnectionLostToast_unableToReconnect":
+            MessageLookupByLibrary.simpleMessage(
+          "Unable to reconnect to Passport Prime.",
         ),
         "firmware_updateModalConnectionLost_exit":
             MessageLookupByLibrary.simpleMessage("Salir de Inicialización"),

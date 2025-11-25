@@ -12,6 +12,7 @@ import android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
 import android.system.Os
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
+import com.foundationdevices.envoy.ble.BluetoothChannel
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel

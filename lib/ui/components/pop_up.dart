@@ -8,10 +8,10 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/checkbox.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart' as old_color;
+import 'package:envoy/ui/envoy_button.dart';
 
 enum PopUpState {
   deafult,
@@ -252,37 +252,31 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
               if (widget.tertiaryButtonLabel != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                  child: EnvoyButton(
-                      label: widget.tertiaryButtonLabel!,
-                      type: ButtonType.tertiary,
-                      state: ButtonState.defaultState,
-                      textColor: widget.tertiaryButtonTextColor,
-                      onTap: () {
-                        if (widget.onTertiaryButtonTap != null) {
-                          widget.onTertiaryButtonTap!(context);
-                        }
-                      }),
+                  child: EnvoyButton(widget.tertiaryButtonLabel!,
+                      type: EnvoyButtonTypes.tertiary, onTap: () {
+                    if (widget.onTertiaryButtonTap != null) {
+                      widget.onTertiaryButtonTap!(context);
+                    }
+                  }),
                 ),
               if (widget.secondaryButtonLabel != null)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                  child: EnvoyButton(
-                      label: widget.secondaryButtonLabel!,
-                      type: ButtonType.secondary,
-                      state: ButtonState.defaultState,
-                      onTap: () {
-                        if (widget.onSecondaryButtonTap != null) {
-                          widget.onSecondaryButtonTap!(context);
-                        }
-                      }),
-                ),
-              EnvoyButton(
-                  label: widget.primaryButtonLabel,
-                  type: ButtonType.primary,
-                  state: ButtonState.defaultState,
-                  onTap: () {
-                    widget.onPrimaryButtonTap?.call(context);
+                  padding: EdgeInsets.only(
+                      bottom: widget.onPrimaryButtonTap == null
+                          ? 0
+                          : EnvoySpacing.medium1),
+                  child: EnvoyButton(widget.secondaryButtonLabel!,
+                      type: EnvoyButtonTypes.secondary, onTap: () {
+                    if (widget.onSecondaryButtonTap != null) {
+                      widget.onSecondaryButtonTap!(context);
+                    }
                   }),
+                ),
+              if (widget.onPrimaryButtonTap != null)
+                EnvoyButton(widget.primaryButtonLabel,
+                    type: EnvoyButtonTypes.primary, onTap: () {
+                  widget.onPrimaryButtonTap?.call(context);
+                }),
             ],
           ),
         ),

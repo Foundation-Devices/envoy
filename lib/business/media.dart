@@ -43,6 +43,9 @@ class Media {
   }
 
   Future<void> _fetchThumbnail() async {
+    if (thumbnailHash == null || thumbnailUrl == null) {
+      return;
+    }
     HttpTor().get(thumbnailUrl!).then((response) async {
       await LocalStorage().saveFileBytes(
           "$thumbnailsFolder/${thumbnailHash!}", response.bodyBytes);

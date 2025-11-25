@@ -19,19 +19,19 @@ mixin _$BackupShardResponse {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() success,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? success,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? success,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -123,7 +123,7 @@ class _$BackupShardResponse_SuccessImpl extends BackupShardResponse_Success {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() success,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) {
     return success();
   }
@@ -132,7 +132,7 @@ class _$BackupShardResponse_SuccessImpl extends BackupShardResponse_Success {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? success,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) {
     return success?.call();
   }
@@ -141,7 +141,7 @@ class _$BackupShardResponse_SuccessImpl extends BackupShardResponse_Success {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? success,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -195,7 +195,7 @@ abstract class _$$BackupShardResponse_ErrorImplCopyWith<$Res> {
           $Res Function(_$BackupShardResponse_ErrorImpl) then) =
       __$$BackupShardResponse_ErrorImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String field0});
+  $Res call({String error});
 }
 
 /// @nodoc
@@ -213,12 +213,12 @@ class __$$BackupShardResponse_ErrorImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? field0 = null,
+    Object? error = null,
   }) {
     return _then(_$BackupShardResponse_ErrorImpl(
-      null == field0
-          ? _value.field0
-          : field0 // ignore: cast_nullable_to_non_nullable
+      error: null == error
+          ? _value.error
+          : error // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -227,14 +227,14 @@ class __$$BackupShardResponse_ErrorImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$BackupShardResponse_ErrorImpl extends BackupShardResponse_Error {
-  const _$BackupShardResponse_ErrorImpl(this.field0) : super._();
+  const _$BackupShardResponse_ErrorImpl({required this.error}) : super._();
 
   @override
-  final String field0;
+  final String error;
 
   @override
   String toString() {
-    return 'BackupShardResponse.error(field0: $field0)';
+    return 'BackupShardResponse.error(error: $error)';
   }
 
   @override
@@ -242,11 +242,11 @@ class _$BackupShardResponse_ErrorImpl extends BackupShardResponse_Error {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$BackupShardResponse_ErrorImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, field0);
+  int get hashCode => Object.hash(runtimeType, error);
 
   /// Create a copy of BackupShardResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -261,29 +261,29 @@ class _$BackupShardResponse_ErrorImpl extends BackupShardResponse_Error {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() success,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) {
-    return error(field0);
+    return error(this.error);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? success,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) {
-    return error?.call(field0);
+    return error?.call(this.error);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? success,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) {
     if (error != null) {
-      return error(field0);
+      return error(this.error);
     }
     return orElse();
   }
@@ -321,11 +321,11 @@ class _$BackupShardResponse_ErrorImpl extends BackupShardResponse_Error {
 }
 
 abstract class BackupShardResponse_Error extends BackupShardResponse {
-  const factory BackupShardResponse_Error(final String field0) =
+  const factory BackupShardResponse_Error({required final String error}) =
       _$BackupShardResponse_ErrorImpl;
   const BackupShardResponse_Error._() : super._();
 
-  String get field0;
+  String get error;
 
   /// Create a copy of BackupShardResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -702,19 +702,19 @@ mixin _$CreateMagicBackupResult {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() success,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? success,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? success,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -808,7 +808,7 @@ class _$CreateMagicBackupResult_SuccessImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() success,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) {
     return success();
   }
@@ -817,7 +817,7 @@ class _$CreateMagicBackupResult_SuccessImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? success,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) {
     return success?.call();
   }
@@ -826,7 +826,7 @@ class _$CreateMagicBackupResult_SuccessImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? success,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -880,7 +880,7 @@ abstract class _$$CreateMagicBackupResult_ErrorImplCopyWith<$Res> {
           $Res Function(_$CreateMagicBackupResult_ErrorImpl) then) =
       __$$CreateMagicBackupResult_ErrorImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String field0});
+  $Res call({String error});
 }
 
 /// @nodoc
@@ -898,12 +898,12 @@ class __$$CreateMagicBackupResult_ErrorImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? field0 = null,
+    Object? error = null,
   }) {
     return _then(_$CreateMagicBackupResult_ErrorImpl(
-      null == field0
-          ? _value.field0
-          : field0 // ignore: cast_nullable_to_non_nullable
+      error: null == error
+          ? _value.error
+          : error // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -913,14 +913,14 @@ class __$$CreateMagicBackupResult_ErrorImplCopyWithImpl<$Res>
 
 class _$CreateMagicBackupResult_ErrorImpl
     extends CreateMagicBackupResult_Error {
-  const _$CreateMagicBackupResult_ErrorImpl(this.field0) : super._();
+  const _$CreateMagicBackupResult_ErrorImpl({required this.error}) : super._();
 
   @override
-  final String field0;
+  final String error;
 
   @override
   String toString() {
-    return 'CreateMagicBackupResult.error(field0: $field0)';
+    return 'CreateMagicBackupResult.error(error: $error)';
   }
 
   @override
@@ -928,11 +928,11 @@ class _$CreateMagicBackupResult_ErrorImpl
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CreateMagicBackupResult_ErrorImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, field0);
+  int get hashCode => Object.hash(runtimeType, error);
 
   /// Create a copy of CreateMagicBackupResult
   /// with the given fields replaced by the non-null parameter values.
@@ -948,29 +948,29 @@ class _$CreateMagicBackupResult_ErrorImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() success,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) {
-    return error(field0);
+    return error(this.error);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? success,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) {
-    return error?.call(field0);
+    return error?.call(this.error);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? success,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) {
     if (error != null) {
-      return error(field0);
+      return error(this.error);
     }
     return orElse();
   }
@@ -1008,11 +1008,11 @@ class _$CreateMagicBackupResult_ErrorImpl
 }
 
 abstract class CreateMagicBackupResult_Error extends CreateMagicBackupResult {
-  const factory CreateMagicBackupResult_Error(final String field0) =
+  const factory CreateMagicBackupResult_Error({required final String error}) =
       _$CreateMagicBackupResult_ErrorImpl;
   const CreateMagicBackupResult_Error._() : super._();
 
-  String get field0;
+  String get error;
 
   /// Create a copy of CreateMagicBackupResult
   /// with the given fields replaced by the non-null parameter values.
@@ -1026,33 +1026,32 @@ abstract class CreateMagicBackupResult_Error extends CreateMagicBackupResult {
 mixin _$RestoreMagicBackupEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() noBackupFound,
+    required TResult Function() notFound,
     required TResult Function(BackupMetadata field0) starting,
     required TResult Function(BackupChunk field0) chunk,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? noBackupFound,
+    TResult? Function()? notFound,
     TResult? Function(BackupMetadata field0)? starting,
     TResult? Function(BackupChunk field0)? chunk,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? noBackupFound,
+    TResult Function()? notFound,
     TResult Function(BackupMetadata field0)? starting,
     TResult Function(BackupChunk field0)? chunk,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(RestoreMagicBackupEvent_NoBackupFound value)
-        noBackupFound,
+    required TResult Function(RestoreMagicBackupEvent_NotFound value) notFound,
     required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
     required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
     required TResult Function(RestoreMagicBackupEvent_Error value) error,
@@ -1060,8 +1059,7 @@ mixin _$RestoreMagicBackupEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreMagicBackupEvent_NoBackupFound value)?
-        noBackupFound,
+    TResult? Function(RestoreMagicBackupEvent_NotFound value)? notFound,
     TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
     TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult? Function(RestoreMagicBackupEvent_Error value)? error,
@@ -1069,8 +1067,7 @@ mixin _$RestoreMagicBackupEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestoreMagicBackupEvent_NoBackupFound value)?
-        noBackupFound,
+    TResult Function(RestoreMagicBackupEvent_NotFound value)? notFound,
     TResult Function(RestoreMagicBackupEvent_Starting value)? starting,
     TResult Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult Function(RestoreMagicBackupEvent_Error value)? error,
@@ -1102,21 +1099,21 @@ class _$RestoreMagicBackupEventCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$RestoreMagicBackupEvent_NoBackupFoundImplCopyWith<$Res> {
-  factory _$$RestoreMagicBackupEvent_NoBackupFoundImplCopyWith(
-          _$RestoreMagicBackupEvent_NoBackupFoundImpl value,
-          $Res Function(_$RestoreMagicBackupEvent_NoBackupFoundImpl) then) =
-      __$$RestoreMagicBackupEvent_NoBackupFoundImplCopyWithImpl<$Res>;
+abstract class _$$RestoreMagicBackupEvent_NotFoundImplCopyWith<$Res> {
+  factory _$$RestoreMagicBackupEvent_NotFoundImplCopyWith(
+          _$RestoreMagicBackupEvent_NotFoundImpl value,
+          $Res Function(_$RestoreMagicBackupEvent_NotFoundImpl) then) =
+      __$$RestoreMagicBackupEvent_NotFoundImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$RestoreMagicBackupEvent_NoBackupFoundImplCopyWithImpl<$Res>
+class __$$RestoreMagicBackupEvent_NotFoundImplCopyWithImpl<$Res>
     extends _$RestoreMagicBackupEventCopyWithImpl<$Res,
-        _$RestoreMagicBackupEvent_NoBackupFoundImpl>
-    implements _$$RestoreMagicBackupEvent_NoBackupFoundImplCopyWith<$Res> {
-  __$$RestoreMagicBackupEvent_NoBackupFoundImplCopyWithImpl(
-      _$RestoreMagicBackupEvent_NoBackupFoundImpl _value,
-      $Res Function(_$RestoreMagicBackupEvent_NoBackupFoundImpl) _then)
+        _$RestoreMagicBackupEvent_NotFoundImpl>
+    implements _$$RestoreMagicBackupEvent_NotFoundImplCopyWith<$Res> {
+  __$$RestoreMagicBackupEvent_NotFoundImplCopyWithImpl(
+      _$RestoreMagicBackupEvent_NotFoundImpl _value,
+      $Res Function(_$RestoreMagicBackupEvent_NotFoundImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of RestoreMagicBackupEvent
@@ -1125,20 +1122,20 @@ class __$$RestoreMagicBackupEvent_NoBackupFoundImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$RestoreMagicBackupEvent_NoBackupFoundImpl
-    extends RestoreMagicBackupEvent_NoBackupFound {
-  const _$RestoreMagicBackupEvent_NoBackupFoundImpl() : super._();
+class _$RestoreMagicBackupEvent_NotFoundImpl
+    extends RestoreMagicBackupEvent_NotFound {
+  const _$RestoreMagicBackupEvent_NotFoundImpl() : super._();
 
   @override
   String toString() {
-    return 'RestoreMagicBackupEvent.noBackupFound()';
+    return 'RestoreMagicBackupEvent.notFound()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$RestoreMagicBackupEvent_NoBackupFoundImpl);
+            other is _$RestoreMagicBackupEvent_NotFoundImpl);
   }
 
   @override
@@ -1147,36 +1144,36 @@ class _$RestoreMagicBackupEvent_NoBackupFoundImpl
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() noBackupFound,
+    required TResult Function() notFound,
     required TResult Function(BackupMetadata field0) starting,
     required TResult Function(BackupChunk field0) chunk,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) {
-    return noBackupFound();
+    return notFound();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? noBackupFound,
+    TResult? Function()? notFound,
     TResult? Function(BackupMetadata field0)? starting,
     TResult? Function(BackupChunk field0)? chunk,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) {
-    return noBackupFound?.call();
+    return notFound?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? noBackupFound,
+    TResult Function()? notFound,
     TResult Function(BackupMetadata field0)? starting,
     TResult Function(BackupChunk field0)? chunk,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) {
-    if (noBackupFound != null) {
-      return noBackupFound();
+    if (notFound != null) {
+      return notFound();
     }
     return orElse();
   }
@@ -1184,49 +1181,46 @@ class _$RestoreMagicBackupEvent_NoBackupFoundImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(RestoreMagicBackupEvent_NoBackupFound value)
-        noBackupFound,
+    required TResult Function(RestoreMagicBackupEvent_NotFound value) notFound,
     required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
     required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
     required TResult Function(RestoreMagicBackupEvent_Error value) error,
   }) {
-    return noBackupFound(this);
+    return notFound(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreMagicBackupEvent_NoBackupFound value)?
-        noBackupFound,
+    TResult? Function(RestoreMagicBackupEvent_NotFound value)? notFound,
     TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
     TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult? Function(RestoreMagicBackupEvent_Error value)? error,
   }) {
-    return noBackupFound?.call(this);
+    return notFound?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestoreMagicBackupEvent_NoBackupFound value)?
-        noBackupFound,
+    TResult Function(RestoreMagicBackupEvent_NotFound value)? notFound,
     TResult Function(RestoreMagicBackupEvent_Starting value)? starting,
     TResult Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult Function(RestoreMagicBackupEvent_Error value)? error,
     required TResult orElse(),
   }) {
-    if (noBackupFound != null) {
-      return noBackupFound(this);
+    if (notFound != null) {
+      return notFound(this);
     }
     return orElse();
   }
 }
 
-abstract class RestoreMagicBackupEvent_NoBackupFound
+abstract class RestoreMagicBackupEvent_NotFound
     extends RestoreMagicBackupEvent {
-  const factory RestoreMagicBackupEvent_NoBackupFound() =
-      _$RestoreMagicBackupEvent_NoBackupFoundImpl;
-  const RestoreMagicBackupEvent_NoBackupFound._() : super._();
+  const factory RestoreMagicBackupEvent_NotFound() =
+      _$RestoreMagicBackupEvent_NotFoundImpl;
+  const RestoreMagicBackupEvent_NotFound._() : super._();
 }
 
 /// @nodoc
@@ -1303,10 +1297,10 @@ class _$RestoreMagicBackupEvent_StartingImpl
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() noBackupFound,
+    required TResult Function() notFound,
     required TResult Function(BackupMetadata field0) starting,
     required TResult Function(BackupChunk field0) chunk,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) {
     return starting(field0);
   }
@@ -1314,10 +1308,10 @@ class _$RestoreMagicBackupEvent_StartingImpl
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? noBackupFound,
+    TResult? Function()? notFound,
     TResult? Function(BackupMetadata field0)? starting,
     TResult? Function(BackupChunk field0)? chunk,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) {
     return starting?.call(field0);
   }
@@ -1325,10 +1319,10 @@ class _$RestoreMagicBackupEvent_StartingImpl
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? noBackupFound,
+    TResult Function()? notFound,
     TResult Function(BackupMetadata field0)? starting,
     TResult Function(BackupChunk field0)? chunk,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) {
     if (starting != null) {
@@ -1340,8 +1334,7 @@ class _$RestoreMagicBackupEvent_StartingImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(RestoreMagicBackupEvent_NoBackupFound value)
-        noBackupFound,
+    required TResult Function(RestoreMagicBackupEvent_NotFound value) notFound,
     required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
     required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
     required TResult Function(RestoreMagicBackupEvent_Error value) error,
@@ -1352,8 +1345,7 @@ class _$RestoreMagicBackupEvent_StartingImpl
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreMagicBackupEvent_NoBackupFound value)?
-        noBackupFound,
+    TResult? Function(RestoreMagicBackupEvent_NotFound value)? notFound,
     TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
     TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult? Function(RestoreMagicBackupEvent_Error value)? error,
@@ -1364,8 +1356,7 @@ class _$RestoreMagicBackupEvent_StartingImpl
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestoreMagicBackupEvent_NoBackupFound value)?
-        noBackupFound,
+    TResult Function(RestoreMagicBackupEvent_NotFound value)? notFound,
     TResult Function(RestoreMagicBackupEvent_Starting value)? starting,
     TResult Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult Function(RestoreMagicBackupEvent_Error value)? error,
@@ -1468,10 +1459,10 @@ class _$RestoreMagicBackupEvent_ChunkImpl
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() noBackupFound,
+    required TResult Function() notFound,
     required TResult Function(BackupMetadata field0) starting,
     required TResult Function(BackupChunk field0) chunk,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) {
     return chunk(field0);
   }
@@ -1479,10 +1470,10 @@ class _$RestoreMagicBackupEvent_ChunkImpl
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? noBackupFound,
+    TResult? Function()? notFound,
     TResult? Function(BackupMetadata field0)? starting,
     TResult? Function(BackupChunk field0)? chunk,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) {
     return chunk?.call(field0);
   }
@@ -1490,10 +1481,10 @@ class _$RestoreMagicBackupEvent_ChunkImpl
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? noBackupFound,
+    TResult Function()? notFound,
     TResult Function(BackupMetadata field0)? starting,
     TResult Function(BackupChunk field0)? chunk,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) {
     if (chunk != null) {
@@ -1505,8 +1496,7 @@ class _$RestoreMagicBackupEvent_ChunkImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(RestoreMagicBackupEvent_NoBackupFound value)
-        noBackupFound,
+    required TResult Function(RestoreMagicBackupEvent_NotFound value) notFound,
     required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
     required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
     required TResult Function(RestoreMagicBackupEvent_Error value) error,
@@ -1517,8 +1507,7 @@ class _$RestoreMagicBackupEvent_ChunkImpl
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreMagicBackupEvent_NoBackupFound value)?
-        noBackupFound,
+    TResult? Function(RestoreMagicBackupEvent_NotFound value)? notFound,
     TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
     TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult? Function(RestoreMagicBackupEvent_Error value)? error,
@@ -1529,8 +1518,7 @@ class _$RestoreMagicBackupEvent_ChunkImpl
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestoreMagicBackupEvent_NoBackupFound value)?
-        noBackupFound,
+    TResult Function(RestoreMagicBackupEvent_NotFound value)? notFound,
     TResult Function(RestoreMagicBackupEvent_Starting value)? starting,
     TResult Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult Function(RestoreMagicBackupEvent_Error value)? error,
@@ -1565,7 +1553,7 @@ abstract class _$$RestoreMagicBackupEvent_ErrorImplCopyWith<$Res> {
           $Res Function(_$RestoreMagicBackupEvent_ErrorImpl) then) =
       __$$RestoreMagicBackupEvent_ErrorImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String field0});
+  $Res call({String error});
 }
 
 /// @nodoc
@@ -1583,12 +1571,12 @@ class __$$RestoreMagicBackupEvent_ErrorImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? field0 = null,
+    Object? error = null,
   }) {
     return _then(_$RestoreMagicBackupEvent_ErrorImpl(
-      null == field0
-          ? _value.field0
-          : field0 // ignore: cast_nullable_to_non_nullable
+      error: null == error
+          ? _value.error
+          : error // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -1598,14 +1586,14 @@ class __$$RestoreMagicBackupEvent_ErrorImplCopyWithImpl<$Res>
 
 class _$RestoreMagicBackupEvent_ErrorImpl
     extends RestoreMagicBackupEvent_Error {
-  const _$RestoreMagicBackupEvent_ErrorImpl(this.field0) : super._();
+  const _$RestoreMagicBackupEvent_ErrorImpl({required this.error}) : super._();
 
   @override
-  final String field0;
+  final String error;
 
   @override
   String toString() {
-    return 'RestoreMagicBackupEvent.error(field0: $field0)';
+    return 'RestoreMagicBackupEvent.error(error: $error)';
   }
 
   @override
@@ -1613,11 +1601,11 @@ class _$RestoreMagicBackupEvent_ErrorImpl
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$RestoreMagicBackupEvent_ErrorImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, field0);
+  int get hashCode => Object.hash(runtimeType, error);
 
   /// Create a copy of RestoreMagicBackupEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -1632,36 +1620,36 @@ class _$RestoreMagicBackupEvent_ErrorImpl
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() noBackupFound,
+    required TResult Function() notFound,
     required TResult Function(BackupMetadata field0) starting,
     required TResult Function(BackupChunk field0) chunk,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) {
-    return error(field0);
+    return error(this.error);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? noBackupFound,
+    TResult? Function()? notFound,
     TResult? Function(BackupMetadata field0)? starting,
     TResult? Function(BackupChunk field0)? chunk,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) {
-    return error?.call(field0);
+    return error?.call(this.error);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? noBackupFound,
+    TResult Function()? notFound,
     TResult Function(BackupMetadata field0)? starting,
     TResult Function(BackupChunk field0)? chunk,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) {
     if (error != null) {
-      return error(field0);
+      return error(this.error);
     }
     return orElse();
   }
@@ -1669,8 +1657,7 @@ class _$RestoreMagicBackupEvent_ErrorImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(RestoreMagicBackupEvent_NoBackupFound value)
-        noBackupFound,
+    required TResult Function(RestoreMagicBackupEvent_NotFound value) notFound,
     required TResult Function(RestoreMagicBackupEvent_Starting value) starting,
     required TResult Function(RestoreMagicBackupEvent_Chunk value) chunk,
     required TResult Function(RestoreMagicBackupEvent_Error value) error,
@@ -1681,8 +1668,7 @@ class _$RestoreMagicBackupEvent_ErrorImpl
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(RestoreMagicBackupEvent_NoBackupFound value)?
-        noBackupFound,
+    TResult? Function(RestoreMagicBackupEvent_NotFound value)? notFound,
     TResult? Function(RestoreMagicBackupEvent_Starting value)? starting,
     TResult? Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult? Function(RestoreMagicBackupEvent_Error value)? error,
@@ -1693,8 +1679,7 @@ class _$RestoreMagicBackupEvent_ErrorImpl
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(RestoreMagicBackupEvent_NoBackupFound value)?
-        noBackupFound,
+    TResult Function(RestoreMagicBackupEvent_NotFound value)? notFound,
     TResult Function(RestoreMagicBackupEvent_Starting value)? starting,
     TResult Function(RestoreMagicBackupEvent_Chunk value)? chunk,
     TResult Function(RestoreMagicBackupEvent_Error value)? error,
@@ -1708,11 +1693,11 @@ class _$RestoreMagicBackupEvent_ErrorImpl
 }
 
 abstract class RestoreMagicBackupEvent_Error extends RestoreMagicBackupEvent {
-  const factory RestoreMagicBackupEvent_Error(final String field0) =
+  const factory RestoreMagicBackupEvent_Error({required final String error}) =
       _$RestoreMagicBackupEvent_ErrorImpl;
   const RestoreMagicBackupEvent_Error._() : super._();
 
-  String get field0;
+  String get error;
 
   /// Create a copy of RestoreMagicBackupEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -1727,19 +1712,19 @@ mixin _$RestoreMagicBackupResult {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() success,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? success,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? success,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -1833,7 +1818,7 @@ class _$RestoreMagicBackupResult_SuccessImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() success,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) {
     return success();
   }
@@ -1842,7 +1827,7 @@ class _$RestoreMagicBackupResult_SuccessImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? success,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) {
     return success?.call();
   }
@@ -1851,7 +1836,7 @@ class _$RestoreMagicBackupResult_SuccessImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? success,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -1906,7 +1891,7 @@ abstract class _$$RestoreMagicBackupResult_ErrorImplCopyWith<$Res> {
           $Res Function(_$RestoreMagicBackupResult_ErrorImpl) then) =
       __$$RestoreMagicBackupResult_ErrorImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String field0});
+  $Res call({String error});
 }
 
 /// @nodoc
@@ -1924,12 +1909,12 @@ class __$$RestoreMagicBackupResult_ErrorImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? field0 = null,
+    Object? error = null,
   }) {
     return _then(_$RestoreMagicBackupResult_ErrorImpl(
-      null == field0
-          ? _value.field0
-          : field0 // ignore: cast_nullable_to_non_nullable
+      error: null == error
+          ? _value.error
+          : error // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -1939,14 +1924,14 @@ class __$$RestoreMagicBackupResult_ErrorImplCopyWithImpl<$Res>
 
 class _$RestoreMagicBackupResult_ErrorImpl
     extends RestoreMagicBackupResult_Error {
-  const _$RestoreMagicBackupResult_ErrorImpl(this.field0) : super._();
+  const _$RestoreMagicBackupResult_ErrorImpl({required this.error}) : super._();
 
   @override
-  final String field0;
+  final String error;
 
   @override
   String toString() {
-    return 'RestoreMagicBackupResult.error(field0: $field0)';
+    return 'RestoreMagicBackupResult.error(error: $error)';
   }
 
   @override
@@ -1954,11 +1939,11 @@ class _$RestoreMagicBackupResult_ErrorImpl
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$RestoreMagicBackupResult_ErrorImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, field0);
+  int get hashCode => Object.hash(runtimeType, error);
 
   /// Create a copy of RestoreMagicBackupResult
   /// with the given fields replaced by the non-null parameter values.
@@ -1974,29 +1959,29 @@ class _$RestoreMagicBackupResult_ErrorImpl
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() success,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) {
-    return error(field0);
+    return error(this.error);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? success,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) {
-    return error?.call(field0);
+    return error?.call(this.error);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? success,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) {
     if (error != null) {
-      return error(field0);
+      return error(this.error);
     }
     return orElse();
   }
@@ -2034,11 +2019,11 @@ class _$RestoreMagicBackupResult_ErrorImpl
 }
 
 abstract class RestoreMagicBackupResult_Error extends RestoreMagicBackupResult {
-  const factory RestoreMagicBackupResult_Error(final String field0) =
+  const factory RestoreMagicBackupResult_Error({required final String error}) =
       _$RestoreMagicBackupResult_ErrorImpl;
   const RestoreMagicBackupResult_Error._() : super._();
 
-  String get field0;
+  String get error;
 
   /// Create a copy of RestoreMagicBackupResult
   /// with the given fields replaced by the non-null parameter values.
@@ -2050,26 +2035,25 @@ abstract class RestoreMagicBackupResult_Error extends RestoreMagicBackupResult {
 
 /// @nodoc
 mixin _$RestoreShardResponse {
-  Object get field0 => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(Shard field0) success,
-    required TResult Function(String field0) error,
-    required TResult Function(String field0) notFound,
+    required TResult Function(Shard shard) success,
+    required TResult Function(String error) error,
+    required TResult Function() notFound,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Shard field0)? success,
-    TResult? Function(String field0)? error,
-    TResult? Function(String field0)? notFound,
+    TResult? Function(Shard shard)? success,
+    TResult? Function(String error)? error,
+    TResult? Function()? notFound,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Shard field0)? success,
-    TResult Function(String field0)? error,
-    TResult Function(String field0)? notFound,
+    TResult Function(Shard shard)? success,
+    TResult Function(String error)? error,
+    TResult Function()? notFound,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -2126,7 +2110,7 @@ abstract class _$$RestoreShardResponse_SuccessImplCopyWith<$Res> {
           $Res Function(_$RestoreShardResponse_SuccessImpl) then) =
       __$$RestoreShardResponse_SuccessImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({Shard field0});
+  $Res call({Shard shard});
 }
 
 /// @nodoc
@@ -2144,12 +2128,12 @@ class __$$RestoreShardResponse_SuccessImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? field0 = null,
+    Object? shard = null,
   }) {
     return _then(_$RestoreShardResponse_SuccessImpl(
-      null == field0
-          ? _value.field0
-          : field0 // ignore: cast_nullable_to_non_nullable
+      shard: null == shard
+          ? _value.shard
+          : shard // ignore: cast_nullable_to_non_nullable
               as Shard,
     ));
   }
@@ -2158,14 +2142,14 @@ class __$$RestoreShardResponse_SuccessImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$RestoreShardResponse_SuccessImpl extends RestoreShardResponse_Success {
-  const _$RestoreShardResponse_SuccessImpl(this.field0) : super._();
+  const _$RestoreShardResponse_SuccessImpl({required this.shard}) : super._();
 
   @override
-  final Shard field0;
+  final Shard shard;
 
   @override
   String toString() {
-    return 'RestoreShardResponse.success(field0: $field0)';
+    return 'RestoreShardResponse.success(shard: $shard)';
   }
 
   @override
@@ -2173,11 +2157,11 @@ class _$RestoreShardResponse_SuccessImpl extends RestoreShardResponse_Success {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$RestoreShardResponse_SuccessImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
+            (identical(other.shard, shard) || other.shard == shard));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, field0);
+  int get hashCode => Object.hash(runtimeType, shard);
 
   /// Create a copy of RestoreShardResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -2192,33 +2176,33 @@ class _$RestoreShardResponse_SuccessImpl extends RestoreShardResponse_Success {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(Shard field0) success,
-    required TResult Function(String field0) error,
-    required TResult Function(String field0) notFound,
+    required TResult Function(Shard shard) success,
+    required TResult Function(String error) error,
+    required TResult Function() notFound,
   }) {
-    return success(field0);
+    return success(shard);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Shard field0)? success,
-    TResult? Function(String field0)? error,
-    TResult? Function(String field0)? notFound,
+    TResult? Function(Shard shard)? success,
+    TResult? Function(String error)? error,
+    TResult? Function()? notFound,
   }) {
-    return success?.call(field0);
+    return success?.call(shard);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Shard field0)? success,
-    TResult Function(String field0)? error,
-    TResult Function(String field0)? notFound,
+    TResult Function(Shard shard)? success,
+    TResult Function(String error)? error,
+    TResult Function()? notFound,
     required TResult orElse(),
   }) {
     if (success != null) {
-      return success(field0);
+      return success(shard);
     }
     return orElse();
   }
@@ -2259,12 +2243,11 @@ class _$RestoreShardResponse_SuccessImpl extends RestoreShardResponse_Success {
 }
 
 abstract class RestoreShardResponse_Success extends RestoreShardResponse {
-  const factory RestoreShardResponse_Success(final Shard field0) =
+  const factory RestoreShardResponse_Success({required final Shard shard}) =
       _$RestoreShardResponse_SuccessImpl;
   const RestoreShardResponse_Success._() : super._();
 
-  @override
-  Shard get field0;
+  Shard get shard;
 
   /// Create a copy of RestoreShardResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -2281,7 +2264,7 @@ abstract class _$$RestoreShardResponse_ErrorImplCopyWith<$Res> {
           $Res Function(_$RestoreShardResponse_ErrorImpl) then) =
       __$$RestoreShardResponse_ErrorImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String field0});
+  $Res call({String error});
 }
 
 /// @nodoc
@@ -2299,12 +2282,12 @@ class __$$RestoreShardResponse_ErrorImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? field0 = null,
+    Object? error = null,
   }) {
     return _then(_$RestoreShardResponse_ErrorImpl(
-      null == field0
-          ? _value.field0
-          : field0 // ignore: cast_nullable_to_non_nullable
+      error: null == error
+          ? _value.error
+          : error // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -2313,14 +2296,14 @@ class __$$RestoreShardResponse_ErrorImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$RestoreShardResponse_ErrorImpl extends RestoreShardResponse_Error {
-  const _$RestoreShardResponse_ErrorImpl(this.field0) : super._();
+  const _$RestoreShardResponse_ErrorImpl({required this.error}) : super._();
 
   @override
-  final String field0;
+  final String error;
 
   @override
   String toString() {
-    return 'RestoreShardResponse.error(field0: $field0)';
+    return 'RestoreShardResponse.error(error: $error)';
   }
 
   @override
@@ -2328,11 +2311,11 @@ class _$RestoreShardResponse_ErrorImpl extends RestoreShardResponse_Error {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$RestoreShardResponse_ErrorImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, field0);
+  int get hashCode => Object.hash(runtimeType, error);
 
   /// Create a copy of RestoreShardResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -2346,33 +2329,33 @@ class _$RestoreShardResponse_ErrorImpl extends RestoreShardResponse_Error {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(Shard field0) success,
-    required TResult Function(String field0) error,
-    required TResult Function(String field0) notFound,
+    required TResult Function(Shard shard) success,
+    required TResult Function(String error) error,
+    required TResult Function() notFound,
   }) {
-    return error(field0);
+    return error(this.error);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Shard field0)? success,
-    TResult? Function(String field0)? error,
-    TResult? Function(String field0)? notFound,
+    TResult? Function(Shard shard)? success,
+    TResult? Function(String error)? error,
+    TResult? Function()? notFound,
   }) {
-    return error?.call(field0);
+    return error?.call(this.error);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Shard field0)? success,
-    TResult Function(String field0)? error,
-    TResult Function(String field0)? notFound,
+    TResult Function(Shard shard)? success,
+    TResult Function(String error)? error,
+    TResult Function()? notFound,
     required TResult orElse(),
   }) {
     if (error != null) {
-      return error(field0);
+      return error(this.error);
     }
     return orElse();
   }
@@ -2413,12 +2396,11 @@ class _$RestoreShardResponse_ErrorImpl extends RestoreShardResponse_Error {
 }
 
 abstract class RestoreShardResponse_Error extends RestoreShardResponse {
-  const factory RestoreShardResponse_Error(final String field0) =
+  const factory RestoreShardResponse_Error({required final String error}) =
       _$RestoreShardResponse_ErrorImpl;
   const RestoreShardResponse_Error._() : super._();
 
-  @override
-  String get field0;
+  String get error;
 
   /// Create a copy of RestoreShardResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -2433,8 +2415,6 @@ abstract class _$$RestoreShardResponse_NotFoundImplCopyWith<$Res> {
           _$RestoreShardResponse_NotFoundImpl value,
           $Res Function(_$RestoreShardResponse_NotFoundImpl) then) =
       __$$RestoreShardResponse_NotFoundImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String field0});
 }
 
 /// @nodoc
@@ -2449,85 +2429,59 @@ class __$$RestoreShardResponse_NotFoundImplCopyWithImpl<$Res>
 
   /// Create a copy of RestoreShardResponse
   /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? field0 = null,
-  }) {
-    return _then(_$RestoreShardResponse_NotFoundImpl(
-      null == field0
-          ? _value.field0
-          : field0 // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
 }
 
 /// @nodoc
 
 class _$RestoreShardResponse_NotFoundImpl
     extends RestoreShardResponse_NotFound {
-  const _$RestoreShardResponse_NotFoundImpl(this.field0) : super._();
-
-  @override
-  final String field0;
+  const _$RestoreShardResponse_NotFoundImpl() : super._();
 
   @override
   String toString() {
-    return 'RestoreShardResponse.notFound(field0: $field0)';
+    return 'RestoreShardResponse.notFound()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$RestoreShardResponse_NotFoundImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
+            other is _$RestoreShardResponse_NotFoundImpl);
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, field0);
-
-  /// Create a copy of RestoreShardResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$RestoreShardResponse_NotFoundImplCopyWith<
-          _$RestoreShardResponse_NotFoundImpl>
-      get copyWith => __$$RestoreShardResponse_NotFoundImplCopyWithImpl<
-          _$RestoreShardResponse_NotFoundImpl>(this, _$identity);
+  int get hashCode => runtimeType.hashCode;
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(Shard field0) success,
-    required TResult Function(String field0) error,
-    required TResult Function(String field0) notFound,
+    required TResult Function(Shard shard) success,
+    required TResult Function(String error) error,
+    required TResult Function() notFound,
   }) {
-    return notFound(field0);
+    return notFound();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Shard field0)? success,
-    TResult? Function(String field0)? error,
-    TResult? Function(String field0)? notFound,
+    TResult? Function(Shard shard)? success,
+    TResult? Function(String error)? error,
+    TResult? Function()? notFound,
   }) {
-    return notFound?.call(field0);
+    return notFound?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Shard field0)? success,
-    TResult Function(String field0)? error,
-    TResult Function(String field0)? notFound,
+    TResult Function(Shard shard)? success,
+    TResult Function(String error)? error,
+    TResult Function()? notFound,
     required TResult orElse(),
   }) {
     if (notFound != null) {
-      return notFound(field0);
+      return notFound();
     }
     return orElse();
   }
@@ -2568,17 +2522,7 @@ class _$RestoreShardResponse_NotFoundImpl
 }
 
 abstract class RestoreShardResponse_NotFound extends RestoreShardResponse {
-  const factory RestoreShardResponse_NotFound(final String field0) =
+  const factory RestoreShardResponse_NotFound() =
       _$RestoreShardResponse_NotFoundImpl;
   const RestoreShardResponse_NotFound._() : super._();
-
-  @override
-  String get field0;
-
-  /// Create a copy of RestoreShardResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$RestoreShardResponse_NotFoundImplCopyWith<
-          _$RestoreShardResponse_NotFoundImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }

@@ -59,18 +59,25 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     // Connection state tracking
     private var isPickerPresented = false
     private var deviceReady = false
+    private var reconnectionTimer: Timer?
+    private var reconnectionAttempts: Int = 0
+    
+    private let bleQueue = DispatchQueue(label: "com.envoy.ble", qos: .userInteractive)
 
     let connectOptions: [String: Any] = [
         CBConnectPeripheralOptionNotifyOnConnectionKey: true,
         CBConnectPeripheralOptionNotifyOnDisconnectionKey: true,
         CBConnectPeripheralOptionNotifyOnNotificationKey: true,
-            // CBConnectPeripheralOptionEnableAutoReconnect: true,
+        CBConnectPeripheralOptionStartDelayKey: 0,
     ]
 
     // MARK: - Initialization
 
     init(flutterController: FlutterViewController) {
         super.init()
+        
+        print(UIDevice.current.name)
+        
         self.flutterController = flutterController
 
         // Set up event channel for streaming Bluetooth metadata (connection status, errors, etc.)
@@ -110,7 +117,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             }
 
             if let data = message as? Data {
-                self.handleBinaryWrite(data: data, reply: reply)
+               let replyStaus =   self.handleBinaryWrite(data: data)
+                reply(replyStaus)
             } else {
                 // Send failure buffer (0 bytes) for invalid data
                 reply(Data())
@@ -138,9 +146,19 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 result(self.getConnectedPeripheralId())
             case "isConnected":
                 result(self.isConnected())
+            case "reconnect":
+                reconnect( result: result)
             case "disconnect":
                 self.disconnectPeripheral()
                 result(true)
+            case "deviceName":
+                result(UIDevice.current.name)
+            case "transmitFromFile":
+                self.transmitFromFile(call: call, result: result)
+            case "getAccessories":
+                self.getAccessories(result: result)
+            case "getCurrentDeviceStatus":
+                self.getCurrentDeviceStatus(result: result)
             default:
                 result(FlutterMethodNotImplemented)
             }
@@ -148,7 +166,6 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
         setupBluetoothManager()
         setupAccessorySession()
-
         //
     }
 
@@ -159,13 +176,178 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     }
 
     private func setupBluetoothManager() {
+        // Use the shared BLE queue for all BLE operations
         centralManager = CBCentralManager(
             delegate: self,
-            queue: nil,
+            queue: bleQueue,  
             options: [
                 CBCentralManagerOptionRestoreIdentifierKey: restoreIdentifier
             ]
         )
+    }
+
+    private func reconnect(result: @escaping FlutterResult) {
+        attemptReconnection()
+        result(["reconnecting": true])
+    }
+    
+    private func attemptReconnection() {
+
+        let accessories = session.accessories
+        
+        guard !accessories.isEmpty else {
+            print("No accessories available - stopping reconnection")
+            stopReconnection()
+            return
+        }
+        
+        // Try to reconnect to the first paired accessory (or previously connected one)
+        // TODO: multi-accessory support
+        let targetAccessory = accessories.first { accessory in
+            accessory.bluetoothIdentifier == primeAccessory?.bluetoothIdentifier
+        } ?? accessories.first
+        
+        guard let accessory = targetAccessory else {
+            print("No valid accessory to reconnect")
+            scheduleReconnection()
+            return
+        }
+        
+        print("Attempting reconnection to: \(accessory.displayName) (attempt \(reconnectionAttempts + 1))")
+        
+        primeAccessory = accessory
+        
+        if let bluetoothId = accessory.bluetoothIdentifier {
+
+            guard let central = centralManager, central.state == .poweredOn else {
+                print("Central manager not ready, will retry...")
+                scheduleReconnection()
+                return
+            }
+            
+            connectToAccessoryPeripheral(bluetoothId: bluetoothId)
+        } else {
+            scheduleReconnection()
+        }
+    }
+    
+    private func scheduleReconnection() {
+        reconnectionAttempts += 1
+        reconnectionTimer?.invalidate()
+        // Schedule next reconnection attempt ( 2s, 4s, 8s, max 30s)
+        let delay = min(pow(2.0, Double(reconnectionAttempts)), 30.0)
+        DispatchQueue.main.async { [weak self] in
+            self?.reconnectionTimer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
+                self?.attemptReconnection()
+            }
+        }
+    }
+    
+    private func stopReconnection() {
+        reconnectionTimer?.invalidate()
+        reconnectionTimer = nil
+        reconnectionAttempts = 0
+        print("Reconnection attempts stopped")
+    }
+
+    private func transmitFromFile(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let arguments = call.arguments as? [String: Any],
+              let path = arguments["path"] as? String else {
+            result(FlutterError(code: "INVALID_ARGUMENTS", message: "Expected path parameter", details: nil))
+            return
+        }
+        
+        
+        if path.isEmpty {
+            result(FlutterError(code: "INVALID_PATH", message: "File path is null or empty", details: nil))
+            return
+        }
+        
+        let fileURL = URL(fileURLWithPath: path)
+        guard FileManager.default.fileExists(atPath: path) else {
+            result(FlutterError(code: "FILE_NOT_FOUND", message: "File does not exist: \(path)", details: nil))
+            return
+        }
+        
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            
+            do {
+                // Get file size
+                let attributes = try FileManager.default.attributesOfItem(atPath: path)
+                let fileSize = attributes[.size] as? Int64 ?? 0
+                var bytesProcessed: Int64 = 0
+                
+                let fileHandle = try FileHandle(forReadingFrom: fileURL)
+                defer { fileHandle.closeFile() }
+                
+                while true {
+                    // Read inner list length (4 bytes)
+                    let lengthData = fileHandle.readData(ofLength: 4)
+                    guard lengthData.count == 4 else {
+                        break
+                    }
+                    
+                    bytesProcessed += Int64(lengthData.count)
+                    
+                    let innerLength = lengthData.withUnsafeBytes { bytes in
+                        return bytes.load(fromByteOffset: 0, as: UInt32.self).bigEndian
+                    }
+                    for _ in 0..<innerLength {
+
+                        let itemLengthData = fileHandle.readData(ofLength: 4)
+                        guard itemLengthData.count == 4 else {
+                            throw NSError(domain: "FileReadError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to read item length"])
+                        }
+                        
+                        bytesProcessed += Int64(itemLengthData.count)
+                        
+                        let itemLength = itemLengthData.withUnsafeBytes { bytes in
+                            return bytes.load(fromByteOffset: 0, as: UInt32.self).bigEndian
+                        }
+                        
+                        let itemData = fileHandle.readData(ofLength: Int(itemLength))
+                        guard itemData.count == Int(itemLength) else {
+                            throw NSError(domain: "FileReadError", code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to read item data"])
+                        }
+                        
+                        bytesProcessed += Int64(itemData.count)
+                        
+                        // Send progress update
+                        let progress = fileSize > 0 ? Float(bytesProcessed) / Float(fileSize) : 0.0
+                        self.sendWriteProgress(progress, id: path, bytesProcessed: bytesProcessed, totalBytes: fileSize)
+                        
+                        let _ = self.handleBinaryWrite(data: itemData)
+                        
+                        Thread.sleep(forTimeInterval: 0.014)
+                    }
+                }
+                
+                // Send final progress update
+                self.sendWriteProgress(1.0, id: path, bytesProcessed: fileSize, totalBytes: fileSize)
+                
+                // Success, delete file after ble transmit
+                do {
+                    try FileManager.default.removeItem(at: fileURL)
+                    print("Successfully deleted file: \(path)")
+                } catch {
+                    print("Warning: Failed to delete file after processing: \(error.localizedDescription)")
+                }
+                
+                DispatchQueue.main.async {
+                    result([
+                        "success": true,
+                        "message": "Large data processed successfully"
+                    ])
+                }
+                
+            } catch {
+                print("Error reading large data file: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    result(FlutterError(code: "FILE_READ_ERROR", message: "Failed to read file: \(error.localizedDescription)", details: nil))
+                }
+            }
+        }
     }
 
     private func setupAccessorySession() {
@@ -179,6 +361,57 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             return peripheral.identifier.uuidString
         }
         return nil
+    }
+
+    func getAccessories(result: @escaping FlutterResult) {
+        // Get all accessories from the session
+        let accessories = session.accessories
+        
+        if accessories.isEmpty {
+            // No accessories paired
+            result([])
+            return
+        }
+        
+        // Build list of accessory info
+        var accessoryList: [[String: Any]] = []
+        
+        for accessory in accessories {
+            let peripheralId = accessory.bluetoothIdentifier?.uuidString ?? ""
+            let isConnected = accessory.bluetoothIdentifier != nil && 
+                             connectedPeripheral?.identifier == accessory.bluetoothIdentifier &&
+                             connectedPeripheral?.state == .connected
+            
+            let accessoryInfo: [String: Any] = [
+                "peripheralId": peripheralId,
+                "peripheralName": accessory.displayName,
+                "isConnected": isConnected,
+                "state": accessory.state.rawValue
+            ]
+            
+            accessoryList.append(accessoryInfo)
+        }
+        
+        result(accessoryList)
+    }
+    
+    func getCurrentDeviceStatus(result: @escaping FlutterResult) {
+        let peripheralId = connectedPeripheral?.identifier.uuidString
+        let peripheralName = connectedPeripheral?.name ?? primeAccessory?.displayName ?? "Unknown Device"
+        let connected = isConnected()
+        let bonded = primeAccessory != nil
+        
+        let statusData: [String: Any?] = [
+            "type": nil,
+            "connected": connected,
+            "peripheralId": peripheralId,
+            "peripheralName": peripheralName,
+            "bonded": bonded,
+            "rssi": nil,
+            "error": nil
+        ]
+        
+        result(statusData)
     }
 
     func showAccessorySetup(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -215,13 +448,11 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
         //Maybe tweak this if multiple primes present
         passportDescriptor.bluetoothRange = ASDiscoveryDescriptor.Range.default
-        // Create picker display item
-        //TODO: based on QR show color of the device
         let productImage = UIImage(named:isMidnight ?  "prime_dark_midgnight_bronze" : "prime_light_arctic_copper") ?? UIImage()
         let passportDisplayItem = ASPickerDisplayItem(
             name: "Passport Prime",
             productImage: productImage,
-            descriptor: passportDescriptor,
+            descriptor: passportDescriptor
         )
 
         do {
@@ -248,25 +479,16 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             guard let accessory = event.accessory else { return }
             saveAccessory(accessory: accessory)
         case .activated:
-
-            guard let accessory = session.accessories.first else { return }
-            saveAccessory(accessory: accessory)
-            if(setupResult != nil){
-                    setupResult!(true)
-                    setupResult = nil
-            }
+            print("Accessory discovery session activated .")
         case .accessoryRemoved:
             handleAccessoryRemoved()
-
         case .pickerDidPresent:
-            isPickerPresented = true
             print("Accessory picker presented")
-
         case .pickerDidDismiss:
-            isPickerPresented = false
-          
-            print("Accessory picker dismissed")
-
+            if(setupResult != nil){
+                setupResult!(false)
+                setupResult = nil
+            }
         default:
             print("Received accessory event type: \(event.eventType)")
         }
@@ -309,6 +531,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         }
     }
 
+
     private func handleAccessoryRemoved() {
         guard let accessory = primeAccessory else { return }
 
@@ -331,7 +554,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             connected: false,
             peripheralId: peripheralId,
             peripheralName: peripheralName,
-            type: "device_disconnected",
+            type: "device_disconnected"
         )
 
     }
@@ -356,52 +579,36 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
     // MARK: - Binary Channel Handlers
 
-    private func handleBinaryWrite(data: Data, reply: @escaping FlutterReply) {
+    private func handleBinaryWrite(data: Data) -> Data {
         // Check if device is connected and ready
         guard let peripheral = connectedPeripheral else {
             // Send failure buffer (0 bytes)
-            reply(Data())
-            return
+            return Data()
         }
 
         guard peripheral.state == .connected && deviceReady else {
-            // Send failure buffer (0 bytes)
-            reply(Data())
-            return
+            return Data()
         }
 
         guard let writeChar = writeCharacteristic else {
-            // Send failure buffer (0 bytes)
-            reply(Data())
-            return
+            return Data()
         }
 
         // Validate data size
         if data.count < 8 {
-            // Send failure buffer (0 bytes)
-            reply(Data())
-            return
+            return Data()
         }
 
         // Determine write type and log details
         let writeType: CBCharacteristicWriteType =
             writeChar.properties.contains(.writeWithoutResponse) ? .withoutResponse : .withResponse
 
-        print("WRITE OPERATION DETAILS:")
-        print("  - Characteristic: \(writeChar.uuid)")
-        print("  - Total Bytes: \(data.count)")
 
         // Check MTU and split data if necessary
         let mtu = peripheral.maximumWriteValueLength(for: writeType)
-        print(" iOS MTU ANALYSIS:")
-        print("  - iOS maximumWriteValueLength: \(mtu) bytes")
-        print("  - Data length: \(data.count) bytes")
-        print("  - Will use single packet: \(data.count <= mtu)")
 
         if data.count <= mtu {
-            // Data fits in one packet
-            print("iOS: Data fits in single packet, writing \(data.count) bytes directly")
-
+ 
             // Store data for potential retry
             pendingWriteData = data
             writeRetryCount = 0
@@ -410,24 +617,15 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
             // For writeWithoutResponse, simulate success since there's no callback
             if writeType == .withoutResponse {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    reply(Data([1]))  // Success indicator
-                }
+                return Data([1])
             } else {
-                // For writeWithResponse, success will be handled in didWriteValueFor callback
-                // For now, return immediate success
-                reply(Data([1]))  // Success indicator
+                return Data([1])  // Success indicator
             }
         } else {
 
-            // Need to chunk the data
             let chunks = data.chunked(into: mtu)
 
             for (index, chunk) in chunks.enumerated() {
-                let progress = Float(index + 1) / Float(chunks.count)
-                if let sink = writeStreamSink {
-                    sink(progress)
-                }
 
                 peripheral.writeValue(chunk, for: writeChar, type: writeType)
 
@@ -437,15 +635,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 }
             }
 
-            // For chunked writes, simulate success after all chunks are sent
-            if writeType == .withoutResponse {
-                DispatchQueue.main.asyncAfter(deadline: .now() + Double(chunks.count) * 0.02) {
-                    reply(Data([1]))  // Success indicator
-                }
-            } else {
-                // For writeWithResponse, return immediate success (individual chunks will be confirmed)
-                reply(Data([1]))  // Success indicator
-            }
+            return Data([1])   
         }
     }
 
@@ -631,6 +821,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         peripheral.delegate = self
         deviceReady = false  // Will be set to true once characteristics are discovered
 
+        stopReconnection()
+
         peripheral.discoverServices([primeUUID])
 
         sendConnectionEvent(
@@ -674,6 +866,9 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             type:"device_disconnected",
             error: error?.localizedDescription
         )
+
+        print("Starting automatic reconnection...")
+        attemptReconnection()
     }
 
     // MARK: - CBPeripheralDelegate
@@ -815,12 +1010,13 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             return
         }
 
-        print("Write successful for characteristic: \(characteristic.uuid)")
-
         // Clear retry data on success
         pendingWriteData = nil
         writeRetryCount = 0
+         
     }
+    
+   
 
     func peripheral(
         _ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic,
@@ -997,6 +1193,19 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         if let error = error {
             print("   Error: \(error)")
         }
+    }
+    
+    private func sendWriteProgress(_ progress: Float, id: String, bytesProcessed: Int64 = 0, totalBytes: Int64 = 0) {
+        guard let sink = writeStreamSink else { return }
+        
+        let stateData: [String: Any] = [
+            "id": id,
+            "progress": progress,
+            "bytes_processed": bytesProcessed,
+            "total_bytes": totalBytes
+         ]
+    
+        sink(stateData)
     }
 
     private func sendBluetoothState(_ state: CBManagerState) {

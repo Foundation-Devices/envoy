@@ -15,7 +15,7 @@ abstract class PassportMessageHandler {
 
   PassportMessageHandler(this.writer);
 
-  Future<void> handleMessage(api.QuantumLinkMessage message);
+  Future<void> handleMessage(api.QuantumLinkMessage message, String bleId);
 
   /// Return true if this handler should receive [message].
   bool canHandle(api.QuantumLinkMessage message);
@@ -40,14 +40,16 @@ class PassportMessageRouter {
     _handlers.add(handler);
   }
 
-  Future<void> dispatch(api.QuantumLinkMessage message) async {
+  Future<void> dispatch(api.QuantumLinkMessage message, String bleId) async {
     for (final handler in _handlers) {
-      kPrint(
-          "Checking handler ${handler.runtimeType} for message ${message.runtimeType} can handle ? ${handler.canHandle(message)}");
+      if (handler.canHandle(message)) {
+        kPrint(
+            "Handler ${handler.runtimeType} CAN handle message ${message.runtimeType}");
+      }
       if (handler.canHandle(message)) {
         try {
           //allows multiple handlers to handle same types
-          unawaited(handler.handleMessage(message));
+          unawaited(handler.handleMessage(message, bleId));
         } catch (e) {
           kPrint("Error handling message ${message.runtimeType}: $e");
         }

@@ -5,15 +5,17 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:envoy/ble/handlers/fw_update_handler.dart';
 import 'package:envoy/ble/handlers/onboard_handler.dart';
+import 'package:envoy/ble/handlers/scv_handler.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/scv_server.dart';
-import 'package:envoy/business/server.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/ntp.dart';
@@ -43,11 +45,15 @@ final sendProgressProvider =
     StateNotifierProvider<SendProgressNotifier, double>(
   (ref) => SendProgressNotifier(ref),
 );
-
+//TODO: refactor with new fw update progress tracking
 final remainingTimeProvider = StateProvider<Duration>((ref) => Duration.zero);
 
 final connectedDeviceProvider = StreamProvider<DeviceStatus>((ref) {
   return BluetoothChannel().deviceStatusStream;
+});
+
+final fwTransferProgress = StreamProvider<FwTransferProgress>((ref) {
+  return BluetoothManager().fwUpdateHandler.transferProgress;
 });
 
 class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
@@ -65,16 +71,25 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       BleMagicBackupHandler(this);
   late final BleAccountHandler _bleAccountHandler = BleAccountHandler(this);
   late final ShardsHandler _bleShardsHandler = ShardsHandler(this);
+  late final ScvHandler _scvAccountHandler = ScvHandler(this);
   late final BleOnboardHandler _bleOnboardHandler = BleOnboardHandler(this);
   late final BlePassphraseHandler _blePassphraseHandler =
       BlePassphraseHandler(this, _passphraseEventStream);
+
+  late final FwUpdateHandler _fwUpdateHandler = FwUpdateHandler(
+    this,
+  );
 
   //
   BleMagicBackupHandler get magicBackupHandler => _bleMagicBackupHandler;
 
   BleAccountHandler get bleAccountHandler => _bleAccountHandler;
 
+  ScvHandler get scvAccountHandler => _scvAccountHandler;
+
   BleOnboardHandler get bleOnboardHandler => _bleOnboardHandler;
+
+  FwUpdateHandler get fwUpdateHandler => _fwUpdateHandler;
 
   static final BluetoothManager _instance = BluetoothManager._internal();
 
@@ -124,24 +139,28 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 
   Stream<double> get writeProgressStream => _writeProgressController.stream;
 
-  int _totalFirmwareChunks = 0;
-  int _sentFirmwareChunks = 0;
-  bool _isUpdatingFirmware = false;
+  //TODO: firmware update progress tracking with new progress stream
+  // int _totalFirmwareChunks = 0;
+  // int _sentFirmwareChunks = 0;
+  // bool _isUpdatingFirmware = false;
 
   void startFirmwareUpdate({required int totalChunks}) {
-    _totalFirmwareChunks = totalChunks;
-    _sentFirmwareChunks = 0;
-    _isUpdatingFirmware = true;
+    // _totalFirmwareChunks = totalChunks;
+    // _sentFirmwareChunks = 0;
+    // _isUpdatingFirmware = true;
     _writeProgressController.add(0.0);
   }
 
   void endFirmwareUpdate() {
-    _isUpdatingFirmware = false;
-    _totalFirmwareChunks = 0;
-    _sentFirmwareChunks = 0;
+    // _isUpdatingFirmware = false;
+    // _totalFirmwareChunks = 0;
+    // _sentFirmwareChunks = 0;
   }
 
   String bleId = "";
+
+  api.QuantumLinkIdentity? get qlIdentity => _qlIdentity;
+  api.XidDocument? get recipientXid => _recipientXid;
 
   static Future<BluetoothManager> init() async {
     var singleton = BluetoothManager._instance;
@@ -161,6 +180,8 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     _messageRouter.registerHandler(_bleAccountHandler);
     _messageRouter.registerHandler(_bleOnboardHandler);
     _messageRouter.registerHandler(_blePassphraseHandler);
+    _messageRouter.registerHandler(_fwUpdateHandler);
+    _messageRouter.registerHandler(_scvAccountHandler);
 
     await listen(id: bleId);
     kPrint("QL Identity: $_qlIdentity");
@@ -282,10 +303,41 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     );
   }
 
+  Future<bool> encodeToFile(
+      {required Uint8List message,
+      required String filePath,
+      required int chunkSize}) async {
+    DateTime dateTime = DateTime.now();
+    try {
+      dateTime = await NTP.now(timeout: const Duration(seconds: 1));
+    } catch (e) {
+      kPrint("NTP error: $e");
+    }
+    final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
+    kPrint("Encoding Message timestamp: $timestampSeconds");
+    //
+    // List<api.EnvoyMessage> envoyMessages = messages.map((message) =>
+    //     api.EnvoyMessage(message: message, timestamp: timestampSeconds)).toList();
+    // kPrint("Encoded Message $timestampSeconds");
+    kPrint("Encoding message: $message to file: $filePath");
+    return await api.encodeToMagicBackupFile(
+        payload: message,
+        sender: _qlIdentity!,
+        recipient: _recipientXid!,
+        path: filePath,
+        chunkSize: BigInt.from(chunkSize),
+        timestamp: timestampSeconds);
+  }
+
   Future<bool> pair(api.XidDocument recipient) async {
     _recipientXid = recipient;
     kPrint("pair: $hashCode");
     listen(id: bleId);
+
+    //reset onboarding state
+    bleOnboardHandler.reset();
+    bleOnboardHandler.updateBlePairState(
+        "Connecting to Prime", EnvoyStepState.LOADING);
 
     if (_qlIdentity == null) {
       await _generateQlIdentity();
@@ -297,11 +349,15 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     final recipientXid =
         await api.serializeXidDocument(xidDocument: _recipientXid!);
 
+    final deviceName = await BluetoothChannel().getDeviceName();
+
     final success = await writeMessage(api.QuantumLinkMessage.pairingRequest(
-        api.PairingRequest(xidDocument: xid)));
+        api.PairingRequest(xidDocument: xid, deviceName: deviceName)));
     kPrint("Pairing... success ?  $success");
 
     if (!success) {
+      bleOnboardHandler.updateBlePairState(
+          "Unable to pair", EnvoyStepState.ERROR);
       throw Exception("Failed to send pairing request");
     }
     // Listen for response
@@ -317,22 +373,23 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   @override
   Future<bool> writeMessage(api.QuantumLinkMessage message) async {
     kPrint("Sending message: $message");
-    final writeStream = await _writeWithProgress(message);
-    final writeFinished = await writeStream
-        .firstWhere((progress) => progress >= 1, orElse: () => 0.0)
-        .timeout(const Duration(seconds: 30), onTimeout: () {
-      throw Exception("Timeout waiting for message write to complete");
-    });
-    return writeFinished == 1.0;
+    await _writeWithProgress(message);
+    return true;
   }
 
   Future<void> addDevice(String serialNumber, String firmwareVersion,
-      String bleId, DeviceColor deviceColor) async {
+      String bleId, DeviceColor deviceColor,
+      {bool onboardingComplete = false, String peripheralId = ""}) async {
     final recipientXid =
         await api.serializeXidDocument(xidDocument: _recipientXid!);
-    Devices().add(Device("Prime", DeviceType.passportPrime, serialNumber,
+    final device = Device("Prime", DeviceType.passportPrime, serialNumber,
         DateTime.now(), firmwareVersion, EnvoyColors.listAccountTileColors[0],
-        bleId: bleId, deviceColor: deviceColor, xid: recipientXid));
+        bleId: bleId,
+        deviceColor: deviceColor,
+        xid: recipientXid,
+        peripheralId: peripheralId,
+        onboardingComplete: onboardingComplete);
+    Devices().add(device);
   }
 
   Future<void> removeConnectedDevice() async {
@@ -362,16 +419,14 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     }
   }
 
-  Future<bool> connect({required String id, int colorWay = 1}) async {
+  Future<bool> setupBle({required String id, int colorWay = 1}) async {
     if (_qlIdentity == null) {
       await _generateQlIdentity();
     }
-    // final pid = await _bluetoothChannel.getConnectedPeripheralID();
-    final connectionEvent = await BluetoothChannel().connect(id, colorWay);
+    final connectionEvent = await BluetoothChannel().setupBle(id, colorWay);
     kPrint("Connection event: $connectionEvent");
-    await Future.delayed(const Duration(milliseconds: 900));
     bleId = id;
-    return true;
+    return connectionEvent.connected;
   }
 
   Future<void> listen({required String id}) async {
@@ -380,7 +435,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       _bluetoothChannel.listenToDataEvents().listen((payload) {
         decode(payload).then((value) async {
           if (value != null) {
-            unawaited(_messageRouter.dispatch(value.message));
+            unawaited(_messageRouter.dispatch(value.message, id));
             _passportMessageStream.add(value);
             kPrint(
                 "Got Passport message type: ${value.message.runtimeType} ${value.message}");
@@ -389,10 +444,18 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
               kPrint("Got the Broadcast Transaction");
               _transactionStream.add(transaction);
             }
+          } else {
+            kPrint("QL Decoded message is null");
           }
         }, onError: (e) {
           kPrint("Error decoding: $e");
         });
+      });
+
+      _bluetoothChannel.deviceStatusStream.listen((event) {
+        if (event.type == BluetoothConnectionEventType.deviceConnected) {
+          sendExchangeRateHistory();
+        }
       });
       // _bluetoothChannel.listenToDeviceConnectionEvents().listen((event) {});
     } else {
@@ -520,118 +583,113 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     }
   }
 
-  void setupExchangeRateListener() {
-    ExchangeRate().addListener(() async {
-      kPrint("Sending exchange rate to Prime ...");
-      await sendExchangeRate();
-    });
-  }
+  Future<void> sendExchangeRateHistory() async {
+    if (_sendingData) return;
 
-  Future<void> sendFirmwareUpdateInfo(List<PrimePatch> patches) async {
-    if (patches.isEmpty) {
-      writeMessage(api.QuantumLinkMessage.firmwareUpdateCheckResponse(
-          api.FirmwareUpdateCheckResponse_NotAvailable()));
-      return;
-    }
-
-    final response = api.QuantumLinkMessage.firmwareUpdateCheckResponse(
-        api.FirmwareUpdateCheckResponse.available(api.FirmwareUpdateAvailable(
-            version: patches.last.version,
-            timestamp: patches.last.releaseDate.millisecondsSinceEpoch,
-            totalSize: 100,
-            changelog: patches.last.changelog,
-            patchCount: patches.length)));
-
-    kPrint("TELLING PRIME THERE'S UPDATES");
-    await writeMessage(response);
-  }
-
-  Future<void> sendFirmwareFetchEvent(api.FirmwareFetchEvent event) async {
-    await writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(event));
-  }
-
-  Future<void> sendFirmwarePayload(List<Uint8List> patches) async {
-    final List<api.QuantumLinkMessage> allChunks = [];
-    for (final (patchIndex, patch) in patches.indexed) {
-      final chunksForPatch = await api.splitFwUpdateIntoChunks(
-        patchIndex: patchIndex,
-        totalPatches: patches.length,
-        patchBytes: patch,
-        chunkSize: BigInt.from(200000),
-      );
-      allChunks.addAll(chunksForPatch);
-    }
-
-    final int totalChunks = allChunks.length;
-    kPrint("Total chunks to send across all patches: $totalChunks");
-
-    if (totalChunks == 0) {
-      kPrint("No chunks to send. Aborting.");
+    if (Devices().getPrimeDevices.isEmpty || _recipientXid == null) {
       return;
     }
 
     try {
-      startFirmwareUpdate(totalChunks: totalChunks);
+      _sendingData = true;
 
-      for (final (chunkIndex, chunk) in allChunks.indexed) {
-        kPrint("Sending overall chunk ${chunkIndex + 1} of $totalChunks");
-        await writeMessage(chunk);
+      final historyPoints = ExchangeRate().history.points;
+      final currency = ExchangeRate().history.currency;
+
+      if (historyPoints.isEmpty) {
+        kPrint("No exchange rate history to send.");
+        return;
       }
 
-      await writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(
-        api.FirmwareFetchEvent.complete(),
-      ));
-      kPrint("Firmware payload sent successfully!");
+      // Convert Dart RatePoint -> API PricePoint
+      final apiPoints = historyPoints.map((p) {
+        return api.PricePoint(
+          rate: p.price,
+          timestamp: BigInt.from(p.timestamp),
+        );
+      }).toList();
+
+      final historyMessage = api.ExchangeRateHistory(
+        history: apiPoints,
+        currencyCode: currency,
+      );
+
+      await writeMessage(
+          api.QuantumLinkMessage.exchangeRateHistory(historyMessage));
+
+      kPrint(
+          "Sent ${apiPoints.length} exchange rate points for currency $currency");
+    } catch (e) {
+      kPrint('Failed to send exchange rate history: $e');
     } finally {
-      endFirmwareUpdate();
+      _sendingData = false;
     }
   }
+
+  void setupExchangeRateListener() {
+    ExchangeRate().addListener(() async {
+      await sendExchangeRate();
+    });
+  }
+
+  // Future<void> sendFirmwareUpdateInfo(List<PrimePatch> patches) async {
+  //   if (patches.isEmpty) {
+  //     writeMessage(api.QuantumLinkMessage.firmwareUpdateCheckResponse(
+  //         api.FirmwareUpdateCheckResponse_NotAvailable()));
+  //     return;
+  //   }
+  //
+  //   final response = api.QuantumLinkMessage.firmwareUpdateCheckResponse(
+  //       api.FirmwareUpdateCheckResponse.available(api.FirmwareUpdateAvailable(
+  //           version: patches.last.version,
+  //           timestamp: patches.last.releaseDate.millisecondsSinceEpoch,
+  //           totalSize: 100,
+  //           changelog: patches.last.changelog,
+  //           patchCount: patches.length)));
+  //
+  //   await writeMessage(response);
+  // }
 
   Future<Stream<double>> _writeWithProgress(
       api.QuantumLinkMessage message) async {
     _sendingData = true;
-    _writeProgressSubscription?.cancel();
     final data = await encodeMessage(message: message);
     kPrint("Encoded message! Size: ${data.length}");
-
-    var writeStream = Stream.value(0.0);
     if (Platform.isIOS || Platform.isAndroid) {
-      writeStream = _bluetoothChannel.writeProgressStream;
-      final result = await _bluetoothChannel.writeAll(data);
-      if (!result) {
-        kPrint("Failed to write data to Bluetooth channel");
-      }
+      await _bluetoothChannel.writeAll(data);
     } else {
+      _sendingData = false;
       throw UnimplementedError(
           "Bluetooth write not implemented for this platform");
     }
-    _writeProgressSubscription = writeStream.listen(
-      (progress) {
-        if (_isUpdatingFirmware && _totalFirmwareChunks > 0) {
-          final overallProgress =
-              (_sentFirmwareChunks + progress) / _totalFirmwareChunks;
-          _writeProgressController.add(overallProgress.clamp(0.0, 1.0));
-        } else {
-          _writeProgressController.add(progress);
-        }
-      },
-      onDone: () {
-        kPrint("Progress stream done!");
-        if (_isUpdatingFirmware) {
-          _sentFirmwareChunks++;
-        }
-        _sendingData = false;
-      },
-      onError: (e) {
-        kPrint("Progress stream errored out!");
-        if (_isUpdatingFirmware) {
-          endFirmwareUpdate();
-        }
-        _sendingData = false;
-        _writeProgressController.addError(e);
-      },
-    );
-    return writeStream;
+    // _writeProgressSubscription = writeStream.listen(
+    //   (progress) {
+    //     if (_isUpdatingFirmware && _totalFirmwareChunks > 0) {
+    //       final overallProgress =
+    //           (_sentFirmwareChunks + progress) / _totalFirmwareChunks;
+    //       _writeProgressController.add(overallProgress.clamp(0.0, 1.0));
+    //     } else {
+    //       _writeProgressController.add(progress);
+    //     }
+    //   },
+    //   onDone: () {
+    //     kPrint("Progress stream done!");
+    //     if (_isUpdatingFirmware) {
+    //       _sentFirmwareChunks++;
+    //     }
+    //     _sendingData = false;
+    //   },
+    //   onError: (e) {
+    //     kPrint("Progress stream errored out!");
+    //     if (_isUpdatingFirmware) {
+    //       endFirmwareUpdate();
+    //     }
+    //     _sendingData = false;
+    //     _writeProgressController.addError(e);
+    //   },
+    // );
+    _sendingData = false;
+    return Stream.value(1.0);
   }
 
   void dispose() {
@@ -650,43 +708,25 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       api.QuantumLinkMessage message) async {
     return _writeWithProgress(message);
   }
+
+  Future<void> reconnect(Device device) async {
+    await BluetoothChannel().reconnect(device);
+  }
 }
 
 class SendProgressNotifier extends StateNotifier<double> {
   final Ref ref;
-  StreamSubscription<double>? _sub;
+  StreamSubscription<WriteProgress>? _sub;
   DateTime? _startTime;
   Duration _elapsed = Duration.zero;
 
-  SendProgressNotifier(this.ref) : super(0.0) {
-    _listen();
-  }
+  SendProgressNotifier(this.ref) : super(0.0);
 
-  void _listen() {
-    _sub = BluetoothManager().writeProgressStream.listen(
-      (progress) {
-        if (_startTime == null && progress > 0) {
-          _startTime = DateTime.now();
-          _elapsed = Duration.zero;
-        }
-
-        state = progress;
-
-        if (_startTime != null) {
-          final now = DateTime.now();
-          _elapsed = now.difference(_startTime!);
-          final elapsedSeconds = _elapsed.inMilliseconds / 1000.0;
-
-          if (progress > 0 && progress < 1 && elapsedSeconds > 0) {
-            final speed = progress / elapsedSeconds;
-            final remainingSeconds =
-                ((1.0 - progress) / speed).clamp(0, double.infinity);
-            ref.read(remainingTimeProvider.notifier).state =
-                Duration(seconds: remainingSeconds.round());
-          } else {
-            ref.read(remainingTimeProvider.notifier).state = Duration.zero;
-          }
-        }
+  void listen(String path) {
+    _sub = BluetoothChannel().getWriteProgress(path).listen(
+      (event) {
+        final progress = event.progress;
+        setProgress(progress);
       },
       onDone: () {
         state = 0.0;
@@ -703,5 +743,31 @@ class SendProgressNotifier extends StateNotifier<double> {
   void dispose() {
     _sub?.cancel();
     super.dispose();
+  }
+
+  void setProgress(double progress) {
+    state = progress;
+    if (_startTime == null && progress > 0) {
+      _startTime = DateTime.now();
+      _elapsed = Duration.zero;
+    }
+
+    state = progress * 100;
+
+    if (_startTime != null) {
+      final now = DateTime.now();
+      _elapsed = now.difference(_startTime!);
+      final elapsedSeconds = _elapsed.inMilliseconds / 1000.0;
+
+      if (progress > 0 && progress < 1 && elapsedSeconds > 0) {
+        final speed = progress / elapsedSeconds;
+        final remainingSeconds =
+            ((1.0 - progress) / speed).clamp(0, double.infinity);
+        ref.read(remainingTimeProvider.notifier).state =
+            Duration(seconds: remainingSeconds.round());
+      } else {
+        ref.read(remainingTimeProvider.notifier).state = Duration.zero;
+      }
+    }
   }
 }
