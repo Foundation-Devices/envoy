@@ -234,6 +234,10 @@ class Devices extends ChangeNotifier {
     return devices.firstWhereOrNull((device) => device.type.index == deviceId);
   }
 
+  Device? getDeviceByBleId(String bleId) {
+    return devices.firstWhereOrNull((device) => device.bleId == bleId);
+  }
+
   List<Device> get getPrimeDevices {
     return devices
         .where((device) => device.type == DeviceType.passportPrime)

@@ -4,12 +4,14 @@
 
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -23,6 +25,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter/cupertino.dart';
 
 /// Flag to track if the dialog is currently being shown
 /// startBluetoothDisconnectionListener, will be hooked different onboarding pages
@@ -150,6 +153,9 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isOnboardingComplete =
+        LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
+
     return Padding(
       padding: const EdgeInsets.all(EnvoySpacing.medium2),
       child: Column(
@@ -177,16 +183,18 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
           const SizedBox(height: EnvoySpacing.medium3),
           Column(
             children: [
-              EnvoyButton(
-                S().firmware_updateModalConnectionLost_exit,
-                borderRadius: BorderRadius.circular(EnvoySpacing.small),
-                type: EnvoyButtonTypes.secondary,
-                onTap: () {
-                  resetOnboardingPrimeProviders(ref);
-                  Navigator.of(context).pop();
-                  context.go("/");
-                },
-              ),
+              isOnboardingComplete
+                  ? EnvoyButton(
+                      S().firmware_updateModalConnectionLost_exit,
+                      borderRadius: BorderRadius.circular(EnvoySpacing.small),
+                      type: EnvoyButtonTypes.secondary,
+                      onTap: () {
+                        resetOnboardingPrimeProviders(ref);
+                        Navigator.of(context).pop();
+                        context.go("/");
+                      },
+                    )
+                  : SizedBox.shrink(),
               const SizedBox(height: EnvoySpacing.medium1),
               EnvoyButton(
                 _isReconnecting
