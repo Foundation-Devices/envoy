@@ -31,12 +31,14 @@ import 'handlers/passphrase_handler.dart';
 import 'handlers/shards_handler.dart';
 import 'quantum_link_router.dart';
 
-final connectedDevicesProvider = StreamProvider<DeviceStatus>((ref) {
+final deviceConnectionStatusStreamProvider =
+    StreamProvider<DeviceStatus>((ref) {
   return BluetoothChannel().deviceStatusStream;
 });
 
 final isPrimeConnectedProvider = Provider.family<bool, String>((ref, bleId) {
-  DeviceStatus? status = ref.watch(connectedDevicesProvider).valueOrNull;
+  DeviceStatus? status =
+      ref.watch(deviceConnectionStatusStreamProvider).valueOrNull;
   status ??= BluetoothChannel().lastDeviceStatus;
   return status.connected == true;
 });
