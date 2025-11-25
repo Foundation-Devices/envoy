@@ -5,6 +5,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -317,6 +318,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                           final uri = Uri.parse(payload);
                                           kPrint(
                                               "BLE UriParams ${uri.queryParameters}");
+
+                                          kPrint(
+                                              "Bl Devices ${Devices().getPrimeDevices.map((e) => "${e.name} ${e.peripheralId} ${e.bleId}").join(", ")}");
                                           context.pushNamed(
                                             ONBOARD_PRIME,
                                             queryParameters:

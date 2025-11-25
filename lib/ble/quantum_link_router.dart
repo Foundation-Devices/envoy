@@ -42,8 +42,10 @@ class PassportMessageRouter {
 
   Future<void> dispatch(api.QuantumLinkMessage message, String bleId) async {
     for (final handler in _handlers) {
-      kPrint(
-          "Checking handler ${handler.runtimeType} for message ${message.runtimeType} can handle ? ${handler.canHandle(message)}");
+      if (handler.canHandle(message)) {
+        kPrint(
+            "Handler ${handler.runtimeType} CAN handle message ${message.runtimeType}");
+      }
       if (handler.canHandle(message)) {
         try {
           //allows multiple handlers to handle same types

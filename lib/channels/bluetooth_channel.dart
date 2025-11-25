@@ -9,6 +9,7 @@ import 'package:envoy/business/devices.dart';
 import 'package:envoy/channels/accessory.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/stream_replay_cache.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -44,7 +45,10 @@ class BluetoothChannel {
 
   Stream<Uint8List> get dataStream => listenToDataEvents();
 
-  Stream<DeviceStatus> get deviceStatusStream => _deviceStatusStatusStream;
+  // Replay stream for device status with latest value caching
+  // New subscribers immediately receive the last known status
+  Stream<DeviceStatus> get deviceStatusStream =>
+      _deviceStatusStatusStream.replayLatest(_lastDeviceStatus);
 
   StreamSubscription? _deviceStatusSubscription;
 
@@ -68,7 +72,8 @@ class BluetoothChannel {
     if (event is Map<dynamic, dynamic>) {
       return WriteProgress.fromMap(event);
     } else {
-      return WriteProgress(progress: 0.0, id: "");
+      return WriteProgress(
+          progress: 0.0, id: "", totalBytes: 0, bytesProcessed: 0);
     }
   }).asBroadcastStream();
 
@@ -91,6 +96,23 @@ class BluetoothChannel {
           "Ble Connection Event: connected=${event.connected}, bonded=${event.bonded}, "
           "peripheralId=${event.peripheralId}");
     });
+  }
+
+  Future<DeviceStatus> getCurrentDeviceStatus() async {
+    try {
+      final result = await bleMethodChannel
+          .invokeMethod<Map<dynamic, dynamic>>('getCurrentDeviceStatus');
+
+      if (result != null) {
+        return DeviceStatus.fromMap(result);
+      } else {
+        return DeviceStatus(connected: false);
+      }
+    } catch (e, stack) {
+      debugPrintStack(
+          label: "Error getting current device status: $e", stackTrace: stack);
+      return DeviceStatus(connected: false);
+    }
   }
 
   /// Write all data chunks to the connected BLE device
@@ -152,10 +174,19 @@ class BluetoothChannel {
       //Android will wait for event after initiating pairing
       unawaited(bleMethodChannel.invokeMethod("pair", {"deviceId": deviceId}));
     }
+    bool initiateBonding = false;
     final connect = await listenToDeviceConnectionEvents.firstWhere(
       (event) {
-        if (Platform.isAndroid) {
-          return event.bonded && event.connected;
+        try {
+          if (event.connected && !initiateBonding && !event.bonded) {
+            initiateBonding = true;
+            kPrint("Initiating bonding ");
+            bleMethodChannel.invokeMethod(
+              "bond",
+            );
+          }
+        } catch (e) {
+          debugPrint("Error during bonding initiation: $e");
         }
         return event.connected;
       },
@@ -195,17 +226,20 @@ class BluetoothChannel {
     _deviceStatusSubscription?.cancel();
   }
 
+  Stream<WriteProgress> writeProgressStream() {
+    return _writeProgressStream;
+  }
+
   Stream<WriteProgress> getWriteProgress(String id) {
-    return _writeProgressStream.where((progress) => progress.id == id);
+    kPrint("Getting write progress for id: $id");
+    return _writeProgressStream
+        .where((progress) => progress.id == id)
+        .asBroadcastStream();
   }
 
   /// Send large data by writing to file and passing path to host platform
   Future<bool> transmitFromFile(String path) async {
     try {
-      getWriteProgress(path).listen((WriteProgress progress) {
-        debugPrint(
-            "BLE Write Progress: id=${progress.id}, progress=${progress.progress}");
-      });
       await bleMethodChannel.invokeMethod("transmitFromFile", {"path": path});
       return true;
     } catch (e, stack) {

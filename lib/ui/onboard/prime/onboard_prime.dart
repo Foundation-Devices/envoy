@@ -53,6 +53,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         onboardingComplete = int.tryParse(params["o"] ?? "0") == 1;
         colorWay = int.tryParse(param) ?? 1;
       });
+      _checkIfDeviceConnected();
     });
   }
 
@@ -327,5 +328,21 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         ),
       ),
     );
+  }
+
+  void _checkIfDeviceConnected() async {
+    final bleId = GoRouter.of(context).state.uri.queryParameters["p"];
+
+    final status = await BluetoothChannel().getCurrentDeviceStatus();
+    if (status.connected && status.peripheralId == bleId) {
+      if (mounted) {
+        setState(() {
+          bleConnectState = BleConnectState.connected;
+        });
+      }
+      if (context.mounted && mounted) {
+        context.goNamed(ONBOARD_PRIME_BLUETOOTH, extra: onboardingComplete);
+      }
+    }
   }
 }

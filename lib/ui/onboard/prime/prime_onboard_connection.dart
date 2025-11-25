@@ -3,25 +3,33 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
+import 'dart:async';
+
 import 'package:animations/animations.dart';
 import 'package:bluart/bluart.dart';
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/prime/onboard_prime.dart';
+import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/console.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:envoy/ui/components/button.dart';
-import 'package:envoy/ble/bluetooth_manager.dart';
-import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 
 class PrimeOnboardParing extends ConsumerStatefulWidget {
   const PrimeOnboardParing({super.key});
@@ -33,7 +41,7 @@ class PrimeOnboardParing extends ConsumerStatefulWidget {
 XidDocument? primeXid;
 
 class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
-  bool canPop = false;
+  bool canPop = true;
 
   //TODO: use provider to get firmware update status
   bool updateAvailable = false;
@@ -77,8 +85,6 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
           canPop = false;
         });
       }
-      final bleStepNotifier = ref.read(bleConnectionProvider.notifier);
-
       String id = LocalStorage().prefs.getString(primeSerialPref) ?? "";
       device = BleDevice(id: id, name: "Passport Prime", connected: false);
       kPrint("Connecting to Prime with ID: $id");
@@ -94,32 +100,56 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
           setState(() {
             canPop = true;
           });
-          await bleStepNotifier.updateStep(
-              "Unable to pair", EnvoyStepState.ERROR);
+          // await bleStepNotifier.updateStep(
+          //     "Unable to pair", EnvoyStepState.ERROR);
           return;
         }
       }
-      await bleStepNotifier.updateStep(
-          "Connecting to Prime", EnvoyStepState.LOADING);
-      ref.read(primeBleIdProvider.notifier).state = id;
+      // await bleStepNotifier.updateStep(
+      //     "Connecting to Prime", EnvoyStepState.LOADING);
       setState(() {
         device = BleDevice(id: id, name: "Passport Prime", connected: true);
       });
       await Future.delayed(const Duration(milliseconds: 200));
-      await bleStepNotifier.updateStep(
-          S().onboarding_connectionIntro_connectedToPrime,
-          EnvoyStepState.FINISHED);
+      // await bleStepNotifier.updateStep(
+      //     S().onboarding_connectionIntro_connectedToPrime,
+      //     EnvoyStepState.FINISHED);
 
       await Future.delayed(const Duration(milliseconds: 1000));
-
-      await ref.read(deviceSecurityProvider.notifier).updateStep(
-          S().onboarding_connectionIntro_checkingDeviceSecurity,
-          EnvoyStepState.LOADING);
-
-      await BluetoothManager().sendSecurityChallengeRequest();
+      //
+      // await ref.read(deviceSecurityProvider.notifier).updateStep(
+      //     S().onboarding_connectionIntro_checkingDeviceSecurity,
+      //     EnvoyStepState.LOADING);
+      //
+      // await BluetoothManager().sendSecurityChallengeRequest();
     } catch (e) {
       kPrint(e);
     }
+  }
+
+  Future<bool> showExitWarning(BuildContext context) {
+    final Completer<bool> completer = Completer<bool>();
+    showEnvoyDialog(
+      context: context,
+      dismissible: true,
+      dialog: EnvoyPopUp(
+        icon: EnvoyIcons.alert,
+        typeOfMessage: PopUpState.warning,
+        showCloseButton: true,
+        content: "Do you want to exit the onboarding ?",
+        primaryButtonLabel: "Cancel",
+        secondaryButtonLabel: "Exit",
+        onPrimaryButtonTap: (context) async {
+          completer.complete(false);
+          Navigator.pop(context);
+        },
+        onSecondaryButtonTap: (context) async {
+          completer.complete(true);
+          Navigator.pop(context);
+        },
+      ),
+    );
+    return completer.future;
   }
 
   @override
@@ -127,10 +157,38 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
     final firmWareCheck = ref.watch(firmWareUpdateProvider);
     final deviceCheck = ref.watch(deviceSecurityProvider);
 
+    ref.listen(onboardingStateStreamProvider, (prev, next) {
+      next.whenData((state) {
+        if (state == OnboardingState.firmwareUpdateScreen) {
+          context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
+        } else if (state == OnboardingState.securingDevice) {
+          context.goNamed(ONBOARD_PRIME_CONTINUING_SETUP);
+        } else if (state == OnboardingState.walletConected) {
+          context.goNamed(ONBOARD_PRIME_CONNECTED_SUCCESS);
+        } else if (state == OnboardingState.completed) {
+          context.go(ROUTE_ACCOUNTS_HOME);
+        }
+      });
+    });
+
     return PopScope(
       canPop: canPop,
+      onPopInvokedWithResult: (canPop, _) async {
+        final exit = await showExitWarning(context);
+        if (exit && context.mounted) {
+          context.go(ROUTE_ACCOUNTS_HOME);
+        }
+      },
       child: EnvoyPatternScaffold(
           gradientHeight: 1.8,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: CupertinoNavigationBarBackButton(
+              color: Colors.white,
+            ),
+            automaticallyImplyLeading: false,
+          ),
           header: Transform.translate(
             offset: const Offset(0, 70),
             child: TweenAnimationBuilder(
@@ -140,11 +198,14 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
               builder: (context, value, child) {
                 return Opacity(opacity: value, child: child);
               },
-              child: Image.asset(
-                "assets/images/prime_envoy_devices.png",
-                alignment: Alignment.bottomCenter,
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: 320,
+              child: Hero(
+                tag: "hero_prime_devices",
+                child: Image.asset(
+                  "assets/images/prime_envoy_devices.png",
+                  alignment: Alignment.bottomCenter,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: 320,
+                ),
               ),
             ),
           ),

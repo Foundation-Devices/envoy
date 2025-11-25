@@ -4,13 +4,9 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
-import 'package:envoy/business/devices.dart';
-import 'package:envoy/business/scv_server.dart';
-import 'package:envoy/business/server.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
@@ -23,19 +19,13 @@ import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/onboard/prime/prime_onboard_connection.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
-import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
-import 'package:envoy/ui/routes/accounts_router.dart';
-import 'package:envoy/ui/routes/routes.dart';
-import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/prime_ql_payload_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
-import 'package:envoy/ui/widgets/tutorial_page.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +56,7 @@ PairingResponse? pairingResponse;
 class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     with SingleTickerProviderStateMixin {
   final s = Settings();
+  bool dialogShown = false;
   bool scanForPayload = false;
   bool onboardingCompleted = false;
 
@@ -92,168 +83,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
   void _listenForPassportMessages() {
     onboardingCompleted = GoRouter.of(context).state.extra as bool? ?? false;
-
-    _passportMessagesSubscription = BluetoothManager()
-        .passportMessageStream
-        .listen((PassportMessage message) async {
-      kPrint("Got the Passport Message : ${message.message}");
-
-      switch (message.message) {
-        case QuantumLinkMessage_PairingResponse(field0: final response):
-          pairingResponse = response;
-          if (pairingResponse != null) {
-            final deviceColor =
-                pairingResponse!.passportColor == PassportColor.dark
-                    ? DeviceColor.dark
-                    : DeviceColor.light;
-            BluetoothManager().addDevice(
-                pairingResponse!.passportSerial.field0,
-                pairingResponse!.passportFirmwareVersion.field0,
-                BluetoothManager().bleId,
-                deviceColor);
-
-            break;
-          }
-
-        //  final response = message.message as QuantumLinkMessage_PairingResponse;
-        // Create the thing that I'm gonna reveal later
-        // await AccountNg().restore(response.field0.descriptor);
-        //
-        // Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-        //     builder: (context) => Theme(
-        //           data: Theme.of(context),
-        //           child: NGWalletUi(),
-        //         )));
-
-        //add to prime to devices list
-        case QuantumLinkMessage_AccountUpdate():
-          kPrint("Got a pairing response!");
-          if (pairingResponse != null) {
-            final deviceColor =
-                pairingResponse!.passportColor == PassportColor.dark
-                    ? DeviceColor.dark
-                    : DeviceColor.light;
-            await BluetoothManager().addDevice(
-              pairingResponse!.passportSerial.field0,
-              pairingResponse!.passportFirmwareVersion.field0,
-              BluetoothManager().bleId,
-              deviceColor,
-            );
-            kPrint("Got a pairing AccountUpdate device!");
-            break;
-          }
-          // AccountUpdate is handled in BluetoothManager; no action needed here
-          break;
-
-        case QuantumLinkMessage_OnboardingState(:final field0):
-          final onboardingState = field0;
-          kPrint("Got onboarding message: $onboardingState");
-          _handleOnboardingState(onboardingState);
-
-        case QuantumLinkMessage_SecurityCheck(field0: final check):
-          switch (check) {
-            case SecurityCheck_ChallengeResponse(field0: final proofResult):
-              switch (proofResult) {
-                case ChallengeResponseResult_Success(data: final proofData):
-                  bool isVerified =
-                      await ScvServer().isProofVerified(proofData);
-
-                  kPrint("challenge res $isVerified");
-
-                  if (isVerified) {
-                    await ref.read(deviceSecurityProvider.notifier).updateStep(
-                        S().onboarding_connectionChecking_SecurityPassed,
-                        EnvoyStepState.FINISHED);
-
-                    await BluetoothManager()
-                        .sendSecurityChallengeVerificationResult(
-                            VerificationResult.success());
-                  } else {
-                    await ref.read(deviceSecurityProvider.notifier).updateStep(
-                        S().onboarding_connectionIntroError_securityCheckFailed,
-                        EnvoyStepState.ERROR);
-
-                    await BluetoothManager()
-                        .sendSecurityChallengeVerificationResult(
-                            VerificationResult.error(
-                                error: "verification failed"));
-                  }
-
-                case ChallengeResponseResult_Error(error: final proofError):
-                  kPrint("challege proof failed $proofError");
-
-                  await ref.read(deviceSecurityProvider.notifier).updateStep(
-                      S().onboarding_connectionIntroError_securityCheckFailed,
-                      EnvoyStepState.ERROR);
-              }
-
-            // we send these to Prime
-            // though it would make sense for prime to have an re-check messsage as well...
-            case SecurityCheck_ChallengeRequest():
-            case SecurityCheck_VerificationResult():
-              kPrint("received invalid security messsage ${message.message}");
-          }
-
-        case QuantumLinkMessage_FirmwareUpdateCheckRequest(
-            field0: final updateRequest
-          ):
-          kPrint("received firmware update check request {updateRequest}");
-          final currentVersion = updateRequest.currentVersion;
-
-          ref.read(primeDeviceVersionProvider.notifier).state = currentVersion;
-
-          await ref.read(firmWareUpdateProvider.notifier).updateStep(
-              S().onboarding_connectionChecking_forUpdates,
-              EnvoyStepState.LOADING);
-
-          final patches = await Server().fetchPrimePatches(currentVersion);
-
-          if (patches.isNotEmpty) {
-            ref.read(primeDeviceNewVersionProvider.notifier).state =
-                patches.last.version;
-          }
-
-          await BluetoothManager().sendFirmwareUpdateInfo(patches);
-
-          await ref.read(firmWareUpdateProvider.notifier).updateStep(
-              patches.isNotEmpty
-                  ? S().onboarding_connectionUpdatesAvailable_updatesAvailable
-                  : S().onboarding_connectionNoUpdates_noUpdates,
-              EnvoyStepState.FINISHED);
-
-          int estimatedTime = await getEstimatedUpdateTimeInMinutes(patches);
-          ref.read(estimatedTimeProvider.notifier).state = estimatedTime;
-
-        case QuantumLinkMessage_FirmwareFetchRequest(field0: final request):
-          handleFirmwareFetchRequest(request.currentVersion);
-
-        // TODO: are these "ref" things correct?
-        case QuantumLinkMessage_FirmwareUpdateResult(field0: final result):
-          switch (result) {
-            // prime has applied an update
-            case FirmwareUpdateResult_Success(installedVersion: final version):
-              kPrint("installed version $version");
-
-              ref.read(fwTransferStateProvider.notifier).updateStep(
-                  S().firmware_updateSuccess_header, EnvoyStepState.FINISHED);
-              ref.read(primeUpdateStateProvider.notifier).state =
-                  PrimeFwUpdateStep.finished;
-
-            // prime fails to apply update
-            case FirmwareUpdateResult_Error(field0: final error):
-              kPrint("failed to apply update: $error");
-
-              ref.read(fwTransferStateProvider.notifier).updateStep(
-                  S().firmware_updateError_installFailed,
-                  EnvoyStepState.FINISHED);
-              ref.read(primeUpdateStateProvider.notifier).state =
-                  PrimeFwUpdateStep.error;
-          }
-
-        default:
-          kPrint("received spurious message ${message.message}");
-      }
-    });
   }
 
   StreamSubscription? _connectionMonitorSubscription;
@@ -264,8 +93,14 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
     _connectionMonitorSubscription =
         BluetoothChannel().deviceStatusStream.listen((event) {
-      if (event.type == BluetoothConnectionEventType.deviceDisconnected) {
+      final lastState = ref.read(primeUpdateStateProvider);
+      final isRebooting = lastState == PrimeFwUpdateStep.rebooting ||
+          lastState == PrimeFwUpdateStep.installing;
+      kPrint("Last known state: $lastState, isRebooting: $isRebooting");
+      if (event.type == BluetoothConnectionEventType.deviceDisconnected &&
+          !isRebooting) {
         if (context.mounted) {
+          dialogShown = true;
           showEnvoyDialog(
             context: context,
             useRootNavigator: true,
@@ -273,286 +108,36 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             dialog: const ConnectionLostDialog(),
           );
         }
+      } else if (event.type == BluetoothConnectionEventType.deviceConnected) {
+        if (dialogShown && context.mounted) {
+          Navigator.of(context, rootNavigator: true).pop();
+          dialogShown = false;
+        }
       }
     });
   }
 
-  Future<int> getEstimatedUpdateTimeInMinutes(List<PrimePatch> patches) async {
-    const double minutesPerMB = 6.0;
-    if (patches.isEmpty) {
-      return 0;
-    }
-
-    try {
-      List<Uint8List> patchBinaries = [];
-      for (final patch in patches) {
-        final binary = await Server().fetchPrimePatchBinary(patch);
-        if (binary == null) {
-          throw Exception("A required patch binary could not be downloaded.");
-        }
-        patchBinaries.add(binary);
-      }
-
-      final totalSizeInBytes =
-          patchBinaries.fold<int>(0, (prev, binary) => prev + binary.length);
-
-      final double totalSizeInMB = totalSizeInBytes / (1024 * 1024);
-
-      final double estimatedMinutes = totalSizeInMB * minutesPerMB;
-
-      //Return the final time, rounded to the nearest minute.
-      return estimatedMinutes.round();
-    } catch (e) {
-      return 0;
-    }
-  }
-
-  Future<void> _handleOnboardingState(OnboardingState state) async {
-    switch (state) {
-      case OnboardingState.firmwareUpdateScreen:
-        if (mounted) {
-          context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
-        }
-        break;
-      case OnboardingState.downloadingUpdate:
-        break;
-      case OnboardingState.receivingUpdate:
-        break;
-      case OnboardingState.veryfyingSignatures:
-        ref.read(fwTransferStateProvider.notifier).updateStep(
-            S().firmware_downloadingUpdate_transferring,
-            EnvoyStepState.FINISHED);
-
-        ref.read(primeUpdateStateProvider.notifier).state =
-            PrimeFwUpdateStep.verifying;
-        ref.read(primeFwSigVerifyStateProvider.notifier).updateStep(
-            S().firmware_updatingPrime_verifying, EnvoyStepState.LOADING);
-        break;
-      case OnboardingState.installingUpdate:
-        ref.read(primeFwSigVerifyStateProvider.notifier).updateStep(
-            S().firmware_updatingPrime_verified, EnvoyStepState.FINISHED);
-        ref.read(primeFwInstallStateProvider.notifier).updateStep(
-            S().firmware_updatingPrime_installingUpdate,
-            EnvoyStepState.LOADING);
-
-        ref.read(primeUpdateStateProvider.notifier).state =
-            PrimeFwUpdateStep.installing;
-        break;
-      case OnboardingState.rebooting:
-        ref.read(primeFwInstallStateProvider.notifier).updateStep(
-            S().firmware_updatingPrime_updateInstalled,
-            EnvoyStepState.FINISHED);
-        ref.read(primeFwRebootStateProvider.notifier).updateStep(
-            S().firmware_updatingPrime_primeRestarting, EnvoyStepState.LOADING);
-
-        ref.read(primeUpdateStateProvider.notifier).state =
-            PrimeFwUpdateStep.rebooting;
-        break;
-      case OnboardingState.firmwareUpdated:
-        ref
-            .read(primeFwRebootStateProvider.notifier)
-            .updateStep("Rebooted", EnvoyStepState.FINISHED);
-        ref.read(primeUpdateStateProvider.notifier).state =
-            PrimeFwUpdateStep.finished;
-        break;
-      case OnboardingState.securingDevice:
-        if (mounted) {
-          context.goNamed(ONBOARD_PRIME_CONTINUING_SETUP);
-        }
-        break;
-      case OnboardingState.deviceSecured:
-        ref.read(creatingPinProvider.notifier).updateStep(
-            S().finalize_catchAll_pinCreated, EnvoyStepState.FINISHED);
-        break;
-      case OnboardingState.walletCreationScreen:
-        ref.read(setUpMasterKeyProvider.notifier).updateStep(
-            S().finalize_catchAll_settingUpMasterKey, EnvoyStepState.LOADING);
-        // context.goNamed(ONBOARD_PRIME_SEED_SETUP);
-        break;
-      case OnboardingState.creatingWallet:
-        // TODO: Handle creating wallet
-        break;
-      case OnboardingState.walletCreated:
-        ref.read(setUpMasterKeyProvider.notifier).updateStep(
-            S().finalize_catchAll_masterKeySetUp, EnvoyStepState.FINISHED);
-        break;
-      case OnboardingState.magicBackupScreen:
-        ref.read(backUpMasterKeyProvider.notifier).updateStep(
-            S().finalize_catchAll_backingUpMasterKey, EnvoyStepState.LOADING);
-        break;
-      case OnboardingState.creatingMagicBackup:
-        // TODO: Handle creating magic backup
-        break;
-      case OnboardingState.magicBackupCreated:
-        ref.read(backUpMasterKeyProvider.notifier).updateStep(
-            S().finalize_catchAll_masterKeyBackedUp, EnvoyStepState.FINISHED);
-        Devices().updatePrimeBackupStatus(BluetoothManager().bleId, true);
-        break;
-      case OnboardingState.creatingManualBackup:
-        ref.read(backUpMasterKeyProvider.notifier).updateStep(
-            S().finalize_catchAll_backingUpMasterKey, EnvoyStepState.LOADING);
-        break;
-      case OnboardingState.creatingKeycardBackup:
-        // TODO: Handle creating keycard backup
-        break;
-      case OnboardingState.writingDownSeedWords:
-        // TODO: Handle writing down seed words
-        break;
-      case OnboardingState.connectingWallet:
-        ref.read(backUpMasterKeyProvider.notifier).updateStep(
-            S().finalize_catchAll_masterKeyBackedUp, EnvoyStepState.FINISHED);
-        ref.read(connectAccountProvider.notifier).updateStep(
-            S().finalize_catchAll_connectingAccount, EnvoyStepState.LOADING);
-        break;
-      case OnboardingState.walletConected:
-        if (mounted) {
-          context.goNamed(ONBOARD_PRIME_CONNECTED_SUCCESS);
-        }
-        break;
-      case OnboardingState.completed:
-        if (pairingResponse != null) {
-          final deviceColor =
-              pairingResponse!.passportColor == PassportColor.dark
-                  ? DeviceColor.dark
-                  : DeviceColor.light;
-          await BluetoothManager().addDevice(
-              pairingResponse!.passportSerial.field0,
-              pairingResponse!.passportFirmwareVersion.field0,
-              BluetoothManager().bleId,
-              deviceColor);
-          kPrint("Got a pairing AccountUpdate device!");
-        } else {
-          kPrint("No pairing response on completed state!");
-        }
-        resetOnboardingPrimeProviders(ref);
-        mainRouter.go(ROUTE_ACCOUNTS_HOME);
-        if (mounted) {
-          _notifyAfterOnboardingTutorial(context);
-        }
-        break;
-      case OnboardingState.securityChecked:
-        break;
-      case OnboardingState.updateAvailable:
-        break;
-      case OnboardingState.updateNotAvailable:
-        break;
-      case OnboardingState.securityCheckFailed:
-        break;
-    }
-  }
-
-  Future<void> _handleFirmwareError(String errorBody,
-      StateNotifierProvider<StepNotifier, StepModel> failedStepProvider) async {
-    ref.read(primeUpdateStateProvider.notifier).state = PrimeFwUpdateStep.error;
-
-    ref
-        .read(failedStepProvider.notifier)
-        .updateStep(errorBody, EnvoyStepState.ERROR);
-
-    await BluetoothManager()
-        .sendFirmwareFetchEvent(FirmwareFetchEvent.error(errorBody));
-  }
-
-  Future<void> handleFirmwareFetchRequest(String currentVersion) async {
-    ref.read(primeUpdateStateProvider.notifier).state =
-        PrimeFwUpdateStep.downloading;
-
-    ref.read(fwDownloadStateProvider.notifier).updateStep(
-        S().firmware_updatingDownload_downloading, EnvoyStepState.LOADING);
-
-    List<PrimePatch> patches = [];
-
-    try {
-      patches = await Server().fetchPrimePatches(currentVersion);
-    } catch (e) {
-      kPrint("failed to fetch patches: $e");
-      await _handleFirmwareError(
-          S().firmware_updateError_downloadFailed, fwDownloadStateProvider);
-      return;
-    }
-
-    if (patches.isEmpty) {
-      await BluetoothManager()
-          .sendFirmwareFetchEvent(FirmwareFetchEvent.updateNotAvailable());
-    } else {
-      await BluetoothManager().sendFirmwareFetchEvent(
-          FirmwareFetchEvent.starting(updateAvailableMessage(patches)));
-
-      List<Uint8List> patchBinaries = [];
-
-      try {
-        for (final patch in patches) {
-          final binary = await Server().fetchPrimePatchBinary(patch);
-          if (binary == null) {
-            throw Exception("Must get all the patches!");
-          }
-
-          patchBinaries.add(binary);
-        }
-      } catch (e) {
-        kPrint("failed to download patch binaries: $e");
-        await _handleFirmwareError(
-            S().firmware_updateError_downloadFailed, fwDownloadStateProvider);
-        return;
-      }
-
-      ref.read(fwDownloadStateProvider.notifier).updateStep(
-          S().firmware_downloadingUpdate_downloaded, EnvoyStepState.FINISHED);
-
-      ref.read(fwTransferStateProvider.notifier).updateStep(
-          S().firmware_downloadingUpdate_transferring, EnvoyStepState.LOADING);
-
-      ref.read(primeUpdateStateProvider.notifier).state =
-          PrimeFwUpdateStep.transferring;
-
-      try {
-        await BluetoothManager().sendFirmwarePayload(patchBinaries);
-      } catch (e) {
-        kPrint("failed to transfer firmware: $e");
-        await _handleFirmwareError(
-            S().firmware_updateError_receivingFailed, fwTransferStateProvider);
-        return;
-      }
-    }
-  }
-
-  // patches must be non-empty
-  FirmwareUpdateAvailable updateAvailableMessage(List<PrimePatch> patches) {
-    final latest = patches.last;
-
-    final changelog =
-        patches.reversed.fold("", (acc, p) => "$acc\n${p.changelog}");
-
-    return FirmwareUpdateAvailable(
-      version: latest.version,
-      changelog: changelog,
-      timestamp: latest.releaseDate.millisecondsSinceEpoch,
-      // TODO: fix
-      totalSize: 100,
-      patchCount: patches.length,
-    );
-  }
-
-  void _notifyAfterOnboardingTutorial(BuildContext context) async {
-    final accounts = ref.read(accountsProvider);
-
-    if (accounts.length == 2) {
-      // make sure there are two wallets hot and prime
-      final hasHotWallet = accounts.any((account) => account.isHot);
-
-      if (hasHotWallet) {
-        if (context.mounted) {
-          Navigator.of(context).push(
-            PageRouteBuilder(
-              opaque: false,
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  const AccountTutorialOverlay(),
-            ),
-          );
-        }
-      }
-    }
-  }
+  //TODO: show overlay properly after onboarding
+  // void _notifyAfterOnboardingTutorial(BuildContext context) async {
+  //   final accounts = ref.read(accountsProvider);
+  //
+  //   if (accounts.length == 2) {
+  //     // make sure there are two wallets hot and prime
+  //     final hasHotWallet = accounts.any((account) => account.isHot);
+  //
+  //     if (hasHotWallet) {
+  //       if (context.mounted) {
+  //         Navigator.of(context).push(
+  //           PageRouteBuilder(
+  //             opaque: false,
+  //             pageBuilder: (context, animation, secondaryAnimation) =>
+  //                 const AccountTutorialOverlay(),
+  //           ),
+  //         );
+  //       }
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -582,11 +167,14 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             builder: (context, value, child) {
               return Opacity(opacity: value, child: child);
             },
-            child: Image.asset(
-              "assets/images/prime_bluetooth_shield.png",
-              alignment: Alignment.bottomCenter,
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: 320,
+            child: Hero(
+              tag: "hero_prime_devices",
+              child: Image.asset(
+                "assets/images/prime_bluetooth_shield.png",
+                alignment: Alignment.bottomCenter,
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: 320,
+              ),
             ),
           ),
         ),
@@ -710,9 +298,9 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                       await Future.delayed(const Duration(milliseconds: 200));
 
                       if (!onboardingCompleted) {
+                        await pairWithPrime(payload);
                         if (!context.mounted) return;
                         context.goNamed(ONBOARD_PRIME_PAIR);
-                        await pairWithPrime(payload);
                       } else {
                         if (context.mounted) {
                           context.goNamed(ONBOARD_REPAIRING);

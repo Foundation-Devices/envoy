@@ -53,21 +53,21 @@ class BackupMetadata {
 }
 
 class BackupShardRequest {
-  final Shard field0;
+  final Shard shard;
 
   const BackupShardRequest({
-    required this.field0,
+    required this.shard,
   });
 
   @override
-  int get hashCode => field0.hashCode;
+  int get hashCode => shard.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is BackupShardRequest &&
           runtimeType == other.runtimeType &&
-          field0 == other.field0;
+          shard == other.shard;
 }
 
 @freezed
@@ -75,9 +75,9 @@ sealed class BackupShardResponse with _$BackupShardResponse {
   const BackupShardResponse._();
 
   const factory BackupShardResponse.success() = BackupShardResponse_Success;
-  const factory BackupShardResponse.error(
-    String field0,
-  ) = BackupShardResponse_Error;
+  const factory BackupShardResponse.error({
+    required String error,
+  }) = BackupShardResponse_Error;
 }
 
 @freezed
@@ -98,9 +98,9 @@ sealed class CreateMagicBackupResult with _$CreateMagicBackupResult {
 
   const factory CreateMagicBackupResult.success() =
       CreateMagicBackupResult_Success;
-  const factory CreateMagicBackupResult.error(
-    String field0,
-  ) = CreateMagicBackupResult_Error;
+  const factory CreateMagicBackupResult.error({
+    required String error,
+  }) = CreateMagicBackupResult_Error;
 }
 
 class EnvoyMagicBackupEnabledRequest {
@@ -136,7 +136,7 @@ class EnvoyMagicBackupEnabledResponse {
 
 class PrimeMagicBackupEnabled {
   final bool enabled;
-  final U8Array32 seedFingerprint;
+  final SeedFingerprint seedFingerprint;
 
   const PrimeMagicBackupEnabled({
     required this.enabled,
@@ -156,7 +156,7 @@ class PrimeMagicBackupEnabled {
 }
 
 class PrimeMagicBackupStatusRequest {
-  final U8Array32 seedFingerprint;
+  final SeedFingerprint seedFingerprint;
 
   const PrimeMagicBackupStatusRequest({
     required this.seedFingerprint,
@@ -195,21 +195,21 @@ class PrimeMagicBackupStatusResponse {
 sealed class RestoreMagicBackupEvent with _$RestoreMagicBackupEvent {
   const RestoreMagicBackupEvent._();
 
-  const factory RestoreMagicBackupEvent.noBackupFound() =
-      RestoreMagicBackupEvent_NoBackupFound;
+  const factory RestoreMagicBackupEvent.notFound() =
+      RestoreMagicBackupEvent_NotFound;
   const factory RestoreMagicBackupEvent.starting(
     BackupMetadata field0,
   ) = RestoreMagicBackupEvent_Starting;
   const factory RestoreMagicBackupEvent.chunk(
     BackupChunk field0,
   ) = RestoreMagicBackupEvent_Chunk;
-  const factory RestoreMagicBackupEvent.error(
-    String field0,
-  ) = RestoreMagicBackupEvent_Error;
+  const factory RestoreMagicBackupEvent.error({
+    required String error,
+  }) = RestoreMagicBackupEvent_Error;
 }
 
 class RestoreMagicBackupRequest {
-  final U8Array32 seedFingerprint;
+  final SeedFingerprint seedFingerprint;
 
   /// if 0, then go from start
   final int resumeFromChunk;
@@ -237,13 +237,13 @@ sealed class RestoreMagicBackupResult with _$RestoreMagicBackupResult {
 
   const factory RestoreMagicBackupResult.success() =
       RestoreMagicBackupResult_Success;
-  const factory RestoreMagicBackupResult.error(
-    String field0,
-  ) = RestoreMagicBackupResult_Error;
+  const factory RestoreMagicBackupResult.error({
+    required String error,
+  }) = RestoreMagicBackupResult_Error;
 }
 
 class RestoreShardRequest {
-  final U8Array32 seedFingerprint;
+  final SeedFingerprint seedFingerprint;
 
   const RestoreShardRequest({
     required this.seedFingerprint,
@@ -264,37 +264,53 @@ class RestoreShardRequest {
 sealed class RestoreShardResponse with _$RestoreShardResponse {
   const RestoreShardResponse._();
 
-  const factory RestoreShardResponse.success(
-    Shard field0,
-  ) = RestoreShardResponse_Success;
-  const factory RestoreShardResponse.error(
-    String field0,
-  ) = RestoreShardResponse_Error;
-  const factory RestoreShardResponse.notFound(
-    String field0,
-  ) = RestoreShardResponse_NotFound;
+  const factory RestoreShardResponse.success({
+    required Shard shard,
+  }) = RestoreShardResponse_Success;
+  const factory RestoreShardResponse.error({
+    required String error,
+  }) = RestoreShardResponse_Error;
+  const factory RestoreShardResponse.notFound() = RestoreShardResponse_NotFound;
 }
 
-class Shard {
-  final Uint8List payload;
+class SeedFingerprint {
+  final U8Array32 field0;
 
-  const Shard({
-    required this.payload,
+  const SeedFingerprint({
+    required this.field0,
   });
 
   @override
-  int get hashCode => payload.hashCode;
+  int get hashCode => field0.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SeedFingerprint &&
+          runtimeType == other.runtimeType &&
+          field0 == other.field0;
+}
+
+class Shard {
+  final Uint8List field0;
+
+  const Shard({
+    required this.field0,
+  });
+
+  @override
+  int get hashCode => field0.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is Shard &&
           runtimeType == other.runtimeType &&
-          payload == other.payload;
+          field0 == other.field0;
 }
 
 class StartMagicBackup {
-  final U8Array32 seedFingerprint;
+  final SeedFingerprint seedFingerprint;
   final int totalChunks;
   final U8Array32 hash;
 

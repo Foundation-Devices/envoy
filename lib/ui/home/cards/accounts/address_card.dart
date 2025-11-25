@@ -106,50 +106,52 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                 ),
                 const SizedBox(height: EnvoySpacing.medium1),
                 // TODO: add other buttons/link texts here!!!
-                GestureDetector(
-                  onTap: () {
-                    if (isPrimeConnected) {
-                      // TODO: if prime is connected via ble, verify address via QL
-                    } else {
-                      if (mounted) {
-                        showEnvoyDialog(
-                          context: context,
-                          blurColor: Colors.black,
-                          useRootNavigator: true,
-                          linearGradient: true,
-                          dialog: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            child: VerifyAddressDialog(
-                              address: address,
-                              accountName: account.name,
+
+                widget.account.isHot
+                    ? SizedBox.shrink()
+                    : GestureDetector(
+                        onTap: () {
+                          if (isPrimeConnected) {
+                            // TODO: if prime is connected via ble, verify address via QL
+                          } else {
+                            if (mounted) {
+                              showEnvoyDialog(
+                                context: context,
+                                blurColor: Colors.black,
+                                useRootNavigator: true,
+                                linearGradient: true,
+                                dialog: SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.9,
+                                  child: VerifyAddressDialog(
+                                    address: address,
+                                    accountName: account.name,
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            EnvoyIcon(
+                              isPrime ? EnvoyIcons.quantum : EnvoyIcons.qr_scan,
+                              color: EnvoyColors.accentPrimary,
                             ),
-                          ),
-                        );
-                      }
-                    }
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      EnvoyIcon(
-                        widget.account.isHot || isPrime
-                            ? EnvoyIcons.quantum
-                            : EnvoyIcons.qr_scan,
-                        color: EnvoyColors.accentPrimary,
-                      ),
-                      const SizedBox(width: EnvoySpacing.small),
-                      Text(
-                        S().buy_bitcoin_accountSelection_verify,
-                        textAlign: TextAlign.center,
-                        style: EnvoyTypography.button.copyWith(
-                          color: EnvoyColors.accentPrimary,
+                            const SizedBox(width: EnvoySpacing.small),
+                            Text(
+                              S().buy_bitcoin_accountSelection_verify,
+                              textAlign: TextAlign.center,
+                              style: EnvoyTypography.button.copyWith(
+                                color: EnvoyColors.accentPrimary,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
