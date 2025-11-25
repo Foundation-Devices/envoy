@@ -91,6 +91,10 @@ Future<void> main() async {
       final atmName = find.text("Kurant Bitcoin ATM");
       expect(atmName, findsAny);
 
+      // exit maps so it won't bug on the next test
+      await findAndTapPopUpEnvoyIcon(tester, EnvoyIcons.close);
+      await findAndPressEnvoyIcon(tester, EnvoyIcons.close);
+
       stopwatch.stop();
       debugPrint(
           '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s');
@@ -206,6 +210,8 @@ Future<void> main() async {
 
       await enterTextInField(tester, find.byType(TextField), 'Mobile Wallet');
       await saveName(tester);
+
+      await goBackHome(tester); // force test to Home
 
       stopwatch.stop();
       debugPrint(
@@ -536,6 +542,8 @@ Future<void> main() async {
       // find no pop-up
       expect(taprootFinder, findsNothing);
 
+      await goBackHome(tester); // force test to Home
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -616,7 +624,8 @@ Future<void> main() async {
 
       final accountText = find.text("Mobile Wallet");
       await tester.timedDrag(
-          accountText.first, const Offset(0, 120), const Duration(seconds: 1));
+          accountText.first, const Offset(0, 120), const Duration(seconds: 1),
+          warnIfMissed: false);
       await tester.pump(Durations.long2);
       await Future.delayed(const Duration(seconds: 1));
 
@@ -938,6 +947,8 @@ Future<void> main() async {
         expect(fiatCheckResult, isTrue);
       }
 
+      await goBackHome(tester); // force test to Home
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -1048,6 +1059,8 @@ Future<void> main() async {
       // check if the unit in the Staging is BTC
       await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
+      await goBackHome(tester); // force test to Home
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -1121,6 +1134,8 @@ Future<void> main() async {
           reason: "First amount should not be zero, but got $firstAmountValue");
 
       await tester.pump(Durations.long2);
+
+      await goBackHome(tester); // force test to Home
 
       stopwatch.stop();
       debugPrint(
@@ -1675,6 +1690,8 @@ Future<void> main() async {
           find.text("Whatever"), findsNothing); // make sure the Tag is deleted
       await findTextOnScreen(tester, "Untagged");
 
+      await goBackHome(tester); // force test to Home
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -1743,6 +1760,8 @@ Future<void> main() async {
       await findAndPressTextButton(tester, "SHOW DESCRIPTOR");
 
       await findTextOnScreen(tester, "Taproot");
+
+      await goBackHome(tester); // force test to Home
 
       stopwatch.stop();
       debugPrint(
@@ -1907,6 +1926,8 @@ Future<void> main() async {
 
       await findAndPressTextButton(tester, 'Foundation (Default)');
       await tester.pump(Durations.long2);
+
+      await goBackHome(tester); // force test to home
 
       stopwatch.stop();
       debugPrint(
@@ -2326,6 +2347,8 @@ Future<void> main() async {
 
       expect(feePercentage, equals(expectedFeePercentage));
 
+      await goBackHome(tester); // force test to Home
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -2410,6 +2433,8 @@ Future<void> main() async {
       final cancelButton = find.text('Cancel Transaction');
       expect(boostButton, findsNothing);
       expect(cancelButton, findsNothing);
+
+      await goBackHome(tester); // force test to Home
 
       stopwatch.stop();
       debugPrint(
@@ -2516,6 +2541,8 @@ Future<void> main() async {
       final textNoteFinder = find.text("This Note");
       await tester.pumpUntilFound(textNoteFinder,
           tries: 100, duration: Durations.long2);
+
+      await goBackHome(tester); // force test to Home
     });
     testWidgets('<Switching Fiat in App>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
