@@ -108,7 +108,6 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
       await BluetoothChannel().deviceStatusStream.firstWhere((status) {
         return status.connected;
       }).timeout(const Duration(seconds: 10), onTimeout: () {
-        //TODO: localize
         throw Exception("Reconnection timed out");
       });
       if (BluetoothChannel().lastDeviceStatus.connected && mounted) {
@@ -133,8 +132,8 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
           backgroundColor: Colors.lightBlue,
           replaceExisting: true,
           duration: const Duration(seconds: 3),
-          //TODO: localize
-          message: "Unable to reconnect to device.",
+          message:
+              S().firmware_updateModalConnectionLostToast_unableToReconnect,
           icon: const EnvoyIcon(
             EnvoyIcons.alert,
             color: EnvoyColors.accentSecondary,
