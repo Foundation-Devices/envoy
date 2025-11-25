@@ -226,6 +226,9 @@ class _AccountCardState extends ConsumerState<AccountCard>
                         },
                       ),
                     ),
+
+                    // TODO: add "show" logic here
+                    RescanningIndicator(),
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),
                       child: (transactions.isNotEmpty || txFiltersEnabled)
@@ -961,7 +964,9 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     icon: EnvoyIcons.refresh,
                     onTap: () {
                       navigator.pop();
-                      // TODO
+                      showEnvoyDialog(
+                          context: context,
+                          dialog: const RescanAccountDialog());
                     },
                   ),
                   _MenuItem(
@@ -1068,6 +1073,117 @@ class _MenuItem extends StatelessWidget {
             ),
           ),
           useDivider ? const Divider(height: 0) : const SizedBox()
+        ],
+      ),
+    );
+  }
+}
+
+class RescanAccountDialog extends ConsumerStatefulWidget {
+  const RescanAccountDialog({super.key});
+
+  @override
+  ConsumerState<RescanAccountDialog> createState() =>
+      _RescanAccountDialogState();
+}
+
+class _RescanAccountDialogState extends ConsumerState<RescanAccountDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return EnvoyPopUp(
+      icon: EnvoyIcons.info,
+      typeOfMessage: PopUpState.deafult,
+      showCloseButton: false,
+      customWidget: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            S().rescanAccount_sizeModal_header,
+            style: EnvoyTypography.heading,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: EnvoySpacing.medium1),
+          Text(
+            S().rescanAccount_sizeModal_content,
+            style: EnvoyTypography.info,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: EnvoySpacing.medium1),
+
+          // TODO: learn more link/button
+          // onLearnMore: () {
+          //   launchUrl(Uri.parse(
+          //       "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
+          // },
+
+          EnvoyButton(
+            S().rescanAccount_sizeModal_1000Addresses,
+            type: EnvoyButtonTypes.secondary,
+            onTap: () {
+              Navigator.pop(context);
+              // TODO: 1000
+            },
+          ),
+        ],
+      ),
+      secondaryButtonLabel: S().rescanAccount_sizeModal_500Addresses,
+      onSecondaryButtonTap: (context) async {
+        Navigator.pop(context);
+        // TODO: 500
+      },
+      primaryButtonLabel: S().rescanAccount_sizeModal_300Addresses,
+      onPrimaryButtonTap: (context) async {
+        Navigator.pop(context);
+        // TODO: 300
+      },
+    );
+  }
+}
+
+class RescanningIndicator extends StatelessWidget {
+  const RescanningIndicator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: EnvoySpacing.medium1),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(22),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color.fromRGBO(0, 0, 0, 0.40),
+                  blurRadius: 8,
+                  offset: Offset(0, 0),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(22),
+              child: const SizedBox(
+                height: 3,
+                child: LinearProgressIndicator(
+                  backgroundColor: EnvoyColors.textPrimaryInverse,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    EnvoyColors.textTertiary,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: EnvoySpacing.small),
+          Text(
+            S().rescanAccount_rescanning_rescanningAccount,
+            textAlign: TextAlign.center,
+            style: EnvoyTypography.info.copyWith(
+              color: EnvoyColors.textTertiary,
+            ),
+          ),
         ],
       ),
     );
