@@ -723,7 +723,7 @@ class EnvoySeed {
     final backupBytes = File(encryptedBackupFilePath).readAsBytesSync();
 
     try {
-      FileSaver.instance.saveAs(
+      await FileSaver.instance.saveAs(
         name: encryptedBackupFileName,
         bytes: backupBytes,
         fileExtension: encryptedBackupFileExtension,
