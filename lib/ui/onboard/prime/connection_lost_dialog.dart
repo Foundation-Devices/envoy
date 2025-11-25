@@ -25,20 +25,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter/cupertino.dart';
 
 /// Flag to track if the dialog is currently being shown
-/// startBluetoothDisconnectionListener, will be hooked different onboarding pages
+/// startBluetoothDisconnectionListener, will be hooked to different onboarding pages
 /// but we only want to show one dialog at a time.
 /// this flag will be set to false when the dialog widget get disposed.
 bool _isDialogShowing = false;
 
 /// Starts listening for Bluetooth disconnection events and shows a dialog if disconnected
 void startBluetoothDisconnectionListener(BuildContext context, WidgetRef ref) {
-  final lastState = ref.read(primeUpdateStateProvider);
-  final isRebooting = lastState == PrimeFwUpdateStep.rebooting ||
-      lastState == PrimeFwUpdateStep.installing;
   ref.listen(deviceConnectionStatusStreamProvider, (previous, next) {
+    final lastState = ref.read(primeUpdateStateProvider);
+    final isRebooting = lastState == PrimeFwUpdateStep.rebooting ||
+        lastState == PrimeFwUpdateStep.installing;
     if (next.hasValue) {
       final event = next.value!;
       if (event.type == BluetoothConnectionEventType.deviceDisconnected &&
@@ -218,7 +217,7 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
   }
 
   @override
-  dispose() {
+  void dispose() {
     _isDialogShowing = false;
     super.dispose();
   }
