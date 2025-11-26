@@ -35,13 +35,25 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+
+    _tabController = TabController(length: 3, vsync: this);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       setFees(ref.read(feeChooserStateProvider));
     });
-    Future.delayed(const Duration(milliseconds: 10))
-        .then((value) => calculateFeeBoundary());
+
+    Future.delayed(const Duration(milliseconds: 10)).then((_) {
+      if (!mounted) return;
+      calculateFeeBoundary();
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   void setFees(FeeChooserState feeChooserState) {

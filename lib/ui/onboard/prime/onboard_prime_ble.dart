@@ -8,15 +8,12 @@ import 'dart:io';
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/settings.dart';
-import 'package:envoy/channels/ble_status.dart';
-import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
-import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/onboard/prime/prime_onboard_connection.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -26,7 +23,6 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/prime_ql_payload_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
-import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -71,7 +67,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   void initState() {
     super.initState();
     _listenForPassportMessages();
-    _startBluetoothDisconnectionListener(context);
   }
 
   @override
@@ -86,36 +81,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   StreamSubscription? _connectionMonitorSubscription;
-
-  void _startBluetoothDisconnectionListener(BuildContext context) {
-    _connectionMonitorSubscription
-        ?.cancel(); // Cancel any existing subscription to avoid duplicates
-
-    _connectionMonitorSubscription =
-        BluetoothChannel().deviceStatusStream.listen((event) {
-      final lastState = ref.read(primeUpdateStateProvider);
-      final isRebooting = lastState == PrimeFwUpdateStep.rebooting ||
-          lastState == PrimeFwUpdateStep.installing;
-      kPrint("Last known state: $lastState, isRebooting: $isRebooting");
-      if (event.type == BluetoothConnectionEventType.deviceDisconnected &&
-          !isRebooting) {
-        if (context.mounted) {
-          dialogShown = true;
-          showEnvoyDialog(
-            context: context,
-            useRootNavigator: true,
-            dismissible: false,
-            dialog: const ConnectionLostDialog(),
-          );
-        }
-      } else if (event.type == BluetoothConnectionEventType.deviceConnected) {
-        if (dialogShown && context.mounted) {
-          Navigator.of(context, rootNavigator: true).pop();
-          dialogShown = false;
-        }
-      }
-    });
-  }
 
   //TODO: show overlay properly after onboarding
   // void _notifyAfterOnboardingTutorial(BuildContext context) async {
@@ -141,6 +106,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
   @override
   Widget build(BuildContext context) {
+    startBluetoothDisconnectionListener(context, ref);
     //TODO: update copy based on s.syncToCloud
     // bool enabledMagicBackup = s.syncToCloud;
     return EnvoyPatternScaffold(

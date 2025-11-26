@@ -11,15 +11,24 @@ import 'dart:async';
 /// Must be a broadcast stream.
 class _ReplayLatestStream<T> extends StreamView<T> {
   T _latest;
+  StreamSubscription<T>? _subscription;
 
   _ReplayLatestStream(this._latest, Stream<T> stream) : super(stream) {
     if (!stream.isBroadcast) {
       throw ArgumentError.value(stream, 'stream', 'Must be a broadcast stream');
     }
     // keep latest value
-    stream.listen((event) {
+    _subscription = stream.listen((event) {
       _latest = event;
+    }, onDone: () {
+      dispose();
     });
+  }
+
+  /// Cancels the internal subscription to prevent memory leaks.
+  void dispose() {
+    _subscription?.cancel();
+    _subscription = null;
   }
 
   /// Subscribes to the stream and immediately receives the latest cached value.

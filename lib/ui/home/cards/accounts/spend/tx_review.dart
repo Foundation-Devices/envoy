@@ -48,7 +48,7 @@ import 'package:rive/rive.dart' as rive;
 
 //TODO: multi device support, pass device id
 final primeConnectedStateProvider = Provider<StepModel>((ref) {
-  final connectionStatus = ref.watch(connectedDevicesProvider);
+  final connectionStatus = ref.watch(deviceConnectionStatusStreamProvider);
   return connectionStatus.maybeMap(
     data: (data) {
       final isConnected = data.value.connected;

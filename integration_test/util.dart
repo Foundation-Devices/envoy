@@ -653,7 +653,8 @@ Future<void> enterSeedWords(
 Future<void> scrollHome(WidgetTester tester, double pixels,
     {Type scrollableWidgetType = ReorderableListView}) async {
   // Perform the drag operation on the ReorderableListView by the specified number of pixels
-  await tester.drag(find.byType(scrollableWidgetType).last, Offset(0, pixels));
+  await tester.drag(find.byType(scrollableWidgetType).last, Offset(0, pixels),
+      warnIfMissed: false);
   await tester.pump(Durations.long2);
 }
 
@@ -882,7 +883,7 @@ Future<void> checkBuyOptionAndTitle(WidgetTester tester) async {
 
   // Check if the "ACCOUNTS" title is still there
   // double check if we entered in BUY
-  final accountsTitleFinder = find.text('ACCOUNTS');
+  final accountsTitleFinder = find.text('BUY BITCOIN');
   expect(accountsTitleFinder, findsOneWidget);
 }
 
@@ -1095,17 +1096,37 @@ Future<bool> findTextOnScreen(WidgetTester tester, String text) async {
   return textFinder.evaluate().isNotEmpty;
 }
 
+Future<void> findAndTapPopUpEnvoyIcon(
+  WidgetTester tester,
+  EnvoyIcons icon, {
+  bool findFirst = false,
+}) async {
+  final iconFinder = await checkForEnvoyIcon(tester, icon);
+
+  // Wait until icon appears
+  await tester.pumpUntilFound(iconFinder, tries: 10, duration: Durations.long1);
+
+  // Select which instance to tap
+  final target = findFirst ? iconFinder.first : iconFinder.last;
+
+  await tester.tap(target, warnIfMissed: false);
+  await tester.pump(Durations.long2);
+}
+
 Future<void> findAndPressEnvoyIcon(
   WidgetTester tester,
   EnvoyIcons expectedIcon, {
   bool onLongPress = false,
+  bool findFirst = true, // default true here to match original behavior
 }) async {
   final iconFinder = await checkForEnvoyIcon(tester, expectedIcon);
 
+  final target = findFirst ? iconFinder.first : iconFinder.last;
+
   if (onLongPress) {
-    await tester.longPress(iconFinder.first);
+    await tester.longPress(target);
   } else {
-    await tester.tap(iconFinder.first);
+    await tester.tap(target);
   }
 
   await tester.pump(Durations.long2);
@@ -1174,7 +1195,7 @@ Future<void> findAndPressTextButton(
   final textButton = find.text(buttonText);
   expect(textButton, findsOneWidget);
 
-  await tester.tap(textButton);
+  await tester.tap(textButton, warnIfMissed: false);
   await tester.pump(Durations.long2);
 }
 
@@ -1285,7 +1306,7 @@ Future<void> findLastTextButtonAndPress(
   expect(textButtons, findsWidgets);
 
   // Tap the first widget that matches
-  await tester.tap(textButtons.last);
+  await tester.tap(textButtons.last, warnIfMissed: false);
   await tester.pump(Durations.long2);
 }
 

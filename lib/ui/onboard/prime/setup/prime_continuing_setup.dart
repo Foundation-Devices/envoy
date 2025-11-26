@@ -9,6 +9,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
+import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -96,6 +97,8 @@ class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
 
   @override
   Widget build(BuildContext context) {
+    startBluetoothDisconnectionListener(context, ref);
+
     ref.listen(onboardingStateStreamProvider, (prev, next) {
       next.whenData((state) {
         if (state == OnboardingState.firmwareUpdateScreen) {
