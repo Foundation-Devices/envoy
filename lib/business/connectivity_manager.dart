@@ -53,8 +53,12 @@ class ConnectivityManager {
   var s = Settings();
   int failedFoundationServerAttempts = 0;
 
+  // Number of failed attempts before restarting Tor
+  final maxFailedTorAttempts = 5;
+
   bool electrumConnected = true;
   bool nguConnected = true;
+  int failedTorConnectivityAttempts = 0;
 
   DateTime? torTemporarilyDisabledTimeStamp;
 
@@ -126,9 +130,15 @@ class ConnectivityManager {
     checkTor();
   }
 
-  void checkTor() {
-    if (torEnabled && (!nguConnected || !electrumConnected)) {
-      restartTor();
+  void checkTor() async {
+    //if tor is enabled, but both electrum and ngu are unreachable, restart tor
+    if (torEnabled && (!nguConnected && !electrumConnected)) {
+      // tor can be flaky, so only restart after several failed attempts,
+      // in this case after 5 failed network checks
+      failedTorConnectivityAttempts++;
+
+      await restartTor();
+
       EnvoyReport().log("tor",
           "Unreachable via Tor -> NGU: ${nguConnected ? 'ok' : 'fail'}, Electrum: ${electrumConnected ? 'ok' : 'fail'}");
       events.add(ConnectivityManagerEvent.torConnectedDoesntWork);
@@ -149,10 +159,15 @@ class ConnectivityManager {
     }
   }
 
-  void restartTor() {
-    // ENV-175
-    if (torEnabled) {
-      Tor.instance.start();
+  Future restartTor() async {
+    //if tor is enabled and we've had 5 failed connectivity attempts, restart tor
+    if (torEnabled && failedTorConnectivityAttempts >= maxFailedTorAttempts) {
+      if (Tor.instance.bootstrapped) {
+        await Tor.instance.stop();
+        await Future.delayed(const Duration(milliseconds: 200));
+      }
+      await Tor.instance.start();
+      failedTorConnectivityAttempts = 0;
     }
   }
 }

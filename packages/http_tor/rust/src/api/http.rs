@@ -6,6 +6,7 @@
 use crate::frb_generated::StreamSink;
 use anyhow::{anyhow, Result};
 use lazy_static::lazy_static;
+use log::info;
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 use std::collections::HashMap;
 use std::fs::File;
@@ -72,7 +73,7 @@ pub async fn get_file(
     let rt = RUNTIME.as_ref().unwrap();
     let handle = rt.spawn(async move {
         let client: reqwest::Client = if tor_port > 0 {
-            let proxy = reqwest::Proxy::all(format!("socks5://127.0.0.1:{}", tor_port))?;
+            let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{}", tor_port))?;
             reqwest::Client::builder().proxy(proxy).build()?
         } else {
             reqwest::Client::builder().build()?
@@ -128,7 +129,7 @@ pub fn request(
     headers: HashMap<String, String>,
 ) -> Result<Response> {
     let client: reqwest::blocking::Client = if tor_port > 0 {
-        let proxy = reqwest::Proxy::all(format!("socks5://127.0.0.1:{}", tor_port))?;
+        let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{}", tor_port))?;
         reqwest::blocking::Client::builder().proxy(proxy).build()?
     } else {
         reqwest::blocking::Client::builder().build()?
@@ -166,7 +167,7 @@ pub fn request(
 /// * `tor_port` - The port for Tor proxy (0 to disable)
 pub fn get_ip(tor_port: i32) -> Result<String> {
     let client: reqwest::blocking::Client = if tor_port > 0 {
-        let proxy = reqwest::Proxy::all(format!("socks5://127.0.0.1:{}", tor_port))?;
+        let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{}", tor_port))?;
         reqwest::blocking::Client::builder().proxy(proxy).build()?
     } else {
         reqwest::blocking::Client::builder().build()?

@@ -402,12 +402,16 @@ class SyncManager {
             "Error syncing $addressType - ${account.name} | ${account.network} | $server | Tor: $port $e",
             silenceInTests: true);
       }
-      EnvoyReport().log(
-          "Error applying sync $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
-          e.toString());
-      // Let ConnectivityManager know that we can't reach Electrum
+      //less noisy logging for non-mainnet networks
       if (account.network == Network.bitcoin) {
+        // Let ConnectivityManager know that we can't reach Electrum
         ConnectivityManager().electrumFailure();
+        EnvoyReport().log(
+            "Error applying sync $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
+            e.toString());
+      } else {
+        kPrint(
+            "Unable to reach Electrum for sync $addressType - ${account.name} | ${account.network} | $server | Tor: $port");
       }
     } finally {
       _currentLoading.sink.add(None());
