@@ -6,7 +6,6 @@
 use crate::frb_generated::StreamSink;
 use anyhow::{anyhow, Result};
 use lazy_static::lazy_static;
-use log::info;
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 use std::collections::HashMap;
 use std::fs::File;
