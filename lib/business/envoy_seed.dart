@@ -935,4 +935,13 @@ class EnvoySeed {
     }
     return data;
   }
+
+  Future<void> generateAndBackupWalletSilently() async {
+    if (Settings().syncToCloud) {
+      if (!walletDerived()) {
+        await generate();
+        await backupData();
+      }
+    }
+  }
 }
