@@ -551,7 +551,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       final exchangeRateMessage = api.ExchangeRate(
         currencyCode: "USD",
         rate: currentExchange,
-        timestamp: BigInt.from(timestamp),
+        timestamp: BigInt.from(timestamp / 1000),
       );
 
       writeMessage(api.QuantumLinkMessage.exchangeRate(exchangeRateMessage));
