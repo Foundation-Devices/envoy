@@ -953,9 +953,12 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
   }
 }
 
-bool accountHasNoTaprootXpub(EnvoyAccount account) {
+bool accountHasNoTaprootXpub(EnvoyAccount? account) {
+  if (account == null) return false;
+
   final hasTaproot = account.externalPublicDescriptors.any(
     (pair) => pair.$1 == AddressType.p2Tr && pair.$2.isNotEmpty,
   );
+
   return !hasTaproot;
 }
