@@ -6,7 +6,6 @@ import 'dart:async';
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
-import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -84,13 +83,14 @@ class SyncManager {
     await _syncAll();
   }
 
-  //sync a single account
-  void syncAccount(EnvoyAccount account) async {
+// Sync a single account
+  Future<void> syncAccount(EnvoyAccount account) async {
     final server = Settings().electrumAddress(account.network);
     int? port = Settings().getTorPort(account.network, server);
     try {
       if (account.handler != null) {
-        final futures = <Future>[];
+        final futures = <Future<void>>[];
+
         for (var descriptor in account.descriptors) {
           final request = await account.handler!
               .syncRequest(addressType: descriptor.addressType);
@@ -102,9 +102,13 @@ class SyncManager {
                 silenceInTests: true);
           }
         }
-        EnvoyScheduler().parallel.run(() async {
-          await Future.wait(futures);
-        });
+
+        // Actually wait for all descriptor syncs
+        await Future.wait(futures);
+
+        // Notify listeners that this account finished syncing
+        _onUpdateFinished?.call(account);
+
         if (_enableLogging) {
           kPrint("SyncManager: Single Account Sync Finished ${account.name}",
               silenceInTests: true);
@@ -198,6 +202,31 @@ class SyncManager {
     await _startFullScan();
   }
 
+  Future<void> initiateAccountFullScan(
+      EnvoyAccount account, int stopGap) async {
+    // Clear previous queued full-scan requests for this account only (optional)
+    _fullScanRequests.removeWhere(
+      (key, _) => key.$1.id == account.id,
+    );
+
+    for (var descriptor in account.descriptors) {
+      if (account.handler == null) {
+        continue;
+      }
+
+      FullScanRequest request = await account.handler!
+          .requestFullScan(addressType: descriptor.addressType);
+      _fullScanRequests[(account, descriptor.addressType)] = request;
+      await performFullScan(account.handler!, descriptor.addressType, request,
+          stopGap: stopGap);
+    }
+  }
+
+  bool isAccountFullScanInProgress(EnvoyAccount account) {
+    final id = account.id;
+    return _activeFullScanOperations.any((e) => e.$1 == id);
+  }
+
   Future<void> _startSync() async {
     final entries = _syncRequests.entries.toList();
     final futures = <Future>[];
@@ -278,8 +307,12 @@ class SyncManager {
     await Future.wait(futures);
   }
 
-  Future<void> performFullScan(EnvoyAccountHandler handler,
-      AddressType addressType, FullScanRequest fullScanRequest) async {
+  Future<void> performFullScan(
+    EnvoyAccountHandler handler,
+    AddressType addressType,
+    FullScanRequest fullScanRequest, {
+    int? stopGap,
+  }) async {
     final account = await handler.state();
     if (_activeFullScanOperations.contains((account.id, addressType))) {
       return;
@@ -306,7 +339,10 @@ class SyncManager {
     try {
       // Use the scheduler to run this task in the background
       WalletUpdate update = await EnvoyAccountHandler.scanWallet(
-          scanRequest: fullScanRequest, electrumServer: server, torPort: port);
+          scanRequest: fullScanRequest,
+          electrumServer: server,
+          torPort: port,
+          stopGap: stopGap);
 
       if (account.handler != null) {
         await account.handler!

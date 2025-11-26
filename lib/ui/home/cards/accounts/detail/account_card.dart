@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:animations/animations.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
@@ -49,6 +50,7 @@ import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/payment_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -175,10 +177,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
               }
             },
             child: EnvoyPullToRefresh(
-              onRefresh: () async {
-                // TODO: implement refresh here, ref's and so on!!!
-                await Future.delayed(const Duration(seconds: 2));
-              },
+              onRefresh: () => SyncManager().syncAccount(account),
               pullIndicator: (progress) {
                 return Column(
                   key: ValueKey("pull"),
@@ -226,9 +225,9 @@ class _AccountCardState extends ConsumerState<AccountCard>
                         },
                       ),
                     ),
-
-                    // TODO: add "show" logic here
-                    RescanningIndicator(),
+                    SyncManager().isAccountFullScanInProgress(account)
+                        ? RescanningIndicator()
+                        : SizedBox.shrink(),
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),
                       child: (transactions.isNotEmpty || txFiltersEnabled)
@@ -284,7 +283,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
               padding: const EdgeInsets.only(top: EnvoySpacing.xs),
               child: EnvoyBar(
                 showDividers: true,
-                // enabled: , TODO: disable if rescanning !!!!
+                enabled: !SyncManager().isAccountFullScanInProgress(account),
                 bottomPadding: EnvoySpacing.large1,
                 items: [
                   EnvoyBarItem(
@@ -966,7 +965,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                       navigator.pop();
                       showEnvoyDialog(
                           context: context,
-                          dialog: const RescanAccountDialog());
+                          dialog: RescanAccountDialog(account: widget.account));
                     },
                   ),
                   _MenuItem(
@@ -1080,7 +1079,12 @@ class _MenuItem extends StatelessWidget {
 }
 
 class RescanAccountDialog extends ConsumerStatefulWidget {
-  const RescanAccountDialog({super.key});
+  final EnvoyAccount account;
+
+  const RescanAccountDialog({
+    super.key,
+    required this.account,
+  });
 
   @override
   ConsumerState<RescanAccountDialog> createState() =>
@@ -1110,7 +1114,7 @@ class _RescanAccountDialogState extends ConsumerState<RescanAccountDialog> {
           ),
           const SizedBox(height: EnvoySpacing.medium1),
 
-          // TODO: learn more link/button
+          // TODO: learn more link/button (if they provide one)
           // onLearnMore: () {
           //   launchUrl(Uri.parse(
           //       "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
@@ -1119,9 +1123,16 @@ class _RescanAccountDialogState extends ConsumerState<RescanAccountDialog> {
           EnvoyButton(
             S().rescanAccount_sizeModal_1000Addresses,
             type: EnvoyButtonTypes.secondary,
-            onTap: () {
+            onTap: () async {
               Navigator.pop(context);
-              // TODO: 1000
+              _showRescanToastStarted();
+              try {
+                await SyncManager()
+                    .initiateAccountFullScan(widget.account, 1000);
+                _showRescanToastFinished(widget.account, success: true);
+              } catch (_) {
+                _showRescanToastFinished(widget.account, success: false);
+              }
             },
           ),
         ],
@@ -1129,14 +1140,53 @@ class _RescanAccountDialogState extends ConsumerState<RescanAccountDialog> {
       secondaryButtonLabel: S().rescanAccount_sizeModal_500Addresses,
       onSecondaryButtonTap: (context) async {
         Navigator.pop(context);
-        // TODO: 500
+        _showRescanToastStarted();
+        try {
+          await SyncManager().initiateAccountFullScan(widget.account, 500);
+          _showRescanToastFinished(widget.account, success: true);
+        } catch (_) {
+          _showRescanToastFinished(widget.account, success: false);
+        }
       },
       primaryButtonLabel: S().rescanAccount_sizeModal_300Addresses,
       onPrimaryButtonTap: (context) async {
         Navigator.pop(context);
-        // TODO: 300
+        _showRescanToastStarted();
+        try {
+          await SyncManager().initiateAccountFullScan(widget.account, 300);
+          _showRescanToastFinished(widget.account, success: true);
+        } catch (_) {
+          _showRescanToastFinished(widget.account, success: false);
+        }
       },
     );
+  }
+
+  void _showRescanToastStarted() {
+    EnvoyToast(
+      backgroundColor: EnvoyColors.accentPrimary,
+      replaceExisting: true,
+      message: "Rescanning started. Please do not close Envoy.", // TODO: Figma
+      icon: const EnvoyIcon(
+        EnvoyIcons.info,
+        color: EnvoyColors.accentPrimary,
+      ),
+    ).show(context);
+  }
+
+  void _showRescanToastFinished(EnvoyAccount account, {required bool success}) {
+    EnvoyToast(
+      backgroundColor: success ? EnvoyColors.accentPrimary : Colors.red,
+      replaceExisting: true,
+      message: success
+          ? "Rescanning was successful for ${account.name}." // TODO: Figma
+          : "Rescanning failed for ${account.name}.", // TODO: Figma
+      icon: EnvoyIcon(
+        success ? EnvoyIcons.info : EnvoyIcons.alert,
+        color: EnvoyColors.accentPrimary,
+      ),
+    ).show(
+        context); // TODO: account is unmounted if you exit acc, transfer this to home_page? -- fix mounted for these toasts
   }
 }
 

@@ -253,7 +253,8 @@ abstract class RustLibApi extends BaseApi {
   Future<WalletUpdate> crateApiEnvoyWalletEnvoyAccountHandlerScanWallet(
       {required FullScanRequest scanRequest,
       required String electrumServer,
-      int? torPort});
+      int? torPort,
+      int? stopGap});
 
   Future<void> crateApiEnvoyWalletEnvoyAccountHandlerSendUpdate(
       {required EnvoyAccountHandler that});
@@ -1607,7 +1608,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Future<WalletUpdate> crateApiEnvoyWalletEnvoyAccountHandlerScanWallet(
       {required FullScanRequest scanRequest,
       required String electrumServer,
-      int? torPort}) {
+      int? torPort,
+      int? stopGap}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -1615,6 +1617,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             scanRequest, serializer);
         sse_encode_String(electrumServer, serializer);
         sse_encode_opt_box_autoadd_u_16(torPort, serializer);
+        sse_encode_opt_box_autoadd_u_16(stopGap, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 37, port: port_);
       },
@@ -1624,7 +1627,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerScanWalletConstMeta,
-      argValues: [scanRequest, electrumServer, torPort],
+      argValues: [scanRequest, electrumServer, torPort, stopGap],
       apiImpl: this,
     ));
   }
@@ -1633,7 +1636,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       get kCrateApiEnvoyWalletEnvoyAccountHandlerScanWalletConstMeta =>
           const TaskConstMeta(
             debugName: "EnvoyAccountHandler_scan_wallet",
-            argNames: ["scanRequest", "electrumServer", "torPort"],
+            argNames: ["scanRequest", "electrumServer", "torPort", "stopGap"],
           );
 
   @override

@@ -214,11 +214,13 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   static Future<WalletUpdate> scanWallet(
           {required FullScanRequest scanRequest,
           required String electrumServer,
-          int? torPort}) =>
+          int? torPort,
+          int? stopGap}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerScanWallet(
           scanRequest: scanRequest,
           electrumServer: electrumServer,
-          torPort: torPort);
+          torPort: torPort,
+          stopGap: stopGap);
 
   Future<void> sendUpdate();
 

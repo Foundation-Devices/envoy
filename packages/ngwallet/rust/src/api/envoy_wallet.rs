@@ -520,16 +520,22 @@ impl EnvoyAccountHandler {
         scan_request: Arc<Mutex<Option<FullScanRequest<KeychainKind>>>>,
         electrum_server: &str,
         tor_port: Option<u16>,
+        stop_gap: Option<u16>,
     ) -> anyhow::Result<Arc<Mutex<Update>>> {
+        let stop_gap_usize = stop_gap.map(|v| v as usize);
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_deref();
         let mut scan_request_guard = scan_request
             .lock()
             .expect("Failed to lock scan request mutex");
         if let Some(scan_request) = scan_request_guard.take() {
-            // Use take() to move the value out
-            // Simulate a delay for the scan operation
-            match NgWallet::<Connection>::scan(scan_request, electrum_server, socks_proxy) {
+            let res = NgWallet::<Connection>::scan(
+                scan_request,
+                electrum_server,
+                socks_proxy,
+                stop_gap_usize,
+            );
+            match res {
                 Ok(update) => Ok(Arc::new(Mutex::new(Update::from(update)))),
                 Err(er) => Err(anyhow!("Error during scan: {}", er)),
             }
