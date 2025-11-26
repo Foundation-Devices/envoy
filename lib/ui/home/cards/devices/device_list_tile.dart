@@ -17,6 +17,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:envoy/generated/l10n.dart';
 
+import '../../../components/pop_up.dart';
+import '../../../theme/envoy_icons.dart';
+import '../../../widgets/blur_dialog.dart';
+
 final shouldUpdateProvider =
     FutureProvider.family<bool, Device>((ref, device) async {
   final version = Devices().getDeviceFirmwareVersion(device.serial);
@@ -189,6 +193,24 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                               : GestureDetector(
                                                   onTap: () {
                                                     if (!fwAvailable) {
+                                                      return;
+                                                    }
+                                                    if (widget.device.type == DeviceType.passportPrime) {
+                                                      showEnvoyDialog(
+                                                        context: context,
+                                                        dismissible: true,
+                                                        dialog: EnvoyPopUp(
+                                                          icon: EnvoyIcons.alert,
+                                                          typeOfMessage: PopUpState.warning,
+                                                          showCloseButton: true,
+                                                          content:
+                                                          "On your Prime device, please go to Settings > Update",
+                                                          primaryButtonLabel: S().component_back,
+                                                          onPrimaryButtonTap: (context) async {
+                                                            Navigator.pop(context);
+                                                          },
+                                                        ),
+                                                      );
                                                       return;
                                                     }
                                                     context.pushNamed(

@@ -224,6 +224,7 @@ class Devices extends ChangeNotifier {
   }
 
   String? getDeviceFirmwareVersion(String serialNumber) {
+    return "0.12.0";
     return devices
             .firstWhereOrNull((d) => d.serial == serialNumber)
             ?.firmwareVersion ??
