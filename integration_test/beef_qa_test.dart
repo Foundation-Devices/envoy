@@ -1531,6 +1531,8 @@ Future<void> main() async {
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // Enable again
 
+      await goBackHome(tester);
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',

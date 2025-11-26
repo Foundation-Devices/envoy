@@ -42,23 +42,23 @@ class _AddressCardState extends ConsumerState<AddressCard> {
     final account = ref.watch(accountStateProvider(widget.account.id));
     String address = "";
     final isTaprootEnabled = Settings().enableTaprootSetting == true;
-    final noTaprootXpub = accountHasNoTaprootXpub(account!);
+    final noTaprootXpub = accountHasNoTaprootXpub(account);
     final Device? device =
-        Devices().getDeviceBySerial(account.deviceSerial ?? "");
+        Devices().getDeviceBySerial(account?.deviceSerial ?? "");
     bool isPrime = device?.type == DeviceType.passportPrime;
     final bool isPrimeConnected =
         ref.watch(isPrimeConnectedProvider(device?.bleId ?? ""));
 
     if (isTaprootEnabled && noTaprootXpub) {
-      final segwitAddressRecord = account.nextAddress.firstWhere(
+      final segwitAddressRecord = account?.nextAddress.firstWhere(
         (record) => record.$2 == AddressType.p2Wpkh, // native SegWit
         orElse: () => ('', AddressType.p2Wpkh),
       );
 
-      address = segwitAddressRecord.$1;
+      address = segwitAddressRecord?.$1 ?? "";
     } else {
       // Normal case: get preferred address
-      address = account.getPreferredAddress();
+      address = account?.getPreferredAddress() ?? "";
     }
 
     return Padding(
@@ -125,7 +125,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                                       MediaQuery.of(context).size.width * 0.9,
                                   child: VerifyAddressDialog(
                                     address: address,
-                                    accountName: account.name,
+                                    accountName: account?.name ?? "",
                                   ),
                                 ),
                               );
