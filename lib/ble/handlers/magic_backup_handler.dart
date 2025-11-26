@@ -7,6 +7,7 @@ import 'package:backup/backup.dart' as backup_lib;
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/util/bug_report_helper.dart';
@@ -143,6 +144,11 @@ class BleMagicBackupHandler extends PassportMessageHandler {
 
     if (Settings().syncToCloud) {
       Devices().updatePrimeBackupStatus(bleId, true);
+
+      if (!EnvoySeed().walletDerived()) {
+        await EnvoySeed().generate();
+        await EnvoySeed().backupData();
+      }
     }
   }
 
