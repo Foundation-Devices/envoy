@@ -1135,7 +1135,6 @@ class _RescanAccountDialogState extends ConsumerState<RescanAccountDialog> {
       onSecondaryButtonTap: (context) async {
         Navigator.pop(context);
         _showRescanToastStarted();
-
         await SyncManager().initiateAccountFullScan(widget.account, 500);
       },
       primaryButtonLabel: S().rescanAccount_sizeModal_300Addresses,
@@ -1152,7 +1151,7 @@ class _RescanAccountDialogState extends ConsumerState<RescanAccountDialog> {
       backgroundColor: EnvoyColors.accentPrimary,
       replaceExisting: true,
       duration: const Duration(seconds: 4),
-      message: "Rescanning started. Please do not close Envoy.", // TODO: Figma
+      message: S().rescanAccount_toast_rescanningStarted,
       icon: const EnvoyIcon(
         EnvoyIcons.info,
         color: EnvoyColors.accentPrimary,

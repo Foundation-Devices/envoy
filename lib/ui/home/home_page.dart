@@ -374,8 +374,8 @@ class HomePageState extends ConsumerState<HomePage>
         replaceExisting: true,
         duration: const Duration(seconds: 3),
         message: success
-            ? "Rescanning was successful for ${account.name}." // TODO: Figma
-            : "Rescanning failed for ${account.name}.", // TODO: Figma
+            ? S().rescanAccount_toast_rescanningSuccessful(account.name)
+            : S().rescanAccount_toast_rescanningFailed(account.name),
         icon: EnvoyIcon(
           success ? EnvoyIcons.info : EnvoyIcons.alert,
           color:

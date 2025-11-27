@@ -6844,10 +6844,10 @@ class S {
     );
   }
 
-  /// `Setting up a Passport Core on firmware v2.3.5 or earlier?`
+  /// `Are you setting up a Passport Core on firmware v2.3.5 or earlier?`
   String get onboarding_passpportSelectCamera_sub235VersionAlert {
     return Intl.message(
-      'Setting up a Passport Core on firmware v2.3.5 or earlier?',
+      'Are you setting up a Passport Core on firmware v2.3.5 or earlier?',
       name: 'onboarding_passpportSelectCamera_sub235VersionAlert',
       desc: '',
       args: [],
@@ -8151,6 +8151,36 @@ class S {
       name: 'rescanAccount_sizeModal_header',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Rescanning failed for {accoutname} `
+  String rescanAccount_toast_rescanningFailed(Object accoutname) {
+    return Intl.message(
+      'Rescanning failed for $accoutname ',
+      name: 'rescanAccount_toast_rescanningFailed',
+      desc: '',
+      args: [accoutname],
+    );
+  }
+
+  /// `Rescanning started. Please do not close Envoy.`
+  String get rescanAccount_toast_rescanningStarted {
+    return Intl.message(
+      'Rescanning started. Please do not close Envoy.',
+      name: 'rescanAccount_toast_rescanningStarted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rescanning was successful for {accoutname} `
+  String rescanAccount_toast_rescanningSuccessful(Object accoutname) {
+    return Intl.message(
+      'Rescanning was successful for $accoutname ',
+      name: 'rescanAccount_toast_rescanningSuccessful',
+      desc: '',
+      args: [accoutname],
     );
   }
 

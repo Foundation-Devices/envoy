@@ -62,6 +62,11 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m16(AccountName) =>
       "Tap the Account ${AccountName} on Passport, choose ‘Verify Address’ and scan the QR code below.";
 
+  static String m17(accoutname) => "Rescanning failed for ${accoutname} ";
+
+  static String m18(accoutname) =>
+      "Rescanning was successful for ${accoutname} ";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "_": MessageLookupByLibrary.simpleMessage("6:15"),
@@ -2121,7 +2126,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "onboarding_migrating_xOfYSynced": m11,
         "onboarding_passpportSelectCamera_sub235VersionAlert":
             MessageLookupByLibrary.simpleMessage(
-          "Setting up a Passport Core on firmware v2.3.5 or earlier?",
+          "Are you setting up a Passport Core on firmware v2.3.5 or earlier?",
         ),
         "onboarding_passpportSelectCamera_tapHere":
             MessageLookupByLibrary.simpleMessage("Tap here"),
@@ -2527,6 +2532,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "rescanAccount_sizeModal_header": MessageLookupByLibrary.simpleMessage(
           "Rescan Account",
         ),
+        "rescanAccount_toast_rescanningFailed": m17,
+        "rescanAccount_toast_rescanningStarted":
+            MessageLookupByLibrary.simpleMessage(
+          "Rescanning started. Please do not close Envoy.",
+        ),
+        "rescanAccount_toast_rescanningSuccessful": m18,
         "scv_cameraModalUnexpectedQrFormat_content":
             MessageLookupByLibrary.simpleMessage(
           "Ensure you are scanning a security check QR code from Passport.",

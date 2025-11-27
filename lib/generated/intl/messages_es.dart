@@ -65,6 +65,11 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m16(AccountName) =>
       "Tap the Account ${AccountName} on Passport, choose ‘Verify Address’ and scan the QR code below.";
 
+  static String m17(accoutname) => "Rescanning failed for ${accoutname} ";
+
+  static String m18(accoutname) =>
+      "Rescanning was successful for ${accoutname} ";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "_": MessageLookupByLibrary.simpleMessage("USD"),
@@ -1371,7 +1376,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sortBy_zToA": MessageLookupByLibrary.simpleMessage("Z a A"),
         "finalize_catchAll_backUpMasterKey":
             MessageLookupByLibrary.simpleMessage(
-          "Realizar Copia de Seguridad de Clave Maestra",
+          "Copia de Seguridad de Clave Maestra",
         ),
         "finalize_catchAll_backingUpMasterKey":
             MessageLookupByLibrary.simpleMessage(
@@ -2540,6 +2545,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "rescanAccount_sizeModal_header": MessageLookupByLibrary.simpleMessage(
           "Rescan Account",
         ),
+        "rescanAccount_toast_rescanningFailed": m17,
+        "rescanAccount_toast_rescanningStarted":
+            MessageLookupByLibrary.simpleMessage(
+          "Rescanning started. Please do not close Envoy.",
+        ),
+        "rescanAccount_toast_rescanningSuccessful": m18,
         "scv_cameraModalUnexpectedQrFormat_content":
             MessageLookupByLibrary.simpleMessage(
           "Ensure you are scanning a security check QR code from Passport.",
