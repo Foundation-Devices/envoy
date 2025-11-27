@@ -199,6 +199,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                       showEnvoyDialog(
                                                         context: context,
                                                         dismissible: true,
+                                                        useRootNavigator: true,
                                                         dialog: EnvoyPopUp(
                                                           icon: EnvoyIcons.alert,
                                                           typeOfMessage: PopUpState.warning,

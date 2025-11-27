@@ -43,9 +43,6 @@ class UpdatesManager {
       });
     }
 
-    EnvoyStorage().addNewFirmware(DeviceType.passportPrime.index, "0.12.0", "");
-
-
     final primeDevices = Devices().getPrimeDevices;
     if (primeDevices.isNotEmpty) {
       final patches = await Server().fetchPrimePatches(primeDevices.first.firmwareVersion);
