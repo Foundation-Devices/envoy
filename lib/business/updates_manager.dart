@@ -45,11 +45,13 @@ class UpdatesManager {
 
     final primeDevices = Devices().getPrimeDevices;
     if (primeDevices.isNotEmpty) {
-      final patches = await Server().fetchPrimePatches(primeDevices.first.firmwareVersion);
+      final patches =
+          await Server().fetchPrimePatches(primeDevices.first.firmwareVersion);
 
       // TODO: Check this against a live endpoint
       if (patches.isNotEmpty) {
-        EnvoyStorage().addNewFirmware(DeviceType.passportPrime.index, patches.first.version, "");
+        EnvoyStorage().addNewFirmware(
+            DeviceType.passportPrime.index, patches.first.version, "");
       }
     }
   }

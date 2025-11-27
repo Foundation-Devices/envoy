@@ -195,20 +195,28 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                     if (!fwAvailable) {
                                                       return;
                                                     }
-                                                    if (widget.device.type == DeviceType.passportPrime) {
+                                                    if (widget.device.type ==
+                                                        DeviceType
+                                                            .passportPrime) {
                                                       showEnvoyDialog(
                                                         context: context,
                                                         dismissible: true,
                                                         useRootNavigator: true,
                                                         dialog: EnvoyPopUp(
-                                                          icon: EnvoyIcons.alert,
-                                                          typeOfMessage: PopUpState.warning,
+                                                          icon:
+                                                              EnvoyIcons.alert,
+                                                          typeOfMessage:
+                                                              PopUpState
+                                                                  .warning,
                                                           showCloseButton: true,
                                                           content:
-                                                          "On your Prime device, please go to Settings > Update",
-                                                          primaryButtonLabel: S().component_back,
-                                                          onPrimaryButtonTap: (context) async {
-                                                            Navigator.pop(context);
+                                                              "On your Prime device, please go to Settings > Update",
+                                                          primaryButtonLabel:
+                                                              S().component_back,
+                                                          onPrimaryButtonTap:
+                                                              (context) async {
+                                                            Navigator.pop(
+                                                                context);
                                                           },
                                                         ),
                                                       );

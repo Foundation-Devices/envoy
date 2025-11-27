@@ -81,9 +81,9 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
         //no need to send security challenge if onboarding is already complete
         try {
           BluetoothManager().sendExchangeRateHistory();
-        }
-        catch (e) {
-          kPrint("Could not send exchange rate history at onboarding completion: ${e.toString()}");
+        } catch (e) {
+          kPrint(
+              "Could not send exchange rate history at onboarding completion: ${e.toString()}");
         }
         return;
       }
@@ -104,9 +104,9 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
     if (onboardingState == api.OnboardingState.completed) {
       try {
         BluetoothManager().sendExchangeRateHistory();
-      }
-      catch (e) {
-        kPrint("Could not send exchange rate history at onboarding completion: ${e.toString()}");
+      } catch (e) {
+        kPrint(
+            "Could not send exchange rate history at onboarding completion: ${e.toString()}");
       }
     }
     _onboardingState.sink.add(onboardingState);
