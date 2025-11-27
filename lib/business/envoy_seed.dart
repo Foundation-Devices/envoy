@@ -937,11 +937,11 @@ class EnvoySeed {
   }
 
   Future<void> generateAndBackupWalletSilently() async {
-    if (Settings().syncToCloud) {
-      if (!walletDerived()) {
-        await generate();
-        await backupData();
-      }
+    if (Settings().syncToCloud &&
+        !Devices().hasNonPrimeDevices() &&
+        !walletDerived()) {
+      await generate();
+      await backupData();
     }
   }
 }

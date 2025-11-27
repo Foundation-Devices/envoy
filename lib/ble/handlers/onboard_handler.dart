@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -77,6 +78,9 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
       updateBlePairState(S().onboarding_connectionIntro_connectedToPrime,
           EnvoyStepState.FINISHED);
       _pairingResponse = response;
+
+      EnvoySeed().generateAndBackupWalletSilently();
+
       if (response.onboardingComplete) {
         //no need to send security challenge if onboarding is already complete
         try {
