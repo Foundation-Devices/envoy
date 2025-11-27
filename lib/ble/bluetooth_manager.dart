@@ -454,33 +454,12 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
         });
       });
 
-      _bluetoothChannel.deviceStatusStream.listen((event) {
+      _bluetoothChannel.deviceStatusStream.listen((event) async {
         if (event.type == BluetoothConnectionEventType.deviceConnected) {
+          await Future.delayed(Duration(seconds: 1));
           sendExchangeRateHistory();
         }
       });
-      // _bluetoothChannel.listenToDeviceConnectionEvents().listen((event) {});
-    } else {
-      // _subscription = bluart.read(id: id).listen((bleData) {
-      //   decode(bleData).then((value) {
-      //     if (value != null) {
-      //       _passportMessageStream.add(value);
-      //       kPrint(
-      //           "Got Passport message type: ${value.message.runtimeType} ${value.message}");
-      //       if (value.message
-      //           case api.QuantumLinkMessage_BroadcastTransaction transaction) {
-      //         kPrint("Got the Broadcast Transaction");
-      //         _transactionStream.add(transaction);
-      //       }  if (value.message
-      //           case api.QuantumLinkMessage_BroadcastTransaction transaction) {
-      //         kPrint("Got the Broadcast Transaction");
-      //         _transactionStream.add(transaction);
-      //       }
-      //     }
-      //   }, onError: (e) {
-      //     kPrint("Error decoding: $e");
-      //   });
-      // });
     }
   }
 
@@ -572,7 +551,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       final exchangeRateMessage = api.ExchangeRate(
         currencyCode: "USD",
         rate: currentExchange,
-        timestamp: BigInt.from(timestamp),
+        timestamp: BigInt.from(timestamp / 1000),
       );
 
       writeMessage(api.QuantumLinkMessage.exchangeRate(exchangeRateMessage));
