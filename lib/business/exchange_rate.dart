@@ -99,7 +99,10 @@ class ExchangeRate extends ChangeNotifier {
   FiatCurrency? _selectedCurrency;
 
   final HttpTor _http = HttpTor();
-  final String _serverAddress = Settings().nguServerAddress;
+
+  static String get _serverAddress {
+    return Settings().nguServerAddress;
+  }
 
   ExchangeRateHistory _history = ExchangeRateHistory(currency: "", points: []);
 
