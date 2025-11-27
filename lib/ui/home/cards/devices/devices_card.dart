@@ -192,6 +192,7 @@ class GhostDevice extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(24),
+          // TODO: this is upside-down on moto phones
           child: ColorFiltered(
             colorFilter: const ColorFilter.mode(
               Color.fromRGBO(255, 255, 255, 0.75),

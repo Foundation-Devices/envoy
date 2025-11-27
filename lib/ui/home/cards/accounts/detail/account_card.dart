@@ -873,18 +873,18 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                           Device? device = Devices().getDeviceBySerial(
                               widget.account.deviceSerial ?? "");
                           final handler = account?.handler;
-                          if (handler == null) {
+                          if (handler == null || account == null) {
                             return;
                           }
-                          await handler.renameAccount(
-                              name: textEntry.enteredText);
+
+                          await NgAccountManager().renameAccountAndSync(
+                              account, textEntry.enteredText);
 
                           if (device != null &&
-                              device.type == DeviceType.passportPrime &&
-                              account?.id != null) {
+                              device.type == DeviceType.passportPrime) {
                             BluetoothManager().sendAccountUpdate(
                                 api.AccountUpdate(
-                                    accountId: account!.id,
+                                    accountId: account.id,
                                     update: (await handler.toRemoteUpdate())));
                           }
                           navigator.pop();
