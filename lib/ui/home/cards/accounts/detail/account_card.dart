@@ -1117,7 +1117,7 @@ class _RescanAccountDialogState extends ConsumerState<RescanAccountDialog> {
           // TODO: learn more link/button (if they provide one)
           // onLearnMore: () {
           //   launchUrl(Uri.parse(
-          //       "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
+          //       "https://......."));
           // },
 
           EnvoyButton(
@@ -1126,13 +1126,7 @@ class _RescanAccountDialogState extends ConsumerState<RescanAccountDialog> {
             onTap: () async {
               Navigator.pop(context);
               _showRescanToastStarted();
-              try {
-                await SyncManager()
-                    .initiateAccountFullScan(widget.account, 1000);
-                _showRescanToastFinished(widget.account, success: true);
-              } catch (_) {
-                _showRescanToastFinished(widget.account, success: false);
-              }
+              await SyncManager().initiateAccountFullScan(widget.account, 1000);
             },
           ),
         ],
@@ -1141,23 +1135,14 @@ class _RescanAccountDialogState extends ConsumerState<RescanAccountDialog> {
       onSecondaryButtonTap: (context) async {
         Navigator.pop(context);
         _showRescanToastStarted();
-        try {
-          await SyncManager().initiateAccountFullScan(widget.account, 500);
-          _showRescanToastFinished(widget.account, success: true);
-        } catch (_) {
-          _showRescanToastFinished(widget.account, success: false);
-        }
+
+        await SyncManager().initiateAccountFullScan(widget.account, 500);
       },
       primaryButtonLabel: S().rescanAccount_sizeModal_300Addresses,
       onPrimaryButtonTap: (context) async {
         Navigator.pop(context);
         _showRescanToastStarted();
-        try {
-          await SyncManager().initiateAccountFullScan(widget.account, 300);
-          _showRescanToastFinished(widget.account, success: true);
-        } catch (_) {
-          _showRescanToastFinished(widget.account, success: false);
-        }
+        await SyncManager().initiateAccountFullScan(widget.account, 300);
       },
     );
   }
@@ -1166,27 +1151,13 @@ class _RescanAccountDialogState extends ConsumerState<RescanAccountDialog> {
     EnvoyToast(
       backgroundColor: EnvoyColors.accentPrimary,
       replaceExisting: true,
+      duration: const Duration(seconds: 4),
       message: "Rescanning started. Please do not close Envoy.", // TODO: Figma
       icon: const EnvoyIcon(
         EnvoyIcons.info,
         color: EnvoyColors.accentPrimary,
       ),
     ).show(context);
-  }
-
-  void _showRescanToastFinished(EnvoyAccount account, {required bool success}) {
-    EnvoyToast(
-      backgroundColor: success ? EnvoyColors.accentPrimary : Colors.red,
-      replaceExisting: true,
-      message: success
-          ? "Rescanning was successful for ${account.name}." // TODO: Figma
-          : "Rescanning failed for ${account.name}.", // TODO: Figma
-      icon: EnvoyIcon(
-        success ? EnvoyIcons.info : EnvoyIcons.alert,
-        color: EnvoyColors.accentPrimary,
-      ),
-    ).show(
-        context); // TODO: account is unmounted if you exit acc, transfer this to home_page? -- fix mounted for these toasts
   }
 }
 

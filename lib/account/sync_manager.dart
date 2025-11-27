@@ -35,6 +35,7 @@ class None extends WalletProgress {}
 class SyncManager {
   static const int _syncInterval = 10;
   final bool _enableLogging = false;
+  Function(EnvoyAccount, bool)? _onAccFullScanFinished;
 
   // Track sync and scan requests
   final Map<(EnvoyAccount, AddressType), SyncRequest> _syncRequests = {};
@@ -203,28 +204,51 @@ class SyncManager {
   }
 
   Future<void> initiateAccountFullScan(
-      EnvoyAccount account, int stopGap) async {
-    // Clear previous queued full-scan requests for this account only (optional)
+    EnvoyAccount account,
+    int stopGap,
+  ) async {
+    // Clear previous queued full-scan requests for this account only
     _fullScanRequests.removeWhere(
       (key, _) => key.$1.id == account.id,
     );
 
-    for (var descriptor in account.descriptors) {
-      if (account.handler == null) {
-        continue;
-      }
+    bool success = true;
 
-      FullScanRequest request = await account.handler!
-          .requestFullScan(addressType: descriptor.addressType);
-      _fullScanRequests[(account, descriptor.addressType)] = request;
-      await performFullScan(account.handler!, descriptor.addressType, request,
-          stopGap: stopGap);
+    try {
+      for (var descriptor in account.descriptors) {
+        if (account.handler == null) {
+          continue;
+        }
+
+        final request = await account.handler!
+            .requestFullScan(addressType: descriptor.addressType);
+
+        _fullScanRequests[(account, descriptor.addressType)] = request;
+
+        await performFullScan(
+          account.handler!,
+          descriptor.addressType,
+          request,
+          stopGap: stopGap,
+        );
+      }
+    } catch (_) {
+      success = false;
+      rethrow;
+    } finally {
+      _onAccFullScanFinished?.call(account, success);
     }
   }
 
   bool isAccountFullScanInProgress(EnvoyAccount account) {
     final id = account.id;
     return _activeFullScanOperations.any((e) => e.$1 == id);
+  }
+
+  void onFullScanFinished(
+    void Function(EnvoyAccount account, bool success) cb,
+  ) {
+    _onAccFullScanFinished = cb;
   }
 
   Future<void> _startSync() async {
