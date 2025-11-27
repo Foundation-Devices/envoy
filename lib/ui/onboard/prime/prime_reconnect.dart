@@ -4,6 +4,7 @@
 
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -100,6 +101,7 @@ class _PrimeReconnectState extends ConsumerState<PrimeReconnect> {
           _success = true;
         });
         _updateRiveState(happy: true);
+        EnvoySeed().generateAndBackupWalletSilently();
       }
     } catch (e) {
       kPrint('Pairing failed: $e');

@@ -258,6 +258,10 @@ class Devices extends ChangeNotifier {
       }
     }
   }
+
+  bool hasNonPrimeDevices() {
+    return devices.any((device) => device.type != DeviceType.passportPrime);
+  }
 }
 
 class Uint8ListConverter implements JsonConverter<Uint8List?, List<dynamic>?> {
