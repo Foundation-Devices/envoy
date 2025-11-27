@@ -7,7 +7,6 @@ import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/handlers/fw_update_handler.dart';
 import 'package:envoy/ble/handlers/onboard_handler.dart';
 import 'package:envoy/ble/handlers/scv_handler.dart';
-import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
@@ -170,7 +169,6 @@ final connectAccountProvider = Provider<StepModel>((ref) {
   ref.watch(onboardingStateStreamProvider);
   final stateHistory = BluetoothManager().bleOnboardHandler.completedSteps;
   if (stateHistory.contains(OnboardingState.walletConected)) {
-    EnvoySeed().generateAndBackupWalletSilently();
     return StepModel(
         stepName: S().finalize_catchAll_connectingAccount,
         state: EnvoyStepState.FINISHED);
