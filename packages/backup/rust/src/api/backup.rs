@@ -251,7 +251,7 @@ impl Backup {
         // Decode hex and decrypt backup, mapping failures to BackupNotFound
         let parsed = match FromHex::from_hex(&response.backup) {
             Ok(p) => p,
-            Err(_) => return Err(GetBackupException::BackupNotFound),
+            Err(_) =>  vec![],
         };
 
         Ok(parsed)

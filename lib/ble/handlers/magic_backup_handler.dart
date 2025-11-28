@@ -11,7 +11,6 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:tor/tor.dart';
 
@@ -111,7 +110,9 @@ class BleMagicBackupHandler extends PassportMessageHandler {
         serverUrl: Settings().envoyServerAddress,
         proxyPort: Tor.instance.port,
         hash: fingerPrint.field0,
-      );
+      ).timeout(Duration(seconds: 30), onTimeout: () {
+        throw Exception("Timeout fetching magic backup from server.");
+      });
       if (payloadRes.isNotEmpty) {
         final tempFile = await BluetoothChannel.getBleCacheFile(
             payloadRes.hashCode.toString());
@@ -121,14 +122,36 @@ class BleMagicBackupHandler extends PassportMessageHandler {
         kPrint("Restore magic backup file sent!");
       } else {
         writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
-            api.RestoreMagicBackupEvent.notFound()));
+            api.RestoreMagicBackupEvent.error(error: "Empty backup payload") ));
       }
     } catch (e, stack) {
-      debugPrintStack(stackTrace: stack);
-      writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
-          api.RestoreMagicBackupEvent.error(error: "$e")));
       EnvoyReport().log("PrimeMagicBackup", "Error restoring magic backup: $e",
           stackTrace: stack);
+      if (e is backup_lib.GetBackupException) {
+        switch (e) {
+          case backup_lib.GetBackupException.serverUnreachable:
+            writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
+                api.RestoreMagicBackupEvent.error(error: "serverUnreachable")));
+          case backup_lib.GetBackupException.seedNotFound:
+            writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
+                api.RestoreMagicBackupEvent.error(error: "seedNotFound")));
+          case backup_lib.GetBackupException.backupNotFound:
+            writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
+                api.RestoreMagicBackupEvent.notFound()));
+          case backup_lib.GetBackupException.invalidServer:
+            writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
+                api.RestoreMagicBackupEvent.error(error: "invalidServer")));
+          case backup_lib.GetBackupException.invalidBackupFile:
+            writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
+                api.RestoreMagicBackupEvent.error(error: "invalidBackupFile")));
+          case backup_lib.GetBackupException.invalidSeed:
+            writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
+                api.RestoreMagicBackupEvent.error(error: "invalidSeed")));
+        }
+      } else {
+        writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
+            api.RestoreMagicBackupEvent.error(error: "$e")));
+      }
     }
   }
 
