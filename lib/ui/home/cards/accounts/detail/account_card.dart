@@ -302,11 +302,23 @@ class _AccountCardState extends ConsumerState<AccountCard>
                         final navigator =
                             Navigator.of(context, rootNavigator: true);
                         final goRouter = GoRouter.of(context);
+                        QrIntentInfoType qrType = QrIntentInfoType.qrCode;
+                        if (!account.isHot) {
+                          final device = Devices()
+                              .getDeviceBySerial(account.deviceSerial ?? "");
+                          if (device != null &&
+                              device.type == DeviceType.passportPrime) {
+                            qrType = QrIntentInfoType.prime;
+                          } else {
+                            qrType = QrIntentInfoType.core;
+                          }
+                        }
                         showScannerDialog(
                             context: context,
                             onBackPressed: (context) {
                               Navigator.of(context).pop();
                             },
+                            infoType: qrType,
                             decoder: PaymentQrDecoder(
                                 account: account,
                                 onAztecoScan: (aztecoVoucher) {
