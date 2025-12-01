@@ -940,6 +940,7 @@ class EnvoySeed {
     if (Settings().syncToCloud &&
         !Devices().hasNonPrimeDevices() &&
         !walletDerived()) {
+      await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
       await generate();
       await backupData();
     }
