@@ -33,7 +33,8 @@ class PassportScannerScreen extends ConsumerWidget {
       if (onboardingCompleted) {
         context.goNamed("/");
       } else {
-        Navigator.of(context).pop();
+        context.pop();
+        // Navigator.of(context).pop();
       }
     }
 
@@ -52,7 +53,7 @@ class PassportScannerScreen extends ConsumerWidget {
                 handleBack();
               },
               child: QrScanner(
-                showInfoDialog: true,
+                infoType: QrIntentInfoType.qrCode,
                 onBackPressed: (_) => handleBack(),
                 decoder: DeviceDecoder(pairPayloadDecoder: PairPayloadDecoder(
                   onScan: (binary) {
