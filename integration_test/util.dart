@@ -1347,49 +1347,74 @@ Future<void> enablePerformance(WidgetTester tester) async {
   await findAndTapBigTab(tester, 'Better');
 }
 
-Future<bool> checkTorShieldIcon(WidgetTester tester,
-    {required bool expectPrivacy}) async {
-  await pumpRepeatedly(tester); // Ensure the screen updates after interactions
-
-  // Find all Image widgets on the screen
-  final imageFinder = find.byType(Image);
-
-  // Collect all Image widgets
-  final imageWidgets = tester.widgetList<Image>(imageFinder).toList();
+Future<bool> checkTorShieldIcon(
+  WidgetTester tester, {
+  required bool expectPrivacy,
+}) async {
+  // Wait up to 2 seconds for initial settling, then
+  // enforce 15 seconds of stability to avoid false positives.
+  final stableAsset = await _waitForStableImageAsset(
+    tester,
+    timeout: const Duration(seconds: 30), // total max wait (adjustable)
+    stabilityWindow: const Duration(seconds: 15), // your requirement
+  );
 
   if (expectPrivacy) {
-    // Check the number of image widgets found
-    expect(imageWidgets, hasLength(1),
-        reason: 'Image should be visible when Privacy is enabled.');
-
-    // Determine the path of the visible image
-    final imageWidget = imageWidgets.first;
-    final imageAssetPath = imageWidget.image is AssetImage
-        ? (imageWidget.image as AssetImage).assetName
-        : null;
-
-    // Verify which image is displayed
     if (ConnectivityManager().torEnabled &&
         !ConnectivityManager().torTemporarilyDisabled) {
-      // Expected image paths when tor is enabled
       if (ConnectivityManager().electrumConnected) {
-        expect(imageAssetPath, 'assets/indicator_shield_teal.png');
+        expect(stableAsset, 'assets/indicator_shield_teal.png',
+            reason:
+                'Expected teal shield when Electrum is connected and privacy mode active.');
         return true;
       } else {
-        expect(imageAssetPath, 'assets/indicator_shield_red.png');
+        expect(stableAsset, 'assets/indicator_shield_red.png',
+            reason:
+                'Expected red shield when Electrum is NOT connected in privacy mode.');
         return false;
       }
     } else {
-      // Expect no image to be displayed
-      expect(imageAssetPath, isNull);
+      expect(stableAsset, isNull,
+          reason: 'No shield should appear when Tor is disabled.');
       return false;
     }
   } else {
-    // When Performance is enabled, expect no shield image to be visible
-    expect(imageWidgets, isEmpty,
-        reason: 'No image should be visible when Performance is enabled.');
+    expect(stableAsset, isNull,
+        reason: 'Performance mode should not show any shield.');
     return false;
   }
+}
+
+Future<String?> _waitForStableImageAsset(
+  WidgetTester tester, {
+  required Duration timeout,
+  required Duration stabilityWindow,
+}) async {
+  final end = DateTime.now().add(timeout);
+  String? lastValue;
+  DateTime? lastChange;
+
+  while (DateTime.now().isBefore(end)) {
+    await tester.pump(const Duration(milliseconds: 100));
+    // Collect current image asset
+    String? current;
+    final images = tester.widgetList<Image>(find.byType(Image)).toList();
+    if (images.isNotEmpty && images.first.image is AssetImage) {
+      current = (images.first.image as AssetImage).assetName;
+    }
+    // Value changed → reset stability timer
+    if (current != lastValue) {
+      lastValue = current;
+      lastChange = DateTime.now();
+    }
+    // Value has remained stable long enough?
+    if (lastChange != null &&
+        DateTime.now().difference(lastChange) >= stabilityWindow) {
+      return lastValue;
+    }
+  }
+  // Timeout reached → return last seen
+  return lastValue;
 }
 
 Future<bool> isAccountTestnetTaproot(

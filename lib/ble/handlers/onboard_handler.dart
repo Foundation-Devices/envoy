@@ -7,6 +7,8 @@ import 'dart:async';
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
@@ -66,7 +68,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
       final peripheralId = BluetoothChannel().lastDeviceStatus.peripheralId;
       await BluetoothManager().addDevice(
         response.passportSerial.field0,
-        response.passportFirmwareVersion.field0,
+        sanitizeVersion(response.passportFirmwareVersion.field0),
         BluetoothManager().bleId,
         deviceColor,
         peripheralId: peripheralId ?? "",
@@ -76,8 +78,17 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
       updateBlePairState(S().onboarding_connectionIntro_connectedToPrime,
           EnvoyStepState.FINISHED);
       _pairingResponse = response;
+
+      EnvoySeed().generateAndBackupWalletSilently();
+
       if (response.onboardingComplete) {
         //no need to send security challenge if onboarding is already complete
+        try {
+          BluetoothManager().sendExchangeRateHistory();
+        } catch (e) {
+          kPrint(
+              "Could not send exchange rate history at onboarding completion: ${e.toString()}");
+        }
         return;
       }
       BluetoothManager().scvAccountHandler.sendSecurityChallenge();
@@ -92,6 +103,15 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
       _completedOnboardingStates.add(onboardingState);
       kPrint(
           "Onboarding States :\n ${_completedOnboardingStates.map((e) => e.name).join(" -> ")}\n");
+    }
+
+    if (onboardingState == api.OnboardingState.completed) {
+      try {
+        BluetoothManager().sendExchangeRateHistory();
+      } catch (e) {
+        kPrint(
+            "Could not send exchange rate history at onboarding completion: ${e.toString()}");
+      }
     }
     _onboardingState.sink.add(onboardingState);
   }
