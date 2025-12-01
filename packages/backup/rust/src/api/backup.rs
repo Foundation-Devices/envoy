@@ -233,9 +233,7 @@ impl Backup {
         };
 
         let status = res.status();
-        if status.as_u16() == 400 {
-            return Err(GetBackupException::SeedNotFound);
-        }
+
         if status.as_u16() == 404 {
             return Err(GetBackupException::BackupNotFound);
         }
@@ -249,10 +247,7 @@ impl Backup {
         };
 
         // Decode hex and decrypt backup, mapping failures to BackupNotFound
-        let parsed = match FromHex::from_hex(&response.backup) {
-            Ok(p) => p,
-            Err(_) =>  vec![],
-        };
+        let parsed: Vec<u8> = FromHex::from_hex(&response.backup).unwrap_or_default();
 
         Ok(parsed)
     }

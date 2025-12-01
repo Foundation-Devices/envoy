@@ -122,7 +122,7 @@ class BleMagicBackupHandler extends PassportMessageHandler {
         kPrint("Restore magic backup file sent!");
       } else {
         writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
-            api.RestoreMagicBackupEvent.error(error: "Empty backup payload") ));
+            api.RestoreMagicBackupEvent.error(error: "Empty backup payload")));
       }
     } catch (e, stack) {
       EnvoyReport().log("PrimeMagicBackup", "Error restoring magic backup: $e",
@@ -132,26 +132,21 @@ class BleMagicBackupHandler extends PassportMessageHandler {
           case backup_lib.GetBackupException.serverUnreachable:
             writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
                 api.RestoreMagicBackupEvent.error(error: "serverUnreachable")));
-            break;
           case backup_lib.GetBackupException.seedNotFound:
             writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
                 api.RestoreMagicBackupEvent.error(error: "seedNotFound")));
-            break;
           case backup_lib.GetBackupException.backupNotFound:
             writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
                 api.RestoreMagicBackupEvent.notFound()));
-            break;
           case backup_lib.GetBackupException.invalidServer:
             writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
                 api.RestoreMagicBackupEvent.error(error: "invalidServer")));
-            break;
           case backup_lib.GetBackupException.invalidBackupFile:
             writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
                 api.RestoreMagicBackupEvent.error(error: "invalidBackupFile")));
           case backup_lib.GetBackupException.invalidSeed:
             writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
                 api.RestoreMagicBackupEvent.error(error: "invalidSeed")));
-            break;
         }
       } else {
         writer.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
