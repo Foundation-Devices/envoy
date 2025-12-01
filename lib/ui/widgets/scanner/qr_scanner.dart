@@ -16,7 +16,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:tor/tor.dart';
 
 bool _isScanDialogOpen = false;
 
@@ -80,7 +79,7 @@ class _QrScannerState extends State<QrScanner>
   @override
   void initState() {
     _userInteractionTimer = Timer(const Duration(seconds: 8), () {
-      if (mounted) {
+      if (mounted && widget.infoType != QrIntentInfoType.none) {
         showScanDialog(context, widget.infoType);
         _userInteractionTimer.cancel();
       }
@@ -428,13 +427,9 @@ class _ScanInfoAnimDialogState extends State<ScanInfoAnimDialog> {
   rive.ViewModelInstance? _viewModelInstance;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     _controller?.dispose();
+    _viewModelInstance?.dispose();
     super.dispose();
   }
 

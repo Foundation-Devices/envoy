@@ -1319,18 +1319,18 @@ packages:
     dependency: "direct main"
     description:
       name: rive
-      sha256: fc0abf65d03d1c9afaeb35be9e71c7cf04d2d1f76e94e69d2af1b3ba413cddf9
+      sha256: "78d4d7014a30fd69b1c0802d77fbeb621ecdf043eec3a412ee54d6a5945aa92a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.14.0-dev.14"
+    version: "0.14.0-dev.8"
   rive_native:
     dependency: transitive
     description:
       name: rive_native
-      sha256: e9c7d36f19eb6d32f563825d4e9d5032b19a36d3ca3341641431035bca022d19
+      sha256: b63bee17e27616b49d113998a982866dab9449f0726f7c78fe4028e361c3c6b0
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.17"
+    version: "0.0.11"
   riverpod:
     dependency: transitive
     description:
