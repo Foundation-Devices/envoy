@@ -2682,7 +2682,7 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?rev=1a0935d25b7d2d542dea9e222586a64bea9bfd6f#1a0935d25b7d2d542dea9e222586a64bea9bfd6f"
+source = "git+https://github.com/Foundation-Devices/ngwallet?branch=envoy-2.2#dd9b439341d6499ceffe31bd2a4146e70a12d1c1"
 dependencies = [
  "anyhow",
  "bdk_core",
