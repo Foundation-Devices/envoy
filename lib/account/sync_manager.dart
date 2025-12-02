@@ -69,7 +69,10 @@ class SyncManager {
       if (NgAccountManager().accounts.isEmpty) {
         return;
       }
-      _syncAll();
+      //wait for any active operations to finish
+      if (_activeSyncOperations.isEmpty) {
+        _syncAll();
+      }
 
       if (!isTest) {
         dumpProgress();
