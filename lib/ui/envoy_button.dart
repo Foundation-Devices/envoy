@@ -52,7 +52,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
           textColor = Colors.white;
           break;
         case EnvoyButtonTypes.secondary:
-          textColor = EnvoyColors.accentPrimary;
+          textColor = EnvoyColors.textSecondary;
           break;
         case EnvoyButtonTypes.tertiary:
           textColor = EnvoyColors.accentPrimary;

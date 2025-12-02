@@ -55,6 +55,7 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
     Future.delayed(const Duration(milliseconds: 10)).then((value) {
       ref.read(homePageTitleProvider.notifier).state =
           S().manage_account_address_heading;
+      ref.read(homeShellOptionsProvider.notifier).state = null;
     });
   }
 

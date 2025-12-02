@@ -106,36 +106,43 @@ class _AccountCardState extends ConsumerState<AccountCard>
           ref.read(selectedAccountProvider) ?? NgAccountManager().accounts[0];
       ref.read(homePageTitleProvider.notifier).state = "";
 
-      ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
-          optionsWidget: Container(),
-          rightAction: Consumer(
-            builder: (context, ref, child) {
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  Navigator.of(context).push(
-                    PageRouteBuilder(
-                      opaque: false,
-                      pageBuilder: (_, __, ___) => AccountOptions(account),
-                    ),
-                  );
-                },
-                child: Container(
-                  height: 55,
-                  width: 55,
-                  color: Colors.transparent,
-                  child: Icon(
-                    Icons.more_horiz_outlined,
-                  ),
-                ),
-              );
-            },
-          ));
+      String path = ref.watch(routePathProvider);
+
+      // env211 - to eliminate right action in neighbouring screens
+      path == ROUTE_ACCOUNT_DETAIL
+          ? ref.read(homeShellOptionsProvider.notifier).state =
+              HomeShellOptions(
+                  optionsWidget: Container(),
+                  rightAction: Consumer(
+                    builder: (context, ref, child) {
+                      return GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              opaque: false,
+                              pageBuilder: (_, __, ___) =>
+                                  AccountOptions(account),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          height: 55,
+                          width: 55,
+                          color: Colors.transparent,
+                          child: Icon(
+                            Icons.more_horiz_outlined,
+                          ),
+                        ),
+                      );
+                    },
+                  ))
+          : ref.read(homeShellOptionsProvider.notifier).state == null;
 
       bool showOverlay = ref.read(showSpendRequirementOverlayProvider);
       bool isInEditMode =
           ref.read(spendEditModeProvider) != SpendOverlayContext.hidden;
-      String path = ref.read(routePathProvider);
+
       if ((showOverlay || isInEditMode) && path == ROUTE_ACCOUNT_DETAIL) {
         ref.read(hideBottomNavProvider.notifier).state = true;
       }
@@ -290,7 +297,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     icon: EnvoyIcons.transfer,
                     text: S().receive_tx_list_transfer,
                     onTap: () {
-                      // TODO: add "Transfer" code
+                      context.go(ROUTE_ACCOUNT_TRANSFER, extra: account.id);
                     },
                   ),
                   EnvoyBarItem(
