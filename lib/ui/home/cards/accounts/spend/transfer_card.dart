@@ -9,8 +9,6 @@ import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_loader.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
-import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
-import 'package:envoy/ui/home/cards/purchase_completed.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -22,12 +20,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
-import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/ui/components/pop_up.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
 
 class SelectAccountTransfer extends ConsumerStatefulWidget {

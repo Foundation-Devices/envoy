@@ -179,39 +179,42 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
       builder: (context) {
         return Theme(
           data: theme,
-          child: AccountChooserOverlay(
-            transferFromAccount: widget.transferFromAccount,
-            key: accountChooserKey,
-            account: _selectedAccount,
-            cardStackKeys: _cardStackKeys,
-            onAnimChanges: (animStatus) {
-              if (mounted) {
-                setState(() {
-                  _status = animStatus;
-                });
-              } else {
-                _entry?.remove();
-              }
-            },
-            onAccountSelected: (account) {
-              if (mounted) {
-                setState(() {
-                  _selectedAccount = account;
-                });
-                widget.onAccountSelected(account);
-              } else {
-                _entry?.remove();
-              }
-            },
-            accounts: widget.accounts,
-            onOverlayChanges: (bool onVisible) {
-              widget.onOverlayChanges(onVisible);
-              if (mounted) {
-                setState(() {
-                  _overlayVisible = onVisible;
-                });
-              }
-            },
+          child: Material(
+            color: Colors.transparent,
+            child: AccountChooserOverlay(
+              transferFromAccount: widget.transferFromAccount,
+              key: accountChooserKey,
+              account: _selectedAccount,
+              cardStackKeys: _cardStackKeys,
+              onAnimChanges: (animStatus) {
+                if (mounted) {
+                  setState(() {
+                    _status = animStatus;
+                  });
+                } else {
+                  _entry?.remove();
+                }
+              },
+              onAccountSelected: (account) {
+                if (mounted) {
+                  setState(() {
+                    _selectedAccount = account;
+                  });
+                  widget.onAccountSelected(account);
+                } else {
+                  _entry?.remove();
+                }
+              },
+              accounts: widget.accounts,
+              onOverlayChanges: (bool onVisible) {
+                widget.onOverlayChanges(onVisible);
+                if (mounted) {
+                  setState(() {
+                    _overlayVisible = onVisible;
+                  });
+                }
+              },
+            ),
           ),
         );
       },
@@ -260,6 +263,14 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
   final Map<String, GlobalKey> _shuttleCardKeys = {};
   final Map<String, Rect> _listCardRect = {};
   final Map<String, Rect> _stackCardRect = {};
+
+  final GlobalKey _transferFromTextKey = GlobalKey();
+  final GlobalKey _transferToTextKey = GlobalKey();
+
+  Rect? _stackTransferFromTextRect;
+  Rect? _stackTransferToTextRect;
+  Rect? _listTransferFromTextRect;
+  Rect? _listTransferToTextRect;
 
   //flag to hide listview when the widget is not ready
   bool isReady = false;
@@ -319,12 +330,68 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       _calcStackCardRect();
       _calcListCardRect();
-      setState(() {
-        isReady = true;
-      });
-      widget.onOverlayChanges(true);
-      animationController.animateWith(_forwardSimulation);
+
+      if (widget.transferFromAccount != null) {
+        _calcStackTextRect(); // Calculate stack text positions based on account stack positions
+
+        // The list texts are being rendered, but we need to measure them
+        // Schedule another frame to ensure they're rendered and measurable
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _calcListTextRect(); // Now measure the actual list text positions
+            setState(() {
+              isReady = true;
+            });
+            widget.onOverlayChanges(true);
+            animationController.animateWith(_forwardSimulation);
+          }
+        });
+      } else {
+        setState(() {
+          isReady = true;
+        });
+        widget.onOverlayChanges(true);
+        animationController.animateWith(_forwardSimulation);
+      }
     });
+  }
+
+  void _calcListTextRect() {
+    final fromTextRect = _getRect(_transferFromTextKey);
+    final toTextRect = _getRect(_transferToTextKey);
+
+    if (fromTextRect != null) {
+      _listTransferFromTextRect = fromTextRect;
+    }
+    if (toTextRect != null) {
+      _listTransferToTextRect = toTextRect;
+    }
+  }
+
+  // ADD THIS METHOD - placeholder rects for stack (you can adjust these based on your UX)
+  void _calcStackTextRect() {
+    // These represent where the text WOULD be in the stack view
+    final selectedAccountRect = _stackCardRect[widget.account.id];
+    if (selectedAccountRect == null) return;
+
+    final textHeight = 16.0;
+    final textWidth = selectedAccountRect.width;
+
+    // Position "Transfer From" text above the selected card with padding
+    _stackTransferFromTextRect = Rect.fromLTWH(
+      selectedAccountRect.left,
+      selectedAccountRect.top - textHeight - EnvoySpacing.small,
+      textWidth,
+      textHeight,
+    );
+
+    // Position "Transfer To" text below the selected card with padding
+    _stackTransferToTextRect = Rect.fromLTWH(
+      selectedAccountRect.left,
+      selectedAccountRect.bottom + EnvoySpacing.small,
+      textWidth,
+      textHeight,
+    );
   }
 
   //calculates list card rect from
@@ -388,6 +455,12 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
       (timeStamp) {
         _calcListCardRect();
         _calcStackCardRect();
+
+        if (widget.transferFromAccount != null) {
+          _calcStackTextRect();
+          _calcListTextRect();
+        }
+
         setState(() {
           _exiting = true;
         });
@@ -514,6 +587,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
                                   ),
                                   child: Text(
                                     S().transfer_fromTo_transferFrom,
+                                    key: _transferFromTextKey,
                                     style: EnvoyTypography.subheading.copyWith(
                                         color: EnvoyColors.solidWhite),
                                     textAlign: TextAlign.center,
@@ -522,7 +596,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
                               }
 
                               if (index == 1) {
-                                // transfer account itself (first in _displayAccounts)
+                                // "transfer" account itself (first in _displayAccounts)
                                 final account = _displayAccounts.first;
                                 return Padding(
                                   padding: const EdgeInsets.only(
@@ -539,6 +613,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
                                   ),
                                   child: Text(
                                     S().transfer_fromTo_transferTo,
+                                    key: _transferToTextKey,
                                     style: EnvoyTypography.subheading.copyWith(
                                         color: EnvoyColors.solidWhite),
                                     textAlign: TextAlign.center,
@@ -564,20 +639,29 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
               ),
             ),
           ),
-          //if the widget is animating,show hero accounts for transition
+          // if the widget is animating, show hero accounts and text for transition
           if (animationController.isAnimating)
             Positioned.fill(
               child: ScrollGradientMask(
                 child: Stack(
                   children: [
-                    for (var account in _displayAccounts
-                        .where((e) => e.id != _selectedAccount.id)
-                        .take(6))
-                      _buildHeroOverlay(account),
-                    for (var account in _displayAccounts.where(
-                      (e) => e.id == _selectedAccount.id,
-                    ))
-                      _buildHeroOverlay(account),
+                    // Text overlays only if transfer account exists
+                    if (widget.transferFromAccount != null) ...[
+                      _buildHeroTextOverlay(
+                        "transferFrom",
+                        _stackTransferFromTextRect,
+                        _listTransferFromTextRect,
+                        S().transfer_fromTo_transferFrom,
+                      ),
+                      _buildHeroTextOverlay(
+                        "transferTo",
+                        _stackTransferToTextRect,
+                        _listTransferToTextRect,
+                        S().transfer_fromTo_transferTo,
+                      ),
+                    ],
+                    // Account overlays
+                    ..._buildAccountHeroOverlays(),
                   ],
                 ),
               ),
@@ -591,6 +675,42 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
   dispose() {
     animationController.dispose();
     super.dispose();
+  }
+
+  Widget _buildHeroTextOverlay(
+    String id,
+    Rect? startRect,
+    Rect? endRect,
+    String text,
+  ) {
+    if (startRect == null || endRect == null) {
+      return const SizedBox();
+    }
+
+    return AnimatedBuilder(
+      animation: animationController,
+      builder: (context, child) {
+        final tween = RectTween(begin: startRect, end: endRect)
+            .transform(animationController.value);
+        return Positioned.fromRect(
+          rect: tween!,
+          child: IgnorePointer(
+            ignoring: animationController.value < 0.85,
+            child: Opacity(
+              opacity: animationController.isAnimating ? 1 : 0,
+              child: child,
+            ),
+          ),
+        );
+      },
+      child: Text(
+        text,
+        style: EnvoyTypography.subheading.copyWith(
+          color: EnvoyColors.solidWhite,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
   }
 
   Widget _buildAccountTile(EnvoyAccount account, bool isLast) {
@@ -611,6 +731,18 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
         draggable: false,
       ),
     );
+  }
+
+  List<Widget> _buildAccountHeroOverlays() {
+    return [
+      for (var account
+          in _displayAccounts.where((e) => e.id != _selectedAccount.id).take(6))
+        _buildHeroOverlay(account),
+      for (var account in _displayAccounts.where(
+        (e) => e.id == _selectedAccount.id,
+      ))
+        _buildHeroOverlay(account),
+    ];
   }
 
   // builds account tile for hero like animation,
