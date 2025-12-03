@@ -9,7 +9,9 @@ import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_loader.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,7 @@ import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
 
@@ -37,7 +40,7 @@ class SelectAccountTransfer extends ConsumerStatefulWidget {
 class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
   EnvoyAccount? selectedAccount;
   GestureTapCallback? onTap;
-  String? address;
+  String? selectedAccAddress;
   bool _canPop = true;
   final Map<String, String?> accountAddressCache = {};
   bool isRampOpen = false;
@@ -51,18 +54,23 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
     Future.microtask(() async {
       ref.read(backupPageProvider.notifier).state = false;
 
-      final account = ref.read(mainnetAccountsProvider(null)).firstOrNull;
+      final network = widget.transferFromAccount.network;
+
+      // Get accounts based on the transfer account's network
+      final filteredAccounts = _getAccountsByNetwork(network, ref);
+
+      final account = filteredAccounts.firstOrNull;
       if (account == null) return;
 
       setState(() {
-        selectedAccount = ref.read(mainnetAccountsProvider(null)).first;
+        selectedAccount = account;
         ref.read(homeShellOptionsProvider.notifier).state = null;
       });
 
       try {
         final addr = account.getPreferredAddress();
         setState(() {
-          address = addr;
+          selectedAccAddress = addr;
           if (selectedAccount != null && selectedAccount?.id != null) {
             accountAddressCache[account.id] = addr;
           }
@@ -71,6 +79,15 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
         debugPrint('Failed to get address: $e');
       }
     });
+  }
+
+  List<EnvoyAccount> _getAccountsByNetwork(Network network, WidgetRef ref) {
+    return switch (network) {
+      Network.signet => ref.read(signetAccountsProvider(null)),
+      Network.testnet4 => ref.read(testnetAccountsProvider(null)),
+      Network.bitcoin => ref.read(mainnetAccountsProvider(null)),
+      _ => <EnvoyAccount>[],
+    };
   }
 
   @override
@@ -82,18 +99,18 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
   void updateSelectedAccount(EnvoyAccount account) async {
     setState(() {
       selectedAccount = account;
-      address = null;
+      selectedAccAddress = null;
     });
     if (accountAddressCache.containsKey(selectedAccount?.id) &&
         accountAddressCache[selectedAccount?.id] != null) {
       setState(() {
-        address = accountAddressCache[selectedAccount?.id];
+        selectedAccAddress = accountAddressCache[selectedAccount?.id];
       });
     } else {
       String? address = account.getPreferredAddress();
       // Separate setState call to avoid UI lag during the async operation
       setState(() {
-        this.address = address;
+        selectedAccAddress = address;
         accountAddressCache[selectedAccount!.id] = address;
       });
     }
@@ -101,11 +118,10 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
 
   @override
   Widget build(BuildContext context) {
-    List<EnvoyAccount> filteredAccounts = [];
+    final network = widget.transferFromAccount.network;
 
-    if (selectedAccount != null) {
-      filteredAccounts = ref.watch(mainnetAccountsProvider(selectedAccount));
-    }
+    final filteredAccounts = _getAccountsByNetwork(network, ref);
+
     if ((selectedAccount == null)) {
       return const Center(child: CircularProgressIndicator());
     } else {
@@ -157,7 +173,7 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
                       ),
                       StackedAccountChooser(
                         key: accountChooserKey,
-                        transferFromAccount: widget.transferFromAccount,
+                        transferAccount: widget.transferFromAccount,
                         account: selectedAccount ?? filteredAccounts.first,
                         accounts: filteredAccounts,
                         onOverlayChanges: (bool visible) {
@@ -198,7 +214,7 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
                       const SizedBox(
                         height: EnvoySpacing.small,
                       ),
-                      getAddressWidget(address),
+                      getAddressWidget(selectedAccAddress),
                     ],
                   ),
                 ),
@@ -222,7 +238,7 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
                             dialog: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.9,
                               child: VerifyAddressDialog(
-                                address: address!,
+                                address: selectedAccAddress!,
                                 accountName: selectedAccount!.name,
                               ),
                             ),
@@ -235,7 +251,14 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
                     label: S().component_continue,
                     type: ButtonType.primary,
                     state: ButtonState.defaultState,
-                    onTap: () async {},
+                    onTap: () async {
+                      clearSpendState(ProviderScope.containerOf(context));
+                      await Future.delayed(const Duration(milliseconds: 50));
+                      if (context.mounted) {
+                        context.go(ROUTE_ACCOUNT_SEND,
+                            extra: selectedAccAddress);
+                      }
+                    },
                   ),
                   const SizedBox(height: EnvoySpacing.large1),
                 ],

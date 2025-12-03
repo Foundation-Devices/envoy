@@ -129,6 +129,36 @@ final mainnetAccountsProvider =
   return filteredEnvoyAccounts;
 });
 
+final signetAccountsProvider =
+    Provider.family<List<EnvoyAccount>, EnvoyAccount?>(
+        (ref, selectedEnvoyAccount) {
+  final accounts = ref.watch(accountsProvider);
+  final order = ref.watch(accountOrderStream);
+
+// We filter everything but mainnet
+  final filteredEnvoyAccounts =
+      accounts.where((account) => account.network == Network.signet).toList();
+
+  sortByAccountOrder(filteredEnvoyAccounts, order, (account) => account.id);
+
+  return filteredEnvoyAccounts;
+});
+
+final testnetAccountsProvider =
+    Provider.family<List<EnvoyAccount>, EnvoyAccount?>(
+        (ref, selectedEnvoyAccount) {
+  final accounts = ref.watch(accountsProvider);
+  final order = ref.watch(accountOrderStream);
+
+// We filter everything but mainnet
+  final filteredEnvoyAccounts =
+      accounts.where((account) => account.network == Network.testnet4).toList();
+
+  sortByAccountOrder(filteredEnvoyAccounts, order, (account) => account.id);
+
+  return filteredEnvoyAccounts;
+});
+
 final accountStateProvider =
     StateProvider.family<EnvoyAccount?, String?>((ref, id) {
   final accounts = ref.watch(accountsProvider);

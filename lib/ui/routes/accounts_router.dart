@@ -172,7 +172,9 @@ final accountsRouter = StatefulShellBranch(
                       return true;
                     },
                     pageBuilder: (context, state) {
-                      return wrapWithEnvoyPageAnimation(child: SendCard());
+                      return wrapWithEnvoyPageAnimation(
+                          child: SendCard(
+                              transferAddress: state.extra as String?));
                     },
                     routes: [
                       GoRoute(

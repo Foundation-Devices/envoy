@@ -20,7 +20,7 @@ class StackedAccountChooser extends StatefulWidget {
   final Function(EnvoyAccount account) onAccountSelected;
   final Function(bool overlayVisible) onOverlayChanges;
   final List<EnvoyAccount> accounts;
-  final EnvoyAccount? transferFromAccount;
+  final EnvoyAccount? transferAccount;
 
   const StackedAccountChooser({
     super.key,
@@ -28,7 +28,7 @@ class StackedAccountChooser extends StatefulWidget {
     required this.account,
     required this.onAccountSelected,
     required this.onOverlayChanges,
-    this.transferFromAccount,
+    this.transferAccount,
   });
 
   @override
@@ -69,16 +69,24 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
   }
 
   List<EnvoyAccount> get _displayAccounts {
-    if (widget.transferFromAccount == null) {
-      // all accounts, including selected
-      return accounts;
+    if (widget.transferAccount == null) {
+      // all accounts, excluding selected
+      return accounts
+          .where(
+            (element) => _selectedAccount.id != element.id,
+          )
+          .toList();
     }
 
-    final transfer = widget.transferFromAccount!;
+    final transfer = widget.transferAccount!;
 
-    // if transfer is already in accounts, move it to front; else, just prepend it
-    final rest = accounts.where((a) => a.id != transfer.id).toList();
-    return [transfer, ...rest];
+    final rest = accounts
+        .where((a) =>
+            a.id != _selectedAccount.id &&
+            a.id != transfer.id) // TODO: here is the list order if TRANSFER
+        .toList();
+
+    return [...rest, transfer];
   }
 
   double _getBackStackOffset(int index) {
@@ -110,10 +118,10 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
           offstage: _status.isAnimating,
           child: Stack(
             children: [
-              for (var account in _displayAccounts.where((a) =>
-                  a.id !=
-                  _selectedAccount
-                      .id)) // TODO: missing acc in BUY but removing drops global KEY error
+              // TODO: all back elements
+
+              for (var account
+                  in _displayAccounts.where((a) => a.id != _selectedAccount.id))
                 Align(
                   alignment: Alignment(
                     0,
@@ -133,6 +141,9 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
                     ),
                   ),
                 ),
+
+              // TODO: front element
+
               for (var (account) in accounts)
                 if (account.id == _selectedAccount.id)
                   Align(
@@ -182,7 +193,7 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
           child: Material(
             color: Colors.transparent,
             child: AccountChooserOverlay(
-              transferFromAccount: widget.transferFromAccount,
+              transferAccount: widget.transferAccount,
               key: accountChooserKey,
               account: _selectedAccount,
               cardStackKeys: _cardStackKeys,
@@ -240,7 +251,7 @@ class AccountChooserOverlay extends StatefulWidget {
   final Function(EnvoyAccount account) onAccountSelected;
   final Function(AnimationStatus animStatus) onAnimChanges;
   final Function(bool onVisible) onOverlayChanges;
-  final EnvoyAccount? transferFromAccount;
+  final EnvoyAccount? transferAccount;
 
   const AccountChooserOverlay({
     super.key,
@@ -250,7 +261,7 @@ class AccountChooserOverlay extends StatefulWidget {
     required this.onAnimChanges,
     required this.cardStackKeys,
     required this.onOverlayChanges,
-    this.transferFromAccount,
+    this.transferAccount,
   });
 
   @override
@@ -289,12 +300,12 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
   );
 
   List<EnvoyAccount> get _displayAccounts {
-    if (widget.transferFromAccount == null) {
+    if (widget.transferAccount == null) {
       // all accounts, including selected
       return widget.accounts;
     }
 
-    final transfer = widget.transferFromAccount!;
+    final transfer = widget.transferAccount!;
 
     // if transfer is already in accounts, move it to front; else, just prepend it
     final rest = widget.accounts.where((a) => a.id != transfer.id).toList();
@@ -331,7 +342,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
       _calcStackCardRect();
       _calcListCardRect();
 
-      if (widget.transferFromAccount != null) {
+      if (widget.transferAccount != null) {
         _calcStackTextRect(); // Calculate stack text positions based on account stack positions
 
         // The list texts are being rendered, but we need to measure them
@@ -443,7 +454,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
   }
 
   Future<void> _selectAccount(EnvoyAccount account) async {
-    if (account == widget.transferFromAccount) return;
+    if (account == widget.transferAccount) return;
 
     setState(() {
       _selectedAccount = account;
@@ -456,7 +467,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
         _calcListCardRect();
         _calcStackCardRect();
 
-        if (widget.transferFromAccount != null) {
+        if (widget.transferAccount != null) {
           _calcStackTextRect();
           _calcListTextRect();
         }
@@ -485,7 +496,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
 
   @override
   Widget build(BuildContext context) {
-    final hasTransfer = widget.transferFromAccount != null;
+    final hasTransfer = widget.transferAccount != null;
 
     return PopScope(
       canPop: false,
@@ -538,7 +549,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
                         duration: Duration(milliseconds: _exiting ? 100 : 300),
                         opacity: _exiting ? 0 : 1,
                         child: Text(
-                          widget.transferFromAccount == null
+                          widget.transferAccount == null
                               ? S().header_chooseAccount
                               : S().bottomNav_transfer.toUpperCase(),
                           style: EnvoyTypography.subheading
@@ -646,7 +657,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
                 child: Stack(
                   children: [
                     // Text overlays only if transfer account exists
-                    if (widget.transferFromAccount != null) ...[
+                    if (widget.transferAccount != null) ...[
                       _buildHeroTextOverlay(
                         "transferFrom",
                         _stackTransferFromTextRect,
@@ -724,7 +735,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
       child: AccountListTile(
         key: _shuttleCardKeys[account.id],
         account,
-        inactive: account == widget.transferFromAccount,
+        inactive: account == widget.transferAccount,
         onTap: () async {
           _selectAccount(account);
         },
@@ -770,7 +781,7 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
       },
       child: AccountListTile(
         account,
-        inactive: account == widget.transferFromAccount,
+        inactive: account == widget.transferAccount,
         onTap: () {
           _selectAccount(account);
         },
