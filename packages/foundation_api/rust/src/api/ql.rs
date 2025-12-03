@@ -298,40 +298,30 @@ pub async fn encode_to_update_file(
 
     let total_patches = payload.len() as u8;
 
-    let mut messages: Vec<EnvoyMessage> = Vec::new();
     for (idx, patch_bytes) in payload.iter().enumerate() {
         let patch_index = idx as u8;
 
-        let chunk_messages: Vec<QuantumLinkMessage> = split_fw_update_into_chunks(
+        let envoy_messages: Vec<EnvoyMessage> = split_fw_update_into_chunks(
             patch_index,
             total_patches,
             patch_bytes.as_slice(),
             chunk_size,
         )
-        .await;
+        .await
+        .into_iter()
+        .map(|message| EnvoyMessage { message, timestamp })
+        .collect();
 
-        for message in chunk_messages.into_iter() {
-            messages.push(EnvoyMessage { message, timestamp });
-        }
-    }
-
-    for message in messages {
-        let envelope = QuantumLink::seal(
-            message,
-            (sender.private_keys.as_ref().unwrap(), &sender.xid_document),
-            recipient,
-        );
-
-        let cbor = envelope.to_cbor_data();
-
-        let message_chunks: Vec<Vec<u8>> = chunk(&cbor).map(|chunk| chunk.to_vec()).collect();
-
-        file.write_all(&(message_chunks.len() as u32).to_be_bytes())?;
-
-        for chunk_data in message_chunks {
-            file.write_all(&(chunk_data.len() as u32).to_be_bytes())?;
-            // Write chunk bytes
-            file.write_all(&chunk_data)?;
+        for message in envoy_messages {
+            let envelope = QuantumLink::seal(
+                message,
+                (sender.private_keys.as_ref().unwrap(), &sender.xid_document),
+                recipient,
+            );
+            let cbor = envelope.to_cbor_data();
+            for chunk in chunk(&cbor) {
+                file.write_all(&chunk)?;
+            }
         }
     }
 
