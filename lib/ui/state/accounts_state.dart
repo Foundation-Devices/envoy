@@ -135,7 +135,7 @@ final signetAccountsProvider =
   final accounts = ref.watch(accountsProvider);
   final order = ref.watch(accountOrderStream);
 
-// We filter everything but mainnet
+// We filter everything but signet
   final filteredEnvoyAccounts =
       accounts.where((account) => account.network == Network.signet).toList();
 
@@ -150,13 +150,39 @@ final testnetAccountsProvider =
   final accounts = ref.watch(accountsProvider);
   final order = ref.watch(accountOrderStream);
 
-// We filter everything but mainnet
+// We filter everything but testnet
   final filteredEnvoyAccounts =
       accounts.where((account) => account.network == Network.testnet4).toList();
 
   sortByAccountOrder(filteredEnvoyAccounts, order, (account) => account.id);
 
   return filteredEnvoyAccounts;
+});
+
+final mainnetAccountsCountProvider = Provider<int>((ref) {
+  final accounts = ref.watch(mainnetAccountsProvider(null));
+  return accounts.length;
+});
+
+final signetAccountsCountProvider = Provider<int>((ref) {
+  final accounts = ref.watch(signetAccountsProvider(null));
+  return accounts.length;
+});
+
+final testnetAccountsCountProvider = Provider<int>((ref) {
+  final accounts = ref.watch(testnetAccountsProvider(null));
+  return accounts.length;
+});
+
+final accountsCountByNetworkProvider =
+    Provider.family<int, Network>((ref, network) {
+  final accounts = switch (network) {
+    Network.bitcoin => ref.watch(mainnetAccountsProvider(null)),
+    Network.signet => ref.watch(signetAccountsProvider(null)),
+    Network.testnet4 => ref.watch(testnetAccountsProvider(null)),
+    _ => <EnvoyAccount>[],
+  };
+  return accounts.length;
 });
 
 final accountStateProvider =

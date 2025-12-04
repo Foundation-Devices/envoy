@@ -13,11 +13,13 @@ class EnvoyBarItem {
   final EnvoyIcons icon;
   final String text;
   final VoidCallback? onTap;
+  final bool enabled;
 
   const EnvoyBarItem({
     required this.icon,
     required this.text,
     this.onTap,
+    this.enabled = true,
   });
 }
 
@@ -27,26 +29,26 @@ class EnvoyBar extends StatelessWidget {
   final List<EnvoyBarItem> items;
   final bool showDividers;
   final double bottomPadding;
-  final bool enabled;
 
   const EnvoyBar(
       {super.key,
       required this.items,
       this.showDividers = false,
-      this.enabled = true,
       this.bottomPadding = EnvoySpacing.large2});
 
   @override
   Widget build(BuildContext context) {
-    // Build the row’s children with optional dividers
+    // Build the row's children with optional dividers
     final List<Widget> children = [];
     for (int i = 0; i < items.length; i++) {
+      final isEnabled = items[i].enabled;
+
       children.add(
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
             child: GestureDetector(
-              onTap: enabled ? items[i].onTap : null,
+              onTap: isEnabled ? items[i].onTap : null,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -54,7 +56,7 @@ class EnvoyBar extends StatelessWidget {
                 children: [
                   EnvoyIcon(
                     items[i].icon,
-                    color: enabled
+                    color: isEnabled
                         ? EnvoyColors.accentPrimary
                         : EnvoyColors.textInactive,
                   ),
@@ -63,7 +65,7 @@ class EnvoyBar extends StatelessWidget {
                     items[i].text,
                     textAlign: TextAlign.center,
                     style: EnvoyTypography.info.copyWith(
-                      color: enabled
+                      color: isEnabled
                           ? EnvoyColors.accentPrimary
                           : EnvoyColors.textInactive,
                     ),

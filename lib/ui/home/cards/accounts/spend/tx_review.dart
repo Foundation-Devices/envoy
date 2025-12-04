@@ -702,8 +702,6 @@ class _TransactionReviewScreenState
                     enabled: !transactionModel.loading,
                     S().replaceByFee_boost_reviewCoinSelection,
                     type: EnvoyButtonTypes.secondary,
-                    borderRadius: const BorderRadius.all(
-                        Radius.circular(EnvoySpacing.small)),
                     onTap: () {
                       ref.read(userHasChangedFeesProvider.notifier).state =
                           false;
@@ -713,8 +711,6 @@ class _TransactionReviewScreenState
                 const Padding(padding: EdgeInsets.all(6)),
                 EnvoyButton(
                   enabled: enableButton,
-                  borderRadius: const BorderRadius.all(
-                      Radius.circular(EnvoySpacing.small)),
                   leading: isPrime
                       ? EnvoyIcon(
                           transactionModel.isFinalized

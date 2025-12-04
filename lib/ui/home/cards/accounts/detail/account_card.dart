@@ -169,6 +169,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
     bool txFiltersEnabled = ref.watch(isTransactionFiltersEnabled);
     bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);
 
+    var scanInProgress = SyncManager().isAccountFullScanInProgress(account);
+
     return MediaQuery.removePadding(
       context: context,
       removeTop: true,
@@ -232,9 +234,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                         },
                       ),
                     ),
-                    SyncManager().isAccountFullScanInProgress(account)
-                        ? RescanningIndicator()
-                        : SizedBox.shrink(),
+                    scanInProgress ? RescanningIndicator() : SizedBox.shrink(),
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),
                       child: (transactions.isNotEmpty || txFiltersEnabled)
@@ -290,12 +290,15 @@ class _AccountCardState extends ConsumerState<AccountCard>
               padding: const EdgeInsets.only(top: EnvoySpacing.xs),
               child: EnvoyBar(
                 showDividers: true,
-                enabled: !SyncManager().isAccountFullScanInProgress(account),
                 bottomPadding: EnvoySpacing.large1,
                 items: [
                   EnvoyBarItem(
                     icon: EnvoyIcons.transfer,
                     text: S().receive_tx_list_transfer,
+                    enabled: !scanInProgress &&
+                        ref.watch(accountsCountByNetworkProvider(
+                                account.network)) >=
+                            2,
                     onTap: () {
                       context.go(ROUTE_ACCOUNT_TRANSFER, extra: account.id);
                     },
@@ -303,6 +306,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   EnvoyBarItem(
                     icon: EnvoyIcons.receive,
                     text: S().receive_tx_list_receive,
+                    //enabled: !scanInProgress, // TODO we should leave this enabled if the scan is in progress???
                     onTap: () {
                       if (accountHasNoTaprootXpub(account) &&
                           Settings().taprootEnabled()) {
@@ -333,6 +337,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   EnvoyBarItem(
                     icon: EnvoyIcons.send,
                     text: S().receive_tx_list_send,
+                    enabled: !scanInProgress,
                     onTap: () async {
                       clearSpendState(ProviderScope.containerOf(context));
                       await Future.delayed(const Duration(milliseconds: 50));
@@ -347,6 +352,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   EnvoyBarItem(
                     icon: EnvoyIcons.externalLink,
                     text: S().receive_tx_list_scan,
+                    enabled: !scanInProgress,
                     onTap: () {
                       final navigator =
                           Navigator.of(context, rootNavigator: true);
