@@ -3,21 +3,38 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/components/draggable_overlay.dart';
+import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
+import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+
+enum FeeOption {
+  fast,
+  standard,
+  slow,
+  custom,
+}
+
+final selectedFeeOptionProvider =
+    StateProvider<FeeOption>((ref) => FeeOption.standard);
 
 class FeeChooser extends ConsumerStatefulWidget {
   final Function(int fee, BuildContext context, bool setCustomFee) onFeeSelect;
+  final BitcoinTransaction transaction;
 
-  const FeeChooser({super.key, required this.onFeeSelect});
+  const FeeChooser(this.transaction, {super.key, required this.onFeeSelect});
 
   @override
   ConsumerState createState() => _FeeChooserState();
@@ -25,23 +42,26 @@ class FeeChooser extends ConsumerStatefulWidget {
 
 class _FeeChooserState extends ConsumerState<FeeChooser>
     with TickerProviderStateMixin {
-  late TabController _tabController;
-
   List<num> feeList = List.generate(2, (index) => index + 1);
 
-  //default fee rates
   num standardFee = 1;
   num fasterFee = 2;
+  num slowerFee = 1;
+
+  FeeOption _selectedOption = FeeOption.standard;
+  bool _showCustom = false;
+  EnvoyAccount? account;
 
   @override
   void initState() {
     super.initState();
 
-    _tabController = TabController(length: 3, vsync: this);
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       setFees(ref.read(feeChooserStateProvider));
+      _selectedOption = ref.read(selectedFeeOptionProvider);
+      _showCustom = ref.read(selectedFeeOptionProvider) == FeeOption.custom;
+      account = ref.read(selectedAccountProvider);
     });
 
     Future.delayed(const Duration(milliseconds: 10)).then((_) {
@@ -50,40 +70,22 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     });
   }
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
   void setFees(FeeChooserState feeChooserState) {
     standardFee = feeChooserState.standardFeeRate;
     fasterFee = feeChooserState.fasterFeeRate;
+    // choose a slower fee, e.g. minFeeRate or something below standard
+    slowerFee = feeChooserState.minFeeRate;
+
     if (standardFee == fasterFee) {
       fasterFee = standardFee + 1;
     }
   }
 
-  TextStyle? get _labelStyle {
-    return Theme.of(context).textTheme.bodySmall?.copyWith(
-        fontSize: 9.5,
-        fontWeight: FontWeight.w600,
-        fontStyle: FontStyle.normal);
-  }
-
-  void selectFeeTab(num fee) {
-    int index = 0;
-    if (fee.toInt() == standardFee.toInt()) {
-      index = 0;
-    } else {
-      if (fee.toInt() == fasterFee.toInt()) {
-        index = 1;
-      } else {
-        index = 2;
-      }
-    }
-    _tabController.animateTo(index.toInt(),
-        duration: const Duration(milliseconds: 200));
+  void _selectOptionLocal(FeeOption option) {
+    setState(() {
+      _selectedOption = option;
+      _showCustom = option == FeeOption.custom;
+    });
   }
 
   @override
@@ -93,137 +95,133 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
       calculateFeeBoundary();
     });
 
-    ref.listen(
-        spendTransactionProvider.select(
-          (value) => value.transaction?.feeRate.toInt() ?? 1,
-        ), (previous, next) {
-      selectFeeTab(next);
-    });
-
-    TextScaler feeTextScaler = MediaQuery.textScalerOf(context)
-        .clamp(minScaleFactor: 1, maxScaleFactor: 1.1);
-
-    return Container(
-        constraints: const BoxConstraints(
-          maxWidth: 194,
-          minWidth: 194,
-          maxHeight: 24,
-        ),
-        child: Consumer(
-          builder: (context, ref, child) {
-            return IgnorePointer(
-              ignoring: ref.watch(spendFeeProcessing),
-              child: child,
-            );
-          },
-          child: TabBar(
-              textScaler: feeTextScaler,
-              controller: _tabController,
-              indicatorColor: Colors.white,
-              onTap: onTabSelected,
-              labelPadding: const EdgeInsets.symmetric(horizontal: 0),
-              padding: const EdgeInsets.symmetric(horizontal: 0),
-              indicatorPadding: const EdgeInsets.symmetric(horizontal: 0),
-              labelColor: Colors.white,
-              indicatorWeight: 1,
-              tabAlignment: TabAlignment.fill,
-              splashBorderRadius: BorderRadius.circular(0),
-              indicatorSize: TabBarIndicatorSize.label,
-              labelStyle: _labelStyle,
-              tabs: [
-                Tab(
-                  child: Text(
-                    S().coincontrol_tx_detail_fee_standard,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Tab(
-                  child: Text(
-                    S().coincontrol_tx_detail_fee_faster,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Tab(
-                  child: Text(
-                    S().coincontrol_tx_detail_fee_custom,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ]),
-        ));
-  }
-
-  void onTabSelected(int index) {
-    switch (index) {
-      case 0:
-        widget.onFeeSelect(standardFee.toInt(), context, false);
-        break;
-      case 1:
-        widget.onFeeSelect(fasterFee.toInt(), context, false);
-        break;
-      case 2:
-        {
-          final currentFee = ref.read(spendTransactionProvider.select(
-            (value) => value.transaction?.feeRate.toInt() ?? 1,
-          ));
-          bool feeChanged = false;
-          showModalBottomSheet(
-            context: context,
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            useRootNavigator: true,
-            barrierColor: Colors.transparent,
-            builder: (context) {
-              return Container(
-                  decoration: const BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        spreadRadius: 2,
-                        blurRadius: 24,
-                        offset: Offset(0, -4), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: Card(
-                    elevation: 0,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(EnvoySpacing.medium2),
-                        topRight: Radius.circular(EnvoySpacing.medium2),
-                      ),
+    return DraggableOverlay(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _FeeOptionRow(
+            selected: _selectedOption == FeeOption.fast,
+            title: S().coincontrol_tx_detail_fee_fast,
+            subtitle: getAproxTime(account, fasterFee),
+            onTap: () => _selectOptionLocal(FeeOption.fast),
+            trailing: (account != null)
+                ? EnvoyAmount(
+                    amountSats: getApproxFeeInSats(
+                      feeRateSatsPerVb: fasterFee.toInt(),
+                      txVSizeVb: widget.transaction.vsize.toInt(),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Consumer(
-                        builder: (context, ref, child) {
-                          return FeeSlider(
-                            fees: feeList,
-                            onFeeSelect: (index) {
-                              widget.onFeeSelect(index, context, true);
-                              feeChanged = true;
-                            },
-                          );
-                        },
-                      ),
+                    // TODO fix vsize always 0
+                    amountWidgetStyle: AmountWidgetStyle.normal,
+                    account: account!)
+                : null,
+          ),
+          const Divider(),
+          _FeeOptionRow(
+            selected: _selectedOption == FeeOption.standard,
+            title: S().coincontrol_tx_detail_fee_standard,
+            subtitle: getAproxTime(account, standardFee),
+            onTap: () => _selectOptionLocal(FeeOption.standard),
+            trailing: (account != null)
+                ? EnvoyAmount(
+                    amountSats: getApproxFeeInSats(
+                      feeRateSatsPerVb: standardFee.toInt(),
+                      txVSizeVb: widget.transaction.vsize.toInt(),
                     ),
-                  ));
+                    // TODO fix vsize always 0
+                    amountWidgetStyle: AmountWidgetStyle.normal,
+                    account: account!)
+                : null,
+          ),
+          const Divider(),
+          _FeeOptionRow(
+            selected: _selectedOption == FeeOption.slow,
+            title: S().coincontrol_tx_detail_fee_slow,
+            subtitle: getAproxTime(account, slowerFee),
+            onTap: () => _selectOptionLocal(FeeOption.slow),
+            trailing: (account != null)
+                ? EnvoyAmount(
+                    amountSats: getApproxFeeInSats(
+                      feeRateSatsPerVb: slowerFee.toInt(),
+                      txVSizeVb: widget.transaction.vsize.toInt(),
+                    ),
+                    // TODO fix vsize always 0
+                    amountWidgetStyle: AmountWidgetStyle.normal,
+                    account: account!)
+                : null,
+          ),
+          const Divider(),
+          _FeeOptionRow(
+            selected: _selectedOption == FeeOption.custom,
+            title: S().coincontrol_tx_detail_fee_custom,
+            subtitle: _showCustom
+                ? getAproxTime(account, ref.watch(_selectedFeeStateProvider))
+                : null,
+            trailing: _showCustom
+                ? (account != null)
+                    ? EnvoyAmount(
+                        amountSats: getApproxFeeInSats(
+                          feeRateSatsPerVb:
+                              ref.watch(_selectedFeeStateProvider),
+                          txVSizeVb: 202,
+                        ),
+                        // TODO fix vsize always null
+                        amountWidgetStyle: AmountWidgetStyle.normal,
+                        account: account!)
+                    : null
+                : const EnvoyIcon(EnvoyIcons.chevron_down,
+                    size: EnvoyIconSize.extraSmall),
+            onTap: () => _selectOptionLocal(FeeOption.custom),
+          ),
+
+          // Inline FeeSlider for custom
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: !_showCustom
+                ? const SizedBox.shrink()
+                : Padding(
+                    key: const ValueKey('feeSlider'),
+                    padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
+                    child: FeeSlider(
+                      fees: feeList,
+                      onFeeSelect: (fee) {
+                        ref.read(_selectedFeeStateProvider.notifier).state =
+                            fee;
+                      },
+                    ),
+                  ),
+          ),
+
+          SizedBox(height: EnvoySpacing.large1),
+          EnvoyButton(
+            S().component_apply,
+            onTap: () async {
+              ref.read(selectedFeeOptionProvider.notifier).state =
+                  _selectedOption;
+              switch (_selectedOption) {
+                case FeeOption.fast:
+                  widget.onFeeSelect(fasterFee.toInt(), context, false);
+                  break;
+                case FeeOption.standard:
+                  widget.onFeeSelect(standardFee.toInt(), context, false);
+                  break;
+                case FeeOption.slow:
+                  widget.onFeeSelect(slowerFee.toInt(), context, false);
+                  break;
+                case FeeOption.custom:
+                  final custom = ref.read(_selectedFeeStateProvider);
+                  await widget.onFeeSelect(custom, context, true);
+                  break;
+              }
+              Future.delayed(const Duration(milliseconds: 200)).then((_) {
+                if (context.mounted) {
+                  Navigator.of(context).maybePop();
+                }
+              });
             },
-          ).then((value) {
-            if (!feeChanged) {
-              /// if the user cancels/sets the fee slider , we need to reset/set the fee rate that used in block estimation
-              /// otherwise set the fee rate to selected value
-              ref.read(spendFeeRateProvider.notifier).state = currentFee;
-              selectFeeTab(currentFee);
-              ref.read(userHasChangedFeesProvider.notifier).state = true;
-            }
-          });
-        }
-        break;
-    }
+          ),
+        ],
+      ),
+    );
   }
 
   void calculateFeeBoundary() {
@@ -245,6 +243,39 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
             (index) => (feeChooserState.minFeeRate) + index).reversed.toList();
       }
     });
+  }
+}
+
+class _FeeOptionRow extends StatelessWidget {
+  const _FeeOptionRow({
+    required this.selected,
+    required this.title,
+    this.trailing,
+    this.subtitle,
+    this.onTap,
+  });
+
+  final bool selected;
+  final String title;
+  final Widget? trailing;
+  final String? subtitle;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      CheckBoxFilterItem(
+        text: title,
+        checked: selected,
+        subtitle: subtitle,
+        onTap: () {
+          if (onTap != null) {
+            onTap!();
+          }
+        },
+      ),
+      if (trailing != null) trailing!,
+    ]);
   }
 }
 
@@ -463,23 +494,19 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                     ),
                   ),
                 ),
-                const Spacer(),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 34),
-                  child: EnvoyButton(
-                      label: S().coincontrol_tx_detail_custom_fee_cta,
-                      onTap: () {
-                        if (!processingFee) {
-                          widget
-                              .onFeeSelect(ref.read(_selectedFeeStateProvider));
-                        }
-                      },
-                      type: ButtonType.primary,
-                      state: processingFee
-                          ? ButtonState.loading
-                          : ButtonState.defaultState),
-                ),
+                // const Spacer(),
+                // Padding(
+                //   padding:
+                //       const EdgeInsets.symmetric(vertical: 12, horizontal: 34),
+                //   child: EnvoyButton(
+                //     S().coincontrol_tx_detail_custom_fee_cta,
+                //     onTap: () {
+                //       if (!processingFee) {
+                //         widget.onFeeSelect(ref.read(_selectedFeeStateProvider));
+                //       }
+                //     },
+                //   ),
+                // ),
                 const Padding(padding: EdgeInsets.only(bottom: 8)),
               ],
             ));

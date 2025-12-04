@@ -305,6 +305,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                                 .coincontrol_tx_detail_newFee,
                                             address: rbfState.receiveAddress,
                                             feeChooserWidget: FeeChooser(
+                                              rbfState.draftTx.transaction,
                                               onFeeSelect: (int fee,
                                                   BuildContext context,
                                                   bool customFee) {

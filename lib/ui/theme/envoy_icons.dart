@@ -96,6 +96,10 @@ enum EnvoyIcons {
   stripe,
   stripe_text,
   prime_front,
+  wallet_coin,
+  fee,
+  receipt,
+  change,
 }
 
 class EnvoyIcon extends StatelessWidget {

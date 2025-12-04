@@ -45,6 +45,7 @@ import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
+import 'package:envoy/ui/components/step_indicator.dart';
 
 //TODO: multi device support, pass device id
 final primeConnectedStateProvider = Provider<StepModel>((ref) {
@@ -656,11 +657,11 @@ class _TransactionReviewScreenState
 
     String header = (account.isHot || transactionModel.isFinalized)
         ? S().coincontrol_tx_detail_heading
-        : S().coincontrol_txDetail_heading_passport;
+        : S().send_build_header;
 
     String subHeading = (account.isHot || transactionModel.isFinalized)
         ? S().coincontrol_tx_detail_subheading
-        : S().coincontrol_txDetail_subheading_passport;
+        : S().send_build_subheader;
 
     int feePercentage = ((transaction.fee.toInt() /
                 (transaction.fee.toInt() + transaction.amount.abs())) *
@@ -700,14 +701,15 @@ class _TransactionReviewScreenState
                 if (transactionModel.canModify)
                   EnvoyButton(
                     enabled: !transactionModel.loading,
-                    S().replaceByFee_boost_reviewCoinSelection,
-                    type: EnvoyButtonTypes.secondary,
+                    S().send_build_viewEditDetails,
+                    type: EnvoyButtonTypes.tertiary,
                     borderRadius: const BorderRadius.all(
                         Radius.circular(EnvoySpacing.small)),
                     onTap: () {
-                      ref.read(userHasChangedFeesProvider.notifier).state =
-                          false;
-                      editTransaction(context, ref);
+                      _showTxDetailsPage(context, ref, preparedTransaction);
+                      // ref.read(userHasChangedFeesProvider.notifier).state =
+                      //     false;
+                      // editTransaction(context, ref);
                     },
                   ),
                 const Padding(padding: EdgeInsets.all(6)),
@@ -738,6 +740,10 @@ class _TransactionReviewScreenState
       ),
       child: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+            child: StepIndicator(currentStep: 0),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(
                 vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium1),
@@ -770,7 +776,8 @@ class _TransactionReviewScreenState
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Consumer(builder: (context, ref, child) {
-                            return TransactionReviewCard(
+                            return TransactionReviewCard2(
+                              account: account,
                               transaction: transaction,
                               onTxDetailTap: () {
                                 _showTxDetailsPage(
@@ -780,14 +787,13 @@ class _TransactionReviewScreenState
                               loading: transactionModel.loading,
                               address: address,
                               feeTitle: S().coincontrol_tx_detail_fee,
-                              feeChooserWidget: FeeChooser(
-                                onFeeSelect: (fee, context, bool customFee) {
-                                  setFee(fee, context, customFee);
-                                  ref
-                                      .read(userHasChangedFeesProvider.notifier)
-                                      .state = true;
-                                },
-                              ),
+                              onFeeTap: () {
+                                _showFeeChooser(
+                                  context,
+                                  ref,
+                                  transaction,
+                                );
+                              },
                             );
                           }),
                           if (feePercentage >= 25)
@@ -918,10 +924,6 @@ class _TransactionReviewScreenState
     ref.read(spendFeeRateProvider.notifier).state = selectedItem.toDouble();
     await ref.read(spendTransactionProvider.notifier).setFee();
     ref.read(spendFeeProcessing.notifier).state = false;
-    //hide fee slider bottom-sheet
-    if (customFee && context.mounted) {
-      Navigator.pop(context);
-    }
   }
 
   void _showTxDetailsPage(BuildContext context, WidgetRef ref,
@@ -943,6 +945,32 @@ class _TransactionReviewScreenState
               ref
                   .read(spendTransactionProvider.notifier)
                   .setNote(ref.read(stagingTxNoteProvider));
+            },
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 100),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+        opaque: false,
+        fullscreenDialog: true));
+  }
+
+  void _showFeeChooser(
+    BuildContext context,
+    WidgetRef ref,
+    BitcoinTransaction transaction,
+  ) {
+    Navigator.of(context, rootNavigator: true).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return FeeChooser(
+            transaction,
+            onFeeSelect: (fee, context, bool customFee) {
+              setFee(fee, context, customFee);
+              ref.read(userHasChangedFeesProvider.notifier).state = true;
             },
           );
         },
