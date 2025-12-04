@@ -45,7 +45,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1452120919;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 169149212;
 
 // Section: executor
 
@@ -1726,90 +1726,6 @@ fn wire__crate__api__ql__serialize_xid_document_impl(
         },
     )
 }
-fn wire__crate__api__ql__split_backup_into_chunks_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "split_backup_into_chunks",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_backup = <Vec<u8>>::sse_decode(&mut deserializer);
-            let api_chunk_size = <usize>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(crate::api::ql::split_backup_into_chunks(
-                        &api_backup,
-                        api_chunk_size,
-                    ))?;
-                    Ok(output_ok)
-                })())
-            }
-        },
-    )
-}
-fn wire__crate__api__ql__split_fw_update_into_chunks_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "split_fw_update_into_chunks",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_patch_index = <u8>::sse_decode(&mut deserializer);
-            let api_total_patches = <u8>::sse_decode(&mut deserializer);
-            let api_patch_bytes = <Vec<u8>>::sse_decode(&mut deserializer);
-            let api_chunk_size = <usize>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| async move {
-                transform_result_sse::<_, ()>(
-                    (move || async move {
-                        let output_ok = Result::<_, ()>::Ok(
-                            crate::api::ql::split_fw_update_into_chunks(
-                                api_patch_index,
-                                api_total_patches,
-                                &api_patch_bytes,
-                                api_chunk_size,
-                            )
-                            .await,
-                        )?;
-                        Ok(output_ok)
-                    })()
-                    .await,
-                )
-            }
-        },
-    )
-}
 
 // Section: static_checks
 
@@ -2862,18 +2778,6 @@ impl SseDecode for Vec<u8> {
     }
 }
 
-impl SseDecode for Vec<foundation_api::api::message::QuantumLinkMessage> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut len_ = <i32>::sse_decode(deserializer);
-        let mut ans_ = vec![];
-        for idx_ in 0..len_ {
-            ans_.push(<foundation_api::api::message::QuantumLinkMessage>::sse_decode(deserializer));
-        }
-        return ans_;
-    }
-}
-
 impl SseDecode for foundation_api::api::onboarding::OnboardingState {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3592,15 +3496,6 @@ fn pde_ffi_dispatcher_primary_impl(
         31 => wire__crate__api__ql__serialize_ql_identity_impl(port, ptr, rust_vec_len, data_len),
         32 => wire__crate__api__ql__serialize_xid_impl(port, ptr, rust_vec_len, data_len),
         33 => wire__crate__api__ql__serialize_xid_document_impl(port, ptr, rust_vec_len, data_len),
-        34 => {
-            wire__crate__api__ql__split_backup_into_chunks_impl(port, ptr, rust_vec_len, data_len)
-        }
-        35 => wire__crate__api__ql__split_fw_update_into_chunks_impl(
-            port,
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
         _ => unreachable!(),
     }
 }
@@ -5690,16 +5585,6 @@ impl SseEncode for Vec<u8> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <u8>::sse_encode(item, serializer);
-        }
-    }
-}
-
-impl SseEncode for Vec<foundation_api::api::message::QuantumLinkMessage> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <i32>::sse_encode(self.len() as _, serializer);
-        for item in self {
-            <foundation_api::api::message::QuantumLinkMessage>::sse_encode(item, serializer);
         }
     }
 }

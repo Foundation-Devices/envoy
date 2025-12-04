@@ -154,52 +154,6 @@ pub async fn decode(
     }
 }
 
-pub async fn split_fw_update_into_chunks(
-    patch_index: u8,
-    total_patches: u8,
-    patch_bytes: &[u8],
-    chunk_size: usize,
-) -> Vec<QuantumLinkMessage> {
-    let chunks = patch_bytes.chunks(chunk_size);
-    let total_chunks = chunks.len() as u16;
-    chunks
-        .enumerate()
-        .map(move |(chunk_index, chunk_data)| FirmwareChunk {
-            patch_index,
-            total_patches,
-            chunk_index: chunk_index as u16,
-            total_chunks,
-            data: chunk_data.to_vec(),
-        })
-        .map(|chunk| QuantumLinkMessage::FirmwareFetchEvent(FirmwareFetchEvent::Chunk(chunk)))
-        .collect()
-}
-
-pub fn split_backup_into_chunks(backup: &[u8], chunk_size: usize) -> Vec<QuantumLinkMessage> {
-    let chunks = backup.chunks(chunk_size);
-    let total_chunks = chunks.len() as u32;
-    let mut messages = Vec::with_capacity(chunks.len() + 1);
-
-    messages.push(QuantumLinkMessage::RestoreMagicBackupEvent(
-        RestoreMagicBackupEvent::Starting(BackupMetadata { total_chunks }),
-    ));
-
-    chunks
-        .enumerate()
-        .map(move |(chunk_index, chunk_data)| {
-            QuantumLinkMessage::RestoreMagicBackupEvent(RestoreMagicBackupEvent::Chunk(
-                BackupChunk {
-                    chunk_index: chunk_index as u32,
-                    total_chunks,
-                    data: chunk_data.to_vec(),
-                },
-            ))
-        })
-        .for_each(|msg| messages.push(msg));
-
-    messages
-}
-
 pub async fn encode(
     message: EnvoyMessage,
     sender: &QuantumLinkIdentity,
@@ -253,13 +207,7 @@ pub async fn encode_to_magic_backup_file(
 
         let cbor = envelope.to_cbor_data();
 
-        let message_chunks: Vec<Vec<u8>> = chunk(&cbor).map(|chunk| chunk.to_vec()).collect();
-
-        file.write_all(&(message_chunks.len() as u32).to_be_bytes())?;
-
-        for chunk_data in message_chunks {
-            file.write_all(&(chunk_data.len() as u32).to_be_bytes())?;
-            // Write chunk bytes
+        for chunk_data in chunk(&cbor) {
             file.write_all(&chunk_data)?;
         }
     }
@@ -301,16 +249,13 @@ pub async fn encode_to_update_file(
     for (idx, patch_bytes) in payload.iter().enumerate() {
         let patch_index = idx as u8;
 
-        let envoy_messages: Vec<EnvoyMessage> = split_fw_update_into_chunks(
+        let envoy_messages = split_fw_update_into_chunks(
             patch_index,
             total_patches,
             patch_bytes.as_slice(),
             chunk_size,
         )
-        .await
-        .into_iter()
-        .map(|message| EnvoyMessage { message, timestamp })
-        .collect();
+        .map(|message| EnvoyMessage { message, timestamp });
 
         for message in envoy_messages {
             let envelope = QuantumLink::seal(
@@ -407,6 +352,51 @@ fn hash_data(data: &[u8]) -> [u8; 32] {
     hasher.update(data);
     let hash = hasher.finalize();
     hash.into()
+}
+
+fn split_fw_update_into_chunks(
+    patch_index: u8,
+    total_patches: u8,
+    patch_bytes: &[u8],
+    chunk_size: usize,
+) -> impl Iterator<Item = QuantumLinkMessage> + '_ {
+    let chunks = patch_bytes.chunks(chunk_size);
+    let total_chunks = chunks.len() as u16;
+    chunks
+        .enumerate()
+        .map(move |(chunk_index, chunk_data)| FirmwareChunk {
+            patch_index,
+            total_patches,
+            chunk_index: chunk_index as u16,
+            total_chunks,
+            data: chunk_data.to_vec(),
+        })
+        .map(|chunk| QuantumLinkMessage::FirmwareFetchEvent(FirmwareFetchEvent::Chunk(chunk)))
+}
+
+fn split_backup_into_chunks(backup: &[u8], chunk_size: usize) -> Vec<QuantumLinkMessage> {
+    let chunks = backup.chunks(chunk_size);
+    let total_chunks = chunks.len() as u32;
+    let mut messages = Vec::with_capacity(chunks.len() + 1);
+
+    messages.push(QuantumLinkMessage::RestoreMagicBackupEvent(
+        RestoreMagicBackupEvent::Starting(BackupMetadata { total_chunks }),
+    ));
+
+    chunks
+        .enumerate()
+        .map(move |(chunk_index, chunk_data)| {
+            QuantumLinkMessage::RestoreMagicBackupEvent(RestoreMagicBackupEvent::Chunk(
+                BackupChunk {
+                    chunk_index: chunk_index as u32,
+                    total_chunks,
+                    data: chunk_data.to_vec(),
+                },
+            ))
+        })
+        .for_each(|msg| messages.push(msg));
+
+    messages
 }
 
 #[cfg(test)]
