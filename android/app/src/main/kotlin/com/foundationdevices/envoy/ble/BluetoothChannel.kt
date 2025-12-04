@@ -106,7 +106,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
     private val scope = CoroutineScope(Dispatchers.Main)
 
     // Job for managing large file data transfers
-    private var job: Job? = null
+    private var transferJob: Job? = null
 
     // BroadcastReceiver for bonding state changes
     private var bondingReceiver: BroadcastReceiver? = null
@@ -207,8 +207,8 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         }
 
         Log.d(TAG, "Bonding state changed for (${device.address})")
-        Log.d(TAG, "  Previous state: ${getBondStateString(previousBondState)}")
-        Log.d(TAG, "  New state: ${getBondStateString(bondState)}")
+        Log.d(TAG, "Previous state: ${getBondStateString(previousBondState)}")
+        Log.d(TAG, "New state: ${getBondStateString(bondState)}")
         sendConnectionEvent(
             when (bondState) {
                 BluetoothDevice.BOND_BONDED -> BluetoothConnectionEventType.DEVICE_CONNECTED
@@ -243,17 +243,19 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             "reconnect" -> reconnect(call, result)
             "getConnectedPeripheralId" -> result.success(getConnectedPeripheralId())
             "isConnected" -> result.success(isConnected())
-            "cancelTransfer" -> {
-                if (job?.isActive == true) {
-                    job?.cancel()
-                    bleWriteQueue?.clearQueue()
-                    result.success(true)
-                } else {
-                    result.success(false)
-                }
-            }
+            "cancelTransfer" -> cancelTransfer(result)
 
             else -> result.notImplemented()
+        }
+    }
+
+    private fun cancelTransfer(result: MethodChannel.Result) {
+        if (transferJob?.isActive == true) {
+            transferJob?.cancel()
+            bleWriteQueue?.clearQueue()
+            result.success(true)
+        } else {
+            result.success(false)
         }
     }
 
@@ -324,6 +326,12 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
     private fun transmitFromFile(call: MethodCall, result: MethodChannel.Result) {
         val path = call.argument<String?>("path")
 
+
+        if (transferJob?.isActive == true) {
+            Log.i(TAG, "transmitFromFile: Transfer already in progress")
+            result.error("TRANSFER_IN_PROGRESS", "Another transfer is already in progress", null)
+            return
+        }
         if (path.isNullOrEmpty()) {
             result.error("INVALID_PATH", "File path is null or empty", null)
             return
@@ -335,7 +343,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             return
         }
 
-        job = scope.launch(Dispatchers.IO) {
+        transferJob = scope.launch(Dispatchers.IO) {
             try {
                 val fileSize = file.length()
                 var bytesProcessed = 0L
@@ -403,7 +411,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
     ): ByteBuffer {
         val failureBuffer = createDirectByteBuffer(0)
 
-        if (job?.isActive == true) {
+        if (transferJob?.isActive == true) {
             Log.e(TAG, "Another write operation is in progress")
             return failureBuffer
         }
