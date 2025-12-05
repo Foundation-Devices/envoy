@@ -898,22 +898,6 @@ class _TransactionReviewScreenState
     );
   }
 
-  Widget feeOverSpendWarning(int feePercentage) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(right: EnvoySpacing.small),
-          child: EnvoyIcon(EnvoyIcons.alert,
-              size: EnvoyIconSize.extraSmall, color: EnvoyColors.copper500),
-        ),
-        Text(S().coincontrol_tx_detail_fee_alert(feePercentage),
-            style:
-                EnvoyTypography.button.copyWith(color: EnvoyColors.copper500)),
-      ],
-    );
-  }
-
   void setFee(int fee, BuildContext context, bool customFee) async {
     if (!mounted) {
       return;
@@ -1006,6 +990,21 @@ Future navigateWithTransition(BuildContext context, Widget page) async {
         );
       },
     ),
+  );
+}
+
+Widget feeOverSpendWarning(int feePercentage) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      const Padding(
+        padding: EdgeInsets.only(right: EnvoySpacing.small),
+        child: EnvoyIcon(EnvoyIcons.alert,
+            size: EnvoyIconSize.extraSmall, color: EnvoyColors.copper500),
+      ),
+      Text(S().coincontrol_tx_detail_fee_alert(feePercentage),
+          style: EnvoyTypography.button.copyWith(color: EnvoyColors.copper500)),
+    ],
   );
 }
 

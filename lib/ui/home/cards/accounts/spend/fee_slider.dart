@@ -5,9 +5,11 @@
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/console.dart';
@@ -183,6 +185,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                     padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
                     child: FeeSlider(
                       fees: feeList,
+                      transaction: widget.transaction,
                       onFeeSelect: (fee) {
                         ref.read(_selectedFeeStateProvider.notifier).state =
                             fee;
@@ -191,7 +194,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                   ),
           ),
 
-          SizedBox(height: EnvoySpacing.large1),
+          SizedBox(height: EnvoySpacing.medium1),
           EnvoyButton(
             S().component_apply,
             onTap: () async {
@@ -283,12 +286,14 @@ class FeeSlider extends ConsumerStatefulWidget {
   final Function(int index) onFeeSelect;
   final int selectedItem;
   final List<num> fees;
+  final BitcoinTransaction transaction;
 
   const FeeSlider(
       {super.key,
       this.selectedItem = 1,
       required this.onFeeSelect,
-      required this.fees});
+      required this.fees,
+      required this.transaction});
 
   @override
   ConsumerState createState() => _FeeSliderState();
@@ -349,22 +354,31 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   }
 
   TextStyle? get _selectedTextStyle {
-    return Theme.of(context).textTheme.titleSmall?.copyWith(
-          fontSize: 12,
-          color: EnvoyColors.teal500,
-        );
+    return EnvoyTypography.body.copyWith(
+      color: EnvoyColors.accentPrimary,
+    );
+  }
+
+  TextStyle? get _warningTextStyle {
+    return EnvoyTypography.body.copyWith(
+      color: EnvoyColors.warning,
+    );
   }
 
   TextStyle? get _satPerVbStyle {
-    return Theme.of(context).textTheme.bodySmall?.copyWith(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-          color: EnvoyColors.accentPrimary,
-        );
+    return EnvoyTypography.body.copyWith(
+      color: EnvoyColors.accentPrimary,
+    );
+  }
+
+  TextStyle? get _satPerVbWarningStyle {
+    return EnvoyTypography.body.copyWith(
+      color: EnvoyColors.warning,
+    );
   }
 
   //builds the indicator widget
-  Widget _buildIndicatorWidget(num feeRate) {
+  Widget _buildIndicatorWidget(num feeRate, int feePercentage) {
     //consumer to listen to selected index changes, to animate the selected item
     return Consumer(
       builder: (context, ref, child) {
@@ -374,7 +388,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
           child: SizedBox(
             height: 68,
             child: Column(
-              mainAxisSize: MainAxisSize.max,
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 AnimatedScale(
@@ -383,7 +397,9 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                   child: Text(
                     "$feeRate",
                     style: selectedItem == feeRate
-                        ? _selectedTextStyle
+                        ? feePercentage >= 25
+                            ? _warningTextStyle
+                            : _selectedTextStyle
                         : _unselectedTextStyle,
                   ),
                 ),
@@ -393,7 +409,9 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(2),
                     color: selectedItem == feeRate
-                        ? EnvoyColors.teal500
+                        ? feePercentage >= 25
+                            ? EnvoyColors.warning
+                            : EnvoyColors.teal500
                         : EnvoyColors.gray600,
                   ),
                   margin: EdgeInsets.only(top: selectedItem == feeRate ? 4 : 0),
@@ -411,16 +429,25 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   Widget build(BuildContext context) {
     Color gradientOverlayColor = Colors.white54;
     bool processingFee = ref.watch(spendFeeProcessing);
+    int selectedFee = ref.watch(_selectedFeeStateProvider);
+    int aproxFee = getApproxFeeInSats(
+      feeRateSatsPerVb: selectedFee,
+      txVSizeVb: 202, // TODO: get real vsize
+    );
+    int feePercentage =
+        ((aproxFee / (aproxFee + widget.transaction.amount.abs())) * 100)
+            .round();
+
     return Consumer(
       builder: (context, ref, child) {
         ref.listen(spendFeeRateProvider, (previous, next) {
           initializeSelectedRate();
         });
         return Container(
-            constraints: const BoxConstraints(minHeight: 190, maxHeight: 210),
+            constraints: const BoxConstraints(maxHeight: 210),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
@@ -448,7 +475,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                               childCount: widget.fees.length,
                               builder: (context, index) {
                                 return _buildIndicatorWidget(
-                                    widget.fees[index]);
+                                    widget.fees[index], feePercentage);
                               },
                             ),
                           ),
@@ -460,8 +487,10 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                                 alignment: const Alignment(0.0, 1.3),
                                 margin: const EdgeInsets.only(top: 4),
                                 child: Text(
-                                  "sats/Vb",
-                                  style: _satPerVbStyle,
+                                  selectedFee == 1 ? "sat/vb" : "sats/vb",
+                                  style: feePercentage >= 25
+                                      ? _satPerVbWarningStyle
+                                      : _satPerVbStyle,
                                 )),
                           ),
                         ),
@@ -507,7 +536,13 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                 //     },
                 //   ),
                 // ),
-                const Padding(padding: EdgeInsets.only(bottom: 8)),
+                if (feePercentage >= 25)
+                  Padding(
+                    padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
+                    child: feeOverSpendWarning(feePercentage),
+                  ),
+                const Padding(
+                    padding: EdgeInsets.only(bottom: EnvoySpacing.medium1)),
               ],
             ));
       },
