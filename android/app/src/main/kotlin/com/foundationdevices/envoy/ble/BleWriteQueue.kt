@@ -33,7 +33,6 @@ class BleWriteQueue(
                     req.result.complete(false)
                     continue
                 }
-                Log.i(TAG, "write queued data of size ${req.data.size}")
                 val ok = performWrite(req.data)
                 if (!ok) {
                     Log.e(TAG, "Write failed, clearing")
@@ -69,7 +68,6 @@ class BleWriteQueue(
     }
 
     fun onCharacteristicWrite(status: Int) {
-        Log.i(TAG, "onCharacteristicWrite: status=${status == BluetoothGatt.GATT_SUCCESS}")
         val current = continuation
         continuation = null
         current?.complete(status == BluetoothGatt.GATT_SUCCESS)
@@ -113,7 +111,6 @@ class BleWriteQueue(
             @Suppress("DEPRECATION")
             gatt.writeCharacteristic(characteristic)
         }
-        Log.i(TAG, "performWrite: $writeType, writeSuccess ? = $writeSuccess")
 
         if (!writeSuccess) {
             continuation = null

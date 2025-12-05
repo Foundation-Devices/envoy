@@ -877,7 +877,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                                 if (properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY != 0) {
                                     val notificationEnabled =
                                         gatt.setCharacteristicNotification(characteristic, true)
-                                    Log.d(TAG, "Notification setup result: $notificationEnabled")
                                     val descriptor = characteristic.getDescriptor(CCCD_UUID)
                                     if (descriptor != null) {
                                         val enableNotificationValue =
@@ -927,10 +926,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             characteristic: BluetoothGattCharacteristic?,
             status: Int
         ) {
-            Log.i(
-                TAG,
-                "onCharacteristicWrite: status=${status == BluetoothGatt.GATT_SUCCESS}, characteristic=${characteristic?.uuid}"
-            )
 
             if (characteristic?.uuid == writeCharacteristic?.uuid) {
                 bleWriteQueue?.onCharacteristicWrite(status)
@@ -1036,7 +1031,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             super.onCharacteristicRead(gatt, characteristic, value, status)
             // API 33+ - value is provided as parameter
             if (value.isEmpty()) {
-                Log.w(TAG, "onCharacteristicRead received but data is null")
                 return
             }
             sendBinaryData(value)
