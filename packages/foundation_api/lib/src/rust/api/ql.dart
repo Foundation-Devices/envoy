@@ -18,7 +18,7 @@ import '../third_party/foundation_api/api/scv.dart';
 import '../third_party/foundation_api/api/status.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `hash_data`
+// These functions are ignored because they are not marked as `pub`: `hash_data`, `split_backup_into_chunks`, `split_fw_update_into_chunks`
 
 Future<EnvoyMasterDechunker> getDecoder() =>
     RustLib.instance.api.crateApiQlGetDecoder();
@@ -56,22 +56,6 @@ Future<DecoderStatus> decode(
         decoder: decoder,
         quantumLinkIdentity: quantumLinkIdentity,
         aridCache: aridCache);
-
-Future<List<QuantumLinkMessage>> splitFwUpdateIntoChunks(
-        {required int patchIndex,
-        required int totalPatches,
-        required List<int> patchBytes,
-        required BigInt chunkSize}) =>
-    RustLib.instance.api.crateApiQlSplitFwUpdateIntoChunks(
-        patchIndex: patchIndex,
-        totalPatches: totalPatches,
-        patchBytes: patchBytes,
-        chunkSize: chunkSize);
-
-Future<List<QuantumLinkMessage>> splitBackupIntoChunks(
-        {required List<int> backup, required BigInt chunkSize}) =>
-    RustLib.instance.api
-        .crateApiQlSplitBackupIntoChunks(backup: backup, chunkSize: chunkSize);
 
 Future<List<Uint8List>> encode(
         {required EnvoyMessage message,

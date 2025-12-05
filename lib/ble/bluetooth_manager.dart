@@ -570,7 +570,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     if (Devices().getPrimeDevices.isEmpty || _recipientXid == null) {
       return;
     }
-
     try {
       _sendingData = true;
 
