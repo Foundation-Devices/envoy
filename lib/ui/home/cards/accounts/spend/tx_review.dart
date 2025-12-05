@@ -257,7 +257,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
     }
     if (context.mounted) {
       //for non hot wallets,note dialog already before finalizing the tx
-      await _showNotesDialog(context, account);
+      final doNotShow = await EnvoyStorage()
+          .checkPromptDismissed(DismissiblePrompt.addTxNoteWarning);
+      if (!doNotShow && context.mounted) {
+        await _showNotesDialog(context, account);
+      }
 
       if (account.isHot) {
         ref

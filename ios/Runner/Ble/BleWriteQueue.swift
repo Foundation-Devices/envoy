@@ -15,7 +15,7 @@ class BleWriteQueue {
     private var isProcessing = false
     private var writeType: CBCharacteristicWriteType = .withResponse
 
-    // Continuation for async/await pattern (like CompletableDeferred in Kotlin)
+    // Continuation for async/await
     private var writeContinuation: CheckedContinuation<Bool, Never>?
 
     init(peripheral: CBPeripheral, characteristic: CBCharacteristic) {
@@ -27,7 +27,6 @@ class BleWriteQueue {
             characteristic.properties.contains(.writeWithoutResponse)
             ? .withoutResponse : .withResponse
 
-        // Start processing queue
         startProcessingQueue()
     }
 

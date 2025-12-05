@@ -296,7 +296,6 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                         break
                     }
                     
-                    // Await write completion (matches Kotlin's suspend function)
                     let success = await bleWriteQueue?.enqueue(data: data) ?? false
                     
                     if !success {

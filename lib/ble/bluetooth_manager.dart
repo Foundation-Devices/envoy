@@ -570,12 +570,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     if (Devices().getPrimeDevices.isEmpty || _recipientXid == null) {
       return;
     }
-
-    if (!Devices().getPrimeDevices.first.onboardingComplete) {
-      kPrint(
-          "Prime device not onboarded, skipping exchange rate history send.");
-      return;
-    }
     try {
       _sendingData = true;
 
