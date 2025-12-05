@@ -69,24 +69,11 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
   }
 
   List<EnvoyAccount> get _displayAccounts {
-    if (widget.transferAccount == null) {
-      // all accounts, excluding selected
-      return accounts
-          .where(
-            (element) => _selectedAccount.id != element.id,
-          )
-          .toList();
-    }
-
-    final transfer = widget.transferAccount!;
-
-    final rest = accounts
-        .where((a) =>
-            a.id != _selectedAccount.id &&
-            a.id != transfer.id) // TODO: here is the list order if TRANSFER
+    return accounts
+        .where(
+          (element) => _selectedAccount.id != element.id,
+        )
         .toList();
-
-    return [...rest, transfer];
   }
 
   double _getBackStackOffset(int index) {
@@ -118,8 +105,6 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
           offstage: _status.isAnimating,
           child: Stack(
             children: [
-              // TODO: all back elements
-
               for (var account
                   in _displayAccounts.where((a) => a.id != _selectedAccount.id))
                 Align(
@@ -141,9 +126,6 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
                     ),
                   ),
                 ),
-
-              // TODO: front element
-
               for (var (account) in accounts)
                 if (account.id == _selectedAccount.id)
                   Align(

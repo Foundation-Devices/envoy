@@ -28,9 +28,9 @@ import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
 
 class SelectAccountTransfer extends ConsumerStatefulWidget {
-  final EnvoyAccount transferFromAccount;
+  final EnvoyAccount transferAccount;
 
-  SelectAccountTransfer(this.transferFromAccount) : super(key: UniqueKey());
+  SelectAccountTransfer(this.transferAccount) : super(key: UniqueKey());
 
   @override
   ConsumerState<SelectAccountTransfer> createState() =>
@@ -54,7 +54,7 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
     Future.microtask(() async {
       ref.read(backupPageProvider.notifier).state = false;
 
-      final network = widget.transferFromAccount.network;
+      final network = widget.transferAccount.network;
 
       // Get accounts based on the transfer account's network
       final filteredAccounts = _getAccountsByNetwork(network, ref);
@@ -118,7 +118,7 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
 
   @override
   Widget build(BuildContext context) {
-    final network = widget.transferFromAccount.network;
+    final network = widget.transferAccount.network;
 
     final filteredAccounts = _getAccountsByNetwork(network, ref);
 
@@ -154,8 +154,10 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
                         height: EnvoySpacing.small,
                       ),
                       AccountListTile(
-                        widget.transferFromAccount,
+                        widget.transferAccount,
                         draggable: false,
+                        // ˇˇˇ avoid duplicate account in stack (this is just "transfer-from" preview)
+                        useHero: false,
                         onTap: () {
                           /// do nothing on press
                         },
@@ -173,8 +175,11 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
                       ),
                       StackedAccountChooser(
                         key: accountChooserKey,
-                        transferAccount: widget.transferFromAccount,
-                        account: selectedAccount ?? filteredAccounts.first,
+                        transferAccount: widget.transferAccount,
+                        account: // do not pass transfer acc as a selected acc !!!
+                            selectedAccount?.id == widget.transferAccount.id
+                                ? filteredAccounts.last
+                                : selectedAccount ?? filteredAccounts.first,
                         accounts: filteredAccounts,
                         onOverlayChanges: (bool visible) {
                           setState(() {
