@@ -581,12 +581,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     // MARK: - Binary Channel Handlers
 
     private func handleBinaryWrite(data: Data) -> Data {
-        // Check if a transfer operation is already in progress
-        if let task = transferTask, !task.isCancelled {
-            print("Another write operation is in progress")
-            return Data()
-        }
-        
+
         guard let peripheral = connectedPeripheral else {
             return Data()
         }

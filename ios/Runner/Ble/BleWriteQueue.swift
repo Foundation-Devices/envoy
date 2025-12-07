@@ -97,8 +97,12 @@ class BleWriteQueue {
                     return
                 }
 
+                var hasResumed = false
                 let request = WriteRequest(id: data.hashValue, data: data) { success in
-                    continuation.resume(returning: success)
+                    if !hasResumed {
+                        hasResumed = true
+                        continuation.resume(returning: success)
+                    }
                 }
 
                 self.writeQueue.append(request)
@@ -125,8 +129,11 @@ class BleWriteQueue {
     func onPeripheralReady() {
         queue.async { [weak self] in
             guard let self = self else { return }
-            self.writeContinuation?.resume(returning: true)
+            guard let continuation = self.writeContinuation else {
+                return
+            }
             self.writeContinuation = nil
+            continuation.resume(returning: true)
         }
     }
 
@@ -160,9 +167,18 @@ class BleWriteQueue {
                     return
                 }
 
-                self.writeContinuation = continuation
-
-                self.gatt.writeValue(data, for: self.characteristic, type: self.writeType)
+                // For writeWithoutResponse, prime only supports writeWithoutResponse
+                if self.writeType == .withoutResponse {
+                    if self.gatt.canSendWriteWithoutResponse {
+                        self.gatt.setNotifyValue(true, for: self.characteristic)
+                        self.gatt.writeValue(data, for: self.characteristic, type: self.writeType)
+                        continuation.resume(returning: true)
+                    } else {
+                        self.gatt.setNotifyValue(true, for: self.characteristic)
+                        self.writeContinuation = continuation
+                        self.gatt.writeValue(data, for: self.characteristic, type: self.writeType)
+                    }
+                } 
             }
         }
     }
