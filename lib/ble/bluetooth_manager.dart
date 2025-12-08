@@ -456,7 +456,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 
       _bluetoothChannel.deviceStatusStream.listen((event) async {
         if (event.type == BluetoothConnectionEventType.deviceConnected) {
-          await Future.delayed(Duration(seconds: 1));
+          await Future.delayed(Duration(seconds: 2));
           sendExchangeRateHistory();
         }
       });
@@ -570,7 +570,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     if (Devices().getPrimeDevices.isEmpty || _recipientXid == null) {
       return;
     }
-
     try {
       _sendingData = true;
 

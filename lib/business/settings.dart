@@ -234,10 +234,10 @@ class Settings extends ChangeNotifier {
     return personalElectrumAddress;
   }
 
-  void setPersonalElectrumAddress(String address) {
+  Future<void> setPersonalElectrumAddress(String address) async {
     personalElectrumAddress = address;
+    setCustomElectrumAddress(personalElectrumAddress);
     notifyListeners();
-    store();
   }
 
   bool usingTor = false;

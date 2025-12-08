@@ -83,7 +83,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 1452120919;
+  int get rustContentHash => 169149212;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -203,15 +203,6 @@ abstract class RustLibApi extends BaseApi {
 
   Future<Uint8List> crateApiQlSerializeXidDocument(
       {required XidDocument xidDocument});
-
-  Future<List<QuantumLinkMessage>> crateApiQlSplitBackupIntoChunks(
-      {required List<int> backup, required BigInt chunkSize});
-
-  Future<List<QuantumLinkMessage>> crateApiQlSplitFwUpdateIntoChunks(
-      {required int patchIndex,
-      required int totalPatches,
-      required List<int> patchBytes,
-      required BigInt chunkSize});
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_ArcMutexDecoder;
@@ -1220,65 +1211,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         argNames: ["xidDocument"],
       );
 
-  @override
-  Future<List<QuantumLinkMessage>> crateApiQlSplitBackupIntoChunks(
-      {required List<int> backup, required BigInt chunkSize}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_list_prim_u_8_loose(backup, serializer);
-        sse_encode_usize(chunkSize, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 34, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_list_quantum_link_message,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiQlSplitBackupIntoChunksConstMeta,
-      argValues: [backup, chunkSize],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiQlSplitBackupIntoChunksConstMeta =>
-      const TaskConstMeta(
-        debugName: "split_backup_into_chunks",
-        argNames: ["backup", "chunkSize"],
-      );
-
-  @override
-  Future<List<QuantumLinkMessage>> crateApiQlSplitFwUpdateIntoChunks(
-      {required int patchIndex,
-      required int totalPatches,
-      required List<int> patchBytes,
-      required BigInt chunkSize}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_u_8(patchIndex, serializer);
-        sse_encode_u_8(totalPatches, serializer);
-        sse_encode_list_prim_u_8_loose(patchBytes, serializer);
-        sse_encode_usize(chunkSize, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 35, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_list_quantum_link_message,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiQlSplitFwUpdateIntoChunksConstMeta,
-      argValues: [patchIndex, totalPatches, patchBytes, chunkSize],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiQlSplitFwUpdateIntoChunksConstMeta =>
-      const TaskConstMeta(
-        debugName: "split_fw_update_into_chunks",
-        argNames: ["patchIndex", "totalPatches", "patchBytes", "chunkSize"],
-      );
-
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_ArcMutexDecoder => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerArcMutexDecoder;
@@ -2231,12 +2163,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
-  }
-
-  @protected
-  List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_quantum_link_message).toList();
   }
 
   @protected
@@ -3679,19 +3605,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<QuantumLinkMessage> sse_decode_list_quantum_link_message(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <QuantumLinkMessage>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_quantum_link_message(deserializer));
-    }
-    return ans_;
-  }
-
-  @protected
   OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
@@ -5052,16 +4965,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
-  }
-
-  @protected
-  void sse_encode_list_quantum_link_message(
-      List<QuantumLinkMessage> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_quantum_link_message(item, serializer);
-    }
   }
 
   @protected

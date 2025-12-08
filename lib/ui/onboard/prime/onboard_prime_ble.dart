@@ -245,7 +245,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                 if (!context.mounted) return;
 
                 await showScannerDialog(
-                  showInfoDialog: true,
+                  infoType: QrIntentInfoType.prime,
                   context: context,
                   onBackPressed: (ctx) {
                     if (ctx.mounted) Navigator.pop(ctx);
@@ -303,7 +303,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           if (!context.mounted) return;
 
           await showScannerDialog(
-            showInfoDialog: true,
+            infoType: QrIntentInfoType.prime,
             context: context,
             onBackPressed: (ctx) {
               if (ctx.mounted) Navigator.pop(ctx);

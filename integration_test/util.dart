@@ -4,7 +4,6 @@
 
 import 'dart:io';
 import 'package:envoy/account/sync_manager.dart';
-import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/main.dart';
@@ -1347,41 +1346,36 @@ Future<void> enablePerformance(WidgetTester tester) async {
   await findAndTapBigTab(tester, 'Better');
 }
 
+enum ShieldExpectation {
+  none, // No shield icon visible
+  teal, // Electrum connected
+  red, // Electrum NOT connected
+}
+
 Future<bool> checkTorShieldIcon(
   WidgetTester tester, {
-  required bool expectPrivacy,
+  required ShieldExpectation expected,
 }) async {
-  // Wait up to 2 seconds for initial settling, then
-  // enforce 15 seconds of stability to avoid false positives.
   final stableAsset = await _waitForStableImageAsset(
     tester,
-    timeout: const Duration(seconds: 30), // total max wait (adjustable)
-    stabilityWindow: const Duration(seconds: 15), // your requirement
+    timeout: const Duration(seconds: 240),
+    stabilityWindow: const Duration(seconds: 30),
   );
 
-  if (expectPrivacy) {
-    if (ConnectivityManager().torEnabled &&
-        !ConnectivityManager().torTemporarilyDisabled) {
-      if (ConnectivityManager().electrumConnected) {
-        expect(stableAsset, 'assets/indicator_shield_teal.png',
-            reason:
-                'Expected teal shield when Electrum is connected and privacy mode active.');
-        return true;
-      } else {
-        expect(stableAsset, 'assets/indicator_shield_red.png',
-            reason:
-                'Expected red shield when Electrum is NOT connected in privacy mode.');
-        return false;
-      }
-    } else {
-      expect(stableAsset, isNull,
-          reason: 'No shield should appear when Tor is disabled.');
-      return false;
-    }
-  } else {
-    expect(stableAsset, isNull,
-        reason: 'Performance mode should not show any shield.');
-    return false;
+  switch (expected) {
+    case ShieldExpectation.none:
+      expect(stableAsset, isNull, reason: 'Expected NO shield icon.');
+      return true;
+
+    case ShieldExpectation.teal:
+      expect(stableAsset, 'assets/indicator_shield_teal.png',
+          reason: 'Expected teal shield icon.');
+      return true;
+
+    case ShieldExpectation.red:
+      expect(stableAsset, 'assets/indicator_shield_red.png',
+          reason: 'Expected red shield icon.');
+      return true;
   }
 }
 

@@ -13,6 +13,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:tor/tor.dart';
 
 const bool isTest = bool.fromEnvironment('IS_TEST', defaultValue: false);
 
@@ -68,7 +69,10 @@ class SyncManager {
       if (NgAccountManager().accounts.isEmpty) {
         return;
       }
-      _syncAll();
+      //wait for any active operations to finish
+      if (_activeSyncOperations.isEmpty) {
+        _syncAll();
+      }
 
       if (!isTest) {
         dumpProgress();
@@ -361,6 +365,14 @@ class SyncManager {
     }
 
     try {
+      if (Settings().usingTor && Tor.instance.port == -1) {
+        if (_enableLogging) {
+          kPrint(
+              "Skipping Scan because Tor is not ready yet $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
+              silenceInTests: true);
+        }
+        return;
+      }
       // Use the scheduler to run this task in the background
       WalletUpdate update = await EnvoyAccountHandler.scanWallet(
           scanRequest: fullScanRequest,
@@ -407,6 +419,14 @@ class SyncManager {
   Future<void> _performWalletSync(EnvoyAccount account, String server,
       SyncRequest syncRequest, int? port, AddressType addressType) async {
     try {
+      if (Settings().usingTor && Tor.instance.port == -1) {
+        if (_enableLogging) {
+          kPrint(
+              "Skipping sync because Tor is not ready yet $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
+              silenceInTests: true);
+        }
+        return;
+      }
       _currentLoading.sink.add(Syncing(account.id));
       DateTime time = DateTime.now();
       if (_enableLogging) {

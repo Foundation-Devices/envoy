@@ -879,10 +879,10 @@ Future<void> openTxDetailsInExplorer(
         checkBoxText: S().component_dontShowAgain,
         checkedValue: false,
         onCheckBoxChanged: (checkedValue) {
-          if (!checkedValue) {
+          if (checkedValue) {
             EnvoyStorage()
                 .addPromptState(DismissiblePrompt.openTxDetailsInExplorer);
-          } else if (checkedValue) {
+          } else {
             EnvoyStorage()
                 .removePromptState(DismissiblePrompt.openTxDetailsInExplorer);
           }
