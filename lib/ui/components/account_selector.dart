@@ -118,6 +118,7 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
                     opacity: _overlayVisible ? 0 : 1,
                     child: AccountListTile(
                       account,
+                      useHero: false, // overflow fix
                       key: _cardStackKeys[account.id],
                       onTap: () {
                         openChooserOverlay(context);
@@ -135,6 +136,7 @@ class StackedAccountChooserState extends State<StackedAccountChooser> {
                       child: AccountListTile(
                         key: _cardStackKeys[account.id],
                         account,
+                        useHero: false, // overflow fix
                         onTap: () {
                           openChooserOverlay(context);
                           return;
@@ -562,8 +564,8 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
                                 _displayAccounts.length + (hasTransfer ? 2 : 0),
                             // +2 for header/footer text
                             itemBuilder: (context, index) {
+                              /// no transfer account: just show accounts normally
                               if (!hasTransfer) {
-                                /// no transfer account: just show accounts normally
                                 final account = _displayAccounts[index];
                                 final isLast =
                                     index == _displayAccounts.length - 1;
@@ -571,7 +573,6 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
                               }
 
                               /// has transfer account
-
                               if (index == 0) {
                                 // before transfer account
                                 return Padding(
@@ -590,11 +591,12 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
 
                               if (index == 1) {
                                 // "transfer" account itself (first in _displayAccounts)
-                                final account = _displayAccounts.first;
+                                final transferAccount = _displayAccounts.first;
                                 return Padding(
                                   padding: const EdgeInsets.only(
                                       bottom: EnvoySpacing.large1),
-                                  child: _buildAccountTile(account, false),
+                                  child:
+                                      _buildAccountTile(transferAccount, false),
                                 );
                               }
 
