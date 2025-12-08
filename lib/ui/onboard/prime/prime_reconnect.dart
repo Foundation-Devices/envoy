@@ -115,8 +115,14 @@ class _PrimeReconnectState extends ConsumerState<PrimeReconnect> {
   void _updateRiveState({bool happy = false, bool unhappy = false}) {
     if (_controller?.stateMachine == null) return;
     final stateMachine = _controller!.stateMachine;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("indeterminate")?.value = false;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("happy")?.value = happy;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("unhappy")?.value = unhappy;
   }
 

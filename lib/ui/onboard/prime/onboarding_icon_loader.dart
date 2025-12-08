@@ -11,6 +11,7 @@ enum IconLoaderState { indeterminate, noIcon, success, error }
 class IconLoader extends StatefulWidget {
   final Widget? child;
   final IconLoaderState state;
+
   const IconLoader({super.key, required this.state, this.child});
 
   @override
@@ -48,23 +49,31 @@ class _IconLoaderState extends State<IconLoader> {
     final stateMachine = _controller!.stateMachine;
 
     // Reset all inputs first
+    // ignore: deprecated_member_use
     stateMachine.boolean('Indeterminate')?.value = false;
+    // ignore: deprecated_member_use
     stateMachine.boolean('no_icon_state')?.value = false;
+    // ignore: deprecated_member_use
     stateMachine.boolean('happy')?.value = false;
+    // ignore: deprecated_member_use
     stateMachine.boolean('unhappy')?.value = false;
 
     // Set the appropriate input based on current state
     switch (widget.state) {
       case IconLoaderState.indeterminate:
+        // ignore: deprecated_member_use
         stateMachine.boolean('Indeterminate')?.value = true;
         break;
       case IconLoaderState.noIcon:
+        // ignore: deprecated_member_use
         stateMachine.boolean('no_icon_state')?.value = true;
         break;
       case IconLoaderState.success:
+        // ignore: deprecated_member_use
         stateMachine.boolean('happy')?.value = true;
         break;
       case IconLoaderState.error:
+        // ignore: deprecated_member_use
         stateMachine.boolean('unhappy')?.value = true;
     }
   }
