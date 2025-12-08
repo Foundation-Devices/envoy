@@ -4,7 +4,6 @@
 
 import 'dart:io';
 import 'package:envoy/account/sync_manager.dart';
-import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/main.dart';
