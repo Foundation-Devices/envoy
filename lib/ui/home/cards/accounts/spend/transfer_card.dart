@@ -25,7 +25,6 @@ import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
 
 class SelectAccountTransfer extends ConsumerStatefulWidget {
   final EnvoyAccount transferAccount;
@@ -129,10 +128,13 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
         canPop: _canPop,
         onPopInvokedWithResult: (didPop, _) {
           if (!didPop) {
+            // Back was intercepted (e.g. overlay open) → just close overlay.
             accountChooserKey.currentState?.dismiss();
-          } else if (didPop && !isRampOpen) {
-            showBuyBitcoinOptions(ref);
+            return;
           }
+          // Route actually popped (leaving transfer screen).
+          clearSpendState(ProviderScope.containerOf(
+              context)); // TODO: do I need to clear when exiting the transfer screen (in app back)
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -257,7 +259,6 @@ class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
                     type: ButtonType.primary,
                     state: ButtonState.defaultState,
                     onTap: () async {
-                      clearSpendState(ProviderScope.containerOf(context));
                       await Future.delayed(const Duration(milliseconds: 50));
                       if (context.mounted) {
                         context.go(ROUTE_ACCOUNT_SEND,
