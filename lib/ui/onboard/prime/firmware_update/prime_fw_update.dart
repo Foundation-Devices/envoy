@@ -58,6 +58,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     );
 
     // Set the boolean input after controller is ready
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller!.stateMachine.boolean('indeterminate')?.value = true;
 
     setState(() => _isInitialized = true);
@@ -76,21 +78,45 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
 
     switch (next) {
       case PrimeFwUpdateStep.finished:
+        //TODO: fix rive with databindings.
+        // ignore: deprecated_member_use
         stateMachine.boolean("indeterminate")?.value = false;
+        //TODO: fix rive with databindings.
+        // ignore: deprecated_member_use
         stateMachine.boolean("happy")?.value = true;
+        //TODO: fix rive with databindings.
+        // ignore: deprecated_member_use
         stateMachine.boolean("unhappy")?.value = false;
       case PrimeFwUpdateStep.error:
         //need
+        //TODO: fix rive with databindings.
+        // ignore: deprecated_member_use
         stateMachine.boolean('indeterminate')?.value = true;
+        //TODO: fix rive with databindings.
+        // ignore: deprecated_member_use
         stateMachine.boolean("unhappy")?.value = false;
+        //TODO: fix rive with databindings.
+        // ignore: deprecated_member_use
         stateMachine.boolean("happy")?.value = false;
         await Future.delayed(const Duration(milliseconds: 500));
+        //TODO: fix rive with databindings.
+        // ignore: deprecated_member_use
         stateMachine.boolean('indeterminate')?.value = false;
+        //TODO: fix rive with databindings.
+        // ignore: deprecated_member_use
         stateMachine.boolean("unhappy")?.value = true;
+        //TODO: fix rive with databindings.
+        // ignore: deprecated_member_use
         stateMachine.boolean("happy")?.value = false;
       default:
+        //TODO: fix rive with databindings.
+        // ignore: deprecated_member_use
         stateMachine.boolean('indeterminate')?.value = true;
+        //TODO: fix rive with databindings.
+        // ignore: deprecated_member_use
         stateMachine.boolean("unhappy")?.value = false;
+        //TODO: fix rive with databindings.
+        // ignore: deprecated_member_use
         stateMachine.boolean("happy")?.value = false;
         break;
     }
@@ -250,6 +276,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
   }
 
   Widget _updateFinishedWidget(BuildContext context) {
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller?.stateMachine.boolean('happy')?.value = true;
     return Column(
       children: [
