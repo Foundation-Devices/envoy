@@ -4,8 +4,8 @@
 
 import 'package:envoy/business/fw_uploader.dart';
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart' as rive;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rive/rive.dart' as rive;
 
 class SdCardSpinner extends ConsumerStatefulWidget {
   const SdCardSpinner({super.key});
@@ -36,6 +36,8 @@ class _SdCardSpinnerState extends ConsumerState<SdCardSpinner> {
     );
 
     // Set initial indeterminate state
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller?.stateMachine.boolean('indeterminate')?.value = true;
 
     setState(() => _isInitialized = true);
@@ -54,8 +56,17 @@ class _SdCardSpinnerState extends ConsumerState<SdCardSpinner> {
       required bool indeterminate}) {
     if (_controller?.stateMachine == null) return;
     final stateMachine = _controller!.stateMachine;
+
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean('happy')?.value = happy;
+
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean('unhappy')?.value = unhappy;
+
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean('indeterminate')?.value = indeterminate;
   }
 

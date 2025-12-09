@@ -89,6 +89,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     );
 
     // Set initial indeterminate state
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller?.stateMachine.boolean("indeterminate")?.value = true;
 
     setState(() => _isInitialized = true);
@@ -168,16 +170,28 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   void _setUnhappyState() {
     if (_controller?.stateMachine == null) return;
     final stateMachine = _controller!.stateMachine;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("indeterminate")?.value = false;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("happy")?.value = false;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("unhappy")?.value = true;
   }
 
   void _setHappyState() {
     if (_controller?.stateMachine == null) return;
     final stateMachine = _controller!.stateMachine;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("indeterminate")?.value = false;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("happy")?.value = true;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("unhappy")?.value = false;
   }
 
@@ -760,8 +774,14 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   }
 
   void _setIndeterminateState() {
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller?.stateMachine.boolean("indeterminate")?.value = true;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller?.stateMachine.boolean("happy")?.value = false;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller?.stateMachine.boolean("unhappy")?.value = false;
   }
 

@@ -81,12 +81,24 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
     // Set initial state based on wallet generation status
     final stateMachine = _controller!.stateMachine;
     if (walletGenerated) {
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       stateMachine.boolean('ShowKey')?.value = false;
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       stateMachine.boolean('showLock')?.value = true;
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       stateMachine.boolean('showShield')?.value = false;
     } else {
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       stateMachine.boolean('ShowKey')?.value = true;
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       stateMachine.boolean('showLock')?.value = false;
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       stateMachine.boolean('showShield')?.value = false;
     }
 
@@ -142,12 +154,22 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
 
     if (walletGenerated) {
       // Only 2 steps: Lock (0), Shield (1)
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       stateMachine.boolean('showLock')?.value = step == 0;
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       stateMachine.boolean('showShield')?.value = step == 1;
     } else {
       // All 3 steps: Key (0), Lock (1), Shield (2)
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       stateMachine.boolean('ShowKey')?.value = step == 0;
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       stateMachine.boolean('showLock')?.value = step == 1;
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       stateMachine.boolean('showShield')?.value = step == 2;
     }
 

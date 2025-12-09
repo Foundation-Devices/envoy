@@ -115,12 +115,6 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   await FMTCObjectBoxBackend().initialise();
   await const FMTCStore('mapStore').manage.create();
 
-  //TODO:Remove,
-  // Shards testing...
-  // await PrimeShard().addShard(
-  //     shard: [1, 234, 3, 4, 4], shardIdentifier: "xnc", deviceSerial: "test");
-  // print("all ${await PrimeShard().getAllShards()}");
-  // Start Tor regardless of whether we are using it or not
   try {
     Tor.instance.start();
   } on Exception catch (e, stack) {
@@ -140,13 +134,6 @@ class EnvoyApp extends StatefulWidget {
 
   @override
   State<EnvoyApp> createState() => _EnvoyAppState();
-}
-
-final _appContainer = ProviderContainer();
-ProviderContainer get appContainer => _appContainer;
-
-void disposeAppContainer() {
-  _appContainer.dispose();
 }
 
 class _EnvoyAppState extends State<EnvoyApp> {

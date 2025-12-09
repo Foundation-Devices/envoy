@@ -158,6 +158,8 @@ class OnrampSessionInfo {
 Future<OnrampSessionInfo?> createOnrampSession(
     String address, String accountId) async {
   final body = 'wallet_addresses[bitcoin]=$address'
+      '&destination_networks[0]=bitcoin'
+      '&destination_currencies[0]=btc'
       '&destination_currency=btc'
       '&destination_network=bitcoin';
 

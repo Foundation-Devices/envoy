@@ -18,10 +18,8 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(
-      _current != null,
-      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
-    );
+    assert(_current != null,
+        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
     return _current!;
   }
 
@@ -43,10 +41,8 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(
-      instance != null,
-      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
-    );
+    assert(instance != null,
+        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
     return instance!;
   }
 
@@ -62,7 +58,12 @@ class S {
 
   /// `6:15`
   String get _ {
-    return Intl.message('6:15', name: '_', desc: '', args: []);
+    return Intl.message(
+      '6:15',
+      name: '_',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `App Version`
@@ -97,7 +98,12 @@ class S {
 
   /// `Show`
   String get about_show {
-    return Intl.message('Show', name: 'about_show', desc: '', args: []);
+    return Intl.message(
+      'Show',
+      name: 'about_show',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Terms of Use`
@@ -482,7 +488,12 @@ class S {
 
   /// `Sent`
   String get activity_sent {
-    return Intl.message('Sent', name: 'activity_sent', desc: '', args: []);
+    return Intl.message(
+      'Sent',
+      name: 'activity_sent',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Sent (Boosted)`
@@ -947,7 +958,12 @@ class S {
 
   /// `Learn`
   String get bottomNav_learn {
-    return Intl.message('Learn', name: 'bottomNav_learn', desc: '', args: []);
+    return Intl.message(
+      'Learn',
+      name: 'bottomNav_learn',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Privacy`
@@ -1684,7 +1700,12 @@ class S {
 
   /// `of`
   String get card_label_of {
-    return Intl.message('of', name: 'card_label_of', desc: '', args: []);
+    return Intl.message(
+      'of',
+      name: 'card_label_of',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Choose a Tag`
@@ -2529,7 +2550,12 @@ class S {
 
   /// `Apply`
   String get component_Apply {
-    return Intl.message('Apply', name: 'component_Apply', desc: '', args: []);
+    return Intl.message(
+      'Apply',
+      name: 'component_Apply',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Advanced`
@@ -2544,7 +2570,12 @@ class S {
 
   /// `Apply`
   String get component_apply {
-    return Intl.message('Apply', name: 'component_apply', desc: '', args: []);
+    return Intl.message(
+      'Apply',
+      name: 'component_apply',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Are you sure?`
@@ -2559,12 +2590,22 @@ class S {
 
   /// `Back`
   String get component_back {
-    return Intl.message('Back', name: 'component_back', desc: '', args: []);
+    return Intl.message(
+      'Back',
+      name: 'component_back',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Cancel`
   String get component_cancel {
-    return Intl.message('Cancel', name: 'component_cancel', desc: '', args: []);
+    return Intl.message(
+      'Cancel',
+      name: 'component_cancel',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Confirm`
@@ -2599,12 +2640,22 @@ class S {
 
   /// `Delete`
   String get component_delete {
-    return Intl.message('Delete', name: 'component_delete', desc: '', args: []);
+    return Intl.message(
+      'Delete',
+      name: 'component_delete',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Device`
   String get component_device {
-    return Intl.message('Device', name: 'component_device', desc: '', args: []);
+    return Intl.message(
+      'Device',
+      name: 'component_device',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Dismiss`
@@ -2619,7 +2670,12 @@ class S {
 
   /// `Done`
   String get component_done {
-    return Intl.message('Done', name: 'component_done', desc: '', args: []);
+    return Intl.message(
+      'Done',
+      name: 'component_done',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Don’t show again`
@@ -2634,7 +2690,12 @@ class S {
 
   /// `Filter`
   String get component_filter {
-    return Intl.message('Filter', name: 'component_filter', desc: '', args: []);
+    return Intl.message(
+      'Filter',
+      name: 'component_filter',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `All`
@@ -2679,12 +2740,22 @@ class S {
 
   /// `Next`
   String get component_next {
-    return Intl.message('Next', name: 'component_next', desc: '', args: []);
+    return Intl.message(
+      'Next',
+      name: 'component_next',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `No`
   String get component_no {
-    return Intl.message('No', name: 'component_no', desc: '', args: []);
+    return Intl.message(
+      'No',
+      name: 'component_no',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Learn more`
@@ -2699,7 +2770,12 @@ class S {
 
   /// `OK`
   String get component_ok {
-    return Intl.message('OK', name: 'component_ok', desc: '', args: []);
+    return Intl.message(
+      'OK',
+      name: 'component_ok',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Recover`
@@ -2714,12 +2790,22 @@ class S {
 
   /// `Redeem`
   String get component_redeem {
-    return Intl.message('Redeem', name: 'component_redeem', desc: '', args: []);
+    return Intl.message(
+      'Redeem',
+      name: 'component_redeem',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Reset`
   String get component_reset {
-    return Intl.message('Reset', name: 'component_reset', desc: '', args: []);
+    return Intl.message(
+      'Reset',
+      name: 'component_reset',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Reset filter`
@@ -2744,12 +2830,22 @@ class S {
 
   /// `Retry`
   String get component_retry {
-    return Intl.message('Retry', name: 'component_retry', desc: '', args: []);
+    return Intl.message(
+      'Retry',
+      name: 'component_retry',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Save`
   String get component_save {
-    return Intl.message('Save', name: 'component_save', desc: '', args: []);
+    return Intl.message(
+      'Save',
+      name: 'component_save',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Searching`
@@ -2764,7 +2860,12 @@ class S {
 
   /// `Skip`
   String get component_skip {
-    return Intl.message('Skip', name: 'component_skip', desc: '', args: []);
+    return Intl.message(
+      'Skip',
+      name: 'component_skip',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Sort by`
@@ -2789,7 +2890,12 @@ class S {
 
   /// `Update`
   String get component_update {
-    return Intl.message('Update', name: 'component_update', desc: '', args: []);
+    return Intl.message(
+      'Update',
+      name: 'component_update',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Warning`
@@ -2804,7 +2910,12 @@ class S {
 
   /// `Yes`
   String get component_yes {
-    return Intl.message('Yes', name: 'component_yes', desc: '', args: []);
+    return Intl.message(
+      'Yes',
+      name: 'component_yes',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Contact Ramp for support`
@@ -4461,7 +4572,12 @@ class S {
 
   /// `~ `
   String get filter_sortBy_newest {
-    return Intl.message('~ ', name: 'filter_sortBy_newest', desc: '', args: []);
+    return Intl.message(
+      '~ ',
+      name: 'filter_sortBy_newest',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Oldest first`
@@ -6416,32 +6532,62 @@ class S {
 
   /// `About`
   String get menu_about {
-    return Intl.message('About', name: 'menu_about', desc: '', args: []);
+    return Intl.message(
+      'About',
+      name: 'menu_about',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Backups`
   String get menu_backups {
-    return Intl.message('Backups', name: 'menu_backups', desc: '', args: []);
+    return Intl.message(
+      'Backups',
+      name: 'menu_backups',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `ENVOY`
   String get menu_heading {
-    return Intl.message('ENVOY', name: 'menu_heading', desc: '', args: []);
+    return Intl.message(
+      'ENVOY',
+      name: 'menu_heading',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Privacy`
   String get menu_privacy {
-    return Intl.message('Privacy', name: 'menu_privacy', desc: '', args: []);
+    return Intl.message(
+      'Privacy',
+      name: 'menu_privacy',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Settings`
   String get menu_settings {
-    return Intl.message('Settings', name: 'menu_settings', desc: '', args: []);
+    return Intl.message(
+      'Settings',
+      name: 'menu_settings',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Support`
   String get menu_support {
-    return Intl.message('Support', name: 'menu_support', desc: '', args: []);
+    return Intl.message(
+      'Support',
+      name: 'menu_support',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `From version 2.0.0, all address types are now accessible under a single account card.\n\nThe default receive address type can be changed in Settings.`
@@ -7396,7 +7542,12 @@ class S {
 
   /// `Node`
   String get privacy_node_title {
-    return Intl.message('Node', name: 'privacy_node_title', desc: '', args: []);
+    return Intl.message(
+      'Node',
+      name: 'privacy_node_title',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Better \nPerformance`
@@ -7551,7 +7702,12 @@ class S {
 
   /// `Ramp Purchase`
   String get ramp_note {
-    return Intl.message('Ramp Purchase', name: 'ramp_note', desc: '', args: []);
+    return Intl.message(
+      'Ramp Purchase',
+      name: 'ramp_note',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Pending Ramp Purchase`
@@ -7606,7 +7762,12 @@ class S {
 
   /// `Copy`
   String get receive_qr_copy {
-    return Intl.message('Copy', name: 'receive_qr_copy', desc: '', args: []);
+    return Intl.message(
+      'Copy',
+      name: 'receive_qr_copy',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Rescan Account`
@@ -7621,7 +7782,12 @@ class S {
 
   /// `Share`
   String get receive_qr_share {
-    return Intl.message('Share', name: 'receive_qr_share', desc: '', args: []);
+    return Intl.message(
+      'Share',
+      name: 'receive_qr_share',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Sign Message`
@@ -8466,7 +8632,12 @@ class S {
 
   /// `To:`
   String get send_keyboard_to {
-    return Intl.message('To:', name: 'send_keyboard_to', desc: '', args: []);
+    return Intl.message(
+      'To:',
+      name: 'send_keyboard_to',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Scan signed Transaction`

@@ -95,15 +95,15 @@ Device getDeviceFromJson(Map<String, dynamic> json) {
   int colorIndex =
       Devices().devices.length % (EnvoyColors.listTileColorPairs.length);
 
-  Device device = Device(
-      deviceName,
-      json["hw_version"] == 1
-          ? DeviceType.passportGen1
-          : DeviceType.passportGen12,
-      serial,
-      DateTime.now(),
-      fwVersion,
-      EnvoyColors.listAccountTileColors[colorIndex]);
+  DeviceType deviceType = () {
+    final hwVersion = json["hw_version"];
+    if (hwVersion == 1) return DeviceType.passportGen1;
+    if (hwVersion == 1.2) return DeviceType.passportGen12;
+    return DeviceType.passportPrime;
+  }();
+
+  Device device = Device(deviceName, deviceType, serial, DateTime.now(),
+      fwVersion, EnvoyColors.listAccountTileColors[colorIndex]);
   return device;
 }
 

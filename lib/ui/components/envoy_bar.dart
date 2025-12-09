@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -119,6 +120,72 @@ class EnvoyBar extends StatelessWidget {
       width: 1,
       color: EnvoyColors.border2,
       margin: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+    );
+  }
+}
+
+class _EnvoyBarItemWidget extends StatefulWidget {
+  final EnvoyBarItem item;
+
+  const _EnvoyBarItemWidget({required this.item});
+
+  @override
+  State<_EnvoyBarItemWidget> createState() => _EnvoyBarItemWidgetState();
+}
+
+class _EnvoyBarItemWidgetState extends State<_EnvoyBarItemWidget> {
+  bool _isPressed = false;
+
+  void _onTapDown(TapDownDetails details) {
+    Haptics.buttonPress();
+    setState(() {
+      _isPressed = true;
+    });
+  }
+
+  void _onTapUp(TapUpDetails details) {
+    Haptics.selectionClick();
+    setState(() {
+      _isPressed = false;
+    });
+    widget.item.onTap?.call();
+  }
+
+  void _onTapCancel() {
+    setState(() {
+      _isPressed = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: _onTapDown,
+      onTapUp: _onTapUp,
+      onTapCancel: _onTapCancel,
+      child: AnimatedScale(
+        scale: _isPressed ? 0.9 : 1.0,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeInOut,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            EnvoyIcon(
+              widget.item.icon,
+              color: EnvoyColors.accentPrimary,
+            ),
+            const SizedBox(height: EnvoySpacing.xs),
+            Text(
+              widget.item.text,
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.info.copyWith(
+                color: EnvoyColors.accentPrimary,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

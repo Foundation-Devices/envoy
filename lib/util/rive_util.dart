@@ -14,7 +14,5 @@ final coinLockRiveProvider = Provider<File?>((ref) {
 });
 
 final animatedQrScannerRiveProvider = Provider<File?>((ref) {
-  return ref
-      .watch(riveLoaderProvider('assets/anim/animated_qr_scanner.riv'))
-      .value;
+  return ref.watch(riveLoaderProvider('assets/anim/qr_info_anim.riv')).value;
 });

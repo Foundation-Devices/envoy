@@ -33,15 +33,16 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import java.util.UUID
 
 
@@ -99,9 +100,13 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
     private var writeRetryCount: Int = 0
 
     private val mainHandler = Handler(Looper.getMainLooper())
+    private var bleWriteQueue: BleWriteQueue? = null
     private var currentMtu: Int = 247
 
     private val scope = CoroutineScope(Dispatchers.Main)
+
+    // Job for managing large file data transfers
+    private var transferJob: Job? = null
 
     // BroadcastReceiver for bonding state changes
     private var bondingReceiver: BroadcastReceiver? = null
@@ -149,7 +154,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         }
         context.registerReceiver(bondingReceiver, filter)
         isReceiverRegistered = true
-        Log.d(TAG, "Bonding receiver registered")
     }
 
 
@@ -203,8 +207,8 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         }
 
         Log.d(TAG, "Bonding state changed for (${device.address})")
-        Log.d(TAG, "  Previous state: ${getBondStateString(previousBondState)}")
-        Log.d(TAG, "  New state: ${getBondStateString(bondState)}")
+        Log.d(TAG, "Previous state: ${getBondStateString(previousBondState)}")
+        Log.d(TAG, "New state: ${getBondStateString(bondState)}")
         sendConnectionEvent(
             when (bondState) {
                 BluetoothDevice.BOND_BONDED -> BluetoothConnectionEventType.DEVICE_CONNECTED
@@ -239,7 +243,19 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             "reconnect" -> reconnect(call, result)
             "getConnectedPeripheralId" -> result.success(getConnectedPeripheralId())
             "isConnected" -> result.success(isConnected())
+            "cancelTransfer" -> cancelTransfer(result)
+
             else -> result.notImplemented()
+        }
+    }
+
+    private fun cancelTransfer(result: MethodChannel.Result) {
+        if (transferJob?.isActive == true) {
+            transferJob?.cancel()
+            bleWriteQueue?.clearQueue()
+            result.success(true)
+        } else {
+            result.success(false)
         }
     }
 
@@ -306,9 +322,16 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun transmitFromFile(call: MethodCall, result: MethodChannel.Result) {
         val path = call.argument<String?>("path")
 
+
+        if (transferJob?.isActive == true) {
+            Log.i(TAG, "transmitFromFile: Transfer already in progress")
+            result.error("TRANSFER_IN_PROGRESS", "Another transfer is already in progress", null)
+            return
+        }
         if (path.isNullOrEmpty()) {
             result.error("INVALID_PATH", "File path is null or empty", null)
             return
@@ -320,53 +343,36 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             return
         }
 
-        scope.launch(Dispatchers.IO) {
+        transferJob = scope.launch(Dispatchers.IO) {
             try {
                 val fileSize = file.length()
                 var bytesProcessed = 0L
-
-                FileInputStream(file).use { fis ->
-                    val intBuffer = ByteArray(4)
-                    val intByteBuffer = ByteBuffer.wrap(intBuffer).order(ByteOrder.BIG_ENDIAN)
-
-                    while (true) {
-                        val lengthBytesRead = fis.read(intBuffer)
-                        if (lengthBytesRead < 4) break
-
-                        bytesProcessed += lengthBytesRead
-                        intByteBuffer.rewind()
-                        val innerLength = intByteBuffer.int
-
-                        Log.d(TAG, "Consuming inner list of length $innerLength")
-
-                        repeat(innerLength) {
-                            val itemLengthBytesRead = fis.read(intBuffer)
-                            if (itemLengthBytesRead < 4) return@use
-
-                            bytesProcessed += itemLengthBytesRead
-                            intByteBuffer.rewind()
-                            val itemLength = intByteBuffer.int
-
-                            val itemBytes = ByteArray(itemLength)
-                            val bytesRead = fis.read(itemBytes)
-                            if (bytesRead < itemLength) return@use
-
-                            bytesProcessed += bytesRead
-
-                            // Send progress update
-                            val progress = bytesProcessed.toFloat() / fileSize.toFloat()
-                            sendWriteProgress(progress, path, bytesProcessed, fileSize)
-
-                            val buffer = ByteBuffer.wrap(itemBytes)
-                            handleBinaryWrite(message = buffer)
-                            delay(10)
+                val chunkSize = 244
+                // Use forEachChunk extension function
+                file.inputStream().use { stream ->
+                    stream.forEachChunk(chunkSize) { chunk ->
+                        // Await the enqueue
+                        val success = bleWriteQueue?.enqueue(chunk) ?: false
+                        if (!success) {
+                            Log.e(TAG, "Failed to enqueue data at byte $bytesProcessed")
+                            withContext(Dispatchers.Main) {
+                                result.error(
+                                    "WRITE_ERROR",
+                                    "Failed to write data at byte $bytesProcessed",
+                                    null
+                                )
+                            }
+                            return@forEachChunk
                         }
+                        bytesProcessed += chunk.size
+                        // Send progress update
+                        val progress = bytesProcessed.toFloat() / fileSize.toFloat()
+                        sendWriteProgress(progress, path, bytesProcessed, fileSize)
                     }
                 }
 
                 // Send final progress update
                 sendWriteProgress(1.0f, path, fileSize, fileSize)
-
                 file.delete()
                 withContext(Dispatchers.Main) {
                     result.success(
@@ -377,7 +383,13 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                     )
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error reading large data file: ${e.message}", e)
+                if (e is CancellationException) {
+                    Log.w(TAG, "transmission cancelled: ${e.message}")
+                    withContext(Dispatchers.Main) {
+                        result.error("TRANSFER_CANCELLED", "Data transmission cancelled", null)
+                    }
+                    return@launch
+                }
                 withContext(Dispatchers.Main) {
                     result.error("FILE_READ_ERROR", "Failed to read file: ${e.message}", null)
                 }
@@ -394,14 +406,17 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
     }
 
     @SuppressLint("MissingPermission")
-    private fun handleBinaryWrite(
+    private suspend fun handleBinaryWrite(
         message: ByteBuffer?,
     ): ByteBuffer {
         val failureBuffer = createDirectByteBuffer(0)
 
+        if (transferJob?.isActive == true) {
+            Log.e(TAG, "Another write operation is in progress")
+            return failureBuffer
+        }
         if (message == null) {
             Log.e(TAG, "Message is null, sending FAILURE (0)")
-
             return failureBuffer
         }
 
@@ -425,96 +440,31 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             return failureBuffer
         }
         if (data.size < 8) {
-            Log.e(
-                TAG,
-                "ERROR: Binary data size (${data.size} bytes) is less than required minimum (8 bytes)"
-            )
             return failureBuffer
         }
-        val writeType =
-            if (writeChar.properties and BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE != 0) {
-                BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
-            } else {
-                BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-            }
 
-        val writeTypeString = if (writeType == BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE) {
-            "without_response"
+        if (bleWriteQueue == null) {
+            Log.e(TAG, "BLE Write Queue is not initialized")
+            return failureBuffer
+        }
+        if (data.size > 244) {
+            data.chunked(244).forEach { chunk ->
+                val result = bleWriteQueue?.enqueue(chunk) ?: false
+                if (!result) {
+                    Log.e(TAG, "Failed to enqueue chunk of size ${chunk.size}")
+                    return failureBuffer
+                }
+            }
+            return createDirectByteBuffer(1)
         } else {
-            "with_response"
+            val success = bleWriteQueue?.enqueue(data) ?: false
+            return if (success) {
+                createDirectByteBuffer(1)
+            } else {
+                failureBuffer
+            }
         }
 
-
-        // Get effective payload size (MTU - 3 bytes for ATT overhead)
-        val payloadPerPacket = maxOf(1, currentMtu - 3)
-
-        Log.d(
-            TAG,
-            "MTU: $currentMtu, payload: $payloadPerPacket, data: ${data.size} bytes, writeType: $writeTypeString"
-        )
-
-        if (data.size <= payloadPerPacket) {
-            // Store data for potential retry
-            pendingWriteData = data
-            writeRetryCount = 0
-
-            // Send progress update for single packet (100%)
-
-            val writeSuccess = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                // API 33+
-                val success = gatt.writeCharacteristic(writeChar, data, writeType)
-                if (success != BluetoothStatusCodes.SUCCESS) {
-                    Log.e(TAG, "Error writeCharacteristic : $success")
-                }
-                success == BluetoothStatusCodes.SUCCESS
-            } else {
-                // Below API 33
-                @Suppress("DEPRECATION")
-                writeChar.writeType = writeType
-                @Suppress("DEPRECATION")
-                writeChar.value = data
-                @Suppress("DEPRECATION")
-                gatt.writeCharacteristic(writeChar)
-            }
-
-            if (!writeSuccess) {
-                Log.e(TAG, " Failed to initiate binary write operation")
-                return failureBuffer
-            }
-
-            val successBuffer = createDirectByteBuffer(1)
-            return successBuffer
-        } else {
-            val chunks = data.chunked(payloadPerPacket)
-            Log.d(
-                TAG,
-                "Writing chunks ${chunks.size}: ${
-                    chunks.map { chunks.size }.reduce { acc, i -> acc + i }
-                } bytes"
-            )
-            for ((index, chunk) in chunks.withIndex()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    gatt.writeCharacteristic(
-                        writeChar,
-                        chunk,
-                        writeType
-                    )
-                } else {
-                    writeChar.writeType = writeType
-                    @Suppress("DEPRECATION")
-                    writeChar.value = chunk
-                    @Suppress("DEPRECATION")
-                    gatt.writeCharacteristic(writeChar)
-                }
-
-                if (writeType == BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE && index < chunks.size - 1) {
-                    Thread.sleep(10)
-                }
-            }
-
-            val successBuffer = createDirectByteBuffer(1)
-            return successBuffer
-        }
     }
 
     private inner class ConnectionStreamHandler : EventChannel.StreamHandler {
@@ -829,6 +779,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                 BluetoothProfile.STATE_CONNECTED -> {
                     Log.d(TAG, "Connected to GATT server")
                     connectedDevice = gatt?.device
+                    bleWriteQueue?.restart()
                     if (!checkBluetoothPermissions()) {
                         return
                     }
@@ -878,7 +829,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                     sendConnectionEvent(
                         BluetoothConnectionEventType.DEVICE_DISCONNECTED,
                     )
-
+                    bleWriteQueue?.cancel()
                     connectedDevice = null
                     writeCharacteristic = null
                     readCharacteristic = null
@@ -908,6 +859,13 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                         when {
                             properties and BluetoothGattCharacteristic.PROPERTY_WRITE != 0 ||
                                     properties and BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE != 0 -> {
+
+                                bleWriteQueue = BleWriteQueue(
+                                    gatt, characteristic,
+                                    CoroutineScope(
+                                        Dispatchers.IO
+                                    )
+                                )
                                 writeCharacteristic = characteristic
                             }
 
@@ -919,7 +877,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                                 if (properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY != 0) {
                                     val notificationEnabled =
                                         gatt.setCharacteristicNotification(characteristic, true)
-                                    Log.d(TAG, "Notification setup result: $notificationEnabled")
                                     val descriptor = characteristic.getDescriptor(CCCD_UUID)
                                     if (descriptor != null) {
                                         val enableNotificationValue =
@@ -969,6 +926,10 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             characteristic: BluetoothGattCharacteristic?,
             status: Int
         ) {
+
+            if (characteristic?.uuid == writeCharacteristic?.uuid) {
+                bleWriteQueue?.onCharacteristicWrite(status)
+            }
             if (status == BluetoothGatt.GATT_SUCCESS) {
 
                 if (!checkBluetoothPermissions()) {
@@ -1070,7 +1031,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             super.onCharacteristicRead(gatt, characteristic, value, status)
             // API 33+ - value is provided as parameter
             if (value.isEmpty()) {
-                Log.w(TAG, "onCharacteristicRead received but data is null")
                 return
             }
             sendBinaryData(value)
@@ -1243,7 +1203,20 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             result.error("DISCONNECT_ERROR", "Failed to disconnect: ${e.message}", null)
         }
     }
+}
 
+suspend fun FileInputStream.forEachChunk(chunkSize: Int, action: suspend (ByteArray) -> Unit) {
+    val buffer = ByteArray(chunkSize)
+    while (true) {
+        val bytesRead = read(buffer)
+        if (bytesRead <= 0) break
+        val chunk = if (bytesRead < chunkSize) {
+            buffer.copyOfRange(0, bytesRead)
+        } else {
+            buffer.copyOf()
+        }
+        action(chunk)
+    }
 }
 
 // Extension function for chunking byte arrays
