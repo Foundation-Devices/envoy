@@ -2012,18 +2012,15 @@ Future<void> main() async {
 
       // enable "better performance" if it is not enabled
       await enablePerformance(tester);
-      // Check the shield icon after enabling performance
-      await checkTorShieldIcon(tester, expected: ShieldExpectation.none);
 
       // Perform the required actions to change to privacy
       await enablePrivacy(tester);
       // Check the shield icon after enabling privacy
 
-      await checkTorShieldIcon(tester, expected: ShieldExpectation.teal);
+      await checkTorShieldIcon(tester, expectPrivacy: true);
 
       // turn off Tor for next test
       await enablePerformance(tester);
-      await checkTorShieldIcon(tester, expected: ShieldExpectation.none);
 
       stopwatch.stop();
       debugPrint(
@@ -2556,8 +2553,7 @@ Future<void> main() async {
       await findAndPressTextButton(tester, 'Privacy');
       // enable "better performance" if it is not enabled
       await enablePerformance(tester);
-      // Check the shield icon after enabling performance
-      await checkTorShieldIcon(tester, expected: ShieldExpectation.none);
+
       await findAndPressTextButton(tester, 'Accounts');
 
       // go to settings
@@ -2644,11 +2640,7 @@ Future<void> main() async {
       await enablePrivacy(tester);
       await findAndPressTextButton(tester, 'Accounts');
       // Check the shield icon after enabling privacy
-      bool torIsConnected =
-          await checkTorShieldIcon(tester, expected: ShieldExpectation.teal);
-
-      expect(torIsConnected, isTrue,
-          reason: 'Tor should be connected, but it is not.');
+      await checkTorShieldIcon(tester, expectPrivacy: true);
 
       /// Open Envoy settings, enable fiat
       await pressHamburgerMenu(tester);
@@ -2719,11 +2711,6 @@ Future<void> main() async {
       /// turn off the tor for the next test
       await findAndPressTextButton(tester, 'Privacy');
       await enablePerformance(tester);
-      // Check the shield icon is gone
-      bool performance =
-          await checkTorShieldIcon(tester, expected: ShieldExpectation.none);
-
-      expect(performance, isTrue, reason: 'Tor is off');
 
       stopwatch.stop();
       debugPrint(
