@@ -383,10 +383,9 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             task.cancel()
             transferTask = nil
             bleWriteQueue?.cancel()
-            
             // Send cancellation progress event
             sendWriteProgress(0.0, id: "transfer_cancelled", bytesProcessed: 0, totalBytes: 0)
-            
+            bleWriteQueue?.restart()
             result(["cancelled": true])
             print("Transfer cancelled successfully")
         } else {
@@ -581,12 +580,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     // MARK: - Binary Channel Handlers
 
     private func handleBinaryWrite(data: Data) -> Data {
-        // Check if a transfer operation is already in progress
-        if let task = transferTask, !task.isCancelled {
-            print("Another write operation is in progress")
-            return Data()
-        }
-        
+
         guard let peripheral = connectedPeripheral else {
             return Data()
         }
@@ -609,6 +603,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
         let writeType: CBCharacteristicWriteType =
             writeChar.properties.contains(.writeWithoutResponse) ? .withoutResponse : .withResponse
+        //prime only supports 244 mtu
         let maxMTU = 244
 
         Task {
@@ -616,11 +611,14 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 let _ = await bleWriteQueue?.enqueue(data: data) ?? false
             } else {
                 let chunks = data.chunked(into: maxMTU)
+                print("Writing chunk of size: \(chunks.count)")
                 for chunk in chunks {
-                    let success = await bleWriteQueue?.enqueue(data: chunk) ?? false
-                    if !success {
-                        break
+                    Task{
+                        let _ =   await bleWriteQueue?.enqueue(data: chunk) ?? false
                     }
+//                    if !success {
+//                        break
+//                    }
                 }
             }
         }
@@ -979,19 +977,18 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     }
 
     
-
+    
     func peripheral(
-        _ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?
+        _ peripheral: CBPeripheral,
+        didReadRSSI RSSI: NSNumber,
+        error: (any Error)?
     ) {
-        print("didWriteValueFor called")
-        // Forward to write queue (only called for withResponse writes)
-        bleWriteQueue?.onCharacteristicWrite(error: error)
+        print("didReadRSSI : \(RSSI)")
     }
     
     func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
-        print("peripheralIsReady(toSendWriteWithoutResponse) called")
+        print("peripheralIsReady(toSendWriteWithoutResponse) ")
         // Forward to write queue (only called for writeWithoutResponse)
-        bleWriteQueue?.onPeripheralReady()
     }
 
     func peripheral(
