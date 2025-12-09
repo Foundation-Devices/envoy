@@ -39,6 +39,7 @@ mixin _$EnvoyAccount {
   String get xfp => throw _privateConstructorUsedError;
   List<(AddressType, String)> get externalPublicDescriptors =>
       throw _privateConstructorUsedError;
+  bool get archived => throw _privateConstructorUsedError;
 
   /// Create a copy of EnvoyAccount
   /// with the given fields replaced by the non-null parameter values.
@@ -73,7 +74,8 @@ abstract class $EnvoyAccountCopyWith<$Res> {
       List<Output> utxo,
       List<String> tags,
       String xfp,
-      List<(AddressType, String)> externalPublicDescriptors});
+      List<(AddressType, String)> externalPublicDescriptors,
+      bool archived});
 }
 
 /// @nodoc
@@ -111,6 +113,7 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
     Object? tags = null,
     Object? xfp = null,
     Object? externalPublicDescriptors = null,
+    Object? archived = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -193,6 +196,10 @@ class _$EnvoyAccountCopyWithImpl<$Res, $Val extends EnvoyAccount>
           ? _value.externalPublicDescriptors
           : externalPublicDescriptors // ignore: cast_nullable_to_non_nullable
               as List<(AddressType, String)>,
+      archived: null == archived
+          ? _value.archived
+          : archived // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -225,7 +232,8 @@ abstract class _$$EnvoyAccountImplCopyWith<$Res>
       List<Output> utxo,
       List<String> tags,
       String xfp,
-      List<(AddressType, String)> externalPublicDescriptors});
+      List<(AddressType, String)> externalPublicDescriptors,
+      bool archived});
 }
 
 /// @nodoc
@@ -261,6 +269,7 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
     Object? tags = null,
     Object? xfp = null,
     Object? externalPublicDescriptors = null,
+    Object? archived = null,
   }) {
     return _then(_$EnvoyAccountImpl(
       name: null == name
@@ -343,6 +352,10 @@ class __$$EnvoyAccountImplCopyWithImpl<$Res>
           ? _value._externalPublicDescriptors
           : externalPublicDescriptors // ignore: cast_nullable_to_non_nullable
               as List<(AddressType, String)>,
+      archived: null == archived
+          ? _value.archived
+          : archived // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -370,7 +383,8 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
       required final List<Output> utxo,
       required final List<String> tags,
       required this.xfp,
-      required final List<(AddressType, String)> externalPublicDescriptors})
+      required final List<(AddressType, String)> externalPublicDescriptors,
+      required this.archived})
       : _descriptors = descriptors,
         _nextAddress = nextAddress,
         _transactions = transactions,
@@ -456,8 +470,11 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
   }
 
   @override
+  final bool archived;
+
+  @override
   String toString() {
-    return 'EnvoyAccount(name: $name, color: $color, deviceSerial: $deviceSerial, dateAdded: $dateAdded, preferredAddressType: $preferredAddressType, seedHasPassphrase: $seedHasPassphrase, index: $index, descriptors: $descriptors, dateSynced: $dateSynced, network: $network, id: $id, nextAddress: $nextAddress, balance: $balance, unlockedBalance: $unlockedBalance, isHot: $isHot, transactions: $transactions, utxo: $utxo, tags: $tags, xfp: $xfp, externalPublicDescriptors: $externalPublicDescriptors)';
+    return 'EnvoyAccount(name: $name, color: $color, deviceSerial: $deviceSerial, dateAdded: $dateAdded, preferredAddressType: $preferredAddressType, seedHasPassphrase: $seedHasPassphrase, index: $index, descriptors: $descriptors, dateSynced: $dateSynced, network: $network, id: $id, nextAddress: $nextAddress, balance: $balance, unlockedBalance: $unlockedBalance, isHot: $isHot, transactions: $transactions, utxo: $utxo, tags: $tags, xfp: $xfp, externalPublicDescriptors: $externalPublicDescriptors, archived: $archived)';
   }
 
   @override
@@ -494,7 +511,9 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
             const DeepCollectionEquality().equals(other._tags, _tags) &&
             (identical(other.xfp, xfp) || other.xfp == xfp) &&
             const DeepCollectionEquality().equals(
-                other._externalPublicDescriptors, _externalPublicDescriptors));
+                other._externalPublicDescriptors, _externalPublicDescriptors) &&
+            (identical(other.archived, archived) ||
+                other.archived == archived));
   }
 
   @override
@@ -519,7 +538,8 @@ class _$EnvoyAccountImpl implements _EnvoyAccount {
         const DeepCollectionEquality().hash(_utxo),
         const DeepCollectionEquality().hash(_tags),
         xfp,
-        const DeepCollectionEquality().hash(_externalPublicDescriptors)
+        const DeepCollectionEquality().hash(_externalPublicDescriptors),
+        archived
       ]);
 
   /// Create a copy of EnvoyAccount
@@ -552,8 +572,8 @@ abstract class _EnvoyAccount implements EnvoyAccount {
       required final List<Output> utxo,
       required final List<String> tags,
       required final String xfp,
-      required final List<(AddressType, String)>
-          externalPublicDescriptors}) = _$EnvoyAccountImpl;
+      required final List<(AddressType, String)> externalPublicDescriptors,
+      required final bool archived}) = _$EnvoyAccountImpl;
 
   @override
   String get name;
@@ -595,6 +615,8 @@ abstract class _EnvoyAccount implements EnvoyAccount {
   String get xfp;
   @override
   List<(AddressType, String)> get externalPublicDescriptors;
+  @override
+  bool get archived;
 
   /// Create a copy of EnvoyAccount
   /// with the given fields replaced by the non-null parameter values.

@@ -13,7 +13,6 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:ngwallet/ngwallet.dart';
-import 'package:envoy/business/devices.dart';
 
 final _accountOrderStream = StreamProvider<List<String>>(((ref) {
   return NgAccountManager().order;
@@ -95,6 +94,10 @@ final accountsProvider = Provider<List<EnvoyAccount>>((ref) {
   final accounts = ref.watch(_accountListProvider);
 
   final visibleItem = accounts.where((account) {
+    if (account.archived) {
+      return false;
+    }
+
     if (!testnetEnabled &&
         (account.network == Network.testnet ||
             account.network == Network.testnet4)) {
@@ -161,9 +164,9 @@ final accountsZeroBalanceProvider = Provider<bool>((ref) {
 final showDefaultAccountProvider = StateProvider<bool>((ref) => true);
 
 /// Stores the current passphrase fingerprint (XFP) for Prime devices.
-/// Key: device serial, Value: XFP (null if no passphrase)
+/// (null if no passphrase)
 final primePassphraseFingerprintProvider =
-    StateProvider<Map<String, String?>>((ref) => {});
+    StateProvider<String?>((ref) => null);
 
 /// Listens to ApplyPassphrase events from Prime and auto-switches view
 final _passphraseEventStreamProvider =
@@ -181,9 +184,7 @@ final passphraseEventHandlerProvider = Provider<void>((ref) {
     kPrint("ApplyPassphrase event received in UI: fingerprint=$fingerprint");
 
     // Update the fingerprint map
-    final currentMap = ref.read(primePassphraseFingerprintProvider);
-    final updatedMap = {...currentMap, 'prime': fingerprint};
-    ref.read(primePassphraseFingerprintProvider.notifier).state = updatedMap;
+    ref.read(primePassphraseFingerprintProvider.notifier).state = fingerprint;
 
     // Auto-switch view based on passphrase state
     if (fingerprint != null) {
@@ -200,10 +201,9 @@ final passphraseEventHandlerProvider = Provider<void>((ref) {
 
 final primePassphraseAccountsProvider = Provider<List<EnvoyAccount>>((ref) {
   final accounts = ref.watch(accountsProvider);
-  final primeSerials = Devices().getPrimeDevices.map((d) => d.serial).toSet();
+  final appliedPasshpraseFingerprint = ref.watch(primePassphraseFingerprintProvider);
 
   return accounts.where((account) {
-    return account.seedHasPassphrase &&
-        primeSerials.contains(account.deviceSerial);
+    return account.seedHasPassphrase && account.xfp == appliedPasshpraseFingerprint;
   }).toList();
 });

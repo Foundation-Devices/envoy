@@ -2784,8 +2784,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   EnvoyAccount dco_decode_envoy_account(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 20)
-      throw Exception('unexpected arr length: expect 20 but see ${arr.length}');
+    if (arr.length != 21)
+      throw Exception('unexpected arr length: expect 21 but see ${arr.length}');
     return EnvoyAccount(
       name: dco_decode_String(arr[0]),
       color: dco_decode_String(arr[1]),
@@ -2808,6 +2808,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       xfp: dco_decode_String(arr[18]),
       externalPublicDescriptors:
           dco_decode_list_record_address_type_string(arr[19]),
+      archived: dco_decode_bool(arr[20]),
     );
   }
 
@@ -3737,6 +3738,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_xfp = sse_decode_String(deserializer);
     var var_externalPublicDescriptors =
         sse_decode_list_record_address_type_string(deserializer);
+    var var_archived = sse_decode_bool(deserializer);
     return EnvoyAccount(
         name: var_name,
         color: var_color,
@@ -3757,7 +3759,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         utxo: var_utxo,
         tags: var_tags,
         xfp: var_xfp,
-        externalPublicDescriptors: var_externalPublicDescriptors);
+        externalPublicDescriptors: var_externalPublicDescriptors,
+        archived: var_archived);
   }
 
   @protected
@@ -4789,6 +4792,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.xfp, serializer);
     sse_encode_list_record_address_type_string(
         self.externalPublicDescriptors, serializer);
+    sse_encode_bool(self.archived, serializer);
   }
 
   @protected
