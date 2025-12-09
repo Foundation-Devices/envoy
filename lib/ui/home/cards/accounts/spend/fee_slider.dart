@@ -428,7 +428,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   @override
   Widget build(BuildContext context) {
     Color gradientOverlayColor = Colors.white54;
-    bool processingFee = ref.watch(spendFeeProcessing);
+    //bool processingFee = ref.watch(spendFeeProcessing);
     int selectedFee = ref.watch(_selectedFeeStateProvider);
     int aproxFee = getApproxFeeInSats(
       feeRateSatsPerVb: selectedFee,

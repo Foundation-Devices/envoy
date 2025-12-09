@@ -16,6 +16,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_det
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/tx_note_dialog_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_tagging.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/state/send_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -30,6 +31,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/ui/components/address_widget.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/choose_coins_widget.dart';
 
 class StagingTxDetails extends ConsumerStatefulWidget {
   final bool isRBFSpend;
@@ -86,6 +88,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
         .fold(0, (int sum, element) => sum + element);
 
     final inputs = stagedTransaction.inputs.map((e) => "${e.txId}:${e.vout}");
+
     final inputTags = stagedTransaction.inputs.map((e) => e.tag);
 
     final changeOutput = stagedTransaction.outputs.firstWhereOrNull(
@@ -94,8 +97,6 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
 
     final int totalChangeAmount = changeOutput?.amount.toInt() ?? 0;
     final String changeAddress = changeOutput?.address ?? "";
-
-    // final String? userChosenTag = ref.watch(stagingTxChangeOutPutTagProvider);
 
     double? displayFiatSendAmount = ref.watch(displayFiatSendAmountProvider);
     double? displayFiatTotalChangeAmount =
@@ -126,14 +127,45 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
               "${S().coincontrol_tx_detail_expand_spentFrom} ${inputs.toSet().length} ${inputs.toSet().length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
           icon: const EnvoyIcon(EnvoyIcons.utxo,
               color: EnvoyColors.textPrimary, size: EnvoyIconSize.small),
-          // TODO: add chevron right
-          trailing: EnvoyAmount(
-              unit: formatUnit,
-              account: account,
-              amountSats: totalInputAmount,
-              displayFiatAmount: displayFiatTotalInputAmount,
-              millionaireMode: false,
-              amountWidgetStyle: AmountWidgetStyle.normal),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              EnvoyAmount(
+                  unit: formatUnit,
+                  account: account,
+                  amountSats: totalInputAmount,
+                  displayFiatAmount: displayFiatTotalInputAmount,
+                  millionaireMode: false,
+                  amountWidgetStyle: AmountWidgetStyle.normal),
+              GestureDetector(
+                  onTap: () async {
+                    Navigator.of(context).pop();
+
+                    editTransaction(context, ref);
+                    Navigator.of(context, rootNavigator: true).push(
+                        PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) {
+                              return ChooseCoinsWidget();
+                            },
+                            transitionDuration:
+                                const Duration(milliseconds: 100),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
+                            opaque: false,
+                            fullscreenDialog: true));
+                  },
+                  child: EnvoyIcon(
+                    EnvoyIcons.chevron_right,
+                    size: EnvoyIconSize.extraSmall,
+                  )),
+            ],
+          ),
         ),
         Padding(
           padding: const EdgeInsets.only(left: 12, top: EnvoySpacing.small),
@@ -155,7 +187,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
                           (e.isEmpty) ? S().account_details_untagged_card : e)
                       .toSet()
                       .map((e) {
-                    return _coinTag(e);
+                    return coinTagPill(e);
                   }).toList(),
                 ),
               ],
@@ -237,7 +269,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
                       const Padding(
                           padding: EdgeInsets.only(left: EnvoySpacing.xs)),
                       if (totalChangeAmount != 0 && changeOutputTag.isNotEmpty)
-                        _coinTag(changeOutputTag),
+                        coinTagPill(changeOutputTag),
                       if (changeOutputTag.isEmpty)
                         Row(
                           mainAxisSize: MainAxisSize.min,
@@ -642,29 +674,6 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
   //   );
   // }
 
-  Widget _coinTag(String title) {
-    TextStyle titleStyle =
-        EnvoyTypography.info.copyWith(color: EnvoyColors.solidWhite);
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
-              color: EnvoyColors.accentPrimary),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-                vertical: EnvoySpacing.xs, horizontal: EnvoySpacing.small),
-            child: Text(
-              title,
-              style: titleStyle,
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
   Future<void> _onEditTransaction(BuildContext context) async {
     Navigator.pop(context);
 
@@ -700,6 +709,29 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
     ///pop spend form
     router.pop();
   }
+}
+
+Widget coinTagPill(String title) {
+  TextStyle titleStyle =
+      EnvoyTypography.info.copyWith(color: EnvoyColors.solidWhite);
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
+            color: EnvoyColors.accentPrimary),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              vertical: EnvoySpacing.xs, horizontal: EnvoySpacing.small),
+          child: Text(
+            title,
+            style: titleStyle,
+          ),
+        ),
+      )
+    ],
+  );
 }
 
 class AnimatedBottomTxDetails extends ConsumerStatefulWidget {

@@ -56,6 +56,7 @@ class _DraggableOverlayState extends State<DraggableOverlay>
             child: Material(
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(24)),
+              color: Colors.white,
               clipBehavior: Clip.antiAlias,
               child: Column(
                 mainAxisSize: MainAxisSize.min,

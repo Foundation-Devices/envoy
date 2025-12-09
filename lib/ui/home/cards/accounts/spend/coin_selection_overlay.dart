@@ -84,7 +84,8 @@ class CoinSelectionOverlayState extends ConsumerState<CoinSelectionOverlay> {
       if (next) {
         if (ref.read(spendEditModeProvider) ==
             SpendOverlayContext.rbfSelection) {
-        } else {
+        } else if (ref.read(spendEditModeProvider) !=
+            SpendOverlayContext.editCoins) {
           final requiredAmount = ref.watch(spendAmountProvider);
           final account = ref.read(selectedAccountProvider);
           if (account != null) {
@@ -880,7 +881,7 @@ class _SpendSelectionCancelWarningState
       checkBoxText: S().component_dontShowAgain,
       checkedValue: isDismissed,
       onCheckBoxChanged: (checkedValue) async {
-        if (!checkedValue) {
+        if (checkedValue) {
           await EnvoyStorage()
               .addPromptState(DismissiblePrompt.txDiscardWarning);
         } else {

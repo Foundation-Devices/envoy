@@ -68,9 +68,6 @@ class _TransactionReviewCardState2
   @override
   Widget build(BuildContext context) {
     String address = widget.address;
-    const double cardRadius = EnvoySpacing.medium2;
-
-    final uneconomicSpends = ref.watch(uneconomicSpendsProvider);
 
     // send amount is passed as a prop to the widget, use that if available
 
@@ -120,8 +117,8 @@ class _TransactionReviewCardState2
     AmountDisplayUnit formatUnit =
         unit == DisplayUnit.btc ? AmountDisplayUnit.btc : AmountDisplayUnit.sat;
 
-    RBFSpendState? rbfSpendState = ref.read(rbfSpendStateProvider);
-    BitcoinTransaction? originalTx = rbfSpendState?.originalTx;
+    // RBFSpendState? rbfSpendState = ref.read(rbfSpendStateProvider);
+    // BitcoinTransaction? originalTx = rbfSpendState?.originalTx;
 
     final spendTimeEstimationProvider =
         ref.watch(spendEstimatedBlockTimeProvider);

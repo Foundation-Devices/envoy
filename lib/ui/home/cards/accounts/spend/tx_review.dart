@@ -16,8 +16,6 @@ import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/choose_coins_widget.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
@@ -970,29 +968,6 @@ class _TransactionReviewScreenState
   }
 }
 
-Future navigateWithTransition(BuildContext context, Widget page) async {
-  final router = Navigator.of(context, rootNavigator: true);
-
-  await router.push(
-    PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 360),
-      reverseTransitionDuration: const Duration(milliseconds: 360),
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return page;
-      },
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return SharedAxisTransition(
-          animation: animation,
-          fillColor: Colors.transparent,
-          secondaryAnimation: secondaryAnimation,
-          transitionType: SharedAxisTransitionType.vertical,
-          child: child,
-        );
-      },
-    ),
-  );
-}
-
 Widget feeOverSpendWarning(int feePercentage) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
@@ -1020,17 +995,14 @@ void editTransaction(BuildContext context, WidgetRef ref) async {
 
   ref.read(coinSelectionStateProvider.notifier).reset();
   ref.read(coinSelectionStateProvider.notifier).addAll(inputs);
+  ref.read(spendEditModeProvider.notifier).state =
+      SpendOverlayContext.editCoins;
 
   ///make a copy of wallet selected coins so that we can backtrack to it
   ref.read(coinSelectionFromWallet.notifier).reset();
   ref.read(coinSelectionFromWallet.notifier).addAll(inputs);
 
-  if (ref.read(selectedAccountProvider) != null) {
-    coinSelectionOverlayKey.currentState?.show(SpendOverlayContext.editCoins);
-  }
-
   final scope = ProviderScope.containerOf(context);
-  await navigateWithTransition(context, const ChooseCoinsWidget());
   await ref.read(spendTransactionProvider.notifier).validate(scope);
 }
 
