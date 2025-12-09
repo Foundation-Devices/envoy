@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/util/haptics.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -30,54 +31,28 @@ class EnvoyBar extends StatelessWidget {
   final bool showDividers;
   final double bottomPadding;
 
-  const EnvoyBar(
-      {super.key,
-      required this.items,
-      this.showDividers = false,
-      this.bottomPadding = EnvoySpacing.large2});
+  const EnvoyBar({
+    super.key,
+    required this.items,
+    this.showDividers = false,
+    this.bottomPadding = EnvoySpacing.large1,
+  });
 
   @override
   Widget build(BuildContext context) {
     // Build the row's children with optional dividers
     final List<Widget> children = [];
     for (int i = 0; i < items.length; i++) {
-      final isEnabled = items[i].enabled;
-
       children.add(
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
-            child: GestureDetector(
-              onTap: isEnabled ? items[i].onTap : null,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  EnvoyIcon(
-                    items[i].icon,
-                    color: isEnabled
-                        ? EnvoyColors.accentPrimary
-                        : EnvoyColors.textInactive,
-                  ),
-                  const SizedBox(height: EnvoySpacing.xs),
-                  Text(
-                    items[i].text,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.info.copyWith(
-                      color: isEnabled
-                          ? EnvoyColors.accentPrimary
-                          : EnvoyColors.textInactive,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: _EnvoyBarItemWidget(item: items[i]),
           ),
         ),
       );
 
-      // Add vertical dividers if enabled
+      // Add vertical dividers after first and before last item
       if (showDividers && (i == 0 || i == items.length - 2)) {
         children.add(_buildDivider());
       }
@@ -121,6 +96,82 @@ class EnvoyBar extends StatelessWidget {
       width: 1,
       color: EnvoyColors.border2,
       margin: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+    );
+  }
+}
+
+class _EnvoyBarItemWidget extends StatefulWidget {
+  final EnvoyBarItem item;
+
+  const _EnvoyBarItemWidget({required this.item});
+
+  @override
+  State<_EnvoyBarItemWidget> createState() => _EnvoyBarItemWidgetState();
+}
+
+class _EnvoyBarItemWidgetState extends State<_EnvoyBarItemWidget> {
+  bool _isPressed = false;
+
+  void _onTapDown(TapDownDetails details) {
+    if (!widget.item.enabled) return;
+    Haptics.buttonPress(); // your original haptic call on press down[web:70]
+    setState(() {
+      _isPressed = true;
+    });
+  }
+
+  void _onTapUp(TapUpDetails details) {
+    if (!widget.item.enabled) return;
+    Haptics.selectionClick(); // your original haptic call on tap up[web:70]
+    setState(() {
+      _isPressed = false;
+    });
+    widget.item.onTap?.call();
+  }
+
+  void _onTapCancel() {
+    if (!widget.item.enabled) return;
+    setState(() {
+      _isPressed = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isEnabled = widget.item.enabled;
+
+    return GestureDetector(
+      onTapDown: _onTapDown,
+      onTapUp: _onTapUp,
+      onTapCancel: _onTapCancel,
+      child: AnimatedScale(
+        scale: _isPressed ? 0.9 : 1.0,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeInOut,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            EnvoyIcon(
+              widget.item.icon,
+              color: isEnabled
+                  ? EnvoyColors.accentPrimary
+                  : EnvoyColors.textInactive,
+            ),
+            const SizedBox(height: EnvoySpacing.xs),
+            Text(
+              widget.item.text,
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.info.copyWith(
+                color: isEnabled
+                    ? EnvoyColors.accentPrimary
+                    : EnvoyColors.textInactive,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

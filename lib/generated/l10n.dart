@@ -1402,7 +1402,7 @@ class S {
 
   /// `Non-custodial, peer-to-peer Bitcoin purchases.`
   String
-  get buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl_subheading {
+      get buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl_subheading {
     return Intl.message(
       'Non-custodial, peer-to-peer Bitcoin purchases.',
       name:
@@ -4991,7 +4991,7 @@ class S {
 
   /// `Tap any of the above cards to receive Bitcoin.`
   String
-  get hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt {
+      get hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt {
     return Intl.message(
       'Tap any of the above cards to receive Bitcoin.',
       name:
@@ -5743,7 +5743,7 @@ class S {
 
   /// `Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again.`
   String
-  get manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading {
+      get manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading {
     return Intl.message(
       'Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again.',
       name:
@@ -6035,7 +6035,7 @@ class S {
 
   /// `If you continue without a backup file, your wallet settings, additional accounts, Tags and Notes will not be restored.`
   String
-  get manual_setup_recovery_import_backup_modal_fail_connectivity_subheading {
+      get manual_setup_recovery_import_backup_modal_fail_connectivity_subheading {
     return Intl.message(
       'If you continue without a backup file, your wallet settings, additional accounts, Tags and Notes will not be restored.',
       name:
@@ -6097,7 +6097,7 @@ class S {
 
   /// `Carefully re-type your passphrase so Envoy can open your Envoy Backup File.`
   String
-  get manual_setup_recovery_import_backup_re_enter_passphrase_subheading {
+      get manual_setup_recovery_import_backup_re_enter_passphrase_subheading {
     return Intl.message(
       'Carefully re-type your passphrase so Envoy can open your Envoy Backup File.',
       name:
@@ -6189,7 +6189,7 @@ class S {
 
   /// `Passphrases are case and space sensitive. Enter with care.`
   String
-  get manual_setup_verify_seed_12_words_enter_passphrase_modal_subheading {
+      get manual_setup_verify_seed_12_words_enter_passphrase_modal_subheading {
     return Intl.message(
       'Passphrases are case and space sensitive. Enter with care.',
       name:
@@ -6201,7 +6201,7 @@ class S {
 
   /// `[[Passphrases]] are an advanced feature.`
   String
-  get manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2 {
+      get manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2 {
     return Intl.message(
       '[[Passphrases]] are an advanced feature.',
       name:
@@ -6213,7 +6213,7 @@ class S {
 
   /// `If you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.`
   String
-  get manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading {
+      get manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading {
     return Intl.message(
       'If you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.',
       name:
@@ -6235,7 +6235,7 @@ class S {
 
   /// `Please carefully re-enter your passphrase.`
   String
-  get manual_setup_verify_seed_12_words_verify_passphrase_modal_subheading {
+      get manual_setup_verify_seed_12_words_verify_passphrase_modal_subheading {
     return Intl.message(
       'Please carefully re-enter your passphrase.',
       name:
@@ -6397,7 +6397,7 @@ class S {
 
   /// `Pending Android Auto Backup (once daily)`
   String
-  get manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup {
+      get manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup {
     return Intl.message(
       'Pending Android Auto Backup (once daily)',
       name:
@@ -6409,7 +6409,7 @@ class S {
 
   /// `Pending backup to iCloud Keychain`
   String
-  get manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup {
+      get manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup {
     return Intl.message(
       'Pending backup to iCloud Keychain',
       name:

@@ -132,7 +132,6 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
           ),
           const SizedBox(),
           EnvoyBar(
-            bottomPadding: EnvoySpacing.large1,
             items: [
               EnvoyBarItem(
                 icon: EnvoyIcons.download,

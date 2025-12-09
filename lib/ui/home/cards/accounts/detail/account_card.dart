@@ -290,7 +290,6 @@ class _AccountCardState extends ConsumerState<AccountCard>
               padding: const EdgeInsets.only(top: EnvoySpacing.xs),
               child: EnvoyBar(
                 showDividers: true,
-                bottomPadding: EnvoySpacing.large1,
                 items: [
                   EnvoyBarItem(
                     icon: EnvoyIcons.transfer,
