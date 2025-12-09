@@ -276,7 +276,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                               S().taproot_passport_dialog_reconnect,
                               (BuildContext modalContext) {
                                 Navigator.pop(modalContext);
-                                scanForDevice(context);
+                                scanForDevice(context, ref);
                               },
                               secondaryButtonLabel:
                                   S().taproot_passport_dialog_later,
