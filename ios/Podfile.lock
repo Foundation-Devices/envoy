@@ -21,10 +21,10 @@ PODS:
     - FlutterMacOS
   - MobileVLCKit (3.6.1b1)
   - MTBBarcodeScanner (5.0.11)
-  - ObjectBox (4.3.0)
+  - ObjectBox (4.4.1)
   - objectbox_flutter_libs (0.0.1):
     - Flutter
-    - ObjectBox (= 4.3.0)
+    - ObjectBox (= 4.4.1)
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_foundation (0.0.1):
@@ -173,32 +173,32 @@ SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_secure_storage: d33dac7ae2ea08509be337e775f6b59f1ff45f12
   flutter_vlc_player: 1508e7989e41d11328e4fa4c9a1f188c7cf4cf7a
-  in_app_purchase_storekit: a1ce04056e23eecc666b086040239da7619cd783
+  in_app_purchase_storekit: 2342c0a5da86593124d08dd13d920f39a52b273a
   integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
-  local_auth_darwin: fa4b06454df7df8e97c18d7ee55151c57e7af0de
+  local_auth_darwin: 63c73d6d28cc3e239be2b6aa460ea6e317cd5100
   MobileVLCKit: 2d9c7c373393ae43086aeeff890bf0b1afc15c5c
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
-  ObjectBox: 7760fa9072adcffe102a6adf4646ca84ba70ab6b
-  objectbox_flutter_libs: 8fa96fe3ffeb448a48e8cacbbe3ec4be7a6564d8
+  ObjectBox: 7da4aceb5013d041bfafdbc6d744a26918b09757
+  objectbox_flutter_libs: 7a6ea1d74b43f5d970e6571d1b79e4b181b33d81
   package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
+  path_provider_foundation: 0b743cbb62d8e47eab856f09262bb8c1ddcfe6ba
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
   qr_code_scanner_plus: 3bfe4deb7f28996a63a2a580819d49dae80d5ed3
   Ramp: 3f843fb75cac12ad40842afa3226bae36dc93521
   ramp_flutter: 7c2b108417cd4899c0f4aae2040a646e82b8f660
-  rive_native: b9a36ed0644fc2ed1fd46f1d2b4e5501e5948235
+  rive_native: 9b0b40deb7105b079e2e4253aef7d0b030d5dfbe
   rust_lib_backup: 4524262f94017bf154f4311366f58b2942301b66
   rust_lib_foundation_api: b926bd066994ff2c0354873b5335f7287ac62945
   rust_lib_http_tor: 0fcda57f1a6c6046f5f62488ef5bce90aa30694a
   rust_lib_ngwallet: 3a8d019b362008e31221ba4b2263988fcc0bf802
   rust_lib_shards: 8e23064d2ebd38e6a70dc5a2fd05747544c14005
   share_plus: 8b6f8b3447e494cca5317c8c3073de39b3600d1f
-  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
+  shared_preferences_foundation: 5086985c1d43c5ba4d5e69a4e8083a389e2909e6
   sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
   tor: 662a9f5b980b5c86decb8ba611de9bcd4c8286eb
-  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
+  url_launcher_ios: bb13df5870e8c4234ca12609d04010a21be43dfa
   wakelock_plus: 76957ab028e12bfa4e66813c99e46637f367fc7e
 
-PODFILE CHECKSUM: dc3fbd9be436599b943a0b318293671d7938b48e
+PODFILE CHECKSUM: 0ca84cefa7f2127eeb30c78f8bacb271e71f39b5
 
 COCOAPODS: 1.16.2

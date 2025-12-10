@@ -642,32 +642,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       throw UnimplementedError(
           "Bluetooth write not implemented for this platform");
     }
-    // _writeProgressSubscription = writeStream.listen(
-    //   (progress) {
-    //     if (_isUpdatingFirmware && _totalFirmwareChunks > 0) {
-    //       final overallProgress =
-    //           (_sentFirmwareChunks + progress) / _totalFirmwareChunks;
-    //       _writeProgressController.add(overallProgress.clamp(0.0, 1.0));
-    //     } else {
-    //       _writeProgressController.add(progress);
-    //     }
-    //   },
-    //   onDone: () {
-    //     kPrint("Progress stream done!");
-    //     if (_isUpdatingFirmware) {
-    //       _sentFirmwareChunks++;
-    //     }
-    //     _sendingData = false;
-    //   },
-    //   onError: (e) {
-    //     kPrint("Progress stream errored out!");
-    //     if (_isUpdatingFirmware) {
-    //       endFirmwareUpdate();
-    //     }
-    //     _sendingData = false;
-    //     _writeProgressController.addError(e);
-    //   },
-    // );
     _sendingData = false;
     return Stream.value(1.0);
   }

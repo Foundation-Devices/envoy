@@ -1,10 +1,17 @@
-import AccessorySetupKit
 import CoreBluetooth
-import Flutter
 import Foundation
-import UIKit
 
 class BleWriteQueue {
+
+    /**
+     
+        The minimum amount of time we expect needs to elapse before the Write Without Response buffer is cleared in miliseconds.
+    
+        The minimum connection interval time is 15 ms, as noted in this technical document: `https://developer.apple.com/library/archive/qa/qa1931/_index.html`. Therefore, it is reasonable to assume that past this interval, the BLE Radio will be powered up by the CoreBluetooth API / Subsystem to send the write values we've enqueued onto the CBPeripheral.
+            based on https://github.com/NordicSemiconductor/IOS-nRF-Connect-Device-Manager/blob/e46fd30eda5397db0e58287f9236b9bfe8ef54f7/iOSMcuManagerLibrary/Source/Bluetooth/McuMgrBleROBWriteBuffer.swift#L29
+        */
+    static let CONNECTION_BUFFER_WAIT_TIME_MS = 15
+
     private let gatt: CBPeripheral
     private let characteristic: CBCharacteristic
     private let queue = DispatchQueue(label: "com.envoy.ble.writequeue", qos: .userInteractive)
@@ -13,19 +20,10 @@ class BleWriteQueue {
     private var currentRequest: WriteRequest?
     private var isActive = true
     private var isProcessing = false
-    private var writeType: CBCharacteristicWriteType = .withResponse
-
-    // Continuation for async/await
-    private var writeContinuation: CheckedContinuation<Bool, Never>?
 
     init(peripheral: CBPeripheral, characteristic: CBCharacteristic) {
         self.gatt = peripheral
         self.characteristic = characteristic
-
-        // Determine write type based on characteristic properties
-        self.writeType =
-            characteristic.properties.contains(.writeWithoutResponse)
-            ? .withoutResponse : .withResponse
 
         startProcessingQueue()
     }
@@ -53,16 +51,14 @@ class BleWriteQueue {
 
                 Task {
                     let success = await self.performWrite(data: request.data)
-
                     if !success {
-                        print("BleWriteQueue: Write failed, clearing queue")
+                        print("ERROR - BleWriteQueue: Write failed, clearing queue")
                         self.isActive = false
                         request.completion(false)
                         self.clearQueue()
                         self.isProcessing = false
                         return
                     }
-
                     request.completion(true)
                     self.currentRequest = nil
                 }
@@ -92,13 +88,17 @@ class BleWriteQueue {
                 }
 
                 if !self.isActive {
-                    print("BleWriteQueue: Queue inactive, rejecting write")
+                    print("WARNING - BleWriteQueue: Queue inactive, rejecting write")
                     continuation.resume(returning: false)
                     return
                 }
 
-                let request = WriteRequest(id: data.hashValue, data: data) { success in
-                    continuation.resume(returning: success)
+                var hasResumed = false
+                let request = WriteRequest(data: data) { success in
+                    if !hasResumed {
+                        hasResumed = true
+                        continuation.resume(returning: success)
+                    }
                 }
 
                 self.writeQueue.append(request)
@@ -110,33 +110,9 @@ class BleWriteQueue {
         }
     }
 
-    func onCharacteristicWrite(error: Error?) {
-        queue.async { [weak self] in
-            guard let self = self else { return }
-
-            let success = error == nil
-            
-            self.writeContinuation?.resume(returning: success)
-            self.writeContinuation = nil
-        }
-    }
-
-    // Called when peripheral is ready for next write
-    func onPeripheralReady() {
-        queue.async { [weak self] in
-            guard let self = self else { return }
-            self.writeContinuation?.resume(returning: true)
-            self.writeContinuation = nil
-        }
-    }
-
     func cancel() {
         queue.async { [weak self] in
             guard let self = self else { return }
-
-            self.writeContinuation?.resume(returning: false)
-            self.writeContinuation = nil
-
             self.currentRequest?.completion(false)
             self.currentRequest = nil
             self.clearQueue()
@@ -153,16 +129,26 @@ class BleWriteQueue {
                     continuation.resume(returning: false)
                     return
                 }
-
-                if !self.isActive {
-                    print("BleWriteQueue: Queue inactive during performWrite")
+                if( self.gatt.state == .disconnected ){
+                    print("Device disconnected, cannot write")
                     continuation.resume(returning: false)
                     return
                 }
-
-                self.writeContinuation = continuation
-
-                self.gatt.writeValue(data, for: self.characteristic, type: self.writeType)
+                if !gatt.canSendWriteWithoutResponse {
+                    queue.asyncAfter(
+                        deadline: .now() + .milliseconds(Self.CONNECTION_BUFFER_WAIT_TIME_MS)
+                    ) { [weak self] in
+                        guard let self else {
+                            continuation.resume(returning: false)
+                            return
+                        }
+                        self.gatt.writeValue(data, for: self.characteristic, type: .withoutResponse)
+                        continuation.resume(returning: true)
+                    }
+                } else {
+                    gatt.writeValue(data, for: characteristic, type: .withoutResponse)
+                    continuation.resume(returning: true)
+                }
             }
         }
     }
@@ -176,12 +162,10 @@ class BleWriteQueue {
     }
 
     private class WriteRequest {
-        let id: Int
         let data: Data
         let completion: (Bool) -> Void
 
-        init(id: Int, data: Data, completion: @escaping (Bool) -> Void) {
-            self.id = id
+        init( data: Data, completion: @escaping (Bool) -> Void) {
             self.data = data
             self.completion = completion
         }
