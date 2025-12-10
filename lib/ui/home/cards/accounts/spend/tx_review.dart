@@ -44,6 +44,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:envoy/ui/components/step_indicator.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/choose_coins_widget.dart';
 
 //TODO: multi device support, pass device id
 final primeConnectedStateProvider = Provider<StepModel>((ref) {
@@ -431,6 +432,21 @@ class _TxReviewState extends ConsumerState<TxReview> {
               //exit broadcast flow and move to review screen
               completer.complete(false);
               editTransaction(context, ref);
+
+              Navigator.of(context, rootNavigator: true).push(PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    return ChooseCoinsWidget();
+                  },
+                  transitionDuration: const Duration(milliseconds: 100),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                  opaque: false,
+                  fullscreenDialog: true));
             },
             hasMultipleTagsInput: true,
             onTagUpdate: () async {
