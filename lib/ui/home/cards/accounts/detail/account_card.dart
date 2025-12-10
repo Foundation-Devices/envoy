@@ -318,7 +318,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                           S().taproot_passport_dialog_reconnect,
                           (BuildContext modalContext) {
                             Navigator.pop(modalContext);
-                            scanForDevice(context);
+                            scanForDevice(context, ref);
                           },
                           secondaryButtonLabel:
                               S().taproot_passport_dialog_later,
@@ -867,7 +867,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                           (modalContext) {
                             Navigator.pop(modalContext);
                             HomePageState.of(context)?.toggleOptions();
-                            scanForDevice(context);
+                            scanForDevice(context, ref);
                           },
                           secondaryButtonLabel:
                               S().taproot_passport_dialog_later,

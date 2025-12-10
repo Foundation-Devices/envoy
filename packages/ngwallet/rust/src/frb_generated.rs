@@ -3577,6 +3577,7 @@ impl SseDecode for crate::api::envoy_account::EnvoyAccount {
         let mut var_xfp = <String>::sse_decode(deserializer);
         let mut var_externalPublicDescriptors =
             <Vec<(ngwallet::config::AddressType, String)>>::sse_decode(deserializer);
+        let mut var_archived = <bool>::sse_decode(deserializer);
         return crate::api::envoy_account::EnvoyAccount {
             name: var_name,
             color: var_color,
@@ -3598,6 +3599,7 @@ impl SseDecode for crate::api::envoy_account::EnvoyAccount {
             tags: var_tags,
             xfp: var_xfp,
             external_public_descriptors: var_externalPublicDescriptors,
+            archived: var_archived,
         };
     }
 }
@@ -4971,6 +4973,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::envoy_account::EnvoyAccount {
             self.external_public_descriptors
                 .into_into_dart()
                 .into_dart(),
+            self.archived.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -5675,6 +5678,7 @@ impl SseEncode for crate::api::envoy_account::EnvoyAccount {
             self.external_public_descriptors,
             serializer,
         );
+        <bool>::sse_encode(self.archived, serializer);
     }
 }
 
