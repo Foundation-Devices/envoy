@@ -383,6 +383,7 @@ impl EnvoyAccountHandler {
                     tags,
                     xfp: account.get_xfp().to_lowercase(),
                     external_public_descriptors,
+                    archived: config.archived,
                 })
             }
             Err(error) => Err(anyhow!("Failed to lock account: {}", error)),

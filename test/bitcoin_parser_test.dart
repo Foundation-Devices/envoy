@@ -276,6 +276,7 @@ EnvoyAccount getAccount({required int balance}) {
       utxo: [],
       tags: [],
       xfp: "xfp",
-      externalPublicDescriptors: [(AddressType.p2Sh, "p2sh")]);
+      externalPublicDescriptors: [(AddressType.p2Sh, "p2sh")],
+      archived: false);
   return account;
 }
