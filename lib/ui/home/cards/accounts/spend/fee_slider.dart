@@ -107,14 +107,28 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
             subtitle: getAproxTime(account, fasterFee),
             onTap: () => _selectOptionLocal(FeeOption.fast),
             trailing: (account != null)
-                ? EnvoyAmount(
-                    amountSats: getApproxFeeInSats(
-                      feeRateSatsPerVb: fasterFee.toInt(),
-                      txVSizeVb: widget.transaction.vsize.toInt(),
-                    ),
-                    // TODO fix vsize always 0
-                    amountWidgetStyle: AmountWidgetStyle.normal,
-                    account: account!)
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: EnvoySpacing.xs),
+                        child: Text("~",
+                            style: EnvoyTypography.body
+                                .copyWith(color: EnvoyColors.textTertiary)),
+                      ),
+                      EnvoyAmount(
+                          amountSats: getApproxFeeInSats(
+                            feeRateSatsPerVb: fasterFee.toInt(),
+                            txVSizeVb: (widget.transaction.fee /
+                                    widget.transaction.feeRate)
+                                .toInt(),
+                          ),
+                          amountWidgetStyle: AmountWidgetStyle.normal,
+                          account: account!),
+                    ],
+                  )
                 : null,
           ),
           const Divider(),
@@ -124,14 +138,28 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
             subtitle: getAproxTime(account, standardFee),
             onTap: () => _selectOptionLocal(FeeOption.standard),
             trailing: (account != null)
-                ? EnvoyAmount(
-                    amountSats: getApproxFeeInSats(
-                      feeRateSatsPerVb: standardFee.toInt(),
-                      txVSizeVb: widget.transaction.vsize.toInt(),
-                    ),
-                    // TODO fix vsize always 0
-                    amountWidgetStyle: AmountWidgetStyle.normal,
-                    account: account!)
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: EnvoySpacing.xs),
+                        child: Text("~",
+                            style: EnvoyTypography.body
+                                .copyWith(color: EnvoyColors.textTertiary)),
+                      ),
+                      EnvoyAmount(
+                          amountSats: getApproxFeeInSats(
+                            feeRateSatsPerVb: standardFee.toInt(),
+                            txVSizeVb: (widget.transaction.fee /
+                                    widget.transaction.feeRate)
+                                .toInt(),
+                          ),
+                          amountWidgetStyle: AmountWidgetStyle.normal,
+                          account: account!),
+                    ],
+                  )
                 : null,
           ),
           const Divider(),
@@ -141,14 +169,28 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
             subtitle: getAproxTime(account, slowerFee),
             onTap: () => _selectOptionLocal(FeeOption.slow),
             trailing: (account != null)
-                ? EnvoyAmount(
-                    amountSats: getApproxFeeInSats(
-                      feeRateSatsPerVb: slowerFee.toInt(),
-                      txVSizeVb: widget.transaction.vsize.toInt(),
-                    ),
-                    // TODO fix vsize always 0
-                    amountWidgetStyle: AmountWidgetStyle.normal,
-                    account: account!)
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: EnvoySpacing.xs),
+                        child: Text("~",
+                            style: EnvoyTypography.body
+                                .copyWith(color: EnvoyColors.textTertiary)),
+                      ),
+                      EnvoyAmount(
+                          amountSats: getApproxFeeInSats(
+                            feeRateSatsPerVb: slowerFee.toInt(),
+                            txVSizeVb: (widget.transaction.fee /
+                                    widget.transaction.feeRate)
+                                .toInt(),
+                          ),
+                          amountWidgetStyle: AmountWidgetStyle.normal,
+                          account: account!),
+                    ],
+                  )
                 : null,
           ),
           const Divider(),
@@ -160,15 +202,30 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                 : null,
             trailing: _showCustom
                 ? (account != null)
-                    ? EnvoyAmount(
-                        amountSats: getApproxFeeInSats(
-                          feeRateSatsPerVb:
-                              ref.watch(_selectedFeeStateProvider),
-                          txVSizeVb: 202,
-                        ),
-                        // TODO fix vsize always null
-                        amountWidgetStyle: AmountWidgetStyle.normal,
-                        account: account!)
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(right: EnvoySpacing.xs),
+                            child: Text("~",
+                                style: EnvoyTypography.body
+                                    .copyWith(color: EnvoyColors.textTertiary)),
+                          ),
+                          EnvoyAmount(
+                              amountSats: getApproxFeeInSats(
+                                feeRateSatsPerVb:
+                                    ref.watch(_selectedFeeStateProvider),
+                                txVSizeVb: (widget.transaction.fee /
+                                        widget.transaction.feeRate)
+                                    .toInt(),
+                              ),
+                              amountWidgetStyle: AmountWidgetStyle.normal,
+                              account: account!),
+                        ],
+                      )
                     : null
                 : const EnvoyIcon(EnvoyIcons.chevron_down,
                     size: EnvoyIconSize.extraSmall),
@@ -432,7 +489,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     int selectedFee = ref.watch(_selectedFeeStateProvider);
     int aproxFee = getApproxFeeInSats(
       feeRateSatsPerVb: selectedFee,
-      txVSizeVb: 202, // TODO: get real vsize
+      txVSizeVb: (widget.transaction.fee / widget.transaction.feeRate).toInt(),
     );
     int feePercentage =
         ((aproxFee / (aproxFee + widget.transaction.amount.abs())) * 100)
