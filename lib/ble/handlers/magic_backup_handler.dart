@@ -117,7 +117,9 @@ class BleMagicBackupHandler extends PassportMessageHandler {
         final tempFile = await BluetoothChannel.getBleCacheFile(
             payloadRes.hashCode.toString());
         await BluetoothManager().encodeToFile(
-            message: payloadRes, filePath: tempFile.path, chunkSize: 10000);
+            message: payloadRes,
+            filePath: tempFile.path,
+            chunkSize: bleChunkSize.toInt());
         await BluetoothChannel().transmitFromFile(tempFile.path);
         kPrint("Restore magic backup file sent!");
       } else {
