@@ -69,7 +69,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("6:15"),
+        "_": MessageLookupByLibrary.simpleMessage(
+          "Foundation Devices, Inc.\n6 Liberty Square #6018\nBoston, MA 02109 USA",
+        ),
         "about_appVersion": MessageLookupByLibrary.simpleMessage(
           "Versão da Aplicação",
         ),
@@ -361,6 +363,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Este é um voucher on-chain. Não pode ser resgatado para uma conta Testnet ou Signet.",
         ),
+        "btn_firmware_version":
+            MessageLookupByLibrary.simpleMessage("Firmware"),
         "buy_bitcoin_accountSelection_chooseAccount":
             MessageLookupByLibrary.simpleMessage(
                 "Escolher uma conta diferente"),
@@ -819,6 +823,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_dontShowAgain": MessageLookupByLibrary.simpleMessage(
           "Não mostrar novamente",
         ),
+        "component_exit": MessageLookupByLibrary.simpleMessage("Exit"),
         "component_filter": MessageLookupByLibrary.simpleMessage("Filtrar"),
         "component_filter_button_all":
             MessageLookupByLibrary.simpleMessage("Tudo"),
@@ -858,6 +863,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_update": MessageLookupByLibrary.simpleMessage("Actualizar"),
         "component_warning": MessageLookupByLibrary.simpleMessage("AVISO"),
         "component_yes": MessageLookupByLibrary.simpleMessage("Sim"),
+        "componet_disconnect":
+            MessageLookupByLibrary.simpleMessage("Disconnect"),
         "contactRampForSupport": MessageLookupByLibrary.simpleMessage(
           "Contacta a Ramp para assistência",
         ),
@@ -917,6 +924,30 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "A tua carteira foi eliminada com sucesso",
         ),
+        "device_deviceDetailsPrimeRemoved_accessoryRemoved":
+            MessageLookupByLibrary.simpleMessage(
+          "Accessory removed, please reconnect Prime.",
+        ),
+        "device_deviceDetailsPrimeRemoved_reconnectPassport":
+            MessageLookupByLibrary.simpleMessage("Reconnect Passport"),
+        "device_deviceDetailsPrime_connected":
+            MessageLookupByLibrary.simpleMessage(
+          "Connected",
+        ),
+        "device_deviceDetailsPrime_connection":
+            MessageLookupByLibrary.simpleMessage("Connection"),
+        "device_deviceDetailsPrime_disconnected":
+            MessageLookupByLibrary.simpleMessage("Disconnected"),
+        "device_deviceDetailsPrime_securityCheck":
+            MessageLookupByLibrary.simpleMessage("Security Check"),
+        "devices_connectingToPrime_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Keep both devices nearby.",
+        ),
+        "devices_connectingToPrime_header":
+            MessageLookupByLibrary.simpleMessage(
+          "Connecting to Prime",
+        ),
         "devices_empty_modal_video_cta1": MessageLookupByLibrary.simpleMessage(
           "Comprar o Passport",
         ),
@@ -925,6 +956,20 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
           "Protege a tua Bitcoin com o Passport.",
+        ),
+        "devices_reconnectedSuccess_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Your device is now ready to use.",
+        ),
+        "devices_reconnectedSuccess_header":
+            MessageLookupByLibrary.simpleMessage(
+          "Device Reconnected Successfully!",
+        ),
+        "devices_reconnecting_content": MessageLookupByLibrary.simpleMessage(
+          "Connecting to Passport Prime",
+        ),
+        "devices_reconnecting_header": MessageLookupByLibrary.simpleMessage(
+          "Reconnecting",
         ),
         "empty_tag_modal_subheading": m4,
         "envoy_account_tos_cta": MessageLookupByLibrary.simpleMessage("Aceito"),
@@ -1683,6 +1728,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "manage_account_rename_heading": MessageLookupByLibrary.simpleMessage(
           "Altera o Nome da Conta",
         ),
+        "manage_deviceDetailsModalDisconnectExistingPassport_content":
+            MessageLookupByLibrary.simpleMessage(
+          "On the current software version, Envoy can only support one Passport Prime connection. \nThis will change with an upcoming update, but for now you must disconnect from your existing Passport Prime before setting up a new one.",
+        ),
+        "manage_deviceDetailsModalDisconnectExistingPassport_disconnect":
+            MessageLookupByLibrary.simpleMessage("Disconnect"),
+        "manage_deviceDetailsModalDisconnectExistingPassport_header":
+            MessageLookupByLibrary.simpleMessage("Disconnect Existing Prime"),
         "manage_device_deletePassportWarning":
             MessageLookupByLibrary.simpleMessage(
           "Tens a certeza que queres eliminar o Passport?\nEsta operação vai remover o dispositivo da Envoy bem como qualquer conta associada.",
@@ -1698,6 +1751,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "manage_device_details_heading": MessageLookupByLibrary.simpleMessage(
           "DETALHES DO DISPOSITIVO",
         ),
+        "manage_device_details_menu_disconnectDevice":
+            MessageLookupByLibrary.simpleMessage("Disconnect"),
         "manage_device_details_menu_editDevice":
             MessageLookupByLibrary.simpleMessage("EDITAR NOME DO DISPOSITIVO"),
         "manage_device_rename_modal_heading":
@@ -2070,6 +2125,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Passport Prime Connected",
         ),
+        "onboarding_connectionModalAbort_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Are you sure to exit the onboarding?",
+        ),
+        "onboarding_connectionModalAbort_header":
+            MessageLookupByLibrary.simpleMessage("Abort Onboarding?"),
         "onboarding_connectionNoUpdates_noUpdates":
             MessageLookupByLibrary.simpleMessage("No Updates Available"),
         "onboarding_connectionUpdatesAvailable_updatesAvailable":
@@ -2860,6 +2921,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "toast_newEnvoyUpdateAvailable": MessageLookupByLibrary.simpleMessage(
           "Disponível nova actualização para a Envoy",
+        ),
+        "toast_repairingSuccessful_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Re-pairing with Prime was successful.",
         ),
         "torToast_learnMore_retryTorConnection":
             MessageLookupByLibrary.simpleMessage(

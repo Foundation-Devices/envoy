@@ -14,6 +14,10 @@ else
 fi
 
 echo "using flutter $FLUTTER"
+
+# FRB needs cargo-expand
+cargo install cargo-expand
+
 # Define packages that need FRB generation
 PACKAGES=(
     "packages/foundation_api"
@@ -27,12 +31,9 @@ for PACKAGE_DIR in "${PACKAGES[@]}"; do
     echo "Generating bindings for $PACKAGE_DIR..."
 
     cd "$PACKAGE_DIR"
+
     # get pub packages
-    if command -v fvm &> /dev/null; then
-        fvm flutter pub get
-    else
-        flutter pub get
-    fi
+    $FLUTTER pub get
 
     echo "Removing old generated files..."
     rm -f rust/frb_generated.rs

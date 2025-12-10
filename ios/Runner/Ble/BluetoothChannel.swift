@@ -34,6 +34,11 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     var writeCharacteristic: CBCharacteristic?
     var readCharacteristic: CBCharacteristic?
 
+    // BLE write queue for proper write operation handling
+    var bleWriteQueue: BleWriteQueue?
+    
+    var transferTask: Task<Void, Never>?
+
     // Accessory (for AccessorySetupKit integration)
     var primeAccessory: ASAccessory?
 
@@ -69,6 +74,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         CBConnectPeripheralOptionNotifyOnDisconnectionKey: true,
         CBConnectPeripheralOptionNotifyOnNotificationKey: true,
         CBConnectPeripheralOptionStartDelayKey: 0,
+        CBConnectPeripheralOptionEnableTransportBridgingKey: false
     ]
 
     // MARK: - Initialization
@@ -159,6 +165,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 self.getAccessories(result: result)
             case "getCurrentDeviceStatus":
                 self.getCurrentDeviceStatus(result: result)
+            case "cancelTransfer":
+                self.cancelTransfer(result: result)
             default:
                 result(FlutterMethodNotImplemented)
             }
@@ -257,7 +265,6 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             return
         }
         
-        
         if path.isEmpty {
             result(FlutterError(code: "INVALID_PATH", message: "File path is null or empty", details: nil))
             return
@@ -269,72 +276,48 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             return
         }
         
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let self = self else { return }
-            
+        transferTask =  Task {
             do {
-                // Get file size
                 let attributes = try FileManager.default.attributesOfItem(atPath: path)
                 let fileSize = attributes[.size] as? Int64 ?? 0
                 var bytesProcessed: Int64 = 0
                 
                 let fileHandle = try FileHandle(forReadingFrom: fileURL)
-                defer { fileHandle.closeFile() }
+                defer { 
+                    try? fileHandle.close()
+                }
+                
+                let chunkSize = 244
                 
                 while true {
-                    // Read inner list length (4 bytes)
-                    let lengthData = fileHandle.readData(ofLength: 4)
-                    guard lengthData.count == 4 else {
+                    let chunk = try fileHandle.read(upToCount: chunkSize)
+                    
+                    guard let data = chunk, !data.isEmpty else {
                         break
                     }
                     
-                    bytesProcessed += Int64(lengthData.count)
+                    let success = await bleWriteQueue?.enqueue(data: data) ?? false
                     
-                    let innerLength = lengthData.withUnsafeBytes { bytes in
-                        return bytes.load(fromByteOffset: 0, as: UInt32.self).bigEndian
+                    if !success {
+                        throw NSError(
+                            domain: "BLEWriteError",
+                            code: 1,
+                            userInfo: [NSLocalizedDescriptionKey: "Failed to write data at byte \(bytesProcessed)"]
+                        )
                     }
-                    for _ in 0..<innerLength {
-
-                        let itemLengthData = fileHandle.readData(ofLength: 4)
-                        guard itemLengthData.count == 4 else {
-                            throw NSError(domain: "FileReadError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to read item length"])
-                        }
-                        
-                        bytesProcessed += Int64(itemLengthData.count)
-                        
-                        let itemLength = itemLengthData.withUnsafeBytes { bytes in
-                            return bytes.load(fromByteOffset: 0, as: UInt32.self).bigEndian
-                        }
-                        
-                        let itemData = fileHandle.readData(ofLength: Int(itemLength))
-                        guard itemData.count == Int(itemLength) else {
-                            throw NSError(domain: "FileReadError", code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to read item data"])
-                        }
-                        
-                        bytesProcessed += Int64(itemData.count)
-                        
-                        // Send progress update
-                        let progress = fileSize > 0 ? Float(bytesProcessed) / Float(fileSize) : 0.0
-                        self.sendWriteProgress(progress, id: path, bytesProcessed: bytesProcessed, totalBytes: fileSize)
-                        
-                        let _ = self.handleBinaryWrite(data: itemData)
-                        
-                        Thread.sleep(forTimeInterval: 0.014)
-                    }
+                    
+                    bytesProcessed += Int64(data.count)
+                    
+                    let progress = fileSize > 0 ? Float(bytesProcessed) / Float(fileSize) : 0.0
+                    sendWriteProgress(progress, id: path, bytesProcessed: bytesProcessed, totalBytes: fileSize)
                 }
                 
-                // Send final progress update
-                self.sendWriteProgress(1.0, id: path, bytesProcessed: fileSize, totalBytes: fileSize)
+                sendWriteProgress(1.0, id: path, bytesProcessed: fileSize, totalBytes: fileSize)
                 
-                // Success, delete file after ble transmit
-                do {
-                    try FileManager.default.removeItem(at: fileURL)
-                    print("Successfully deleted file: \(path)")
-                } catch {
-                    print("Warning: Failed to delete file after processing: \(error.localizedDescription)")
-                }
+                try? FileManager.default.removeItem(at: fileURL)
+                print("Successfully deleted file: \(path)")
                 
-                DispatchQueue.main.async {
+                await MainActor.run {
                     result([
                         "success": true,
                         "message": "Large data processed successfully"
@@ -343,7 +326,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 
             } catch {
                 print("Error reading large data file: \(error.localizedDescription)")
-                DispatchQueue.main.async {
+                await MainActor.run {
                     result(FlutterError(code: "FILE_READ_ERROR", message: "Failed to read file: \(error.localizedDescription)", details: nil))
                 }
             }
@@ -394,6 +377,23 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         
         result(accessoryList)
     }
+    
+    func cancelTransfer(result: @escaping FlutterResult) {
+        if let task = transferTask {
+            task.cancel()
+            transferTask = nil
+            bleWriteQueue?.cancel()
+            // Send cancellation progress event
+            sendWriteProgress(0.0, id: "transfer_cancelled", bytesProcessed: 0, totalBytes: 0)
+            bleWriteQueue?.restart()
+            result(["cancelled": true])
+            print("Transfer cancelled successfully")
+        } else {
+            result(["cancelled": false, "message": "No active transfer to cancel"])
+            print("No active transfer to cancel")
+        }
+    }
+  
     
     func getCurrentDeviceStatus(result: @escaping FlutterResult) {
         let peripheralId = connectedPeripheral?.identifier.uuidString
@@ -580,9 +580,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     // MARK: - Binary Channel Handlers
 
     private func handleBinaryWrite(data: Data) -> Data {
-        // Check if device is connected and ready
+
         guard let peripheral = connectedPeripheral else {
-            // Send failure buffer (0 bytes)
             return Data()
         }
 
@@ -594,49 +593,38 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             return Data()
         }
 
-        // Validate data size
         if data.count < 8 {
             return Data()
         }
 
-        // Determine write type and log details
+        if bleWriteQueue == nil {
+            bleWriteQueue = BleWriteQueue(peripheral: peripheral, characteristic: writeChar)
+        }
+
         let writeType: CBCharacteristicWriteType =
             writeChar.properties.contains(.writeWithoutResponse) ? .withoutResponse : .withResponse
+        //prime only supports 244 mtu
+        let maxMTU = 244
 
-
-        // Check MTU and split data if necessary
-        let mtu = peripheral.maximumWriteValueLength(for: writeType)
-
-        if data.count <= mtu {
- 
-            // Store data for potential retry
-            pendingWriteData = data
-            writeRetryCount = 0
-
-            peripheral.writeValue(data, for: writeChar, type: writeType)
-
-            // For writeWithoutResponse, simulate success since there's no callback
-            if writeType == .withoutResponse {
-                return Data([1])
+        Task {
+            if data.count <= maxMTU {
+                let _ = await bleWriteQueue?.enqueue(data: data) ?? false
             } else {
-                return Data([1])  // Success indicator
-            }
-        } else {
-
-            let chunks = data.chunked(into: mtu)
-
-            for (index, chunk) in chunks.enumerated() {
-
-                peripheral.writeValue(chunk, for: writeChar, type: writeType)
-
-                // Add small delay between chunks for writeWithoutResponse to prevent buffer overflow
-                if writeType == .withoutResponse && index < chunks.count - 1 {
-                    Thread.sleep(forTimeInterval: 0.01)  // 10ms delay
+                let chunks = data.chunked(into: maxMTU)
+                print("Writing chunk of size: \(chunks.count)")
+                for chunk in chunks {
+                    Task{
+                        let _ =   await bleWriteQueue?.enqueue(data: chunk) ?? false
+                    }
+//                    if !success {
+//                        break
+//                    }
                 }
             }
-
-            return Data([1])   
         }
+        
+        // Return success immediately (actual write happens asynchronously)
+        return Data([1])
     }
 
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -856,6 +844,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             connectedPeripheral = nil
             writeCharacteristic = nil
             readCharacteristic = nil
+            bleWriteQueue?.cancel()
+            bleWriteQueue = nil
             deviceReady = false
         }
 
@@ -918,9 +908,9 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 || characteristic.properties.contains(.writeWithoutResponse)
             {
                 writeCharacteristic = characteristic
-                print(
-                    "Set write characteristic: \(characteristic.uuid)"
-                )
+                // Initialize write queue with new characteristic
+                bleWriteQueue = BleWriteQueue(peripheral: peripheral, characteristic: characteristic)
+                print("Set write characteristic: \(characteristic.uuid)")
             }
 
             if characteristic.properties.contains(.read) {
@@ -986,43 +976,26 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         sendBinaryData(data)
     }
 
+    
+    
     func peripheral(
-        _ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?
+        _ peripheral: CBPeripheral,
+        didReadRSSI RSSI: NSNumber,
+        error: (any Error)?
     ) {
-        if let error = error {
-            print("WRITE ERROR:")
-            print("  - Characteristic: \(characteristic.uuid)")
-            print("  - Error: \(error.localizedDescription)")
-
-            if writeRetryCount < maxWriteRetries, let retryData = pendingWriteData {
-                writeRetryCount += 1
-                print("Retrying write operation (attempt \(writeRetryCount)/\(maxWriteRetries))")
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    peripheral.writeValue(retryData, for: characteristic, type: .withResponse)
-                }
-                return
-            }
-
-            // Max retries reached, clear pending data
-            pendingWriteData = nil
-            writeRetryCount = 0
-            return
-        }
-
-        // Clear retry data on success
-        pendingWriteData = nil
-        writeRetryCount = 0
-         
+        print("didReadRSSI : \(RSSI)")
     }
     
-   
+    func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
+        print("peripheralIsReady(toSendWriteWithoutResponse) ")
+        // Forward to write queue (only called for writeWithoutResponse)
+    }
 
     func peripheral(
         _ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic,
         error: Error?
     ) {
-        if let error = error {
+        if let error: any Error = error {
             print("Error updating notification state: \(error.localizedDescription)")
             return
         }
@@ -1067,6 +1040,10 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             print("Peripheral not connected (state: \(peripheral.state)), skipping disconnect")
             return
         }
+        
+        bleWriteQueue?.cancel()
+        bleWriteQueue = nil
+        
         central.cancelPeripheralConnection(peripheral)
         Task {
             await removeAccessory()

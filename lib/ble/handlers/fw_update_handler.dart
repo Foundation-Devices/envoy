@@ -279,6 +279,8 @@ class FwUpdateHandler extends PassportMessageHandler {
     }, success: (event) {
       _updateFwUpdateState(PrimeFwUpdateStep.finished);
     }, error: (event) {
+      // Cancel any ongoing transfer
+      unawaited(BluetoothChannel().cancelTransfer());
       EnvoyReport()
           .log("fw_update_handler", "Firmware install error: ${event.error}");
       _updateFwUpdateState(PrimeFwUpdateStep.error);

@@ -248,6 +248,17 @@ class BluetoothChannel {
     }
   }
 
+  /// Cancel ongoing transfer
+  Future<bool> cancelTransfer() async {
+    try {
+      await bleMethodChannel.invokeMethod("cancelTransfer");
+      return true;
+    } catch (e, stack) {
+      debugPrintStack(label: ": $e", stackTrace: stack);
+      return false;
+    }
+  }
+
   // Create a file in the ble cache directory
   // file will be removed after transmission
   static Future<File> getBleCacheFile(String filename) async {

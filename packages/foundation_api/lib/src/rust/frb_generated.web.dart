@@ -446,9 +446,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
-  List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw);
-
-  @protected
   OnboardingState dco_decode_onboarding_state(dynamic raw);
 
   @protected
@@ -986,10 +983,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
-
-  @protected
-  List<QuantumLinkMessage> sse_decode_list_quantum_link_message(
-      SseDeserializer deserializer);
 
   @protected
   OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer);
@@ -1540,10 +1533,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_list_quantum_link_message(
-      List<QuantumLinkMessage> self, SseSerializer serializer);
 
   @protected
   void sse_encode_onboarding_state(
