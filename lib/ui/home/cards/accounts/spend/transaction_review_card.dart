@@ -35,7 +35,7 @@ class TransactionReviewCard2 extends ConsumerStatefulWidget {
   final String address;
   final bool loading;
   final int? amountToSend;
-  final Function onFeeTap;
+  final Function? onFeeTap;
   final bool hideTxDetailsDialog;
   final GestureTapCallback onTxDetailTap;
   final String feeTitle;
@@ -52,7 +52,7 @@ class TransactionReviewCard2 extends ConsumerStatefulWidget {
     //for RBF spend screen
     this.amountToSend,
     required this.onTxDetailTap,
-    required this.onFeeTap,
+    this.onFeeTap,
     this.hideTxDetailsDialog = false,
     required this.feeTitle,
     this.feeTitleIconButton,
@@ -172,15 +172,16 @@ class _TransactionReviewCardState2
                             displayFiatAmount: displayFiatFeeAmount,
                             millionaireMode: false,
                             amountWidgetStyle: AmountWidgetStyle.normal),
-                        GestureDetector(
-                          onTap: () {
-                            widget.onFeeTap();
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.only(left: EnvoySpacing.xs),
-                            child: EnvoyIcon(EnvoyIcons.chevron_right),
+                        if (widget.onFeeTap != null)
+                          GestureDetector(
+                            onTap: () {
+                              widget.onFeeTap!();
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.only(left: EnvoySpacing.xs),
+                              child: EnvoyIcon(EnvoyIcons.chevron_right),
+                            ),
                           ),
-                        ),
                       ],
                     )),
               ],

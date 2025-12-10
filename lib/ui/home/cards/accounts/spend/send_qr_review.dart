@@ -1,90 +1,44 @@
-// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+// SPDX-FileCopyrightText: 2025 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
-import 'dart:convert';
+import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/staging_tx_details.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/transaction_review_card.dart';
 import 'package:envoy/ui/shield_path.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as envoy_colors;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/crypto_tx_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/components/step_indicator.dart';
 import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/routes/accounts_router.dart';
 
-class VerifyCountdownNotifier extends StateNotifier<int> {
-  VerifyCountdownNotifier() : super(5);
-
-  Timer? _timer;
-
-  void start() {
-    _timer?.cancel();
-    state = 5;
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (state <= 1) {
-        state = 0;
-        timer.cancel();
-      } else {
-        state = state - 1;
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-}
-
-final verifyCountdownProvider =
-    StateNotifierProvider<VerifyCountdownNotifier, int>((ref) {
-  return VerifyCountdownNotifier();
-});
-
-class PsbtCard extends ConsumerStatefulWidget {
+class SendQrReview extends ConsumerStatefulWidget {
   final DraftTransaction transaction;
 
-  const PsbtCard(this.transaction, {super.key});
+  const SendQrReview(this.transaction, {super.key});
 
   @override
-  ConsumerState<PsbtCard> createState() => _PsbtCardState();
+  ConsumerState<SendQrReview> createState() => _SendQrReviewState();
 }
 
-class _PsbtCardState extends ConsumerState<PsbtCard> {
-  @override
-  void initState() {
-    super.initState();
-    // Defer the provider write until after the first frame
-    Future.microtask(() {
-      ref.read(verifyCountdownProvider.notifier).start();
-    });
-  }
-
+class _SendQrReviewState extends ConsumerState<SendQrReview> {
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
     final account = ref.read(selectedAccountProvider);
     if (account == null) {
       return const SizedBox();
     }
-
-    final countdown = ref.watch(verifyCountdownProvider);
-
-    final isDisabled = countdown > 0;
-
-    // start countdown only once when widget shows
-    ref.listen<int>(verifyCountdownProvider, (prev, next) {});
 
     return Stack(
       children: [
@@ -116,7 +70,7 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
               },
             ),
           ),
-          topBarTitle: StepIndicator(currentStep: 1),
+          topBarTitle: StepIndicator(currentStep: 2),
           topBarActions: [
             SizedBox(
               width: EnvoySpacing.large1,
@@ -132,13 +86,13 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
                   children: [
                     SizedBox(height: EnvoySpacing.medium1),
                     Text(
-                      S().send_qr_code_card_heading,
+                      S().send_review_header,
                       style: EnvoyTypography.heading,
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: EnvoySpacing.small),
                     Text(
-                      S().send_qr_code_card_subheading,
+                      S().send_review_subheader,
                       style: EnvoyTypography.body.copyWith(
                           color: envoy_colors.EnvoyColors.textSecondary),
                       textAlign: TextAlign.center,
@@ -148,30 +102,17 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: EnvoySpacing.medium1),
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                  width: 1,
-                                  color: envoy_colors.EnvoyColors.border2),
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(EnvoySpacing.medium1))),
-                          child: AspectRatio(
-                            aspectRatio: 1.0,
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.all(EnvoySpacing.medium1),
-                                child: AnimatedQrImage(
-                                  widget.transaction.psbt,
-                                  urType: "crypto-psbt",
-                                  binaryCborTag: true,
-                                ),
-                              ),
-                            ),
-                          ),
+                        child: TransactionReviewCard2(
+                          account: account,
+                          transaction: widget.transaction.transaction,
+                          onTxDetailTap: () {
+                            // _showTxDetailsPage(
+                            //     context, ref, preparedTransaction);
+                          },
+                          canModifyPsbt: false,
+                          loading: false,
+                          address: widget.transaction.transaction.address,
+                          feeTitle: S().coincontrol_tx_detail_fee,
                         ),
                       ),
                     ),
@@ -186,35 +127,19 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       EnvoyButton(
-                        S().send_QrScan_saveToFile,
+                        S().send_qrReview_viewDetails,
                         onTap: () {
-                          SharePlus.instance.share(ShareParams(
-                            text: base64Encode(widget.transaction.psbt),
-                          ));
+                          _showTxDetailsPage(context, ref, widget.transaction);
                         },
                         type: EnvoyButtonTypes.tertiary,
-                        leading: EnvoyIcon(
-                          EnvoyIcons.sd_card,
-                          color: envoy_colors.EnvoyColors.accentPrimary,
-                          size: EnvoyIconSize.extraSmall,
-                        ),
                       ),
                       SizedBox(
                         height: EnvoySpacing.small,
                       ),
                       EnvoyButton(
-                        isDisabled
-                            ? '${countdown.toString()}... ${S().send_qrScan_scanQrWithPassportFirst}'
-                            : S().send_qrScan_verifyOnPassport,
-                        leading: EnvoyIcon(
-                          isDisabled ? EnvoyIcons.clock : EnvoyIcons.eye,
-                          color: envoy_colors.EnvoyColors.solidWhite,
-                          size: EnvoyIconSize.extraSmall,
-                        ),
-                        enabled: !isDisabled,
+                        S().send_qrReview_scanSignedTransaction,
                         onTap: () {
-                          GoRouter.of(context).pushNamed(ACCOUNT_SEND_SCAN_QR,
-                              extra: widget.transaction);
+                          _scanSignedTransaction(context);
                         },
                       ),
                     ],
@@ -224,5 +149,58 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
         ),
       ],
     );
+  }
+
+  void _scanSignedTransaction(BuildContext context) {
+    final navigator = Navigator.of(context, rootNavigator: true);
+    final goRouter = GoRouter.of(context);
+
+    final decoder = CryptoTxDecoder(
+      onScan: (CryptoPsbt cryptoPsbt) async {
+        navigator.pop(); // close scanner dialog
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        goRouter.pop(); // pop qr_review
+        goRouter.pop(
+            cryptoPsbt); // pop scan (PsbtCard) → back to TxReview with result
+      },
+    );
+
+    showScannerDialog(
+      context: context,
+      onBackPressed: (ctx) {
+        Navigator.pop(ctx);
+      },
+      decoder: decoder,
+    );
+  }
+
+  void _showTxDetailsPage(BuildContext context, WidgetRef ref,
+      DraftTransaction? preparedTransaction) {
+    Navigator.of(context, rootNavigator: true).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          if (preparedTransaction == null) {
+            return const Center(
+                child: Text("Unable to fetch Staged transaction"));
+          }
+          return StagingTxDetails(
+            draftTransaction: preparedTransaction,
+            canEdit: false,
+            onTxNoteUpdated: () {
+              ref
+                  .read(spendTransactionProvider.notifier)
+                  .setNote(ref.read(stagingTxNoteProvider));
+            },
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 100),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+        opaque: false,
+        fullscreenDialog: true));
   }
 }

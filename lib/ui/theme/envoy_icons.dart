@@ -100,6 +100,9 @@ enum EnvoyIcons {
   fee,
   receipt,
   change,
+  eye,
+  sd_card,
+  stopwatch,
 }
 
 class EnvoyIcon extends StatelessWidget {

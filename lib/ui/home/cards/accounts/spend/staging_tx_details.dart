@@ -38,6 +38,7 @@ class StagingTxDetails extends ConsumerStatefulWidget {
   final DraftTransaction draftTransaction;
   final Function? onTagUpdate;
   final Function? onTxNoteUpdated;
+  final bool canEdit;
 
   ///for rbf staging transaction details
   final BitcoinTransaction? previousTransaction;
@@ -48,7 +49,8 @@ class StagingTxDetails extends ConsumerStatefulWidget {
       this.previousTransaction,
       this.onTagUpdate,
       this.onTxNoteUpdated,
-      this.isRBFSpend = false});
+      this.isRBFSpend = false,
+      this.canEdit = true});
 
   @override
   ConsumerState createState() => _SpendTxDetailsState();
@@ -137,33 +139,34 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
                   displayFiatAmount: displayFiatTotalInputAmount,
                   millionaireMode: false,
                   amountWidgetStyle: AmountWidgetStyle.normal),
-              GestureDetector(
-                  onTap: () async {
-                    Navigator.of(context).pop();
+              if (widget.canEdit)
+                GestureDetector(
+                    onTap: () async {
+                      Navigator.of(context).pop();
 
-                    editTransaction(context, ref);
-                    Navigator.of(context, rootNavigator: true).push(
-                        PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) {
-                              return ChooseCoinsWidget();
-                            },
-                            transitionDuration:
-                                const Duration(milliseconds: 100),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: child,
-                              );
-                            },
-                            opaque: false,
-                            fullscreenDialog: true));
-                  },
-                  child: EnvoyIcon(
-                    EnvoyIcons.chevron_right,
-                    size: EnvoyIconSize.extraSmall,
-                  )),
+                      editTransaction(context, ref);
+                      Navigator.of(context, rootNavigator: true).push(
+                          PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) {
+                                return ChooseCoinsWidget();
+                              },
+                              transitionDuration:
+                                  const Duration(milliseconds: 100),
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                              opaque: false,
+                              fullscreenDialog: true));
+                    },
+                    child: EnvoyIcon(
+                      EnvoyIcons.chevron_right,
+                      size: EnvoyIconSize.extraSmall,
+                    )),
             ],
           ),
         ),
@@ -284,38 +287,39 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
                         )
                     ],
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      showEnvoyDialog(
-                          context: context,
-                          builder: Builder(
-                            builder: (_) => ChooseTagForStagingTx(
-                              accountId: account.id,
-                              onEditTransaction: () =>
-                                  _onEditTransaction(context),
-                              onTagUpdate: () {
-                                widget.onTagUpdate?.call();
-                                Navigator.pop(context);
-                              },
+                  if (widget.canEdit)
+                    GestureDetector(
+                      onTap: () {
+                        showEnvoyDialog(
+                            context: context,
+                            builder: Builder(
+                              builder: (_) => ChooseTagForStagingTx(
+                                accountId: account.id,
+                                onEditTransaction: () =>
+                                    _onEditTransaction(context),
+                                onTagUpdate: () {
+                                  widget.onTagUpdate?.call();
+                                  Navigator.pop(context);
+                                },
+                              ),
                             ),
-                          ),
-                          alignment: const Alignment(0.0, -.6));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: EnvoySpacing.xs),
-                      child: changeOutputTag.isNotEmpty
-                          ? EnvoyIcon(
-                              EnvoyIcons.edit,
-                              color: EnvoyColors.accentPrimary,
-                              size: EnvoyIconSize.small,
-                            )
-                          : Icon(
-                              Icons.add_circle_rounded,
-                              color: EnvoyColors.accentPrimary,
-                              size: EnvoySpacing.medium2,
-                            ),
+                            alignment: const Alignment(0.0, -.6));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: EnvoySpacing.xs),
+                        child: changeOutputTag.isNotEmpty
+                            ? EnvoyIcon(
+                                EnvoyIcons.edit,
+                                color: EnvoyColors.accentPrimary,
+                                size: EnvoyIconSize.small,
+                              )
+                            : Icon(
+                                Icons.add_circle_rounded,
+                                color: EnvoyColors.accentPrimary,
+                                size: EnvoySpacing.medium2,
+                              ),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),

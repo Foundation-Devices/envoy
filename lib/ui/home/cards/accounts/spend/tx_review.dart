@@ -710,6 +710,20 @@ class _TransactionReviewScreenState
                       // editTransaction(context, ref);
                     },
                   ),
+                if (transactionModel.isFinalized && !account.isHot)
+                  EnvoyButton(
+                    enabled: !transactionModel.loading,
+                    S().component_cancel,
+                    type: EnvoyButtonTypes.tertiary,
+                    borderRadius: const BorderRadius.all(
+                        Radius.circular(EnvoySpacing.small)),
+                    onTap: () {
+                      showEnvoyDialog(
+                          context: context,
+                          useRootNavigator: true,
+                          dialog: const DiscardTransactionDialog());
+                    },
+                  ),
                 const Padding(padding: EdgeInsets.all(6)),
                 EnvoyButton(
                   enabled: enableButton,
@@ -723,10 +737,16 @@ class _TransactionReviewScreenState
                           color: EnvoyColors.solidWhite,
                           size: EnvoyIconSize.small,
                         )
-                      : null,
+                      : transactionModel.isFinalized
+                          ? EnvoyIcon(
+                              EnvoyIcons.send,
+                              color: EnvoyColors.solidWhite,
+                              size: EnvoyIconSize.small,
+                            )
+                          : null,
                   (account.isHot || transactionModel.isFinalized)
                       ? S().coincontrol_tx_detail_cta1
-                      : S().coincontrol_txDetail_cta1_passport,
+                      : S().component_next,
                   onTap: () {
                     widget.onBroadcast();
                   },
@@ -738,10 +758,12 @@ class _TransactionReviewScreenState
       ),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-            child: StepIndicator(currentStep: 0),
-          ),
+          if (!account.isHot && !isPrime)
+            Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+              child: StepIndicator(
+                  currentStep: transactionModel.isFinalized ? 3 : 0),
+            ),
           Padding(
             padding: const EdgeInsets.symmetric(
                 vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium1),
@@ -785,13 +807,16 @@ class _TransactionReviewScreenState
                               loading: transactionModel.loading,
                               address: address,
                               feeTitle: S().coincontrol_tx_detail_fee,
-                              onFeeTap: () {
-                                _showFeeChooser(
-                                  context,
-                                  ref,
-                                  transaction,
-                                );
-                              },
+                              onFeeTap: (transactionModel.isFinalized &&
+                                      !account.isHot)
+                                  ? null
+                                  : () {
+                                      _showFeeChooser(
+                                        context,
+                                        ref,
+                                        transaction,
+                                      );
+                                    },
                             );
                           }),
                           if (feePercentage >= 25)
