@@ -36,8 +36,6 @@ class FwTransferProgress {
 class FwUpdateHandler extends PassportMessageHandler {
   FwUpdateHandler(super.writer);
 
-  final chunkSize = BigInt.from(200000);
-
   Set<PrimeFwUpdateStep> _completedUpdateStates = {};
   String newVersion = "";
 
@@ -184,7 +182,7 @@ class FwUpdateHandler extends PassportMessageHandler {
         sender: BluetoothManager().qlIdentity!,
         recipient: BluetoothManager().recipientXid!,
         path: tempFile.path,
-        chunkSize: chunkSize,
+        chunkSize: bleChunkSize,
         timestamp: timestampSeconds);
 
     if (ready) {

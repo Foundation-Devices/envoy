@@ -31,11 +31,14 @@ import 'handlers/passphrase_handler.dart';
 import 'handlers/shards_handler.dart';
 import 'quantum_link_router.dart';
 
+final bleChunkSize = BigInt.from(51200);
+
 final deviceConnectionStatusStreamProvider =
     StreamProvider<DeviceStatus>((ref) {
   return BluetoothChannel().deviceStatusStream;
 });
 
+//TODO: support multiple devices
 final isPrimeConnectedProvider = Provider.family<bool, String>((ref, bleId) {
   DeviceStatus? status =
       ref.watch(deviceConnectionStatusStreamProvider).valueOrNull;
