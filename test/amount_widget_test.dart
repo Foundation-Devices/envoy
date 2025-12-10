@@ -92,7 +92,7 @@ class AmountWidgetTestCases extends StatelessWidget {
         tags: [],
         xfp: "xfp",
         externalPublicDescriptors: [(AddressType.p2Sh, "p2sh")],
-    archived: false);
+        archived: false);
 
     return Padding(
       padding: const EdgeInsets.all(EnvoySpacing.large1),
@@ -492,7 +492,8 @@ class AmountWidgetTestnetCases extends StatelessWidget {
         utxo: [],
         tags: [],
         xfp: "xfp",
-        externalPublicDescriptors: [(AddressType.p2Sh, "p2sh")], archived: false);
+        externalPublicDescriptors: [(AddressType.p2Sh, "p2sh")],
+        archived: false);
     return Padding(
       padding: const EdgeInsets.all(EnvoySpacing.large1),
       child: Row(

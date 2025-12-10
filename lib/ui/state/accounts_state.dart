@@ -201,9 +201,11 @@ final passphraseEventHandlerProvider = Provider<void>((ref) {
 
 final primePassphraseAccountsProvider = Provider<List<EnvoyAccount>>((ref) {
   final accounts = ref.watch(accountsProvider);
-  final appliedPasshpraseFingerprint = ref.watch(primePassphraseFingerprintProvider);
+  final appliedPasshpraseFingerprint =
+      ref.watch(primePassphraseFingerprintProvider);
 
   return accounts.where((account) {
-    return account.seedHasPassphrase && account.xfp == appliedPasshpraseFingerprint;
+    return account.seedHasPassphrase &&
+        account.xfp == appliedPasshpraseFingerprint;
   }).toList();
 });

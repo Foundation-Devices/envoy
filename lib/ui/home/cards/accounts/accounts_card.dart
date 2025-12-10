@@ -199,14 +199,12 @@ class _AccountsListState extends ConsumerState<AccountsList> {
     }
 
     if (showDefaultAccounts) {
-      accounts = accounts
-          .where((account) {
-            if (primePassphraseAccounts.contains(account)) return false;
-            if (account.seedHasPassphrase) return false;
+      accounts = accounts.where((account) {
+        if (primePassphraseAccounts.contains(account)) return false;
+        if (account.seedHasPassphrase) return false;
 
-            return true;
-          })
-          .toList();
+        return true;
+      }).toList();
     }
 
     final listContentHeight = accounts.length * _accountHeight;
@@ -341,7 +339,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
           });
           await EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
         },
-        children: buildListItems(accounts, showDefaultAccounts ? _accountsOrder : null ),
+        children: buildListItems(
+            accounts, showDefaultAccounts ? _accountsOrder : null),
       ),
     );
 
@@ -353,8 +352,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
         : scrollView;
   }
 
-  List<Widget> buildListItems(List<EnvoyAccount> accounts,
-      List<String>? accountsOrder) {
+  List<Widget> buildListItems(
+      List<EnvoyAccount> accounts, List<String>? accountsOrder) {
     final List<Widget> items = [];
 
     final orderToUse = accountsOrder == null || accountsOrder.isEmpty

@@ -53,7 +53,7 @@ class EmptyAccountsCard extends StatelessWidget {
                       tags: [],
                       xfp: "ghost",
                       externalPublicDescriptors: [],
-                  archived: false),
+                      archived: false),
                   onTap: () {}),
             ),
           ),
