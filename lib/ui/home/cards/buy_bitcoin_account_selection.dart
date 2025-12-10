@@ -7,7 +7,7 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ui/components/account_selector.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/button.dart';
-import 'package:envoy/ui/components/envoy_loader.dart';
+import 'package:envoy/ui/components/envoy_loaders.dart';
 import 'package:envoy/ui/home/cards/purchase_completed.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';

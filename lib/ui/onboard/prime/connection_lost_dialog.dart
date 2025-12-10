@@ -8,6 +8,7 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/envoy_loaders.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
@@ -21,7 +22,6 @@ import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -201,10 +201,8 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
                 borderRadius: BorderRadius.circular(EnvoySpacing.small),
                 type: EnvoyButtonTypes.primaryModal,
                 leading: _isReconnecting
-                    ? const CupertinoActivityIndicator(
-                        color: EnvoyColors.textPrimaryInverse,
-                        radius: 12,
-                      )
+                    ? const EnvoyActivityIndicator(
+                        color: EnvoyColors.textPrimaryInverse)
                     : null,
                 onTap: _isReconnecting ? null : _attemptReconnect,
               ),

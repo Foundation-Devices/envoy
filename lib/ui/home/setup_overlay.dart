@@ -8,6 +8,7 @@ import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/envoy_loaders.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/glow.dart';
@@ -29,7 +30,6 @@ import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
@@ -260,10 +260,8 @@ void scanForDevice(BuildContext context) async {
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-                    child: CupertinoActivityIndicator(
-                      color: EnvoyColors.accentPrimary,
-                      radius: 24,
-                    ),
+                    child: const EnvoyActivityIndicator(
+                        color: EnvoyColors.accentPrimary, radius: 24),
                   ),
                   Padding(
                     padding:
