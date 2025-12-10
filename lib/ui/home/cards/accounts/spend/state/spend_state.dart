@@ -46,26 +46,6 @@ final draftTransactionProvider = Provider<DraftTransaction?>((ref) {
   return ref.watch(spendTransactionProvider).draftTransaction;
 });
 
-// If the user performed coin selection on a non-hot wallet transaction,
-// they should see a confirmation dialog before exiting the review screen.
-final isTransactionCancellableProvider = Provider<bool>((ref) {
-  EnvoyAccount? account = ref.watch(selectedAccountProvider);
-  if (account == null) {
-    return false;
-  }
-  TransactionModel spendState = ref.watch(spendTransactionProvider);
-  bool userChangedCoins = ref.watch(userSelectedCoinsThisSessionProvider);
-  final txNotFinalized =
-      spendState.broadcastProgress != BroadcastProgress.success;
-  bool cancellable = false;
-
-  if (txNotFinalized && userChangedCoins) {
-    cancellable = true;
-  }
-
-  return cancellable;
-});
-
 final emptyTransactionModel = TransactionModel(
     transaction: null,
     draftTransaction: null,
