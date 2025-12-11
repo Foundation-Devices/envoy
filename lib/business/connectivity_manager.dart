@@ -147,14 +147,11 @@ class ConnectivityManager {
 
   Future<void> checkFoundationServer() async {
     if (usingDefaultServer) {
-      Response response = await FeedManager().getVimeoData();
-      if (response.statusCode == 200) {
-        failedFoundationServerAttempts++;
-        if (failedFoundationServerAttempts >= 3) {
-          events.add(ConnectivityManagerEvent.foundationServerDown);
-        } else {
-          s.switchToNextDefaultServer();
-        }
+      failedFoundationServerAttempts++;
+      if (failedFoundationServerAttempts >= 3) {
+        events.add(ConnectivityManagerEvent.foundationServerDown);
+      } else {
+        await s.switchToNextDefaultServer();
       }
     }
   }
