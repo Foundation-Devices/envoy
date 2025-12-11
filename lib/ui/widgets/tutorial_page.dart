@@ -7,8 +7,10 @@ import 'dart:ui';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/util/envoy_storage.dart' show EnvoyStorage;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -79,6 +81,8 @@ class _AccountTutorialOverlayState extends ConsumerState<AccountTutorialOverlay>
                         child: IconButton(
                           icon: const Icon(Icons.close),
                           onPressed: () {
+                            EnvoyStorage().addPromptState(
+                                DismissiblePrompt.primeAccountTutorial);
                             Navigator.of(context).pop();
                           },
                         ),
@@ -170,6 +174,7 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
       if (pageNumber < totalPages) {
         pageNotifier.state++;
       } else {
+        EnvoyStorage().addPromptState(DismissiblePrompt.primeAccountTutorial);
         Navigator.of(context).pop(); // Close dialog on "Done"
       }
     }
