@@ -154,9 +154,9 @@ class Devices extends ChangeNotifier {
     _ls.prefs.remove(DEVICES_PREFS);
   }
 
-  void storeDevices() {
+  Future storeDevices() async {
     String json = jsonEncode(devices);
-    _ls.prefs.setString(DEVICES_PREFS, json);
+    await _ls.prefs.setString(DEVICES_PREFS, json);
   }
 
   void restore({bool hasExitingSetup = false}) {
@@ -193,6 +193,17 @@ class Devices extends ChangeNotifier {
     }
 
     storeDevices();
+    notifyListeners();
+  }
+
+  Future markPrimeUpdated(String serial, String firmwareVersion) async {
+    for (var device in getPrimeDevices) {
+      if (serial == device.serial) {
+        device.firmwareVersion = firmwareVersion;
+      }
+    }
+
+    await storeDevices();
     notifyListeners();
   }
 
