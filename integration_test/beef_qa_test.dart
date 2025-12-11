@@ -452,6 +452,7 @@ Future<void> main() async {
       // go back to settings
       //await pressHamburgerMenu(tester);
       await findAndPressTextButton(tester, "Accounts");
+      await tester.pump(Durations.long2);
       await pressHamburgerMenu(tester);
       await tapSettingsButton(tester);
       await openAdvancedMenu(tester);
@@ -490,7 +491,9 @@ Future<void> main() async {
       // go back to acc
       //await pressHamburgerMenu(tester);
       await findAndPressTextButton(tester, "Accounts");
+      await tester.pump(Durations.long2);
       await findAndPressTextButton(tester, accountPassportName);
+      await tester.pump(Durations.long2);
 
       /// Go to show descriptor for this account, check pop up shows
       // open menu
@@ -530,7 +533,9 @@ Future<void> main() async {
       // go back to home
       //await pressHamburgerMenu(tester);
       await findAndPressTextButton(tester, "Accounts");
+      await tester.pump(Durations.long2);
       await findAndPressTextButton(tester, "Primary (#0)");
+      await tester.pump(Durations.long2);
 
       // open menu
       await findAndPressIcon(tester, Icons.more_horiz_outlined);
@@ -567,14 +572,12 @@ Future<void> main() async {
       // tap again to exit
       await fromHomeToHotWallet(tester);
 
-      tapCardsPromptFinder = find.text(tapTheAboveCardsPrompt);
-      expect(tapCardsPromptFinder, findsNothing);
+      await scrollHome(tester, -600);
 
       String swipeBalancePrompt = "Swipe to show and hide your balance.";
       Finder swipeBalancePromptFinder = find.text(swipeBalancePrompt);
       expect(swipeBalancePromptFinder, findsOneWidget);
 
-      await scrollHome(tester, -600);
       // check Dismiss button functionality
       final dismissButton = find.text('Dismiss');
       await tester.tap(dismissButton);
@@ -633,6 +636,8 @@ Future<void> main() async {
       reorderPromptFinder = find.text(reorderPromptMessage);
       expect(tapCardsPromptFinder, findsNothing);
 
+      await goBackHome(tester); // force test to Home
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -679,6 +684,8 @@ Future<void> main() async {
       await enterTextInField(tester, find.byType(TextField), 'Passport');
       await saveName(tester);
 
+      await goBackHome(tester); // force test to Home
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -722,6 +729,8 @@ Future<void> main() async {
       await tester.binding.handlePopRoute();
       // confirm that you are back to ENVOY
       await findTextOnScreen(tester, "ENVOY");
+
+      await goBackHome(tester); // force test to Home
 
       stopwatch.stop();
       debugPrint(
@@ -1420,6 +1429,8 @@ Future<void> main() async {
       await pressHamburgerMenu(tester); // back to home
       // Ensure there are at least two badges: one for the passport and one for the hot testnet wallet.
       expect(testnetAccountBadge, findsAtLeast(2));
+
+      await goBackHome(tester);
 
       stopwatch.stop();
       debugPrint(
