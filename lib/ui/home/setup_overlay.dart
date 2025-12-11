@@ -11,7 +11,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/glow.dart';
-import 'package:envoy/ui/onboard/passport_scanner_screen.dart';
+import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
