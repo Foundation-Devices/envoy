@@ -509,7 +509,6 @@ class OnboardBluetoothDenied extends StatelessWidget {
   Widget bluetoothPermission(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: EnvoySpacing.medium1),
         Flexible(
           child: Container(
             constraints: const BoxConstraints(
@@ -520,43 +519,33 @@ class OnboardBluetoothDenied extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(
                   vertical: EnvoySpacing.medium3,
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.medium2),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text(
-                                S().onboarding_bluetoothDisabled_header,
-                                textAlign: TextAlign.center,
-                                style: EnvoyTypography.body.copyWith(
-                                  fontSize: 20,
-                                  color: EnvoyColors.gray1000,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                              const SizedBox(height: EnvoySpacing.medium2),
-                              Text(
-                                S().onboarding_bluetoothDisabled_content,
-                                style: EnvoyTypography.info.copyWith(
-                                  color: EnvoyColors.inactiveDark,
-                                  decoration: TextDecoration.none,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.medium1),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        S().onboarding_bluetoothDisabled_header,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.body.copyWith(
+                          fontSize: 20,
+                          color: EnvoyColors.gray1000,
+                          decoration: TextDecoration.none,
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      const SizedBox(height: EnvoySpacing.medium2),
+                      Text(
+                        S().onboarding_bluetoothDisabled_content,
+                        style: EnvoyTypography.info.copyWith(
+                          color: EnvoyColors.inactiveDark,
+                          decoration: TextDecoration.none,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -571,13 +560,12 @@ class OnboardBluetoothDenied extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const SizedBox(height: EnvoySpacing.medium1),
               EnvoyButton(S().component_learnMore,
                   type: EnvoyButtonTypes.tertiary, onTap: () {
                 launchUrl(
                     Uri.parse("https://docs.foundation.xyz/prime/quantumlink"));
               }),
-              const SizedBox(height: EnvoySpacing.medium1),
+              const SizedBox(height: EnvoySpacing.small),
               EnvoyButton(S().onboarding_bluetoothDisabled_enable, onTap: () {
                 context.pop();
                 openAppSettings();
