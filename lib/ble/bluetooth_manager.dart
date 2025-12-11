@@ -475,7 +475,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
         quantumLinkIdentity: _qlIdentity!,
         aridCache: _aridCache!);
     if (decoderStatus.payload != null) {
-      _decoder = await api.getDecoder();
       return decoderStatus.payload;
     } else {
       return null;
