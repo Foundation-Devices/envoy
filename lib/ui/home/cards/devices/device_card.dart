@@ -194,7 +194,8 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                     ],
                   ),
                 )),
-            Expanded(child: PrimeOptionsWidget(device: widget.device)),
+            if (widget.device.type == DeviceType.passportPrime)
+              Expanded(child: PrimeOptionsWidget(device: widget.device)),
           ],
         ),
       ),
