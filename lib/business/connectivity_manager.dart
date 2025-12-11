@@ -4,10 +4,8 @@
 
 import 'dart:async';
 import 'package:collection/collection.dart';
-import 'package:envoy/business/feed_manager.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
-import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/settings.dart';
 
