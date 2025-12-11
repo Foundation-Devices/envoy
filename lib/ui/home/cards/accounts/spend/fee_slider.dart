@@ -2,8 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -33,7 +35,8 @@ final selectedFeeOptionProvider =
     StateProvider<FeeOption>((ref) => FeeOption.standard);
 
 class FeeChooser extends ConsumerStatefulWidget {
-  final Function(int fee, BuildContext context, bool setCustomFee) onFeeSelect;
+  final Function(double fee, BuildContext context, bool setCustomFee)
+      onFeeSelect;
   final BitcoinTransaction transaction;
 
   const FeeChooser(this.transaction, {super.key, required this.onFeeSelect});
@@ -120,7 +123,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                       ),
                       EnvoyAmount(
                           amountSats: getApproxFeeInSats(
-                            feeRateSatsPerVb: fasterFee.toInt(),
+                            feeRateSatsPerVb: fasterFee.toDouble(),
                             txVSizeVb: (widget.transaction.fee /
                                     widget.transaction.feeRate)
                                 .toInt(),
@@ -151,7 +154,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                       ),
                       EnvoyAmount(
                           amountSats: getApproxFeeInSats(
-                            feeRateSatsPerVb: standardFee.toInt(),
+                            feeRateSatsPerVb: standardFee.toDouble(),
                             txVSizeVb: (widget.transaction.fee /
                                     widget.transaction.feeRate)
                                 .toInt(),
@@ -182,7 +185,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                       ),
                       EnvoyAmount(
                           amountSats: getApproxFeeInSats(
-                            feeRateSatsPerVb: slowerFee.toInt(),
+                            feeRateSatsPerVb: slowerFee.toDouble(),
                             txVSizeVb: (widget.transaction.fee /
                                     widget.transaction.feeRate)
                                 .toInt(),
@@ -247,6 +250,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                         ref.read(_selectedFeeStateProvider.notifier).state =
                             fee;
                       },
+                      allowSubOne: Settings().usingDefaultElectrumServer,
                     ),
                   ),
           ),
@@ -259,17 +263,17 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                   _selectedOption;
               switch (_selectedOption) {
                 case FeeOption.fast:
-                  widget.onFeeSelect(fasterFee.toInt(), context, false);
+                  widget.onFeeSelect(fasterFee.toDouble(), context, false);
                   break;
                 case FeeOption.standard:
-                  widget.onFeeSelect(standardFee.toInt(), context, false);
+                  widget.onFeeSelect(standardFee.toDouble(), context, false);
                   break;
                 case FeeOption.slow:
-                  widget.onFeeSelect(slowerFee.toInt(), context, false);
+                  widget.onFeeSelect(slowerFee.toDouble(), context, false);
                   break;
                 case FeeOption.custom:
                   final custom = ref.read(_selectedFeeStateProvider);
-                  await widget.onFeeSelect(custom, context, true);
+                  await widget.onFeeSelect(custom.toDouble(), context, true);
                   break;
               }
               Future.delayed(const Duration(milliseconds: 200)).then((_) {
@@ -340,17 +344,20 @@ class _FeeOptionRow extends StatelessWidget {
 }
 
 class FeeSlider extends ConsumerStatefulWidget {
-  final Function(int index) onFeeSelect;
+  final Function(double index) onFeeSelect;
   final int selectedItem;
   final List<num> fees;
   final BitcoinTransaction transaction;
+  final bool allowSubOne;
 
-  const FeeSlider(
-      {super.key,
-      this.selectedItem = 1,
-      required this.onFeeSelect,
-      required this.fees,
-      required this.transaction});
+  const FeeSlider({
+    super.key,
+    this.selectedItem = 1,
+    required this.onFeeSelect,
+    required this.fees,
+    required this.transaction,
+    required this.allowSubOne,
+  });
 
   @override
   ConsumerState createState() => _FeeSliderState();
@@ -359,7 +366,7 @@ class FeeSlider extends ConsumerStatefulWidget {
 //local state notifier to keep track of selected index,
 //this is used to animate the selected item,
 //by using provider we can avoid unnecessary rebuilds on scroll-wheel widget
-final _selectedFeeStateProvider = StateProvider.autoDispose<int>((ref) => 0);
+final _selectedFeeStateProvider = StateProvider.autoDispose<double>((ref) => 0);
 
 class _FeeSliderState extends ConsumerState<FeeSlider> {
   double yOffset = 0.0;
@@ -370,33 +377,63 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   final FixedExtentScrollController _controller =
       FixedExtentScrollController(initialItem: 2);
 
+  late List<num> _effectiveFees;
+
+  bool _allowSubOne = false;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      //cache textStyle to avoid creating new instances
+    _allowSubOne = widget.allowSubOne;
+    _effectiveFees = _buildEffectiveFees();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       initializeSelectedRate();
     });
+  }
+
+  List<num> _buildEffectiveFees() {
+    // 1) Start from your original fees and sort ascending first
+    final base = [...widget.fees]..sort(); // numeric sort[web:31]
+
+    final result = <num>[];
+
+    final baseGe1 = base.where((f) => f >= 1).toList()..sort(); // ascending
+    final baseDesc = baseGe1.reversed;
+    result.addAll(baseDesc);
+
+    if (_allowSubOne) {
+      for (int i = 99; i >= 10; i--) {
+        final v = i / 100.0; // 0.99, 0.98, ..., 0.10
+        result.add(double.parse(v.toStringAsFixed(2)));
+      }
+    }
+
+    return result;
   }
 
   void initializeSelectedRate() async {
     num feeRate = ref.read(spendFeeRateProvider);
     final num selectedItem = ref.read(_selectedFeeStateProvider);
+
     if (feeRate != selectedItem) {
       setState(() {
-        ref.read(_selectedFeeStateProvider.notifier).state = feeRate.toInt();
-        //since we are setting the initial item, we need to disable haptic feedback
+        ref.read(_selectedFeeStateProvider.notifier).state = feeRate.toDouble();
         _disableHaptic = true;
       });
-      int jumpIndex = widget.fees.indexOf(feeRate.toInt());
+
+      int jumpIndex = _effectiveFees.indexWhere((f) => f == feeRate);
       if (jumpIndex < 0) {
-        jumpIndex = widget.fees.length - 1;
+        jumpIndex = _effectiveFees.length - 1;
       }
+
       _controller
-          .animateToItem(jumpIndex,
-              duration: const Duration(milliseconds: 60),
-              curve: Curves.easeInOut)
-          .then((value) {
+          .animateToItem(
+        jumpIndex,
+        duration: const Duration(milliseconds: 60),
+        curve: Curves.easeInOut,
+      )
+          .then((_) {
         _disableHaptic = false;
         _initializationFinished = true;
       });
@@ -486,7 +523,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   Widget build(BuildContext context) {
     Color gradientOverlayColor = Colors.white54;
     //bool processingFee = ref.watch(spendFeeProcessing);
-    int selectedFee = ref.watch(_selectedFeeStateProvider);
+    double selectedFee = ref.watch(_selectedFeeStateProvider);
     int aproxFee = getApproxFeeInSats(
       feeRateSatsPerVb: selectedFee,
       txVSizeVb: (widget.transaction.fee / widget.transaction.feeRate).toInt(),
@@ -507,78 +544,151 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  height: 100,
-                  width: MediaQuery.of(context).size.width,
-                  child: RotatedBox(
-                    quarterTurns: 1,
-                    child: Stack(
-                      children: <Widget>[
-                        Positioned.fill(
-                          child: ListWheelScrollView.useDelegate(
-                            controller: _controller,
-                            renderChildrenOutsideViewport: false,
-                            physics: const FixedExtentScrollPhysics(
-                                parent: ClampingScrollPhysics()),
-                            diameterRatio: 2.8,
-                            offAxisFraction: -.3,
-                            useMagnifier: false,
-                            perspective: 0.004,
-                            overAndUnderCenterOpacity: 1,
-                            itemExtent: 48,
-                            squeeze: widget.fees.length > 1000 ? 1.0 : 1.3,
-                            onSelectedItemChanged: _handleItemChanged,
-                            childDelegate: ListWheelChildBuilderDelegate(
-                              childCount: widget.fees.length,
-                              builder: (context, index) {
-                                return _buildIndicatorWidget(
-                                    widget.fees[index], feePercentage);
-                              },
+                Row(
+                  children: [
+                    if (!_allowSubOne && selectedFee == 1)
+                      SizedBox(
+                        width: 100,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "Less than 1 sat/vb is an advanced feature.",
+                              style: EnvoyTypography.label.copyWith(
+                                color: EnvoyColors.textTertiary,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                          ),
+                            GestureDetector(
+                              onTap: () {
+                                showEnvoyPopUp(
+                                    context,
+                                    S().send_editTxDetailsSubsatModal_content,
+                                    S().settings_advanced_taproot_modal_cta1,
+                                    (context) {
+                                      Navigator.of(context).pop();
+                                      setState(() {
+                                        _allowSubOne = true;
+                                        _effectiveFees = _buildEffectiveFees();
+                                        final selectedFee =
+                                            ref.read(_selectedFeeStateProvider);
+                                        final idx = _effectiveFees.indexWhere(
+                                            (f) => f == selectedFee);
+                                        if (idx != -1) {
+                                          _controller.jumpToItem(idx);
+                                        }
+                                      });
+                                    },
+                                    title: S()
+                                        .send_editTxDetailsSubsatModal_header,
+                                    showCloseButton: false,
+                                    icon: EnvoyIcons.info,
+                                    learnMoreText: S().component_learnMore,
+                                    onLearnMore: () {},
+                                    secondaryButtonLabel: S().component_back,
+                                    onSecondaryButtonTap: (context) {
+                                      Navigator.of(context).pop();
+                                    });
+                              },
+                              child: Text(
+                                S().component_learnMore,
+                                textAlign: TextAlign.center,
+                                style: EnvoyTypography.label.copyWith(
+                                  color: EnvoyColors.accentPrimary,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        Center(
-                          child: RotatedBox(
-                            quarterTurns: 3,
-                            child: Container(
-                                alignment: const Alignment(0.0, 1.3),
-                                margin: const EdgeInsets.only(top: 4),
-                                child: Text(
-                                  selectedFee == 1 ? "sat/vb" : "sats/vb",
-                                  style: feePercentage >= 25
-                                      ? _satPerVbWarningStyle
-                                      : _satPerVbStyle,
-                                )),
-                          ),
-                        ),
-                        Positioned.fill(
-                          child: IgnorePointer(
-                            child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(
-                                  gradient: RadialGradient(
-                                    transform: const GradientRotation(1.6),
-                                    radius: 3,
-                                    focal: Alignment.center,
-                                    colors: [
-                                      gradientOverlayColor.applyOpacity(0.0),
-                                      gradientOverlayColor.applyOpacity(0.0),
-                                      gradientOverlayColor.applyOpacity(0.0),
-                                      gradientOverlayColor.applyOpacity(0.6),
-                                      gradientOverlayColor.applyOpacity(0.7),
-                                      gradientOverlayColor.applyOpacity(0.8),
-                                      gradientOverlayColor.applyOpacity(0.8),
-                                      gradientOverlayColor.applyOpacity(0.9),
-                                      gradientOverlayColor.applyOpacity(0.9),
-                                      gradientOverlayColor.applyOpacity(1),
-                                    ],
+                      ),
+                    Expanded(
+                      child: SizedBox(
+                        height: 100,
+                        width: MediaQuery.of(context).size.width,
+                        child: RotatedBox(
+                          quarterTurns: 1,
+                          child: Stack(
+                            children: <Widget>[
+                              Positioned.fill(
+                                child: ListWheelScrollView.useDelegate(
+                                  controller: _controller,
+                                  renderChildrenOutsideViewport: false,
+                                  physics: const FixedExtentScrollPhysics(
+                                      parent: ClampingScrollPhysics()),
+                                  diameterRatio: 2.8,
+                                  offAxisFraction: -.3,
+                                  useMagnifier: false,
+                                  perspective: 0.004,
+                                  overAndUnderCenterOpacity: 1,
+                                  itemExtent: 48,
+                                  squeeze:
+                                      _effectiveFees.length > 1000 ? 1.0 : 1.3,
+                                  onSelectedItemChanged: _handleItemChanged,
+                                  childDelegate: ListWheelChildBuilderDelegate(
+                                    childCount: _effectiveFees.length,
+                                    builder: (context, index) {
+                                      return _buildIndicatorWidget(
+                                          _effectiveFees[index], feePercentage);
+                                    },
                                   ),
-                                )),
+                                ),
+                              ),
+                              Center(
+                                child: RotatedBox(
+                                  quarterTurns: 3,
+                                  child: Container(
+                                      alignment: const Alignment(0.0, 1.3),
+                                      margin: const EdgeInsets.only(top: 4),
+                                      child: Text(
+                                        selectedFee == 1 ? "sat/vb" : "sats/vb",
+                                        style: feePercentage >= 25
+                                            ? _satPerVbWarningStyle
+                                            : _satPerVbStyle,
+                                      )),
+                                ),
+                              ),
+                              Positioned.fill(
+                                child: IgnorePointer(
+                                  child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      decoration: BoxDecoration(
+                                        gradient: RadialGradient(
+                                          transform:
+                                              const GradientRotation(1.6),
+                                          radius: 3,
+                                          focal: Alignment.center,
+                                          colors: [
+                                            gradientOverlayColor
+                                                .applyOpacity(0.0),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.0),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.0),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.6),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.7),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.8),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.8),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.9),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.9),
+                                            gradientOverlayColor
+                                                .applyOpacity(1),
+                                          ],
+                                        ),
+                                      )),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
                 // const Spacer(),
                 // Padding(
@@ -611,11 +721,12 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
       _lastHapticIndex = index;
       if (!_disableHaptic) HapticFeedback.selectionClick();
     }
-    ref.read(_selectedFeeStateProvider.notifier).state =
-        widget.fees[index].toInt();
+
+    final fee = _effectiveFees[index].toDouble();
+    ref.read(_selectedFeeStateProvider.notifier).state = fee;
+
     if (_initializationFinished) {
-      ref.read(spendFeeRateProvider.notifier).state =
-          widget.fees[index].toInt();
+      ref.read(spendFeeRateProvider.notifier).state = fee;
     }
   }
 }

@@ -97,9 +97,9 @@ String getAproxTime(EnvoyAccount? account, num feeRate) {
 }
 
 int getApproxFeeInSats({
-  required int feeRateSatsPerVb,
+  required double feeRateSatsPerVb,
   required int txVSizeVb,
 }) {
   // fee [sats] = rate [sats/vB] * vsize [vB]
-  return feeRateSatsPerVb * txVSizeVb;
+  return (feeRateSatsPerVb * txVSizeVb).round();
 }

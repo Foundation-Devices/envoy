@@ -937,14 +937,13 @@ class _TransactionReviewScreenState
     );
   }
 
-  void setFee(int fee, BuildContext context, bool customFee) async {
+  void setFee(double fee, BuildContext context, bool customFee) async {
     if (!mounted) {
       return;
     }
     // Set the fee
     ref.read(spendFeeProcessing.notifier).state = true;
-    int selectedItem = fee;
-    ref.read(spendFeeRateProvider.notifier).state = selectedItem.toDouble();
+    ref.read(spendFeeRateProvider.notifier).state = fee.toDouble();
     await ref.read(spendTransactionProvider.notifier).setFee();
     ref.read(spendFeeProcessing.notifier).state = false;
   }

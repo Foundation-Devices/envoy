@@ -306,7 +306,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                             address: rbfState.receiveAddress,
                                             feeChooserWidget: FeeChooser(
                                               rbfState.draftTx.transaction,
-                                              onFeeSelect: (int fee,
+                                              onFeeSelect: (double fee,
                                                   BuildContext context,
                                                   bool customFee) {
                                                 _setFee(
@@ -661,7 +661,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     HapticFeedback.mediumImpact();
   }
 
-  Future _setFee(int fee, BuildContext context, bool customFee) async {
+  Future _setFee(double fee, BuildContext context, bool customFee) async {
     EnvoyAccount? account = ref.read(selectedAccountProvider);
     num? existingFeeRate = ref.read(spendFeeRateProvider);
     setState(() {
