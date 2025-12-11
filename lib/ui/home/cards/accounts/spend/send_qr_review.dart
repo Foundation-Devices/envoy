@@ -102,7 +102,7 @@ class _SendQrReviewState extends ConsumerState<SendQrReview> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: EnvoySpacing.medium1),
-                        child: TransactionReviewCard2(
+                        child: TransactionReviewCard(
                           account: account,
                           transaction: widget.transaction.transaction,
                           onTxDetailTap: () {
@@ -112,7 +112,6 @@ class _SendQrReviewState extends ConsumerState<SendQrReview> {
                           canModifyPsbt: false,
                           loading: false,
                           address: widget.transaction.transaction.address,
-                          feeTitle: S().coincontrol_tx_detail_fee,
                         ),
                       ),
                     ),

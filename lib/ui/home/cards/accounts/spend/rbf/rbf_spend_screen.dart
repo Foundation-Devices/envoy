@@ -288,10 +288,12 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                       children: [
                                         Consumer(
                                             builder: (context, ref, child) {
-                                          return TransactionReviewCard2(
+                                          return TransactionReviewCard(
                                             account: account,
                                             transaction:
                                                 rbfState.draftTx.transaction,
+                                            amountToSend:
+                                                rbfState.originalAmount.abs(),
                                             onTxDetailTap: () {
                                               _showTxDetailsPage(context);
                                             },
@@ -299,8 +301,6 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                                 transactionModel.canModify,
                                             loading: transactionModel.loading,
                                             address: rbfState.receiveAddress,
-                                            feeTitle:
-                                                S().coincontrol_tx_detail_fee,
                                             onFeeTap:
                                                 (transactionModel.isFinalized &&
                                                         !account.isHot)

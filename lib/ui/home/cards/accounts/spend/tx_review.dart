@@ -812,7 +812,7 @@ class _TransactionReviewScreenState
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Consumer(builder: (context, ref, child) {
-                            return TransactionReviewCard2(
+                            return TransactionReviewCard(
                               account: account,
                               transaction: transaction,
                               onTxDetailTap: () {
@@ -822,7 +822,6 @@ class _TransactionReviewScreenState
                               canModifyPsbt: transactionModel.canModify,
                               loading: transactionModel.loading,
                               address: address,
-                              feeTitle: S().coincontrol_tx_detail_fee,
                               onFeeTap: (transactionModel.isFinalized &&
                                       !account.isHot)
                                   ? null
