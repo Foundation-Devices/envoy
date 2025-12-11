@@ -21,6 +21,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/components/step_indicator.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/routes/routes.dart';
 
 class VerifyCountdownNotifier extends StateNotifier<int> {
   VerifyCountdownNotifier() : super(5);
@@ -54,8 +55,9 @@ final verifyCountdownProvider =
 
 class PsbtCard extends ConsumerStatefulWidget {
   final DraftTransaction transaction;
+  final bool rbfFlow;
 
-  const PsbtCard(this.transaction, {super.key});
+  const PsbtCard(this.transaction, this.rbfFlow, {super.key});
 
   @override
   ConsumerState<PsbtCard> createState() => _PsbtCardState();
@@ -213,7 +215,10 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
                         ),
                         enabled: !isDisabled,
                         onTap: () {
-                          GoRouter.of(context).pushNamed(ACCOUNT_SEND_SCAN_QR,
+                          GoRouter.of(context).pushNamed(
+                              widget.rbfFlow
+                                  ? PSBT_SCAN_QR
+                                  : ACCOUNT_SEND_SCAN_QR,
                               extra: widget.transaction);
                         },
                       ),

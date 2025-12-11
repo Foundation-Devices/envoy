@@ -40,7 +40,6 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -289,30 +288,31 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                       children: [
                                         Consumer(
                                             builder: (context, ref, child) {
-                                          return TransactionReviewCard(
+                                          return TransactionReviewCard2(
+                                            account: account,
                                             transaction:
                                                 rbfState.draftTx.transaction,
-                                            amountToSend:
-                                                rbfState.originalAmount.abs(),
                                             onTxDetailTap: () {
                                               _showTxDetailsPage(context);
                                             },
-                                            canModifyPsbt: true,
-                                            hideTxDetailsDialog: true,
+                                            canModifyPsbt:
+                                                transactionModel.canModify,
                                             loading: transactionModel.loading,
-                                            feeTitleIconButton: EnvoyIcons.info,
-                                            feeTitle: S()
-                                                .coincontrol_tx_detail_newFee,
                                             address: rbfState.receiveAddress,
-                                            feeChooserWidget: FeeChooser(
-                                              rbfState.draftTx.transaction,
-                                              onFeeSelect: (double fee,
-                                                  BuildContext context,
-                                                  bool customFee) {
-                                                _setFee(
-                                                    fee, context, customFee);
-                                              },
-                                            ),
+                                            feeTitle:
+                                                S().coincontrol_tx_detail_fee,
+                                            onFeeTap:
+                                                (transactionModel.isFinalized &&
+                                                        !account.isHot)
+                                                    ? null
+                                                    : () {
+                                                        _showFeeChooser(
+                                                          context,
+                                                          ref,
+                                                          rbfState.draftTx
+                                                              .transaction,
+                                                        );
+                                                      },
                                           );
                                         }),
                                       ],
@@ -331,6 +331,32 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         );
       }),
     );
+  }
+
+  void _showFeeChooser(
+    BuildContext context,
+    WidgetRef ref,
+    BitcoinTransaction transaction,
+  ) {
+    Navigator.of(context, rootNavigator: true).push(PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return FeeChooser(
+            transaction,
+            onFeeSelect: (fee, context, bool customFee) {
+              _setFee(fee, context, customFee);
+              ref.read(userHasChangedFeesProvider.notifier).state = true;
+            },
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 100),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+        opaque: false,
+        fullscreenDialog: true));
   }
 
   Widget _buildBroadcastProgress() {
@@ -789,6 +815,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   //show edit coins screen,
   //if the user changed coin selection, recalculate the fee boundaries and rebuild the boosted tx
   Future<void> _editCoins(BuildContext context) async {
+    // nešto ovde
     final selectedAccount = ref.read(selectedAccountProvider);
 
     final account = ref.read(selectedAccountProvider);
@@ -800,7 +827,6 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       return;
     }
     final rbfState = ref.read(rbfSpendStateProvider);
-    final router = Navigator.of(context, rootNavigator: true);
     if (rbfState == null) {
       return;
     }
@@ -827,12 +853,22 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
     ref.read(spendAmountProvider.notifier).state =
         rbfState.draftTx.transaction.amount;
-    if (ref.read(selectedAccountProvider) != null) {
-      CoinSelectionOverlay.of(context)?.show(SpendOverlayContext.rbfSelection);
-    }
-    dynamic newSelection = await router.push(CupertinoPageRoute(
-        builder: (context) => const ChooseCoinsWidget(),
-        fullscreenDialog: true));
+
+    dynamic newSelection = Navigator.of(context, rootNavigator: true).push(
+        PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return ChooseCoinsWidget();
+            },
+            transitionDuration: const Duration(milliseconds: 100),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            opaque: false,
+            fullscreenDialog: true));
 
     ref.read(rbfChangeOutputProvider.notifier).state = null;
     ref.read(coinSelectionStateProvider.notifier).reset();

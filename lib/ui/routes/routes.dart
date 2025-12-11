@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/send_qr_review.dart';
 
 const ROUTE_SPLASH = 'onboard';
 const WALLET_SUCCESS = "wallet_ready";
@@ -32,6 +33,7 @@ const PASSPORT_INTRO = "passport_intro";
 const PREFS_ONBOARDED = 'onboarded';
 const PSBT_QR_EXCHANGE_STANDALONE = '"psbt_qr_exchange';
 const TOU_EXTERNAL = 'tou_external';
+const PSBT_SCAN_QR = 'psbt_scan_qr';
 
 /// this key can be used in nested GoRoute to leverage main router
 /// for example:
@@ -149,34 +151,67 @@ final GoRouter mainRouter = GoRouter(
           );
         }),
     GoRoute(
-      path: "/psbt_qr_exchange",
-      name: PSBT_QR_EXCHANGE_STANDALONE,
-      builder: (context, state) {
-        return Stack(
-          children: [
-            const Positioned.fill(
-                child: AppBackground(
-              showRadialGradient: true,
-            )),
-            Positioned(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: SafeArea(
-                  child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 8),
-                      child: Shield(
-                        child: PsbtCard(state.extra as DraftTransaction),
-                      )),
+        path: "/psbt_qr_exchange",
+        name: PSBT_QR_EXCHANGE_STANDALONE,
+        builder: (context, state) {
+          return Stack(
+            children: [
+              const Positioned.fill(
+                  child: AppBackground(
+                showRadialGradient: true,
+              )),
+              Positioned(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Scaffold(
+                  backgroundColor: Colors.transparent,
+                  body: SafeArea(
+                    child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 8),
+                        child: Shield(
+                          child:
+                              PsbtCard(state.extra as DraftTransaction, true),
+                        )),
+                  ),
                 ),
               ),
-            ),
-          ],
-        );
-      },
-    ),
+            ],
+          );
+        },
+        routes: [
+          GoRoute(
+            name: PSBT_SCAN_QR,
+            path: "qr_review",
+            pageBuilder: (context, state) {
+              return wrapWithEnvoyPageAnimation(
+                  child: Stack(
+                children: [
+                  const Positioned.fill(
+                      child: AppBackground(
+                    showRadialGradient: true,
+                  )),
+                  Positioned(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: Scaffold(
+                      backgroundColor: Colors.transparent,
+                      body: SafeArea(
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 8),
+                            child: Shield(
+                              child:
+                                  SendQrReview(state.extra as DraftTransaction),
+                            )),
+                      ),
+                    ),
+                  ),
+                ],
+              ));
+            },
+          )
+        ]),
   ],
 );
 

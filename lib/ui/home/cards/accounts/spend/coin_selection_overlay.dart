@@ -83,15 +83,10 @@ class CoinSelectionOverlayState extends ConsumerState<CoinSelectionOverlay> {
     ref.listen(showSpendRequirementOverlayProvider, (previous, next) {
       if (next) {
         if (ref.read(spendEditModeProvider) ==
-            SpendOverlayContext.rbfSelection) {
-        } else if (ref.read(spendEditModeProvider) !=
-            SpendOverlayContext.editCoins) {
-          final requiredAmount = ref.watch(spendAmountProvider);
+            SpendOverlayContext.preselectCoins) {
           final account = ref.read(selectedAccountProvider);
           if (account != null) {
-            show(requiredAmount != 0
-                ? SpendOverlayContext.editCoins
-                : SpendOverlayContext.preselectCoins);
+            show(SpendOverlayContext.preselectCoins);
           }
         }
       } else {

@@ -217,7 +217,8 @@ final accountsRouter = StatefulShellBranch(
                                   pageBuilder: (context, state) {
                                     return wrapWithEnvoyPageAnimation(
                                         child: PsbtCard(
-                                            state.extra as DraftTransaction));
+                                            state.extra as DraftTransaction,
+                                            false));
                                   },
                                   routes: [
                                     GoRoute(
