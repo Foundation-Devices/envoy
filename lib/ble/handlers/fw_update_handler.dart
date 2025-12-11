@@ -36,8 +36,6 @@ class FwTransferProgress {
 class FwUpdateHandler extends PassportMessageHandler {
   FwUpdateHandler(super.writer);
 
-  final chunkSize = BigInt.from(200000);
-
   Set<PrimeFwUpdateStep> _completedUpdateStates = {};
   String newVersion = "";
 
@@ -184,7 +182,7 @@ class FwUpdateHandler extends PassportMessageHandler {
         sender: BluetoothManager().qlIdentity!,
         recipient: BluetoothManager().recipientXid!,
         path: tempFile.path,
-        chunkSize: chunkSize,
+        chunkSize: bleChunkSize,
         timestamp: timestampSeconds);
 
     if (ready) {
@@ -279,6 +277,8 @@ class FwUpdateHandler extends PassportMessageHandler {
     }, success: (event) {
       _updateFwUpdateState(PrimeFwUpdateStep.finished);
     }, error: (event) {
+      // Cancel any ongoing transfer
+      unawaited(BluetoothChannel().cancelTransfer());
       EnvoyReport()
           .log("fw_update_handler", "Firmware install error: ${event.error}");
       _updateFwUpdateState(PrimeFwUpdateStep.error);

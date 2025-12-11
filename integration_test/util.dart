@@ -732,10 +732,10 @@ Future<void> onboardingAndEnterSeed(
   await tester.pump(const Duration(milliseconds: 1000));
 
   /// 24 word err test ENV-2315 ////////////////////////////////////////////////////
+  ///
+  final mnemonicInput = find.byType(MnemonicInput);
 
   await findAndPressTextButton(tester, '24 Word Seed');
-
-  final mnemonicInput = find.byType(MnemonicInput);
 
 // Enter first 12 words
   for (int i = 0; i < 12; i++) {
@@ -1351,12 +1351,11 @@ Future<bool> checkTorShieldIcon(
   WidgetTester tester, {
   required bool expectPrivacy,
 }) async {
-  // Wait up to 2 seconds for initial settling, then
-  // enforce 15 seconds of stability to avoid false positives.
+  // enforce 30 seconds of stability to avoid false positives.
   final stableAsset = await _waitForStableImageAsset(
     tester,
-    timeout: const Duration(seconds: 30), // total max wait (adjustable)
-    stabilityWindow: const Duration(seconds: 15), // your requirement
+    timeout: const Duration(seconds: 240), // total max wait (adjustable)
+    stabilityWindow: const Duration(seconds: 30), // your requirement
   );
 
   if (expectPrivacy) {

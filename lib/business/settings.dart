@@ -86,7 +86,7 @@ class Settings extends ChangeNotifier {
     return servers[Random().nextInt(servers.length)];
   }
 
-  void switchToNextDefaultServer() {
+  Future<void> switchToNextDefaultServer() async {
     if (usingTor) {
       final currentIndex = defaultTorServers.indexOf(currentDefaultTorServer);
       currentDefaultTorServer =
@@ -96,7 +96,7 @@ class Settings extends ChangeNotifier {
       currentDefaultServer =
           defaultServers[(currentIndex + 1) % defaultServers.length];
     }
-    store();
+    await store();
     notifyListeners();
   }
 
@@ -234,10 +234,10 @@ class Settings extends ChangeNotifier {
     return personalElectrumAddress;
   }
 
-  void setPersonalElectrumAddress(String address) {
+  Future<void> setPersonalElectrumAddress(String address) async {
     personalElectrumAddress = address;
+    setCustomElectrumAddress(personalElectrumAddress);
     notifyListeners();
-    store();
   }
 
   bool usingTor = false;

@@ -193,9 +193,20 @@ class _AccountsListState extends ConsumerState<AccountsList> {
     List<EnvoyAccount> primePassphraseAccounts =
         ref.watch(primePassphraseAccountsProvider);
     List<EnvoyAccount> accounts = ref.watch(accountsProvider);
+
     if (!showDefaultAccounts && primePassphraseAccounts.isNotEmpty) {
       accounts = primePassphraseAccounts;
     }
+
+    if (showDefaultAccounts) {
+      accounts = accounts.where((account) {
+        if (primePassphraseAccounts.contains(account)) return false;
+        if (account.seedHasPassphrase) return false;
+
+        return true;
+      }).toList();
+    }
+
     final listContentHeight = accounts.length * _accountHeight;
 
     // Keep _accountsOrder in sync with accountOrderStream
@@ -328,7 +339,8 @@ class _AccountsListState extends ConsumerState<AccountsList> {
           });
           await EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
         },
-        children: buildListItems(_accountsOrder, accounts),
+        children: buildListItems(
+            accounts, showDefaultAccounts ? _accountsOrder : null),
       ),
     );
 
@@ -341,10 +353,10 @@ class _AccountsListState extends ConsumerState<AccountsList> {
   }
 
   List<Widget> buildListItems(
-      List<String> accountsOrder, List<EnvoyAccount> accounts) {
+      List<EnvoyAccount> accounts, List<String>? accountsOrder) {
     final List<Widget> items = [];
 
-    final orderToUse = accountsOrder.isEmpty
+    final orderToUse = accountsOrder == null || accountsOrder.isEmpty
         ? accounts.map((e) => e.id).toList()
         : accountsOrder;
 

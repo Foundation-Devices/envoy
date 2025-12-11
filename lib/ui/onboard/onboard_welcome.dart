@@ -307,7 +307,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                                     // Navigator.pop(context);
 
                                     showScannerDialog(
-                                        showInfoDialog: true,
+                                        infoType: QrIntentInfoType.prime,
                                         context: context,
                                         onBackPressed: (context) {
                                           Navigator.pop(context);

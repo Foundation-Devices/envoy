@@ -64,11 +64,11 @@ generate:
 bump:
     bash scripts/bump_version.sh
 
-format:
-    cargo fmt && \
+fmt:
+    cargo-fmt && \
     dart format .
 
-lint: format
+lint: fmt
     reuse lint && \
     flutter analyze && \
     cargo clippy -- -Dwarnings -A clippy::missing_safety_doc

@@ -505,6 +505,8 @@ class _CancelTransactionProgressState
       stateMachineSelector: rive.StateMachineSelector.byName('STM'),
     );
 
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller?.stateMachine.boolean("indeterminate")?.value = true;
 
     setState(() => _isInitialized = true);
@@ -604,8 +606,14 @@ class _CancelTransactionProgressState
       required bool unhappy}) {
     if (_controller?.stateMachine == null) return;
     final stateMachine = _controller!.stateMachine;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("indeterminate")?.value = indeterminate;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("happy")?.value = happy;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("unhappy")?.value = unhappy;
   }
 

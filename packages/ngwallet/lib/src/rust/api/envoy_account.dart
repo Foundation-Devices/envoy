@@ -37,5 +37,6 @@ sealed class EnvoyAccount with _$EnvoyAccount {
     required List<String> tags,
     required String xfp,
     required List<(AddressType, String)> externalPublicDescriptors,
+    required bool archived,
   }) = _EnvoyAccount;
 }

@@ -462,6 +462,8 @@ class CoinLockButtonState extends State<CoinLockButton> {
 
   /// 👇 Public getter so tests (via GlobalKey) can read the current lock state
   bool get isLocked =>
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       _controller?.stateMachine.boolean("Lock")?.value ?? widget.locked;
 
   void _initRive(rive.File riveFile) {
@@ -472,6 +474,8 @@ class CoinLockButtonState extends State<CoinLockButton> {
             rive.StateMachineSelector.byName('CoinStateMachine'),
       );
 
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       _controller?.stateMachine.boolean("Lock")?.value = widget.locked;
 
       setState(() => _isInitialized = true);
@@ -482,12 +486,16 @@ class CoinLockButtonState extends State<CoinLockButton> {
   void didUpdateWidget(covariant CoinLockButton oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.locked != oldWidget.locked) {
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       _controller?.stateMachine.boolean("Lock")?.value = widget.locked;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller?.stateMachine.boolean("Lock")?.value = widget.locked;
 
     return Consumer(builder: (context, ref, child) {

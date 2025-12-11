@@ -48,6 +48,8 @@ class _PrimeMagicBackupState extends ConsumerState<PrimeMagicBackup> {
     setState(() {
       _state = IconLoaderState.noIcon;
     });
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _lockController?.stateMachine.boolean('Lock')?.value = true;
   }
 

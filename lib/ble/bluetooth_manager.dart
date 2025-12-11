@@ -31,11 +31,14 @@ import 'handlers/passphrase_handler.dart';
 import 'handlers/shards_handler.dart';
 import 'quantum_link_router.dart';
 
+final bleChunkSize = BigInt.from(51200);
+
 final deviceConnectionStatusStreamProvider =
     StreamProvider<DeviceStatus>((ref) {
   return BluetoothChannel().deviceStatusStream;
 });
 
+//TODO: support multiple devices
 final isPrimeConnectedProvider = Provider.family<bool, String>((ref, bleId) {
   DeviceStatus? status =
       ref.watch(deviceConnectionStatusStreamProvider).valueOrNull;
@@ -456,7 +459,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 
       _bluetoothChannel.deviceStatusStream.listen((event) async {
         if (event.type == BluetoothConnectionEventType.deviceConnected) {
-          await Future.delayed(Duration(seconds: 1));
+          await Future.delayed(Duration(seconds: 2));
           sendExchangeRateHistory();
         }
       });
@@ -472,7 +475,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
         quantumLinkIdentity: _qlIdentity!,
         aridCache: _aridCache!);
     if (decoderStatus.payload != null) {
-      _decoder = await api.getDecoder();
       return decoderStatus.payload;
     } else {
       return null;
@@ -570,7 +572,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     if (Devices().getPrimeDevices.isEmpty || _recipientXid == null) {
       return;
     }
-
     try {
       _sendingData = true;
 
@@ -643,32 +644,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       throw UnimplementedError(
           "Bluetooth write not implemented for this platform");
     }
-    // _writeProgressSubscription = writeStream.listen(
-    //   (progress) {
-    //     if (_isUpdatingFirmware && _totalFirmwareChunks > 0) {
-    //       final overallProgress =
-    //           (_sentFirmwareChunks + progress) / _totalFirmwareChunks;
-    //       _writeProgressController.add(overallProgress.clamp(0.0, 1.0));
-    //     } else {
-    //       _writeProgressController.add(progress);
-    //     }
-    //   },
-    //   onDone: () {
-    //     kPrint("Progress stream done!");
-    //     if (_isUpdatingFirmware) {
-    //       _sentFirmwareChunks++;
-    //     }
-    //     _sendingData = false;
-    //   },
-    //   onError: (e) {
-    //     kPrint("Progress stream errored out!");
-    //     if (_isUpdatingFirmware) {
-    //       endFirmwareUpdate();
-    //     }
-    //     _sendingData = false;
-    //     _writeProgressController.addError(e);
-    //   },
-    // );
     _sendingData = false;
     return Stream.value(1.0);
   }

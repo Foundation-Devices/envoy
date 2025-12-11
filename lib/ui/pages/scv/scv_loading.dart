@@ -43,6 +43,8 @@ class _ScvLoadingPageState extends State<ScvLoadingPage> {
       stateMachineSelector: rive.StateMachineSelector.byName('STM'),
     );
 
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller?.stateMachine.boolean("indeterminate")?.value = true;
 
     setState(() => _isInitialized = true);

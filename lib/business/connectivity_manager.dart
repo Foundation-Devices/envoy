@@ -4,10 +4,8 @@
 
 import 'dart:async';
 import 'package:collection/collection.dart';
-import 'package:envoy/business/feed_manager.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
-import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/settings.dart';
 
@@ -147,14 +145,11 @@ class ConnectivityManager {
 
   Future<void> checkFoundationServer() async {
     if (usingDefaultServer) {
-      Response response = await FeedManager().getVimeoData();
-      if (response.statusCode == 200) {
-        failedFoundationServerAttempts++;
-        if (failedFoundationServerAttempts >= 3) {
-          events.add(ConnectivityManagerEvent.foundationServerDown);
-        } else {
-          s.switchToNextDefaultServer();
-        }
+      failedFoundationServerAttempts++;
+      if (failedFoundationServerAttempts >= 3) {
+        events.add(ConnectivityManagerEvent.foundationServerDown);
+      } else {
+        await s.switchToNextDefaultServer();
       }
     }
   }

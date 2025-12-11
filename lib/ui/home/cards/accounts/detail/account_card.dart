@@ -271,7 +271,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                               S().taproot_passport_dialog_reconnect,
                               (BuildContext modalContext) {
                                 Navigator.pop(modalContext);
-                                scanForDevice(context);
+                                scanForDevice(context, ref);
                               },
                               secondaryButtonLabel:
                                   S().taproot_passport_dialog_later,
@@ -302,11 +302,23 @@ class _AccountCardState extends ConsumerState<AccountCard>
                         final navigator =
                             Navigator.of(context, rootNavigator: true);
                         final goRouter = GoRouter.of(context);
+                        QrIntentInfoType qrType = QrIntentInfoType.qrCode;
+                        if (!account.isHot) {
+                          final device = Devices()
+                              .getDeviceBySerial(account.deviceSerial ?? "");
+                          if (device != null &&
+                              device.type == DeviceType.passportPrime) {
+                            qrType = QrIntentInfoType.prime;
+                          } else {
+                            qrType = QrIntentInfoType.core;
+                          }
+                        }
                         showScannerDialog(
                             context: context,
                             onBackPressed: (context) {
                               Navigator.of(context).pop();
                             },
+                            infoType: qrType,
                             decoder: PaymentQrDecoder(
                                 account: account,
                                 onAztecoScan: (aztecoVoucher) {
@@ -818,7 +830,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                 (BuildContext modalContext) {
                   Navigator.pop(modalContext);
                   HomePageState.of(context)?.toggleOptions();
-                  scanForDevice(context);
+                  scanForDevice(context, ref);
                 },
                 secondaryButtonLabel: S().taproot_passport_dialog_later,
                 onSecondaryButtonTap: (BuildContext modalContext) {
