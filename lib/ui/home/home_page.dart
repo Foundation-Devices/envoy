@@ -27,7 +27,9 @@ import 'package:envoy/ui/home/migration_dialogs.dart';
 import 'package:envoy/ui/home/top_bar_home.dart';
 import 'package:envoy/ui/lock/session_manager.dart';
 import 'package:envoy/ui/migrations/migration_manager.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -36,6 +38,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/tor_warning.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/ui/widgets/tutorial_page.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -264,6 +267,7 @@ class HomePageState extends ConsumerState<HomePage>
       final router = Navigator.of(context);
       SessionManager().bind(router);
       notifyAboutNetworkMigrationDialog(context);
+      _showTutorialIfNeeded(context);
     });
   }
 
@@ -567,6 +571,13 @@ class HomePageState extends ConsumerState<HomePage>
       },
     );
 
+    ref.listen(
+      onboardingStateStreamProvider,
+      (previous, next) {
+        _showTutorialIfNeeded(context);
+      },
+    );
+
     double shieldTotalTop = _backgroundShown
         ? screenHeight + 20
         : optionsShown
@@ -716,6 +727,42 @@ class HomePageState extends ConsumerState<HomePage>
 
   static HomePageState? of(BuildContext context) {
     return context.findAncestorStateOfType<HomePageState>();
+  }
+
+  //Show tutorial if needed
+  //overlay will be shown only when there are two wallets (hot and prime)
+  //and the bluetooth onboarding step 'walletConnected' is completed
+  void _showTutorialIfNeeded(BuildContext context) async {
+    await Future.delayed(Duration(milliseconds: 600));
+    final dismissed = await EnvoyStorage()
+        .checkPromptDismissed(DismissiblePrompt.primeAccountTutorial);
+    if (dismissed) {
+      return;
+    }
+    final accounts = ref
+        .read(accountsProvider)
+        .where((account) => account.network == Network.bitcoin);
+
+    final hasPrimeAccount = accounts.any((account) {
+      final device = Devices().getDeviceBySerial(account.deviceSerial ?? "");
+      return device?.type == DeviceType.passportPrime;
+    });
+
+    if (accounts.length == 2 && hasPrimeAccount) {
+      // make sure there are two wallets hot and prime
+      final hasHotWallet = accounts.any((account) => account.isHot);
+      if (hasHotWallet) {
+        if (context.mounted) {
+          Navigator.of(context).push(
+            PageRouteBuilder(
+              opaque: false,
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const AccountTutorialOverlay(),
+            ),
+          );
+        }
+      }
+    }
   }
 }
 

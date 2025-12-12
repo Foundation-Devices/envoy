@@ -77,7 +77,6 @@ class Settings extends ChangeNotifier {
   static final List<String> defaultTorServers = [
     "mocmguuik7rws4bclpcoz2ldfzesjolatrzggaxfl37hjpreap777yqd.onion:50001",
     "l7wsl4yghqvdgp4ullod67ydb54ttxs3nnvctblbofl7umw6j72e5did.onion:50001",
-    "vtdblqfka4iqbvjscagwglbg4wxmc42hvf5i7htr3dipnbqz5eiwqrqd.onion:50001"
   ];
   static String currentDefaultTorServer =
       selectRandomServerFrom(defaultTorServers);
@@ -86,7 +85,7 @@ class Settings extends ChangeNotifier {
     return servers[Random().nextInt(servers.length)];
   }
 
-  void switchToNextDefaultServer() {
+  Future<void> switchToNextDefaultServer() async {
     if (usingTor) {
       final currentIndex = defaultTorServers.indexOf(currentDefaultTorServer);
       currentDefaultTorServer =
@@ -96,7 +95,7 @@ class Settings extends ChangeNotifier {
       currentDefaultServer =
           defaultServers[(currentIndex + 1) % defaultServers.length];
     }
-    store();
+    await store();
     notifyListeners();
   }
 
@@ -104,7 +103,6 @@ class Settings extends ChangeNotifier {
     List<String> servers = [
       "mainnet-0.foundation.xyz",
       "mainnet-1.foundation.xyz",
-      "mainnet-2.foundation.xyz"
     ];
 
     String protocol = ssl ? "ssl://" : "tcp://";

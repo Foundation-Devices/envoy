@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:envoy/ble/handlers/device_handler.dart';
 import 'package:envoy/ble/handlers/fw_update_handler.dart';
 import 'package:envoy/ble/handlers/onboard_handler.dart';
 import 'package:envoy/ble/handlers/scv_handler.dart';
@@ -165,6 +166,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   String bleId = "";
 
   api.QuantumLinkIdentity? get qlIdentity => _qlIdentity;
+
   api.XidDocument? get recipientXid => _recipientXid;
 
   static Future<BluetoothManager> init() async {
@@ -187,6 +189,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     _messageRouter.registerHandler(_blePassphraseHandler);
     _messageRouter.registerHandler(_fwUpdateHandler);
     _messageRouter.registerHandler(_scvAccountHandler);
+    _messageRouter.registerHandler(DeviceHandler(this));
 
     await listen(id: bleId);
     kPrint("QL Identity: $_qlIdentity");
@@ -377,7 +380,19 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 
   @override
   Future<bool> writeMessage(api.QuantumLinkMessage message) async {
-    kPrint("Sending message: $message");
+    kPrint("R: connected ${BluetoothChannel().lastDeviceStatus.connected}");
+    if (!BluetoothChannel().lastDeviceStatus.connected) {
+      kPrint("Sending message: Waiting for connection");
+      await BluetoothChannel().deviceStatusStream.firstWhere((status) {
+        kPrint("Sending message: Device status changed: $status");
+        return status.connected == true;
+      }).timeout(Duration(seconds: 10), onTimeout: () {
+        kPrint("Sending message: Timeout");
+        throw Exception("Failed to send message, device not connected");
+      });
+      kPrint("Sending message: Waiting is over  .....");
+    }
+    kPrint("Sending message: ${message.runtimeType}");
     await _writeWithProgress(message);
     return true;
   }
@@ -440,7 +455,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       _bluetoothChannel.listenToDataEvents().listen((payload) {
         decode(payload).then((value) async {
           if (value != null) {
-            unawaited(_messageRouter.dispatch(value.message, id));
+            unawaited(_messageRouter.dispatch(value, id));
             _passportMessageStream.add(value);
             kPrint(
                 "Got Passport message type: ${value.message.runtimeType} ${value.message}");
@@ -475,7 +490,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
         quantumLinkIdentity: _qlIdentity!,
         aridCache: _aridCache!);
     if (decoderStatus.payload != null) {
-      _decoder = await api.getDecoder();
       return decoderStatus.payload;
     } else {
       return null;

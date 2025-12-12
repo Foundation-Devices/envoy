@@ -222,6 +222,8 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
 
   Future<void> sendUpdate();
 
+  Future<void> setArchived({required bool archived});
+
   Future<void> setDoNotSpend({required Output utxo, required bool doNotSpend});
 
   Future<void> setDoNotSpendMultiple(

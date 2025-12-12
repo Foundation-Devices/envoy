@@ -82,28 +82,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
   StreamSubscription? _connectionMonitorSubscription;
 
-  //TODO: show overlay properly after onboarding
-  // void _notifyAfterOnboardingTutorial(BuildContext context) async {
-  //   final accounts = ref.read(accountsProvider);
-  //
-  //   if (accounts.length == 2) {
-  //     // make sure there are two wallets hot and prime
-  //     final hasHotWallet = accounts.any((account) => account.isHot);
-  //
-  //     if (hasHotWallet) {
-  //       if (context.mounted) {
-  //         Navigator.of(context).push(
-  //           PageRouteBuilder(
-  //             opaque: false,
-  //             pageBuilder: (context, animation, secondaryAnimation) =>
-  //                 const AccountTutorialOverlay(),
-  //           ),
-  //         );
-  //       }
-  //     }
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     startBluetoothDisconnectionListener(context, ref);
