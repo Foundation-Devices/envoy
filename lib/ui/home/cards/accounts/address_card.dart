@@ -3,20 +3,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/ble/bluetooth_manager.dart';
-import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
-import 'package:envoy/ui/home/cards/buy_bitcoin_account_selection.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/build_context_extension.dart';
@@ -44,11 +39,6 @@ class _AddressCardState extends ConsumerState<AddressCard> {
     String address = "";
     final isTaprootEnabled = Settings().enableTaprootSetting == true;
     final noTaprootXpub = accountHasNoTaprootXpub(account);
-    final Device? device =
-        Devices().getDeviceBySerial(account?.deviceSerial ?? "");
-    bool isPrime = device?.type == DeviceType.passportPrime;
-    final bool isPrimeConnected =
-        ref.watch(isPrimeConnectedProvider(device?.bleId ?? ""));
 
     if (isTaprootEnabled && noTaprootXpub) {
       final segwitAddressRecord = account?.nextAddress.firstWhere(
@@ -106,53 +96,6 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                   ),
                 ),
                 const SizedBox(height: EnvoySpacing.medium3),
-                // TODO: add other buttons/link texts here!!!
-
-                widget.account.isHot
-                    ? SizedBox.shrink()
-                    : GestureDetector(
-                        onTap: () {
-                          if (isPrimeConnected) {
-                            // TODO: if prime is connected via ble, verify address via QL
-                          } else {
-                            if (mounted) {
-                              showEnvoyDialog(
-                                context: context,
-                                blurColor: Colors.black,
-                                useRootNavigator: true,
-                                linearGradient: true,
-                                dialog: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.9,
-                                  child: VerifyAddressDialog(
-                                    address: address,
-                                    accountName: account?.name ?? "",
-                                  ),
-                                ),
-                              );
-                            }
-                          }
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            EnvoyIcon(
-                              isPrime ? EnvoyIcons.quantum : EnvoyIcons.qr_scan,
-                              color: EnvoyColors.accentPrimary,
-                            ),
-                            const SizedBox(width: EnvoySpacing.small),
-                            Text(
-                              S().buy_bitcoin_accountSelection_verify,
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.button.copyWith(
-                                color: EnvoyColors.accentPrimary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
               ],
             ),
           ),
