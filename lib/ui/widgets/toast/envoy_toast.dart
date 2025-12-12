@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/toast/toast_route.dart';
 import 'package:flutter/material.dart';
 
@@ -163,7 +164,7 @@ class EnvoyToastState extends State<EnvoyToast> {
                         child: InkWell(
                           onTap: widget.onActionTap,
                           child: Padding(
-                            padding: const EdgeInsets.all(4.0),
+                            padding: const EdgeInsets.all(EnvoySpacing.xs),
                             child: Text(widget.actionButtonText ?? "",
                                 style: Theme.of(context)
                                     .textTheme
@@ -190,9 +191,14 @@ class EnvoyToastState extends State<EnvoyToast> {
                       ),
                     ),
                     IconButton(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium1),
                       onPressed: () {
-                        widget.envoyToastRoute.navigator?.pop();
+                        final nav = widget.envoyToastRoute.navigator;
+                        if (nav != null && nav.canPop()) {
+                          // Safe to pop this toast route.
+                          nav.pop();
+                        }
                       },
                       icon: const Icon(Icons.close, color: Colors.white),
                     ),
