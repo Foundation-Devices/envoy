@@ -17,6 +17,7 @@ import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/ntp.dart';
+import 'package:envoy/util/transfer_rate_estimator.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 
 class FwUpdateState {
@@ -39,9 +40,9 @@ class FwUpdateHandler extends PassportMessageHandler {
   Set<PrimeFwUpdateStep> _completedUpdateStates = {};
   String newVersion = "";
 
-  // Track transfer speed for ETA calculation
-  DateTime? _transferStartTime;
-  DateTime? _lastUpdateTime;
+  // Transfer rate estimator
+  // reset this every time a new transfer starts
+  final _transferEstimator = TransferRateEstimator();
 
   final _fetchState = StreamController<FwUpdateState>.broadcast();
   final _downloadState = StreamController<FwUpdateState>.broadcast();
@@ -155,8 +156,8 @@ class FwUpdateHandler extends PassportMessageHandler {
     final tempFile =
         await BluetoothChannel.getBleCacheFile(patches.hashCode.toString());
 
-    _transferStartTime = null;
-    _lastUpdateTime = null;
+    // reset this every time a new transfer starts
+    _transferEstimator.reset();
 
     BluetoothChannel().writeProgressStream().listen((progress) {
       if (progress.id == tempFile.path) {
@@ -290,37 +291,16 @@ class FwUpdateHandler extends PassportMessageHandler {
     final totalBytes = wProgress.totalBytes;
     final bytesProcessed = wProgress.bytesProcessed;
 
-    _transferStartTime ??= DateTime.now();
-    _lastUpdateTime ??= DateTime.now();
+    final remainingTime = _transferEstimator.updateProgress(
+      bytesProcessed: bytesProcessed,
+      totalBytes: totalBytes,
+      progress: progress,
+    );
 
-    String remainingTime = "";
-
-    if (bytesProcessed > 0 && totalBytes > 0 && progress > 0.01) {
-      final now = DateTime.now();
-      final elapsedSeconds = now.difference(_transferStartTime!).inSeconds;
-
-      if (elapsedSeconds > 0) {
-        final bytesPerSecond = bytesProcessed / elapsedSeconds;
-        final remainingBytes = totalBytes - bytesProcessed;
-
-        if (bytesPerSecond > 0) {
-          final secondsRemaining = (remainingBytes / bytesPerSecond).ceil();
-
-          if (secondsRemaining < 60) {
-            remainingTime = "$secondsRemaining sec";
-          } else if (secondsRemaining < 3600) {
-            final minutes = (secondsRemaining / 60).ceil();
-            remainingTime = "$minutes min";
-          } else {
-            final hours = (secondsRemaining / 3600).floor();
-            final minutes = ((secondsRemaining % 3600) / 60).ceil();
-            remainingTime = "${hours}h ${minutes}m";
-          }
-        }
-      }
+    // If null, update was throttled
+    if (remainingTime == null) {
+      return;
     }
-
-    _lastUpdateTime = DateTime.now();
 
     _transferProgress.sink.add(
       FwTransferProgress(
