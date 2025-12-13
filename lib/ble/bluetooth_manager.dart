@@ -47,10 +47,6 @@ final isPrimeConnectedProvider = Provider.family<bool, String>((ref, bleId) {
   return status.connected == true;
 });
 
-final sendProgressProvider =
-    StateNotifierProvider<SendProgressNotifier, double>(
-  (ref) => SendProgressNotifier(ref),
-);
 //TODO: refactor with new fw update progress tracking
 final remainingTimeProvider = StateProvider<Duration>((ref) => Duration.zero);
 
@@ -144,24 +140,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       StreamController<double>.broadcast();
 
   Stream<double> get writeProgressStream => _writeProgressController.stream;
-
-  //TODO: firmware update progress tracking with new progress stream
-  // int _totalFirmwareChunks = 0;
-  // int _sentFirmwareChunks = 0;
-  // bool _isUpdatingFirmware = false;
-
-  void startFirmwareUpdate({required int totalChunks}) {
-    // _totalFirmwareChunks = totalChunks;
-    // _sentFirmwareChunks = 0;
-    // _isUpdatingFirmware = true;
-    _writeProgressController.add(0.0);
-  }
-
-  void endFirmwareUpdate() {
-    // _isUpdatingFirmware = false;
-    // _totalFirmwareChunks = 0;
-    // _sentFirmwareChunks = 0;
-  }
 
   String bleId = "";
 
@@ -464,8 +442,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
               kPrint("Got the Broadcast Transaction");
               _transactionStream.add(transaction);
             }
-          } else {
-            kPrint("QL Decoded message is null");
           }
         }, onError: (e) {
           kPrint("Error decoding: $e");
@@ -629,24 +605,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     });
   }
 
-  // Future<void> sendFirmwareUpdateInfo(List<PrimePatch> patches) async {
-  //   if (patches.isEmpty) {
-  //     writeMessage(api.QuantumLinkMessage.firmwareUpdateCheckResponse(
-  //         api.FirmwareUpdateCheckResponse_NotAvailable()));
-  //     return;
-  //   }
-  //
-  //   final response = api.QuantumLinkMessage.firmwareUpdateCheckResponse(
-  //       api.FirmwareUpdateCheckResponse.available(api.FirmwareUpdateAvailable(
-  //           version: patches.last.version,
-  //           timestamp: patches.last.releaseDate.millisecondsSinceEpoch,
-  //           totalSize: 100,
-  //           changelog: patches.last.changelog,
-  //           patchCount: patches.length)));
-  //
-  //   await writeMessage(response);
-  // }
-
   Future<Stream<double>> _writeWithProgress(
       api.QuantumLinkMessage message) async {
     _sendingData = true;
@@ -682,63 +640,5 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 
   Future<void> reconnect(Device device) async {
     await BluetoothChannel().reconnect(device);
-  }
-}
-
-class SendProgressNotifier extends StateNotifier<double> {
-  final Ref ref;
-  StreamSubscription<WriteProgress>? _sub;
-  DateTime? _startTime;
-  Duration _elapsed = Duration.zero;
-
-  SendProgressNotifier(this.ref) : super(0.0);
-
-  void listen(String path) {
-    _sub = BluetoothChannel().getWriteProgress(path).listen(
-      (event) {
-        final progress = event.progress;
-        setProgress(progress);
-      },
-      onDone: () {
-        state = 0.0;
-        ref.read(remainingTimeProvider.notifier).state = Duration.zero;
-      },
-      onError: (_) {
-        state = 0.0;
-        ref.read(remainingTimeProvider.notifier).state = Duration.zero;
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _sub?.cancel();
-    super.dispose();
-  }
-
-  void setProgress(double progress) {
-    state = progress;
-    if (_startTime == null && progress > 0) {
-      _startTime = DateTime.now();
-      _elapsed = Duration.zero;
-    }
-
-    state = progress * 100;
-
-    if (_startTime != null) {
-      final now = DateTime.now();
-      _elapsed = now.difference(_startTime!);
-      final elapsedSeconds = _elapsed.inMilliseconds / 1000.0;
-
-      if (progress > 0 && progress < 1 && elapsedSeconds > 0) {
-        final speed = progress / elapsedSeconds;
-        final remainingSeconds =
-            ((1.0 - progress) / speed).clamp(0, double.infinity);
-        ref.read(remainingTimeProvider.notifier).state =
-            Duration(seconds: remainingSeconds.round());
-      } else {
-        ref.read(remainingTimeProvider.notifier).state = Duration.zero;
-      }
-    }
   }
 }
