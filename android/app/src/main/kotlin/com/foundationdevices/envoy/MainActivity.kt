@@ -119,7 +119,7 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
             .setStreamHandler(this)
 
         // Initialize BluetoothChannel
-        bluetoothChannel = BluetoothChannel(this, flutterEngine.dartExecutor.binaryMessenger)
+        bluetoothChannel = BluetoothChannel(this, this,flutterEngine.dartExecutor.binaryMessenger)
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
