@@ -802,7 +802,9 @@ class _TransactionReviewScreenState
                             : null,
                     (account.isHot || transactionModel.isFinalized)
                         ? S().coincontrol_tx_detail_cta1
-                        : S().component_next,
+                        : isPrime
+                            ? S().send_quantumBuild_signWithPassport
+                            : S().component_next,
                     onTap: () {
                       widget.onBroadcast();
                     },
