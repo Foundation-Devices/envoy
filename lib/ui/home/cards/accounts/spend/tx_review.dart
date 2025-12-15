@@ -196,17 +196,17 @@ class _TxReviewState extends ConsumerState<TxReview> {
     if (isPrime && psbt != null) {
       kPrint("Sending to prime $psbt");
       ref.read(transferTransactionStateProvider.notifier).updateStep(
-            "Transferring Transaction", //TODO: localazy
+            S().send_quantumReview_transferringTransaction,
             EnvoyStepState.LOADING,
           );
 
       await BluetoothManager().sendPsbt(account.id, psbt);
       ref.read(transferTransactionStateProvider.notifier).updateStep(
-            "Transaction transferred", //TODO: localazy
+            S().send_quantumReview_transactionTransferred,
             EnvoyStepState.FINISHED,
           );
       ref.read(signTransactionStateProvider.notifier).updateStep(
-            "Waiting for Signing ", //TODO: localazy
+            S().send_quantumReview_waitingForSigning,
             EnvoyStepState.LOADING,
           );
     } else {
