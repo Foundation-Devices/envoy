@@ -145,7 +145,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                 infoState(
                     EnvoyIcons.fee,
                     S().coincontrol_tx_detail_fee, // TODO add standard etc.
-                    subtitle: "$spendTimeEstimationProvider min",
+                    subtitle: "$spendTimeEstimationProvider ${transaction.fee}",
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,

@@ -123,11 +123,11 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                       ),
                       EnvoyAmount(
                           amountSats: getApproxFeeInSats(
-                            feeRateSatsPerVb: fasterFee.toDouble(),
-                            txVSizeVb: (widget.transaction.fee /
-                                    widget.transaction.feeRate)
-                                .toInt(),
-                          ),
+                              feeRateSatsPerVb: fasterFee.toDouble(),
+                              txVSizeVb: _safeTxVSizeVb(
+                                widget.transaction.fee.toDouble(),
+                                widget.transaction.feeRate.toDouble(),
+                              )),
                           amountWidgetStyle: AmountWidgetStyle.normal,
                           account: account!),
                     ],
@@ -154,11 +154,11 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                       ),
                       EnvoyAmount(
                           amountSats: getApproxFeeInSats(
-                            feeRateSatsPerVb: standardFee.toDouble(),
-                            txVSizeVb: (widget.transaction.fee /
-                                    widget.transaction.feeRate)
-                                .toInt(),
-                          ),
+                              feeRateSatsPerVb: standardFee.toDouble(),
+                              txVSizeVb: _safeTxVSizeVb(
+                                widget.transaction.fee.toDouble(),
+                                widget.transaction.feeRate.toDouble(),
+                              )),
                           amountWidgetStyle: AmountWidgetStyle.normal,
                           account: account!),
                     ],
@@ -185,11 +185,11 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                       ),
                       EnvoyAmount(
                           amountSats: getApproxFeeInSats(
-                            feeRateSatsPerVb: slowerFee.toDouble(),
-                            txVSizeVb: (widget.transaction.fee /
-                                    widget.transaction.feeRate)
-                                .toInt(),
-                          ),
+                              feeRateSatsPerVb: slowerFee.toDouble(),
+                              txVSizeVb: _safeTxVSizeVb(
+                                widget.transaction.fee.toDouble(),
+                                widget.transaction.feeRate.toDouble(),
+                              )),
                           amountWidgetStyle: AmountWidgetStyle.normal,
                           account: account!),
                     ],
@@ -219,12 +219,12 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                           ),
                           EnvoyAmount(
                               amountSats: getApproxFeeInSats(
-                                feeRateSatsPerVb:
-                                    ref.watch(_selectedFeeStateProvider),
-                                txVSizeVb: (widget.transaction.fee /
-                                        widget.transaction.feeRate)
-                                    .toInt(),
-                              ),
+                                  feeRateSatsPerVb:
+                                      ref.watch(_selectedFeeStateProvider),
+                                  txVSizeVb: _safeTxVSizeVb(
+                                    widget.transaction.fee.toDouble(),
+                                    widget.transaction.feeRate.toDouble(),
+                                  )),
                               amountWidgetStyle: AmountWidgetStyle.normal,
                               account: account!),
                         ],
@@ -308,6 +308,18 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
       }
     });
   }
+}
+
+int _safeTxVSizeVb(double fee, double feeRate) {
+  if (feeRate == 0 || feeRate.isNaN || !feeRate.isFinite) {
+    // fallback – ovisno što ti ima smisla: 0, neki default, ili skip UI
+    return 0;
+  }
+  final vsize = fee / feeRate;
+  if (vsize.isNaN || !vsize.isFinite) {
+    return 0;
+  }
+  return vsize.round(); // ili .toInt(), kako želiš
 }
 
 class _FeeOptionRow extends StatelessWidget {
@@ -525,9 +537,11 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     //bool processingFee = ref.watch(spendFeeProcessing);
     double selectedFee = ref.watch(_selectedFeeStateProvider);
     int aproxFee = getApproxFeeInSats(
-      feeRateSatsPerVb: selectedFee,
-      txVSizeVb: (widget.transaction.fee / widget.transaction.feeRate).toInt(),
-    );
+        feeRateSatsPerVb: selectedFee,
+        txVSizeVb: _safeTxVSizeVb(
+          widget.transaction.fee.toDouble(),
+          widget.transaction.feeRate.toDouble(),
+        ));
     int feePercentage =
         ((aproxFee / (aproxFee + widget.transaction.amount.abs())) * 100)
             .round();
