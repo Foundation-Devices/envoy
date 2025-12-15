@@ -2741,7 +2741,7 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
       // Go to Acc options
       await findAndPressIcon(tester, Icons.more_horiz_outlined);
-      await findAndPressTextButton(tester, "DELETE");
+      await findAndPressTextButton(tester, "Disconnect");
 
       final envoyIconFinder = find.byWidgetPredicate(
         (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.alert,
