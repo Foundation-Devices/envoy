@@ -20,6 +20,7 @@ import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 
 class TransactionReviewCard extends ConsumerStatefulWidget {
   final BitcoinTransaction transaction;
@@ -144,8 +145,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                 _divider(),
                 infoState(
                     EnvoyIcons.fee,
-                    S().coincontrol_tx_detail_fee, // TODO add standard etc.
-                    subtitle: "$spendTimeEstimationProvider ${transaction.fee}",
+                    "${S().coincontrol_tx_detail_fee} - ${selectedFeeLabel(ref)}",
+                    subtitle: spendTimeEstimationProvider,
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,

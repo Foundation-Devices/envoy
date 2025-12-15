@@ -754,17 +754,18 @@ class _TransactionReviewScreenState
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   const Padding(padding: EdgeInsets.all(6)),
-                  EnvoyButton(
-                    enabled: !transactionModel.loading,
-                    S().send_build_viewEditDetails,
-                    type: EnvoyButtonTypes.tertiary,
-                    onTap: () {
-                      _showTxDetailsPage(context, ref, preparedTransaction);
-                      // ref.read(userHasChangedFeesProvider.notifier).state =
-                      //     false;
-                      // editTransaction(context, ref);
-                    },
-                  ),
+                  if (!transactionModel.isFinalized || account.isHot)
+                    EnvoyButton(
+                      enabled: !transactionModel.loading,
+                      S().send_build_viewEditDetails,
+                      type: EnvoyButtonTypes.tertiary,
+                      onTap: () {
+                        _showTxDetailsPage(context, ref, preparedTransaction);
+                        // ref.read(userHasChangedFeesProvider.notifier).state =
+                        //     false;
+                        // editTransaction(context, ref);
+                      },
+                    ),
                   if (transactionModel.isFinalized && !account.isHot)
                     EnvoyButton(
                       enabled: !transactionModel.loading,

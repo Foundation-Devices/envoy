@@ -2,10 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
-import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -33,6 +31,20 @@ enum FeeOption {
 
 final selectedFeeOptionProvider =
     StateProvider<FeeOption>((ref) => FeeOption.standard);
+
+String selectedFeeLabel(WidgetRef ref) {
+  final option = ref.watch(selectedFeeOptionProvider); // or ref.read(...)
+  switch (option) {
+    case FeeOption.fast:
+      return S().coincontrol_tx_detail_fee_fast;
+    case FeeOption.standard:
+      return S().coincontrol_tx_detail_fee_standard;
+    case FeeOption.slow:
+      return S().coincontrol_tx_detail_fee_slow;
+    case FeeOption.custom:
+      return S().coincontrol_tx_detail_fee_custom;
+  }
+}
 
 class FeeChooser extends ConsumerStatefulWidget {
   final Function(double fee, BuildContext context, bool setCustomFee)
@@ -250,7 +262,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                         ref.read(_selectedFeeStateProvider.notifier).state =
                             fee;
                       },
-                      allowSubOne: Settings().usingDefaultElectrumServer,
+                      allowSubOne: false,
                     ),
                   ),
           ),
@@ -360,6 +372,8 @@ class FeeSlider extends ConsumerStatefulWidget {
   final int selectedItem;
   final List<num> fees;
   final BitcoinTransaction transaction;
+
+  /// This feature will be implemented in future release
   final bool allowSubOne;
 
   const FeeSlider({
@@ -560,61 +574,62 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
               children: [
                 Row(
                   children: [
-                    if (!_allowSubOne && selectedFee == 1)
-                      SizedBox(
-                        width: 100,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              "Less than 1 sat/vb is an advanced feature.",
-                              style: EnvoyTypography.label.copyWith(
-                                color: EnvoyColors.textTertiary,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                showEnvoyPopUp(
-                                    context,
-                                    S().send_editTxDetailsSubsatModal_content,
-                                    S().settings_advanced_taproot_modal_cta1,
-                                    (context) {
-                                      Navigator.of(context).pop();
-                                      setState(() {
-                                        _allowSubOne = true;
-                                        _effectiveFees = _buildEffectiveFees();
-                                        final selectedFee =
-                                            ref.read(_selectedFeeStateProvider);
-                                        final idx = _effectiveFees.indexWhere(
-                                            (f) => f == selectedFee);
-                                        if (idx != -1) {
-                                          _controller.jumpToItem(idx);
-                                        }
-                                      });
-                                    },
-                                    title: S()
-                                        .send_editTxDetailsSubsatModal_header,
-                                    showCloseButton: false,
-                                    icon: EnvoyIcons.info,
-                                    learnMoreText: S().component_learnMore,
-                                    onLearnMore: () {},
-                                    secondaryButtonLabel: S().component_back,
-                                    onSecondaryButtonTap: (context) {
-                                      Navigator.of(context).pop();
-                                    });
-                              },
-                              child: Text(
-                                S().component_learnMore,
-                                textAlign: TextAlign.center,
-                                style: EnvoyTypography.label.copyWith(
-                                  color: EnvoyColors.accentPrimary,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    // TODO: this will be implemented in future releases
+                    // if (!_allowSubOne && selectedFee == 1)
+                    //   SizedBox(
+                    //     width: 100,
+                    //     child: Column(
+                    //       mainAxisSize: MainAxisSize.min,
+                    //       children: [
+                    //         Text(
+                    //           "Less than 1 sat/vb is an advanced feature.",
+                    //           style: EnvoyTypography.label.copyWith(
+                    //             color: EnvoyColors.textTertiary,
+                    //           ),
+                    //           textAlign: TextAlign.center,
+                    //         ),
+                    //         GestureDetector(
+                    //           onTap: () {
+                    //             showEnvoyPopUp(
+                    //                 context,
+                    //                 S().send_editTxDetailsSubsatModal_content,
+                    //                 S().settings_advanced_taproot_modal_cta1,
+                    //                 (context) {
+                    //                   Navigator.of(context).pop();
+                    //                   setState(() {
+                    //                     _allowSubOne = true;
+                    //                     _effectiveFees = _buildEffectiveFees();
+                    //                     final selectedFee =
+                    //                         ref.read(_selectedFeeStateProvider);
+                    //                     final idx = _effectiveFees.indexWhere(
+                    //                         (f) => f == selectedFee);
+                    //                     if (idx != -1) {
+                    //                       _controller.jumpToItem(idx);
+                    //                     }
+                    //                   });
+                    //                 },
+                    //                 title: S()
+                    //                     .send_editTxDetailsSubsatModal_header,
+                    //                 showCloseButton: false,
+                    //                 icon: EnvoyIcons.info,
+                    //                 learnMoreText: S().component_learnMore,
+                    //                 onLearnMore: () {},
+                    //                 secondaryButtonLabel: S().component_back,
+                    //                 onSecondaryButtonTap: (context) {
+                    //                   Navigator.of(context).pop();
+                    //                 });
+                    //           },
+                    //           child: Text(
+                    //             S().component_learnMore,
+                    //             textAlign: TextAlign.center,
+                    //             style: EnvoyTypography.label.copyWith(
+                    //               color: EnvoyColors.accentPrimary,
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
                     Expanded(
                       child: SizedBox(
                         height: 100,
