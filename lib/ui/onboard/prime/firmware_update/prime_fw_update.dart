@@ -492,64 +492,59 @@ class PrimeFwFlashProgress extends ConsumerStatefulWidget {
 class _PrimeFwFlashProgressState extends ConsumerState<PrimeFwFlashProgress> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: EnvoySpacing.medium1,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            S().firmware_updatingDownload_content,
-            textAlign: TextAlign.center,
-            style: EnvoyTypography.explainer.copyWith(fontSize: 14),
-          ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Wrap(
-            alignment: WrapAlignment.center,
-            direction: Axis.horizontal,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            runSpacing: EnvoySpacing.medium1,
-            children: [
-              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  EnvoyStepItem(
-                      step: ref.watch(primeFwSigVerifyStateProvider),
-                      highlight: false),
-                  SizedBox(
-                    height: EnvoySpacing.medium1,
-                  ),
-                  EnvoyStepItem(
-                      step: ref.watch(primeFwInstallStateProvider),
-                      highlight: false),
-                  SizedBox(
-                    height: EnvoySpacing.medium1,
-                  ),
-                  EnvoyStepItem(
-                      step: ref.watch(primeFwRebootStateProvider),
-                      highlight: false),
-                ],
-              ),
-              const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-            ],
-          ),
-          Consumer(builder: (context, ref, child) {
-            final progress = ref.watch(primeFwRebootStateProvider);
-            if (progress.state == EnvoyStepState.LOADING) {
-              return Text(
-                S().firmware_updatingPrime_content2,
-                textAlign: TextAlign.center,
-                style: EnvoyTypography.explainer.copyWith(fontSize: 12),
-              );
-            } else {
-              return const SizedBox.shrink();
-            }
-          })
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          S().firmware_updatingDownload_content,
+          textAlign: TextAlign.center,
+          style: EnvoyTypography.explainer.copyWith(fontSize: 14),
+        ),
+        const SizedBox(height: EnvoySpacing.medium1),
+        Wrap(
+          alignment: WrapAlignment.center,
+          direction: Axis.horizontal,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          runSpacing: EnvoySpacing.medium1,
+          children: [
+            const SizedBox(height: EnvoySpacing.small),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                EnvoyStepItem(
+                    step: ref.watch(primeFwSigVerifyStateProvider),
+                    highlight: false),
+                SizedBox(
+                  height: EnvoySpacing.medium1,
+                ),
+                EnvoyStepItem(
+                    step: ref.watch(primeFwInstallStateProvider),
+                    highlight: false),
+                SizedBox(
+                  height: EnvoySpacing.medium1,
+                ),
+                EnvoyStepItem(
+                    step: ref.watch(primeFwRebootStateProvider),
+                    highlight: false),
+                SizedBox(
+                  height: EnvoySpacing.medium3,
+                ),
+              ],
+            ),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          ],
+        ),
+        Consumer(builder: (context, ref, child) {
+          final progress = ref.watch(primeFwRebootStateProvider);
+          if (progress.state == EnvoyStepState.LOADING) {
+            return Text(S().firmware_updatingPrime_content2,
+                textAlign: TextAlign.center, style: EnvoyTypography.body);
+          } else {
+            return const SizedBox.shrink();
+          }
+        })
+      ],
     );
   }
 }
