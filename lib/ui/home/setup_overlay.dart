@@ -340,7 +340,8 @@ void scanForDevice(BuildContext context, WidgetRef ref) async {
         onPrimaryButtonTap: (context) async {
           Navigator.pop(context);
           Navigator.pop(context);
-          if (Devices().getPrimeDevices.isNotEmpty) {
+          await Future.delayed(const Duration(milliseconds: 500));
+          if (Devices().getPrimeDevices.isNotEmpty && context.mounted) {
             final device = Devices().getPrimeDevices.first;
             removeExistingPrime(context, device);
           } else {

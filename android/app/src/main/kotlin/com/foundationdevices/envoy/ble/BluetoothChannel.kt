@@ -1,3 +1,4 @@
+@file:OptIn(ExperimentalAtomicApi::class)
 package com.foundationdevices.envoy.ble
 
 import android.Manifest
@@ -44,6 +45,8 @@ import java.io.File
 import java.io.FileInputStream
 import java.nio.ByteBuffer
 import java.util.UUID
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 
 class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMessenger) :
@@ -57,6 +60,8 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         private const val BLE_CONNECTION_STREAM_NAME = "envoy/bluetooth/connection/stream"
         private const val BLE_WRITE_PROGRESS_STREAM_NAME = "envoy/ble/write/progress"
         private const val BLUETOOTH_DISCOVERY_DELAY_MS = 500L
+
+        private const val BLE_PACKET_SIZE = 244 // Max BLE packet size for Envoy Prime
 
         // Service UUID for Prime device
         private val PRIME_SERVICE_UUID = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E")
@@ -342,21 +347,24 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             result.error("FILE_NOT_FOUND", "File does not exist: $path", null)
             return
         }
+        val safeResult = SafeResult(result)
 
         transferJob = scope.launch(Dispatchers.IO) {
             try {
                 val fileSize = file.length()
                 var bytesProcessed = 0L
-                val chunkSize = 244
+                var writeError = false
+
                 // Use forEachChunk extension function
                 file.inputStream().use { stream ->
-                    stream.forEachChunk(chunkSize) { chunk ->
+                    stream.forEachChunk(BLE_PACKET_SIZE) { chunk ->
                         // Await the enqueue
                         val success = bleWriteQueue?.enqueue(chunk) ?: false
                         if (!success) {
                             Log.e(TAG, "Failed to enqueue data at byte $bytesProcessed")
+                            writeError = true
                             withContext(Dispatchers.Main) {
-                                result.error(
+                                safeResult.error(
                                     "WRITE_ERROR",
                                     "Failed to write data at byte $bytesProcessed",
                                     null
@@ -370,12 +378,13 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                         sendWriteProgress(progress, path, bytesProcessed, fileSize)
                     }
                 }
+                file.delete()
+
 
                 // Send final progress update
                 sendWriteProgress(1.0f, path, fileSize, fileSize)
-                file.delete()
                 withContext(Dispatchers.Main) {
-                    result.success(
+                    safeResult.success(
                         mapOf(
                             "success" to true,
                             "message" to "Large data processed successfully"
@@ -386,12 +395,12 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                 if (e is CancellationException) {
                     Log.w(TAG, "transmission cancelled: ${e.message}")
                     withContext(Dispatchers.Main) {
-                        result.error("TRANSFER_CANCELLED", "Data transmission cancelled", null)
+                        safeResult.error("TRANSFER_CANCELLED", "Data transmission cancelled", null)
                     }
                     return@launch
                 }
                 withContext(Dispatchers.Main) {
-                    result.error("FILE_READ_ERROR", "Failed to read file: ${e.message}", null)
+                    safeResult.error("FILE_READ_ERROR", "Failed to read file: ${e.message}", null)
                 }
             }
         }
@@ -447,8 +456,8 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             Log.e(TAG, "BLE Write Queue is not initialized")
             return failureBuffer
         }
-        if (data.size > 244) {
-            data.chunked(244).forEach { chunk ->
+        if (data.size > BLE_PACKET_SIZE) {
+            data.chunked(BLE_PACKET_SIZE).forEach { chunk ->
                 val result = bleWriteQueue?.enqueue(chunk) ?: false
                 if (!result) {
                     Log.e(TAG, "Failed to enqueue chunk of size ${chunk.size}")
@@ -1231,4 +1240,28 @@ fun ByteArray.chunked(size: Int): List<ByteArray> {
         index += size
     }
     return chunks
+}
+
+
+class SafeResult(private val result: MethodChannel.Result) {
+    @OptIn(ExperimentalAtomicApi::class)
+    private val lock = AtomicBoolean(false)
+
+    fun success(value: Any?) {
+        if (lock.compareAndSet(false, true)) {
+            result.success(value)
+        }
+    }
+
+    fun error(code: String, message: String?, details: Any?) {
+        if (lock.compareAndSet(false, true)) {
+            result.error(code, message, details)
+        }
+    }
+
+    fun notImplemented() {
+        if (lock.compareAndSet(false, true)) {
+            result.notImplemented()
+        }
+    }
 }

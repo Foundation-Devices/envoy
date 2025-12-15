@@ -22,7 +22,6 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_gradient_progress.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
@@ -202,8 +201,17 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
       child: OnboardPageBackground(
           child: EnvoyScaffold(
         removeAppBarPadding: true,
-        topBarLeading: CupertinoNavigationBarBackButton(
-          color: Colors.black,
+        topBarLeading: Padding(
+          padding: const EdgeInsets.all(12),
+          child: IconButton(
+            icon: const Icon(
+              Icons.close,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              GoRouter.of(context).pop();
+            },
+          ),
         ),
         child: Container(
           padding: const EdgeInsets.symmetric(
@@ -451,8 +459,11 @@ class _PrimeFwDownloadProgressState
                           if (ref.watch(fwDownloadStateProvider).state ==
                               EnvoyStepState.FINISHED)
                             Text(
-                              S().firmware_downloadingUpdate_timeRemaining(
-                                  progressAsync.value.remainingTime), //
+                              progressAsync.value.remainingTime.isEmpty
+                                  ? "Estimated Time Remaining"
+                                  : S()
+                                      .firmware_downloadingUpdate_timeRemaining(
+                                          progressAsync.value.remainingTime), //
                               style: EnvoyTypography.explainer
                                   .copyWith(fontSize: 14),
                             ),
