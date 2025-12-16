@@ -62,7 +62,8 @@ class BuyBitcoinCard extends ConsumerStatefulWidget {
 
 class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
     with SingleTickerProviderStateMixin {
-  BuyBitcoinCardState currentState = BuyBitcoinCardState.buyInEnvoy;
+  BuyBitcoinCardState currentState =
+      BuyBitcoinCardState.none; //BuyBitcoinCardState.buyInEnvoy;
   late AnimationController animationController;
   late Animation<Alignment> animation;
   bool regionCanBuy = false;
@@ -182,23 +183,25 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                       ),
                       IconTab(
                         label: S().buy_bitcoin_buyOptions_card_inEnvoy_heading,
-                        isLocked:
-                            !Settings().isAllowedBuyInEnvoy() || !regionCanBuy,
+                        isLocked: true,
+                        //!Settings().isAllowedBuyInEnvoy() || !regionCanBuy,
                         icon: EnvoyIcons.btc,
                         bigTab: true,
                         isSelected:
                             currentState == BuyBitcoinCardState.buyInEnvoy,
                         description:
                             S().buy_bitcoin_buyOptions_card_inEnvoy_subheading,
-                        lockedInfoText: !Settings().isAllowedBuyInEnvoy()
-                            ? S().buy_bitcoin_buyOptions_card_disabledInSettings
-                            : S().buy_bitcoin_buyOptions_card_commingSoon,
+                        lockedInfoText:
+                            // !Settings().isAllowedBuyInEnvoy()
+                            //     ? S().buy_bitcoin_buyOptions_card_disabledInSettings
+                            //     :
+                            S().buy_bitcoin_buyOptions_card_commingSoon,
                         onSelect: (selected) {
-                          if (regionCanBuy && Settings().allowBuyInEnvoy) {
-                            _updateState(BuyBitcoinCardState.buyInEnvoy);
-                          }
+                          // if (regionCanBuy && Settings().allowBuyInEnvoy) {
+                          //   _updateState(BuyBitcoinCardState.buyInEnvoy);
+                          // }
                         },
-                        poweredByIcons: const [EnvoyIcons.stripe_text],
+                        //poweredByIcons: const [EnvoyIcons.stripe_text],
                       ),
                       const SizedBox(
                         height: EnvoySpacing.medium2,
