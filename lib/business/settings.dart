@@ -280,7 +280,9 @@ class Settings extends ChangeNotifier {
       case Environment.staging:
         return "https://staging.envoy.foundation.xyz";
       case Environment.production:
-        return "https://envoy.foundation.xyz";
+        return usingTor
+            ? "http://sb6kqsauvr2cw5n7nkel5jbwdvdjksfhwj62tpcruxtt2r2bg763mrid.onion"
+            : "https://envoy.foundation.xyz";
     }
   }
 
