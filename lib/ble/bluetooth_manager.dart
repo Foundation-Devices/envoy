@@ -27,6 +27,7 @@ import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:permission_handler/permission_handler.dart';
 
 import 'handlers/account_handler.dart';
+import 'handlers/heartbeat_handler.dart';
 import 'handlers/magic_backup_handler.dart';
 import 'handlers/passphrase_handler.dart';
 import 'handlers/shards_handler.dart';
@@ -81,6 +82,8 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   late final FwUpdateHandler _fwUpdateHandler = FwUpdateHandler(
     this,
   );
+
+  late final HeartbeatHandler _heartbeatHandler = HeartbeatHandler(this);
 
   //
   BleMagicBackupHandler get magicBackupHandler => _bleMagicBackupHandler;
@@ -167,6 +170,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     _messageRouter.registerHandler(_blePassphraseHandler);
     _messageRouter.registerHandler(_fwUpdateHandler);
     _messageRouter.registerHandler(_scvAccountHandler);
+    _messageRouter.registerHandler(_heartbeatHandler);
     _messageRouter.registerHandler(DeviceHandler(this));
 
     await listen(id: bleId);

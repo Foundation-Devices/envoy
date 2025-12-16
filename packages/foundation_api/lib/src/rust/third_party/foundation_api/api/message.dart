@@ -157,4 +157,7 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.restoreMagicBackupResult(
     RestoreMagicBackupResult field0,
   ) = QuantumLinkMessage_RestoreMagicBackupResult;
+  const factory QuantumLinkMessage.heartbeat(
+    Heartbeat field0,
+  ) = QuantumLinkMessage_Heartbeat;
 }
