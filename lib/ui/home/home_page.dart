@@ -743,7 +743,7 @@ class HomePageState extends ConsumerState<HomePage>
     //wait for user to land on home screen. before showing tutorial
     await Future.delayed(Duration(milliseconds: 600));
     final route = ref.read(routePathProvider);
-    //if user moved to diffrent screen, do not show tutorial
+    //if user moved to diffrent screen, do
     if (route != ROUTE_ACCOUNTS_HOME) {
       return;
     }

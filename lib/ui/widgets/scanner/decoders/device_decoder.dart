@@ -23,7 +23,8 @@ class DeviceDecoder extends ScannerDecoder {
     if (barCode.code == null) {
       return;
     }
-    if (barCode.code?.toUpperCase().startsWith("UR:ENVELOPE") == true) {
+    if (barCode.code?.toUpperCase().startsWith("UR:ENVELOPE") == true ||
+        primeQlPayloadDecoder != null) {
       if (primeQlPayloadDecoder == null) {
         qrDecoder = await getQrDecoder();
         primeQlPayloadDecoder = PrimeQlPayloadDecoder(
