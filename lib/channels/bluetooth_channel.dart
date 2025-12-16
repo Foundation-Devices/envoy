@@ -172,7 +172,7 @@ class BluetoothChannel {
       }
     } else {
       //Android will wait for event after initiating pairing
-      unawaited(bleMethodChannel.invokeMethod("pair", {"deviceId": deviceId}));
+      await bleMethodChannel.invokeMethod("pair", {"deviceId": deviceId});
     }
     bool initiateBonding = false;
     final connect = await listenToDeviceConnectionEvents.firstWhere(
@@ -297,5 +297,9 @@ class BluetoothChannel {
       kPrint('Error getting accessories: $e', stackTrace: stack);
       return [];
     }
+  }
+
+  Future<bool?> requestEnableBle() async {
+    return await bleMethodChannel.invokeMethod<bool>("enableBluetooth");
   }
 }

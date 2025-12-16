@@ -19,9 +19,11 @@ import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -125,6 +127,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         } else {
           await BluetoothManager().getPermissions();
         }
+
         final connectionStatus =
             await BluetoothManager().setupBle(id: bleId!, colorWay: colorWay);
 
@@ -148,26 +151,41 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
       } else {
         throw Exception("Invalid Prime Serial");
       }
-    } catch (e) {
+    } catch (e, stack) {
+      setState(() {
+        bleConnectState = BleConnectState.idle;
+      });
+      if (e is PlatformException) {
+        //only for Android
+        if (e.code == "BLUETOOTH_DISABLED") {
+          final bool? allowed = await BluetoothChannel().requestEnableBle();
+          if (allowed == true) {
+            return _connectToPrime();
+          }
+        }
+      }
       if (mounted) {
         setState(() {
           bleConnectState = BleConnectState.invalidId;
         });
-        showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-                  title: const Text("Unable to connect "),
-                  content: Text(e.toString()),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text("OK"),
-                    ),
-                  ],
-                ));
+
+        // showEnvoyDialog(
+        //     context: context,
+        //     w
+        //     builder: (context) => AlertDialog(
+        //           title: const Text("Unable to connect "),
+        //           content: Text(e.toString()),
+        //           actions: [
+        //             TextButton(
+        //               onPressed: () {
+        //                 Navigator.pop(context);
+        //               },
+        //               child: const Text("OK"),
+        //             ),
+        //           ],
+        //         ));
         kPrint(e);
+        EnvoyReport().log("BleConnect", e.toString(), stackTrace: stack);
       }
     }
   }
@@ -292,16 +310,6 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const SizedBox(height: EnvoySpacing.medium1),
-                    // Consumer(
-                    //   builder: (context, ref, child) {
-                    //     final payload = GoRouter.of(context)
-                    //         .state
-                    //         ?.uri
-                    //         .queryParameters["p"];
-                    //     return Text("Debug Payload : $payload");
-                    //   },
-                    // ),
                     const SizedBox(height: EnvoySpacing.medium1),
                     Opacity(
                       opacity: (bleConnectState == BleConnectState.invalidId ||

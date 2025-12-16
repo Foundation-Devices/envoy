@@ -1,8 +1,10 @@
 @file:OptIn(ExperimentalAtomicApi::class)
+
 package com.foundationdevices.envoy.ble
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
@@ -27,6 +29,8 @@ import android.os.Handler
 import android.os.Looper
 import android.os.ParcelUuid
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.core.app.ActivityCompat
 import io.flutter.plugin.common.BasicMessageChannel
 import io.flutter.plugin.common.BinaryCodec
@@ -49,7 +53,11 @@ import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 
-class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMessenger) :
+class BluetoothChannel(
+    private val context: Context,
+    private val activity: ComponentActivity,
+    binaryMessenger: BinaryMessenger
+) :
     MethodChannel.MethodCallHandler {
 
     companion object {
@@ -249,9 +257,34 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             "getConnectedPeripheralId" -> result.success(getConnectedPeripheralId())
             "isConnected" -> result.success(isConnected())
             "cancelTransfer" -> cancelTransfer(result)
-
+            "enableBluetooth" -> enableBluetooth(result)
             else -> result.notImplemented()
         }
+    }
+
+    private var pendingEnableResult: MethodChannel.Result? = null
+
+    //handler for enableBluetooth, this needs to be registered before activity onResume
+    val enableBtLauncher =
+        activity.registerForActivityResult(StartActivityForResult()) { res ->
+            pendingEnableResult?.success(res.resultCode == Activity.RESULT_OK)
+            pendingEnableResult = null
+        }
+
+    private fun enableBluetooth(result: MethodChannel.Result) {
+        if (bluetoothAdapter?.isEnabled == true) {
+            result.success(true)
+        }
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH_CONNECT
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        pendingEnableResult = result
+        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+        enableBtLauncher.launch(enableBtIntent)
     }
 
     private fun cancelTransfer(result: MethodChannel.Result) {
@@ -539,15 +572,15 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             result.error("BLUETOOTH_DISABLED", "Bluetooth is not enabled", null)
             return
         }
+        bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
 
-        val scanner = bluetoothLeScanner
-        if (scanner == null) {
+        if (bluetoothLeScanner == null) {
             result.error("SCANNER_ERROR", "Bluetooth LE scanner not available", null)
             return
         }
 
         try {
-            scanner.stopScan(scanCallback)
+            bluetoothLeScanner?.stopScan(scanCallback)
         } catch (e: Exception) {
             Log.w(TAG, "No ongoing scan to stop: ${e.message}")
         }
@@ -572,12 +605,12 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             .build()
 
         try {
-            scanner.startScan(scanFilters, scanSettings, scanCallback)
+            bluetoothLeScanner?.startScan(scanFilters, scanSettings, scanCallback)
 
             result.success(mapOf("scanning" to true, "message" to "Scan started"))
             mainHandler.postDelayed({
                 try {
-                    scanner.stopScan(scanCallback)
+                    bluetoothLeScanner?.stopScan(scanCallback)
 
                     sendConnectionEvent(
                         type = BluetoothConnectionEventType.SCAN_STOPPED,

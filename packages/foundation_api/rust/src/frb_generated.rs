@@ -1885,6 +1885,9 @@ const _: fn() = || {
         foundation_api::api::firmware::FirmwareUpdateCheckResponse::NotAvailable => {}
     }
     {
+        let Heartbeat = None::<foundation_api::api::status::Heartbeat>.unwrap();
+    }
+    {
         let PairingRequest = None::<foundation_api::api::pairing::PairingRequest>.unwrap();
         let _: Vec<u8> = PairingRequest.xid_document;
         let _: String = PairingRequest.device_name;
@@ -2034,6 +2037,9 @@ const _: fn() = || {
         }
         foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupResult(field0) => {
             let _: foundation_api::api::backup::RestoreMagicBackupResult = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::Heartbeat(field0) => {
+            let _: foundation_api::api::status::Heartbeat = field0;
         }
     }
     match None::<foundation_api::api::backup::RestoreMagicBackupEvent>.unwrap() {
@@ -2720,6 +2726,13 @@ impl SseDecode for foundation_api::api::firmware::FirmwareUpdateCheckResponse {
     }
 }
 
+impl SseDecode for foundation_api::api::status::Heartbeat {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        return foundation_api::api::status::Heartbeat {};
+    }
+}
+
 impl SseDecode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3216,6 +3229,11 @@ impl SseDecode for foundation_api::api::message::QuantumLinkMessage {
                 return foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupResult(
                     var_field0,
                 );
+            }
+            31 => {
+                let mut var_field0 =
+                    <foundation_api::api::status::Heartbeat>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::Heartbeat(var_field0);
             }
             _ => {
                 unimplemented!("");
@@ -4339,6 +4357,23 @@ impl
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::status::Heartbeat> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        Vec::<u8>::new().into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::status::Heartbeat>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::status::Heartbeat>>
+    for foundation_api::api::status::Heartbeat
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::status::Heartbeat> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart
     for FrbWrapper<foundation_api::api::firmware::InstallErrorStage>
 {
@@ -4767,6 +4802,9 @@ impl flutter_rust_bridge::IntoDart
             }
             foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupResult(field0) => {
                 [30.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::Heartbeat(field0) => {
+                [31.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
             _ => {
                 unimplemented!("");
@@ -5535,6 +5573,11 @@ impl SseEncode for foundation_api::api::firmware::FirmwareUpdateCheckResponse {
     }
 }
 
+impl SseEncode for foundation_api::api::status::Heartbeat {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+}
+
 impl SseEncode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5953,6 +5996,10 @@ impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
                 <foundation_api::api::backup::RestoreMagicBackupResult>::sse_encode(
                     field0, serializer,
                 );
+            }
+            foundation_api::api::message::QuantumLinkMessage::Heartbeat(field0) => {
+                <i32>::sse_encode(31, serializer);
+                <foundation_api::api::status::Heartbeat>::sse_encode(field0, serializer);
             }
             _ => {
                 unimplemented!("");
