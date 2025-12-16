@@ -41,7 +41,7 @@ class Device {
   @JsonKey(defaultValue: "")
   final String peripheralId;
   @JsonKey(defaultValue: false)
-  final bool onboardingComplete;
+  bool onboardingComplete;
   @Uint8ListConverter()
   final Uint8List? xid;
   final DateTime datePaired;
@@ -272,6 +272,17 @@ class Devices extends ChangeNotifier {
 
   bool hasNonPrimeDevices() {
     return devices.any((device) => device.type != DeviceType.passportPrime);
+  }
+
+  Future<void> markPrimeOnboarded(bool onboarded) async {
+    for (var device in devices) {
+      if (device.type == DeviceType.passportPrime) {
+        device.onboardingComplete = onboarded;
+        await storeDevices();
+        notifyListeners();
+        return;
+      }
+    }
   }
 }
 
