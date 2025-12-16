@@ -44,3 +44,15 @@ class EnvoyStatus {
           runtimeType == other.runtimeType &&
           version == other.version;
 }
+
+class Heartbeat {
+  const Heartbeat();
+
+  @override
+  int get hashCode => 0;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Heartbeat && runtimeType == other.runtimeType;
+}

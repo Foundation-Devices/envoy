@@ -33,10 +33,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // TODO: remove this, store somewhere else
-final primeDeviceVersionProvider = StateProvider<String>((ref) => '');
-
-final primeDeviceNewVersionProvider = StateProvider<String>((ref) => '');
-
 final estimatedTimeProvider = StateProvider<int>((ref) => 0);
 
 class OnboardPrimeBluetooth extends ConsumerStatefulWidget {

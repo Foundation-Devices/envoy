@@ -6,6 +6,7 @@ import 'dart:async';
 
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/components/pop_up.dart';
@@ -16,6 +17,7 @@ import 'package:envoy/ui/onboard/prime/onboard_prime_ble.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -28,6 +30,7 @@ import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 class OnboardPrimeFwUpdate extends ConsumerStatefulWidget {
   const OnboardPrimeFwUpdate({super.key});
@@ -171,13 +174,13 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     Widget downloadImage = Image.asset(
       "assets/images/fw_download.png",
       alignment: Alignment.bottomCenter,
-      width: 230,
-      height: 230,
+      width: 184,
+      height: 184,
     );
 
     Widget progressAnimation = SizedBox(
-      width: 220,
-      height: 220,
+      width: 184,
+      height: 184,
       child: _isInitialized && _controller != null
           ? Transform.scale(
               scale: 1.6,
@@ -238,7 +241,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
                     textAlign: TextAlign.center,
                     style: EnvoyTypography.heading,
                   ),
-                  const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+                  const SizedBox(height: EnvoySpacing.medium3),
                   Expanded(
                     child: _pageTransitionBuilder(
                       context: context,
@@ -287,47 +290,68 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     //TODO: fix rive with databindings.
     // ignore: deprecated_member_use
     _controller?.stateMachine.boolean('happy')?.value = true;
+    var fwInfo =
+        ref.watch(firmwareStreamProvider(DeviceType.passportPrime.index));
+
     return Column(
       children: [
         Text(
-          //TODO: Note to devs: {0} in firmware.updateSuccess.content1 should be programmatically replaced by the new keyOS version installed
-          S().firmware_updateSuccess_content1("new_keyOS_version"), // TODO
+          S().firmware_updateSuccess_content1(
+              "KeyOS v${fwInfo.value!.storedVersion}"),
           textAlign: TextAlign.center,
-          style: EnvoyTypography.explainer.copyWith(fontSize: 14),
+          style:
+              EnvoyTypography.body.copyWith(color: EnvoyColors.textSecondary),
         ),
-        const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-        Padding(
-          padding: const EdgeInsets.all(EnvoySpacing.small),
-          child: Text(
-            S().firmware_updateSuccess_content2,
-            textAlign: TextAlign.center,
-            style: EnvoyTypography.explainer.copyWith(fontSize: 14),
-          ),
+        const SizedBox(height: EnvoySpacing.medium3),
+        Text(
+          S().firmware_updateSuccess_content2,
+          textAlign: TextAlign.center,
+          style:
+              EnvoyTypography.body.copyWith(color: EnvoyColors.textSecondary),
         ),
       ],
     );
   }
 
   Widget _updateIntroWidget(BuildContext context) {
+    var fwInfo =
+        ref.watch(firmwareStreamProvider(DeviceType.passportPrime.index));
+    final devices = Devices();
+    final connectedPrime = devices.getPrimeDevices.isNotEmpty
+        ? devices.getPrimeDevices.first
+        : null;
+
+    final currentFwVersion = connectedPrime?.firmwareVersion ?? '';
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
           children: [
             Text(
-              S().firmware_updateAvailable_estimatedUpdateTime(
-                  "${ref.read(estimatedTimeProvider)} min"),
+              "KeyOS v${fwInfo.value!.storedVersion}",
               textAlign: TextAlign.center,
-              style: EnvoyTypography.explainer.copyWith(fontSize: 14),
+              style: EnvoyTypography.button
+                  .copyWith(color: EnvoyColors.textSecondary),
             ),
-            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+            const SizedBox(height: EnvoySpacing.xs),
+            Text(
+              S().firmware_updateAvailable_estimatedUpdateTime(
+                "${ref.read(estimatedTimeProvider)} min",
+              ),
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.body
+                  .copyWith(color: EnvoyColors.textSecondary),
+            ),
+            const SizedBox(height: EnvoySpacing.medium3),
             Padding(
               padding: const EdgeInsets.all(EnvoySpacing.small),
               child: Text(
                 S().firmware_updateAvailable_content2(
-                    ref.read(primeDeviceVersionProvider)),
+                    "KeyOS v$currentFwVersion"),
                 textAlign: TextAlign.center,
-                style: EnvoyTypography.explainer.copyWith(fontSize: 14),
+                style: EnvoyTypography.body
+                    .copyWith(color: EnvoyColors.textSecondary),
               ),
             ),
           ],
@@ -352,12 +376,18 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         Padding(
           padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
           child: EnvoyButton(
-              S().firmware_updateAvailable_whatsNew(
-                  BluetoothManager().fwUpdateHandler.newVersion),
-              type: EnvoyButtonTypes.secondary, onTap: () {
-            launchUrl(Uri.parse(
-                "https://github.com/Foundation-Devices/KeyOS-Releases/releases/tag/${ref.read(primeDeviceNewVersionProvider)}"));
-          }),
+            S().firmware_updateAvailable_whatsNew(
+                "KeyOS v${fwInfo.value!.storedVersion}"),
+            type: EnvoyButtonTypes.secondary,
+            onTap: () {
+              if (fwInfo.value!.storedVersion.isEmpty) return;
+              launchUrl(
+                Uri.parse(
+                  "https://github.com/Foundation-Devices/KeyOS-Releases/releases/tag/${fwInfo.value!.storedVersion}",
+                ),
+              );
+            },
+          ),
         ),
       ],
     );
@@ -492,64 +522,59 @@ class PrimeFwFlashProgress extends ConsumerStatefulWidget {
 class _PrimeFwFlashProgressState extends ConsumerState<PrimeFwFlashProgress> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: EnvoySpacing.medium1,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            S().firmware_updatingDownload_content,
-            textAlign: TextAlign.center,
-            style: EnvoyTypography.explainer.copyWith(fontSize: 14),
-          ),
-          const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          Wrap(
-            alignment: WrapAlignment.center,
-            direction: Axis.horizontal,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            runSpacing: EnvoySpacing.medium1,
-            children: [
-              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  EnvoyStepItem(
-                      step: ref.watch(primeFwSigVerifyStateProvider),
-                      highlight: false),
-                  SizedBox(
-                    height: EnvoySpacing.medium1,
-                  ),
-                  EnvoyStepItem(
-                      step: ref.watch(primeFwInstallStateProvider),
-                      highlight: false),
-                  SizedBox(
-                    height: EnvoySpacing.medium1,
-                  ),
-                  EnvoyStepItem(
-                      step: ref.watch(primeFwRebootStateProvider),
-                      highlight: false),
-                ],
-              ),
-              const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-            ],
-          ),
-          Consumer(builder: (context, ref, child) {
-            final progress = ref.watch(primeFwRebootStateProvider);
-            if (progress.state == EnvoyStepState.LOADING) {
-              return Text(
-                S().firmware_updatingPrime_content2,
-                textAlign: TextAlign.center,
-                style: EnvoyTypography.explainer.copyWith(fontSize: 12),
-              );
-            } else {
-              return const SizedBox.shrink();
-            }
-          })
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          S().firmware_updatingDownload_content,
+          textAlign: TextAlign.center,
+          style: EnvoyTypography.explainer.copyWith(fontSize: 14),
+        ),
+        const SizedBox(height: EnvoySpacing.medium1),
+        Wrap(
+          alignment: WrapAlignment.center,
+          direction: Axis.horizontal,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          runSpacing: EnvoySpacing.medium1,
+          children: [
+            const SizedBox(height: EnvoySpacing.small),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                EnvoyStepItem(
+                    step: ref.watch(primeFwSigVerifyStateProvider),
+                    highlight: false),
+                SizedBox(
+                  height: EnvoySpacing.medium1,
+                ),
+                EnvoyStepItem(
+                    step: ref.watch(primeFwInstallStateProvider),
+                    highlight: false),
+                SizedBox(
+                  height: EnvoySpacing.medium1,
+                ),
+                EnvoyStepItem(
+                    step: ref.watch(primeFwRebootStateProvider),
+                    highlight: false),
+                SizedBox(
+                  height: EnvoySpacing.medium3,
+                ),
+              ],
+            ),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          ],
+        ),
+        Consumer(builder: (context, ref, child) {
+          final progress = ref.watch(primeFwRebootStateProvider);
+          if (progress.state == EnvoyStepState.LOADING) {
+            return Text(S().firmware_updatingPrime_content2,
+                textAlign: TextAlign.center, style: EnvoyTypography.body);
+          } else {
+            return const SizedBox.shrink();
+          }
+        })
+      ],
     );
   }
 }
