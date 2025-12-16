@@ -364,6 +364,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   }
 }
 
+bool skipPrimeSecurityCheckFlag = false;
+
 class _DevOptions extends StatelessWidget {
   const _DevOptions();
 
@@ -372,7 +374,7 @@ class _DevOptions extends StatelessWidget {
     bool loading = false;
     return AlertDialog(
       backgroundColor: Colors.white,
-      title: const Text("Developer options"), // TODO: FIGMA
+      title: const Text("Developer options"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -381,25 +383,25 @@ class _DevOptions extends StatelessWidget {
                 EnvoyStorage().clearDismissedStatesStore();
                 Navigator.pop(context);
               },
-              child: const Text("Clear Prompt states")), // TODO: FIGMA
+              child: const Text("Clear Prompt states")),
           TextButton(
               onPressed: () {
                 EnvoyStorage().clearPendingStore();
                 Navigator.pop(context);
               },
-              child: const Text("Clear Azteco states")), // TODO: FIGMA
+              child: const Text("Clear Azteco states")),
           TextButton(
               onPressed: () {
                 EnvoyReport().clearAll();
                 Navigator.pop(context);
               },
-              child: const Text("Clear Envoy Logs")), // TODO: FIGMA
+              child: const Text("Clear Envoy Logs")),
           TextButton(
               onPressed: () {
                 EnvoyStorage().clear();
                 Navigator.pop(context);
               },
-              child: const Text("Clear Envoy Preferences")), // TODO: FIGMA
+              child: const Text("Clear Envoy Preferences")),
           StatefulBuilder(
             builder: (context, setState) {
               if (loading) {
@@ -427,9 +429,15 @@ class _DevOptions extends StatelessWidget {
                       kPrint(e);
                     }
                   },
-                  child: const Text("Wipe Envoy Wallet")); // TODO: FIGMA
+                  child: const Text("Wipe Envoy Wallet"));
             },
-          )
+          ),
+          TextButton(
+              onPressed: () {
+                skipPrimeSecurityCheckFlag = true;
+                Navigator.pop(context);
+              },
+              child: const Text("Skip Prime security check")),
         ],
       ),
     );
