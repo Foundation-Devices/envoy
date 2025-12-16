@@ -525,6 +525,10 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     if (Devices().getPrimeDevices.isEmpty || _recipientXid == null) {
       return;
     }
+    //TODO: support multi device
+    if (Devices().getPrimeDevices.first.onboardingComplete) {
+      return;
+    }
     kPrint(
         "Preparing to send exchange rate to Prime... $_sendingData devices ${Devices().getPrimeDevices.length}");
     try {
@@ -560,6 +564,11 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     if (_sendingData) return;
 
     if (Devices().getPrimeDevices.isEmpty || _recipientXid == null) {
+      return;
+    }
+    //TODO: support multi device
+
+    if (Devices().getPrimeDevices.first.onboardingComplete) {
       return;
     }
     try {

@@ -98,7 +98,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
     }
   }
 
-  void _handleOnboardingState(OnboardingState onboardingState) {
+  Future _handleOnboardingState(OnboardingState onboardingState) async {
     if (!_completedOnboardingStates.contains(onboardingState)) {
       _completedOnboardingStates.add(onboardingState);
       kPrint(
@@ -106,6 +106,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
     }
 
     if (onboardingState == api.OnboardingState.completed) {
+      await Devices().markPrimeOnboarded(true);
       try {
         BluetoothManager().sendExchangeRateHistory();
       } catch (e) {
