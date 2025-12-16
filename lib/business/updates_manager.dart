@@ -34,11 +34,7 @@ class UpdatesManager {
   static Future<UpdatesManager> init() async => _instance;
 
   Future<void> fetchUpdates() async {
-    for (var device in [
-      DeviceType.passportGen1,
-      DeviceType.passportGen12,
-      DeviceType.passportPrime
-    ]) {
+    for (var device in [DeviceType.passportGen1, DeviceType.passportGen12]) {
       Server()
           .fetchFirmwareUpdateInfo(device.id)
           .then(_downloadAndStoreFirmware)
