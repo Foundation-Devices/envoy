@@ -502,6 +502,8 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       await Future.delayed(const Duration(milliseconds: 2000));
 
       if (_isDeleted) {
+        // Now that the seed is gone, delete the magic backup
+        await EnvoySeed().deleteMagicBackup();
         //Show android backup info
         if (Platform.isAndroid) {
           await Future.delayed(const Duration(milliseconds: 300));
