@@ -300,6 +300,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dco_decode_box_autoadd_firmware_update_check_response(dynamic raw);
 
   @protected
+  Heartbeat dco_decode_box_autoadd_heartbeat(dynamic raw);
+
+  @protected
   PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw);
 
   @protected
@@ -426,6 +429,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   FirmwareUpdateCheckResponse dco_decode_firmware_update_check_response(
       dynamic raw);
+
+  @protected
+  Heartbeat dco_decode_heartbeat(dynamic raw);
 
   @protected
   int dco_decode_i_32(dynamic raw);
@@ -817,6 +823,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  Heartbeat sse_decode_box_autoadd_heartbeat(SseDeserializer deserializer);
+
+  @protected
   PairingRequest sse_decode_box_autoadd_pairing_request(
       SseDeserializer deserializer);
 
@@ -963,6 +972,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   FirmwareUpdateCheckResponse sse_decode_firmware_update_check_response(
       SseDeserializer deserializer);
+
+  @protected
+  Heartbeat sse_decode_heartbeat(SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
@@ -1366,6 +1378,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FirmwareUpdateCheckResponse self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_heartbeat(
+      Heartbeat self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_pairing_request(
       PairingRequest self, SseSerializer serializer);
 
@@ -1511,6 +1527,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_firmware_update_check_response(
       FirmwareUpdateCheckResponse self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_heartbeat(Heartbeat self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);

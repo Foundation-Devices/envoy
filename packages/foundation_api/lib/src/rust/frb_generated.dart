@@ -1724,6 +1724,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Heartbeat dco_decode_box_autoadd_heartbeat(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_heartbeat(raw);
+  }
+
+  @protected
   PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_pairing_request(raw);
@@ -2130,6 +2136,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Heartbeat dco_decode_heartbeat(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 0)
+      throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
+    return Heartbeat();
+  }
+
+  @protected
   int dco_decode_i_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
@@ -2467,6 +2482,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 30:
         return QuantumLinkMessage_RestoreMagicBackupResult(
           dco_decode_box_autoadd_restore_magic_backup_result(raw[1]),
+        );
+      case 31:
+        return QuantumLinkMessage_Heartbeat(
+          dco_decode_box_autoadd_heartbeat(raw[1]),
         );
       default:
         throw Exception("unreachable");
@@ -3163,6 +3182,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Heartbeat sse_decode_box_autoadd_heartbeat(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_heartbeat(deserializer));
+  }
+
+  @protected
   PairingRequest sse_decode_box_autoadd_pairing_request(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3552,6 +3577,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Heartbeat sse_decode_heartbeat(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return Heartbeat();
+  }
+
+  @protected
   int sse_decode_i_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getInt32();
@@ -3895,6 +3926,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 =
             sse_decode_box_autoadd_restore_magic_backup_result(deserializer);
         return QuantumLinkMessage_RestoreMagicBackupResult(var_field0);
+      case 31:
+        var var_field0 = sse_decode_box_autoadd_heartbeat(deserializer);
+        return QuantumLinkMessage_Heartbeat(var_field0);
       default:
         throw UnimplementedError('');
     }
@@ -4584,6 +4618,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_heartbeat(
+      Heartbeat self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_heartbeat(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_pairing_request(
       PairingRequest self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4918,6 +4959,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_heartbeat(Heartbeat self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
   void sse_encode_i_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putInt32(self);
@@ -5225,6 +5271,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case QuantumLinkMessage_RestoreMagicBackupResult(field0: final field0):
         sse_encode_i_32(30, serializer);
         sse_encode_box_autoadd_restore_magic_backup_result(field0, serializer);
+      case QuantumLinkMessage_Heartbeat(field0: final field0):
+        sse_encode_i_32(31, serializer);
+        sse_encode_box_autoadd_heartbeat(field0, serializer);
     }
   }
 
