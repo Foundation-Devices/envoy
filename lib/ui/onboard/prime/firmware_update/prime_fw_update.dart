@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
@@ -314,8 +315,6 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
   }
 
   Widget _updateIntroWidget(BuildContext context) {
-    var fwInfo =
-        ref.watch(firmwareStreamProvider(DeviceType.passportPrime.index));
     final devices = Devices();
     final connectedPrime = devices.getPrimeDevices.isNotEmpty
         ? devices.getPrimeDevices.first
@@ -329,7 +328,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         Column(
           children: [
             Text(
-              "KeyOS v${fwInfo.value!.storedVersion}",
+              "KeyOS v${BluetoothManager().fwUpdateHandler.newVersion}",
               textAlign: TextAlign.center,
               style: EnvoyTypography.button
                   .copyWith(color: EnvoyColors.textSecondary),
@@ -337,7 +336,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
             const SizedBox(height: EnvoySpacing.xs),
             Text(
               S().firmware_updateAvailable_estimatedUpdateTime(
-                "${ref.read(estimatedTimeProvider)} min",
+                //TODO: proper size based time estimation
+                "${Platform.isAndroid ? '~1' : '~2.5'} min",
               ),
               textAlign: TextAlign.center,
               style: EnvoyTypography.body
@@ -377,13 +377,12 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
           padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
           child: EnvoyButton(
             S().firmware_updateAvailable_whatsNew(
-                "KeyOS v${fwInfo.value!.storedVersion}"),
+                "KeyOS v${BluetoothManager().fwUpdateHandler.newVersion}"),
             type: EnvoyButtonTypes.secondary,
             onTap: () {
-              if (fwInfo.value!.storedVersion.isEmpty) return;
               launchUrl(
                 Uri.parse(
-                  "https://github.com/Foundation-Devices/KeyOS-Releases/releases/tag/${fwInfo.value!.storedVersion}",
+                  "https://github.com/Foundation-Devices/KeyOS-Releases/releases/tag/${BluetoothManager().fwUpdateHandler.newVersion}",
                 ),
               );
             },
@@ -490,7 +489,7 @@ class _PrimeFwDownloadProgressState
                               EnvoyStepState.FINISHED)
                             Text(
                               progressAsync.value.remainingTime.isEmpty
-                                  ? "Estimated Time Remaining"
+                                  ? "Estimating remaining time..."
                                   : S()
                                       .firmware_downloadingUpdate_timeRemaining(
                                           progressAsync.value.remainingTime), //
