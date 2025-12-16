@@ -28,6 +28,8 @@ import 'package:envoy/ui/home/top_bar_home.dart';
 import 'package:envoy/ui/lock/session_manager.dart';
 import 'package:envoy/ui/migrations/migration_manager.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
@@ -729,11 +731,22 @@ class HomePageState extends ConsumerState<HomePage>
     return context.findAncestorStateOfType<HomePageState>();
   }
 
+  bool _tutorialIsInProgress = false;
+
   //Show tutorial if needed
   //overlay will be shown only when there are two wallets (hot and prime)
   //and the bluetooth onboarding step 'walletConnected' is completed
   void _showTutorialIfNeeded(BuildContext context) async {
+    if (_tutorialIsInProgress) {
+      return;
+    }
+    //wait for user to land on home screen. before showing tutorial
     await Future.delayed(Duration(milliseconds: 600));
+    final route = ref.read(routePathProvider);
+    //if user moved to diffrent screen, do not show tutorial
+    if (route != ROUTE_ACCOUNTS_HOME) {
+      return;
+    }
     final dismissed = await EnvoyStorage()
         .checkPromptDismissed(DismissiblePrompt.primeAccountTutorial);
     if (dismissed) {
@@ -753,13 +766,18 @@ class HomePageState extends ConsumerState<HomePage>
       final hasHotWallet = accounts.any((account) => account.isHot);
       if (hasHotWallet) {
         if (context.mounted) {
-          Navigator.of(context).push(
+          _tutorialIsInProgress = true;
+          await Navigator.of(context, rootNavigator: true).push(
             PageRouteBuilder(
               opaque: false,
+              fullscreenDialog: true,
               pageBuilder: (context, animation, secondaryAnimation) =>
-                  const AccountTutorialOverlay(),
+                  AccountTutorialOverlay(
+                accounts: accounts.toList(),
+              ),
             ),
           );
+          _tutorialIsInProgress = false;
         }
       }
     }
