@@ -362,17 +362,12 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 
   @override
   Future<bool> writeMessage(api.QuantumLinkMessage message) async {
-    kPrint("R: connected ${BluetoothChannel().lastDeviceStatus.connected}");
     if (!BluetoothChannel().lastDeviceStatus.connected) {
-      kPrint("Sending message: Waiting for connection");
       await BluetoothChannel().deviceStatusStream.firstWhere((status) {
-        kPrint("Sending message: Device status changed: $status");
         return status.connected == true;
       }).timeout(Duration(seconds: 10), onTimeout: () {
-        kPrint("Sending message: Timeout");
         throw Exception("Failed to send message, device not connected");
       });
-      kPrint("Sending message: Waiting is over  .....");
     }
     kPrint("Sending message: ${message.runtimeType}");
     await _writeWithProgress(message);
