@@ -109,6 +109,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
     }
 
     if (onboardingState == api.OnboardingState.completed) {
+      await Devices().markPrimeOnboarded(true);
       try {
         if (_pairingResponse != null) {
           await addDevice(_pairingResponse!);

@@ -206,7 +206,7 @@ class _QrScannerState extends State<QrScanner>
     final navigator = Navigator.of(context);
     widget.decoder.onProgressUpdates(
       (progress) {
-        if (mounted) {
+        if (mounted && progress > _progress) {
           setState(() {
             _progress = progress;
           });
