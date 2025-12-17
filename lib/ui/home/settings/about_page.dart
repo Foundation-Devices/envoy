@@ -13,7 +13,6 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 class AboutPage extends ConsumerStatefulWidget {
   const AboutPage({super.key});
 
