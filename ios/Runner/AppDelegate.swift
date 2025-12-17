@@ -73,6 +73,10 @@ func getSdCardBookmark() -> URL {
                 folderAccessResult = result
                 self.promptUserForFolderAccess()
                 return
+            case "get_time_zone":
+                let id = TimeZone.current.identifier
+                result(id)
+                return
                 
             case "access_folder":
                 do {
