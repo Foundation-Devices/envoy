@@ -44,7 +44,7 @@ class BleMagicBackupHandler extends PassportMessageHandler {
     } else if (message
         case api.QuantumLinkMessage_PrimeMagicBackupEnabled enabled) {
       // TODO: enable/disable prime backup
-      Devices().updatePrimeBackupStatus(bleId, enabled.field0.enabled);
+      Devices().updatePrimeBackupStatus(enabled.field0.enabled);
     } else if (message
         case api.QuantumLinkMessage_PrimeMagicBackupStatusRequest
             enabledRequest) {
@@ -167,7 +167,7 @@ class BleMagicBackupHandler extends PassportMessageHandler {
                 enabled: Settings().syncToCloud)));
 
     if (Settings().syncToCloud) {
-      Devices().updatePrimeBackupStatus(bleId, true);
+      Devices().updatePrimeBackupStatus(true);
     }
   }
 
