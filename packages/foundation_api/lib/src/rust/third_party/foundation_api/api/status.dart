@@ -56,3 +56,36 @@ class Heartbeat {
       identical(this, other) ||
       other is Heartbeat && runtimeType == other.runtimeType;
 }
+
+class TimezoneRequest {
+  const TimezoneRequest();
+
+  @override
+  int get hashCode => 0;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TimezoneRequest && runtimeType == other.runtimeType;
+}
+
+class TimezoneResponse {
+  final int offsetMinutes;
+  final String zone;
+
+  const TimezoneResponse({
+    required this.offsetMinutes,
+    required this.zone,
+  });
+
+  @override
+  int get hashCode => offsetMinutes.hashCode ^ zone.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TimezoneResponse &&
+          runtimeType == other.runtimeType &&
+          offsetMinutes == other.offsetMinutes &&
+          zone == other.zone;
+}

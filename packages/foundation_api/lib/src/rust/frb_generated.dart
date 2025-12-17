@@ -1834,6 +1834,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TimezoneRequest dco_decode_box_autoadd_timezone_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_timezone_request(raw);
+  }
+
+  @protected
+  TimezoneResponse dco_decode_box_autoadd_timezone_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_timezone_response(raw);
+  }
+
+  @protected
   VerificationResult dco_decode_box_autoadd_verification_result(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_verification_result(raw);
@@ -2487,6 +2499,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return QuantumLinkMessage_Heartbeat(
           dco_decode_box_autoadd_heartbeat(raw[1]),
         );
+      case 32:
+        return QuantumLinkMessage_TimezoneRequest(
+          dco_decode_box_autoadd_timezone_request(raw[1]),
+        );
+      case 33:
+        return QuantumLinkMessage_TimezoneResponse(
+          dco_decode_box_autoadd_timezone_response(raw[1]),
+        );
       default:
         throw Exception("unreachable");
     }
@@ -2638,6 +2658,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       seedFingerprint: dco_decode_seed_fingerprint(arr[0]),
       totalChunks: dco_decode_u_32(arr[1]),
       hash: dco_decode_u_8_array_32(arr[2]),
+    );
+  }
+
+  @protected
+  TimezoneRequest dco_decode_timezone_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 0)
+      throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
+    return TimezoneRequest();
+  }
+
+  @protected
+  TimezoneResponse dco_decode_timezone_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return TimezoneResponse(
+      offsetMinutes: dco_decode_i_32(arr[0]),
+      zone: dco_decode_String(arr[1]),
     );
   }
 
@@ -3300,6 +3341,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TimezoneRequest sse_decode_box_autoadd_timezone_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_timezone_request(deserializer));
+  }
+
+  @protected
+  TimezoneResponse sse_decode_box_autoadd_timezone_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_timezone_response(deserializer));
+  }
+
+  @protected
   VerificationResult sse_decode_box_autoadd_verification_result(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3929,6 +3984,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 31:
         var var_field0 = sse_decode_box_autoadd_heartbeat(deserializer);
         return QuantumLinkMessage_Heartbeat(var_field0);
+      case 32:
+        var var_field0 = sse_decode_box_autoadd_timezone_request(deserializer);
+        return QuantumLinkMessage_TimezoneRequest(var_field0);
+      case 33:
+        var var_field0 = sse_decode_box_autoadd_timezone_response(deserializer);
+        return QuantumLinkMessage_TimezoneResponse(var_field0);
       default:
         throw UnimplementedError('');
     }
@@ -4067,6 +4128,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         seedFingerprint: var_seedFingerprint,
         totalChunks: var_totalChunks,
         hash: var_hash);
+  }
+
+  @protected
+  TimezoneRequest sse_decode_timezone_request(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return TimezoneRequest();
+  }
+
+  @protected
+  TimezoneResponse sse_decode_timezone_response(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_offsetMinutes = sse_decode_i_32(deserializer);
+    var var_zone = sse_decode_String(deserializer);
+    return TimezoneResponse(offsetMinutes: var_offsetMinutes, zone: var_zone);
   }
 
   @protected
@@ -4736,6 +4811,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_timezone_request(
+      TimezoneRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_timezone_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_timezone_response(
+      TimezoneResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_timezone_response(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_verification_result(
       VerificationResult self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5274,6 +5363,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case QuantumLinkMessage_Heartbeat(field0: final field0):
         sse_encode_i_32(31, serializer);
         sse_encode_box_autoadd_heartbeat(field0, serializer);
+      case QuantumLinkMessage_TimezoneRequest(field0: final field0):
+        sse_encode_i_32(32, serializer);
+        sse_encode_box_autoadd_timezone_request(field0, serializer);
+      case QuantumLinkMessage_TimezoneResponse(field0: final field0):
+        sse_encode_i_32(33, serializer);
+        sse_encode_box_autoadd_timezone_response(field0, serializer);
     }
   }
 
@@ -5383,6 +5478,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_seed_fingerprint(self.seedFingerprint, serializer);
     sse_encode_u_32(self.totalChunks, serializer);
     sse_encode_u_8_array_32(self.hash, serializer);
+  }
+
+  @protected
+  void sse_encode_timezone_request(
+      TimezoneRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_timezone_response(
+      TimezoneResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.offsetMinutes, serializer);
+    sse_encode_String(self.zone, serializer);
   }
 
   @protected

@@ -160,4 +160,10 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.heartbeat(
     Heartbeat field0,
   ) = QuantumLinkMessage_Heartbeat;
+  const factory QuantumLinkMessage.timezoneRequest(
+    TimezoneRequest field0,
+  ) = QuantumLinkMessage_TimezoneRequest;
+  const factory QuantumLinkMessage.timezoneResponse(
+    TimezoneResponse field0,
+  ) = QuantumLinkMessage_TimezoneResponse;
 }
