@@ -125,8 +125,16 @@ class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
           child: EnvoyScaffold(
         removeAppBarPadding: true,
         topBarActions: const [],
-        topBarLeading: BackButton(
-          color: Colors.black,
+        topBarLeading: IconButton(
+          icon: const EnvoyIcon(
+            EnvoyIcons.chevron_left,
+            color: Colors.black,
+          ),
+          onPressed: () async {
+            if (context.canPop()) {
+              context.pop();
+            }
+          },
         ),
         child: Container(
           padding: const EdgeInsets.symmetric(

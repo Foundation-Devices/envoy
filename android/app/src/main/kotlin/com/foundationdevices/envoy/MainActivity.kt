@@ -19,8 +19,6 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
-import java.time.ZoneId
-import java.time.temporal.TemporalQueries.zone
 
 class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
     private val CHANNEL = "envoy"
@@ -162,7 +160,10 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
 
                 "get_time_zone" -> {
                     val id = TimeZone.getDefault().id
-                    val canonical = TimeZone.getCanonicalID(id)
+                    var canonical = TimeZone.getCanonicalID(id)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+                        canonical = TimeZone.getIanaID(id);
+                    }
                     result.success(canonical)
                 }
 
