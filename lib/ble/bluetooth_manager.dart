@@ -13,6 +13,7 @@ import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/scv_server.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -379,13 +380,20 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       {bool onboardingComplete = false, String peripheralId = ""}) async {
     final recipientXid =
         await api.serializeXidDocument(xidDocument: _recipientXid!);
-    final device = Device("Prime", DeviceType.passportPrime, serialNumber,
-        DateTime.now(), firmwareVersion, EnvoyColors.listAccountTileColors[0],
-        bleId: bleId,
-        deviceColor: deviceColor,
-        xid: recipientXid,
-        peripheralId: peripheralId,
-        onboardingComplete: onboardingComplete);
+    final device = Device(
+      "Prime",
+      DeviceType.passportPrime,
+      serialNumber,
+      DateTime.now(),
+      firmwareVersion,
+      EnvoyColors.listAccountTileColors[0],
+      bleId: bleId,
+      deviceColor: deviceColor,
+      xid: recipientXid,
+      peripheralId: peripheralId,
+      onboardingComplete: onboardingComplete,
+      primeBackupEnabled: Settings().syncToCloud,
+    );
     Devices().add(device);
   }
 

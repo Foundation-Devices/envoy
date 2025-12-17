@@ -166,9 +166,7 @@ class BleMagicBackupHandler extends PassportMessageHandler {
             api.EnvoyMagicBackupEnabledResponse(
                 enabled: Settings().syncToCloud)));
 
-    if (Settings().syncToCloud) {
-      Devices().updatePrimeBackupStatus(true);
-    }
+    Devices().updatePrimeBackupStatus(Settings().syncToCloud);
   }
 
   Future<void> _handleStatusRequest(
