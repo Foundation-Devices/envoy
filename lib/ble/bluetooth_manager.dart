@@ -9,6 +9,7 @@ import 'package:envoy/ble/handlers/device_handler.dart';
 import 'package:envoy/ble/handlers/fw_update_handler.dart';
 import 'package:envoy/ble/handlers/onboard_handler.dart';
 import 'package:envoy/ble/handlers/scv_handler.dart';
+import 'package:envoy/ble/handlers/timezone_handler.dart' show TimeZoneHandler;
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
@@ -173,6 +174,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     _messageRouter.registerHandler(_scvAccountHandler);
     _messageRouter.registerHandler(_heartbeatHandler);
     _messageRouter.registerHandler(DeviceHandler(this));
+    _messageRouter.registerHandler(TimeZoneHandler(this));
 
     await listen(id: bleId);
     kPrint("QL Identity: $_qlIdentity");

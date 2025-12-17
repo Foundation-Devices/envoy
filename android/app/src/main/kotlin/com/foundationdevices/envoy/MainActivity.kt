@@ -3,6 +3,7 @@ package com.foundationdevices.envoy
 import android.app.backup.BackupManager
 import android.content.ComponentName
 import android.content.Intent
+import android.icu.util.TimeZone
 import android.os.Build
 import android.os.Environment
 import android.os.Handler
@@ -119,7 +120,7 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
             .setStreamHandler(this)
 
         // Initialize BluetoothChannel
-        bluetoothChannel = BluetoothChannel(this, this,flutterEngine.dartExecutor.binaryMessenger)
+        bluetoothChannel = BluetoothChannel(this, this, flutterEngine.dartExecutor.binaryMessenger)
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
@@ -155,6 +156,15 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
                 "show_settings" -> {
                     startActivity(Intent(Settings.ACTION_SETTINGS))
                     result.success(true)
+                }
+
+                "get_time_zone" -> {
+                    val id = TimeZone.getDefault().id
+                    var canonical = TimeZone.getCanonicalID(id)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+                        canonical = TimeZone.getIanaID(id);
+                    }
+                    result.success(canonical)
                 }
 
                 "get_sd_card_path" -> {

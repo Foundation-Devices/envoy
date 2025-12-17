@@ -2041,6 +2041,12 @@ const _: fn() = || {
         foundation_api::api::message::QuantumLinkMessage::Heartbeat(field0) => {
             let _: foundation_api::api::status::Heartbeat = field0;
         }
+        foundation_api::api::message::QuantumLinkMessage::TimezoneRequest(field0) => {
+            let _: foundation_api::api::status::TimezoneRequest = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::TimezoneResponse(field0) => {
+            let _: foundation_api::api::status::TimezoneResponse = field0;
+        }
     }
     match None::<foundation_api::api::backup::RestoreMagicBackupEvent>.unwrap() {
         foundation_api::api::backup::RestoreMagicBackupEvent::NotFound => {}
@@ -2109,6 +2115,14 @@ const _: fn() = || {
         let _: foundation_api::api::backup::SeedFingerprint = StartMagicBackup.seed_fingerprint;
         let _: u32 = StartMagicBackup.total_chunks;
         let _: [u8; 32] = StartMagicBackup.hash;
+    }
+    {
+        let TimezoneRequest = None::<foundation_api::api::status::TimezoneRequest>.unwrap();
+    }
+    {
+        let TimezoneResponse = None::<foundation_api::api::status::TimezoneResponse>.unwrap();
+        let _: i32 = TimezoneResponse.offset_minutes;
+        let _: String = TimezoneResponse.zone;
     }
     match None::<foundation_api::api::scv::VerificationResult>.unwrap() {
         foundation_api::api::scv::VerificationResult::Success => {}
@@ -3235,6 +3249,20 @@ impl SseDecode for foundation_api::api::message::QuantumLinkMessage {
                     <foundation_api::api::status::Heartbeat>::sse_decode(deserializer);
                 return foundation_api::api::message::QuantumLinkMessage::Heartbeat(var_field0);
             }
+            32 => {
+                let mut var_field0 =
+                    <foundation_api::api::status::TimezoneRequest>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::TimezoneRequest(
+                    var_field0,
+                );
+            }
+            33 => {
+                let mut var_field0 =
+                    <foundation_api::api::status::TimezoneResponse>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::TimezoneResponse(
+                    var_field0,
+                );
+            }
             _ => {
                 unimplemented!("");
             }
@@ -3411,6 +3439,25 @@ impl SseDecode for foundation_api::api::backup::StartMagicBackup {
             seed_fingerprint: var_seedFingerprint,
             total_chunks: var_totalChunks,
             hash: var_hash,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::status::TimezoneRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        return foundation_api::api::status::TimezoneRequest {};
+    }
+}
+
+impl SseDecode for foundation_api::api::status::TimezoneResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_offsetMinutes = <i32>::sse_decode(deserializer);
+        let mut var_zone = <String>::sse_decode(deserializer);
+        return foundation_api::api::status::TimezoneResponse {
+            offset_minutes: var_offsetMinutes,
+            zone: var_zone,
         };
     }
 }
@@ -4806,6 +4853,12 @@ impl flutter_rust_bridge::IntoDart
             foundation_api::api::message::QuantumLinkMessage::Heartbeat(field0) => {
                 [31.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
+            foundation_api::api::message::QuantumLinkMessage::TimezoneRequest(field0) => {
+                [32.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::TimezoneResponse(field0) => {
+                [33.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
             _ => {
                 unimplemented!("");
             }
@@ -5072,6 +5125,44 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::backup::S
     for foundation_api::api::backup::StartMagicBackup
 {
     fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::StartMagicBackup> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::status::TimezoneRequest> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        Vec::<u8>::new().into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::status::TimezoneRequest>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::status::TimezoneRequest>>
+    for foundation_api::api::status::TimezoneRequest
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::status::TimezoneRequest> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::status::TimezoneResponse> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.offset_minutes.into_into_dart().into_dart(),
+            self.0.zone.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::status::TimezoneResponse>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::status::TimezoneResponse>>
+    for foundation_api::api::status::TimezoneResponse
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::status::TimezoneResponse> {
         self.into()
     }
 }
@@ -6001,6 +6092,14 @@ impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
                 <i32>::sse_encode(31, serializer);
                 <foundation_api::api::status::Heartbeat>::sse_encode(field0, serializer);
             }
+            foundation_api::api::message::QuantumLinkMessage::TimezoneRequest(field0) => {
+                <i32>::sse_encode(32, serializer);
+                <foundation_api::api::status::TimezoneRequest>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::TimezoneResponse(field0) => {
+                <i32>::sse_encode(33, serializer);
+                <foundation_api::api::status::TimezoneResponse>::sse_encode(field0, serializer);
+            }
             _ => {
                 unimplemented!("");
             }
@@ -6149,6 +6248,19 @@ impl SseEncode for foundation_api::api::backup::StartMagicBackup {
         );
         <u32>::sse_encode(self.total_chunks, serializer);
         <[u8; 32]>::sse_encode(self.hash, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::status::TimezoneRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+}
+
+impl SseEncode for foundation_api::api::status::TimezoneResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.offset_minutes, serializer);
+        <String>::sse_encode(self.zone, serializer);
     }
 }
 

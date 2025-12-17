@@ -358,6 +358,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   StartMagicBackup dco_decode_box_autoadd_start_magic_backup(dynamic raw);
 
   @protected
+  TimezoneRequest dco_decode_box_autoadd_timezone_request(dynamic raw);
+
+  @protected
+  TimezoneResponse dco_decode_box_autoadd_timezone_response(dynamic raw);
+
+  @protected
   VerificationResult dco_decode_box_autoadd_verification_result(dynamic raw);
 
   @protected
@@ -541,6 +547,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   StartMagicBackup dco_decode_start_magic_backup(dynamic raw);
+
+  @protected
+  TimezoneRequest dco_decode_timezone_request(dynamic raw);
+
+  @protected
+  TimezoneResponse dco_decode_timezone_response(dynamic raw);
 
   @protected
   int dco_decode_u_16(dynamic raw);
@@ -890,6 +902,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  TimezoneRequest sse_decode_box_autoadd_timezone_request(
+      SseDeserializer deserializer);
+
+  @protected
+  TimezoneResponse sse_decode_box_autoadd_timezone_response(
+      SseDeserializer deserializer);
+
+  @protected
   VerificationResult sse_decode_box_autoadd_verification_result(
       SseDeserializer deserializer);
 
@@ -1094,6 +1114,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   StartMagicBackup sse_decode_start_magic_backup(SseDeserializer deserializer);
+
+  @protected
+  TimezoneRequest sse_decode_timezone_request(SseDeserializer deserializer);
+
+  @protected
+  TimezoneResponse sse_decode_timezone_response(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_16(SseDeserializer deserializer);
@@ -1445,6 +1471,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       StartMagicBackup self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_timezone_request(
+      TimezoneRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_timezone_response(
+      TimezoneResponse self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_verification_result(
       VerificationResult self, SseSerializer serializer);
 
@@ -1659,6 +1693,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_start_magic_backup(
       StartMagicBackup self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_timezone_request(
+      TimezoneRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_timezone_response(
+      TimezoneResponse self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_16(int self, SseSerializer serializer);
