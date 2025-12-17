@@ -50,6 +50,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   @override
   void initState() {
     super.initState();
+    resetOnboardingPrimeProviders();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       try {
         _connectBLE();

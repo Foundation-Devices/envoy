@@ -187,7 +187,7 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
                       borderRadius: BorderRadius.circular(EnvoySpacing.small),
                       type: EnvoyButtonTypes.secondary,
                       onTap: () {
-                        resetOnboardingPrimeProviders(ref);
+                        resetOnboardingPrimeProviders();
                         Navigator.of(context).pop();
                         context.go("/");
                       },

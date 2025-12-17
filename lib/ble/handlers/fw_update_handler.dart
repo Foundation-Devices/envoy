@@ -255,6 +255,7 @@ class FwUpdateHandler extends PassportMessageHandler {
     );
   }
 
+  //UI state updates
   void _updateFetchState(String message, EnvoyStepState state) {
     _fetchState.sink.add(FwUpdateState(message: message, step: state));
   }
@@ -267,6 +268,7 @@ class FwUpdateHandler extends PassportMessageHandler {
   void _updateDownloadState(String message, EnvoyStepState state) {
     _downloadState.sink.add(FwUpdateState(message: message, step: state));
   }
+  //end ui stete updates
 
   void _handleOnboardingState(api.FirmwareInstallEvent event) {
     event.map(updateVerified: (event) {
@@ -308,5 +310,18 @@ class FwUpdateHandler extends PassportMessageHandler {
         remainingTime: remainingTime,
       ),
     );
+  }
+
+  void reset() {
+    _updateFwUpdateState(PrimeFwUpdateStep.idle);
+    _updateFetchState(
+        S().onboarding_connectionIntro_checkForUpdates, EnvoyStepState.IDLE);
+    _updateDownloadState(
+        S().firmware_updatingDownload_downloading, EnvoyStepState.IDLE);
+    _transferProgress.sink.add(FwTransferProgress(
+      progress: 0,
+      remainingTime: "",
+    ));
+    newVersion = "";
   }
 }
