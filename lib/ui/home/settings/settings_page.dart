@@ -60,6 +60,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool devModeEnabled = ref.watch(devModeEnabledProvider);
     double nestedMargin = 8;
     double marginBetweenItems = 6;
 
@@ -151,9 +152,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           //   ],
           // )),
           SliverPadding(
-              padding: EdgeInsets.all(kDebugMode ? marginBetweenItems : 0)),
+              padding: EdgeInsets.all(
+                  kDebugMode || devModeEnabled ? marginBetweenItems : 0)),
           SliverToBoxAdapter(
-            child: kDebugMode
+            child: kDebugMode || devModeEnabled
                 ? GestureDetector(
                     onTap: () {
                       showDialog(
@@ -364,13 +366,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   }
 }
 
-bool skipPrimeSecurityCheckFlag = false;
-
-class _DevOptions extends StatelessWidget {
+class _DevOptions extends ConsumerWidget {
   const _DevOptions();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     bool loading = false;
     return AlertDialog(
       backgroundColor: Colors.white,
@@ -434,7 +434,7 @@ class _DevOptions extends StatelessWidget {
           ),
           TextButton(
               onPressed: () {
-                skipPrimeSecurityCheckFlag = true;
+                Settings().skipPrimeSecurityCheck = true;
                 Navigator.pop(context);
               },
               child: const Text("Skip Prime security check")),

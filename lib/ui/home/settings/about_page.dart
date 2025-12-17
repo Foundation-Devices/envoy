@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/home/settings/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -11,15 +11,16 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AboutPage extends StatefulWidget {
+class AboutPage extends ConsumerStatefulWidget {
   const AboutPage({super.key});
 
   @override
-  State<AboutPage> createState() => _AboutPageState();
+  ConsumerState<AboutPage> createState() => _AboutPageState();
 }
 
-class _AboutPageState extends State<AboutPage> {
+class _AboutPageState extends ConsumerState<AboutPage> {
   int _tapCount = 0;
   DateTime? _firstTapTime;
 
@@ -37,7 +38,7 @@ class _AboutPageState extends State<AboutPage> {
 
     if (_tapCount == 3) {
       setState(() {
-        skipPrimeSecurityCheckFlag = true;
+        ref.read(devModeEnabledProvider.notifier).state = true;
       });
       _tapCount = 0;
       _firstTapTime = null;
