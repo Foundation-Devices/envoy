@@ -50,6 +50,10 @@ final allowBuyInEnvoyProvider = Provider((ref) {
   return ref.watch(settingsProvider).isAllowedBuyInEnvoy();
 });
 
+final devModeEnabledProvider = StateProvider<bool>((ref) {
+  return false;
+});
+
 @JsonSerializable()
 class Settings extends ChangeNotifier {
   @override
@@ -320,6 +324,10 @@ class Settings extends ChangeNotifier {
     allowScreenshotsSetting = allowScreenshots;
     store();
   }
+
+  // Dev option - not persisted
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool skipPrimeSecurityCheck = false;
 
   @JsonKey(defaultValue: false)
   bool showTestnetAccountsSetting = false;
