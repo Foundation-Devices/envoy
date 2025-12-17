@@ -95,13 +95,23 @@ class _AccountTutorialOverlayState
                       padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
                       itemBuilder: (context, index) {
                         final account = accounts[index];
+
+                        bool active = false;
+                        if (account.isHot) {
+                          //For mobile wallet
+                          active = currentPageNumber == 1;
+                        } else {
+                          //For prime
+                          active = currentPageNumber == 2;
+                        }
+
                         return Padding(
                           padding: const EdgeInsets.all(EnvoySpacing.small),
                           child: AnimatedOpacity(
-                            opacity: index == currentPageNumber - 1 ? 1 : 0.1,
+                            opacity: active ? 1 : 0.1,
                             duration: Duration(milliseconds: 300),
                             child: AnimatedScale(
-                              scale: index == currentPageNumber - 1 ? 1 : 0.98,
+                              scale: active ? 1 : 0.98,
                               duration: Duration(milliseconds: 200),
                               child: AccountListTile(
                                 key: ValueKey(account.id),

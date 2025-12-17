@@ -269,7 +269,11 @@ class HomePageState extends ConsumerState<HomePage>
       final router = Navigator.of(context);
       SessionManager().bind(router);
       notifyAboutNetworkMigrationDialog(context);
-      _showTutorialIfNeeded(context);
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) {
+          _showTutorialIfNeeded(context);
+        }
+      });
     });
   }
 
