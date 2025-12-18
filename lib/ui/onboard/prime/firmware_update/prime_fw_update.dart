@@ -7,7 +7,6 @@ import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
-import 'package:envoy/business/devices.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/components/pop_up.dart';
@@ -311,13 +310,6 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
   }
 
   Widget _updateIntroWidget(BuildContext context) {
-    final devices = Devices();
-    final connectedPrime = devices.getPrimeDevices.isNotEmpty
-        ? devices.getPrimeDevices.first
-        : null;
-
-    final currentFwVersion = connectedPrime?.firmwareVersion ?? '';
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -344,7 +336,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
               padding: const EdgeInsets.all(EnvoySpacing.small),
               child: Text(
                 S().firmware_updateAvailable_content2(
-                    "KeyOS v$currentFwVersion"),
+                    "KeyOS v${BluetoothManager().fwUpdateHandler.currentVersion}"),
                 textAlign: TextAlign.center,
                 style: EnvoyTypography.body
                     .copyWith(color: EnvoyColors.textSecondary),
