@@ -30,7 +30,6 @@ import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:envoy/util/envoy_storage.dart';
 
 class OnboardPrimeFwUpdate extends ConsumerStatefulWidget {
   const OnboardPrimeFwUpdate({super.key});
@@ -290,14 +289,12 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     //TODO: fix rive with databindings.
     // ignore: deprecated_member_use
     _controller?.stateMachine.boolean('happy')?.value = true;
-    var fwInfo =
-        ref.watch(firmwareStreamProvider(DeviceType.passportPrime.index));
 
     return Column(
       children: [
         Text(
           S().firmware_updateSuccess_content1(
-              "KeyOS v${fwInfo.value!.storedVersion}"),
+              "KeyOS v${BluetoothManager().fwUpdateHandler.newVersion}"),
           textAlign: TextAlign.center,
           style:
               EnvoyTypography.body.copyWith(color: EnvoyColors.textSecondary),

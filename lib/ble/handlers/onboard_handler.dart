@@ -142,7 +142,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
   }
 
   void reset() {
-    _pairingResponse = null;
     _completedOnboardingStates.clear();
+    updateBlePairState("Connecting to device", EnvoyStepState.IDLE);
   }
 }

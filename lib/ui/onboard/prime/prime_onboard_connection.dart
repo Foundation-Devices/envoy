@@ -24,7 +24,6 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/console.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
@@ -50,6 +49,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   @override
   void initState() {
     super.initState();
+    resetOnboardingPrimeProviders();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       try {
         _connectBLE();
@@ -184,8 +184,16 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            leading: CupertinoNavigationBarBackButton(
-              color: Colors.white,
+            leading: IconButton(
+              icon: const EnvoyIcon(
+                EnvoyIcons.chevron_left,
+                color: EnvoyColors.solidWhite,
+              ),
+              onPressed: () async {
+                if (context.canPop()) {
+                  context.pop();
+                }
+              },
             ),
             automaticallyImplyLeading: false,
           ),

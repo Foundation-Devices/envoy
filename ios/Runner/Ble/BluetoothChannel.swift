@@ -987,7 +987,6 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     }
     
     func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
-        print("peripheralIsReady(toSendWriteWithoutResponse) ")
         // Forward to write queue (only called for writeWithoutResponse)
     }
 
