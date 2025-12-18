@@ -53,6 +53,11 @@ class UpdatesManager {
         EnvoyStorage().addNewFirmware(
             DeviceType.passportPrime.index, patches.first.version, "");
       }
+      // The update check returned no patches, which indicates no newer firmware is available.
+      else {
+        EnvoyStorage().addNewFirmware(DeviceType.passportPrime.index,
+            primeDevices.first.firmwareVersion, "");
+      }
     }
   }
 
