@@ -55,6 +55,7 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
       duration: const Duration(milliseconds: 320),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           leading,
@@ -64,7 +65,7 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
               step.stepName,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center, // center text itself
+              textAlign: TextAlign.start,
               style: EnvoyTypography.body.copyWith(
                 fontWeight: widget.highlight ? FontWeight.w800 : null,
                 color: step.state == EnvoyStepState.ERROR
