@@ -1380,7 +1380,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sortBy_lowest": MessageLookupByLibrary.simpleMessage(
           "Lowest value",
         ),
-        "filter_sortBy_newest": MessageLookupByLibrary.simpleMessage("~ "),
+        "filter_sortBy_newest": MessageLookupByLibrary.simpleMessage(
+          "Newest first",
+        ),
         "filter_sortBy_oldest": MessageLookupByLibrary.simpleMessage(
           "Oldest first",
         ),
@@ -2140,7 +2142,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Set up Mobile Wallet"),
         "onboarding_tutorialColdWallet_content":
             MessageLookupByLibrary.simpleMessage(
-          "Also known as a “cold wallet.” Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.",
+          "Also known as a “cold wallet”. Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.",
         ),
         "onboarding_tutorialColdWallet_header":
             MessageLookupByLibrary.simpleMessage("Passport Wallet"),
