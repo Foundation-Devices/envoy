@@ -163,34 +163,30 @@ class _QrScannerState extends State<QrScanner>
             )
           else
             const SizedBox(),
-        Padding(
-          padding: EdgeInsets.only(top: _topPadding),
-          child: Scaffold(
-            primary: true,
-            backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              // Get rid of the shadow
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              leading: IconButton(
-                  icon: const Icon(
-                    Icons.close_rounded,
-                    size: 25,
-                    color: Colors.white54,
+        Positioned(
+          top: _topPadding,
+          left: 0,
+          right: 0,
+          child: SafeArea(
+            child: Material(
+              color: Colors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded,
+                        size: 25, color: Colors.white54),
+                    onPressed: () => widget.onBackPressed(context),
                   ),
-                  onPressed: () {
-                    widget.onBackPressed(context);
-                  }),
-              actions: [
-                IconButton(
-                    onPressed: () {
-                      showScanDialog(context, widget.infoType);
-                    },
-                    icon: const Icon(Icons.info_outline, color: Colors.white54))
-              ],
+                  IconButton(
+                    icon: const Icon(Icons.info_outline, color: Colors.white54),
+                    onPressed: () => showScanDialog(context, widget.infoType),
+                  ),
+                ],
+              ),
             ),
           ),
-        )
+        ),
       ],
     );
   }

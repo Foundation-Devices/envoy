@@ -501,7 +501,7 @@ class LegacyFirmwareAlert extends StatelessWidget {
                 ),
                 onPressed: () async {
                   context.pop();
-                  context.goNamed(ONBOARD_PASSPORT_SETUP);
+                  context.pushNamed(ONBOARD_PASSPORT_SETUP);
                 },
               ),
             ],
