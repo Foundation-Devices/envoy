@@ -250,7 +250,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
             return Container(
               margin: const EdgeInsets.symmetric(
                 vertical: EnvoySpacing.medium1,
-                horizontal: EnvoySpacing.medium3,
+                horizontal: EnvoySpacing.large1,
               ),
               child: Wrap(
                 alignment: WrapAlignment.center,
