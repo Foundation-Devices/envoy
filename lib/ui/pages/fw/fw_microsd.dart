@@ -30,6 +30,7 @@ class FwMicrosdPage extends ConsumerWidget {
 
     return CustomOnboardingPage(
       key: const Key("fw_microsd"),
+      showBackArrow: !fwPagePayload.onboarding,
       mainWidget: Image.asset("assets/fw_microsd.png", height: 312, width: 129),
       title: S().envoy_fw_microsd_heading,
       subheading: S().envoy_fw_microsd_subheading,
