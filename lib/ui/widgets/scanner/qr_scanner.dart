@@ -7,6 +7,7 @@ import 'dart:io';
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
@@ -22,14 +23,12 @@ bool _isScanDialogOpen = false;
 //QrScanner is a descendant of showModalBottomSheet with  isScrollControlled set to true,
 //which doesnt support safeArea, so we need to manually add padding to the top of the scanner,
 // https://github.com/flutter/flutter/issues/103585
-double _topPadding = 0;
 Future showScannerDialog(
     {required BuildContext context,
     Widget? child,
     required Function(BuildContext context) onBackPressed,
     required ScannerDecoder decoder,
     QrIntentInfoType infoType = QrIntentInfoType.qrCode}) {
-  _topPadding = MediaQuery.of(context).padding.top;
   return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -164,7 +163,7 @@ class _QrScannerState extends State<QrScanner>
           else
             const SizedBox(),
         Positioned(
-          top: _topPadding,
+          top: EnvoySpacing.medium3,
           left: 0,
           right: 0,
           child: SafeArea(
