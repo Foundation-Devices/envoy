@@ -282,7 +282,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "backups_erase_wallets_and_backups":
             MessageLookupByLibrary.simpleMessage(
-          "Eliminar Carteras y Copias de Seguridad",
+          "Eliminar Cartera Móvil y Copias de Seguridad",
         ),
         "backups_erase_wallets_and_backups_modal_1_2_android_subheading":
             MessageLookupByLibrary.simpleMessage(
@@ -298,6 +298,12 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "backups_erase_wallets_and_backups_show_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Mostrar semilla"),
+        "backups_erase_wallets_and_backups_show_seed_heading":
+            MessageLookupByLibrary.simpleMessage("Keep Your Seed Private"),
+        "backups_erase_wallets_and_backups_show_seed_subheading":
+            MessageLookupByLibrary.simpleMessage(
+          "Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!",
+        ),
         "backups_magicToManualErrorModal_header":
             MessageLookupByLibrary.simpleMessage("No Se Puede Continuar"),
         "backups_magicToManualErrorModal_subheader":
@@ -673,7 +679,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Transacción lista para ser enviada",
         ),
         "coincontrol_tx_detail_high_fee_info_overlay_learnMore":
-            MessageLookupByLibrary.simpleMessage("[[Más información]]"),
+            MessageLookupByLibrary.simpleMessage("Más información"),
         "coincontrol_tx_detail_high_fee_info_overlay_subheading":
             MessageLookupByLibrary.simpleMessage(
           "Algunas de las monedas más pequeñas han sido excluidas de esta transacción. Con el coste de envío seleccionado, cuesta más incluirlas de lo que valen.",
@@ -806,6 +812,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "common_button_contactSupport": MessageLookupByLibrary.simpleMessage(
           "Contactar Servicio Técnico",
         ),
+        "component_12WordSeed": MessageLookupByLibrary.simpleMessage(
+          "12 Word Seed",
+        ),
+        "component_24WordSeed": MessageLookupByLibrary.simpleMessage(
+          "24 Word Seed",
+        ),
         "component_Apply":
             MessageLookupByLibrary.simpleMessage("Aplicar Filtro"),
         "component_advanced": MessageLookupByLibrary.simpleMessage("Avanzado"),
@@ -845,6 +857,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "component_ok": MessageLookupByLibrary.simpleMessage("OK"),
         "component_recover": MessageLookupByLibrary.simpleMessage("Recuperar"),
+        "component_recoverWithQR": MessageLookupByLibrary.simpleMessage(
+          "Recover with QR Code",
+        ),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Canjear"),
         "component_reset": MessageLookupByLibrary.simpleMessage(
           "Restablecer filtro",
@@ -1378,7 +1393,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "exploreAdresses_activityOptions_signMessage":
             MessageLookupByLibrary.simpleMessage("Firmar Mensaje"),
         "export_backup_modal_subheading": MessageLookupByLibrary.simpleMessage(
-          "Este archivo encriptado contiene datos útiles de la cartera, como etiquetas, notas, cuentas y configuración.\n\nEste archivo está encriptado con tu Semilla Envoy. Asegúrate de que tienes copias de seguridad de tu semilla. ",
+          "Este archivo encriptado contiene datos útiles de la cartera, como etiquetas, notas, cuentas y configuración.\nEste archivo está encriptado con tu Semilla Envoy. Asegúrate de que tienes copias de seguridad de tu semilla. ",
         ),
         "export_backup_send_CTA1": MessageLookupByLibrary.simpleMessage(
           "Descargar Copia de Seguridad",
@@ -1647,6 +1662,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Envoy está creando una semilla de cartera Bitcoin de forma segura, que se almacenará encriptada de extremo a extremo en tu llavero iCloud.",
         ),
+        "magic_setup_recovery_fail_Android_CTA1":
+            MessageLookupByLibrary.simpleMessage("Retry"),
         "magic_setup_recovery_fail_Android_CTA2":
             MessageLookupByLibrary.simpleMessage("Restaurar con código QR"),
         "magic_setup_recovery_fail_Android_subheading":
@@ -1758,7 +1775,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Disconnect"),
         "manage_device_details_menu_editDevice":
             MessageLookupByLibrary.simpleMessage(
-                "EDITAR NOMBRE DE DISPOSITIVO"),
+                "Editar Nombre de Dispositivo"),
         "manage_device_rename_modal_heading":
             MessageLookupByLibrary.simpleMessage(
           "Renombrar Passport",
@@ -2681,7 +2698,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Introduce una dirección válida"),
         "send_keyboard_amount_insufficient_funds_info":
-            MessageLookupByLibrary.simpleMessage("Fondos insuficientes"),
+            MessageLookupByLibrary.simpleMessage("Fondos Insuficientes"),
         "send_keyboard_amount_too_low_info":
             MessageLookupByLibrary.simpleMessage(
           "Cantidad demasiado baja",
@@ -2756,7 +2773,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "send_reviewScreen_sendMaxWarning":
             MessageLookupByLibrary.simpleMessage(
-          "Envío máximo: \nLas tasas se deducen de la cantidad que se envía.",
+          "Envío máximo - Las tasas se deducen de la cantidad que se envía.",
         ),
         "send_review_header": MessageLookupByLibrary.simpleMessage(
           "Verify Transaction Details",
