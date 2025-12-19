@@ -5,6 +5,7 @@
 
 import 'dart:async';
 
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/util/console.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 
@@ -19,6 +20,9 @@ abstract class PassportMessageHandler {
 
   /// Return true if this handler should receive [message].
   bool canHandle(api.QuantumLinkMessage message);
+
+  ///
+  void onDeviceStatus(api.DeviceStatus stauts, Device device) {}
 }
 
 /// Writer used by handlers to send messages to the device.
@@ -34,20 +38,30 @@ mixin EnvoyMessageWriter {
 /// Calls handlers in insertion order
 /// and does not await their `handle` futures (fire-and-forget).
 class PassportMessageRouter {
-  final List<PassportMessageHandler> _handlers = [];
+  final List<PassportMessageHandler> _qlHandlers = [];
 
   void registerHandler(PassportMessageHandler handler) {
-    _handlers.add(handler);
+    _qlHandlers.add(handler);
   }
 
-  Future<void> dispatch(api.QuantumLinkMessage message, String bleId) async {
-    for (final handler in _handlers) {
-      kPrint(
-          "Checking handler ${handler.runtimeType} for message ${message.runtimeType} can handle ? ${handler.canHandle(message)}");
-      if (handler.canHandle(message)) {
+  Future<void> dispatch(api.PassportMessage message, String bleId) async {
+    final qMessage = message.message;
+    for (final handler in _qlHandlers) {
+      if (handler.canHandle(qMessage)) {
+        kPrint(
+            "Handler ${handler.runtimeType} CAN handle message ${(qMessage.runtimeType)}");
+      }
+      if (handler.canHandle(qMessage)) {
         try {
           //allows multiple handlers to handle same types
-          unawaited(handler.handleMessage(message, bleId));
+          unawaited(handler.handleMessage(qMessage, bleId));
+        } catch (e) {
+          kPrint("Error handling message ${message.runtimeType}: $e");
+        }
+        try {
+          //handlers who wants to know device status
+          handler.onDeviceStatus(
+              message.status, Devices().getPrimeDevices.first);
         } catch (e) {
           kPrint("Error handling message ${message.runtimeType}: $e");
         }

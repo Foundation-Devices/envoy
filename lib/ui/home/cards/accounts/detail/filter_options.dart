@@ -549,12 +549,21 @@ class _SlidingToggleState extends State<SlidingToggle>
   void initState() {
     super.initState();
     value = widget.value;
-    _animationController =
-        AnimationController(vsync: this, duration: _duration);
-    _slidingSegmentAnimation =
-        AlignmentTween(begin: Alignment.centerLeft, end: Alignment.centerRight)
-            .animate(CurvedAnimation(
-                parent: _animationController, curve: Curves.easeInOutCubic));
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: _duration,
+    );
+
+    _slidingSegmentAnimation = AlignmentTween(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOutCubic,
+      ),
+    );
 
     _activityIconColorAnimation = TweenSequence([
       TweenSequenceItem(
@@ -615,22 +624,32 @@ class _SlidingToggleState extends State<SlidingToggle>
     ]).animate(_animationController);
 
     _animationController.addListener(() {
+      if (!mounted) return;
       setState(() {
         if (_animationController.value < 0.5) {
           _currentOptionText = _firstOptionText;
-        } else if (_animationController.value > 0.5) {
+        } else {
           _currentOptionText = _secondOptionText;
         }
       });
     });
 
     if (value == "Tx") {
-      // TODO: FIGMA
-      _animationController.reverse();
+      if (mounted) _animationController.reverse();
     } else {
-      _animationController.animateTo(1.0,
-          duration: const Duration(milliseconds: 0));
+      if (mounted) {
+        _animationController.animateTo(
+          1.0,
+          duration: const Duration(milliseconds: 0),
+        );
+      }
     }
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override

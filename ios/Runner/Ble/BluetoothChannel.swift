@@ -34,6 +34,11 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     var writeCharacteristic: CBCharacteristic?
     var readCharacteristic: CBCharacteristic?
 
+    // BLE write queue for proper write operation handling
+    var bleWriteQueue: BleWriteQueue?
+    
+    var transferTask: Task<Void, Never>?
+
     // Accessory (for AccessorySetupKit integration)
     var primeAccessory: ASAccessory?
 
@@ -59,12 +64,17 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     // Connection state tracking
     private var isPickerPresented = false
     private var deviceReady = false
+    private var reconnectionTimer: Timer?
+    private var reconnectionAttempts: Int = 0
+    
+    private let bleQueue = DispatchQueue(label: "com.envoy.ble", qos: .userInteractive)
 
     let connectOptions: [String: Any] = [
         CBConnectPeripheralOptionNotifyOnConnectionKey: true,
         CBConnectPeripheralOptionNotifyOnDisconnectionKey: true,
         CBConnectPeripheralOptionNotifyOnNotificationKey: true,
-            // CBConnectPeripheralOptionEnableAutoReconnect: true,
+        CBConnectPeripheralOptionStartDelayKey: 0,
+        CBConnectPeripheralOptionEnableTransportBridgingKey: false
     ]
 
     // MARK: - Initialization
@@ -113,7 +123,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             }
 
             if let data = message as? Data {
-                self.handleBinaryWrite(data: data, reply: reply)
+               let replyStaus =   self.handleBinaryWrite(data: data)
+                reply(replyStaus)
             } else {
                 // Send failure buffer (0 bytes) for invalid data
                 reply(Data())
@@ -141,11 +152,21 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 result(self.getConnectedPeripheralId())
             case "isConnected":
                 result(self.isConnected())
+            case "reconnect":
+                reconnect( result: result)
             case "disconnect":
                 self.disconnectPeripheral()
                 result(true)
             case "deviceName":
                 result(UIDevice.current.name)
+            case "transmitFromFile":
+                self.transmitFromFile(call: call, result: result)
+            case "getAccessories":
+                self.getAccessories(result: result)
+            case "getCurrentDeviceStatus":
+                self.getCurrentDeviceStatus(result: result)
+            case "cancelTransfer":
+                self.cancelTransfer(result: result)
             default:
                 result(FlutterMethodNotImplemented)
             }
@@ -153,7 +174,6 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
         setupBluetoothManager()
         setupAccessorySession()
-
         //
     }
 
@@ -164,13 +184,153 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     }
 
     private func setupBluetoothManager() {
+        // Use the shared BLE queue for all BLE operations
         centralManager = CBCentralManager(
             delegate: self,
-            queue: nil,
+            queue: bleQueue,  
             options: [
                 CBCentralManagerOptionRestoreIdentifierKey: restoreIdentifier
             ]
         )
+    }
+
+    private func reconnect(result: @escaping FlutterResult) {
+        attemptReconnection()
+        result(["reconnecting": true])
+    }
+    
+    private func attemptReconnection() {
+
+        let accessories = session.accessories
+        
+        guard !accessories.isEmpty else {
+            print("No accessories available - stopping reconnection")
+            stopReconnection()
+            return
+        }
+        
+        // Try to reconnect to the first paired accessory (or previously connected one)
+        // TODO: multi-accessory support
+        let targetAccessory = accessories.first { accessory in
+            accessory.bluetoothIdentifier == primeAccessory?.bluetoothIdentifier
+        } ?? accessories.first
+        
+        guard let accessory = targetAccessory else {
+            print("No valid accessory to reconnect")
+            scheduleReconnection()
+            return
+        }
+        
+        print("Attempting reconnection to: \(accessory.displayName) (attempt \(reconnectionAttempts + 1))")
+        
+        primeAccessory = accessory
+        
+        if let bluetoothId = accessory.bluetoothIdentifier {
+
+            guard let central = centralManager, central.state == .poweredOn else {
+                print("Central manager not ready, will retry...")
+                scheduleReconnection()
+                return
+            }
+            
+            connectToAccessoryPeripheral(bluetoothId: bluetoothId)
+        } else {
+            scheduleReconnection()
+        }
+    }
+    
+    private func scheduleReconnection() {
+        reconnectionAttempts += 1
+        reconnectionTimer?.invalidate()
+        // Schedule next reconnection attempt ( 2s, 4s, 8s, max 30s)
+        let delay = min(pow(2.0, Double(reconnectionAttempts)), 30.0)
+        DispatchQueue.main.async { [weak self] in
+            self?.reconnectionTimer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
+                self?.attemptReconnection()
+            }
+        }
+    }
+    
+    private func stopReconnection() {
+        reconnectionTimer?.invalidate()
+        reconnectionTimer = nil
+        reconnectionAttempts = 0
+        print("Reconnection attempts stopped")
+    }
+
+    private func transmitFromFile(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let arguments = call.arguments as? [String: Any],
+              let path = arguments["path"] as? String else {
+            result(FlutterError(code: "INVALID_ARGUMENTS", message: "Expected path parameter", details: nil))
+            return
+        }
+        
+        if path.isEmpty {
+            result(FlutterError(code: "INVALID_PATH", message: "File path is null or empty", details: nil))
+            return
+        }
+        
+        let fileURL = URL(fileURLWithPath: path)
+        guard FileManager.default.fileExists(atPath: path) else {
+            result(FlutterError(code: "FILE_NOT_FOUND", message: "File does not exist: \(path)", details: nil))
+            return
+        }
+        
+        transferTask =  Task {
+            do {
+                let attributes = try FileManager.default.attributesOfItem(atPath: path)
+                let fileSize = attributes[.size] as? Int64 ?? 0
+                var bytesProcessed: Int64 = 0
+                
+                let fileHandle = try FileHandle(forReadingFrom: fileURL)
+                defer { 
+                    try? fileHandle.close()
+                }
+                
+                let chunkSize = 244
+                
+                while true {
+                    let chunk = try fileHandle.read(upToCount: chunkSize)
+                    
+                    guard let data = chunk, !data.isEmpty else {
+                        break
+                    }
+                    
+                    let success = await bleWriteQueue?.enqueue(data: data) ?? false
+                    
+                    if !success {
+                        throw NSError(
+                            domain: "BLEWriteError",
+                            code: 1,
+                            userInfo: [NSLocalizedDescriptionKey: "Failed to write data at byte \(bytesProcessed)"]
+                        )
+                    }
+                    
+                    bytesProcessed += Int64(data.count)
+                    
+                    let progress = fileSize > 0 ? Float(bytesProcessed) / Float(fileSize) : 0.0
+                    sendWriteProgress(progress, id: path, bytesProcessed: bytesProcessed, totalBytes: fileSize)
+                }
+                
+                sendWriteProgress(1.0, id: path, bytesProcessed: fileSize, totalBytes: fileSize)
+                
+                try? FileManager.default.removeItem(at: fileURL)
+                print("Successfully deleted file: \(path)")
+                
+                await MainActor.run {
+                    result([
+                        "success": true,
+                        "message": "Large data processed successfully"
+                    ])
+                }
+                
+            } catch {
+                print("Error reading large data file: \(error.localizedDescription)")
+                await MainActor.run {
+                    result(FlutterError(code: "FILE_READ_ERROR", message: "Failed to read file: \(error.localizedDescription)", details: nil))
+                }
+            }
+        }
     }
 
     private func setupAccessorySession() {
@@ -184,6 +344,74 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             return peripheral.identifier.uuidString
         }
         return nil
+    }
+
+    func getAccessories(result: @escaping FlutterResult) {
+        // Get all accessories from the session
+        let accessories = session.accessories
+        
+        if accessories.isEmpty {
+            // No accessories paired
+            result([])
+            return
+        }
+        
+        // Build list of accessory info
+        var accessoryList: [[String: Any]] = []
+        
+        for accessory in accessories {
+            let peripheralId = accessory.bluetoothIdentifier?.uuidString ?? ""
+            let isConnected = accessory.bluetoothIdentifier != nil && 
+                             connectedPeripheral?.identifier == accessory.bluetoothIdentifier &&
+                             connectedPeripheral?.state == .connected
+            
+            let accessoryInfo: [String: Any] = [
+                "peripheralId": peripheralId,
+                "peripheralName": accessory.displayName,
+                "isConnected": isConnected,
+                "state": accessory.state.rawValue
+            ]
+            
+            accessoryList.append(accessoryInfo)
+        }
+        
+        result(accessoryList)
+    }
+    
+    func cancelTransfer(result: @escaping FlutterResult) {
+        if let task = transferTask {
+            task.cancel()
+            transferTask = nil
+            bleWriteQueue?.cancel()
+            // Send cancellation progress event
+            sendWriteProgress(0.0, id: "transfer_cancelled", bytesProcessed: 0, totalBytes: 0)
+            bleWriteQueue?.restart()
+            result(["cancelled": true])
+            print("Transfer cancelled successfully")
+        } else {
+            result(["cancelled": false, "message": "No active transfer to cancel"])
+            print("No active transfer to cancel")
+        }
+    }
+  
+    
+    func getCurrentDeviceStatus(result: @escaping FlutterResult) {
+        let peripheralId = connectedPeripheral?.identifier.uuidString
+        let peripheralName = connectedPeripheral?.name ?? primeAccessory?.displayName ?? "Unknown Device"
+        let connected = isConnected()
+        let bonded = primeAccessory != nil
+        
+        let statusData: [String: Any?] = [
+            "type": nil,
+            "connected": connected,
+            "peripheralId": peripheralId,
+            "peripheralName": peripheralName,
+            "bonded": bonded,
+            "rssi": nil,
+            "error": nil
+        ]
+        
+        result(statusData)
     }
 
     func showAccessorySetup(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -220,8 +448,6 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
         //Maybe tweak this if multiple primes present
         passportDescriptor.bluetoothRange = ASDiscoveryDescriptor.Range.default
-        // Create picker display item
-        //TODO: based on QR show color of the device
         let productImage = UIImage(named:isMidnight ?  "prime_dark_midgnight_bronze" : "prime_light_arctic_copper") ?? UIImage()
         let passportDisplayItem = ASPickerDisplayItem(
             name: "Passport Prime",
@@ -253,25 +479,16 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             guard let accessory = event.accessory else { return }
             saveAccessory(accessory: accessory)
         case .activated:
-
-            guard let accessory = session.accessories.first else { return }
-            saveAccessory(accessory: accessory)
-            if(setupResult != nil){
-                    setupResult!(true)
-                    setupResult = nil
-            }
+            print("Accessory discovery session activated .")
         case .accessoryRemoved:
             handleAccessoryRemoved()
-
         case .pickerDidPresent:
-            isPickerPresented = true
             print("Accessory picker presented")
-
         case .pickerDidDismiss:
-            isPickerPresented = false
-          
-            print("Accessory picker dismissed")
-
+            if(setupResult != nil){
+                setupResult!(false)
+                setupResult = nil
+            }
         default:
             print("Received accessory event type: \(event.eventType)")
         }
@@ -313,6 +530,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             connectToAccessoryPeripheral(bluetoothId: bluetoothId)
         }
     }
+
 
     private func handleAccessoryRemoved() {
         guard let accessory = primeAccessory else { return }
@@ -361,97 +579,52 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
     // MARK: - Binary Channel Handlers
 
-    private func handleBinaryWrite(data: Data, reply: @escaping FlutterReply) {
-        // Check if device is connected and ready
+    private func handleBinaryWrite(data: Data) -> Data {
+
         guard let peripheral = connectedPeripheral else {
-            // Send failure buffer (0 bytes)
-            reply(Data())
-            return
+            return Data()
         }
 
         guard peripheral.state == .connected && deviceReady else {
-            // Send failure buffer (0 bytes)
-            reply(Data())
-            return
+            return Data()
         }
 
         guard let writeChar = writeCharacteristic else {
-            // Send failure buffer (0 bytes)
-            reply(Data())
-            return
+            return Data()
         }
 
-        // Validate data size
         if data.count < 8 {
-            // Send failure buffer (0 bytes)
-            reply(Data())
-            return
+            return Data()
         }
 
-        // Determine write type and log details
+        if bleWriteQueue == nil {
+            bleWriteQueue = BleWriteQueue(peripheral: peripheral, characteristic: writeChar)
+        }
+
         let writeType: CBCharacteristicWriteType =
             writeChar.properties.contains(.writeWithoutResponse) ? .withoutResponse : .withResponse
+        //prime only supports 244 mtu
+        let maxMTU = 244
 
-        print("WRITE OPERATION DETAILS:")
-        print("  - Characteristic: \(writeChar.uuid)")
-        print("  - Total Bytes: \(data.count)")
-
-        // Check MTU and split data if necessary
-        let mtu = peripheral.maximumWriteValueLength(for: writeType)
-        print(" iOS MTU ANALYSIS:")
-        print("  - iOS maximumWriteValueLength: \(mtu) bytes")
-        print("  - Data length: \(data.count) bytes")
-        print("  - Will use single packet: \(data.count <= mtu)")
-
-        if data.count <= mtu {
-            // Data fits in one packet
-            print("iOS: Data fits in single packet, writing \(data.count) bytes directly")
-
-            // Store data for potential retry
-            pendingWriteData = data
-            writeRetryCount = 0
-
-            peripheral.writeValue(data, for: writeChar, type: writeType)
-
-            // For writeWithoutResponse, simulate success since there's no callback
-            if writeType == .withoutResponse {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    reply(Data([1]))  // Success indicator
-                }
+        Task {
+            if data.count <= maxMTU {
+                let _ = await bleWriteQueue?.enqueue(data: data) ?? false
             } else {
-                // For writeWithResponse, success will be handled in didWriteValueFor callback
-                // For now, return immediate success
-                reply(Data([1]))  // Success indicator
-            }
-        } else {
-
-            // Need to chunk the data
-            let chunks = data.chunked(into: mtu)
-
-            for (index, chunk) in chunks.enumerated() {
-                let progress = Float(index + 1) / Float(chunks.count)
-                if let sink = writeStreamSink {
-                    sink(progress)
+                let chunks = data.chunked(into: maxMTU)
+                print("Writing chunk of size: \(chunks.count)")
+                for chunk in chunks {
+                    Task{
+                        let _ =   await bleWriteQueue?.enqueue(data: chunk) ?? false
+                    }
+//                    if !success {
+//                        break
+//                    }
                 }
-
-                peripheral.writeValue(chunk, for: writeChar, type: writeType)
-
-                // Add small delay between chunks for writeWithoutResponse to prevent buffer overflow
-                if writeType == .withoutResponse && index < chunks.count - 1 {
-                    Thread.sleep(forTimeInterval: 0.01)  // 10ms delay
-                }
-            }
-
-            // For chunked writes, simulate success after all chunks are sent
-            if writeType == .withoutResponse {
-                DispatchQueue.main.asyncAfter(deadline: .now() + Double(chunks.count) * 0.02) {
-                    reply(Data([1]))  // Success indicator
-                }
-            } else {
-                // For writeWithResponse, return immediate success (individual chunks will be confirmed)
-                reply(Data([1]))  // Success indicator
             }
         }
+        
+        // Return success immediately (actual write happens asynchronously)
+        return Data([1])
     }
 
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -636,6 +809,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         peripheral.delegate = self
         deviceReady = false  // Will be set to true once characteristics are discovered
 
+        stopReconnection()
+
         peripheral.discoverServices([primeUUID])
 
         sendConnectionEvent(
@@ -669,6 +844,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             connectedPeripheral = nil
             writeCharacteristic = nil
             readCharacteristic = nil
+            bleWriteQueue?.cancel()
+            bleWriteQueue = nil
             deviceReady = false
         }
 
@@ -679,6 +856,9 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             type:"device_disconnected",
             error: error?.localizedDescription
         )
+
+        print("Starting automatic reconnection...")
+        attemptReconnection()
     }
 
     // MARK: - CBPeripheralDelegate
@@ -728,9 +908,9 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
                 || characteristic.properties.contains(.writeWithoutResponse)
             {
                 writeCharacteristic = characteristic
-                print(
-                    "Set write characteristic: \(characteristic.uuid)"
-                )
+                // Initialize write queue with new characteristic
+                bleWriteQueue = BleWriteQueue(peripheral: peripheral, characteristic: characteristic)
+                print("Set write characteristic: \(characteristic.uuid)")
             }
 
             if characteristic.properties.contains(.read) {
@@ -796,42 +976,25 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         sendBinaryData(data)
     }
 
+    
+    
     func peripheral(
-        _ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?
+        _ peripheral: CBPeripheral,
+        didReadRSSI RSSI: NSNumber,
+        error: (any Error)?
     ) {
-        if let error = error {
-            print("WRITE ERROR:")
-            print("  - Characteristic: \(characteristic.uuid)")
-            print("  - Error: \(error.localizedDescription)")
-
-            if writeRetryCount < maxWriteRetries, let retryData = pendingWriteData {
-                writeRetryCount += 1
-                print("Retrying write operation (attempt \(writeRetryCount)/\(maxWriteRetries))")
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    peripheral.writeValue(retryData, for: characteristic, type: .withResponse)
-                }
-                return
-            }
-
-            // Max retries reached, clear pending data
-            pendingWriteData = nil
-            writeRetryCount = 0
-            return
-        }
-
-        print("Write successful for characteristic: \(characteristic.uuid)")
-
-        // Clear retry data on success
-        pendingWriteData = nil
-        writeRetryCount = 0
+        print("didReadRSSI : \(RSSI)")
+    }
+    
+    func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
+        // Forward to write queue (only called for writeWithoutResponse)
     }
 
     func peripheral(
         _ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic,
         error: Error?
     ) {
-        if let error = error {
+        if let error: any Error = error {
             print("Error updating notification state: \(error.localizedDescription)")
             return
         }
@@ -876,6 +1039,10 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             print("Peripheral not connected (state: \(peripheral.state)), skipping disconnect")
             return
         }
+        
+        bleWriteQueue?.cancel()
+        bleWriteQueue = nil
+        
         central.cancelPeripheralConnection(peripheral)
         Task {
             await removeAccessory()
@@ -1002,6 +1169,19 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         if let error = error {
             print("   Error: \(error)")
         }
+    }
+    
+    private func sendWriteProgress(_ progress: Float, id: String, bytesProcessed: Int64 = 0, totalBytes: Int64 = 0) {
+        guard let sink = writeStreamSink else { return }
+        
+        let stateData: [String: Any] = [
+            "id": id,
+            "progress": progress,
+            "bytes_processed": bytesProcessed,
+            "total_bytes": totalBytes
+         ]
+    
+        sink(stateData)
     }
 
     private func sendBluetoothState(_ state: CBManagerState) {

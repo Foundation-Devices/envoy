@@ -13,7 +13,6 @@ import 'dart:convert';
 import 'frb_generated.dart';
 import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
-import 'third_party/bc_xid.dart';
 import 'third_party/foundation_api/api/backup.dart';
 import 'third_party/foundation_api/api/bitcoin.dart';
 import 'third_party/foundation_api/api/firmware.dart';
@@ -23,7 +22,6 @@ import 'third_party/foundation_api/api/onboarding.dart';
 import 'third_party/foundation_api/api/pairing.dart';
 import 'third_party/foundation_api/api/passport.dart';
 import 'third_party/foundation_api/api/quantum_link.dart';
-import 'third_party/foundation_api/api/raw.dart';
 import 'third_party/foundation_api/api/scv.dart';
 import 'third_party/foundation_api/api/status.dart';
 
@@ -286,6 +284,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  FirmwareInstallEvent dco_decode_box_autoadd_firmware_install_event(
+      dynamic raw);
+
+  @protected
   FirmwareUpdateAvailable dco_decode_box_autoadd_firmware_update_available(
       dynamic raw);
 
@@ -298,8 +300,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dco_decode_box_autoadd_firmware_update_check_response(dynamic raw);
 
   @protected
-  FirmwareUpdateResult dco_decode_box_autoadd_firmware_update_result(
-      dynamic raw);
+  Heartbeat dco_decode_box_autoadd_heartbeat(dynamic raw);
 
   @protected
   PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw);
@@ -321,9 +322,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   PrimeMagicBackupStatusResponse
       dco_decode_box_autoadd_prime_magic_backup_status_response(dynamic raw);
-
-  @protected
-  RawData dco_decode_box_autoadd_raw_data(dynamic raw);
 
   @protected
   RestoreMagicBackupEvent dco_decode_box_autoadd_restore_magic_backup_event(
@@ -348,6 +346,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SecurityCheck dco_decode_box_autoadd_security_check(dynamic raw);
 
   @protected
+  SeedFingerprint dco_decode_box_autoadd_seed_fingerprint(dynamic raw);
+
+  @protected
   Shard dco_decode_box_autoadd_shard(dynamic raw);
 
   @protected
@@ -355,6 +356,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   StartMagicBackup dco_decode_box_autoadd_start_magic_backup(dynamic raw);
+
+  @protected
+  TimezoneRequest dco_decode_box_autoadd_timezone_request(dynamic raw);
+
+  @protected
+  TimezoneResponse dco_decode_box_autoadd_timezone_response(dynamic raw);
 
   @protected
   VerificationResult dco_decode_box_autoadd_verification_result(dynamic raw);
@@ -378,9 +385,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   DecoderStatus dco_decode_decoder_status(dynamic raw);
 
   @protected
-  DeviceState dco_decode_device_state(dynamic raw);
-
-  @protected
   DeviceStatus dco_decode_device_status(dynamic raw);
 
   @protected
@@ -393,9 +397,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   EnvoyMessage dco_decode_envoy_message(dynamic raw);
-
-  @protected
-  EnvoyState dco_decode_envoy_state(dynamic raw);
 
   @protected
   EnvoyStatus dco_decode_envoy_status(dynamic raw);
@@ -422,6 +423,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FirmwareFetchRequest dco_decode_firmware_fetch_request(dynamic raw);
 
   @protected
+  FirmwareInstallEvent dco_decode_firmware_install_event(dynamic raw);
+
+  @protected
   FirmwareUpdateAvailable dco_decode_firmware_update_available(dynamic raw);
 
   @protected
@@ -433,13 +437,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
-  FirmwareUpdateResult dco_decode_firmware_update_result(dynamic raw);
+  Heartbeat dco_decode_heartbeat(dynamic raw);
 
   @protected
   int dco_decode_i_32(dynamic raw);
 
   @protected
-  int dco_decode_i_8(dynamic raw);
+  InstallErrorStage dco_decode_install_error_stage(dynamic raw);
 
   @protected
   List<Uint8List> dco_decode_list_list_prim_u_8_strict(dynamic raw);
@@ -452,9 +456,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
-
-  @protected
-  List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw);
 
   @protected
   OnboardingState dco_decode_onboarding_state(dynamic raw);
@@ -517,9 +518,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   QuantumLinkMessage dco_decode_quantum_link_message(dynamic raw);
 
   @protected
-  RawData dco_decode_raw_data(dynamic raw);
-
-  @protected
   RestoreMagicBackupEvent dco_decode_restore_magic_backup_event(dynamic raw);
 
   @protected
@@ -539,6 +537,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SecurityCheck dco_decode_security_check(dynamic raw);
 
   @protected
+  SeedFingerprint dco_decode_seed_fingerprint(dynamic raw);
+
+  @protected
   Shard dco_decode_shard(dynamic raw);
 
   @protected
@@ -546,6 +547,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   StartMagicBackup dco_decode_start_magic_backup(dynamic raw);
+
+  @protected
+  TimezoneRequest dco_decode_timezone_request(dynamic raw);
+
+  @protected
+  TimezoneResponse dco_decode_timezone_response(dynamic raw);
 
   @protected
   int dco_decode_u_16(dynamic raw);
@@ -810,6 +817,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  FirmwareInstallEvent sse_decode_box_autoadd_firmware_install_event(
+      SseDeserializer deserializer);
+
+  @protected
   FirmwareUpdateAvailable sse_decode_box_autoadd_firmware_update_available(
       SseDeserializer deserializer);
 
@@ -824,8 +835,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
-  FirmwareUpdateResult sse_decode_box_autoadd_firmware_update_result(
-      SseDeserializer deserializer);
+  Heartbeat sse_decode_box_autoadd_heartbeat(SseDeserializer deserializer);
 
   @protected
   PairingRequest sse_decode_box_autoadd_pairing_request(
@@ -854,9 +864,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
-  RawData sse_decode_box_autoadd_raw_data(SseDeserializer deserializer);
-
-  @protected
   RestoreMagicBackupEvent sse_decode_box_autoadd_restore_magic_backup_event(
       SseDeserializer deserializer);
 
@@ -881,6 +888,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  SeedFingerprint sse_decode_box_autoadd_seed_fingerprint(
+      SseDeserializer deserializer);
+
+  @protected
   Shard sse_decode_box_autoadd_shard(SseDeserializer deserializer);
 
   @protected
@@ -888,6 +899,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   StartMagicBackup sse_decode_box_autoadd_start_magic_backup(
+      SseDeserializer deserializer);
+
+  @protected
+  TimezoneRequest sse_decode_box_autoadd_timezone_request(
+      SseDeserializer deserializer);
+
+  @protected
+  TimezoneResponse sse_decode_box_autoadd_timezone_response(
       SseDeserializer deserializer);
 
   @protected
@@ -917,9 +936,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   DecoderStatus sse_decode_decoder_status(SseDeserializer deserializer);
 
   @protected
-  DeviceState sse_decode_device_state(SseDeserializer deserializer);
-
-  @protected
   DeviceStatus sse_decode_device_status(SseDeserializer deserializer);
 
   @protected
@@ -933,9 +949,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   EnvoyMessage sse_decode_envoy_message(SseDeserializer deserializer);
-
-  @protected
-  EnvoyState sse_decode_envoy_state(SseDeserializer deserializer);
 
   @protected
   EnvoyStatus sse_decode_envoy_status(SseDeserializer deserializer);
@@ -965,6 +978,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  FirmwareInstallEvent sse_decode_firmware_install_event(
+      SseDeserializer deserializer);
+
+  @protected
   FirmwareUpdateAvailable sse_decode_firmware_update_available(
       SseDeserializer deserializer);
 
@@ -977,14 +994,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  FirmwareUpdateResult sse_decode_firmware_update_result(
-      SseDeserializer deserializer);
+  Heartbeat sse_decode_heartbeat(SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
-  int sse_decode_i_8(SseDeserializer deserializer);
+  InstallErrorStage sse_decode_install_error_stage(
+      SseDeserializer deserializer);
 
   @protected
   List<Uint8List> sse_decode_list_list_prim_u_8_strict(
@@ -998,10 +1015,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
-
-  @protected
-  List<QuantumLinkMessage> sse_decode_list_quantum_link_message(
-      SseDeserializer deserializer);
 
   @protected
   OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer);
@@ -1068,9 +1081,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  RawData sse_decode_raw_data(SseDeserializer deserializer);
-
-  @protected
   RestoreMagicBackupEvent sse_decode_restore_magic_backup_event(
       SseDeserializer deserializer);
 
@@ -1094,6 +1104,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SecurityCheck sse_decode_security_check(SseDeserializer deserializer);
 
   @protected
+  SeedFingerprint sse_decode_seed_fingerprint(SseDeserializer deserializer);
+
+  @protected
   Shard sse_decode_shard(SseDeserializer deserializer);
 
   @protected
@@ -1101,6 +1114,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   StartMagicBackup sse_decode_start_magic_backup(SseDeserializer deserializer);
+
+  @protected
+  TimezoneRequest sse_decode_timezone_request(SseDeserializer deserializer);
+
+  @protected
+  TimezoneResponse sse_decode_timezone_response(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_16(SseDeserializer deserializer);
@@ -1369,6 +1388,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FirmwareFetchRequest self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_firmware_install_event(
+      FirmwareInstallEvent self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_firmware_update_available(
       FirmwareUpdateAvailable self, SseSerializer serializer);
 
@@ -1381,8 +1404,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FirmwareUpdateCheckResponse self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_firmware_update_result(
-      FirmwareUpdateResult self, SseSerializer serializer);
+  void sse_encode_box_autoadd_heartbeat(
+      Heartbeat self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_pairing_request(
@@ -1409,9 +1432,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       PrimeMagicBackupStatusResponse self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_raw_data(RawData self, SseSerializer serializer);
-
-  @protected
   void sse_encode_box_autoadd_restore_magic_backup_event(
       RestoreMagicBackupEvent self, SseSerializer serializer);
 
@@ -1436,6 +1456,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SecurityCheck self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_seed_fingerprint(
+      SeedFingerprint self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_shard(Shard self, SseSerializer serializer);
 
   @protected
@@ -1445,6 +1469,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_start_magic_backup(
       StartMagicBackup self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_timezone_request(
+      TimezoneRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_timezone_response(
+      TimezoneResponse self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_verification_result(
@@ -1474,9 +1506,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_decoder_status(DecoderStatus self, SseSerializer serializer);
 
   @protected
-  void sse_encode_device_state(DeviceState self, SseSerializer serializer);
-
-  @protected
   void sse_encode_device_status(DeviceStatus self, SseSerializer serializer);
 
   @protected
@@ -1489,9 +1518,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_envoy_message(EnvoyMessage self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_envoy_state(EnvoyState self, SseSerializer serializer);
 
   @protected
   void sse_encode_envoy_status(EnvoyStatus self, SseSerializer serializer);
@@ -1521,6 +1547,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FirmwareFetchRequest self, SseSerializer serializer);
 
   @protected
+  void sse_encode_firmware_install_event(
+      FirmwareInstallEvent self, SseSerializer serializer);
+
+  @protected
   void sse_encode_firmware_update_available(
       FirmwareUpdateAvailable self, SseSerializer serializer);
 
@@ -1533,14 +1563,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FirmwareUpdateCheckResponse self, SseSerializer serializer);
 
   @protected
-  void sse_encode_firmware_update_result(
-      FirmwareUpdateResult self, SseSerializer serializer);
+  void sse_encode_heartbeat(Heartbeat self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
 
   @protected
-  void sse_encode_i_8(int self, SseSerializer serializer);
+  void sse_encode_install_error_stage(
+      InstallErrorStage self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_list_prim_u_8_strict(
@@ -1556,10 +1586,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_list_quantum_link_message(
-      List<QuantumLinkMessage> self, SseSerializer serializer);
 
   @protected
   void sse_encode_onboarding_state(
@@ -1632,9 +1658,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       QuantumLinkMessage self, SseSerializer serializer);
 
   @protected
-  void sse_encode_raw_data(RawData self, SseSerializer serializer);
-
-  @protected
   void sse_encode_restore_magic_backup_event(
       RestoreMagicBackupEvent self, SseSerializer serializer);
 
@@ -1658,6 +1681,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_security_check(SecurityCheck self, SseSerializer serializer);
 
   @protected
+  void sse_encode_seed_fingerprint(
+      SeedFingerprint self, SseSerializer serializer);
+
+  @protected
   void sse_encode_shard(Shard self, SseSerializer serializer);
 
   @protected
@@ -1666,6 +1693,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_start_magic_backup(
       StartMagicBackup self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_timezone_request(
+      TimezoneRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_timezone_response(
+      TimezoneResponse self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_16(int self, SseSerializer serializer);

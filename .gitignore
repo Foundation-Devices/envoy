@@ -72,3 +72,6 @@ localazy.json
 # Failed golden tests
 test/failures
 
+# direnv
+.direnv
+

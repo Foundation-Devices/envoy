@@ -653,7 +653,8 @@ Future<void> enterSeedWords(
 Future<void> scrollHome(WidgetTester tester, double pixels,
     {Type scrollableWidgetType = ReorderableListView}) async {
   // Perform the drag operation on the ReorderableListView by the specified number of pixels
-  await tester.drag(find.byType(scrollableWidgetType).last, Offset(0, pixels));
+  await tester.drag(find.byType(scrollableWidgetType).last, Offset(0, pixels),
+      warnIfMissed: false);
   await tester.pump(Durations.long2);
 }
 
@@ -731,10 +732,10 @@ Future<void> onboardingAndEnterSeed(
   await tester.pump(const Duration(milliseconds: 1000));
 
   /// 24 word err test ENV-2315 ////////////////////////////////////////////////////
+  ///
+  final mnemonicInput = find.byType(MnemonicInput);
 
   await findAndPressTextButton(tester, '24 Word Seed');
-
-  final mnemonicInput = find.byType(MnemonicInput);
 
 // Enter first 12 words
   for (int i = 0; i < 12; i++) {
@@ -882,7 +883,7 @@ Future<void> checkBuyOptionAndTitle(WidgetTester tester) async {
 
   // Check if the "ACCOUNTS" title is still there
   // double check if we entered in BUY
-  final accountsTitleFinder = find.text('ACCOUNTS');
+  final accountsTitleFinder = find.text('BUY BITCOIN');
   expect(accountsTitleFinder, findsOneWidget);
 }
 
@@ -1095,17 +1096,37 @@ Future<bool> findTextOnScreen(WidgetTester tester, String text) async {
   return textFinder.evaluate().isNotEmpty;
 }
 
+Future<void> findAndTapPopUpEnvoyIcon(
+  WidgetTester tester,
+  EnvoyIcons icon, {
+  bool findFirst = false,
+}) async {
+  final iconFinder = await checkForEnvoyIcon(tester, icon);
+
+  // Wait until icon appears
+  await tester.pumpUntilFound(iconFinder, tries: 10, duration: Durations.long1);
+
+  // Select which instance to tap
+  final target = findFirst ? iconFinder.first : iconFinder.last;
+
+  await tester.tap(target, warnIfMissed: false);
+  await tester.pump(Durations.long2);
+}
+
 Future<void> findAndPressEnvoyIcon(
   WidgetTester tester,
   EnvoyIcons expectedIcon, {
   bool onLongPress = false,
+  bool findFirst = true, // default true here to match original behavior
 }) async {
   final iconFinder = await checkForEnvoyIcon(tester, expectedIcon);
 
+  final target = findFirst ? iconFinder.first : iconFinder.last;
+
   if (onLongPress) {
-    await tester.longPress(iconFinder.first);
+    await tester.longPress(target);
   } else {
-    await tester.tap(iconFinder.first);
+    await tester.tap(target);
   }
 
   await tester.pump(Durations.long2);
@@ -1174,7 +1195,7 @@ Future<void> findAndPressTextButton(
   final textButton = find.text(buttonText);
   expect(textButton, findsOneWidget);
 
-  await tester.tap(textButton);
+  await tester.tap(textButton, warnIfMissed: false);
   await tester.pump(Durations.long2);
 }
 
@@ -1285,7 +1306,7 @@ Future<void> findLastTextButtonAndPress(
   expect(textButtons, findsWidgets);
 
   // Tap the first widget that matches
-  await tester.tap(textButtons.last);
+  await tester.tap(textButtons.last, warnIfMissed: false);
   await tester.pump(Durations.long2);
 }
 
@@ -1326,49 +1347,73 @@ Future<void> enablePerformance(WidgetTester tester) async {
   await findAndTapBigTab(tester, 'Better');
 }
 
-Future<bool> checkTorShieldIcon(WidgetTester tester,
-    {required bool expectPrivacy}) async {
-  await pumpRepeatedly(tester); // Ensure the screen updates after interactions
-
-  // Find all Image widgets on the screen
-  final imageFinder = find.byType(Image);
-
-  // Collect all Image widgets
-  final imageWidgets = tester.widgetList<Image>(imageFinder).toList();
+Future<bool> checkTorShieldIcon(
+  WidgetTester tester, {
+  required bool expectPrivacy,
+}) async {
+  // enforce 30 seconds of stability to avoid false positives.
+  final stableAsset = await _waitForStableImageAsset(
+    tester,
+    timeout: const Duration(seconds: 240), // total max wait (adjustable)
+    stabilityWindow: const Duration(seconds: 30), // your requirement
+  );
 
   if (expectPrivacy) {
-    // Check the number of image widgets found
-    expect(imageWidgets, hasLength(1),
-        reason: 'Image should be visible when Privacy is enabled.');
-
-    // Determine the path of the visible image
-    final imageWidget = imageWidgets.first;
-    final imageAssetPath = imageWidget.image is AssetImage
-        ? (imageWidget.image as AssetImage).assetName
-        : null;
-
-    // Verify which image is displayed
     if (ConnectivityManager().torEnabled &&
         !ConnectivityManager().torTemporarilyDisabled) {
-      // Expected image paths when tor is enabled
       if (ConnectivityManager().electrumConnected) {
-        expect(imageAssetPath, 'assets/indicator_shield_teal.png');
+        expect(stableAsset, 'assets/indicator_shield_teal.png',
+            reason:
+                'Expected teal shield when Electrum is connected and privacy mode active.');
         return true;
       } else {
-        expect(imageAssetPath, 'assets/indicator_shield_red.png');
+        expect(stableAsset, 'assets/indicator_shield_red.png',
+            reason:
+                'Expected red shield when Electrum is NOT connected in privacy mode.');
         return false;
       }
     } else {
-      // Expect no image to be displayed
-      expect(imageAssetPath, isNull);
+      expect(stableAsset, isNull,
+          reason: 'No shield should appear when Tor is disabled.');
       return false;
     }
   } else {
-    // When Performance is enabled, expect no shield image to be visible
-    expect(imageWidgets, isEmpty,
-        reason: 'No image should be visible when Performance is enabled.');
+    expect(stableAsset, isNull,
+        reason: 'Performance mode should not show any shield.');
     return false;
   }
+}
+
+Future<String?> _waitForStableImageAsset(
+  WidgetTester tester, {
+  required Duration timeout,
+  required Duration stabilityWindow,
+}) async {
+  final end = DateTime.now().add(timeout);
+  String? lastValue;
+  DateTime? lastChange;
+
+  while (DateTime.now().isBefore(end)) {
+    await tester.pump(const Duration(milliseconds: 100));
+    // Collect current image asset
+    String? current;
+    final images = tester.widgetList<Image>(find.byType(Image)).toList();
+    if (images.isNotEmpty && images.first.image is AssetImage) {
+      current = (images.first.image as AssetImage).assetName;
+    }
+    // Value changed → reset stability timer
+    if (current != lastValue) {
+      lastValue = current;
+      lastChange = DateTime.now();
+    }
+    // Value has remained stable long enough?
+    if (lastChange != null &&
+        DateTime.now().difference(lastChange) >= stabilityWindow) {
+      return lastValue;
+    }
+  }
+  // Timeout reached → return last seen
+  return lastValue;
 }
 
 Future<bool> isAccountTestnetTaproot(

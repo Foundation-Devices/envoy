@@ -5,9 +5,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:envoy/business/devices.dart';
+import 'package:envoy/channels/accessory.dart';
 import 'package:envoy/channels/ble_status.dart';
+import 'package:envoy/util/console.dart';
+import 'package:envoy/util/stream_replay_cache.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// Manages Bluetooth communication via platform channels for iOS
 /// Handles method channel calls and event streams for BLE operations
@@ -37,16 +42,15 @@ class BluetoothChannel {
   DeviceStatus get lastDeviceStatus => _lastDeviceStatus;
 
   final _readController = StreamController<Uint8List>.broadcast();
-  final _writeProgressController = StreamController<double>.broadcast();
 
   Stream<Uint8List> get dataStream => listenToDataEvents();
 
-  Stream<double> get writeProgressStream => _writeProgressController.stream;
-
-  Stream<DeviceStatus> get deviceStatusStream => _deviceStatusStatusStream;
+  // Replay stream for device status with latest value caching
+  // New subscribers immediately receive the last known status
+  Stream<DeviceStatus> get deviceStatusStream =>
+      _deviceStatusStatusStream.replayLatest(_lastDeviceStatus);
 
   StreamSubscription? _deviceStatusSubscription;
-  StreamSubscription? _writeProgressSubscription;
 
   static final BluetoothChannel _instance = BluetoothChannel._internal();
 
@@ -63,6 +67,16 @@ class BluetoothChannel {
     }
   }).asBroadcastStream();
 
+  late final Stream<WriteProgress> _writeProgressStream =
+      writeProgressChannel.receiveBroadcastStream().map((dynamic event) {
+    if (event is Map<dynamic, dynamic>) {
+      return WriteProgress.fromMap(event);
+    } else {
+      return WriteProgress(
+          progress: 0.0, id: "", totalBytes: 0, bytesProcessed: 0);
+    }
+  }).asBroadcastStream();
+
   Stream<DeviceStatus> get listenToDeviceConnectionEvents =>
       deviceStatusStream.where((status) => status.isConnectionEvent);
 
@@ -74,16 +88,6 @@ class BluetoothChannel {
       }
       return ByteData(0);
     });
-    _writeProgressSubscription =
-        writeProgressChannel.receiveBroadcastStream().listen((dynamic event) {
-      if (event is double) {
-        _writeProgressController.add(event);
-      } else if (event is int) {
-        _writeProgressController.add(event.toDouble());
-      } else {
-        _writeProgressController.add(0.0);
-      }
-    });
 
     _deviceStatusSubscription =
         _deviceStatusStatusStream.listen((DeviceStatus event) {
@@ -94,11 +98,28 @@ class BluetoothChannel {
     });
   }
 
+  Future<DeviceStatus> getCurrentDeviceStatus() async {
+    try {
+      final result = await bleMethodChannel
+          .invokeMethod<Map<dynamic, dynamic>>('getCurrentDeviceStatus');
+
+      if (result != null) {
+        return DeviceStatus.fromMap(result);
+      } else {
+        return DeviceStatus(connected: false);
+      }
+    } catch (e, stack) {
+      debugPrintStack(
+          label: "Error getting current device status: $e", stackTrace: stack);
+      return DeviceStatus(connected: false);
+    }
+  }
+
   /// Write all data chunks to the connected BLE device
   /// Returns true if successful, false otherwise
   Future<bool> writeAll(List<Uint8List> data) async {
     if (!Platform.isIOS && !Platform.isAndroid) {
-      return false;
+      throw Exception("BLE write is only supported on iOS and Android");
     }
 
     try {
@@ -142,21 +163,30 @@ class BluetoothChannel {
   /// Returns the BluetoothConnectionStatus after pairing and connecting
   /// on IOS this will show the accessory setup sheet
   /// on Android this will initiate the android bonding dialog
-  Future<DeviceStatus> connect(String deviceId, int colorWay) async {
+  Future<DeviceStatus> setupBle(String deviceId, int colorWay) async {
     if (Platform.isIOS) {
-      final result = await bleMethodChannel
+      final status = await bleMethodChannel
           .invokeMethod("showAccessorySetup", {"c": colorWay});
-      if (result != true) {
-        throw Exception("User cancelled accessory setup");
+      if (status is bool && !status) {
+        return DeviceStatus(connected: false);
       }
     } else {
       //Android will wait for event after initiating pairing
-      unawaited(bleMethodChannel.invokeMethod("pair", {"deviceId": deviceId}));
+      await bleMethodChannel.invokeMethod("pair", {"deviceId": deviceId});
     }
+    bool initiateBonding = false;
     final connect = await listenToDeviceConnectionEvents.firstWhere(
       (event) {
-        if (Platform.isAndroid) {
-          return event.bonded && event.connected;
+        try {
+          if (event.connected && !initiateBonding && !event.bonded) {
+            initiateBonding = true;
+            kPrint("Initiating bonding ");
+            bleMethodChannel.invokeMethod(
+              "bond",
+            );
+          }
+        } catch (e) {
+          debugPrint("Error during bonding initiation: $e");
         }
         return event.connected;
       },
@@ -194,6 +224,82 @@ class BluetoothChannel {
   /// Dispose of stream subscriptions
   void dispose() {
     _deviceStatusSubscription?.cancel();
-    _writeProgressSubscription?.cancel();
+  }
+
+  Stream<WriteProgress> writeProgressStream() {
+    return _writeProgressStream;
+  }
+
+  Stream<WriteProgress> getWriteProgress(String id) {
+    kPrint("Getting write progress for id: $id");
+    return _writeProgressStream
+        .where((progress) => progress.id == id)
+        .asBroadcastStream();
+  }
+
+  /// Send large data by writing to file and passing path to host platform
+  Future<bool> transmitFromFile(String path) async {
+    try {
+      await bleMethodChannel.invokeMethod("transmitFromFile", {"path": path});
+      return true;
+    } catch (e, stack) {
+      debugPrintStack(label: "Error sending large data: $e", stackTrace: stack);
+      return false;
+    }
+  }
+
+  /// Cancel ongoing transfer
+  Future<bool> cancelTransfer() async {
+    try {
+      await bleMethodChannel.invokeMethod("cancelTransfer");
+      return true;
+    } catch (e, stack) {
+      debugPrintStack(label: ": $e", stackTrace: stack);
+      return false;
+    }
+  }
+
+  // Create a file in the ble cache directory
+  // file will be removed after transmission
+  static Future<File> getBleCacheFile(String filename) async {
+    final appPath = await getApplicationCacheDirectory();
+    final bleCacheDir = Directory('${appPath.path}/ble_cache');
+    if (!await bleCacheDir.exists()) {
+      await bleCacheDir.create(recursive: true);
+    }
+    // quantum link file, .qlf ? maybe ? this includes chunked QL messages
+    final file = File('${bleCacheDir.path}/ble_$filename.qlf');
+    return file;
+  }
+
+  Future reconnect(Device device) async {
+    final bluetoothId = Platform.isIOS ? device.peripheralId : device.bleId;
+    await bleMethodChannel.invokeMethod("reconnect", {"bleId": bluetoothId});
+  }
+
+  //IOS only
+  Future<List<AccessoryInfo>> getAccessories() async {
+    if (!Platform.isIOS) {
+      throw Exception("getAccessories is only supported on iOS");
+    }
+    try {
+      final result = await bleMethodChannel.invokeMethod('getAccessories');
+
+      if (result is List) {
+        return result
+            .map((item) =>
+                AccessoryInfo.fromMap(Map<String, dynamic>.from(item)))
+            .toList();
+      }
+
+      return [];
+    } catch (e, stack) {
+      kPrint('Error getting accessories: $e', stackTrace: stack);
+      return [];
+    }
+  }
+
+  Future<bool?> requestEnableBle() async {
+    return await bleMethodChannel.invokeMethod<bool>("enableBluetooth");
   }
 }

@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/animated_qr_image.dart';
@@ -141,8 +142,23 @@ class PsbtCard extends ConsumerWidget {
                                             const Duration(milliseconds: 100));
                                         gorouter.pop(cryptoPsbt);
                                       });
+                                      QrIntentInfoType qrType =
+                                          QrIntentInfoType.qrCode;
+                                      if (!account.isHot) {
+                                        final device = Devices()
+                                            .getDeviceBySerial(
+                                                account.deviceSerial ?? "");
+                                        if (device != null &&
+                                            device.type ==
+                                                DeviceType.passportPrime) {
+                                          qrType = QrIntentInfoType.prime;
+                                        } else {
+                                          qrType = QrIntentInfoType.core;
+                                        }
+                                      }
                                       showScannerDialog(
                                           context: context,
+                                          infoType: qrType,
                                           onBackPressed: (context) {
                                             Navigator.pop(context);
                                           },

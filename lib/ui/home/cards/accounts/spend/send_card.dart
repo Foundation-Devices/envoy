@@ -26,7 +26,7 @@ import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
-  SendCard() : super(key: UniqueKey());
+  const SendCard({super.key});
 
   @override
   ConsumerState<SendCard> createState() => _SendCardState();

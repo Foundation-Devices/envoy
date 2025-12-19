@@ -22,8 +22,7 @@ mixin _$FirmwareFetchEvent {
     required TResult Function(FirmwareUpdateAvailable field0) starting,
     required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
-    required TResult Function() complete,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -32,8 +31,7 @@ mixin _$FirmwareFetchEvent {
     TResult? Function(FirmwareUpdateAvailable field0)? starting,
     TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
-    TResult? Function()? complete,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -42,8 +40,7 @@ mixin _$FirmwareFetchEvent {
     TResult Function(FirmwareUpdateAvailable field0)? starting,
     TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
-    TResult Function()? complete,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -54,7 +51,6 @@ mixin _$FirmwareFetchEvent {
     required TResult Function(FirmwareFetchEvent_Starting value) starting,
     required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
     required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
-    required TResult Function(FirmwareFetchEvent_Complete value) complete,
     required TResult Function(FirmwareFetchEvent_Error value) error,
   }) =>
       throw _privateConstructorUsedError;
@@ -65,7 +61,6 @@ mixin _$FirmwareFetchEvent {
     TResult? Function(FirmwareFetchEvent_Starting value)? starting,
     TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
     TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) =>
       throw _privateConstructorUsedError;
@@ -76,7 +71,6 @@ mixin _$FirmwareFetchEvent {
     TResult Function(FirmwareFetchEvent_Starting value)? starting,
     TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult Function(FirmwareFetchEvent_Complete value)? complete,
     TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) =>
@@ -154,8 +148,7 @@ class _$FirmwareFetchEvent_UpdateNotAvailableImpl
     required TResult Function(FirmwareUpdateAvailable field0) starting,
     required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
-    required TResult Function() complete,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) {
     return updateNotAvailable();
   }
@@ -167,8 +160,7 @@ class _$FirmwareFetchEvent_UpdateNotAvailableImpl
     TResult? Function(FirmwareUpdateAvailable field0)? starting,
     TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
-    TResult? Function()? complete,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) {
     return updateNotAvailable?.call();
   }
@@ -180,8 +172,7 @@ class _$FirmwareFetchEvent_UpdateNotAvailableImpl
     TResult Function(FirmwareUpdateAvailable field0)? starting,
     TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
-    TResult Function()? complete,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) {
     if (updateNotAvailable != null) {
@@ -198,7 +189,6 @@ class _$FirmwareFetchEvent_UpdateNotAvailableImpl
     required TResult Function(FirmwareFetchEvent_Starting value) starting,
     required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
     required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
-    required TResult Function(FirmwareFetchEvent_Complete value) complete,
     required TResult Function(FirmwareFetchEvent_Error value) error,
   }) {
     return updateNotAvailable(this);
@@ -212,7 +202,6 @@ class _$FirmwareFetchEvent_UpdateNotAvailableImpl
     TResult? Function(FirmwareFetchEvent_Starting value)? starting,
     TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
     TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) {
     return updateNotAvailable?.call(this);
@@ -226,7 +215,6 @@ class _$FirmwareFetchEvent_UpdateNotAvailableImpl
     TResult Function(FirmwareFetchEvent_Starting value)? starting,
     TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult Function(FirmwareFetchEvent_Complete value)? complete,
     TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) {
@@ -320,8 +308,7 @@ class _$FirmwareFetchEvent_StartingImpl extends FirmwareFetchEvent_Starting {
     required TResult Function(FirmwareUpdateAvailable field0) starting,
     required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
-    required TResult Function() complete,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) {
     return starting(field0);
   }
@@ -333,8 +320,7 @@ class _$FirmwareFetchEvent_StartingImpl extends FirmwareFetchEvent_Starting {
     TResult? Function(FirmwareUpdateAvailable field0)? starting,
     TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
-    TResult? Function()? complete,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) {
     return starting?.call(field0);
   }
@@ -346,8 +332,7 @@ class _$FirmwareFetchEvent_StartingImpl extends FirmwareFetchEvent_Starting {
     TResult Function(FirmwareUpdateAvailable field0)? starting,
     TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
-    TResult Function()? complete,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) {
     if (starting != null) {
@@ -364,7 +349,6 @@ class _$FirmwareFetchEvent_StartingImpl extends FirmwareFetchEvent_Starting {
     required TResult Function(FirmwareFetchEvent_Starting value) starting,
     required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
     required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
-    required TResult Function(FirmwareFetchEvent_Complete value) complete,
     required TResult Function(FirmwareFetchEvent_Error value) error,
   }) {
     return starting(this);
@@ -378,7 +362,6 @@ class _$FirmwareFetchEvent_StartingImpl extends FirmwareFetchEvent_Starting {
     TResult? Function(FirmwareFetchEvent_Starting value)? starting,
     TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
     TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) {
     return starting?.call(this);
@@ -392,7 +375,6 @@ class _$FirmwareFetchEvent_StartingImpl extends FirmwareFetchEvent_Starting {
     TResult Function(FirmwareFetchEvent_Starting value)? starting,
     TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult Function(FirmwareFetchEvent_Complete value)? complete,
     TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) {
@@ -467,8 +449,7 @@ class _$FirmwareFetchEvent_DownloadingImpl
     required TResult Function(FirmwareUpdateAvailable field0) starting,
     required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
-    required TResult Function() complete,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) {
     return downloading();
   }
@@ -480,8 +461,7 @@ class _$FirmwareFetchEvent_DownloadingImpl
     TResult? Function(FirmwareUpdateAvailable field0)? starting,
     TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
-    TResult? Function()? complete,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) {
     return downloading?.call();
   }
@@ -493,8 +473,7 @@ class _$FirmwareFetchEvent_DownloadingImpl
     TResult Function(FirmwareUpdateAvailable field0)? starting,
     TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
-    TResult Function()? complete,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) {
     if (downloading != null) {
@@ -511,7 +490,6 @@ class _$FirmwareFetchEvent_DownloadingImpl
     required TResult Function(FirmwareFetchEvent_Starting value) starting,
     required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
     required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
-    required TResult Function(FirmwareFetchEvent_Complete value) complete,
     required TResult Function(FirmwareFetchEvent_Error value) error,
   }) {
     return downloading(this);
@@ -525,7 +503,6 @@ class _$FirmwareFetchEvent_DownloadingImpl
     TResult? Function(FirmwareFetchEvent_Starting value)? starting,
     TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
     TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) {
     return downloading?.call(this);
@@ -539,7 +516,6 @@ class _$FirmwareFetchEvent_DownloadingImpl
     TResult Function(FirmwareFetchEvent_Starting value)? starting,
     TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult Function(FirmwareFetchEvent_Complete value)? complete,
     TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) {
@@ -632,8 +608,7 @@ class _$FirmwareFetchEvent_ChunkImpl extends FirmwareFetchEvent_Chunk {
     required TResult Function(FirmwareUpdateAvailable field0) starting,
     required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
-    required TResult Function() complete,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) {
     return chunk(field0);
   }
@@ -645,8 +620,7 @@ class _$FirmwareFetchEvent_ChunkImpl extends FirmwareFetchEvent_Chunk {
     TResult? Function(FirmwareUpdateAvailable field0)? starting,
     TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
-    TResult? Function()? complete,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) {
     return chunk?.call(field0);
   }
@@ -658,8 +632,7 @@ class _$FirmwareFetchEvent_ChunkImpl extends FirmwareFetchEvent_Chunk {
     TResult Function(FirmwareUpdateAvailable field0)? starting,
     TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
-    TResult Function()? complete,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) {
     if (chunk != null) {
@@ -676,7 +649,6 @@ class _$FirmwareFetchEvent_ChunkImpl extends FirmwareFetchEvent_Chunk {
     required TResult Function(FirmwareFetchEvent_Starting value) starting,
     required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
     required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
-    required TResult Function(FirmwareFetchEvent_Complete value) complete,
     required TResult Function(FirmwareFetchEvent_Error value) error,
   }) {
     return chunk(this);
@@ -690,7 +662,6 @@ class _$FirmwareFetchEvent_ChunkImpl extends FirmwareFetchEvent_Chunk {
     TResult? Function(FirmwareFetchEvent_Starting value)? starting,
     TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
     TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) {
     return chunk?.call(this);
@@ -704,7 +675,6 @@ class _$FirmwareFetchEvent_ChunkImpl extends FirmwareFetchEvent_Chunk {
     TResult Function(FirmwareFetchEvent_Starting value)? starting,
     TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult Function(FirmwareFetchEvent_Complete value)? complete,
     TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) {
@@ -730,151 +700,13 @@ abstract class FirmwareFetchEvent_Chunk extends FirmwareFetchEvent {
 }
 
 /// @nodoc
-abstract class _$$FirmwareFetchEvent_CompleteImplCopyWith<$Res> {
-  factory _$$FirmwareFetchEvent_CompleteImplCopyWith(
-          _$FirmwareFetchEvent_CompleteImpl value,
-          $Res Function(_$FirmwareFetchEvent_CompleteImpl) then) =
-      __$$FirmwareFetchEvent_CompleteImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$FirmwareFetchEvent_CompleteImplCopyWithImpl<$Res>
-    extends _$FirmwareFetchEventCopyWithImpl<$Res,
-        _$FirmwareFetchEvent_CompleteImpl>
-    implements _$$FirmwareFetchEvent_CompleteImplCopyWith<$Res> {
-  __$$FirmwareFetchEvent_CompleteImplCopyWithImpl(
-      _$FirmwareFetchEvent_CompleteImpl _value,
-      $Res Function(_$FirmwareFetchEvent_CompleteImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of FirmwareFetchEvent
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$FirmwareFetchEvent_CompleteImpl extends FirmwareFetchEvent_Complete {
-  const _$FirmwareFetchEvent_CompleteImpl() : super._();
-
-  @override
-  String toString() {
-    return 'FirmwareFetchEvent.complete()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$FirmwareFetchEvent_CompleteImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() updateNotAvailable,
-    required TResult Function(FirmwareUpdateAvailable field0) starting,
-    required TResult Function() downloading,
-    required TResult Function(FirmwareChunk field0) chunk,
-    required TResult Function() complete,
-    required TResult Function(String field0) error,
-  }) {
-    return complete();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? updateNotAvailable,
-    TResult? Function(FirmwareUpdateAvailable field0)? starting,
-    TResult? Function()? downloading,
-    TResult? Function(FirmwareChunk field0)? chunk,
-    TResult? Function()? complete,
-    TResult? Function(String field0)? error,
-  }) {
-    return complete?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? updateNotAvailable,
-    TResult Function(FirmwareUpdateAvailable field0)? starting,
-    TResult Function()? downloading,
-    TResult Function(FirmwareChunk field0)? chunk,
-    TResult Function()? complete,
-    TResult Function(String field0)? error,
-    required TResult orElse(),
-  }) {
-    if (complete != null) {
-      return complete();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)
-        updateNotAvailable,
-    required TResult Function(FirmwareFetchEvent_Starting value) starting,
-    required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
-    required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
-    required TResult Function(FirmwareFetchEvent_Complete value) complete,
-    required TResult Function(FirmwareFetchEvent_Error value) error,
-  }) {
-    return complete(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(FirmwareFetchEvent_UpdateNotAvailable value)?
-        updateNotAvailable,
-    TResult? Function(FirmwareFetchEvent_Starting value)? starting,
-    TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
-    TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
-    TResult? Function(FirmwareFetchEvent_Error value)? error,
-  }) {
-    return complete?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(FirmwareFetchEvent_UpdateNotAvailable value)?
-        updateNotAvailable,
-    TResult Function(FirmwareFetchEvent_Starting value)? starting,
-    TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
-    TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult Function(FirmwareFetchEvent_Complete value)? complete,
-    TResult Function(FirmwareFetchEvent_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (complete != null) {
-      return complete(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class FirmwareFetchEvent_Complete extends FirmwareFetchEvent {
-  const factory FirmwareFetchEvent_Complete() =
-      _$FirmwareFetchEvent_CompleteImpl;
-  const FirmwareFetchEvent_Complete._() : super._();
-}
-
-/// @nodoc
 abstract class _$$FirmwareFetchEvent_ErrorImplCopyWith<$Res> {
   factory _$$FirmwareFetchEvent_ErrorImplCopyWith(
           _$FirmwareFetchEvent_ErrorImpl value,
           $Res Function(_$FirmwareFetchEvent_ErrorImpl) then) =
       __$$FirmwareFetchEvent_ErrorImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String field0});
+  $Res call({String error});
 }
 
 /// @nodoc
@@ -892,12 +724,12 @@ class __$$FirmwareFetchEvent_ErrorImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? field0 = null,
+    Object? error = null,
   }) {
     return _then(_$FirmwareFetchEvent_ErrorImpl(
-      null == field0
-          ? _value.field0
-          : field0 // ignore: cast_nullable_to_non_nullable
+      error: null == error
+          ? _value.error
+          : error // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -906,14 +738,14 @@ class __$$FirmwareFetchEvent_ErrorImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
-  const _$FirmwareFetchEvent_ErrorImpl(this.field0) : super._();
+  const _$FirmwareFetchEvent_ErrorImpl({required this.error}) : super._();
 
   @override
-  final String field0;
+  final String error;
 
   @override
   String toString() {
-    return 'FirmwareFetchEvent.error(field0: $field0)';
+    return 'FirmwareFetchEvent.error(error: $error)';
   }
 
   @override
@@ -921,11 +753,11 @@ class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$FirmwareFetchEvent_ErrorImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, field0);
+  int get hashCode => Object.hash(runtimeType, error);
 
   /// Create a copy of FirmwareFetchEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -943,10 +775,9 @@ class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
     required TResult Function(FirmwareUpdateAvailable field0) starting,
     required TResult Function() downloading,
     required TResult Function(FirmwareChunk field0) chunk,
-    required TResult Function() complete,
-    required TResult Function(String field0) error,
+    required TResult Function(String error) error,
   }) {
-    return error(field0);
+    return error(this.error);
   }
 
   @override
@@ -956,10 +787,9 @@ class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
     TResult? Function(FirmwareUpdateAvailable field0)? starting,
     TResult? Function()? downloading,
     TResult? Function(FirmwareChunk field0)? chunk,
-    TResult? Function()? complete,
-    TResult? Function(String field0)? error,
+    TResult? Function(String error)? error,
   }) {
-    return error?.call(field0);
+    return error?.call(this.error);
   }
 
   @override
@@ -969,12 +799,11 @@ class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
     TResult Function(FirmwareUpdateAvailable field0)? starting,
     TResult Function()? downloading,
     TResult Function(FirmwareChunk field0)? chunk,
-    TResult Function()? complete,
-    TResult Function(String field0)? error,
+    TResult Function(String error)? error,
     required TResult orElse(),
   }) {
     if (error != null) {
-      return error(field0);
+      return error(this.error);
     }
     return orElse();
   }
@@ -987,7 +816,6 @@ class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
     required TResult Function(FirmwareFetchEvent_Starting value) starting,
     required TResult Function(FirmwareFetchEvent_Downloading value) downloading,
     required TResult Function(FirmwareFetchEvent_Chunk value) chunk,
-    required TResult Function(FirmwareFetchEvent_Complete value) complete,
     required TResult Function(FirmwareFetchEvent_Error value) error,
   }) {
     return error(this);
@@ -1001,7 +829,6 @@ class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
     TResult? Function(FirmwareFetchEvent_Starting value)? starting,
     TResult? Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult? Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult? Function(FirmwareFetchEvent_Complete value)? complete,
     TResult? Function(FirmwareFetchEvent_Error value)? error,
   }) {
     return error?.call(this);
@@ -1015,7 +842,6 @@ class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
     TResult Function(FirmwareFetchEvent_Starting value)? starting,
     TResult Function(FirmwareFetchEvent_Downloading value)? downloading,
     TResult Function(FirmwareFetchEvent_Chunk value)? chunk,
-    TResult Function(FirmwareFetchEvent_Complete value)? complete,
     TResult Function(FirmwareFetchEvent_Error value)? error,
     required TResult orElse(),
   }) {
@@ -1027,16 +853,847 @@ class _$FirmwareFetchEvent_ErrorImpl extends FirmwareFetchEvent_Error {
 }
 
 abstract class FirmwareFetchEvent_Error extends FirmwareFetchEvent {
-  const factory FirmwareFetchEvent_Error(final String field0) =
+  const factory FirmwareFetchEvent_Error({required final String error}) =
       _$FirmwareFetchEvent_ErrorImpl;
   const FirmwareFetchEvent_Error._() : super._();
 
-  String get field0;
+  String get error;
 
   /// Create a copy of FirmwareFetchEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$FirmwareFetchEvent_ErrorImplCopyWith<_$FirmwareFetchEvent_ErrorImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$FirmwareInstallEvent {
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() updateVerified,
+    required TResult Function() installing,
+    required TResult Function() rebooting,
+    required TResult Function(String installedVersion) success,
+    required TResult Function(String error, InstallErrorStage stage) error,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? updateVerified,
+    TResult? Function()? installing,
+    TResult? Function()? rebooting,
+    TResult? Function(String installedVersion)? success,
+    TResult? Function(String error, InstallErrorStage stage)? error,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? updateVerified,
+    TResult Function()? installing,
+    TResult Function()? rebooting,
+    TResult Function(String installedVersion)? success,
+    TResult Function(String error, InstallErrorStage stage)? error,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FirmwareInstallEvent_UpdateVerified value)
+        updateVerified,
+    required TResult Function(FirmwareInstallEvent_Installing value) installing,
+    required TResult Function(FirmwareInstallEvent_Rebooting value) rebooting,
+    required TResult Function(FirmwareInstallEvent_Success value) success,
+    required TResult Function(FirmwareInstallEvent_Error value) error,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(FirmwareInstallEvent_UpdateVerified value)?
+        updateVerified,
+    TResult? Function(FirmwareInstallEvent_Installing value)? installing,
+    TResult? Function(FirmwareInstallEvent_Rebooting value)? rebooting,
+    TResult? Function(FirmwareInstallEvent_Success value)? success,
+    TResult? Function(FirmwareInstallEvent_Error value)? error,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FirmwareInstallEvent_UpdateVerified value)? updateVerified,
+    TResult Function(FirmwareInstallEvent_Installing value)? installing,
+    TResult Function(FirmwareInstallEvent_Rebooting value)? rebooting,
+    TResult Function(FirmwareInstallEvent_Success value)? success,
+    TResult Function(FirmwareInstallEvent_Error value)? error,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $FirmwareInstallEventCopyWith<$Res> {
+  factory $FirmwareInstallEventCopyWith(FirmwareInstallEvent value,
+          $Res Function(FirmwareInstallEvent) then) =
+      _$FirmwareInstallEventCopyWithImpl<$Res, FirmwareInstallEvent>;
+}
+
+/// @nodoc
+class _$FirmwareInstallEventCopyWithImpl<$Res,
+        $Val extends FirmwareInstallEvent>
+    implements $FirmwareInstallEventCopyWith<$Res> {
+  _$FirmwareInstallEventCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of FirmwareInstallEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+abstract class _$$FirmwareInstallEvent_UpdateVerifiedImplCopyWith<$Res> {
+  factory _$$FirmwareInstallEvent_UpdateVerifiedImplCopyWith(
+          _$FirmwareInstallEvent_UpdateVerifiedImpl value,
+          $Res Function(_$FirmwareInstallEvent_UpdateVerifiedImpl) then) =
+      __$$FirmwareInstallEvent_UpdateVerifiedImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$FirmwareInstallEvent_UpdateVerifiedImplCopyWithImpl<$Res>
+    extends _$FirmwareInstallEventCopyWithImpl<$Res,
+        _$FirmwareInstallEvent_UpdateVerifiedImpl>
+    implements _$$FirmwareInstallEvent_UpdateVerifiedImplCopyWith<$Res> {
+  __$$FirmwareInstallEvent_UpdateVerifiedImplCopyWithImpl(
+      _$FirmwareInstallEvent_UpdateVerifiedImpl _value,
+      $Res Function(_$FirmwareInstallEvent_UpdateVerifiedImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of FirmwareInstallEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$FirmwareInstallEvent_UpdateVerifiedImpl
+    extends FirmwareInstallEvent_UpdateVerified {
+  const _$FirmwareInstallEvent_UpdateVerifiedImpl() : super._();
+
+  @override
+  String toString() {
+    return 'FirmwareInstallEvent.updateVerified()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FirmwareInstallEvent_UpdateVerifiedImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() updateVerified,
+    required TResult Function() installing,
+    required TResult Function() rebooting,
+    required TResult Function(String installedVersion) success,
+    required TResult Function(String error, InstallErrorStage stage) error,
+  }) {
+    return updateVerified();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? updateVerified,
+    TResult? Function()? installing,
+    TResult? Function()? rebooting,
+    TResult? Function(String installedVersion)? success,
+    TResult? Function(String error, InstallErrorStage stage)? error,
+  }) {
+    return updateVerified?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? updateVerified,
+    TResult Function()? installing,
+    TResult Function()? rebooting,
+    TResult Function(String installedVersion)? success,
+    TResult Function(String error, InstallErrorStage stage)? error,
+    required TResult orElse(),
+  }) {
+    if (updateVerified != null) {
+      return updateVerified();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FirmwareInstallEvent_UpdateVerified value)
+        updateVerified,
+    required TResult Function(FirmwareInstallEvent_Installing value) installing,
+    required TResult Function(FirmwareInstallEvent_Rebooting value) rebooting,
+    required TResult Function(FirmwareInstallEvent_Success value) success,
+    required TResult Function(FirmwareInstallEvent_Error value) error,
+  }) {
+    return updateVerified(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(FirmwareInstallEvent_UpdateVerified value)?
+        updateVerified,
+    TResult? Function(FirmwareInstallEvent_Installing value)? installing,
+    TResult? Function(FirmwareInstallEvent_Rebooting value)? rebooting,
+    TResult? Function(FirmwareInstallEvent_Success value)? success,
+    TResult? Function(FirmwareInstallEvent_Error value)? error,
+  }) {
+    return updateVerified?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FirmwareInstallEvent_UpdateVerified value)? updateVerified,
+    TResult Function(FirmwareInstallEvent_Installing value)? installing,
+    TResult Function(FirmwareInstallEvent_Rebooting value)? rebooting,
+    TResult Function(FirmwareInstallEvent_Success value)? success,
+    TResult Function(FirmwareInstallEvent_Error value)? error,
+    required TResult orElse(),
+  }) {
+    if (updateVerified != null) {
+      return updateVerified(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class FirmwareInstallEvent_UpdateVerified
+    extends FirmwareInstallEvent {
+  const factory FirmwareInstallEvent_UpdateVerified() =
+      _$FirmwareInstallEvent_UpdateVerifiedImpl;
+  const FirmwareInstallEvent_UpdateVerified._() : super._();
+}
+
+/// @nodoc
+abstract class _$$FirmwareInstallEvent_InstallingImplCopyWith<$Res> {
+  factory _$$FirmwareInstallEvent_InstallingImplCopyWith(
+          _$FirmwareInstallEvent_InstallingImpl value,
+          $Res Function(_$FirmwareInstallEvent_InstallingImpl) then) =
+      __$$FirmwareInstallEvent_InstallingImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$FirmwareInstallEvent_InstallingImplCopyWithImpl<$Res>
+    extends _$FirmwareInstallEventCopyWithImpl<$Res,
+        _$FirmwareInstallEvent_InstallingImpl>
+    implements _$$FirmwareInstallEvent_InstallingImplCopyWith<$Res> {
+  __$$FirmwareInstallEvent_InstallingImplCopyWithImpl(
+      _$FirmwareInstallEvent_InstallingImpl _value,
+      $Res Function(_$FirmwareInstallEvent_InstallingImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of FirmwareInstallEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$FirmwareInstallEvent_InstallingImpl
+    extends FirmwareInstallEvent_Installing {
+  const _$FirmwareInstallEvent_InstallingImpl() : super._();
+
+  @override
+  String toString() {
+    return 'FirmwareInstallEvent.installing()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FirmwareInstallEvent_InstallingImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() updateVerified,
+    required TResult Function() installing,
+    required TResult Function() rebooting,
+    required TResult Function(String installedVersion) success,
+    required TResult Function(String error, InstallErrorStage stage) error,
+  }) {
+    return installing();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? updateVerified,
+    TResult? Function()? installing,
+    TResult? Function()? rebooting,
+    TResult? Function(String installedVersion)? success,
+    TResult? Function(String error, InstallErrorStage stage)? error,
+  }) {
+    return installing?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? updateVerified,
+    TResult Function()? installing,
+    TResult Function()? rebooting,
+    TResult Function(String installedVersion)? success,
+    TResult Function(String error, InstallErrorStage stage)? error,
+    required TResult orElse(),
+  }) {
+    if (installing != null) {
+      return installing();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FirmwareInstallEvent_UpdateVerified value)
+        updateVerified,
+    required TResult Function(FirmwareInstallEvent_Installing value) installing,
+    required TResult Function(FirmwareInstallEvent_Rebooting value) rebooting,
+    required TResult Function(FirmwareInstallEvent_Success value) success,
+    required TResult Function(FirmwareInstallEvent_Error value) error,
+  }) {
+    return installing(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(FirmwareInstallEvent_UpdateVerified value)?
+        updateVerified,
+    TResult? Function(FirmwareInstallEvent_Installing value)? installing,
+    TResult? Function(FirmwareInstallEvent_Rebooting value)? rebooting,
+    TResult? Function(FirmwareInstallEvent_Success value)? success,
+    TResult? Function(FirmwareInstallEvent_Error value)? error,
+  }) {
+    return installing?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FirmwareInstallEvent_UpdateVerified value)? updateVerified,
+    TResult Function(FirmwareInstallEvent_Installing value)? installing,
+    TResult Function(FirmwareInstallEvent_Rebooting value)? rebooting,
+    TResult Function(FirmwareInstallEvent_Success value)? success,
+    TResult Function(FirmwareInstallEvent_Error value)? error,
+    required TResult orElse(),
+  }) {
+    if (installing != null) {
+      return installing(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class FirmwareInstallEvent_Installing extends FirmwareInstallEvent {
+  const factory FirmwareInstallEvent_Installing() =
+      _$FirmwareInstallEvent_InstallingImpl;
+  const FirmwareInstallEvent_Installing._() : super._();
+}
+
+/// @nodoc
+abstract class _$$FirmwareInstallEvent_RebootingImplCopyWith<$Res> {
+  factory _$$FirmwareInstallEvent_RebootingImplCopyWith(
+          _$FirmwareInstallEvent_RebootingImpl value,
+          $Res Function(_$FirmwareInstallEvent_RebootingImpl) then) =
+      __$$FirmwareInstallEvent_RebootingImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$FirmwareInstallEvent_RebootingImplCopyWithImpl<$Res>
+    extends _$FirmwareInstallEventCopyWithImpl<$Res,
+        _$FirmwareInstallEvent_RebootingImpl>
+    implements _$$FirmwareInstallEvent_RebootingImplCopyWith<$Res> {
+  __$$FirmwareInstallEvent_RebootingImplCopyWithImpl(
+      _$FirmwareInstallEvent_RebootingImpl _value,
+      $Res Function(_$FirmwareInstallEvent_RebootingImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of FirmwareInstallEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$FirmwareInstallEvent_RebootingImpl
+    extends FirmwareInstallEvent_Rebooting {
+  const _$FirmwareInstallEvent_RebootingImpl() : super._();
+
+  @override
+  String toString() {
+    return 'FirmwareInstallEvent.rebooting()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FirmwareInstallEvent_RebootingImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() updateVerified,
+    required TResult Function() installing,
+    required TResult Function() rebooting,
+    required TResult Function(String installedVersion) success,
+    required TResult Function(String error, InstallErrorStage stage) error,
+  }) {
+    return rebooting();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? updateVerified,
+    TResult? Function()? installing,
+    TResult? Function()? rebooting,
+    TResult? Function(String installedVersion)? success,
+    TResult? Function(String error, InstallErrorStage stage)? error,
+  }) {
+    return rebooting?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? updateVerified,
+    TResult Function()? installing,
+    TResult Function()? rebooting,
+    TResult Function(String installedVersion)? success,
+    TResult Function(String error, InstallErrorStage stage)? error,
+    required TResult orElse(),
+  }) {
+    if (rebooting != null) {
+      return rebooting();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FirmwareInstallEvent_UpdateVerified value)
+        updateVerified,
+    required TResult Function(FirmwareInstallEvent_Installing value) installing,
+    required TResult Function(FirmwareInstallEvent_Rebooting value) rebooting,
+    required TResult Function(FirmwareInstallEvent_Success value) success,
+    required TResult Function(FirmwareInstallEvent_Error value) error,
+  }) {
+    return rebooting(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(FirmwareInstallEvent_UpdateVerified value)?
+        updateVerified,
+    TResult? Function(FirmwareInstallEvent_Installing value)? installing,
+    TResult? Function(FirmwareInstallEvent_Rebooting value)? rebooting,
+    TResult? Function(FirmwareInstallEvent_Success value)? success,
+    TResult? Function(FirmwareInstallEvent_Error value)? error,
+  }) {
+    return rebooting?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FirmwareInstallEvent_UpdateVerified value)? updateVerified,
+    TResult Function(FirmwareInstallEvent_Installing value)? installing,
+    TResult Function(FirmwareInstallEvent_Rebooting value)? rebooting,
+    TResult Function(FirmwareInstallEvent_Success value)? success,
+    TResult Function(FirmwareInstallEvent_Error value)? error,
+    required TResult orElse(),
+  }) {
+    if (rebooting != null) {
+      return rebooting(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class FirmwareInstallEvent_Rebooting extends FirmwareInstallEvent {
+  const factory FirmwareInstallEvent_Rebooting() =
+      _$FirmwareInstallEvent_RebootingImpl;
+  const FirmwareInstallEvent_Rebooting._() : super._();
+}
+
+/// @nodoc
+abstract class _$$FirmwareInstallEvent_SuccessImplCopyWith<$Res> {
+  factory _$$FirmwareInstallEvent_SuccessImplCopyWith(
+          _$FirmwareInstallEvent_SuccessImpl value,
+          $Res Function(_$FirmwareInstallEvent_SuccessImpl) then) =
+      __$$FirmwareInstallEvent_SuccessImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String installedVersion});
+}
+
+/// @nodoc
+class __$$FirmwareInstallEvent_SuccessImplCopyWithImpl<$Res>
+    extends _$FirmwareInstallEventCopyWithImpl<$Res,
+        _$FirmwareInstallEvent_SuccessImpl>
+    implements _$$FirmwareInstallEvent_SuccessImplCopyWith<$Res> {
+  __$$FirmwareInstallEvent_SuccessImplCopyWithImpl(
+      _$FirmwareInstallEvent_SuccessImpl _value,
+      $Res Function(_$FirmwareInstallEvent_SuccessImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of FirmwareInstallEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? installedVersion = null,
+  }) {
+    return _then(_$FirmwareInstallEvent_SuccessImpl(
+      installedVersion: null == installedVersion
+          ? _value.installedVersion
+          : installedVersion // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$FirmwareInstallEvent_SuccessImpl extends FirmwareInstallEvent_Success {
+  const _$FirmwareInstallEvent_SuccessImpl({required this.installedVersion})
+      : super._();
+
+  @override
+  final String installedVersion;
+
+  @override
+  String toString() {
+    return 'FirmwareInstallEvent.success(installedVersion: $installedVersion)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FirmwareInstallEvent_SuccessImpl &&
+            (identical(other.installedVersion, installedVersion) ||
+                other.installedVersion == installedVersion));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, installedVersion);
+
+  /// Create a copy of FirmwareInstallEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$FirmwareInstallEvent_SuccessImplCopyWith<
+          _$FirmwareInstallEvent_SuccessImpl>
+      get copyWith => __$$FirmwareInstallEvent_SuccessImplCopyWithImpl<
+          _$FirmwareInstallEvent_SuccessImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() updateVerified,
+    required TResult Function() installing,
+    required TResult Function() rebooting,
+    required TResult Function(String installedVersion) success,
+    required TResult Function(String error, InstallErrorStage stage) error,
+  }) {
+    return success(installedVersion);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? updateVerified,
+    TResult? Function()? installing,
+    TResult? Function()? rebooting,
+    TResult? Function(String installedVersion)? success,
+    TResult? Function(String error, InstallErrorStage stage)? error,
+  }) {
+    return success?.call(installedVersion);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? updateVerified,
+    TResult Function()? installing,
+    TResult Function()? rebooting,
+    TResult Function(String installedVersion)? success,
+    TResult Function(String error, InstallErrorStage stage)? error,
+    required TResult orElse(),
+  }) {
+    if (success != null) {
+      return success(installedVersion);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FirmwareInstallEvent_UpdateVerified value)
+        updateVerified,
+    required TResult Function(FirmwareInstallEvent_Installing value) installing,
+    required TResult Function(FirmwareInstallEvent_Rebooting value) rebooting,
+    required TResult Function(FirmwareInstallEvent_Success value) success,
+    required TResult Function(FirmwareInstallEvent_Error value) error,
+  }) {
+    return success(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(FirmwareInstallEvent_UpdateVerified value)?
+        updateVerified,
+    TResult? Function(FirmwareInstallEvent_Installing value)? installing,
+    TResult? Function(FirmwareInstallEvent_Rebooting value)? rebooting,
+    TResult? Function(FirmwareInstallEvent_Success value)? success,
+    TResult? Function(FirmwareInstallEvent_Error value)? error,
+  }) {
+    return success?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FirmwareInstallEvent_UpdateVerified value)? updateVerified,
+    TResult Function(FirmwareInstallEvent_Installing value)? installing,
+    TResult Function(FirmwareInstallEvent_Rebooting value)? rebooting,
+    TResult Function(FirmwareInstallEvent_Success value)? success,
+    TResult Function(FirmwareInstallEvent_Error value)? error,
+    required TResult orElse(),
+  }) {
+    if (success != null) {
+      return success(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class FirmwareInstallEvent_Success extends FirmwareInstallEvent {
+  const factory FirmwareInstallEvent_Success(
+          {required final String installedVersion}) =
+      _$FirmwareInstallEvent_SuccessImpl;
+  const FirmwareInstallEvent_Success._() : super._();
+
+  String get installedVersion;
+
+  /// Create a copy of FirmwareInstallEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$FirmwareInstallEvent_SuccessImplCopyWith<
+          _$FirmwareInstallEvent_SuccessImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$FirmwareInstallEvent_ErrorImplCopyWith<$Res> {
+  factory _$$FirmwareInstallEvent_ErrorImplCopyWith(
+          _$FirmwareInstallEvent_ErrorImpl value,
+          $Res Function(_$FirmwareInstallEvent_ErrorImpl) then) =
+      __$$FirmwareInstallEvent_ErrorImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String error, InstallErrorStage stage});
+}
+
+/// @nodoc
+class __$$FirmwareInstallEvent_ErrorImplCopyWithImpl<$Res>
+    extends _$FirmwareInstallEventCopyWithImpl<$Res,
+        _$FirmwareInstallEvent_ErrorImpl>
+    implements _$$FirmwareInstallEvent_ErrorImplCopyWith<$Res> {
+  __$$FirmwareInstallEvent_ErrorImplCopyWithImpl(
+      _$FirmwareInstallEvent_ErrorImpl _value,
+      $Res Function(_$FirmwareInstallEvent_ErrorImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of FirmwareInstallEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? error = null,
+    Object? stage = null,
+  }) {
+    return _then(_$FirmwareInstallEvent_ErrorImpl(
+      error: null == error
+          ? _value.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as String,
+      stage: null == stage
+          ? _value.stage
+          : stage // ignore: cast_nullable_to_non_nullable
+              as InstallErrorStage,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$FirmwareInstallEvent_ErrorImpl extends FirmwareInstallEvent_Error {
+  const _$FirmwareInstallEvent_ErrorImpl(
+      {required this.error, required this.stage})
+      : super._();
+
+  @override
+  final String error;
+  @override
+  final InstallErrorStage stage;
+
+  @override
+  String toString() {
+    return 'FirmwareInstallEvent.error(error: $error, stage: $stage)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FirmwareInstallEvent_ErrorImpl &&
+            (identical(other.error, error) || other.error == error) &&
+            (identical(other.stage, stage) || other.stage == stage));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, error, stage);
+
+  /// Create a copy of FirmwareInstallEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$FirmwareInstallEvent_ErrorImplCopyWith<_$FirmwareInstallEvent_ErrorImpl>
+      get copyWith => __$$FirmwareInstallEvent_ErrorImplCopyWithImpl<
+          _$FirmwareInstallEvent_ErrorImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() updateVerified,
+    required TResult Function() installing,
+    required TResult Function() rebooting,
+    required TResult Function(String installedVersion) success,
+    required TResult Function(String error, InstallErrorStage stage) error,
+  }) {
+    return error(this.error, stage);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? updateVerified,
+    TResult? Function()? installing,
+    TResult? Function()? rebooting,
+    TResult? Function(String installedVersion)? success,
+    TResult? Function(String error, InstallErrorStage stage)? error,
+  }) {
+    return error?.call(this.error, stage);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? updateVerified,
+    TResult Function()? installing,
+    TResult Function()? rebooting,
+    TResult Function(String installedVersion)? success,
+    TResult Function(String error, InstallErrorStage stage)? error,
+    required TResult orElse(),
+  }) {
+    if (error != null) {
+      return error(this.error, stage);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FirmwareInstallEvent_UpdateVerified value)
+        updateVerified,
+    required TResult Function(FirmwareInstallEvent_Installing value) installing,
+    required TResult Function(FirmwareInstallEvent_Rebooting value) rebooting,
+    required TResult Function(FirmwareInstallEvent_Success value) success,
+    required TResult Function(FirmwareInstallEvent_Error value) error,
+  }) {
+    return error(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(FirmwareInstallEvent_UpdateVerified value)?
+        updateVerified,
+    TResult? Function(FirmwareInstallEvent_Installing value)? installing,
+    TResult? Function(FirmwareInstallEvent_Rebooting value)? rebooting,
+    TResult? Function(FirmwareInstallEvent_Success value)? success,
+    TResult? Function(FirmwareInstallEvent_Error value)? error,
+  }) {
+    return error?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FirmwareInstallEvent_UpdateVerified value)? updateVerified,
+    TResult Function(FirmwareInstallEvent_Installing value)? installing,
+    TResult Function(FirmwareInstallEvent_Rebooting value)? rebooting,
+    TResult Function(FirmwareInstallEvent_Success value)? success,
+    TResult Function(FirmwareInstallEvent_Error value)? error,
+    required TResult orElse(),
+  }) {
+    if (error != null) {
+      return error(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class FirmwareInstallEvent_Error extends FirmwareInstallEvent {
+  const factory FirmwareInstallEvent_Error(
+          {required final String error,
+          required final InstallErrorStage stage}) =
+      _$FirmwareInstallEvent_ErrorImpl;
+  const FirmwareInstallEvent_Error._() : super._();
+
+  String get error;
+  InstallErrorStage get stage;
+
+  /// Create a copy of FirmwareInstallEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$FirmwareInstallEvent_ErrorImplCopyWith<_$FirmwareInstallEvent_ErrorImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -1380,365 +2037,4 @@ abstract class FirmwareUpdateCheckResponse_NotAvailable
   const factory FirmwareUpdateCheckResponse_NotAvailable() =
       _$FirmwareUpdateCheckResponse_NotAvailableImpl;
   const FirmwareUpdateCheckResponse_NotAvailable._() : super._();
-}
-
-/// @nodoc
-mixin _$FirmwareUpdateResult {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String installedVersion) success,
-    required TResult Function(String field0) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String installedVersion)? success,
-    TResult? Function(String field0)? error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String installedVersion)? success,
-    TResult Function(String field0)? error,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(FirmwareUpdateResult_Success value) success,
-    required TResult Function(FirmwareUpdateResult_Error value) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(FirmwareUpdateResult_Success value)? success,
-    TResult? Function(FirmwareUpdateResult_Error value)? error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(FirmwareUpdateResult_Success value)? success,
-    TResult Function(FirmwareUpdateResult_Error value)? error,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $FirmwareUpdateResultCopyWith<$Res> {
-  factory $FirmwareUpdateResultCopyWith(FirmwareUpdateResult value,
-          $Res Function(FirmwareUpdateResult) then) =
-      _$FirmwareUpdateResultCopyWithImpl<$Res, FirmwareUpdateResult>;
-}
-
-/// @nodoc
-class _$FirmwareUpdateResultCopyWithImpl<$Res,
-        $Val extends FirmwareUpdateResult>
-    implements $FirmwareUpdateResultCopyWith<$Res> {
-  _$FirmwareUpdateResultCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of FirmwareUpdateResult
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-abstract class _$$FirmwareUpdateResult_SuccessImplCopyWith<$Res> {
-  factory _$$FirmwareUpdateResult_SuccessImplCopyWith(
-          _$FirmwareUpdateResult_SuccessImpl value,
-          $Res Function(_$FirmwareUpdateResult_SuccessImpl) then) =
-      __$$FirmwareUpdateResult_SuccessImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String installedVersion});
-}
-
-/// @nodoc
-class __$$FirmwareUpdateResult_SuccessImplCopyWithImpl<$Res>
-    extends _$FirmwareUpdateResultCopyWithImpl<$Res,
-        _$FirmwareUpdateResult_SuccessImpl>
-    implements _$$FirmwareUpdateResult_SuccessImplCopyWith<$Res> {
-  __$$FirmwareUpdateResult_SuccessImplCopyWithImpl(
-      _$FirmwareUpdateResult_SuccessImpl _value,
-      $Res Function(_$FirmwareUpdateResult_SuccessImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of FirmwareUpdateResult
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? installedVersion = null,
-  }) {
-    return _then(_$FirmwareUpdateResult_SuccessImpl(
-      installedVersion: null == installedVersion
-          ? _value.installedVersion
-          : installedVersion // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$FirmwareUpdateResult_SuccessImpl extends FirmwareUpdateResult_Success {
-  const _$FirmwareUpdateResult_SuccessImpl({required this.installedVersion})
-      : super._();
-
-  @override
-  final String installedVersion;
-
-  @override
-  String toString() {
-    return 'FirmwareUpdateResult.success(installedVersion: $installedVersion)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$FirmwareUpdateResult_SuccessImpl &&
-            (identical(other.installedVersion, installedVersion) ||
-                other.installedVersion == installedVersion));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, installedVersion);
-
-  /// Create a copy of FirmwareUpdateResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$FirmwareUpdateResult_SuccessImplCopyWith<
-          _$FirmwareUpdateResult_SuccessImpl>
-      get copyWith => __$$FirmwareUpdateResult_SuccessImplCopyWithImpl<
-          _$FirmwareUpdateResult_SuccessImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String installedVersion) success,
-    required TResult Function(String field0) error,
-  }) {
-    return success(installedVersion);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String installedVersion)? success,
-    TResult? Function(String field0)? error,
-  }) {
-    return success?.call(installedVersion);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String installedVersion)? success,
-    TResult Function(String field0)? error,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(installedVersion);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(FirmwareUpdateResult_Success value) success,
-    required TResult Function(FirmwareUpdateResult_Error value) error,
-  }) {
-    return success(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(FirmwareUpdateResult_Success value)? success,
-    TResult? Function(FirmwareUpdateResult_Error value)? error,
-  }) {
-    return success?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(FirmwareUpdateResult_Success value)? success,
-    TResult Function(FirmwareUpdateResult_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class FirmwareUpdateResult_Success extends FirmwareUpdateResult {
-  const factory FirmwareUpdateResult_Success(
-          {required final String installedVersion}) =
-      _$FirmwareUpdateResult_SuccessImpl;
-  const FirmwareUpdateResult_Success._() : super._();
-
-  String get installedVersion;
-
-  /// Create a copy of FirmwareUpdateResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$FirmwareUpdateResult_SuccessImplCopyWith<
-          _$FirmwareUpdateResult_SuccessImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$FirmwareUpdateResult_ErrorImplCopyWith<$Res> {
-  factory _$$FirmwareUpdateResult_ErrorImplCopyWith(
-          _$FirmwareUpdateResult_ErrorImpl value,
-          $Res Function(_$FirmwareUpdateResult_ErrorImpl) then) =
-      __$$FirmwareUpdateResult_ErrorImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String field0});
-}
-
-/// @nodoc
-class __$$FirmwareUpdateResult_ErrorImplCopyWithImpl<$Res>
-    extends _$FirmwareUpdateResultCopyWithImpl<$Res,
-        _$FirmwareUpdateResult_ErrorImpl>
-    implements _$$FirmwareUpdateResult_ErrorImplCopyWith<$Res> {
-  __$$FirmwareUpdateResult_ErrorImplCopyWithImpl(
-      _$FirmwareUpdateResult_ErrorImpl _value,
-      $Res Function(_$FirmwareUpdateResult_ErrorImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of FirmwareUpdateResult
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? field0 = null,
-  }) {
-    return _then(_$FirmwareUpdateResult_ErrorImpl(
-      null == field0
-          ? _value.field0
-          : field0 // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$FirmwareUpdateResult_ErrorImpl extends FirmwareUpdateResult_Error {
-  const _$FirmwareUpdateResult_ErrorImpl(this.field0) : super._();
-
-  @override
-  final String field0;
-
-  @override
-  String toString() {
-    return 'FirmwareUpdateResult.error(field0: $field0)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$FirmwareUpdateResult_ErrorImpl &&
-            (identical(other.field0, field0) || other.field0 == field0));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, field0);
-
-  /// Create a copy of FirmwareUpdateResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$FirmwareUpdateResult_ErrorImplCopyWith<_$FirmwareUpdateResult_ErrorImpl>
-      get copyWith => __$$FirmwareUpdateResult_ErrorImplCopyWithImpl<
-          _$FirmwareUpdateResult_ErrorImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String installedVersion) success,
-    required TResult Function(String field0) error,
-  }) {
-    return error(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String installedVersion)? success,
-    TResult? Function(String field0)? error,
-  }) {
-    return error?.call(field0);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String installedVersion)? success,
-    TResult Function(String field0)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(field0);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(FirmwareUpdateResult_Success value) success,
-    required TResult Function(FirmwareUpdateResult_Error value) error,
-  }) {
-    return error(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(FirmwareUpdateResult_Success value)? success,
-    TResult? Function(FirmwareUpdateResult_Error value)? error,
-  }) {
-    return error?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(FirmwareUpdateResult_Success value)? success,
-    TResult Function(FirmwareUpdateResult_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class FirmwareUpdateResult_Error extends FirmwareUpdateResult {
-  const factory FirmwareUpdateResult_Error(final String field0) =
-      _$FirmwareUpdateResult_ErrorImpl;
-  const FirmwareUpdateResult_Error._() : super._();
-
-  String get field0;
-
-  /// Create a copy of FirmwareUpdateResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$FirmwareUpdateResult_ErrorImplCopyWith<_$FirmwareUpdateResult_ErrorImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }

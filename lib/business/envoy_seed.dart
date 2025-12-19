@@ -723,7 +723,7 @@ class EnvoySeed {
     final backupBytes = File(encryptedBackupFilePath).readAsBytesSync();
 
     try {
-      FileSaver.instance.saveAs(
+      await FileSaver.instance.saveAs(
         name: encryptedBackupFileName,
         bytes: backupBytes,
         fileExtension: encryptedBackupFileExtension,
@@ -934,5 +934,15 @@ class EnvoySeed {
       data[key] = value;
     }
     return data;
+  }
+
+  Future<void> generateAndBackupWalletSilently() async {
+    if (Settings().syncToCloud &&
+        !Devices().hasNonPrimeDevices() &&
+        !walletDerived()) {
+      await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
+      await generate();
+      await backupData();
+    }
   }
 }

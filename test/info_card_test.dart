@@ -73,7 +73,8 @@ class DetailsWidgetTestCases extends StatelessWidget {
         utxo: [],
         tags: [],
         xfp: "xfp",
-        externalPublicDescriptors: [(AddressType.p2Sh, "p2sh")]);
+        externalPublicDescriptors: [(AddressType.p2Sh, "p2sh")],
+        archived: false);
 
     return Scaffold(
       body: EnvoyInfoCard(

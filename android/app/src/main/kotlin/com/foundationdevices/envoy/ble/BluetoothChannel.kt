@@ -1,7 +1,10 @@
-package com.foundationdevices.envoy
+@file:OptIn(ExperimentalAtomicApi::class)
+
+package com.foundationdevices.envoy.ble
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
@@ -12,7 +15,9 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
 import android.bluetooth.BluetoothStatusCodes
 import android.bluetooth.le.BluetoothLeScanner
+import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
+import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -24,6 +29,8 @@ import android.os.Handler
 import android.os.Looper
 import android.os.ParcelUuid
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.core.app.ActivityCompat
 import io.flutter.plugin.common.BasicMessageChannel
 import io.flutter.plugin.common.BinaryCodec
@@ -31,15 +38,26 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileInputStream
 import java.nio.ByteBuffer
 import java.util.UUID
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 
-class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMessenger) :
+class BluetoothChannel(
+    private val context: Context,
+    private val activity: ComponentActivity,
+    binaryMessenger: BinaryMessenger
+) :
     MethodChannel.MethodCallHandler {
 
     companion object {
@@ -50,6 +68,8 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         private const val BLE_CONNECTION_STREAM_NAME = "envoy/bluetooth/connection/stream"
         private const val BLE_WRITE_PROGRESS_STREAM_NAME = "envoy/ble/write/progress"
         private const val BLUETOOTH_DISCOVERY_DELAY_MS = 500L
+
+        private const val BLE_PACKET_SIZE = 244 // Max BLE packet size for Envoy Prime
 
         // Service UUID for Prime device
         private val PRIME_SERVICE_UUID = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E")
@@ -93,9 +113,13 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
     private var writeRetryCount: Int = 0
 
     private val mainHandler = Handler(Looper.getMainLooper())
+    private var bleWriteQueue: BleWriteQueue? = null
     private var currentMtu: Int = 247
 
     private val scope = CoroutineScope(Dispatchers.Main)
+
+    // Job for managing large file data transfers
+    private var transferJob: Job? = null
 
     // BroadcastReceiver for bonding state changes
     private var bondingReceiver: BroadcastReceiver? = null
@@ -113,7 +137,12 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
 
         // Set up binary write channel handler
         bleWriteChannel.setMessageHandler { message, reply ->
-            handleBinaryWrite(message, reply)
+            scope.launch(Dispatchers.IO) {
+                val response = handleBinaryWrite(message)
+                withContext(Dispatchers.Main) {
+                    reply.reply(response)
+                }
+            }
         }
 
         bluetoothLeScanner = bluetoothAdapter?.bluetoothLeScanner
@@ -138,7 +167,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         }
         context.registerReceiver(bondingReceiver, filter)
         isReceiverRegistered = true
-        Log.d(TAG, "Bonding receiver registered")
     }
 
 
@@ -160,8 +188,14 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
     /**
      * Handle bonding state changes from broadcast receiver
      */
+    @SuppressLint("MissingPermission", "NewApi")
     private fun handleBondingStateChange(intent: Intent) {
-        val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+        val device = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+        }
         val bondState =
             intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.BOND_NONE)
         val previousBondState =
@@ -185,22 +219,16 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             return
         }
 
-        Log.d(TAG, "Bonding state changed for (${device?.address})")
-        Log.d(TAG, "  Previous state: ${getBondStateString(previousBondState)}")
-        Log.d(TAG, "  New state: ${getBondStateString(bondState)}")
+        Log.d(TAG, "Bonding state changed for (${device.address})")
+        Log.d(TAG, "Previous state: ${getBondStateString(previousBondState)}")
+        Log.d(TAG, "New state: ${getBondStateString(bondState)}")
         sendConnectionEvent(
-            BluetoothConnectionStatus(
-                type = when (bondState) {
-                    BluetoothDevice.BOND_BONDED -> BluetoothConnectionEventType.DEVICE_CONNECTED
-                    BluetoothDevice.BOND_NONE -> BluetoothConnectionEventType.DEVICE_DISCONNECTED
-                    BluetoothDevice.BOND_BONDING -> BluetoothConnectionEventType.CONNECTION_ATTEMPT
-                    else -> BluetoothConnectionEventType.DEVICE_DISCONNECTED
-                },
-                connected = bondState == BluetoothDevice.BOND_BONDED,
-                peripheralId = device.address,
-                peripheralName = device.name ?: "Unknown Device",
-                bonded = bondState == BluetoothDevice.BOND_BONDED
-            ).toMap()
+            when (bondState) {
+                BluetoothDevice.BOND_BONDED -> BluetoothConnectionEventType.DEVICE_CONNECTED
+                BluetoothDevice.BOND_NONE -> BluetoothConnectionEventType.DEVICE_DISCONNECTED
+                BluetoothDevice.BOND_BONDING -> BluetoothConnectionEventType.CONNECTION_ATTEMPT
+                else -> BluetoothConnectionEventType.DEVICE_DISCONNECTED
+            },
         )
     }
 
@@ -219,30 +247,219 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "pair" -> pairWithDevice(call, result)
+            "bond" -> bond(result)
             "stopScan" -> stopDeviceScan(result)
+            "getCurrentDeviceStatus" -> getCurrentDeviceStatus(result)
+            "transmitFromFile" -> transmitFromFile(call, result)
             "deviceName" -> getDeviceName(result)
             "disconnect" -> disconnectDevice(result)
+            "reconnect" -> reconnect(call, result)
             "getConnectedPeripheralId" -> result.success(getConnectedPeripheralId())
             "isConnected" -> result.success(isConnected())
+            "cancelTransfer" -> cancelTransfer(result)
+            "enableBluetooth" -> enableBluetooth(result)
             else -> result.notImplemented()
         }
     }
 
+    private var pendingEnableResult: MethodChannel.Result? = null
+
+    //handler for enableBluetooth, this needs to be registered before activity onResume
+    val enableBtLauncher =
+        activity.registerForActivityResult(StartActivityForResult()) { res ->
+            pendingEnableResult?.success(res.resultCode == Activity.RESULT_OK)
+            pendingEnableResult = null
+        }
+
+    private fun enableBluetooth(result: MethodChannel.Result) {
+        if (bluetoothAdapter?.isEnabled == true) {
+            result.success(true)
+        }
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH_CONNECT
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        pendingEnableResult = result
+        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+        enableBtLauncher.launch(enableBtIntent)
+    }
+
+    private fun cancelTransfer(result: MethodChannel.Result) {
+        if (transferJob?.isActive == true) {
+            transferJob?.cancel()
+            bleWriteQueue?.clearQueue()
+            result.success(true)
+        } else {
+            result.success(false)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getCurrentDeviceStatus(result: MethodChannel.Result) {
+        if (!checkBluetoothPermissions()) {
+            result.error(
+                "PERMISSION_ERROR", "Bluetooth permissions not granted", null
+            )
+            return
+        }
+        result.success(
+            BluetoothConnectionStatus(
+                type = null,
+                connected = isConnected(),
+                peripheralId = connectedDevice?.address,
+                peripheralName = connectedDevice?.name ?: "Unknown Device",
+                bonded = connectedDevice?.bondState == BluetoothDevice.BOND_BONDED,
+                rssi = null,
+                error = null
+            ).toMap()
+        )
+    }
+
+    private fun reconnect(call: MethodCall, result: MethodChannel.Result) {
+        pairWithDevice(call, result)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun bond(result: MethodChannel.Result) {
+        if (!checkBluetoothPermissions()) {
+            result.error(
+                "PERMISSION_ERROR", "Bluetooth permissions not granted", null
+            )
+            return
+        }
+        connectedDevice?.let { device ->
+            when (device.bondState) {
+                BluetoothDevice.BOND_NONE -> {
+                    Log.d(TAG, "Starting bonding after GATT connection...")
+                    val bondResult = device.createBond()
+                    if (!bondResult) {
+                        Log.e(TAG, "Failed to start bonding")
+
+                        sendConnectionEvent(
+                            BluetoothConnectionEventType.CONNECTION_ERROR,
+                            error = "Failed to start bonding"
+                        )
+
+                    }
+                }
+
+                BluetoothDevice.BOND_BONDED -> {
+                    Log.d(
+                        TAG,
+                        "Device already bonded, proceeding with service discovery"
+                    )
+                }
+
+                BluetoothDevice.BOND_BONDING -> {
+                    Log.d(TAG, "Bonding in progress, waiting...")
+                }
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun transmitFromFile(call: MethodCall, result: MethodChannel.Result) {
+        val path = call.argument<String?>("path")
+
+
+        if (transferJob?.isActive == true) {
+            Log.i(TAG, "transmitFromFile: Transfer already in progress")
+            result.error("TRANSFER_IN_PROGRESS", "Another transfer is already in progress", null)
+            return
+        }
+        if (path.isNullOrEmpty()) {
+            result.error("INVALID_PATH", "File path is null or empty", null)
+            return
+        }
+
+        val file = File(path)
+        if (!file.exists()) {
+            result.error("FILE_NOT_FOUND", "File does not exist: $path", null)
+            return
+        }
+        val safeResult = SafeResult(result)
+
+        transferJob = scope.launch(Dispatchers.IO) {
+            try {
+                val fileSize = file.length()
+                var bytesProcessed = 0L
+                var writeError = false
+
+                // Use forEachChunk extension function
+                file.inputStream().use { stream ->
+                    stream.forEachChunk(BLE_PACKET_SIZE) { chunk ->
+                        // Await the enqueue
+                        val success = bleWriteQueue?.enqueue(chunk) ?: false
+                        if (!success) {
+                            Log.e(TAG, "Failed to enqueue data at byte $bytesProcessed")
+                            writeError = true
+                            withContext(Dispatchers.Main) {
+                                safeResult.error(
+                                    "WRITE_ERROR",
+                                    "Failed to write data at byte $bytesProcessed",
+                                    null
+                                )
+                            }
+                            return@forEachChunk
+                        }
+                        bytesProcessed += chunk.size
+                        // Send progress update
+                        val progress = bytesProcessed.toFloat() / fileSize.toFloat()
+                        sendWriteProgress(progress, path, bytesProcessed, fileSize)
+                    }
+                }
+                file.delete()
+
+
+                // Send final progress update
+                sendWriteProgress(1.0f, path, fileSize, fileSize)
+                withContext(Dispatchers.Main) {
+                    safeResult.success(
+                        mapOf(
+                            "success" to true,
+                            "message" to "Large data processed successfully"
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                if (e is CancellationException) {
+                    Log.w(TAG, "transmission cancelled: ${e.message}")
+                    withContext(Dispatchers.Main) {
+                        safeResult.error("TRANSFER_CANCELLED", "Data transmission cancelled", null)
+                    }
+                    return@launch
+                }
+                withContext(Dispatchers.Main) {
+                    safeResult.error("FILE_READ_ERROR", "Failed to read file: ${e.message}", null)
+                }
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
     private fun getDeviceName(result: MethodChannel.Result) {
+        if (!checkBluetoothPermissions()) {
+            return
+        }
         result.success(bluetoothAdapter?.name ?: "Envoy ")
     }
 
     @SuppressLint("MissingPermission")
-    private fun handleBinaryWrite(
+    private suspend fun handleBinaryWrite(
         message: ByteBuffer?,
-        reply: BasicMessageChannel.Reply<ByteBuffer>
-    ) {
+    ): ByteBuffer {
         val failureBuffer = createDirectByteBuffer(0)
 
+        if (transferJob?.isActive == true) {
+            Log.e(TAG, "Another write operation is in progress")
+            return failureBuffer
+        }
         if (message == null) {
             Log.e(TAG, "Message is null, sending FAILURE (0)")
-            reply.reply(failureBuffer)
-            return
+            return failureBuffer
         }
 
         val data = ByteArray(message.remaining())
@@ -250,127 +467,46 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
 
         if (!checkBluetoothPermissions()) {
             Log.e(TAG, "Missing Bluetooth permissions for binary write")
-            reply.reply(failureBuffer)
-            return
+            return failureBuffer
         }
 
         val gatt = bluetoothGatt
         if (gatt == null) {
             Log.e(TAG, "No active Bluetooth connection for binary write")
-            reply.reply(createDirectByteBuffer(0))
-            return
+            return failureBuffer
         }
 
         val writeChar = writeCharacteristic
         if (writeChar == null) {
             Log.e(TAG, "No write characteristic available for binary write")
-            reply.reply(createDirectByteBuffer(0))
-            return
+            return failureBuffer
         }
         if (data.size < 8) {
-            Log.e(
-                TAG,
-                "ERROR: Binary data size (${data.size} bytes) is less than required minimum (8 bytes)"
-            )
-            reply.reply(createDirectByteBuffer(0))
-            return
+            return failureBuffer
         }
-        val writeType =
-            if (writeChar.properties and BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE != 0) {
-                BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
-            } else {
-                BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-            }
 
-        val writeTypeString = if (writeType == BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE) {
-            "without_response"
+        if (bleWriteQueue == null) {
+            Log.e(TAG, "BLE Write Queue is not initialized")
+            return failureBuffer
+        }
+        if (data.size > BLE_PACKET_SIZE) {
+            data.chunked(BLE_PACKET_SIZE).forEach { chunk ->
+                val result = bleWriteQueue?.enqueue(chunk) ?: false
+                if (!result) {
+                    Log.e(TAG, "Failed to enqueue chunk of size ${chunk.size}")
+                    return failureBuffer
+                }
+            }
+            return createDirectByteBuffer(1)
         } else {
-            "with_response"
-        }
-
-
-        // Get effective payload size (MTU - 3 bytes for ATT overhead)
-        val payloadPerPacket = maxOf(1, currentMtu - 3)
-
-        Log.d(
-            TAG,
-            "MTU: $currentMtu, payload: $payloadPerPacket, data: ${data.size} bytes, writeType: $writeTypeString"
-        )
-
-        if (data.size <= payloadPerPacket) {
-            // Store data for potential retry
-            pendingWriteData = data
-            writeRetryCount = 0
-
-            // Send progress update for single packet (100%)
-            sendWriteProgress(1.0f)
-
-
-            val writeSuccess = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                // API 33+
-                val success = gatt.writeCharacteristic(writeChar, data, writeType)
-                if (success != BluetoothStatusCodes.SUCCESS) {
-                    Log.e(TAG, "Error writeCharacteristic : $success")
-                }
-                success == BluetoothStatusCodes.SUCCESS
+            val success = bleWriteQueue?.enqueue(data) ?: false
+            return if (success) {
+                createDirectByteBuffer(1)
             } else {
-                // Below API 33
-                @Suppress("DEPRECATION")
-                writeChar.writeType = writeType
-                @Suppress("DEPRECATION")
-                writeChar.value = data
-                @Suppress("DEPRECATION")
-                gatt.writeCharacteristic(writeChar)
+                failureBuffer
             }
-
-            if (!writeSuccess) {
-                Log.e(TAG, "Failed to write characteristic")
-            }
-
-            if (!writeSuccess) {
-                Log.e(TAG, " Failed to initiate binary write operation")
-                reply.reply(createDirectByteBuffer(0))
-                return
-            }
-
-            val successBuffer = createDirectByteBuffer(1)
-            reply.reply(successBuffer)
-        } else {
-            val chunks = data.chunked(payloadPerPacket)
-            Log.d(
-                TAG,
-                "Writing chunks ${chunks.size}: ${
-                    chunks.map { chunks.size }.reduce { acc, i -> acc + i }
-                } bytes"
-            )
-            for ((index, chunk) in chunks.withIndex()) {
-
-                // Send progress update
-                val progress = (index + 1).toFloat() / chunks.size.toFloat()
-                sendWriteProgress(progress)
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    gatt.writeCharacteristic(
-                        writeChar,
-                        chunk,
-                        writeType
-                    )
-                } else {
-                    writeChar.writeType = writeType
-                    @Suppress("DEPRECATION")
-                    writeChar.value = chunk
-                    @Suppress("DEPRECATION")
-                    gatt.writeCharacteristic(writeChar)
-                }
-
-                if (writeType == BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE && index < chunks.size - 1) {
-                    Thread.sleep(10)
-                }
-            }
-
-            val successBuffer = createDirectByteBuffer(1)
-            reply.reply(successBuffer)
         }
+
     }
 
     private inner class ConnectionStreamHandler : EventChannel.StreamHandler {
@@ -378,7 +514,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
             connectionEventSink = events
 
-            connectedDevice?.let { device ->
+            connectedDevice?.let { _ ->
                 if (ActivityCompat.checkSelfPermission(
                         context,
                         Manifest.permission.BLUETOOTH_CONNECT
@@ -386,14 +522,8 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                 ) {
                     return
                 }
-                val connectionState =
-                    bluetoothManager.getConnectionState(device, BluetoothProfile.GATT)
                 sendConnectionEvent(
-                    BluetoothConnectionStatus(
-                        type = BluetoothConnectionEventType.DEVICE_DISCONNECTED,
-                        connected = false,
-                        bonded = connectedDevice?.bondState == BluetoothDevice.BOND_BONDED,
-                    ).toMap()
+                    type = BluetoothConnectionEventType.DEVICE_DISCONNECTED,
                 )
             }
         }
@@ -442,25 +572,23 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             result.error("BLUETOOTH_DISABLED", "Bluetooth is not enabled", null)
             return
         }
+        bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
 
-        val scanner = bluetoothLeScanner
-        if (scanner == null) {
+        if (bluetoothLeScanner == null) {
             result.error("SCANNER_ERROR", "Bluetooth LE scanner not available", null)
             return
         }
 
         try {
-            scanner.stopScan(scanCallback)
+            bluetoothLeScanner?.stopScan(scanCallback)
         } catch (e: Exception) {
             Log.w(TAG, "No ongoing scan to stop: ${e.message}")
         }
 
         var scanFilters = knownPrimeDevicesMAC.map { bleMac ->
             ScanFilter.Builder()
-                .setDeviceName("Passport Prime")
                 .setDeviceAddress(bleMac)
                 .setServiceUuid(ParcelUuid(PRIME_SERVICE_UUID))
-                .setDeviceName("Passport Prime")
                 .build()
         }
 
@@ -477,20 +605,17 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             .build()
 
         try {
-            scanner.startScan(scanFilters, scanSettings, scanCallback)
+            bluetoothLeScanner?.startScan(scanFilters, scanSettings, scanCallback)
 
             result.success(mapOf("scanning" to true, "message" to "Scan started"))
             mainHandler.postDelayed({
                 try {
-                    scanner.stopScan(scanCallback)
+                    bluetoothLeScanner?.stopScan(scanCallback)
 
                     sendConnectionEvent(
-                        BluetoothConnectionStatus(
-                            type = BluetoothConnectionEventType.SCAN_STOPPED,
-                            connected = false,
-                            bonded = false
-                        ).toMap()
+                        type = BluetoothConnectionEventType.SCAN_STOPPED,
                     )
+
                 } catch (e: Exception) {
                     Log.w(TAG, "Error stopping scan: ${e.message}")
                 }
@@ -505,21 +630,16 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         }
     }
 
-    private val scanCallback = object : android.bluetooth.le.ScanCallback() {
+    private val scanCallback = object : ScanCallback() {
         @SuppressLint("MissingPermission")
-        override fun onScanResult(callbackType: Int, result: android.bluetooth.le.ScanResult?) {
+        override fun onScanResult(callbackType: Int, result: ScanResult?) {
             result?.device?.let { device ->
-                Log.d(TAG, "Found device: ${device.name ?: "Unknown"} (${device.address})")
+                val serviceUuids =
+                    result.scanRecord?.serviceUuids?.joinToString(", ") { it.uuid.toString() }
+                        ?: "none"
 
                 sendConnectionEvent(
-                    BluetoothConnectionStatus(
-                        type = BluetoothConnectionEventType.DEVICE_FOUND,
-                        connected = false,
-                        peripheralId = device.address,
-                        peripheralName = device.name ?: "Unknown Device",
-                        rssi = result.rssi,
-                        bonded = device.bondState == BluetoothDevice.BOND_BONDED
-                    ).toMap()
+                    type = BluetoothConnectionEventType.DEVICE_FOUND,
                 )
                 // Auto-connect to first Prime device found
                 if (device.name?.contains("Prime", ignoreCase = true) == true ||
@@ -532,7 +652,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             }
         }
 
-        override fun onBatchScanResults(results: MutableList<android.bluetooth.le.ScanResult>?) {
+        override fun onBatchScanResults(results: MutableList<ScanResult>?) {
 
             results?.forEach { result ->
                 onScanResult(ScanSettings.CALLBACK_TYPE_ALL_MATCHES, result)
@@ -550,43 +670,8 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
 
             Log.e(TAG, "BLE scan failed: $errorMessage")
             sendConnectionEvent(
-                BluetoothConnectionStatus(
-                    type = BluetoothConnectionEventType.SCAN_ERROR,
-                    connected = false,
-                    error = errorMessage,
-                    bonded = false
-                ).toMap()
+                type = BluetoothConnectionEventType.SCAN_ERROR,
             )
-        }
-    }
-
-    private fun connectToDevice(deviceAddress: String, result: MethodChannel.Result) {
-        if (!checkBluetoothPermissions()) {
-            result.error("PERMISSION_ERROR", "Bluetooth connect permission not granted", null)
-            return
-        }
-        Log.i(TAG, "connectToDevice: Connecting to $deviceAddress")
-        try {
-            val device = bluetoothAdapter?.getRemoteDevice(deviceAddress)
-            Log.i(TAG, "connectToDevice: bluetoothAdapter $bluetoothAdapter $device")
-
-            if (device == null) {
-                result.error(
-                    "DEVICE_NOT_FOUND",
-                    "Device with address $deviceAddress not found",
-                    null
-                )
-                return
-            }
-
-            connectAndBondDevice(device)
-
-            result.success(mapOf("connecting" to true, "deviceAddress" to deviceAddress))
-
-        } catch (e: IllegalArgumentException) {
-            result.error("INVALID_ADDRESS", "Invalid device address: $deviceAddress", null)
-        } catch (e: Exception) {
-            result.error("CONNECTION_ERROR", "Failed to connect: ${e.message}", null)
         }
     }
 
@@ -609,15 +694,8 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         Log.d(TAG, "Connecting to: ${device.name ?: "Unknown"} (${device.address})")
 
         sendConnectionEvent(
-            BluetoothConnectionStatus(
-                type = BluetoothConnectionEventType.CONNECTION_ATTEMPT,
-                connected = false,
-                peripheralId = device.address,
-                peripheralName = device.name ?: "Unknown Device",
-                bonded = device.bondState == BluetoothDevice.BOND_BONDED
-            ).toMap()
+            type = BluetoothConnectionEventType.CONNECTION_ATTEMPT,
         )
-
         try {
             Log.d(TAG, "Connecting to: connectGatt called $gattCallback")
 
@@ -633,13 +711,8 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
 
             if (bluetoothGatt == null) {
                 sendConnectionEvent(
-                    BluetoothConnectionStatus(
-                        type = BluetoothConnectionEventType.CONNECTION_ERROR,
-                        connected = false,
-                        peripheralId = device.address,
-                        error = "Failed to create GATT connection",
-                        bonded = device.bondState == BluetoothDevice.BOND_BONDED
-                    ).toMap()
+                    type = BluetoothConnectionEventType.CONNECTION_ERROR,
+                    error = "Failed to create GATT connection"
                 )
                 return
             }
@@ -647,41 +720,61 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         } catch (e: SecurityException) {
             Log.e(TAG, "Security exception during connection: ${e.message}")
             sendConnectionEvent(
-                BluetoothConnectionStatus(
-                    type = BluetoothConnectionEventType.CONNECTION_ERROR,
-                    connected = false,
-                    peripheralId = device.address,
-                    bonded = device.bondState == BluetoothDevice.BOND_BONDED,
-                    error = "Permission denied: ${e.message}"
-                ).toMap()
+                type = BluetoothConnectionEventType.CONNECTION_ERROR,
+                error = "Permission denied: ${e.message}"
             )
         } catch (e: Exception) {
             Log.e(TAG, "Unexpected error during connection: ${e.message}")
             sendConnectionEvent(
-                BluetoothConnectionStatus(
-                    type = BluetoothConnectionEventType.CONNECTION_ERROR,
-                    connected = false,
-                    peripheralId = device.address,
-                    bonded = device.bondState == BluetoothDevice.BOND_BONDED,
-                    error = "Connection failed: ${e.message}"
-                ).toMap()
+                type = BluetoothConnectionEventType.CONNECTION_ERROR,
+                error = "Connection failed: ${e.message}"
             )
         }
     }
 
 
-    private fun sendConnectionEvent(payload: Map<String, Any?>) {
+    @SuppressLint("MissingPermission")
+    private fun sendConnectionEvent(
+        type: BluetoothConnectionEventType,
+        error: String? = null
+    ) {
+        if (!checkBluetoothPermissions()) {
+            Log.w(TAG, "Missing Bluetooth permissions for sending connection event")
+            return
+        }
         scope.launch {
-            connectionEventSink?.success(payload)
+            connectionEventSink?.success(
+                BluetoothConnectionStatus(
+                    type,
+                    connected = isConnected(),
+                    peripheralId = connectedDevice?.address,
+                    peripheralName = connectedDevice?.name ?: "Unknown Device",
+                    bonded = connectedDevice?.bondState == BluetoothDevice.BOND_BONDED,
+                    rssi = null,
+                    error = error
+                ).toMap()
+            )
         }
     }
 
-    private fun sendWriteProgress(progress: Float) {
+    private fun sendWriteProgress(
+        progress: Float,
+        id: String,
+        bytesProcessed: Long = 0,
+        totalBytes: Long = 0
+    ) {
         scope.launch {
             if (writeProgressEventSink == null) {
                 return@launch
             }
-            writeProgressEventSink?.success(progress)
+            writeProgressEventSink?.success(
+                mapOf<String, Any>(
+                    "progress" to progress,
+                    "id" to id,
+                    "bytes_processed" to bytesProcessed,
+                    "total_bytes" to totalBytes
+                )
+            )
         }
     }
 
@@ -728,62 +821,31 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                 BluetoothProfile.STATE_CONNECTED -> {
                     Log.d(TAG, "Connected to GATT server")
                     connectedDevice = gatt?.device
+                    bleWriteQueue?.restart()
                     if (!checkBluetoothPermissions()) {
                         return
                     }
                     if (connectedDevice?.bondState == BluetoothDevice.BOND_BONDED) {
                         sendConnectionEvent(
-                            BluetoothConnectionStatus(
-                                type = BluetoothConnectionEventType.DEVICE_CONNECTED,
-                                connected = true,
-                                bonded = connectedDevice?.bondState == BluetoothDevice.BOND_BONDED,
-                            ).toMap()
+                            type = BluetoothConnectionEventType.DEVICE_CONNECTED
                         )
-                    }
-                    connectedDevice?.let { device ->
-                        when (device.bondState) {
-                            BluetoothDevice.BOND_NONE -> {
-                                Log.d(TAG, "Starting bonding after GATT connection...")
-                                val bondResult = device.createBond()
-                                if (!bondResult) {
-                                    Log.e(TAG, "Failed to start bonding")
-                                    sendConnectionEvent(
-                                        BluetoothConnectionStatus(
-                                            type = BluetoothConnectionEventType.CONNECTION_ERROR,
-                                            connected = true,
-                                            peripheralId = device.address,
-                                            peripheralName = device.name ?: "Unknown Device",
-                                            bonded = false,
-                                            error = "Failed to start bonding"
-                                        ).toMap()
-                                    )
-                                }
-                            }
-
-                            BluetoothDevice.BOND_BONDED -> {
-                                Log.d(
-                                    TAG,
-                                    "Device already bonded, proceeding with service discovery"
-                                )
-                            }
-
-                            BluetoothDevice.BOND_BONDING -> {
-                                Log.d(TAG, "Bonding in progress, waiting...")
-                            }
-                        }
                     }
 
                     val requestMtu = bluetoothGatt?.requestMtu(247)
+                    if (requestMtu == true) {
+                        Log.i(TAG, "onConnectionStateChange: MTU request sent 247")
+                    }
                     bluetoothGatt?.apply {
                         //TODO: use method channel to enable high priority connection from flutter side
                         //use only for large data transfers
-                        requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH)
+                        requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_BALANCED)
 
                         setPreferredPhy(
-                            BluetoothDevice.PHY_LE_1M_MASK or BluetoothDevice.PHY_LE_2M_MASK,  // txPhy
-                            BluetoothDevice.PHY_LE_1M_MASK or BluetoothDevice.PHY_LE_2M_MASK,  // rxPhy
-                            BluetoothDevice.PHY_OPTION_NO_PREFERRED
+                            BluetoothDevice.PHY_LE_2M,  // txPhy
+                            BluetoothDevice.PHY_LE_2M,  // rxPhy
+                            BluetoothDevice.PHY_LE_2M
                         )
+                        Log.i(TAG, "onConnectionStateChange: setPreferredPhy 2M")
 
                     }
                     Log.i(TAG, "onConnectionStateChange: requestMtu $requestMtu")
@@ -797,77 +859,19 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
 
                     if (connectedDevice == null) {
                         Log.i(TAG, "onConnectionStateChange: ")
-                        return;
+                        return
                     }
-                    val device = connectedDevice
-                    // Initiate bonding (pairing) if not already bonded
-                    when (device?.bondState) {
-                        BluetoothDevice.BOND_NONE -> {
-                            val bondResult = device.createBond()
-                            if (bondResult) {
-
-                                sendConnectionEvent(
-                                    BluetoothConnectionStatus(
-                                        type = BluetoothConnectionEventType.CONNECTION_ATTEMPT,
-                                        connected = false,
-                                        peripheralId = device.address,
-                                        peripheralName = device.name ?: "Unknown Device",
-                                        bonded = device.bondState == BluetoothDevice.BOND_BONDED
-                                    ).toMap()
-                                )
-                            } else {
-                                Log.e(TAG, "Failed to start bonding")
-                                sendConnectionEvent(
-                                    BluetoothConnectionStatus(
-                                        type = BluetoothConnectionEventType.CONNECTION_ERROR,
-                                        connected = false,
-                                        peripheralId = device.address,
-                                        bonded = device.bondState == BluetoothDevice.BOND_BONDED,
-                                        error = "Failed to start bonding"
-                                    ).toMap()
-                                )
-                            }
-                        }
-
-                        BluetoothDevice.BOND_BONDING -> {
-
-                            sendConnectionEvent(
-                                BluetoothConnectionStatus(
-                                    type = BluetoothConnectionEventType.CONNECTION_ATTEMPT,
-                                    connected = false,
-                                    peripheralId = device.address,
-                                    bonded = device.bondState == BluetoothDevice.BOND_BONDED,
-                                    peripheralName = device.name ?: "Unknown Device"
-                                ).toMap()
-                            )
-                        }
-
-                        BluetoothDevice.BOND_BONDED -> {
-
-                            sendConnectionEvent(
-                                BluetoothConnectionStatus(
-                                    type = BluetoothConnectionEventType.DEVICE_CONNECTED,
-                                    connected = false,
-                                    peripheralId = device.address,
-                                    bonded = device.bondState == BluetoothDevice.BOND_BONDED,
-                                    peripheralName = device.name ?: "Unknown Device"
-                                ).toMap()
-                            )
-                        }
-                    }
+                    sendConnectionEvent(
+                        BluetoothConnectionEventType.DEVICE_CONNECTED,
+                    )
                 }
 
                 BluetoothProfile.STATE_DISCONNECTED -> {
                     Log.d(TAG, "Disconnected from GATT server")
-
                     sendConnectionEvent(
-                        BluetoothConnectionStatus(
-                            type = BluetoothConnectionEventType.DEVICE_DISCONNECTED,
-                            connected = false,
-                            bonded = connectedDevice?.bondState == BluetoothDevice.BOND_BONDED,
-                        ).toMap()
+                        BluetoothConnectionEventType.DEVICE_DISCONNECTED,
                     )
-
+                    bleWriteQueue?.cancel()
                     connectedDevice = null
                     writeCharacteristic = null
                     readCharacteristic = null
@@ -897,6 +901,13 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                         when {
                             properties and BluetoothGattCharacteristic.PROPERTY_WRITE != 0 ||
                                     properties and BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE != 0 -> {
+
+                                bleWriteQueue = BleWriteQueue(
+                                    gatt, characteristic,
+                                    CoroutineScope(
+                                        Dispatchers.IO
+                                    )
+                                )
                                 writeCharacteristic = characteristic
                             }
 
@@ -908,7 +919,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                                 if (properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY != 0) {
                                     val notificationEnabled =
                                         gatt.setCharacteristicNotification(characteristic, true)
-                                    Log.d(TAG, "Notification setup result: $notificationEnabled")
                                     val descriptor = characteristic.getDescriptor(CCCD_UUID)
                                     if (descriptor != null) {
                                         val enableNotificationValue =
@@ -929,7 +939,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                                     } else {
                                         Log.e(
                                             TAG,
-                                            " CCCD descriptor not found! Notifications won't work"
+                                            "CCCD descriptor not found! Notifications won't work"
                                         )
                                         Log.e(TAG, "   Available descriptors:")
                                         characteristic.descriptors.forEach { desc ->
@@ -958,6 +968,10 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             characteristic: BluetoothGattCharacteristic?,
             status: Int
         ) {
+
+            if (characteristic?.uuid == writeCharacteristic?.uuid) {
+                bleWriteQueue?.onCharacteristicWrite(status)
+            }
             if (status == BluetoothGatt.GATT_SUCCESS) {
 
                 if (!checkBluetoothPermissions()) {
@@ -1021,7 +1035,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                 // Max retries reached, send error
                 Log.e(TAG, "Write failed after $MAX_WRITE_RETRIES retries")
                 pendingWriteData = null
-                val finalRetryCount = writeRetryCount
                 writeRetryCount = 0
             }
         }
@@ -1060,7 +1073,6 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             super.onCharacteristicRead(gatt, characteristic, value, status)
             // API 33+ - value is provided as parameter
             if (value.isEmpty()) {
-                Log.w(TAG, "onCharacteristicRead received but data is null")
                 return
             }
             sendBinaryData(value)
@@ -1118,9 +1130,21 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         return connectedDevice?.address
     }
 
+    @SuppressLint("MissingPermission")
     private fun isConnected(): Boolean {
-        return connectedDevice != null &&
-                bluetoothGatt?.getConnectionState(connectedDevice!!) == BluetoothProfile.STATE_CONNECTED
+        if (!checkBluetoothPermissions()) return false
+
+        val device = connectedDevice ?: return false
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            bluetoothManager.getConnectionState(
+                device,
+                BluetoothProfile.GATT
+            ) == BluetoothProfile.STATE_CONNECTED
+        } else {
+            @Suppress("DEPRECATION")
+            bluetoothGatt?.getConnectionState(device) == BluetoothProfile.STATE_CONNECTED
+        }
     }
 
     private fun checkBluetoothPermissions(): Boolean {
@@ -1193,11 +1217,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             if (checkBluetoothPermissions()) {
                 bluetoothLeScanner?.stopScan(scanCallback)
                 sendConnectionEvent(
-                    BluetoothConnectionStatus(
-                        type = BluetoothConnectionEventType.SCAN_STOPPED,
-                        connected = false,
-                        bonded = false
-                    ).toMap()
+                    BluetoothConnectionEventType.SCAN_STOPPED,
                 )
                 result.success(mapOf("scanning" to false, "message" to "Scan stopped"))
             } else {
@@ -1225,7 +1245,20 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             result.error("DISCONNECT_ERROR", "Failed to disconnect: ${e.message}", null)
         }
     }
+}
 
+suspend fun FileInputStream.forEachChunk(chunkSize: Int, action: suspend (ByteArray) -> Unit) {
+    val buffer = ByteArray(chunkSize)
+    while (true) {
+        val bytesRead = read(buffer)
+        if (bytesRead <= 0) break
+        val chunk = if (bytesRead < chunkSize) {
+            buffer.copyOfRange(0, bytesRead)
+        } else {
+            buffer.copyOf()
+        }
+        action(chunk)
+    }
 }
 
 // Extension function for chunking byte arrays
@@ -1240,4 +1273,28 @@ fun ByteArray.chunked(size: Int): List<ByteArray> {
         index += size
     }
     return chunks
+}
+
+
+class SafeResult(private val result: MethodChannel.Result) {
+    @OptIn(ExperimentalAtomicApi::class)
+    private val lock = AtomicBoolean(false)
+
+    fun success(value: Any?) {
+        if (lock.compareAndSet(false, true)) {
+            result.success(value)
+        }
+    }
+
+    fun error(code: String, message: String?, details: Any?) {
+        if (lock.compareAndSet(false, true)) {
+            result.error(code, message, details)
+        }
+    }
+
+    fun notImplemented() {
+        if (lock.compareAndSet(false, true)) {
+            result.notImplemented()
+        }
+    }
 }

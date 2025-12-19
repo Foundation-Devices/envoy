@@ -14,7 +14,6 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 import 'pairing.dart';
 import 'passport.dart';
-import 'raw.dart';
 import 'scv.dart';
 import 'status.dart';
 part 'message.freezed.dart';
@@ -83,9 +82,9 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.firmwareFetchEvent(
     FirmwareFetchEvent field0,
   ) = QuantumLinkMessage_FirmwareFetchEvent;
-  const factory QuantumLinkMessage.firmwareUpdateResult(
-    FirmwareUpdateResult field0,
-  ) = QuantumLinkMessage_FirmwareUpdateResult;
+  const factory QuantumLinkMessage.firmwareInstallEvent(
+    FirmwareInstallEvent field0,
+  ) = QuantumLinkMessage_FirmwareInstallEvent;
   const factory QuantumLinkMessage.deviceStatus(
     DeviceStatus field0,
   ) = QuantumLinkMessage_DeviceStatus;
@@ -98,6 +97,9 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.pairingResponse(
     PairingResponse field0,
   ) = QuantumLinkMessage_PairingResponse;
+  const factory QuantumLinkMessage.securityCheck(
+    SecurityCheck field0,
+  ) = QuantumLinkMessage_SecurityCheck;
   const factory QuantumLinkMessage.onboardingState(
     OnboardingState field0,
   ) = QuantumLinkMessage_OnboardingState;
@@ -113,9 +115,6 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.applyPassphrase(
     ApplyPassphrase field0,
   ) = QuantumLinkMessage_ApplyPassphrase;
-  const factory QuantumLinkMessage.securityCheck(
-    SecurityCheck field0,
-  ) = QuantumLinkMessage_SecurityCheck;
   const factory QuantumLinkMessage.envoyMagicBackupEnabledRequest(
     EnvoyMagicBackupEnabledRequest field0,
   ) = QuantumLinkMessage_EnvoyMagicBackupEnabledRequest;
@@ -158,7 +157,13 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.restoreMagicBackupResult(
     RestoreMagicBackupResult field0,
   ) = QuantumLinkMessage_RestoreMagicBackupResult;
-  const factory QuantumLinkMessage.rawData(
-    RawData field0,
-  ) = QuantumLinkMessage_RawData;
+  const factory QuantumLinkMessage.heartbeat(
+    Heartbeat field0,
+  ) = QuantumLinkMessage_Heartbeat;
+  const factory QuantumLinkMessage.timezoneRequest(
+    TimezoneRequest field0,
+  ) = QuantumLinkMessage_TimezoneRequest;
+  const factory QuantumLinkMessage.timezoneResponse(
+    TimezoneResponse field0,
+  ) = QuantumLinkMessage_TimezoneResponse;
 }

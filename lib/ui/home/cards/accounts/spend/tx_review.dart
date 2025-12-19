@@ -46,25 +46,37 @@ import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
 
-final primeConnectedStateProvider =
-    StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier(
-      stepName: S().onboarding_connectionIntro_connectedToPrime,
-      state: EnvoyStepState.FINISHED);
+//TODO: multi device support, pass device id
+final primeConnectedStateProvider = Provider<StepModel>((ref) {
+  final connectionStatus = ref.watch(deviceConnectionStatusStreamProvider);
+  return connectionStatus.maybeMap(
+    data: (data) {
+      final isConnected = data.value.connected;
+      if (isConnected) {
+        return StepModel(
+            stepName: S().onboarding_connectionIntro_connectedToPrime,
+            state: EnvoyStepState.FINISHED);
+      } else {
+        return StepModel(
+            stepName: "Reconnecting to Passport", // TODO: localazy
+            state: EnvoyStepState.LOADING);
+      }
+    },
+    orElse: () => StepModel(
+        stepName: "Reconnecting to Passport", // TODO: localazy
+        state: EnvoyStepState.LOADING),
+  );
 });
 
 final transferTransactionStateProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
   return StepNotifier(
-      stepName: "Transferring Transaction", // TODO: localazy
-      state: EnvoyStepState.IDLE);
+      stepName: "Transferring Transaction", state: EnvoyStepState.IDLE);
 });
 
 final signTransactionStateProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier(
-      stepName: "Wait for Signing", // TODO: localazy
-      state: EnvoyStepState.IDLE);
+  return StepNotifier(stepName: "Wait for Signing", state: EnvoyStepState.IDLE);
 });
 
 //ignore: must_be_immutable
@@ -163,10 +175,6 @@ class _TxReviewState extends ConsumerState<TxReview> {
   }
 
   void _resetPrimeProviderStates() {
-    ref.read(primeConnectedStateProvider.notifier).updateStep(
-          S().onboarding_connectionIntro_connectedToPrime,
-          EnvoyStepState.FINISHED,
-        );
     ref.read(transferTransactionStateProvider.notifier).updateStep(
           "Transferring Transaction", //TODO: localazy
           EnvoyStepState.IDLE,
@@ -249,7 +257,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
     }
     if (context.mounted) {
       //for non hot wallets,note dialog already before finalizing the tx
-      await _showNotesDialog(context, account);
+      final doNotShow = await EnvoyStorage()
+          .checkPromptDismissed(DismissiblePrompt.addTxNoteWarning);
+      if (!doNotShow && context.mounted) {
+        await _showNotesDialog(context, account);
+      }
 
       if (account.isHot) {
         ref
@@ -507,8 +519,14 @@ class _TxReviewState extends ConsumerState<TxReview> {
     bool indeterminate = progress == BroadcastProgress.inProgress;
 
     final stateMachine = _controller!.stateMachine;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("indeterminate")?.value = indeterminate;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("happy")?.value = happy;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("unhappy")?.value = unhappy;
   }
 
@@ -555,7 +573,7 @@ class _TransactionReviewScreenState
         if (!isConnected &&
             device != null &&
             device.type == DeviceType.passportPrime) {
-          BluetoothManager().connect(id: device.bleId);
+          BluetoothManager().reconnect(device);
         }
       },
     );
@@ -612,6 +630,7 @@ class _TransactionReviewScreenState
     String? error = transactionModel.error;
     DraftTransaction? preparedTransaction = ref.watch(draftTransactionProvider);
     BitcoinTransaction? transaction = preparedTransaction?.transaction;
+    bool userChangedCoins = ref.watch(userSelectedCoinsThisSessionProvider);
 
     final coinSelectionChanged = ref.watch(coinSelectionChangedProvider);
     final userSelectedCoinsThisSession =
@@ -646,21 +665,6 @@ class _TransactionReviewScreenState
           state: EnvoyStepState.LOADING);
     }
 
-    ref.listen(connectedDeviceProvider, (previous, next) {
-      if (isPrime) {
-        if (next.value?.connected == false) {
-          ref.read(primeConnectedStateProvider.notifier).updateStep(
-                "Reconnecting to Passport", // todo: localazy
-                EnvoyStepState.LOADING,
-              );
-        } else {
-          ref.read(primeConnectedStateProvider.notifier).updateStep(
-              S().onboarding_connectionIntro_connectedToPrime,
-              EnvoyStepState.FINISHED);
-        }
-      }
-    });
-
     String header = (account.isHot || transactionModel.isFinalized)
         ? S().coincontrol_tx_detail_heading
         : S().coincontrol_txDetail_heading_passport;
@@ -677,188 +681,224 @@ class _TransactionReviewScreenState
     final enableButton = (!transactionModel.loading && !isPrime) ||
         ((account.isHot || transactionModel.isFinalized) ||
             (isPrime && isConnected));
-    return EnvoyScaffold(
-      backgroundColor: Colors.transparent,
-      hasScrollBody: true,
-      extendBody: true,
-      extendBodyBehindAppBar: true,
-      removeAppBarPadding: true,
-      topBarLeading: IconButton(
-        icon: const EnvoyIcon(
-          EnvoyIcons.chevron_left,
-          color: EnvoyColors.textPrimary,
-        ),
-        onPressed: () {
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        // If something already popped this route (programmatically or system),
+        // do NOT show the dialog again.
+        if (didPop) return;
+
+        if (userChangedCoins) {
+          Future.microtask(() async {
+            if (!context.mounted) return;
+
+            await showEnvoyDialog(
+              context: context,
+              useRootNavigator: true,
+              dialog: const DiscardTransactionDialog(),
+            );
+          });
+        } else {
           GoRouter.of(context).pop();
-        },
-      ),
-      bottom: ClipPath(
-        clipper: ShieldClipper(isBlurShield: true),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-            ).add(const EdgeInsets.only(bottom: EnvoySpacing.large1)),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (transactionModel.canModify)
+        }
+      },
+      child: EnvoyScaffold(
+        backgroundColor: Colors.transparent,
+        hasScrollBody: true,
+        extendBody: true,
+        extendBodyBehindAppBar: true,
+        removeAppBarPadding: true,
+        topBarLeading: IconButton(
+          icon: const EnvoyIcon(
+            EnvoyIcons.chevron_left,
+            color: EnvoyColors.textPrimary,
+          ),
+          onPressed: () async {
+            if (userChangedCoins) {
+              await showEnvoyDialog(
+                context: context,
+                useRootNavigator: true,
+                dialog: const DiscardTransactionDialog(),
+              );
+            } else {
+              GoRouter.of(context).pop();
+            }
+          },
+        ),
+        bottom: ClipPath(
+          clipper: ShieldClipper(isBlurShield: true),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+              ).add(const EdgeInsets.only(bottom: EnvoySpacing.large1)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (transactionModel.canModify)
+                    EnvoyButton(
+                      enabled: !transactionModel.loading,
+                      S().replaceByFee_boost_reviewCoinSelection,
+                      type: EnvoyButtonTypes.secondary,
+                      borderRadius: const BorderRadius.all(
+                          Radius.circular(EnvoySpacing.small)),
+                      onTap: () {
+                        ref.read(userHasChangedFeesProvider.notifier).state =
+                            false;
+                        editTransaction(context, ref);
+                      },
+                    ),
+                  const Padding(padding: EdgeInsets.all(6)),
                   EnvoyButton(
-                    enabled: !transactionModel.loading,
-                    S().replaceByFee_boost_reviewCoinSelection,
-                    type: EnvoyButtonTypes.secondary,
+                    enabled: enableButton,
                     borderRadius: const BorderRadius.all(
                         Radius.circular(EnvoySpacing.small)),
+                    leading: isPrime
+                        ? EnvoyIcon(
+                            transactionModel.isFinalized
+                                ? EnvoyIcons.send
+                                : EnvoyIcons.quantum,
+                            color: EnvoyColors.solidWhite,
+                            size: EnvoyIconSize.small,
+                          )
+                        : null,
+                    (account.isHot || transactionModel.isFinalized)
+                        ? S().coincontrol_tx_detail_cta1
+                        : S().coincontrol_txDetail_cta1_passport,
                     onTap: () {
-                      ref.read(userHasChangedFeesProvider.notifier).state =
-                          false;
-                      editTransaction(context, ref);
+                      widget.onBroadcast();
                     },
                   ),
-                const Padding(padding: EdgeInsets.all(6)),
-                EnvoyButton(
-                  enabled: enableButton,
-                  borderRadius: const BorderRadius.all(
-                      Radius.circular(EnvoySpacing.small)),
-                  leading: isPrime
-                      ? EnvoyIcon(
-                          transactionModel.isFinalized
-                              ? EnvoyIcons.send
-                              : EnvoyIcons.quantum,
-                          color: EnvoyColors.solidWhite,
-                          size: EnvoyIconSize.small,
-                        )
-                      : null,
-                  (account.isHot || transactionModel.isFinalized)
-                      ? S().coincontrol_tx_detail_cta1
-                      : S().coincontrol_txDetail_cta1_passport,
-                  onTap: () {
-                    widget.onBroadcast();
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium1),
-            child: ListTile(
-              title: Text(header,
-                  textAlign: TextAlign.center, style: EnvoyTypography.heading),
-              subtitle: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
-                child: Text(
-                  subHeading,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontSize: 13, fontWeight: FontWeight.w400),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  vertical: EnvoySpacing.small,
+                  horizontal: EnvoySpacing.medium1),
+              child: ListTile(
+                title: Text(header,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.heading),
+                subtitle: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
+                  child: Text(
+                    subHeading,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontSize: 13, fontWeight: FontWeight.w400),
+                  ),
                 ),
               ),
             ),
-          ),
-          Flexible(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 160),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Consumer(builder: (context, ref, child) {
-                            return TransactionReviewCard(
-                              transaction: transaction,
-                              onTxDetailTap: () {
-                                _showTxDetailsPage(
-                                    context, ref, preparedTransaction);
-                              },
-                              canModifyPsbt: transactionModel.canModify,
-                              loading: transactionModel.loading,
-                              address: address,
-                              feeTitle: S().coincontrol_tx_detail_fee,
-                              feeChooserWidget: FeeChooser(
-                                onFeeSelect: (fee, context, bool customFee) {
-                                  setFee(fee, context, customFee);
-                                  ref
-                                      .read(userHasChangedFeesProvider.notifier)
-                                      .state = true;
+            Flexible(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 160),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Consumer(builder: (context, ref, child) {
+                              return TransactionReviewCard(
+                                transaction: transaction,
+                                onTxDetailTap: () {
+                                  _showTxDetailsPage(
+                                      context, ref, preparedTransaction);
                                 },
+                                canModifyPsbt: transactionModel.canModify,
+                                loading: transactionModel.loading,
+                                address: address,
+                                feeTitle: S().coincontrol_tx_detail_fee,
+                                feeChooserWidget: FeeChooser(
+                                  onFeeSelect: (fee, context, bool customFee) {
+                                    setFee(fee, context, customFee);
+                                    ref
+                                        .read(
+                                            userHasChangedFeesProvider.notifier)
+                                        .state = true;
+                                  },
+                                ),
+                              );
+                            }),
+                            if (feePercentage >= 25)
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: EnvoySpacing.medium1),
+                                child: feeOverSpendWarning(feePercentage),
                               ),
-                            );
-                          }),
-                          if (feePercentage >= 25)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: EnvoySpacing.medium1),
-                              child: feeOverSpendWarning(feePercentage),
-                            ),
-                          if (isPrime)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: EnvoySpacing.medium1),
-                              child: transactionPrimeStatus(context),
-                            ),
-                          if (isTest)
-                            const SizedBox(height: EnvoySpacing.medium1)
-                        ]),
-
-                    if (error != null)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(right: EnvoySpacing.small),
-                            child: EnvoyIcon(EnvoyIcons.alert,
-                                size: EnvoyIconSize.extraSmall,
-                                color: EnvoyColors.copper500),
-                          ),
-                          Text(error,
-                              style: EnvoyTypography.button
-                                  .copyWith(color: EnvoyColors.copper500)),
-                        ],
-                      ),
-
-                    // Special warning if we are sending max or the fee changed the TX
-                    if (transactionModel.mode == SpendMode.sendMax ||
-                        showFeeChangeNotice)
-                      ListTile(
-                        subtitle: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 12, horizontal: EnvoySpacing.small),
-                            child: Padding(
-                              padding: const EdgeInsets.all(EnvoySpacing.small),
-                              child: Text(
-                                showFeeChangeNotice
-                                    ? S()
-                                        .coincontrol_tx_detail_feeChange_information
-                                    : S().send_reviewScreen_sendMaxWarning,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w400),
-                                textAlign: TextAlign.center,
+                            if (isPrime)
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: EnvoySpacing.medium1),
+                                child: transactionPrimeStatus(context),
                               ),
-                            )),
-                      ),
-                  ],
+                            if (isTest)
+                              const SizedBox(height: EnvoySpacing.medium1)
+                          ]),
+
+                      if (error != null)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Padding(
+                              padding:
+                                  EdgeInsets.only(right: EnvoySpacing.small),
+                              child: EnvoyIcon(EnvoyIcons.alert,
+                                  size: EnvoyIconSize.extraSmall,
+                                  color: EnvoyColors.copper500),
+                            ),
+                            Text(error,
+                                style: EnvoyTypography.button
+                                    .copyWith(color: EnvoyColors.copper500)),
+                          ],
+                        ),
+
+                      // Special warning if we are sending max or the fee changed the TX
+                      if (transactionModel.mode == SpendMode.sendMax ||
+                          showFeeChangeNotice)
+                        ListTile(
+                          subtitle: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: EnvoySpacing.small),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.all(EnvoySpacing.small),
+                                child: Text(
+                                  showFeeChangeNotice
+                                      ? S()
+                                          .coincontrol_tx_detail_feeChange_information
+                                      : S().send_reviewScreen_sendMaxWarning,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w400),
+                                  textAlign: TextAlign.center,
+                                ),
+                              )),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -871,17 +911,9 @@ class _TransactionReviewScreenState
 
   void checkConnectivity(bool isConnected, Device device) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    if (isConnected) {
-      ref.read(primeConnectedStateProvider.notifier).updateStep(
-          S().onboarding_connectionIntro_connectedToPrime,
-          EnvoyStepState.FINISHED);
-    } else if (!isConnected) {
-      ref.read(primeConnectedStateProvider.notifier).updateStep(
-            "Reconnecting to Passport", // todo: localazy
-            EnvoyStepState.LOADING,
-          );
+    if (!isConnected) {
       // try to connect to prime
-      BluetoothManager().connect(id: device.bleId);
+      BluetoothManager().reconnect(device);
     }
   }
 
@@ -1053,9 +1085,8 @@ class _DiscardTransactionDialogState
         router.pop(true);
         await Future.delayed(const Duration(milliseconds: 50));
         ref.read(selectedAccountProvider.notifier).state = account;
-        router.pushReplacement(ROUTE_ACCOUNT_DETAIL, extra: account);
+        router.go(ROUTE_ACCOUNT_DETAIL, extra: account);
         await Future.delayed(const Duration(milliseconds: 50));
-        router.pop();
       },
     );
   }

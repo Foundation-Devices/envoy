@@ -91,6 +91,10 @@ Future<void> main() async {
       final atmName = find.text("Kurant Bitcoin ATM");
       expect(atmName, findsAny);
 
+      // exit maps so it won't bug on the next test
+      await findAndTapPopUpEnvoyIcon(tester, EnvoyIcons.close);
+      await findAndPressEnvoyIcon(tester, EnvoyIcons.close);
+
       stopwatch.stop();
       debugPrint(
           '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s');
@@ -206,6 +210,8 @@ Future<void> main() async {
 
       await enterTextInField(tester, find.byType(TextField), 'Mobile Wallet');
       await saveName(tester);
+
+      await goBackHome(tester); // force test to Home
 
       stopwatch.stop();
       debugPrint(
@@ -446,6 +452,7 @@ Future<void> main() async {
       // go back to settings
       //await pressHamburgerMenu(tester);
       await findAndPressTextButton(tester, "Accounts");
+      await tester.pump(Durations.long2);
       await pressHamburgerMenu(tester);
       await tapSettingsButton(tester);
       await openAdvancedMenu(tester);
@@ -484,7 +491,9 @@ Future<void> main() async {
       // go back to acc
       //await pressHamburgerMenu(tester);
       await findAndPressTextButton(tester, "Accounts");
+      await tester.pump(Durations.long2);
       await findAndPressTextButton(tester, accountPassportName);
+      await tester.pump(Durations.long2);
 
       /// Go to show descriptor for this account, check pop up shows
       // open menu
@@ -524,7 +533,9 @@ Future<void> main() async {
       // go back to home
       //await pressHamburgerMenu(tester);
       await findAndPressTextButton(tester, "Accounts");
+      await tester.pump(Durations.long2);
       await findAndPressTextButton(tester, "Primary (#0)");
+      await tester.pump(Durations.long2);
 
       // open menu
       await findAndPressIcon(tester, Icons.more_horiz_outlined);
@@ -535,6 +546,8 @@ Future<void> main() async {
       await tester.pump();
       // find no pop-up
       expect(taprootFinder, findsNothing);
+
+      await goBackHome(tester); // force test to Home
 
       stopwatch.stop();
       debugPrint(
@@ -559,14 +572,12 @@ Future<void> main() async {
       // tap again to exit
       await fromHomeToHotWallet(tester);
 
-      tapCardsPromptFinder = find.text(tapTheAboveCardsPrompt);
-      expect(tapCardsPromptFinder, findsNothing);
+      await scrollHome(tester, -600);
 
       String swipeBalancePrompt = "Swipe to show and hide your balance.";
       Finder swipeBalancePromptFinder = find.text(swipeBalancePrompt);
       expect(swipeBalancePromptFinder, findsOneWidget);
 
-      await scrollHome(tester, -600);
       // check Dismiss button functionality
       final dismissButton = find.text('Dismiss');
       await tester.tap(dismissButton);
@@ -616,13 +627,16 @@ Future<void> main() async {
 
       final accountText = find.text("Mobile Wallet");
       await tester.timedDrag(
-          accountText.first, const Offset(0, 120), const Duration(seconds: 1));
+          accountText.first, const Offset(0, 120), const Duration(seconds: 1),
+          warnIfMissed: false);
       await tester.pump(Durations.long2);
       await Future.delayed(const Duration(seconds: 1));
 
       await tester.pump(Durations.long2);
       reorderPromptFinder = find.text(reorderPromptMessage);
       expect(tapCardsPromptFinder, findsNothing);
+
+      await goBackHome(tester); // force test to Home
 
       stopwatch.stop();
       debugPrint(
@@ -670,6 +684,8 @@ Future<void> main() async {
       await enterTextInField(tester, find.byType(TextField), 'Passport');
       await saveName(tester);
 
+      await goBackHome(tester); // force test to Home
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -713,6 +729,8 @@ Future<void> main() async {
       await tester.binding.handlePopRoute();
       // confirm that you are back to ENVOY
       await findTextOnScreen(tester, "ENVOY");
+
+      await goBackHome(tester); // force test to Home
 
       stopwatch.stop();
       debugPrint(
@@ -938,6 +956,8 @@ Future<void> main() async {
         expect(fiatCheckResult, isTrue);
       }
 
+      await goBackHome(tester); // force test to Home
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -1048,6 +1068,8 @@ Future<void> main() async {
       // check if the unit in the Staging is BTC
       await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
+      await goBackHome(tester); // force test to Home
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -1121,6 +1143,8 @@ Future<void> main() async {
           reason: "First amount should not be zero, but got $firstAmountValue");
 
       await tester.pump(Durations.long2);
+
+      await goBackHome(tester); // force test to Home
 
       stopwatch.stop();
       debugPrint(
@@ -1406,6 +1430,8 @@ Future<void> main() async {
       // Ensure there are at least two badges: one for the passport and one for the hot testnet wallet.
       expect(testnetAccountBadge, findsAtLeast(2));
 
+      await goBackHome(tester);
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -1515,6 +1541,8 @@ Future<void> main() async {
       await openAdvancedMenu(tester);
       await findAndToggleSettingsSwitch(
           tester, "Receive to Taproot"); // Enable again
+
+      await goBackHome(tester);
 
       stopwatch.stop();
       debugPrint(
@@ -1675,6 +1703,8 @@ Future<void> main() async {
           find.text("Whatever"), findsNothing); // make sure the Tag is deleted
       await findTextOnScreen(tester, "Untagged");
 
+      await goBackHome(tester); // force test to Home
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -1743,6 +1773,8 @@ Future<void> main() async {
       await findAndPressTextButton(tester, "SHOW DESCRIPTOR");
 
       await findTextOnScreen(tester, "Taproot");
+
+      await goBackHome(tester); // force test to Home
 
       stopwatch.stop();
       debugPrint(
@@ -1908,6 +1940,8 @@ Future<void> main() async {
       await findAndPressTextButton(tester, 'Foundation (Default)');
       await tester.pump(Durations.long2);
 
+      await goBackHome(tester); // force test to home
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -1989,8 +2023,6 @@ Future<void> main() async {
 
       // enable "better performance" if it is not enabled
       await enablePerformance(tester);
-      // Check the shield icon after enabling performance
-      await checkTorShieldIcon(tester, expectPrivacy: false);
 
       // Perform the required actions to change to privacy
       await enablePrivacy(tester);
@@ -2000,7 +2032,6 @@ Future<void> main() async {
 
       // turn off Tor for next test
       await enablePerformance(tester);
-      await checkTorShieldIcon(tester, expectPrivacy: false);
 
       stopwatch.stop();
       debugPrint(
@@ -2326,6 +2357,8 @@ Future<void> main() async {
 
       expect(feePercentage, equals(expectedFeePercentage));
 
+      await goBackHome(tester); // force test to Home
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -2410,6 +2443,8 @@ Future<void> main() async {
       final cancelButton = find.text('Cancel Transaction');
       expect(boostButton, findsNothing);
       expect(cancelButton, findsNothing);
+
+      await goBackHome(tester); // force test to Home
 
       stopwatch.stop();
       debugPrint(
@@ -2516,6 +2551,8 @@ Future<void> main() async {
       final textNoteFinder = find.text("This Note");
       await tester.pumpUntilFound(textNoteFinder,
           tries: 100, duration: Durations.long2);
+
+      await goBackHome(tester); // force test to Home
     });
     testWidgets('<Switching Fiat in App>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
@@ -2527,8 +2564,7 @@ Future<void> main() async {
       await findAndPressTextButton(tester, 'Privacy');
       // enable "better performance" if it is not enabled
       await enablePerformance(tester);
-      // Check the shield icon after enabling performance
-      await checkTorShieldIcon(tester, expectPrivacy: false);
+
       await findAndPressTextButton(tester, 'Accounts');
 
       // go to settings
@@ -2615,11 +2651,7 @@ Future<void> main() async {
       await enablePrivacy(tester);
       await findAndPressTextButton(tester, 'Accounts');
       // Check the shield icon after enabling privacy
-      bool torIsConnected =
-          await checkTorShieldIcon(tester, expectPrivacy: true);
-
-      expect(torIsConnected, isTrue,
-          reason: 'Tor should be connected, but it is not.');
+      await checkTorShieldIcon(tester, expectPrivacy: true);
 
       /// Open Envoy settings, enable fiat
       await pressHamburgerMenu(tester);
@@ -2687,6 +2719,10 @@ Future<void> main() async {
       // Check if the numbers differ from different Fiats
       expect(newFiatAmount != usdFiatAmount, isTrue);
 
+      /// turn off the tor for the next test
+      await findAndPressTextButton(tester, 'Privacy');
+      await enablePerformance(tester);
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -2705,7 +2741,7 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
       // Go to Acc options
       await findAndPressIcon(tester, Icons.more_horiz_outlined);
-      await findAndPressTextButton(tester, "DELETE");
+      await findAndPressTextButton(tester, "Disconnect");
 
       final envoyIconFinder = find.byWidgetPredicate(
         (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.alert,

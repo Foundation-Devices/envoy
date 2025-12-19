@@ -18,7 +18,7 @@ class NTPUtil {
   static final NTPUtil _instance = NTPUtil._();
   DateTime _dateTime = DateTime.now();
   StreamController<DateTime> ntpTimeStreamController =
-      StreamController<DateTime>();
+      StreamController<DateTime>.broadcast();
 
   Stream<DateTime> getDateStream() {
     return ntpTimeStreamController.stream;

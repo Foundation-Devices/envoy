@@ -348,6 +348,8 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       stateMachineSelector: rive.StateMachineSelector.byName('STM'),
     );
 
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller?.stateMachine.boolean("indeterminate")?.value = true;
 
     setState(() => _isInitialized = true);
@@ -368,8 +370,14 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       required bool unhappy}) {
     if (_controller?.stateMachine == null) return;
     final stateMachine = _controller!.stateMachine;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("indeterminate")?.value = indeterminate;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("happy")?.value = happy;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("unhappy")?.value = unhappy;
   }
 
@@ -494,6 +502,8 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       await Future.delayed(const Duration(milliseconds: 2000));
 
       if (_isDeleted) {
+        // Now that the seed is gone, delete the magic backup
+        await EnvoySeed().deleteMagicBackup();
         //Show android backup info
         if (Platform.isAndroid) {
           await Future.delayed(const Duration(milliseconds: 300));

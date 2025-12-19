@@ -2,21 +2,21 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use anyhow::anyhow;
 use anyhow::bail;
 use anyhow::Context;
 use anyhow::Result;
-use bc_envelope::prelude::CBOREncodable;
-use bc_envelope::Envelope;
-use bc_ur::prelude::{CBORCase, CBOR};
-use bc_xid::XIDDocument;
 use btp::{chunk, Chunk, MasterDechunker};
 use flutter_rust_bridge::frb;
 use foundation_api::backup::BackupChunk;
 use foundation_api::backup::BackupMetadata;
 use foundation_api::backup::RestoreMagicBackupEvent;
 use foundation_api::backup::SeedFingerprint;
-use foundation_api::firmware::{split_update_into_chunks, FirmwareFetchEvent};
+use foundation_api::bc_envelope::prelude::CBOREncodable;
+use foundation_api::bc_envelope::Envelope;
+use foundation_api::bc_xid::XIDDocument;
+use foundation_api::dcbor;
+use foundation_api::dcbor::{CBORCase, CBOR};
+use foundation_api::firmware::{FirmwareChunk, FirmwareFetchEvent};
 use foundation_api::message::{EnvoyMessage, PassportMessage, QuantumLinkMessage};
 use foundation_api::quantum_link::{ARIDCache, QuantumLink, QuantumLinkIdentity};
 use log::debug;
@@ -49,31 +49,22 @@ pub fn get_arid_cache() -> EnvoyARIDCache {
 }
 
 pub async fn serialize_xid(quantum_link_identity: &QuantumLinkIdentity) -> Vec<u8> {
-    quantum_link_identity
-        .clone()
-        .xid_document
-        .to_unsigned_envelope()
-        .to_cbor_data()
+    quantum_link_identity.clone().xid_document.to_cbor_data()
 }
 
 pub fn serialize_xid_document(xid_document: &XIDDocument) -> Result<Vec<u8>> {
-    let envelope = xid_document.to_unsigned_envelope();
+    let envelope = xid_document;
     let cbor_data = envelope.to_cbor_data();
     Ok(cbor_data)
 }
 
 pub fn deserialize_xid(data: Vec<u8>) -> Result<XIDDocument> {
-    match Envelope::try_from_cbor_data(data) {
-        Ok(envelope) => {
-            let xid_doc = XIDDocument::from_unsigned_envelope(&envelope)?;
-            Ok(xid_doc)
-        }
-        Err(e) => Err(anyhow!("Failed to decode XIDDocument: {:?}", e)),
-    }
+    let xid_cbor = CBOR::try_from_data(data.clone()).context("invalid xid cbor")?;
+    XIDDocument::try_from(xid_cbor).context("Failed to convert CBOR to XIDDocument")
 }
 
 pub async fn serialize_ql_identity(quantum_link_identity: &QuantumLinkIdentity) -> Result<Vec<u8>> {
-    let mut map = bc_envelope::prelude::Map::new();
+    let mut map = dcbor::prelude::Map::new();
     map.insert(
         CBOR::from("xid_document"),
         quantum_link_identity.clone().xid_document,
@@ -163,42 +154,6 @@ pub async fn decode(
     }
 }
 
-pub async fn split_fw_update_into_chunks(
-    patch_index: u8,
-    total_patches: u8,
-    patch_bytes: &[u8],
-    chunk_size: usize,
-) -> Vec<QuantumLinkMessage> {
-    split_update_into_chunks(patch_index, total_patches, patch_bytes, chunk_size)
-        .map(|chunk| QuantumLinkMessage::FirmwareFetchEvent(FirmwareFetchEvent::Chunk(chunk)))
-        .collect()
-}
-
-pub fn split_backup_into_chunks(backup: &[u8], chunk_size: usize) -> Vec<QuantumLinkMessage> {
-    let chunks = backup.chunks(chunk_size);
-    let total_chunks = chunks.len() as u32;
-    let mut messages = Vec::with_capacity(chunks.len() + 1);
-
-    messages.push(QuantumLinkMessage::RestoreMagicBackupEvent(
-        RestoreMagicBackupEvent::Starting(BackupMetadata { total_chunks }),
-    ));
-
-    chunks
-        .enumerate()
-        .map(move |(chunk_index, chunk_data)| {
-            QuantumLinkMessage::RestoreMagicBackupEvent(RestoreMagicBackupEvent::Chunk(
-                BackupChunk {
-                    chunk_index: chunk_index as u32,
-                    total_chunks,
-                    data: chunk_data.to_vec(),
-                },
-            ))
-        })
-        .for_each(|msg| messages.push(msg));
-
-    messages
-}
-
 pub async fn encode(
     message: EnvoyMessage,
     sender: &QuantumLinkIdentity,
@@ -208,7 +163,7 @@ pub async fn encode(
     debug!("RECEIVER: {:?}", recipient);
 
     let envelope = QuantumLink::seal(
-        &message,
+        message,
         (sender.private_keys.as_ref().unwrap(), &sender.xid_document),
         recipient,
     );
@@ -219,8 +174,104 @@ pub async fn encode(
     for chunk in chunk(&cbor) {
         chunks.push(chunk.to_vec());
     }
-
     chunks
+}
+
+pub async fn encode_to_magic_backup_file(
+    payload: &[u8],
+    sender: &QuantumLinkIdentity,
+    recipient: &XIDDocument,
+    path: &str,
+    chunk_size: usize,
+    timestamp: u32,
+) -> anyhow::Result<bool> {
+    use std::fs::File;
+    use std::io::Write;
+
+    debug!("SENDER: {:?}", sender.xid_document);
+    debug!("RECEIVER: {:?}", recipient);
+
+    let mut file = File::create(path)?;
+
+    let messages: Vec<EnvoyMessage> = split_backup_into_chunks(payload, chunk_size)
+        .into_iter()
+        .map(|message| EnvoyMessage { message, timestamp })
+        .collect();
+
+    for message in messages {
+        let envelope = QuantumLink::seal(
+            message,
+            (sender.private_keys.as_ref().unwrap(), &sender.xid_document),
+            recipient,
+        );
+
+        let cbor = envelope.to_cbor_data();
+
+        for chunk_data in chunk(&cbor) {
+            file.write_all(&chunk_data)?;
+        }
+    }
+
+    file.flush()?;
+    anyhow::Ok(true)
+}
+
+pub async fn encode_to_update_file(
+    payload: Vec<Vec<u8>>,
+    sender: &QuantumLinkIdentity,
+    recipient: &XIDDocument,
+    path: &str,
+    chunk_size: usize,
+    timestamp: u32,
+) -> anyhow::Result<bool> {
+    use std::fs::File;
+    use std::io::Write;
+
+    debug!("SENDER: {:?}", sender.xid_document);
+    debug!("RECEIVER: {:?}", recipient);
+
+    let mut file = File::create(path)?;
+
+    if payload.is_empty() {
+        return Ok(false);
+    }
+
+    if payload.len() > (u8::MAX as usize) {
+        return Err(anyhow::anyhow!(
+            "Too many patches in payload: {} exceeds maximum of {}",
+            payload.len(),
+            u8::MAX
+        ));
+    }
+
+    let total_patches = payload.len() as u8;
+
+    for (idx, patch_bytes) in payload.iter().enumerate() {
+        let patch_index = idx as u8;
+
+        let envoy_messages = split_fw_update_into_chunks(
+            patch_index,
+            total_patches,
+            patch_bytes.as_slice(),
+            chunk_size,
+        )
+        .map(|message| EnvoyMessage { message, timestamp });
+
+        for message in envoy_messages {
+            let envelope = QuantumLink::seal(
+                message,
+                (sender.private_keys.as_ref().unwrap(), &sender.xid_document),
+                recipient,
+            );
+            let cbor = envelope.to_cbor_data();
+            for chunk in chunk(&cbor) {
+                file.write_all(&chunk)?;
+            }
+        }
+    }
+
+    file.flush()?;
+    anyhow::Ok(true)
 }
 
 pub async fn generate_ql_identity() -> QuantumLinkIdentity {
@@ -287,7 +338,7 @@ pub fn push_backup_chunk(
         }
         Ok(Some(PrimeBackupFile {
             data: this.data.clone(),
-            seed_fingerprint: this.seed_fingerprint,
+            seed_fingerprint: this.seed_fingerprint.clone(),
         }))
     } else {
         Ok(None)
@@ -303,10 +354,58 @@ fn hash_data(data: &[u8]) -> [u8; 32] {
     hash.into()
 }
 
+fn split_fw_update_into_chunks(
+    patch_index: u8,
+    total_patches: u8,
+    patch_bytes: &[u8],
+    chunk_size: usize,
+) -> impl Iterator<Item = QuantumLinkMessage> + '_ {
+    let chunks = patch_bytes.chunks(chunk_size);
+    let total_chunks = chunks.len() as u16;
+    chunks
+        .enumerate()
+        .map(move |(chunk_index, chunk_data)| FirmwareChunk {
+            patch_index,
+            total_patches,
+            chunk_index: chunk_index as u16,
+            total_chunks,
+            data: chunk_data.to_vec(),
+        })
+        .map(|chunk| QuantumLinkMessage::FirmwareFetchEvent(FirmwareFetchEvent::Chunk(chunk)))
+}
+
+fn split_backup_into_chunks(backup: &[u8], chunk_size: usize) -> Vec<QuantumLinkMessage> {
+    let chunks = backup.chunks(chunk_size);
+    let total_chunks = chunks.len() as u32;
+    let mut messages = Vec::with_capacity(chunks.len() + 1);
+
+    messages.push(QuantumLinkMessage::RestoreMagicBackupEvent(
+        RestoreMagicBackupEvent::Starting(BackupMetadata { total_chunks }),
+    ));
+
+    chunks
+        .enumerate()
+        .map(move |(chunk_index, chunk_data)| {
+            QuantumLinkMessage::RestoreMagicBackupEvent(RestoreMagicBackupEvent::Chunk(
+                BackupChunk {
+                    chunk_index: chunk_index as u32,
+                    total_chunks,
+                    data: chunk_data.to_vec(),
+                },
+            ))
+        })
+        .for_each(|msg| messages.push(msg));
+
+    messages
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use anyhow::Result;
+    use foundation_api::bc_envelope::prelude::UREncodable;
+    use foundation_api::bc_envelope::EnvelopeEncodable;
+    use foundation_api::dcbor::CBORTaggedDecodable;
 
     #[tokio::test]
     async fn test_generate_identity() -> Result<()> {
@@ -323,8 +422,8 @@ mod tests {
         let serialized = serialize_xid(&identity).await;
         let deserialized = deserialize_xid(serialized)?;
 
-        let original_cbor = original_xid.to_unsigned_envelope().to_cbor_data();
-        let deserialized_cbor = deserialized.to_unsigned_envelope().to_cbor_data();
+        let original_cbor = original_xid.to_cbor_data();
+        let deserialized_cbor = deserialized.to_cbor_data();
 
         assert_eq!(
             original_cbor, deserialized_cbor,
@@ -340,7 +439,7 @@ mod tests {
         let data = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
         let hash = hash_data(&data);
 
-        let mut in_progress = collect_backup_chunks(seed_fp, 3, hash);
+        let mut in_progress = collect_backup_chunks(SeedFingerprint(seed_fp), 3, hash);
 
         let chunk1 = BackupChunk {
             chunk_index: 0,
@@ -367,7 +466,7 @@ mod tests {
         assert!(result.is_some());
         let file = result.unwrap();
         assert_eq!(file.data, vec![1, 2, 3, 4, 5, 6, 7, 8, 9]);
-        assert_eq!(file.seed_fingerprint, seed_fp);
+        assert_eq!(file.seed_fingerprint, SeedFingerprint(seed_fp));
 
         Ok(())
     }
@@ -378,7 +477,7 @@ mod tests {
         let data = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
         let hash = hash_data(&data);
 
-        let mut in_progress = collect_backup_chunks(seed_fp, 3, hash);
+        let mut in_progress = collect_backup_chunks(SeedFingerprint(seed_fp), 3, hash);
 
         let chunk = BackupChunk {
             chunk_index: 1,

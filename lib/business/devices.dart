@@ -38,8 +38,10 @@ class Device {
   final String serial;
   @JsonKey(defaultValue: "")
   final String bleId;
+  @JsonKey(defaultValue: "")
+  final String peripheralId;
   @JsonKey(defaultValue: false)
-  final bool onboardingComplete;
+  bool onboardingComplete;
   @Uint8ListConverter()
   final Uint8List? xid;
   final DateTime datePaired;
@@ -59,6 +61,7 @@ class Device {
     this.color, {
     this.deviceColor = DeviceColor.light,
     this.bleId = "",
+    this.peripheralId = "",
     this.xid,
     this.pairedAccountIds,
     this.primeBackupEnabled,
@@ -111,9 +114,10 @@ class Devices extends ChangeNotifier {
               "Bluetooth permissions denied, cannot connect to device ${device.name}");
           await BluetoothManager().getPermissions();
         }
+
         //OS will try to reconnect to bonded device automatically,
         //but we call connect to ensure our app connects to it
-        await BluetoothManager().connect(id: device.bleId);
+        await BluetoothManager().reconnect(device);
       }
     }
   }
@@ -150,9 +154,9 @@ class Devices extends ChangeNotifier {
     _ls.prefs.remove(DEVICES_PREFS);
   }
 
-  void storeDevices() {
+  Future storeDevices() async {
     String json = jsonEncode(devices);
-    _ls.prefs.setString(DEVICES_PREFS, json);
+    await _ls.prefs.setString(DEVICES_PREFS, json);
   }
 
   void restore({bool hasExitingSetup = false}) {
@@ -189,6 +193,17 @@ class Devices extends ChangeNotifier {
     }
 
     storeDevices();
+    notifyListeners();
+  }
+
+  Future markPrimeUpdated(String serial, String firmwareVersion) async {
+    for (var device in getPrimeDevices) {
+      if (serial == device.serial) {
+        device.firmwareVersion = firmwareVersion;
+      }
+    }
+
+    await storeDevices();
     notifyListeners();
   }
 
@@ -230,6 +245,10 @@ class Devices extends ChangeNotifier {
     return devices.firstWhereOrNull((device) => device.type.index == deviceId);
   }
 
+  Device? getDeviceByBleId(String bleId) {
+    return devices.firstWhereOrNull((device) => device.bleId == bleId);
+  }
+
   List<Device> get getPrimeDevices {
     return devices
         .where((device) => device.type == DeviceType.passportPrime)
@@ -240,11 +259,27 @@ class Devices extends ChangeNotifier {
     return devices.firstWhereOrNull((device) => device.serial == serialNumber);
   }
 
-  void updatePrimeBackupStatus(String bleId, bool isEnabled) {
+  void updatePrimeBackupStatus(bool isEnabled) {
     for (var device in devices) {
-      if (device.bleId == bleId && device.type == DeviceType.passportPrime) {
+      if (device.bleId == BluetoothManager().bleId &&
+          device.type == DeviceType.passportPrime) {
         device.primeBackupEnabled = isEnabled;
         storeDevices();
+        notifyListeners();
+        return;
+      }
+    }
+  }
+
+  bool hasNonPrimeDevices() {
+    return devices.any((device) => device.type != DeviceType.passportPrime);
+  }
+
+  Future<void> markPrimeOnboarded(bool onboarded) async {
+    for (var device in devices) {
+      if (device.type == DeviceType.passportPrime) {
+        device.onboardingComplete = onboarded;
+        await storeDevices();
         notifyListeners();
         return;
       }

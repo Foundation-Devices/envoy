@@ -5,6 +5,7 @@
 
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:http_tor/http_tor.dart';
@@ -137,7 +138,10 @@ class ScvServer {
   }
 
   Future<bool> isProofVerified(Uint8List data) async {
-    return true;
+    if (Settings().skipPrimeSecurityCheck) {
+      return true;
+    }
+
     final uri = '$primeSecurityCheckUrl/verify';
     final dataStr = data.map((d) => d.toString()).join(",");
 

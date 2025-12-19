@@ -12,15 +12,19 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/home/settings/bluetooth_diag.dart';
+import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class OnboardPrimeWelcome extends StatefulWidget {
@@ -53,6 +57,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         onboardingComplete = int.tryParse(params["o"] ?? "0") == 1;
         colorWay = int.tryParse(param) ?? 1;
       });
+      _checkIfDeviceConnected();
     });
   }
 
@@ -122,11 +127,18 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         } else {
           await BluetoothManager().getPermissions();
         }
-        final connectionStatus =
-            await BluetoothManager().connect(id: bleId!, colorWay: colorWay);
 
-        if (!connectionStatus) {
-          throw Exception("Failed to connect to Prime device.");
+        final connectionStatus =
+            await BluetoothManager().setupBle(id: bleId!, colorWay: colorWay);
+
+        if (!connectionStatus && mounted) {
+          setState(() {
+            bleConnectState = BleConnectState.idle;
+          });
+          //on ios accessory setup handles connection failures
+          if (!Platform.isIOS) {
+            throw Exception("Failed to connect to Prime device.");
+          }
         }
         if (mounted && connectionStatus) {
           setState(() {
@@ -139,26 +151,41 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
       } else {
         throw Exception("Invalid Prime Serial");
       }
-    } catch (e) {
+    } catch (e, stack) {
+      setState(() {
+        bleConnectState = BleConnectState.idle;
+      });
+      if (e is PlatformException) {
+        //only for Android
+        if (e.code == "BLUETOOTH_DISABLED") {
+          final bool? allowed = await BluetoothChannel().requestEnableBle();
+          if (allowed == true) {
+            return _connectToPrime();
+          }
+        }
+      }
       if (mounted) {
         setState(() {
           bleConnectState = BleConnectState.invalidId;
         });
-        showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-                  title: const Text("Unable to connect "),
-                  content: Text(e.toString()),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text("OK"),
-                    ),
-                  ],
-                ));
+
+        // showEnvoyDialog(
+        //     context: context,
+        //     w
+        //     builder: (context) => AlertDialog(
+        //           title: const Text("Unable to connect "),
+        //           content: Text(e.toString()),
+        //           actions: [
+        //             TextButton(
+        //               onPressed: () {
+        //                 Navigator.pop(context);
+        //               },
+        //               child: const Text("OK"),
+        //             ),
+        //           ],
+        //         ));
         kPrint(e);
+        EnvoyReport().log("BleConnect", e.toString(), stackTrace: stack);
       }
     }
   }
@@ -167,159 +194,170 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   Widget build(BuildContext context) {
     // bool enabledMagicBackup = s.syncToCloud;
     //TODO: update copy based on s.syncToCloud
-    return PopScope(
-      canPop: LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true,
-      onPopInvokedWithResult: (didPop, result) {
-        if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) == true) {
-          GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
-        } else {}
-      },
-      child: EnvoyPatternScaffold(
-        gradientHeight: 1.8,
-        appBar: AppBar(
-          elevation: 0,
-          toolbarHeight: kToolbarHeight,
-          backgroundColor: Colors.transparent,
-          leading: CupertinoNavigationBarBackButton(
-            color: Colors.white,
-            onPressed: () {
-              Navigator.pop(context);
-              return;
-              //TODO: fix this
-              // if (GoRouter.of(context).canPop()) {
-              //   GoRouter.of(context).pop();
-              // } else {
-              //   GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
-              // }
+    return Consumer(builder: (context, ref, child) {
+      startBluetoothDisconnectionListener(context, ref);
+      return PopScope(
+        canPop: LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true,
+        onPopInvokedWithResult: (didPop, result) {
+          if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) == true) {
+            GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
+          } else {}
+        },
+        child: EnvoyPatternScaffold(
+          gradientHeight: 1.8,
+          appBar: AppBar(
+            elevation: 0,
+            toolbarHeight: kToolbarHeight,
+            backgroundColor: Colors.transparent,
+            leading: CupertinoNavigationBarBackButton(
+              color: Colors.white,
+              onPressed: () {
+                Navigator.pop(context);
+                return;
+                //TODO: fix this
+                // if (GoRouter.of(context).canPop()) {
+                //   GoRouter.of(context).pop();
+                // } else {
+                //   GoRouter.of(context).push(ROUTE_ACCOUNTS_HOME);
+                // }
+              },
+            ),
+            automaticallyImplyLeading: false,
+          ),
+          header: GestureDetector(
+            onLongPress: () {
+              BluetoothManager().getPermissions();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const BluetoothDiagnosticsPage(),
+                  ));
             },
-          ),
-          automaticallyImplyLeading: false,
-        ),
-        header: GestureDetector(
-          onLongPress: () {
-            BluetoothManager().getPermissions();
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const BluetoothDiagnosticsPage(),
-                ));
-          },
-          child: Transform.translate(
-            offset: const Offset(0, 85),
-            child: Image.asset(
-              colorWay == 1
-                  ? "assets/images/prime_midnight_bronze.png"
-                  : "assets/images/prime_artic_copper.png",
-              alignment: Alignment.bottomCenter,
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height * 0.8,
+            child: Transform.translate(
+              offset: const Offset(0, 85),
+              child: Image.asset(
+                colorWay == 1
+                    ? "assets/images/prime_midnight_bronze.png"
+                    : "assets/images/prime_artic_copper.png",
+                alignment: Alignment.bottomCenter,
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: MediaQuery.of(context).size.height * 0.8,
+              ),
             ),
           ),
-        ),
-        shield: Column(
-          children: [
-            const SizedBox(height: EnvoySpacing.medium1),
-            Flexible(
-              child: Container(
-                constraints: const BoxConstraints(
-                  minHeight: 300,
-                ),
-                child: SingleChildScrollView(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.large1,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: EnvoySpacing.medium1),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    S().onboarding_primeIntro_header,
-                                    textAlign: TextAlign.center,
-                                    style: EnvoyTypography.body.copyWith(
-                                      fontSize: 20,
-                                      color: EnvoyColors.gray1000,
-                                      decoration: TextDecoration.none,
+          shield: Column(
+            children: [
+              const SizedBox(height: EnvoySpacing.medium1),
+              Flexible(
+                child: Container(
+                  constraints: const BoxConstraints(
+                    minHeight: 300,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.large1,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: EnvoySpacing.medium1),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      S().onboarding_primeIntro_header,
+                                      textAlign: TextAlign.center,
+                                      style: EnvoyTypography.body.copyWith(
+                                        fontSize: 20,
+                                        color: EnvoyColors.gray1000,
+                                        decoration: TextDecoration.none,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: EnvoySpacing.small),
-                                  Text(
-                                    S().onboarding_primeIntro_content,
-                                    style: EnvoyTypography.info.copyWith(
-                                      color: EnvoyColors.inactiveDark,
-                                      decoration: TextDecoration.none,
+                                    const SizedBox(height: EnvoySpacing.small),
+                                    Text(
+                                      S().onboarding_primeIntro_content,
+                                      style: EnvoyTypography.info.copyWith(
+                                        color: EnvoyColors.inactiveDark,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                      textAlign: TextAlign.center,
                                     ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: EnvoySpacing.medium1,
-                right: EnvoySpacing.medium1,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const SizedBox(height: EnvoySpacing.medium1),
-                  // Consumer(
-                  //   builder: (context, ref, child) {
-                  //     final payload = GoRouter.of(context)
-                  //         .state
-                  //         ?.uri
-                  //         .queryParameters["p"];
-                  //     return Text("Debug Payload : $payload");
-                  //   },
-                  // ),
-                  const SizedBox(height: EnvoySpacing.medium1),
-                  Opacity(
-                    opacity: (bleConnectState == BleConnectState.invalidId ||
-                            bleConnectState == BleConnectState.connecting)
-                        ? 0.5
-                        : 1,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Opacity(
-                          opacity: bleConnectState == BleConnectState.connecting
-                              ? 0.5
-                              : 1,
-                          child: EnvoyButton(S().component_continue, onTap: () {
-                            _connectToPrime();
-                          }),
-                        ),
-                        if (bleConnectState == BleConnectState.connecting)
-                          const CupertinoActivityIndicator(),
-                      ],
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: EnvoySpacing.medium1,
+                  right: EnvoySpacing.medium1,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const SizedBox(height: EnvoySpacing.medium1),
+                    Opacity(
+                      opacity: (bleConnectState == BleConnectState.invalidId ||
+                              bleConnectState == BleConnectState.connecting)
+                          ? 0.5
+                          : 1,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Opacity(
+                            opacity:
+                                bleConnectState == BleConnectState.connecting
+                                    ? 0.5
+                                    : 1,
+                            child:
+                                EnvoyButton(S().component_continue, onTap: () {
+                              _connectToPrime();
+                            }),
+                          ),
+                          if (bleConnectState == BleConnectState.connecting)
+                            const CupertinoActivityIndicator(),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: EnvoySpacing.small),
-                ],
+                    const SizedBox(height: EnvoySpacing.small),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
+  }
+
+  void _checkIfDeviceConnected() async {
+    final bleId = GoRouter.of(context).state.uri.queryParameters["p"];
+
+    final status = await BluetoothChannel().getCurrentDeviceStatus();
+    if (status.connected && status.peripheralId == bleId) {
+      if (mounted) {
+        setState(() {
+          bleConnectState = BleConnectState.connected;
+        });
+      }
+      if (context.mounted && mounted) {
+        context.goNamed(ONBOARD_PRIME_BLUETOOTH, extra: onboardingComplete);
+      }
+    }
   }
 }

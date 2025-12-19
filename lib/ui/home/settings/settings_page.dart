@@ -60,6 +60,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool devModeEnabled = ref.watch(devModeEnabledProvider);
     double nestedMargin = 8;
     double marginBetweenItems = 6;
 
@@ -151,9 +152,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           //   ],
           // )),
           SliverPadding(
-              padding: EdgeInsets.all(kDebugMode ? marginBetweenItems : 0)),
+              padding: EdgeInsets.all(
+                  kDebugMode || devModeEnabled ? marginBetweenItems : 0)),
           SliverToBoxAdapter(
-            child: kDebugMode
+            child: kDebugMode || devModeEnabled
                 ? GestureDetector(
                     onTap: () {
                       showDialog(
@@ -276,7 +278,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                               S().taproot_passport_dialog_reconnect,
                               (BuildContext modalContext) {
                                 Navigator.pop(modalContext);
-                                scanForDevice(context);
+                                scanForDevice(context, ref);
                               },
                               secondaryButtonLabel:
                                   S().taproot_passport_dialog_later,
@@ -364,15 +366,15 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   }
 }
 
-class _DevOptions extends StatelessWidget {
+class _DevOptions extends ConsumerWidget {
   const _DevOptions();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     bool loading = false;
     return AlertDialog(
       backgroundColor: Colors.white,
-      title: const Text("Developer options"), // TODO: FIGMA
+      title: const Text("Developer options"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -381,25 +383,25 @@ class _DevOptions extends StatelessWidget {
                 EnvoyStorage().clearDismissedStatesStore();
                 Navigator.pop(context);
               },
-              child: const Text("Clear Prompt states")), // TODO: FIGMA
+              child: const Text("Clear Prompt states")),
           TextButton(
               onPressed: () {
                 EnvoyStorage().clearPendingStore();
                 Navigator.pop(context);
               },
-              child: const Text("Clear Azteco states")), // TODO: FIGMA
+              child: const Text("Clear Azteco states")),
           TextButton(
               onPressed: () {
                 EnvoyReport().clearAll();
                 Navigator.pop(context);
               },
-              child: const Text("Clear Envoy Logs")), // TODO: FIGMA
+              child: const Text("Clear Envoy Logs")),
           TextButton(
               onPressed: () {
                 EnvoyStorage().clear();
                 Navigator.pop(context);
               },
-              child: const Text("Clear Envoy Preferences")), // TODO: FIGMA
+              child: const Text("Clear Envoy Preferences")),
           StatefulBuilder(
             builder: (context, setState) {
               if (loading) {
@@ -427,9 +429,15 @@ class _DevOptions extends StatelessWidget {
                       kPrint(e);
                     }
                   },
-                  child: const Text("Wipe Envoy Wallet")); // TODO: FIGMA
+                  child: const Text("Wipe Envoy Wallet"));
             },
-          )
+          ),
+          TextButton(
+              onPressed: () {
+                Settings().skipPrimeSecurityCheck = true;
+                Navigator.pop(context);
+              },
+              child: const Text("Skip Prime security check")),
         ],
       ),
     );

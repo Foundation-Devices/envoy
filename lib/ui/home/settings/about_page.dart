@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -10,15 +11,40 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AboutPage extends StatefulWidget {
+class AboutPage extends ConsumerStatefulWidget {
   const AboutPage({super.key});
 
   @override
-  State<AboutPage> createState() => _AboutPageState();
+  ConsumerState<AboutPage> createState() => _AboutPageState();
 }
 
-class _AboutPageState extends State<AboutPage> {
+class _AboutPageState extends ConsumerState<AboutPage> {
+  int _tapCount = 0;
+  DateTime? _firstTapTime;
+
+  void _onTripleTapToSkipPrimeSecureCheck() {
+    final now = DateTime.now();
+
+    if (_firstTapTime == null ||
+        now.difference(_firstTapTime!).inMilliseconds > 500) {
+      // too slow, start over
+      _firstTapTime = now;
+      _tapCount = 1;
+    } else {
+      _tapCount++;
+    }
+
+    if (_tapCount == 3) {
+      setState(() {
+        ref.read(devModeEnabledProvider.notifier).state = true;
+      });
+      _tapCount = 0;
+      _firstTapTime = null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -27,9 +53,12 @@ class _AboutPageState extends State<AboutPage> {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: Image.asset("assets/logo.png", height: 170),
+          GestureDetector(
+            onTap: _onTripleTapToSkipPrimeSecureCheck,
+            child: Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: Image.asset("assets/logo.png", height: 170),
+            ),
           ),
           const SizedBox(height: EnvoySpacing.xl),
           Row(
