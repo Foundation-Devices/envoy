@@ -247,7 +247,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                         }
                         await Future.delayed(Duration(milliseconds: 400));
                         await pairWithPrime(payload);
-                      }*/
+                      }
                     },
                   ),
                 );
