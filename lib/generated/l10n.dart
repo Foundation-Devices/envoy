@@ -56,11 +56,19 @@ class S {
 
   // skipped getter for the ':' key
 
-  // skipped getter for the 'FW_Version_No.' key
-
   // skipped getter for the 'Pull to scan' key
 
   // skipped getter for the 'Pull to sync' key
+
+  /// `Foundation Devices, Inc.\n6 Liberty Square #6018\nBoston, MA 02109 USA`
+  String get _ {
+    return Intl.message(
+      'Foundation Devices, Inc.\n6 Liberty Square #6018\nBoston, MA 02109 USA',
+      name: '_',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `App Version`
   String get about_appVersion {
@@ -4601,9 +4609,14 @@ class S {
     );
   }
 
-  /// `~ `
+  /// `Newest first`
   String get filter_sortBy_newest {
-    return Intl.message('~ ', name: 'filter_sortBy_newest', desc: '', args: []);
+    return Intl.message(
+      'Newest first',
+      name: 'filter_sortBy_newest',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Oldest first`
@@ -7116,10 +7129,10 @@ class S {
     );
   }
 
-  /// `Also known as a “cold wallet.” Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.`
+  /// `Also known as a “cold wallet”. Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.`
   String get onboarding_tutorialColdWallet_content {
     return Intl.message(
-      'Also known as a “cold wallet.” Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.',
+      'Also known as a “cold wallet”. Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.',
       name: 'onboarding_tutorialColdWallet_content',
       desc: '',
       args: [],
