@@ -45,19 +45,27 @@ class UpdatesManager {
 
     final primeDevices = Devices().getPrimeDevices;
     if (primeDevices.isNotEmpty) {
-      final patches =
-          await Server().fetchPrimePatches(primeDevices.first.firmwareVersion);
+      await checkAndStoreLatestPrimeFirmware(primeDevices.first);
+    }
+  }
 
-      // TODO: Check this against a live endpoint
-      if (patches.isNotEmpty) {
-        EnvoyStorage().addNewFirmware(
-            DeviceType.passportPrime.index, patches.first.version, "");
-      }
-      // The update check returned no patches, which indicates no newer firmware is available.
-      else {
-        EnvoyStorage().addNewFirmware(DeviceType.passportPrime.index,
-            primeDevices.first.firmwareVersion, "");
-      }
+  Future<void> checkAndStoreLatestPrimeFirmware(Device primeDevice) async {
+    if (primeDevice.type != DeviceType.passportPrime) {
+      return;
+    }
+
+    final patches =
+        await Server().fetchPrimePatches(primeDevice.firmwareVersion);
+
+    // TODO: Check this against a live endpoint
+    if (patches.isNotEmpty) {
+      EnvoyStorage().addNewFirmware(
+          DeviceType.passportPrime.index, patches.first.version, "");
+    }
+    // The update check returned no patches, which indicates no newer firmware is available.
+    else {
+      EnvoyStorage().addNewFirmware(
+          DeviceType.passportPrime.index, primeDevice.firmwareVersion, "");
     }
   }
 
