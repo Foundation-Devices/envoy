@@ -151,9 +151,6 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isOnboardingComplete =
-        LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
-
     return Padding(
       padding: const EdgeInsets.all(EnvoySpacing.medium2),
       child: Column(
@@ -181,18 +178,18 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
           const SizedBox(height: EnvoySpacing.medium3),
           Column(
             children: [
-              isOnboardingComplete
-                  ? EnvoyButton(
-                      S().firmware_updateModalConnectionLost_exit,
-                      borderRadius: BorderRadius.circular(EnvoySpacing.small),
-                      type: EnvoyButtonTypes.secondary,
-                      onTap: () {
-                        resetOnboardingPrimeProviders();
-                        Navigator.of(context).pop();
-                        context.go("/");
-                      },
-                    )
-                  : SizedBox.shrink(),
+              if (Devices().getPrimeDevices.isEmpty ||
+                  !Devices().getPrimeDevices.first.onboardingComplete)
+                EnvoyButton(
+                  S().firmware_updateModalConnectionLost_exit,
+                  borderRadius: BorderRadius.circular(EnvoySpacing.small),
+                  type: EnvoyButtonTypes.secondary,
+                  onTap: () {
+                    resetOnboardingPrimeProviders();
+                    Navigator.of(context).pop();
+                    context.go("/");
+                  },
+                ),
               const SizedBox(height: EnvoySpacing.medium1),
               EnvoyButton(
                 _isReconnecting
