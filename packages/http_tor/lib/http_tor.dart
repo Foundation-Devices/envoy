@@ -59,7 +59,12 @@ class HttpTor {
     String? body,
     Map<String, String>? headers,
   }) async {
-    return _makeHttpRequest(http.Verb.get_, uri, body: body?.codeUnits, headers: headers);
+    return _makeHttpRequest(
+      http.Verb.get_,
+      uri,
+      body: body?.codeUnits,
+      headers: headers,
+    );
   }
 
   Future<http.Response> post(
@@ -67,14 +72,19 @@ class HttpTor {
     String? body,
     Map<String, String>? headers,
   }) async {
-    return _makeHttpRequest(http.Verb.post, uri, body: body?.codeUnits, headers: headers);
+    return _makeHttpRequest(
+      http.Verb.post,
+      uri,
+      body: body?.codeUnits,
+      headers: headers,
+    );
   }
 
   Future<http.Response> postBytes(
-      String uri, {
-        List<int>? body,
-        Map<String, String>? headers,
-      }) async {
+    String uri, {
+    List<int>? body,
+    Map<String, String>? headers,
+  }) async {
     return _makeHttpRequest(http.Verb.post, uri, body: body, headers: headers);
   }
 
