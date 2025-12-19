@@ -176,6 +176,9 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     _messageRouter.registerHandler(DeviceHandler(this));
     _messageRouter.registerHandler(TimeZoneHandler(this));
 
+    if (bleId.isEmpty && Devices().getPrimeDevices.isNotEmpty) {
+      bleId = Devices().getPrimeDevices.first.bleId;
+    }
     await listen(id: bleId);
     kPrint("QL Identity: $_qlIdentity");
     await restoreQuantumLinkIdentity();
