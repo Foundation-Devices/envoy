@@ -39,6 +39,7 @@ class FwUpdateHandler extends PassportMessageHandler {
 
   Set<PrimeFwUpdateStep> _completedUpdateStates = {};
   String newVersion = "";
+  String currentVersion = "";
 
   // Transfer rate estimator
   // reset this every time a new transfer starts
@@ -80,7 +81,7 @@ class FwUpdateHandler extends PassportMessageHandler {
       api.QuantumLinkMessage message, String bleId) async {
     if (message
         case api.QuantumLinkMessage_FirmwareUpdateCheckRequest updateRequest) {
-      final currentVersion = updateRequest.field0.currentVersion;
+      currentVersion = updateRequest.field0.currentVersion;
       _handleFwUpdateCheckRequest(currentVersion);
     } else if (message
         case api.QuantumLinkMessage_FirmwareFetchRequest fetchRequest) {
