@@ -147,9 +147,9 @@ class ScvServer {
 
     try {
       kPrint("isProofVerified payload $dataStr");
-      final response = await http.post(
+      final response = await http.postBytes(
         uri,
-        body: data.toList().toString(),
+        body: data.toList(),
         headers: {'Content-Type': 'application/octet-stream'},
       );
 
@@ -157,7 +157,7 @@ class ScvServer {
       if (response.statusCode == 200) {
         List<int> rawVerificationMessage = response.bodyBytes;
         kPrint("response status data 32: ${rawVerificationMessage[32]}");
-        kPrint("rawVerificationMessage {rawVerificationMessage}");
+        kPrint("rawVerificationMessage $rawVerificationMessage");
         // Error code is the 33rd byte in the response
         final errorCode = rawVerificationMessage.length > 32
             ? rawVerificationMessage[32]

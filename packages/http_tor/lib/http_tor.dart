@@ -59,12 +59,30 @@ class HttpTor {
     String? body,
     Map<String, String>? headers,
   }) async {
-    return _makeHttpRequest(http.Verb.get_, uri, body: body, headers: headers);
+    return _makeHttpRequest(
+      http.Verb.get_,
+      uri,
+      body: body?.codeUnits,
+      headers: headers,
+    );
   }
 
   Future<http.Response> post(
     String uri, {
     String? body,
+    Map<String, String>? headers,
+  }) async {
+    return _makeHttpRequest(
+      http.Verb.post,
+      uri,
+      body: body?.codeUnits,
+      headers: headers,
+    );
+  }
+
+  Future<http.Response> postBytes(
+    String uri, {
+    List<int>? body,
     Map<String, String>? headers,
   }) async {
     return _makeHttpRequest(http.Verb.post, uri, body: body, headers: headers);
@@ -100,7 +118,7 @@ class HttpTor {
   Future<http.Response> _makeHttpRequest(
     http.Verb verb,
     String uri, {
-    String? body,
+    List<int>? body,
     Map<String, String>? headers,
   }) async {
     await tor.isReady();
@@ -125,7 +143,7 @@ class HttpTor {
     http.Verb verb,
     String uri,
     int torPort, {
-    String? body,
+    List<int>? body,
     Map<String, String>? headers,
   }) async {
     // pretend to be wget to avoid cloudflare captchas and other challenges
@@ -135,7 +153,7 @@ class HttpTor {
       verb: verb,
       url: uri,
       torPort: torPort,
-      body: body,
+      body: body != null ? Uint8List.fromList(body) : null,
       headers: headers,
     );
   }
