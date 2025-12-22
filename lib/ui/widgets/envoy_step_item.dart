@@ -7,7 +7,6 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 //TODO: add more concrete states based on bluetooth implementation
