@@ -15,7 +15,6 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/settings.dart';
-import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -28,8 +27,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:permission_handler/permission_handler.dart';
-
-import '../ui/routes/routes.dart';
 import 'handlers/account_handler.dart';
 import 'handlers/heartbeat_handler.dart';
 import 'handlers/magic_backup_handler.dart';
@@ -402,8 +399,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       primeBackupEnabled: Settings().syncToCloud,
     );
     Devices().add(device);
-    UpdatesManager().checkAndStoreLatestPrimeFirmware(device);
-    await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
   }
 
   Future<void> removeConnectedDevice() async {
