@@ -443,7 +443,8 @@ class _PrimeFwDownloadProgressState
           Text(
             S().firmware_updatingDownload_content,
             textAlign: TextAlign.center,
-            style: EnvoyTypography.explainer.copyWith(fontSize: 14),
+            style: EnvoyTypography.explainer
+                .copyWith(fontSize: 14, color: EnvoyColors.contentSecondary),
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Expanded(
@@ -459,14 +460,14 @@ class _PrimeFwDownloadProgressState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   EnvoyStepItem(
-                      step: ref.watch(fwDownloadStateProvider),
-                      highlight: false),
+                    step: ref.watch(fwDownloadStateProvider),
+                  ),
                   SizedBox(
                     height: EnvoySpacing.medium1,
                   ),
                   EnvoyStepItem(
-                      step: ref.watch(fwTransferStateProvider),
-                      highlight: false),
+                    step: ref.watch(fwTransferStateProvider),
+                  ),
                 ],
               ),
               const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
@@ -523,7 +524,8 @@ class _PrimeFwFlashProgressState extends ConsumerState<PrimeFwFlashProgress> {
         Text(
           S().firmware_updatingDownload_content,
           textAlign: TextAlign.center,
-          style: EnvoyTypography.explainer.copyWith(fontSize: 14),
+          style: EnvoyTypography.explainer
+              .copyWith(fontSize: 14, color: EnvoyColors.contentSecondary),
         ),
         const SizedBox(height: EnvoySpacing.medium1),
         Wrap(
@@ -538,20 +540,20 @@ class _PrimeFwFlashProgressState extends ConsumerState<PrimeFwFlashProgress> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 EnvoyStepItem(
-                    step: ref.watch(primeFwSigVerifyStateProvider),
-                    highlight: false),
+                  step: ref.watch(primeFwSigVerifyStateProvider),
+                ),
                 SizedBox(
                   height: EnvoySpacing.medium1,
                 ),
                 EnvoyStepItem(
-                    step: ref.watch(primeFwInstallStateProvider),
-                    highlight: false),
+                  step: ref.watch(primeFwInstallStateProvider),
+                ),
                 SizedBox(
                   height: EnvoySpacing.medium1,
                 ),
                 EnvoyStepItem(
-                    step: ref.watch(primeFwRebootStateProvider),
-                    highlight: false),
+                  step: ref.watch(primeFwRebootStateProvider),
+                ),
                 SizedBox(
                   height: EnvoySpacing.medium3,
                 ),
