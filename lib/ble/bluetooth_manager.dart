@@ -27,7 +27,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:permission_handler/permission_handler.dart';
-
 import 'handlers/account_handler.dart';
 import 'handlers/heartbeat_handler.dart';
 import 'handlers/magic_backup_handler.dart';
