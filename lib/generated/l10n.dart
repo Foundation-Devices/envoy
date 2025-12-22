@@ -60,14 +60,9 @@ class S {
 
   // skipped getter for the 'Pull to sync' key
 
-  /// `Foundation Devices, Inc.\n6 Liberty Square #6018\nBoston, MA 02109 USA`
+  /// `6:15`
   String get _ {
-    return Intl.message(
-      'Foundation Devices, Inc.\n6 Liberty Square #6018\nBoston, MA 02109 USA',
-      name: '_',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('6:15', name: '_', desc: '', args: []);
   }
 
   /// `App Version`
@@ -805,6 +800,26 @@ class S {
     return Intl.message(
       'Show Seed',
       name: 'backups_erase_wallets_and_backups_show_seed_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep Your Seed Private`
+  String get backups_erase_wallets_and_backups_show_seed_heading {
+    return Intl.message(
+      'Keep Your Seed Private',
+      name: 'backups_erase_wallets_and_backups_show_seed_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!`
+  String get backups_erase_wallets_and_backups_show_seed_subheading {
+    return Intl.message(
+      'Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!',
+      name: 'backups_erase_wallets_and_backups_show_seed_subheading',
       desc: '',
       args: [],
     );
@@ -2542,6 +2557,26 @@ class S {
     );
   }
 
+  /// `12 Word Seed`
+  String get component_12WordSeed {
+    return Intl.message(
+      '12 Word Seed',
+      name: 'component_12WordSeed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `24 Word Seed`
+  String get component_24WordSeed {
+    return Intl.message(
+      '24 Word Seed',
+      name: 'component_24WordSeed',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Apply`
   String get component_Apply {
     return Intl.message('Apply', name: 'component_Apply', desc: '', args: []);
@@ -2727,6 +2762,16 @@ class S {
     return Intl.message(
       'Recover',
       name: 'component_recover',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover with QR Code`
+  String get component_recoverWithQR {
+    return Intl.message(
+      'Recover with QR Code',
+      name: 'component_recoverWithQR',
       desc: '',
       args: [],
     );
@@ -5401,6 +5446,16 @@ class S {
     );
   }
 
+  /// `Retry`
+  String get magic_setup_recovery_fail_Android_CTA1 {
+    return Intl.message(
+      'Retry',
+      name: 'magic_setup_recovery_fail_Android_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Recover with QR Code`
   String get magic_setup_recovery_fail_Android_CTA2 {
     return Intl.message(
@@ -5451,20 +5506,20 @@ class S {
     );
   }
 
-  /// `Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.\n`
+  /// `Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.`
   String get magic_setup_recovery_fail_connectivity_subheading {
     return Intl.message(
-      'Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.\n',
+      'Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.',
       name: 'magic_setup_recovery_fail_connectivity_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Import Your Seed`
+  /// `Recovery Unsuccessful`
   String get magic_setup_recovery_fail_heading {
     return Intl.message(
-      'Import Your Seed',
+      'Recovery Unsuccessful',
       name: 'magic_setup_recovery_fail_heading',
       desc: '',
       args: [],

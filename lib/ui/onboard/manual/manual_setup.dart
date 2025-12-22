@@ -86,7 +86,8 @@ class SeedIntroScreen extends StatelessWidget {
                               Text(
                                 mode == SeedIntroScreenType.generate ||
                                         mode == SeedIntroScreenType.verify
-                                    ? S().manual_setup_generate_seed_heading
+                                    ? S()
+                                        .backups_erase_wallets_and_backups_show_seed_heading
                                     : S().manual_setup_import_seed_heading,
                                 textAlign: TextAlign.center,
                                 style: EnvoyTypography.heading,
@@ -97,7 +98,8 @@ class SeedIntroScreen extends StatelessWidget {
                               Text(
                                 mode == SeedIntroScreenType.generate ||
                                         mode == SeedIntroScreenType.verify
-                                    ? S().manual_setup_generate_seed_subheading
+                                    ? S()
+                                        .backups_erase_wallets_and_backups_show_seed_subheading
                                     : S().manual_setup_import_seed_subheading,
                                 textAlign: TextAlign.center,
                                 style: EnvoyTypography.body
@@ -156,7 +158,7 @@ class SeedIntroScreen extends StatelessWidget {
                       : Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            EnvoyButton(S().manual_setup_import_seed_CTA3,
+                            EnvoyButton(S().component_12WordSeed,
                                 type: EnvoyButtonTypes.secondary,
                                 borderRadius: BorderRadius.all(
                                     Radius.circular(EnvoySpacing.medium1)),
@@ -166,7 +168,7 @@ class SeedIntroScreen extends StatelessWidget {
                             const SizedBox(
                               height: EnvoySpacing.medium1,
                             ),
-                            EnvoyButton(S().manual_setup_import_seed_CTA2,
+                            EnvoyButton(S().component_24WordSeed,
                                 type: EnvoyButtonTypes.secondary,
                                 borderRadius: BorderRadius.all(
                                     Radius.circular(EnvoySpacing.medium1)),
@@ -176,7 +178,7 @@ class SeedIntroScreen extends StatelessWidget {
                             const SizedBox(
                               height: EnvoySpacing.medium1,
                             ),
-                            EnvoyButton(S().manual_setup_import_seed_CTA1,
+                            EnvoyButton(S().component_recoverWithQR,
                                 type: EnvoyButtonTypes.primary,
                                 borderRadius: BorderRadius.all(
                                     Radius.circular(EnvoySpacing.medium1)),
