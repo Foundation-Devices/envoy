@@ -110,7 +110,7 @@ class FwUpdateHandler extends PassportMessageHandler {
     } catch (e) {
       kPrint("failed to fetch patches: $e");
       _updateDownloadState(
-          S().firmware_downloadingUpdate_header, EnvoyStepState.ERROR);
+          S().firmware_updateError_downloadFailed, EnvoyStepState.ERROR);
       await _handleFirmwareError(
         S().firmware_updateError_downloadFailed,
       );
@@ -147,7 +147,7 @@ class FwUpdateHandler extends PassportMessageHandler {
       } catch (e) {
         _updateFwUpdateState(PrimeFwUpdateStep.error);
         kPrint("failed to transfer firmware: $e");
-        await _handleFirmwareError(S().firmware_updateError_downloadFailed);
+        await _handleFirmwareError(S().firmware_updateError_receivingFailed);
         return;
       }
     }

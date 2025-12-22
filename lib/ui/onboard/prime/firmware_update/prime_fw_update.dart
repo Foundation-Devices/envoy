@@ -255,7 +255,6 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
                         PrimeFwUpdateStep.finished =>
                           _updateFinishedWidget(context),
                         PrimeFwUpdateStep.error => _updateErrorWidget(context),
-                        // TODO: Handle this case.
                       },
                     ),
                   )
@@ -399,15 +398,24 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
 
   Widget _updateErrorWidget(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        EnvoyButton(
-          S().common_button_contactSupport,
-          type: EnvoyButtonTypes.secondary,
-          onTap: () {},
+        if (ref.watch(firmWareUpdateProvider).state == EnvoyStepState.ERROR)
+          EnvoyStepItem(
+              step: ref.watch(firmWareUpdateProvider), highlight: false),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            EnvoyButton(
+              S().common_button_contactSupport,
+              type: EnvoyButtonTypes.secondary,
+              onTap: () {},
+            ),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          ],
         ),
-        const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
       ],
     );
   }
