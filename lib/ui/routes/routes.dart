@@ -95,10 +95,12 @@ final GoRouter mainRouter = GoRouter(
         final params = state.uri.queryParameters;
 
         if (params.containsKey("p")) {
+          WakelockPlus.enable();
           return state.namedLocation(ONBOARD_PRIME, queryParameters: params);
         }
 
         if (params.containsKey("t")) {
+          WakelockPlus.enable();
           return state.namedLocation(TOU_EXTERNAL, queryParameters: params);
         }
 

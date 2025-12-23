@@ -29,6 +29,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 enum EscapeHatchTap { logo, text }
 
@@ -199,6 +200,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       ),
                       title: S().onboarding_welcome_setUpPassport,
                       onTap: () {
+                        WakelockPlus.enable();
                         showScanner(context);
                         // context.goNamed(ONBOARD_PASSPORT_SCAN);
                       },
