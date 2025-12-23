@@ -26,6 +26,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
@@ -86,6 +87,16 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
             Flexible(
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
+                layoutBuilder:
+                    (Widget? currentChild, List<Widget> previousChildren) {
+                  return Stack(
+                    alignment: Alignment.topCenter,
+                    children: <Widget>[
+                      ...previousChildren,
+                      if (currentChild != null) currentChild,
+                    ],
+                  );
+                },
                 child: showDefaultAccounts
                     ? const DefaultAccountsList(key: ValueKey('default'))
                     : const PassphraseAccountsList(key: ValueKey('passphrase')),
