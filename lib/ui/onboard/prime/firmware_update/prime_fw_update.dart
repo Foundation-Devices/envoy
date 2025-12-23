@@ -527,7 +527,7 @@ class _PrimeFwFlashProgressState extends ConsumerState<PrimeFwFlashProgress> {
           style: EnvoyTypography.explainer
               .copyWith(fontSize: 14, color: EnvoyColors.contentSecondary),
         ),
-        const SizedBox(height: EnvoySpacing.medium1),
+        const SizedBox(height: EnvoySpacing.medium3),
         Wrap(
           alignment: WrapAlignment.center,
           direction: Axis.horizontal,
