@@ -108,7 +108,7 @@ class TransferRateEstimator {
 
   String _formatTimeRemaining(int seconds) {
     if (seconds < 60) {
-      return "~1 min";
+      return "about 1 min";
     } else if (seconds < 3600) {
       final minutes = (seconds / 60).ceil();
       return "$minutes min";
