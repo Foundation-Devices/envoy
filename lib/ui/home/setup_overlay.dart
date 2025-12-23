@@ -38,6 +38,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 double cardButtonHeight = 125;
 
@@ -206,6 +207,7 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                         title: S()
                                             .onboarding_welcome_setUpPassport,
                                         onTap: () {
+                                          WakelockPlus.enable();
                                           try {
                                             scanForDevice(context, ref);
                                           } catch (e) {
