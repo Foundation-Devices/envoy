@@ -238,8 +238,9 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
                           Text(
                             widget.titles[pageNumber - 1],
                             textAlign: TextAlign.center,
-                            style: EnvoyTypography.subheading.copyWith(
-                                color: EnvoyColors.textPrimaryInverse),
+                            style: EnvoyTypography.heading
+                                .copyWith(color: EnvoyColors.textPrimaryInverse)
+                                .setWeight(FontWeight.w600),
                           ),
                           const SizedBox(height: EnvoySpacing.medium1),
                           SizedBox(
@@ -248,8 +249,8 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
                               child: Text(
                                 widget.descriptions[pageNumber - 1],
                                 textAlign: TextAlign.center,
-                                style: EnvoyTypography.info
-                                    .copyWith(color: EnvoyColors.textTertiary),
+                                style: EnvoyTypography.body.copyWith(
+                                    color: EnvoyColors.contentTertiary),
                               ),
                             ),
                           ),
