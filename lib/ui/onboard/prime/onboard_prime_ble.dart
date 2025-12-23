@@ -133,55 +133,34 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   Widget quantumLinkIntro(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: EnvoySpacing.medium1),
-        Flexible(
-          child: Container(
-            constraints: const BoxConstraints(
-              minHeight: 300,
-            ),
-            child: SingleChildScrollView(
-              child: Container(
-                margin: const EdgeInsets.symmetric(
-                  vertical: EnvoySpacing.medium3,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.medium2),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text(
-                                S().onboarding_bluetoothIntro_header,
-                                textAlign: TextAlign.center,
-                                style: EnvoyTypography.body.copyWith(
-                                  fontSize: 20,
-                                  color: EnvoyColors.gray1000,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                              const SizedBox(height: EnvoySpacing.small),
-                              Text(
-                                S().onboarding_bluetoothIntro_content,
-                                style: EnvoyTypography.info.copyWith(
-                                  color: EnvoyColors.inactiveDark,
-                                  decoration: TextDecoration.none,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+        Expanded(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.medium2,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: EnvoySpacing.large1,
+                  ),
+                  Text(
+                    S().onboarding_bluetoothIntro_header,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.heading.copyWith(
+                      color: EnvoyColors.textPrimary,
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: EnvoySpacing.medium1),
+                  Text(
+                    S().onboarding_bluetoothIntro_content,
+                    style: EnvoyTypography.info.copyWith(
+                      color: EnvoyColors.contentSecondary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ),
           ),
@@ -190,69 +169,68 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           padding: const EdgeInsets.only(
             left: EnvoySpacing.medium1,
             right: EnvoySpacing.medium1,
+            bottom: EnvoySpacing.medium1,
+            top: EnvoySpacing.small,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              //const SizedBox(height: EnvoySpacing.medium1),
-              // Consumer(
-              //   builder: (context, ref, child) {
-              //     final payload = GoRouter.of(context)
-              //         .state
-              //         ?.uri
-              //         .queryParameters["p"];
-              //     return Text("Debug Payload : $payload");
-              //   },
-              // ),
-              const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton(S().component_learnMore,
-                  type: EnvoyButtonTypes.tertiary, onTap: () {
-                launchUrl(
-                    Uri.parse("https://docs.foundation.xyz/prime/quantumlink"));
-              }),
-              const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton(S().onboarding_bluetoothIntro_connect,
-                  onTap: () async {
-                final qrDecoder = await getQrDecoder();
-
-                if (!context.mounted) return;
-
-                await showScannerDialog(
-                  infoType: QrIntentInfoType.prime,
-                  context: context,
-                  onBackPressed: (ctx) {
-                    if (ctx.mounted) Navigator.pop(ctx);
-                  },
-                  decoder: PrimeQlPayloadDecoder(
-                    decoder: qrDecoder,
-                    onScan: (XidDocument payload) async {
-                      // TODO: process XidDocument for connection
-
-                      if (!context.mounted) return;
-
-                      if (Navigator.canPop(context)) {
-                        Navigator.pop(context);
-                      }
-
-                      await Future.delayed(const Duration(milliseconds: 200));
-
-                      if (!onboardingCompleted) {
-                        await pairWithPrime(payload);
-                        if (!context.mounted) return;
-                        context.goNamed(ONBOARD_PRIME_PAIR);
-                      } else {
-                        if (context.mounted) {
-                          context.goNamed(ONBOARD_REPAIRING);
-                        }
-                        await Future.delayed(Duration(milliseconds: 400));
-                        await pairWithPrime(payload);
-                      }
-                    },
-                  ),
-                );
-              }),
+              EnvoyButton(
+                S().component_learnMore,
+                type: EnvoyButtonTypes.tertiary,
+                onTap: () {
+                  launchUrl(
+                    Uri.parse("https://docs.foundation.xyz/prime/quantumlink"),
+                  );
+                },
+              ),
               const SizedBox(height: EnvoySpacing.small),
+              EnvoyButton(
+                S().onboarding_bluetoothIntro_connect,
+                onTap: () async {
+                  final qrDecoder = await getQrDecoder();
+
+                  if (!context.mounted) return;
+
+                  await showScannerDialog(
+                    infoType: QrIntentInfoType.prime,
+                    context: context,
+                    onBackPressed: (ctx) {
+                      if (ctx.mounted) Navigator.pop(ctx);
+                    },
+                    decoder: PrimeQlPayloadDecoder(
+                      decoder: qrDecoder,
+                      onScan: (XidDocument payload) async {
+                        // TODO: process XidDocument for connection
+
+                        if (!context.mounted) return;
+
+                        if (Navigator.canPop(context)) {
+                          Navigator.pop(context);
+                        }
+
+                        await Future.delayed(
+                          const Duration(milliseconds: 200),
+                        );
+
+                        if (!onboardingCompleted) {
+                          await pairWithPrime(payload);
+                          if (!context.mounted) return;
+                          context.goNamed(ONBOARD_PRIME_PAIR);
+                        } else {
+                          if (context.mounted) {
+                            context.goNamed(ONBOARD_REPAIRING);
+                          }
+                          await Future.delayed(
+                            const Duration(milliseconds: 400),
+                          );
+                          await pairWithPrime(payload);
+                        }
+                      },
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),
