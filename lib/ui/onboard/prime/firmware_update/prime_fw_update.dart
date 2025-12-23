@@ -255,7 +255,6 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
                         PrimeFwUpdateStep.finished =>
                           _updateFinishedWidget(context),
                         PrimeFwUpdateStep.error => _updateErrorWidget(context),
-                        // TODO: Handle this case.
                       },
                     ),
                   )
@@ -399,15 +398,24 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
 
   Widget _updateErrorWidget(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        EnvoyButton(
-          S().common_button_contactSupport,
-          type: EnvoyButtonTypes.secondary,
-          onTap: () {},
+        if (ref.watch(firmWareUpdateProvider).state == EnvoyStepState.ERROR)
+          EnvoyStepItem(
+              step: ref.watch(firmWareUpdateProvider), highlight: false),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            EnvoyButton(
+              S().common_button_contactSupport,
+              type: EnvoyButtonTypes.secondary,
+              onTap: () {},
+            ),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
+          ],
         ),
-        const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
       ],
     );
   }
@@ -435,7 +443,8 @@ class _PrimeFwDownloadProgressState
           Text(
             S().firmware_updatingDownload_content,
             textAlign: TextAlign.center,
-            style: EnvoyTypography.explainer.copyWith(fontSize: 14),
+            style: EnvoyTypography.explainer
+                .copyWith(fontSize: 14, color: EnvoyColors.contentSecondary),
           ),
           const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           Expanded(
@@ -451,14 +460,14 @@ class _PrimeFwDownloadProgressState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   EnvoyStepItem(
-                      step: ref.watch(fwDownloadStateProvider),
-                      highlight: false),
+                    step: ref.watch(fwDownloadStateProvider),
+                  ),
                   SizedBox(
                     height: EnvoySpacing.medium1,
                   ),
                   EnvoyStepItem(
-                      step: ref.watch(fwTransferStateProvider),
-                      highlight: false),
+                    step: ref.watch(fwTransferStateProvider),
+                  ),
                 ],
               ),
               const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
@@ -515,9 +524,10 @@ class _PrimeFwFlashProgressState extends ConsumerState<PrimeFwFlashProgress> {
         Text(
           S().firmware_updatingDownload_content,
           textAlign: TextAlign.center,
-          style: EnvoyTypography.explainer.copyWith(fontSize: 14),
+          style: EnvoyTypography.explainer
+              .copyWith(fontSize: 14, color: EnvoyColors.contentSecondary),
         ),
-        const SizedBox(height: EnvoySpacing.medium1),
+        const SizedBox(height: EnvoySpacing.medium3),
         Wrap(
           alignment: WrapAlignment.center,
           direction: Axis.horizontal,
@@ -530,20 +540,20 @@ class _PrimeFwFlashProgressState extends ConsumerState<PrimeFwFlashProgress> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 EnvoyStepItem(
-                    step: ref.watch(primeFwSigVerifyStateProvider),
-                    highlight: false),
+                  step: ref.watch(primeFwSigVerifyStateProvider),
+                ),
                 SizedBox(
                   height: EnvoySpacing.medium1,
                 ),
                 EnvoyStepItem(
-                    step: ref.watch(primeFwInstallStateProvider),
-                    highlight: false),
+                  step: ref.watch(primeFwInstallStateProvider),
+                ),
                 SizedBox(
                   height: EnvoySpacing.medium1,
                 ),
                 EnvoyStepItem(
-                    step: ref.watch(primeFwRebootStateProvider),
-                    highlight: false),
+                  step: ref.watch(primeFwRebootStateProvider),
+                ),
                 SizedBox(
                   height: EnvoySpacing.medium3,
                 ),

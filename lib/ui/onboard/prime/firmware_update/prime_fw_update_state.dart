@@ -58,11 +58,13 @@ final fwTransferStateProvider =
   final updateState = ref.watch(primeUpdateStateProvider);
   if (updateState == PrimeFwUpdateStep.transferring) {
     return StepNotifier(
-        stepName: S().firmware_downloadingUpdate_transferring,
-        state: EnvoyStepState.LOADING);
+      stepName: S().firmware_downloadingUpdate_transferring,
+      state: EnvoyStepState.LOADING,
+    );
   } else {
     return StepNotifier(
-        stepName: "Transferring to Passport Prime", state: EnvoyStepState.IDLE);
+        stepName: S().firmware_updatingDownload_transfer,
+        state: EnvoyStepState.IDLE);
   }
 });
 

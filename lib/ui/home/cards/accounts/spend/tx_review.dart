@@ -923,18 +923,21 @@ class _TransactionReviewScreenState
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        EnvoyStepItem(step: _primeConnectionState, highlight: false),
+        EnvoyStepItem(
+          step: _primeConnectionState,
+        ),
         SizedBox(
           height: EnvoySpacing.medium1,
         ),
         EnvoyStepItem(
-            step: ref.watch(transferTransactionStateProvider),
-            highlight: false),
+          step: ref.watch(transferTransactionStateProvider),
+        ),
         SizedBox(
           height: EnvoySpacing.medium1,
         ),
         EnvoyStepItem(
-            step: ref.watch(signTransactionStateProvider), highlight: false),
+          step: ref.watch(signTransactionStateProvider),
+        ),
       ],
     );
   }
