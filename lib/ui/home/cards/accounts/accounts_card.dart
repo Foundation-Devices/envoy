@@ -26,7 +26,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/util/console.dart';
+
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
@@ -59,13 +59,23 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
     final mainNetAccounts = ref.watch(mainnetAccountsProvider(null));
     final allowBuyInEnvoy = ref.watch(allowBuyInEnvoyProvider);
     final showDefaultAccounts = ref.watch(showDefaultAccountProvider);
+    final hasPassphraseAccounts =
+        ref.watch(primePassphraseAccountsProvider).isNotEmpty;
+
+    // Auto-switch to default accounts when passphrase accounts become empty
+    ref.listen(primePassphraseAccountsProvider,
+        (List<EnvoyAccount>? previous, List<EnvoyAccount> next) {
+      if (next.isEmpty && !ref.read(showDefaultAccountProvider)) {
+        ref.read(showDefaultAccountProvider.notifier).state = true;
+      }
+    });
 
     return Stack(
       children: [
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (ref.watch(primePassphraseAccountsProvider).isNotEmpty)
+            if (hasPassphraseAccounts)
               Padding(
                 padding: const EdgeInsets.only(
                     left: 20, right: 20, top: EnvoySpacing.medium2),

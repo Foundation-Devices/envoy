@@ -450,6 +450,12 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
               kPrint("Got the Broadcast Transaction");
               _transactionStream.add(transaction);
             }
+            if (value.message
+                case api.QuantumLinkMessage_ApplyPassphrase applyPassphrase) {
+              kPrint(
+                  "Got ApplyPassphrase event: ${applyPassphrase.field0.fingerprint}");
+              _passphraseEventStream.add(applyPassphrase.field0);
+            }
           }
         }, onError: (e) {
           kPrint("Error decoding: $e");
