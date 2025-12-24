@@ -5,6 +5,7 @@
 import 'dart:io';
 
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -468,6 +469,28 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
                       ],
                     ),
                   ),
+                if (_isDeleted && !_deleteInProgress)
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        bottom: EnvoySpacing.medium2,
+                        right: EnvoySpacing.medium2,
+                        left: EnvoySpacing.medium2),
+                    child: EnvoyButton(S().component_continue,
+                        type: EnvoyButtonTypes.primary, onTap: () {
+                      if (Platform.isAndroid) {
+                        context.pushNamed(WALLET_BACKUP_WARNING, extra: true);
+                      } else {
+                        // Show home page and navigate to accounts
+                        context.goNamed("/");
+
+                        ref.read(homePageBackgroundProvider.notifier).state =
+                            HomePageBackgroundState.hidden;
+                        ref.read(homePageTabProvider.notifier).state =
+                            HomePageTabState.accounts;
+                        ref.read(homePageTitleProvider.notifier).state = "";
+                      }
+                    }),
+                  ),
               ],
             ),
           ),
@@ -485,44 +508,26 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       //wait for animation
       await Future.delayed(const Duration(seconds: 1));
 
-      bool isDeleted = await EnvoySeed().delete();
+      final seed = EnvoySeed();
+      bool isDeleted = true;
+
+      if (Settings().syncToCloud) {
+        isDeleted = await seed.deleteMagicBackup();
+      }
+
+      if (isDeleted) {
+        isDeleted = await seed.delete();
+      }
+
       setState(() {
         _isDeleted = isDeleted;
+        _deleteInProgress = false;
       });
 
       if (_isDeleted) {
         _setAnimationState(indeterminate: false, happy: true, unhappy: false);
       } else {
         _setAnimationState(indeterminate: false, happy: false, unhappy: true);
-      }
-
-      setState(() {
-        _deleteInProgress = false;
-      });
-      await Future.delayed(const Duration(milliseconds: 2000));
-
-      if (_isDeleted) {
-        // Now that the seed is gone, delete the magic backup
-        await EnvoySeed().deleteMagicBackup();
-        //Show android backup info
-        if (Platform.isAndroid) {
-          await Future.delayed(const Duration(milliseconds: 300));
-          if (mounted) {
-            context.pushNamed(WALLET_BACKUP_WARNING, extra: true);
-          }
-        } else {
-          //wait for pop animation to finish
-          await Future.delayed(const Duration(milliseconds: 300));
-          // Show home page and navigate to accounts
-          if (mounted) {
-            context.goNamed("/");
-          }
-          ref.read(homePageBackgroundProvider.notifier).state =
-              HomePageBackgroundState.hidden;
-          ref.read(homePageTabProvider.notifier).state =
-              HomePageTabState.accounts;
-          ref.read(homePageTitleProvider.notifier).state = "";
-        }
       }
     } catch (e) {
       kPrint(e);
