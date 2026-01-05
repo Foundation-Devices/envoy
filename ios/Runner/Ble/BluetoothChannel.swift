@@ -172,14 +172,11 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             }
         })
 
-        setupBluetoothManager()
         setupAccessorySession()
-        //
     }
 
     override init() {
         super.init()
-        setupBluetoothManager()
         setupAccessorySession()
     }
 
@@ -477,7 +474,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         switch event.eventType {
         case .accessoryAdded, .accessoryChanged:
             guard let accessory = event.accessory else { return }
-            saveAccessory(accessory: accessory)
+            initWithAccessory(accessory: accessory)
         case .activated:
             print("Accessory discovery session activated .")
         case .accessoryRemoved:
@@ -494,7 +491,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         }
     }
 
-    private func saveAccessory(accessory: ASAccessory) {
+    private func initWithAccessory(accessory: ASAccessory) {
         primeAccessory = accessory
 
         let peripheralId = accessory.bluetoothIdentifier?.uuidString ?? accessory.displayName
