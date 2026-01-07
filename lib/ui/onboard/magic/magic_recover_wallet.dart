@@ -104,17 +104,6 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   }
 
   void _tryAutomaticRecovery() async {
-    String? seed = await EnvoySeed().get();
-    if (!Settings().syncToCloud && seed != null) {
-      if (mounted) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const ManualSetupImportBackup()));
-      }
-
-      return;
-    }
     ref.read(triedAutomaticRecovery.notifier).state = true;
     await Future.delayed(const Duration(seconds: 1));
     var success = false;
