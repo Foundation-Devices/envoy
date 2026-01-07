@@ -59,7 +59,7 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
       duration: const Duration(milliseconds: 320),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           leading,
