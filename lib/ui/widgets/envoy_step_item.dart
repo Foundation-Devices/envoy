@@ -59,7 +59,7 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
       duration: const Duration(milliseconds: 320),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           leading,
@@ -70,6 +70,7 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.start,
+              textWidthBasis: TextWidthBasis.longestLine,
               style: EnvoyTypography.info.copyWith(
                 color: _color(step),
               ),
