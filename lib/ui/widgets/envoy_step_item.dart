@@ -70,6 +70,7 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.start,
+              textWidthBasis: TextWidthBasis.longestLine,
               style: EnvoyTypography.info.copyWith(
                 color: _color(step),
               ),
