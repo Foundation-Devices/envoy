@@ -191,7 +191,10 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
               ),
               onPressed: () async {
                 if (context.canPop()) {
-                  context.pop();
+                  final exit = await showExitWarning(context);
+                  if (exit && context.mounted) {
+                    context.go(ROUTE_ACCOUNTS_HOME);
+                  }
                 }
               },
             ),

@@ -132,7 +132,10 @@ class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
           ),
           onPressed: () async {
             if (context.canPop()) {
-              context.pop();
+              final shouldExit = await showExitWarning(context);
+              if (shouldExit && context.mounted) {
+                context.go(ROUTE_ACCOUNTS_HOME);
+              }
             }
           },
         ),
