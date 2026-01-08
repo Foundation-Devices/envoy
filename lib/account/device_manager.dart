@@ -83,6 +83,19 @@ Future<NgAccountConfig> getPassportAccountFromJson(dynamic json) async {
   return accountConfig;
 }
 
+DeviceColor _deviceColorFromJson(dynamic raw) {
+  if (raw == null) return DeviceColor.light;
+
+  switch (raw as String) {
+    case 'midnightbronze':
+      return DeviceColor.dark;
+    case 'arcticcopper':
+      return DeviceColor.light;
+    default:
+      return DeviceColor.light;
+  }
+}
+
 Device getDeviceFromJson(Map<String, dynamic> json) {
   var fwVersion = json["fw_version"].toString();
   var serial = json["serial"].toString();
@@ -102,8 +115,11 @@ Device getDeviceFromJson(Map<String, dynamic> json) {
     return DeviceType.passportPrime;
   }();
 
+  final deviceColor = _deviceColorFromJson(json["color"]);
+
   Device device = Device(deviceName, deviceType, serial, DateTime.now(),
-      fwVersion, EnvoyColors.listAccountTileColors[colorIndex]);
+      fwVersion, EnvoyColors.listAccountTileColors[colorIndex],
+      deviceColor: deviceColor);
   return device;
 }
 
