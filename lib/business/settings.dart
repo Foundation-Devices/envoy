@@ -455,27 +455,6 @@ class Settings extends ChangeNotifier {
       }
     }
 
-    // ENV-2224
-    // Normalize default Electrum server: if current is not one of our defaults, pick a fresh one.
-    if (singleton.usingDefaultElectrumServer) {
-      final current = singleton.selectedElectrumAddress;
-
-      // All current clearnet defaults (both tcp and ssl, though we prefer ssl when selecting)
-      final allowedDefaults = <String>{
-        ...getDefaultFulcrumServers(ssl: true),
-        ...getDefaultFulcrumServers(ssl: false),
-      };
-
-      if (!allowedDefaults.contains(current)) {
-        final newDefault =
-            selectRandomServerFrom(getDefaultFulcrumServers(ssl: true));
-        currentDefaultServer = newDefault; // update static default
-        singleton.selectedElectrumAddress =
-            newDefault; // persist chosen default
-        await singleton.store();
-      }
-    }
-
     return singleton;
   }
 
@@ -502,6 +481,22 @@ class Settings extends ChangeNotifier {
   static Future<void> restore({bool fromBackup = false}) async {
     if (ls.prefs.containsKey(SETTINGS_PREFS)) {
       var json = jsonDecode(ls.prefs.getString(SETTINGS_PREFS)!);
+
+      // Migration: fix outdated default server.
+      final selected = json["selectedElectrumAddress"] as String?;
+      final usingDefault = json["usingDefaultElectrumServer"] as bool? ?? true;
+      final allowedDefaults = <String>{
+        ...getDefaultFulcrumServers(ssl: true),
+        ...getDefaultFulcrumServers(ssl: false),
+      };
+      final shouldFixDefault = usingDefault &&
+          selected != null &&
+          !allowedDefaults.contains(selected);
+      if (shouldFixDefault) {
+        json["selectedElectrumAddress"] =
+            selectRandomServerFrom(getDefaultFulcrumServers(ssl: true));
+        json["usingDefaultElectrumServer"] = true;
+      }
 
       if (fromBackup) {
         if (Settings().nodeChangedInAdvanced ||
