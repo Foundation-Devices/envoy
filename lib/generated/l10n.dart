@@ -56,10 +56,6 @@ class S {
 
   // skipped getter for the ':' key
 
-  // skipped getter for the 'Pull to scan' key
-
-  // skipped getter for the 'Pull to sync' key
-
   /// `6:15`
   String get _ {
     return Intl.message('6:15', name: '_', desc: '', args: []);
@@ -5811,6 +5807,26 @@ class S {
     return Intl.message(
       'This will discard any coin selection changes. Do you want to proceed?',
       name: 'manual_coin_preselection_dialog_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Existing Wallet Detected`
+  String get manual_onboardDisableMB_magicBackupDetected_heading {
+    return Intl.message(
+      'Existing Wallet Detected',
+      name: 'manual_onboardDisableMB_magicBackupDetected_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy found an existing wallet in your personal cloud and will recover it now. To disable Magic Backups or permanently erase this wallet, please visit the backups menu.`
+  String get manual_onboardDisableMB_magicBackupDetected_subheading {
+    return Intl.message(
+      'Envoy found an existing wallet in your personal cloud and will recover it now. To disable Magic Backups or permanently erase this wallet, please visit the backups menu.',
+      name: 'manual_onboardDisableMB_magicBackupDetected_subheading',
       desc: '',
       args: [],
     );
