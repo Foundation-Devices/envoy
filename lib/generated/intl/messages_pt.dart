@@ -1782,6 +1782,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Isto anulará quaisquer alterações na seleção de moedas. Desejas continuar?",
         ),
+        "manual_onboardDisableMB_magicBackupDetected_heading":
+            MessageLookupByLibrary.simpleMessage("Existing Wallet Detected"),
+        "manual_onboardDisableMB_magicBackupDetected_subheading":
+            MessageLookupByLibrary.simpleMessage(
+          "Envoy found an existing wallet in your personal cloud and will recover it now. To disable Magic Backups or permanently erase this wallet, please visit the backups menu.",
+        ),
         "manual_setup_change_from_magic_header":
             MessageLookupByLibrary.simpleMessage("Magic Backups deactivated"),
         "manual_setup_change_from_magic_modal_subheader":

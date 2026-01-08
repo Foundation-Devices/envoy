@@ -531,7 +531,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Compra Realizada"),
         "buy_bitcoin_purchaseComplete_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "La finalización puede tardar algún tiempo dependiendo del método de pago utilizado y de la congestión de la red.",
+          "La finalización de la transacción puede tardar algún tiempo dependiendo del método de pago utilizado y de la congestión de la red.",
         ),
         "buy_bitcoin_purchaseError_contactRamp":
             MessageLookupByLibrary.simpleMessage(
@@ -1758,7 +1758,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Disconnect Existing Prime"),
         "manage_device_deletePassportWarning":
             MessageLookupByLibrary.simpleMessage(
-          "¿Estás seguro de que quieres desconectar Passport?\nEsto eliminará el dispositivo de Envoy junto con todas las cuentas conectadas.",
+          "¿Estás seguro de que quieres desconectar Passport?\n\nEsto eliminará el dispositivo de Envoy junto con todas las cuentas conectadas.",
         ),
         "manage_device_details_devicePaired":
             MessageLookupByLibrary.simpleMessage(
@@ -1787,6 +1787,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_coin_preselection_dialog_description":
             MessageLookupByLibrary.simpleMessage(
           "Esto descartará cualquier cambio en la selección de monedas. ¿Quieres continuar?",
+        ),
+        "manual_onboardDisableMB_magicBackupDetected_heading":
+            MessageLookupByLibrary.simpleMessage("Existing Wallet Detected"),
+        "manual_onboardDisableMB_magicBackupDetected_subheading":
+            MessageLookupByLibrary.simpleMessage(
+          "Envoy found an existing wallet in your personal cloud and will recover it now. To disable Magic Backups or permanently erase this wallet, please visit the backups menu.",
         ),
         "manual_setup_change_from_magic_header":
             MessageLookupByLibrary.simpleMessage(
@@ -2456,7 +2462,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("RECIBIR"),
         "receive_qr_copy": MessageLookupByLibrary.simpleMessage("Copiar"),
         "receive_qr_rescanAccount": MessageLookupByLibrary.simpleMessage(
-          "Rescan Account",
+          "Volver a Escanear",
         ),
         "receive_qr_share": MessageLookupByLibrary.simpleMessage("Compartir"),
         "receive_qr_signMessage": MessageLookupByLibrary.simpleMessage(
@@ -2603,23 +2609,23 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "rescanAccount_pullToSync_pullToSync":
             MessageLookupByLibrary.simpleMessage(
-          "Pull to sync",
+          "Desliza para actualizar",
         ),
         "rescanAccount_rescanning_rescanningAccount":
             MessageLookupByLibrary.simpleMessage(
-          "Rescanning your account. Please do not close Envoy.",
+          "Escaneando la cuenta. Por favor no cierres Envoy.",
         ),
         "rescanAccount_sizeModal_1000Addresses":
-            MessageLookupByLibrary.simpleMessage("1000 Addresses (~10 min)"),
+            MessageLookupByLibrary.simpleMessage("1000 Direcciones (~10 min)"),
         "rescanAccount_sizeModal_300Addresses":
-            MessageLookupByLibrary.simpleMessage("300 Addresses (~3 min)"),
+            MessageLookupByLibrary.simpleMessage("300 Direcciones (~3 min)"),
         "rescanAccount_sizeModal_500Addresses":
-            MessageLookupByLibrary.simpleMessage("500 Addresses (~5 min)"),
+            MessageLookupByLibrary.simpleMessage("500 Direcciones (~5 min)"),
         "rescanAccount_sizeModal_content": MessageLookupByLibrary.simpleMessage(
-          "100 addresses were previously scanned. If missing funds, try a higher scan value.",
+          "100 direcciones escaneadas. Si faltan fondos, prueba a escanear un número de direcciones mayor.",
         ),
         "rescanAccount_sizeModal_header": MessageLookupByLibrary.simpleMessage(
-          "Rescan Account",
+          "Volver a escanear cuenta",
         ),
         "rescanAccount_toast_rescanningFailed": m17,
         "rescanAccount_toast_rescanningStarted":

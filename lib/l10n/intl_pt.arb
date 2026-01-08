@@ -1,7 +1,5 @@
 {
   ":": ":",
-  "Pull to scan": "Pull to scan",
-  "Pull to sync": "Pull to sync",
   "_": "6:15",
   "about_appVersion": "Versão da Aplicação",
   "about_openSourceLicences": "Licenças de Código Aberto",
@@ -590,6 +588,8 @@
   "manage_device_rename_modal_heading": "Altera o nome do Passport",
   "manualToggleOnSeed_toastHeading_failedText": "Não foi possível fazer a cópia de segurança. Por favor tenta novamente mais tarde.",
   "manual_coin_preselection_dialog_description": "Isto anulará quaisquer alterações na seleção de moedas. Desejas continuar?",
+  "manual_onboardDisableMB_magicBackupDetected_heading": "Existing Wallet Detected",
+  "manual_onboardDisableMB_magicBackupDetected_subheading": "Envoy found an existing wallet in your personal cloud and will recover it now. To disable Magic Backups or permanently erase this wallet, please visit the backups menu.",
   "manual_setup_change_from_magic_header": "Magic Backups deactivated",
   "manual_setup_change_from_magic_modal_subheader": "Your Magic backup is about to be permanently erased. Ensure your seed is securely backed up and that you download your Envoy backup file.\n\nThis action will permanently delete your Envoy seed from your Apple or Google account, and your encrypted Envoy data from Foundation servers after a 24h waiting period.",
   "manual_setup_change_from_magic_subheaderApple": "Your Envoy Magic Backup data was successfully deleted from your Apple account and Foundation servers.",
