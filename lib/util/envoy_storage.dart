@@ -245,6 +245,10 @@ class EnvoyStorage {
       exchangeRateStoreName: exchangeRateStore,
       rbfBoostStoreName: rbfBoostStore,
       canceledTxStoreName: canceledTxStore,
+      primeDataStoreName: primeStore,
+      inputTagHistoryStoreName: tagHistoryStore,
+      quantumLinkIdentityStoreName: quantumLinkIdentityStore,
+      selectedCountryStoreName: countryStore,
     };
 
     for (var store in storesToBackUp.values) {
