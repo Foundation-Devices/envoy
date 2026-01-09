@@ -68,7 +68,7 @@ class ScvServer {
     if (_ls.prefs.containsKey(SCV_CHALLENGE_PREFS)) {
       await _ls.prefs.remove(SCV_CHALLENGE_PREFS);
     }
-    
+
     _storedChallenge = null;
   }
 

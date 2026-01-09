@@ -87,7 +87,12 @@ class HttpTor {
     required List<int> body,
     Map<String, String>? headers,
   }) async {
-    return _makeHttpRequest(http.Verb.post, uri, body: Uint8List.fromList(body), headers: headers);
+    return _makeHttpRequest(
+      http.Verb.post,
+      uri,
+      body: Uint8List.fromList(body),
+      headers: headers,
+    );
   }
 
   Future<String> getIp() async {
