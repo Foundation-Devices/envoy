@@ -3570,6 +3570,7 @@ version = "0.1.0"
 dependencies = [
  "backup-shard",
  "flutter_rust_bridge",
+ "log",
  "minicbor 1.1.0",
  "minicbor-derive 0.17.0",
 ]

@@ -2,12 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#[flutter_rust_bridge::frb(sync)] // Synchronous mode for simplicity of the demo
+#[flutter_rust_bridge::frb(sync)]
 use backup_shard::Shard;
-use flutter_rust_bridge::for_generated::anyhow;
-use flutter_rust_bridge::for_generated::anyhow::{anyhow, Context};
+use flutter_rust_bridge::for_generated::anyhow::{self, Context};
 use minicbor::decode;
 use minicbor_derive::{Decode, Encode};
+use std::collections::BTreeMap;
 use std::fs::File;
 
 #[flutter_rust_bridge::frb(init)]
@@ -16,9 +16,74 @@ pub fn init_app() {
     flutter_rust_bridge::setup_default_user_utils();
 }
 
-#[derive(Encode, Decode)]
-#[cbor(map)] // You need to specify encoding format
-pub struct ShardBackUp {
+#[derive(Encode, Decode, Default)]
+pub struct ShardBackupFile {
+    #[n(0)]
+    pub shards: BTreeMap<[u8; 32], ShardBackup>,
+}
+
+impl ShardBackupFile {
+    pub fn new() -> Self {
+        Self {
+            shards: BTreeMap::new(),
+        }
+    }
+
+    pub fn add_new_shard(shard: Vec<u8>, file_path: String) -> anyhow::Result<()> {
+        if !std::path::Path::new(&file_path).exists() {
+            File::create(&file_path).context("Failed to create file")?;
+        }
+        let shard = Shard::decode(&shard).context("decode shard")?;
+        let mut backup_file = Self::load(file_path.clone());
+        let new_shard = ShardBackup::new(*shard.seed_fingerprint(), shard.encode());
+        backup_file
+            .shards
+            .insert(*shard.seed_fingerprint(), new_shard);
+        backup_file.save(&file_path)?;
+        Ok(())
+    }
+
+    pub fn load(file_path: String) -> Self {
+        (|| {
+            let file_data = std::fs::read(file_path)
+                .inspect_err(|e| log::warn!("failed to read shard backup file {e:?}"))
+                .ok()?;
+            let backup_file: ShardBackupFile = decode(&file_data)
+                .inspect_err(|e| log::warn!("failed to decode shard data {e:?}"))
+                .ok()?;
+            Some(backup_file)
+        })()
+        .unwrap_or_default()
+    }
+
+    pub fn save(&self, file_path: &str) -> anyhow::Result<()> {
+        let encoded_data = minicbor::to_vec(self).context("encode shard data")?;
+        std::fs::write(file_path, encoded_data).context("Failed to write file")?;
+        Ok(())
+    }
+
+    pub fn get_shard_by_fingerprint(fingerprint: [u8; 32], file_path: String) -> Option<Vec<u8>> {
+        let backup_file = Self::load(file_path);
+        backup_file
+            .shards
+            .get(&fingerprint)
+            .map(|s| s.shard.clone())
+    }
+
+    pub fn to_bytes(&self) -> anyhow::Result<Vec<u8>> {
+        minicbor::to_vec(&self.shards).context("failed to encode ShardBackupFile")
+    }
+
+    pub fn from_bytes(data: &[u8]) -> Result<Self, decode::Error> {
+        let shards: BTreeMap<[u8; 32], ShardBackup> = decode(data)?;
+        Ok(Self { shards })
+    }
+}
+
+/// single shard backup entry
+#[derive(Encode, Decode, Clone)]
+#[cbor(map)]
+pub struct ShardBackup {
     #[n(0)]
     pub fingerprint: [u8; 32],
     #[n(1)]
@@ -27,51 +92,7 @@ pub struct ShardBackUp {
     pub shard: Vec<u8>,
 }
 
-impl ShardBackUp {
-    pub fn add_new_shard(shard: Vec<u8>, file_path: String) -> anyhow::Result<()> {
-        if !std::path::Path::new(&file_path).exists() {
-            File::create(file_path.clone()).context("Failed to create file")?;
-        }
-
-        // Parse the shard from CBOR
-        let shard = Shard::decode(&shard).context("Failed to decode shard")?;
-
-        let mut shards: Vec<ShardBackUp> = Self::get_all_shards(file_path.clone());
-
-        if shards
-            .iter()
-            .any(|s| s.fingerprint == *shard.seed_fingerprint())
-        {
-            anyhow::bail!(
-                "Shard with identifier '{:?}' already exists",
-                shard.seed_fingerprint()
-            );
-        }
-        // Add new shard
-        let new_shard = ShardBackUp::new(*shard.seed_fingerprint(), shard.encode());
-
-        shards.push(new_shard);
-
-        // Encode and write back
-        let encoded_data = minicbor::to_vec(&shards).context("Failed to encode shard data")?;
-
-        std::fs::write(&file_path, encoded_data).context("Failed to write file")?;
-
-        Ok(())
-    }
-
-    pub fn get_all_shards(file_path: String) -> Vec<ShardBackUp> {
-        match std::fs::read(&file_path).map_err(|e| format!("Failed to read file: {:?}", e)) {
-            Ok(file_data) => decode(&file_data)
-                .map_err(|e| format!("Failed to decode shard data: {:?}", e))
-                .unwrap_or_else(|_| Vec::new()),
-            Err(_) => {
-                // If the file does not exist or is empty, return an empty vector
-                Vec::new()
-            }
-        }
-    }
-
+impl ShardBackup {
     pub fn new(fingerprint: [u8; 32], shard: Vec<u8>) -> Self {
         Self {
             fingerprint,
@@ -83,8 +104,8 @@ impl ShardBackUp {
         }
     }
 
-    pub fn to_bytes(&self) -> anyhow::Result<Vec<u8>, anyhow::Error> {
-        minicbor::to_vec(self).map_err(|e| anyhow!("Failed to encode ShardBackUp: {:?}", e))
+    pub fn to_bytes(&self) -> anyhow::Result<Vec<u8>> {
+        minicbor::to_vec(self).context("failed to encode ShardBackup")
     }
 
     pub fn from_bytes(data: &[u8]) -> Result<Self, decode::Error> {
