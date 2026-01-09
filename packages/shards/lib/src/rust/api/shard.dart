@@ -7,41 +7,8 @@ import '../frb_generated.dart';
 import '../lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// These functions are ignored because they are not marked as `pub`: `from_bytes`, `load`, `new`, `save`, `to_bytes`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `decode`, `decode`, `encode`, `encode`
-
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ShardBackupFile>>
-abstract class ShardBackupFile implements RustOpaqueInterface {
-  static Future<void> addNewShard(
-          {required List<int> shard, required String filePath}) =>
-      RustLib.instance.api.crateApiShardShardBackupFileAddNewShard(
-          shard: shard, filePath: filePath);
-
-  BTreeMapU832ShardBackup get shards;
-
-  set shards(BTreeMapU832ShardBackup shards);
-
-  static Future<ShardBackupFile> default_() =>
-      RustLib.instance.api.crateApiShardShardBackupFileDefault();
-
-  static Future<ShardBackupFile> fromBytes({required List<int> data}) =>
-      RustLib.instance.api.crateApiShardShardBackupFileFromBytes(data: data);
-
-  static Future<Uint8List?> getShardByFingerprint(
-          {required U8Array32 fingerprint, required String filePath}) =>
-      RustLib.instance.api.crateApiShardShardBackupFileGetShardByFingerprint(
-          fingerprint: fingerprint, filePath: filePath);
-
-  static Future<ShardBackupFile> load({required String filePath}) =>
-      RustLib.instance.api.crateApiShardShardBackupFileLoad(filePath: filePath);
-
-  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
-  static Future<ShardBackupFile> newInstance() =>
-      RustLib.instance.api.crateApiShardShardBackupFileNew();
-
-  Future<void> save({required String filePath});
-
-  Future<Uint8List> toBytes();
-}
 
 /// single shard backup entry
 class ShardBackup {
@@ -55,20 +22,6 @@ class ShardBackup {
     required this.shard,
   });
 
-  static Future<ShardBackup> fromBytes({required List<int> data}) =>
-      RustLib.instance.api.crateApiShardShardBackupFromBytes(data: data);
-
-  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
-  static Future<ShardBackup> newInstance(
-          {required U8Array32 fingerprint, required List<int> shard}) =>
-      RustLib.instance.api
-          .crateApiShardShardBackupNew(fingerprint: fingerprint, shard: shard);
-
-  Future<Uint8List> toBytes() =>
-      RustLib.instance.api.crateApiShardShardBackupToBytes(
-        that: this,
-      );
-
   @override
   int get hashCode =>
       fingerprint.hashCode ^ timestamp.hashCode ^ shard.hashCode;
@@ -81,4 +34,35 @@ class ShardBackup {
           fingerprint == other.fingerprint &&
           timestamp == other.timestamp &&
           shard == other.shard;
+}
+
+class ShardBackupFile {
+  final List<ShardBackup> shards;
+
+  const ShardBackupFile({
+    required this.shards,
+  });
+
+  static Future<void> addNewShard(
+          {required List<int> shard, required String filePath}) =>
+      RustLib.instance.api.crateApiShardShardBackupFileAddNewShard(
+          shard: shard, filePath: filePath);
+
+  static Future<ShardBackupFile> default_() =>
+      RustLib.instance.api.crateApiShardShardBackupFileDefault();
+
+  static Future<Uint8List?> getShardByFingerprint(
+          {required U8Array32 fingerprint, required String filePath}) =>
+      RustLib.instance.api.crateApiShardShardBackupFileGetShardByFingerprint(
+          fingerprint: fingerprint, filePath: filePath);
+
+  @override
+  int get hashCode => shards.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ShardBackupFile &&
+          runtimeType == other.runtimeType &&
+          shards == other.shards;
 }

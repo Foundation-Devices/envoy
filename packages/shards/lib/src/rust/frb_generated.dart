@@ -71,7 +71,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 53706393;
+  int get rustContentHash => -934118791;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -82,62 +82,15 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
+  Future<void> crateApiShardInitApp();
+
   Future<void> crateApiShardShardBackupFileAddNewShard(
       {required List<int> shard, required String filePath});
 
-  BTreeMapU832ShardBackup crateApiShardShardBackupFileAutoAccessorGetShards(
-      {required ShardBackupFile that});
-
-  void crateApiShardShardBackupFileAutoAccessorSetShards(
-      {required ShardBackupFile that, required BTreeMapU832ShardBackup shards});
-
   Future<ShardBackupFile> crateApiShardShardBackupFileDefault();
-
-  Future<ShardBackupFile> crateApiShardShardBackupFileFromBytes(
-      {required List<int> data});
 
   Future<Uint8List?> crateApiShardShardBackupFileGetShardByFingerprint(
       {required U8Array32 fingerprint, required String filePath});
-
-  Future<ShardBackupFile> crateApiShardShardBackupFileLoad(
-      {required String filePath});
-
-  Future<ShardBackupFile> crateApiShardShardBackupFileNew();
-
-  Future<void> crateApiShardShardBackupFileSave(
-      {required ShardBackupFile that, required String filePath});
-
-  Future<Uint8List> crateApiShardShardBackupFileToBytes(
-      {required ShardBackupFile that});
-
-  Future<void> crateApiShardInitApp();
-
-  Future<ShardBackup> crateApiShardShardBackupFromBytes(
-      {required List<int> data});
-
-  Future<ShardBackup> crateApiShardShardBackupNew(
-      {required U8Array32 fingerprint, required List<int> shard});
-
-  Future<Uint8List> crateApiShardShardBackupToBytes(
-      {required ShardBackup that});
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_BTreeMapU832ShardBackup;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_BTreeMapU832ShardBackup;
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_BTreeMapU832ShardBackupPtr;
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_ShardBackupFile;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_ShardBackupFile;
-
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_ShardBackupFilePtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -149,284 +102,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  Future<void> crateApiShardShardBackupFileAddNewShard(
-      {required List<int> shard, required String filePath}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_list_prim_u_8_loose(shard, serializer);
-        sse_encode_String(filePath, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 1, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
-        decodeErrorData: sse_decode_AnyhowException,
-      ),
-      constMeta: kCrateApiShardShardBackupFileAddNewShardConstMeta,
-      argValues: [shard, filePath],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiShardShardBackupFileAddNewShardConstMeta =>
-      const TaskConstMeta(
-        debugName: "ShardBackupFile_add_new_shard",
-        argNames: ["shard", "filePath"],
-      );
-
-  @override
-  BTreeMapU832ShardBackup crateApiShardShardBackupFileAutoAccessorGetShards(
-      {required ShardBackupFile that}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-            that, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
-      },
-      codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBTreeMapu832ShardBackup,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiShardShardBackupFileAutoAccessorGetShardsConstMeta,
-      argValues: [that],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta
-      get kCrateApiShardShardBackupFileAutoAccessorGetShardsConstMeta =>
-          const TaskConstMeta(
-            debugName: "ShardBackupFile_auto_accessor_get_shards",
-            argNames: ["that"],
-          );
-
-  @override
-  void crateApiShardShardBackupFileAutoAccessorSetShards(
-      {required ShardBackupFile that,
-      required BTreeMapU832ShardBackup shards}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-            that, serializer);
-        sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBTreeMapu832ShardBackup(
-            shards, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiShardShardBackupFileAutoAccessorSetShardsConstMeta,
-      argValues: [that, shards],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta
-      get kCrateApiShardShardBackupFileAutoAccessorSetShardsConstMeta =>
-          const TaskConstMeta(
-            debugName: "ShardBackupFile_auto_accessor_set_shards",
-            argNames: ["that", "shards"],
-          );
-
-  @override
-  Future<ShardBackupFile> crateApiShardShardBackupFileDefault() {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiShardShardBackupFileDefaultConstMeta,
-      argValues: [],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiShardShardBackupFileDefaultConstMeta =>
-      const TaskConstMeta(
-        debugName: "ShardBackupFile_default",
-        argNames: [],
-      );
-
-  @override
-  Future<ShardBackupFile> crateApiShardShardBackupFileFromBytes(
-      {required List<int> data}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_list_prim_u_8_loose(data, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 5, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile,
-        decodeErrorData: sse_decode_AnyhowException,
-      ),
-      constMeta: kCrateApiShardShardBackupFileFromBytesConstMeta,
-      argValues: [data],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiShardShardBackupFileFromBytesConstMeta =>
-      const TaskConstMeta(
-        debugName: "ShardBackupFile_from_bytes",
-        argNames: ["data"],
-      );
-
-  @override
-  Future<Uint8List?> crateApiShardShardBackupFileGetShardByFingerprint(
-      {required U8Array32 fingerprint, required String filePath}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_u_8_array_32(fingerprint, serializer);
-        sse_encode_String(filePath, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_opt_list_prim_u_8_strict,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiShardShardBackupFileGetShardByFingerprintConstMeta,
-      argValues: [fingerprint, filePath],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta
-      get kCrateApiShardShardBackupFileGetShardByFingerprintConstMeta =>
-          const TaskConstMeta(
-            debugName: "ShardBackupFile_get_shard_by_fingerprint",
-            argNames: ["fingerprint", "filePath"],
-          );
-
-  @override
-  Future<ShardBackupFile> crateApiShardShardBackupFileLoad(
-      {required String filePath}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(filePath, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 7, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiShardShardBackupFileLoadConstMeta,
-      argValues: [filePath],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiShardShardBackupFileLoadConstMeta =>
-      const TaskConstMeta(
-        debugName: "ShardBackupFile_load",
-        argNames: ["filePath"],
-      );
-
-  @override
-  Future<ShardBackupFile> crateApiShardShardBackupFileNew() {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 8, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData:
-            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiShardShardBackupFileNewConstMeta,
-      argValues: [],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiShardShardBackupFileNewConstMeta =>
-      const TaskConstMeta(
-        debugName: "ShardBackupFile_new",
-        argNames: [],
-      );
-
-  @override
-  Future<void> crateApiShardShardBackupFileSave(
-      {required ShardBackupFile that, required String filePath}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-            that, serializer);
-        sse_encode_String(filePath, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 9, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
-        decodeErrorData: sse_decode_AnyhowException,
-      ),
-      constMeta: kCrateApiShardShardBackupFileSaveConstMeta,
-      argValues: [that, filePath],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiShardShardBackupFileSaveConstMeta =>
-      const TaskConstMeta(
-        debugName: "ShardBackupFile_save",
-        argNames: ["that", "filePath"],
-      );
-
-  @override
-  Future<Uint8List> crateApiShardShardBackupFileToBytes(
-      {required ShardBackupFile that}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-            that, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 10, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_list_prim_u_8_strict,
-        decodeErrorData: sse_decode_AnyhowException,
-      ),
-      constMeta: kCrateApiShardShardBackupFileToBytesConstMeta,
-      argValues: [that],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiShardShardBackupFileToBytesConstMeta =>
-      const TaskConstMeta(
-        debugName: "ShardBackupFile_to_bytes",
-        argNames: ["that"],
-      );
-
-  @override
   Future<void> crateApiShardInitApp() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 11, port: port_);
+            funcId: 1, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -444,99 +125,83 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<ShardBackup> crateApiShardShardBackupFromBytes(
-      {required List<int> data}) {
+  Future<void> crateApiShardShardBackupFileAddNewShard(
+      {required List<int> shard, required String filePath}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_list_prim_u_8_loose(data, serializer);
+        sse_encode_list_prim_u_8_loose(shard, serializer);
+        sse_encode_String(filePath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 12, port: port_);
+            funcId: 2, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_shard_backup,
+        decodeSuccessData: sse_decode_unit,
         decodeErrorData: sse_decode_AnyhowException,
       ),
-      constMeta: kCrateApiShardShardBackupFromBytesConstMeta,
-      argValues: [data],
+      constMeta: kCrateApiShardShardBackupFileAddNewShardConstMeta,
+      argValues: [shard, filePath],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiShardShardBackupFromBytesConstMeta =>
+  TaskConstMeta get kCrateApiShardShardBackupFileAddNewShardConstMeta =>
       const TaskConstMeta(
-        debugName: "shard_backup_from_bytes",
-        argNames: ["data"],
+        debugName: "shard_backup_file_add_new_shard",
+        argNames: ["shard", "filePath"],
       );
 
   @override
-  Future<ShardBackup> crateApiShardShardBackupNew(
-      {required U8Array32 fingerprint, required List<int> shard}) {
+  Future<ShardBackupFile> crateApiShardShardBackupFileDefault() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 3, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_shard_backup_file,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiShardShardBackupFileDefaultConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiShardShardBackupFileDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "shard_backup_file_default",
+        argNames: [],
+      );
+
+  @override
+  Future<Uint8List?> crateApiShardShardBackupFileGetShardByFingerprint(
+      {required U8Array32 fingerprint, required String filePath}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_u_8_array_32(fingerprint, serializer);
-        sse_encode_list_prim_u_8_loose(shard, serializer);
+        sse_encode_String(filePath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 13, port: port_);
+            funcId: 4, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_shard_backup,
+        decodeSuccessData: sse_decode_opt_list_prim_u_8_strict,
         decodeErrorData: null,
       ),
-      constMeta: kCrateApiShardShardBackupNewConstMeta,
-      argValues: [fingerprint, shard],
+      constMeta: kCrateApiShardShardBackupFileGetShardByFingerprintConstMeta,
+      argValues: [fingerprint, filePath],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiShardShardBackupNewConstMeta =>
-      const TaskConstMeta(
-        debugName: "shard_backup_new",
-        argNames: ["fingerprint", "shard"],
-      );
-
-  @override
-  Future<Uint8List> crateApiShardShardBackupToBytes(
-      {required ShardBackup that}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_box_autoadd_shard_backup(that, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 14, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_list_prim_u_8_strict,
-        decodeErrorData: sse_decode_AnyhowException,
-      ),
-      constMeta: kCrateApiShardShardBackupToBytesConstMeta,
-      argValues: [that],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiShardShardBackupToBytesConstMeta =>
-      const TaskConstMeta(
-        debugName: "shard_backup_to_bytes",
-        argNames: ["that"],
-      );
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_BTreeMapU832ShardBackup => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBTreeMapu832ShardBackup;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_BTreeMapU832ShardBackup => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBTreeMapu832ShardBackup;
-
-  RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_ShardBackupFile => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_ShardBackupFile => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile;
+  TaskConstMeta
+      get kCrateApiShardShardBackupFileGetShardByFingerprintConstMeta =>
+          const TaskConstMeta(
+            debugName: "shard_backup_file_get_shard_by_fingerprint",
+            argNames: ["fingerprint", "filePath"],
+          );
 
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
@@ -545,65 +210,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  BTreeMapU832ShardBackup
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBTreeMapu832ShardBackup(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return BTreeMapU832ShardBackupImpl.frbInternalDcoDecode(
-        raw as List<dynamic>);
-  }
-
-  @protected
-  ShardBackupFile
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ShardBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  ShardBackupFile
-      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ShardBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  ShardBackupFile
-      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ShardBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  BTreeMapU832ShardBackup
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBTreeMapu832ShardBackup(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return BTreeMapU832ShardBackupImpl.frbInternalDcoDecode(
-        raw as List<dynamic>);
-  }
-
-  @protected
-  ShardBackupFile
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ShardBackupFileImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as String;
-  }
-
-  @protected
-  ShardBackup dco_decode_box_autoadd_shard_backup(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_shard_backup(raw);
   }
 
   @protected
@@ -616,6 +225,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
+  }
+
+  @protected
+  List<ShardBackup> dco_decode_list_shard_backup(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_shard_backup).toList();
   }
 
   @protected
@@ -634,6 +249,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       fingerprint: dco_decode_u_8_array_32(arr[0]),
       timestamp: dco_decode_u_64(arr[1]),
       shard: dco_decode_list_prim_u_8_strict(arr[2]),
+    );
+  }
+
+  @protected
+  ShardBackupFile dco_decode_shard_backup_file(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return ShardBackupFile(
+      shards: dco_decode_list_shard_backup(arr[0]),
     );
   }
 
@@ -662,12 +288,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  BigInt dco_decode_usize(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dcoDecodeU64(raw);
-  }
-
-  @protected
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_String(deserializer);
@@ -675,71 +295,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  BTreeMapU832ShardBackup
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBTreeMapu832ShardBackup(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return BTreeMapU832ShardBackupImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  ShardBackupFile
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return ShardBackupFileImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  ShardBackupFile
-      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return ShardBackupFileImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  ShardBackupFile
-      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return ShardBackupFileImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  BTreeMapU832ShardBackup
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBTreeMapu832ShardBackup(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return BTreeMapU832ShardBackupImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  ShardBackupFile
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return ShardBackupFileImpl.frbInternalSseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
   String sse_decode_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_prim_u_8_strict(deserializer);
     return utf8.decoder.convert(inner);
-  }
-
-  @protected
-  ShardBackup sse_decode_box_autoadd_shard_backup(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_shard_backup(deserializer));
   }
 
   @protected
@@ -754,6 +313,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  List<ShardBackup> sse_decode_list_shard_backup(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <ShardBackup>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_shard_backup(deserializer));
+    }
+    return ans_;
   }
 
   @protected
@@ -777,6 +348,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         fingerprint: var_fingerprint,
         timestamp: var_timestamp,
         shard: var_shard);
+  }
+
+  @protected
+  ShardBackupFile sse_decode_shard_backup_file(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_shards = sse_decode_list_shard_backup(deserializer);
+    return ShardBackupFile(shards: var_shards);
   }
 
   @protected
@@ -804,12 +382,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  BigInt sse_decode_usize(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getBigUint64();
-  }
-
-  @protected
   int sse_decode_i_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getInt32();
@@ -829,76 +401,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBTreeMapu832ShardBackup(
-          BTreeMapU832ShardBackup self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as BTreeMapU832ShardBackupImpl).frbInternalSseEncode(move: true),
-        serializer);
-  }
-
-  @protected
-  void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-          ShardBackupFile self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as ShardBackupFileImpl).frbInternalSseEncode(move: true),
-        serializer);
-  }
-
-  @protected
-  void
-      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-          ShardBackupFile self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as ShardBackupFileImpl).frbInternalSseEncode(move: false),
-        serializer);
-  }
-
-  @protected
-  void
-      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-          ShardBackupFile self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as ShardBackupFileImpl).frbInternalSseEncode(move: false),
-        serializer);
-  }
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBTreeMapu832ShardBackup(
-          BTreeMapU832ShardBackup self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as BTreeMapU832ShardBackupImpl).frbInternalSseEncode(move: null),
-        serializer);
-  }
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerShardBackupFile(
-          ShardBackupFile self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-        (self as ShardBackupFileImpl).frbInternalSseEncode(move: null),
-        serializer);
-  }
-
-  @protected
   void sse_encode_String(String self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
-  }
-
-  @protected
-  void sse_encode_box_autoadd_shard_backup(
-      ShardBackup self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_shard_backup(self, serializer);
   }
 
   @protected
@@ -919,6 +424,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_shard_backup(
+      List<ShardBackup> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_shard_backup(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_opt_list_prim_u_8_strict(
       Uint8List? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -935,6 +450,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_u_8_array_32(self.fingerprint, serializer);
     sse_encode_u_64(self.timestamp, serializer);
     sse_encode_list_prim_u_8_strict(self.shard, serializer);
+  }
+
+  @protected
+  void sse_encode_shard_backup_file(
+      ShardBackupFile self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_shard_backup(self.shards, serializer);
   }
 
   @protected
@@ -961,12 +483,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_usize(BigInt self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putBigUint64(self);
-  }
-
-  @protected
   void sse_encode_i_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putInt32(self);
@@ -977,63 +493,4 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self ? 1 : 0);
   }
-}
-
-@sealed
-class BTreeMapU832ShardBackupImpl extends RustOpaque
-    implements BTreeMapU832ShardBackup {
-  // Not to be used by end users
-  BTreeMapU832ShardBackupImpl.frbInternalDcoDecode(List<dynamic> wire)
-      : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  BTreeMapU832ShardBackupImpl.frbInternalSseDecode(
-      BigInt ptr, int externalSizeOnNative)
-      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount: RustLib
-        .instance.api.rust_arc_increment_strong_count_BTreeMapU832ShardBackup,
-    rustArcDecrementStrongCount: RustLib
-        .instance.api.rust_arc_decrement_strong_count_BTreeMapU832ShardBackup,
-    rustArcDecrementStrongCountPtr: RustLib.instance.api
-        .rust_arc_decrement_strong_count_BTreeMapU832ShardBackupPtr,
-  );
-}
-
-@sealed
-class ShardBackupFileImpl extends RustOpaque implements ShardBackupFile {
-  // Not to be used by end users
-  ShardBackupFileImpl.frbInternalDcoDecode(List<dynamic> wire)
-      : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  ShardBackupFileImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
-      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_ShardBackupFile,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_ShardBackupFile,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_ShardBackupFilePtr,
-  );
-
-  BTreeMapU832ShardBackup get shards =>
-      RustLib.instance.api.crateApiShardShardBackupFileAutoAccessorGetShards(
-        that: this,
-      );
-
-  set shards(BTreeMapU832ShardBackup shards) =>
-      RustLib.instance.api.crateApiShardShardBackupFileAutoAccessorSetShards(
-          that: this, shards: shards);
-
-  Future<void> save({required String filePath}) => RustLib.instance.api
-      .crateApiShardShardBackupFileSave(that: this, filePath: filePath);
-
-  Future<Uint8List> toBytes() =>
-      RustLib.instance.api.crateApiShardShardBackupFileToBytes(
-        that: this,
-      );
 }
