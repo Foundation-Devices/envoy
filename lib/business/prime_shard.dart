@@ -12,7 +12,6 @@ import 'package:flutter/services.dart';
 import 'package:shards/shards.dart';
 
 import 'package:envoy/util/bug_report_helper.dart';
-import 'package:collection/collection.dart';
 
 const String LAST_BACKUP_PREFS = "last_backup_prime";
 const String PRIME_SECRET = "prime.secret";
@@ -45,28 +44,14 @@ class PrimeShard {
     kPrint("Instance of PrimeShard created!");
   }
 
-  //TODO: use secure storage too ?
-  Future<List<ShardBackUp>> getAllShards() async {
-    return ShardBackUp.getAllShards(
-      filePath: getPrimeSecretPath(),
-    );
-  }
-
-  Future<ShardBackUp?> getShard({required Uint8List fingerprint}) async {
-    final shards = await getAllShards();
-    return shards.firstWhereOrNull((shard) {
-      kPrint("looking for: $fingerprint");
-      kPrint("got: ${Uint8List.fromList(shard.fingerprint)}");
-
-      return ListEquality()
-          .equals(Uint8List.fromList(shard.fingerprint), fingerprint);
-    });
+  Future<Uint8List?> getShard({required Uint8List fingerprint}) async {
+    return ShardBackupFile.getShardByFingerprint(filePath: getPrimeSecretPath(), fingerprint: U8Array32(fingerprint));
   }
 
   Future addShard({
     required List<int> shard,
   }) async {
-    await ShardBackUp.addNewShard(
+    await ShardBackupFile.addNewShard(
       shard: shard,
       filePath: getPrimeSecretPath(),
     );
