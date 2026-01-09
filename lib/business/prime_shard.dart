@@ -45,7 +45,8 @@ class PrimeShard {
   }
 
   Future<Uint8List?> getShard({required Uint8List fingerprint}) async {
-    return ShardBackupFile.getShardByFingerprint(filePath: getPrimeSecretPath(), fingerprint: U8Array32(fingerprint));
+    return ShardBackupFile.getShardByFingerprint(
+        filePath: getPrimeSecretPath(), fingerprint: U8Array32(fingerprint));
   }
 
   Future addShard({

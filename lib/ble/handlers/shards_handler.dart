@@ -38,7 +38,7 @@ class ShardsHandler extends PassportMessageHandler {
       } catch (e, _) {
         kPrint("Shard backup failure: $e");
         writer.writeMessage(api.QuantumLinkMessage.backupShardResponse(
-          api.BackupShardResponse_Error(error: e.toString())));
+            api.BackupShardResponse_Error(error: e.toString())));
       }
     }
     if (message
