@@ -23,7 +23,7 @@ class ScvServer {
 
   final LocalStorage _ls = LocalStorage();
   static const String SCV_CHALLENGE_PREFS = "scv_challenge";
-  Challenge? storedChallenge;
+  Challenge? _storedChallenge;
 
   static final ScvServer _instance = ScvServer._internal();
 
@@ -42,37 +42,39 @@ class ScvServer {
     // Get the SCV challenge from storage
     // If not there, get it from Server and store it
     if (_restoreChallege() == false) {
-      getChallenge().then((challenge) {
-        _storeChallenge(challenge);
+      getChallenge().then((challenge) async {
+        await _storeChallenge(challenge);
       });
     }
   }
 
-  void _storeChallenge(Challenge challenge) {
-    storedChallenge = challenge;
+  Future<void> _storeChallenge(Challenge challenge) async {
+    _storedChallenge = challenge;
     String json = jsonEncode(challenge.toJson());
-    _ls.prefs.setString(SCV_CHALLENGE_PREFS, json);
+    await _ls.prefs.setString(SCV_CHALLENGE_PREFS, json);
   }
 
   bool _restoreChallege() {
     if (_ls.prefs.containsKey(SCV_CHALLENGE_PREFS)) {
       var challenge = jsonDecode(_ls.prefs.getString(SCV_CHALLENGE_PREFS)!);
-      storedChallenge = Challenge.fromJson(challenge);
+      _storedChallenge = Challenge.fromJson(challenge);
       return true;
     }
 
     return false;
   }
 
-  void _clearChallenge() {
+  Future<void> _clearChallenge() async {
     if (_ls.prefs.containsKey(SCV_CHALLENGE_PREFS)) {
-      _ls.prefs.remove(SCV_CHALLENGE_PREFS);
+      await _ls.prefs.remove(SCV_CHALLENGE_PREFS);
     }
+    
+    _storedChallenge = null;
   }
 
   Future<Challenge> getChallenge() async {
-    if (storedChallenge != null) {
-      return storedChallenge!;
+    if (_storedChallenge != null) {
+      return _storedChallenge!;
     }
 
     final response = await http.get('$serverAddress/challenge');
@@ -90,7 +92,8 @@ class ScvServer {
 
   Future<bool> validate(Challenge challenge, List<String> responseWords) async {
     // Clear stored challenge and fetch it again
-    _clearChallenge();
+
+    await _clearChallenge();
     getChallenge().then((challenge) {
       _storeChallenge(challenge);
     });
