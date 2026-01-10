@@ -97,10 +97,10 @@ class Devices extends ChangeNotifier {
   //reconnect to all paired primes
   //TODO: fix simultaneous connections
   Future<void> connect() async {
-    kPrint("Connecting to primes...");
     if (getPrimeDevices.isEmpty) {
       return;
     }
+    kPrint("Connecting to primes...");
     await BluetoothManager().getPermissions();
     //wait for the bluetooth manager to initialize
     await Future.delayed(const Duration(seconds: 1));
