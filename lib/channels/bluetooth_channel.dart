@@ -14,6 +14,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
+class BleSetupTimeoutException implements Exception {
+  final String message;
+
+  BleSetupTimeoutException(this.message);
+
+  @override
+  String toString() => 'BleSetupTimeoutException: $message';
+}
+
 /// Manages Bluetooth communication via platform channels for iOS
 /// Handles method channel calls and event streams for BLE operations
 class BluetoothChannel {
@@ -172,7 +181,11 @@ class BluetoothChannel {
       }
     } else {
       //Android will wait for event after initiating pairing
-      await bleMethodChannel.invokeMethod("pair", {"deviceId": deviceId});
+      await bleMethodChannel
+          .invokeMethod("pair", {"deviceId": deviceId}).timeout(
+              Duration(seconds: 10), onTimeout: () {
+        throw BleSetupTimeoutException("Pairing timed out");
+      });
     }
     bool initiateBonding = false;
     final connect = await listenToDeviceConnectionEvents.firstWhere(
@@ -190,7 +203,9 @@ class BluetoothChannel {
         }
         return event.connected;
       },
-    );
+    ).timeout(Duration(seconds: 10), onTimeout: () {
+      throw BleSetupTimeoutException("Pairing timed out");
+    });
     return connect;
   }
 
