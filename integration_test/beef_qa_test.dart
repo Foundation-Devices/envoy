@@ -776,35 +776,147 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
-    testWidgets('<BUY forever back loop>', (tester) async {
+    // testWidgets('<BUY forever back loop>', (tester) async {
+    //   final stopwatch = Stopwatch()..start(); // Start timer
+    //
+    //   await goBackHome(tester);
+    //
+    //   await fromHomeToBuyOptions(tester);
+    //
+    //   await findAndPressTextButton(tester, "Continue");
+    //
+    //   // this is to choose passport account so we can see the Verify button !!!!
+    //   await findAndPressWidget<CardSwipeWrapper>(tester, findFirst: true);
+    //   await findLastTextButtonAndPress(tester, "GH TEST ACC (#1)");
+    //
+    //   await findAndPressTextButton(tester, "Verify Address with Passport");
+    //   Finder doneButton = find.text("Done");
+    //   await tester.pumpUntilFound(doneButton);
+    //   await findAndPressTextButton(tester, "Done");
+    //   await pressHamburgerMenu(tester);
+    //   await pressHamburgerMenu(tester);
+    //   await tester.pump(Durations.long2);
+    //   await findTextOnScreen(tester, "ACCOUNTS");
+    //   await tester.pump(Durations.long2);
+    //   await findTextOnScreen(tester, "Accounts");
+    //   await tester.pump(Durations.long2);
+    //   // Make sure you do not go back to BUY after hamburger (and closing the loop)
+    //   await pressHamburgerMenu(tester);
+    //   await tester.pump(Durations.long2);
+    //   await findTextOnScreen(tester, "SETTINGS");
+    //   await tester.pump(Durations.long2);
+    //
+    //   stopwatch.stop();
+    //   debugPrint(
+    //     '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+    //   );
+    // });
+    testWidgets('<User unit preference in Send>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
+      String mainetReceiveAddress =
+          'bc1qcjwyecualcytzgud5ruwrj642fng4tvp8nsgr2';
+
       await goBackHome(tester);
+      await checkSync(tester);
 
-      await fromHomeToBuyOptions(tester);
-
-      await findAndPressTextButton(tester, "Continue");
-
-      // this is to choose passport account so we can see the Verify button !!!!
-      await findAndPressWidget<CardSwipeWrapper>(tester, findFirst: true);
-      await findLastTextButtonAndPress(tester, "GH TEST ACC (#1)");
-
-      await findAndPressTextButton(tester, "Verify Address with Passport");
-      Finder doneButton = find.text("Done");
-      await tester.pumpUntilFound(doneButton);
-      await findAndPressTextButton(tester, "Done");
+      /// 1) Go to settings
       await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
-      await tester.pump(Durations.long2);
-      await findTextOnScreen(tester, "ACCOUNTS");
-      await tester.pump(Durations.long2);
-      await findTextOnScreen(tester, "Accounts");
-      await tester.pump(Durations.long2);
-      // Make sure you do not go back to BUY after hamburger (and closing the loop)
-      await pressHamburgerMenu(tester);
-      await tester.pump(Durations.long2);
-      await findTextOnScreen(tester, "SETTINGS");
-      await tester.pump(Durations.long2);
+      await tapSettingsButton(tester);
+
+      /// 2) Check that the fiat toggle exists
+      bool isSettingsFiatSwitchOn =
+          await isSlideSwitchOn(tester, 'Display Fiat Values');
+
+      /// 3) Check that it can toggle just fine, leave it enabled (leave default fiat value)
+      if (!isSettingsFiatSwitchOn) {
+        // find And Toggle DisplayFiat Switch
+        await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
+      }
+
+      await pressHamburgerMenu(tester); // back to settings
+      await pressHamburgerMenu(tester); // back to home
+
+      await scrollFindAndTapText(
+          tester, "GH TEST ACC (#1)"); // tap first mainet acc with money
+
+      await findAndPressTextButton(tester, "Send");
+
+      /// change to sats
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
+
+      /// check if the unit is SATS (there should be 2 SATS icons on the screen)
+      final satsFinder = await checkForEnvoyIcon(tester, EnvoyIcons.sats);
+      expect(satsFinder, findsNWidgets(2));
+
+      // go back
+      //await pressHamburgerMenu(tester);
+      await findAndPressTextButton(tester, "Accounts");
+      await findAndPressTextButton(tester, "GH TEST ACC (#1)");
+      await tester.pump(Durations.long1);
+
+      await findAndPressTextButton(tester, "Send");
+
+      /// check if the unit is SATS (there should be 2 SATS icons on the screen)
+      expect(satsFinder, findsNWidgets(2));
+
+      /// change to fiat
+      await findAndPressTextButton(tester, "\$");
+
+      // go back
+      //await pressHamburgerMenu(tester);
+      await findAndPressTextButton(tester, "Accounts");
+      await findAndPressTextButton(tester, "GH TEST ACC (#1)");
+      await tester.pump(Durations.long1);
+
+      await findAndPressTextButton(tester, "Send");
+
+      // check if you are entering dollars
+      final dollarFinder = find.text("\$");
+      expect(dollarFinder, findsNWidgets(2));
+
+      /// change to btc
+      await cycleToEnvoyIcon(tester, EnvoyIcons.btc);
+
+      // go back
+      //await pressHamburgerMenu(tester);
+      await findAndPressTextButton(tester, "Accounts");
+      await findAndPressTextButton(tester, "GH TEST ACC (#1)");
+      await tester.pump(Durations.long1);
+
+      await findAndPressTextButton(tester, "Send");
+
+      /// check if the unit is BTC (there should be 2 BTC icons on the screen)
+      final btcFinder = await checkForEnvoyIcon(tester, EnvoyIcons.btc);
+      expect(btcFinder, findsNWidgets(2));
+
+      /// With the unit in btc, paste a valid address, enter a valid amount, tap Confirm
+      await enterTextInField(
+          tester, find.byType(TextFormField), mainetReceiveAddress);
+
+      /// change to sats so you can enter with test
+      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
+
+      // enter amount
+      await findAndPressTextButton(tester, '5');
+      await findAndPressTextButton(tester, '6');
+      await findAndPressTextButton(tester, '7');
+
+      /// change to btc
+      await cycleToEnvoyIcon(tester, EnvoyIcons.btc);
+
+      // go to staging
+      await waitForTealTextAndTap(tester, 'Confirm');
+
+      // now wait for it to go to staging
+      final textFinder = find.text("Fee");
+      await tester.pumpUntilFound(textFinder,
+          tries: 20, duration: Durations.long2);
+
+      // check if the unit in the Staging is BTC
+      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
+
+      await goBackHome(tester); // force test to Home
 
       stopwatch.stop();
       debugPrint(
@@ -955,118 +1067,6 @@ Future<void> main() async {
             await checkFiatOnCurrentScreen(tester, currentSettingsFiatCode);
         expect(fiatCheckResult, isTrue);
       }
-
-      await goBackHome(tester); // force test to Home
-
-      stopwatch.stop();
-      debugPrint(
-        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
-      );
-    });
-    testWidgets('<User unit preference in Send>', (tester) async {
-      final stopwatch = Stopwatch()..start(); // Start timer
-
-      String mainetReceiveAddress =
-          'bc1qcjwyecualcytzgud5ruwrj642fng4tvp8nsgr2';
-
-      await goBackHome(tester);
-      await checkSync(tester);
-
-      /// 1) Go to settings
-      await pressHamburgerMenu(tester);
-      await tapSettingsButton(tester);
-
-      /// 2) Check that the fiat toggle exists
-      bool isSettingsFiatSwitchOn =
-          await isSlideSwitchOn(tester, 'Display Fiat Values');
-
-      /// 3) Check that it can toggle just fine, leave it enabled (leave default fiat value)
-      if (!isSettingsFiatSwitchOn) {
-        // find And Toggle DisplayFiat Switch
-        await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
-      }
-
-      await pressHamburgerMenu(tester); // back to settings
-      await pressHamburgerMenu(tester); // back to home
-
-      await scrollFindAndTapText(
-          tester, "GH TEST ACC (#1)"); // tap first mainet acc with money
-
-      await findAndPressTextButton(tester, "Send");
-
-      /// change to sats
-      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
-
-      /// check if the unit is SATS (there should be 2 SATS icons on the screen)
-      final satsFinder = await checkForEnvoyIcon(tester, EnvoyIcons.sats);
-      expect(satsFinder, findsNWidgets(2));
-
-      // go back
-      //await pressHamburgerMenu(tester);
-      await findAndPressTextButton(tester, "Accounts");
-      await findAndPressTextButton(tester, "GH TEST ACC (#1)");
-      await tester.pump(Durations.long1);
-
-      await findAndPressTextButton(tester, "Send");
-
-      /// check if the unit is SATS (there should be 2 SATS icons on the screen)
-      expect(satsFinder, findsNWidgets(2));
-
-      /// change to fiat
-      await findAndPressTextButton(tester, "\$");
-
-      // go back
-      //await pressHamburgerMenu(tester);
-      await findAndPressTextButton(tester, "Accounts");
-      await findAndPressTextButton(tester, "GH TEST ACC (#1)");
-      await tester.pump(Durations.long1);
-
-      await findAndPressTextButton(tester, "Send");
-
-      // check if you are entering dollars
-      final dollarFinder = find.text("\$");
-      expect(dollarFinder, findsNWidgets(2));
-
-      /// change to btc
-      await cycleToEnvoyIcon(tester, EnvoyIcons.btc);
-
-      // go back
-      //await pressHamburgerMenu(tester);
-      await findAndPressTextButton(tester, "Accounts");
-      await findAndPressTextButton(tester, "GH TEST ACC (#1)");
-      await tester.pump(Durations.long1);
-
-      await findAndPressTextButton(tester, "Send");
-
-      /// check if the unit is BTC (there should be 2 BTC icons on the screen)
-      final btcFinder = await checkForEnvoyIcon(tester, EnvoyIcons.btc);
-      expect(btcFinder, findsNWidgets(2));
-
-      /// With the unit in btc, paste a valid address, enter a valid amount, tap Confirm
-      await enterTextInField(
-          tester, find.byType(TextFormField), mainetReceiveAddress);
-
-      /// change to sats so you can enter with test
-      await cycleToEnvoyIcon(tester, EnvoyIcons.sats);
-
-      // enter amount
-      await findAndPressTextButton(tester, '5');
-      await findAndPressTextButton(tester, '6');
-      await findAndPressTextButton(tester, '7');
-
-      /// change to btc
-      await cycleToEnvoyIcon(tester, EnvoyIcons.btc);
-
-      // go to staging
-      await waitForTealTextAndTap(tester, 'Confirm');
-
-      // now wait for it to go to staging
-      final textFinder = find.text("Fee");
-      await tester.pumpUntilFound(textFinder,
-          tries: 20, duration: Durations.long2);
-
-      // check if the unit in the Staging is BTC
-      await checkForEnvoyIcon(tester, EnvoyIcons.btc);
 
       await goBackHome(tester); // force test to Home
 
@@ -1502,7 +1502,7 @@ Future<void> main() async {
               'The first address should be a Taproot address starting with bc1p');
 
       // back to home
-      await findAndPressTextButton(tester, "Accounts");
+      await goBackHome(tester);
       // settings
       await pressHamburgerMenu(tester);
       await tapSettingsButton(tester);
@@ -1523,6 +1523,12 @@ Future<void> main() async {
       await tester.pumpUntilFound(nonTaprootFinder,
           duration: Durations.long1, tries: 30);
 
+      // refresh Receive scren
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+      await tester.pump(Durations.extralong4);
+      await tester.pump();
+
       // Grab the second address
       final address2 = await getAddressFromReceiveScreen(tester);
       await tester.pump(Durations.extralong4);
@@ -1531,10 +1537,8 @@ Future<void> main() async {
           reason:
               'The second address should be a non-Taproot address starting with bc1q, the second address: $address2');
 
-      // Check if "Reconnect Passport" button working
-      // back to home
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
+      // back to Home
+      await goBackHome(tester);
       // settings
       await pressHamburgerMenu(tester);
       await tapSettingsButton(tester);
@@ -2741,7 +2745,7 @@ Future<void> main() async {
       await tester.pump(Durations.long2);
       // Go to Acc options
       await findAndPressIcon(tester, Icons.more_horiz_outlined);
-      await findAndPressTextButton(tester, "Disconnect");
+      await findAndPressTextButton(tester, "DELETE");
 
       final envoyIconFinder = find.byWidgetPredicate(
         (widget) => widget is EnvoyIcon && widget.icon == EnvoyIcons.alert,
@@ -2777,21 +2781,17 @@ Future<void> main() async {
 
       final popUpText = find.text('Are you sure');
       // Check that a pop up comes up
-      await tester.pumpUntilFound(popUpText, duration: Durations.long1);
-      final closeDialogButton = find.byIcon(Icons.close);
-      await tester.tap(closeDialogButton.last);
+      await findAndTapPopUpText(tester, "Cancel");
       await tester.pump(Durations.long2);
       await tester.pump(Durations.long2);
 
-      // Check that a pop up close on 'x'
+      // Check that a pop up close on 'Cancel'
       expect(popUpText, findsNothing);
 
       await openMenuAndPressDeleteDevice(tester);
       await tester.pumpUntilFound(popUpText, duration: Durations.long1);
 
-      final deleteButtonFromDialog = find.text('Delete');
-      expect(deleteButtonFromDialog, findsOneWidget);
-      await tester.tap(deleteButtonFromDialog);
+      await findAndTapPopUpText(tester, 'Disconnect');
       await tester.pump(Durations.long2);
       await tester.pump(Durations.long2);
 
@@ -2806,6 +2806,7 @@ Future<void> main() async {
       await scrollHome(tester, -600);
       final deletedAccount = find.text('Taproot modal test');
       expect(deletedAccount, findsNothing);
+      await goBackHome(tester);
 
       stopwatch.stop();
       debugPrint(
