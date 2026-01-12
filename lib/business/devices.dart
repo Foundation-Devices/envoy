@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
@@ -114,10 +115,12 @@ class Devices extends ChangeNotifier {
               "Bluetooth permissions denied, cannot connect to device ${device.name}");
           await BluetoothManager().getPermissions();
         }
+        final deviceId =
+            Platform.isAndroid ? device.bleId : device.peripheralId;
 
         //OS will try to reconnect to bonded device automatically,
         //but we call connect to ensure our app connects to it
-        await BluetoothManager().reconnect(device);
+        await BluetoothManager().reconnect(deviceId);
       }
     }
   }

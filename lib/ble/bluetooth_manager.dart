@@ -661,7 +661,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     return _writeWithProgress(message);
   }
 
-  Future<void> reconnect(Device device) async {
-    await BluetoothChannel().reconnect(device);
+  Future<void> reconnect(String id) async {
+    await BluetoothChannel().reconnect(id);
   }
 }

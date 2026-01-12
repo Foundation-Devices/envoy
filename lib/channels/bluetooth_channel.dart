@@ -5,7 +5,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:envoy/business/devices.dart';
 import 'package:envoy/channels/accessory.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/util/console.dart';
@@ -287,9 +286,8 @@ class BluetoothChannel {
     return file;
   }
 
-  Future reconnect(Device device) async {
-    final bluetoothId = Platform.isIOS ? device.peripheralId : device.bleId;
-    await bleMethodChannel.invokeMethod("reconnect", {"bleId": bluetoothId});
+  Future reconnect(String id) async {
+    await bleMethodChannel.invokeMethod("reconnect", {"bleId": id});
   }
 
   //IOS only
