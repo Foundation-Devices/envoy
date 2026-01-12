@@ -100,7 +100,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                     onTap: () {
                       Settings().updateAccountsViewSettings();
                       if (mounted) {
-                        context.go("/");
+                        GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
                       }
                     },
                   ),
