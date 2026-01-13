@@ -177,8 +177,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
 
         //handle specific errors
         if (e is BleSetupTimeoutException) {
-          message =
-              "Unable to connect to the device. Please make sure Prime Bluetooth is enabled and try again.";
+          message = S().onboarding_modalBluetoothUnableConnect_content;
         }
 
         showEnvoyDialog(
@@ -186,9 +185,10 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
           dismissible: true,
           dialog: EnvoyPopUp(
             icon: EnvoyIcons.alert,
-            typeOfMessage: PopUpState.danger,
-            showCloseButton: true,
+            typeOfMessage: PopUpState.warning,
+            showCloseButton: false,
             content: message,
+            title: S().onboarding_modalBluetoothUnableConnect_header,
             primaryButtonLabel: S().component_retry,
             secondaryButtonLabel: S().component_dismiss,
             onSecondaryButtonTap: (BuildContext context) {

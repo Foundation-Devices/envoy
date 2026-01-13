@@ -18,7 +18,6 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/bug_report_helper.dart';
-import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -90,24 +89,26 @@ class ConnectionLostModal extends ConsumerStatefulWidget {
 class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
   bool _isReconnecting = false;
 
+  //TODO: implement device speicific reconnect
   Future<void> _attemptReconnect() async {
     setState(() {
       _isReconnecting = true;
     });
 
     try {
-      if (Devices().getPrimeDevices.isEmpty) {
-        //TODO: localize
-        throw Exception("No Prime devices available to reconnect");
+      if (BluetoothChannel().lastDeviceStatus.peripheralId == null) {
+        throw Exception("No Previous connection...");
       }
-      kPrint(
-          "Attempting to reconnect to device... ${BluetoothChannel().lastDeviceStatus.connected}");
-      BluetoothManager().reconnect(Devices().getPrimeDevices.first);
-      await BluetoothChannel().deviceStatusStream.firstWhere((status) {
-        return status.connected;
-      }).timeout(const Duration(seconds: 10), onTimeout: () {
-        throw Exception("Reconnection timed out");
-      });
+      String deviceId = BluetoothChannel().lastDeviceStatus.peripheralId ?? "";
+      //  if (Devices().getPrimeDevices.isEmpty) {
+      //    //TODO: localize
+      //    // throw Exception("No Prime devices available to reconnect");
+      //   deviceId =    Devices().getPrimeDevices.firs.
+      //  }
+      //  kPrint(
+      //      "Attempting to reconnect to device... ${BluetoothChannel().lastDeviceStatus.}");
+      await BluetoothManager().reconnect(deviceId);
+      await Future.delayed(const Duration(seconds: 2));
       if (BluetoothChannel().lastDeviceStatus.connected && mounted) {
         Navigator.pop(context);
         EnvoyToast(
