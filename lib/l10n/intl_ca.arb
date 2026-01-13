@@ -721,6 +721,8 @@
   "onboarding_magicUserMobileUploading_content": "Envoy is uploading your encrypted wallet backup to Foundation servers.\n\nSince your backup is end-to-end encrypted, Foundation has no access to your backup or knowledge of its contents.",
   "onboarding_magicUserMobileUploading_header": "Uploading Your Backup",
   "onboarding_migrating_xOfYSynced": "Re-syncing your accounts.\nPlease do not close Envoy.\n\n{amount} of {total_amount} synced",
+  "onboarding_modalBluetoothUnableConnect_content": "Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.",
+  "onboarding_modalBluetoothUnableConnect_header": "Unable to Connect",
   "onboarding_passpportSelectCamera_sub235VersionAlert": "Are you setting up a Passport Core on firmware v2.3.5 or earlier?",
   "onboarding_passpportSelectCamera_tapHere": "Tap here",
   "onboarding_primeIntro_content": "Congratulations on taking the first step to secure your entire digital life.\n\nSetting up your Passport Prime will take only 5-10 minutes. Pick up your device and let’s get started!",

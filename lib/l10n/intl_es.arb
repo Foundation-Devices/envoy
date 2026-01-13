@@ -721,6 +721,8 @@
   "onboarding_magicUserMobileUploading_content": "Envoy está subiendo la copia de seguridad encriptada de tu cartera a los servidores de Foundation.\n\nComo la copia de seguridad está encriptada de extremo a extremo, Foundation no tiene acceso a ella, ni tiene conocimiento sobre su contenido.",
   "onboarding_magicUserMobileUploading_header": "Cargando Copia de Seguridad",
   "onboarding_migrating_xOfYSynced": "Re-sincronizando tus cuentas.\nPor favor, no cierres Envoy.\n\n{amount} de {total_amount} sincronizado",
+  "onboarding_modalBluetoothUnableConnect_content": "Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.",
+  "onboarding_modalBluetoothUnableConnect_header": "Unable to Connect",
   "onboarding_passpportSelectCamera_sub235VersionAlert": "¿Quieres inicializar una Passport Core en la versión 2.3.5 o anterior?",
   "onboarding_passpportSelectCamera_tapHere": "Pulsa aquí",
   "onboarding_primeIntro_content": "Enhorabuena por dar el primer paso para asegurar toda tu vida digital.\n\nConfigurar tu Passport Prime sólo te llevará entre 5 y 10 minutos. ¡Coge tu dispositivo y empecemos!",
