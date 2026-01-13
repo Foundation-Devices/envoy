@@ -2206,6 +2206,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "onboarding_magicUserMobileUploading_header":
             MessageLookupByLibrary.simpleMessage("Uploading Your Backup"),
         "onboarding_migrating_xOfYSynced": m11,
+        "onboarding_modalBluetoothUnableConnect_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.",
+        ),
+        "onboarding_modalBluetoothUnableConnect_header":
+            MessageLookupByLibrary.simpleMessage("Unable to Connect"),
         "onboarding_passpportSelectCamera_sub235VersionAlert":
             MessageLookupByLibrary.simpleMessage(
           "Are you setting up a Passport Core on firmware v2.3.5 or earlier?",

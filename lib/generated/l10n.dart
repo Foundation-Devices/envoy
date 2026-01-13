@@ -7130,6 +7130,26 @@ class S {
     );
   }
 
+  /// `Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.`
+  String get onboarding_modalBluetoothUnableConnect_content {
+    return Intl.message(
+      'Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.',
+      name: 'onboarding_modalBluetoothUnableConnect_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to Connect`
+  String get onboarding_modalBluetoothUnableConnect_header {
+    return Intl.message(
+      'Unable to Connect',
+      name: 'onboarding_modalBluetoothUnableConnect_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Are you setting up a Passport Core on firmware v2.3.5 or earlier?`
   String get onboarding_passpportSelectCamera_sub235VersionAlert {
     return Intl.message(
