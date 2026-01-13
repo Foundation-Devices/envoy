@@ -32,6 +32,7 @@ class SingleImportPpScanPage extends OnboardingPage {
               label: S().component_continue,
               onTap: () {
                 showScannerDialog(
+                    infoType: QrIntentInfoType.core,
                     context: context,
                     onBackPressed: (context) {
                       Navigator.pop(context);

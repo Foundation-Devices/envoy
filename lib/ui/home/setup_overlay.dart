@@ -424,6 +424,7 @@ void scanForDevice(BuildContext context, WidgetRef ref) async {
 
   showScannerDialog(
       context: context,
+      infoType: QrIntentInfoType.prime,
       onBackPressed: (context) {
         Navigator.pop(context);
       },
