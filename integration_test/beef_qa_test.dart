@@ -9,7 +9,7 @@ import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
+//import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
@@ -572,7 +572,10 @@ Future<void> main() async {
       // tap again to exit
       await fromHomeToHotWallet(tester);
 
-      await scrollHome(tester, -600);
+      await scrollHome(tester, -1200);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
 
       String swipeBalancePrompt = "Swipe to show and hide your balance.";
       Finder swipeBalancePromptFinder = find.text(swipeBalancePrompt);
@@ -625,12 +628,21 @@ Future<void> main() async {
       reorderPromptFinder = find.text(reorderPromptMessage);
       expect(reorderPromptFinder, findsOneWidget);
 
+      await scrollHome(tester, 1200);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+
       final accountText = find.text("Mobile Wallet");
       await tester.timedDrag(
-          accountText.first, const Offset(0, 120), const Duration(seconds: 1),
-          warnIfMissed: false);
+          accountText.first, const Offset(0, 120), const Duration(seconds: 1));
+
       await tester.pump(Durations.long2);
       await Future.delayed(const Duration(seconds: 1));
+
+      await scrollHome(tester, -1200);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
 
       await tester.pump(Durations.long2);
       reorderPromptFinder = find.text(reorderPromptMessage);
@@ -770,6 +782,8 @@ Future<void> main() async {
       await enterTextInField(
           tester, find.byType(TextField), accountPassportName);
       await saveName(tester);
+
+      await goBackHome(tester);
 
       stopwatch.stop();
       debugPrint(
@@ -2042,187 +2056,6 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
-    testWidgets('<Boost screen>', (tester) async {
-      final stopwatch = Stopwatch()..start(); // Start timer
-
-      final coinLockKey = GlobalKey<CoinLockButtonState>();
-
-      await goBackHome(tester);
-
-      await disableAllNetworks(tester);
-
-      //const hotSignetReceiveAddress =
-      //    'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql';
-      // TODO: fill this wallet if there is no money from here https://signet257.bublina.eu.org/
-      // TODO: when getting more coins you need to wait for the transaction confirmation before running the tests!!!
-
-      const hotSignetSendAddress =
-          'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql'; // send coins to this address from base wallet
-
-      await tester.pump(Durations.long2);
-
-      await fromHomeToAdvancedMenu(tester);
-
-      bool isSettingsSignetSwitchOn = await isSlideSwitchOn(tester, 'Signet');
-      bool isSettingsTaprootSwitchOn =
-          await isSlideSwitchOn(tester, 'Receive to Taproot');
-      bool isSettingsViewSatsSwitchOn =
-          await isSlideSwitchOn(tester, 'View Amount in Sats');
-
-      if (!isSettingsViewSatsSwitchOn) {
-        // find And Toggle DisplayFiat Switch
-        await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
-      }
-
-      if (!isSettingsSignetSwitchOn) {
-        // find And Toggle Signet Switch
-        await tester.pump(Durations.long2);
-        await findAndToggleSettingsSwitch(tester, 'Signet');
-        await tester.pump(Durations.long2);
-        final closeDialogButton = find.byIcon(Icons.close);
-        await tester.tap(closeDialogButton.last, warnIfMissed: false);
-        await tester.pump(Durations.long2);
-      }
-
-      if (!isSettingsTaprootSwitchOn) {
-        // find And Toggle Taproot Switch
-        await tester.pump(Durations.long2);
-        await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
-        await tester.pump(Durations.long2);
-        await findAndPressTextButton(tester, "Confirm");
-        await tester.pump(Durations.long2);
-      }
-
-      // go back to accounts
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
-
-      await checkSync(tester, waitAccSync: "Signet");
-      await tester.pump(Durations.long2);
-
-      await sendFromBaseWallet(tester, hotSignetSendAddress);
-
-      // go to tags
-      await findAndTapActivitySlideButton(tester);
-
-      /// lock all coins in the Untagged
-      // Find all instances of the CoinTagSwitch
-      Finder switchFinder = find.byType(CoinTagSwitch);
-
-      // Check if the tag is locked
-      if (switchFinder.evaluate().isNotEmpty) {
-        // If there's a CoinTagSwitch, lock all of the Coins by tapping the CoinLockButton
-        await findAndTapCoinLockButton(tester);
-        await findAndPressTextButton(tester, 'Lock');
-
-        // 🕒 Wait for the Rive animation/state to reflect locked status
-        await tester.pumpUntilCondition(
-          tries: 100,
-          duration: const Duration(milliseconds: 200),
-          condition: () {
-            final isLocked = coinLockKey.currentState?.isLocked ?? false;
-            return isLocked == true; // ✅ Stop when actually locked
-          },
-        );
-      }
-
-      // go to activity
-      await findAndTapActivitySlideButton(tester);
-      await tester.pump(Durations.long2);
-      await tester.pump(Durations.long2);
-
-      // go to tags
-      await findAndTapActivitySlideButton(tester);
-      await tester.pump(Durations.long2);
-      await tester.pump(Durations.long2);
-
-      /// Check if the tag is locked (retry for good measures, it is bugged somehow)
-      if (switchFinder.evaluate().isNotEmpty) {
-        // If there's a CoinTagSwitch, lock all of the Coins by tapping the CoinLockButton
-        await findAndTapCoinLockButton(tester);
-        await findAndPressTextButton(tester, 'Lock');
-
-        // 🕒 Wait for the Rive animation/state to reflect locked status
-        await tester.pumpUntilCondition(
-          tries: 100,
-          duration: const Duration(milliseconds: 200),
-          condition: () {
-            final isLocked = coinLockKey.currentState?.isLocked ?? false;
-            return isLocked == true; // ✅ Stop when actually locked
-          },
-        );
-      }
-
-      // go to Activity
-      await findAndTapActivitySlideButton(tester);
-      await tester.pump(Durations.long2);
-      await tester.pump(Durations.long2);
-
-      await findFirstTextButtonAndPress(tester, 'Sent');
-
-      /// Test does not press on X for some reason, it works on iOS but only sometimes
-      // enter to pop-up
-      // await slowSearchAndToggleText(tester, 'Boost');
-      //
-      // await tester.pump(const Duration(milliseconds: 1000));
-
-      //close via X button
-      // final closeDialogButton = find.byIcon(Icons.close);
-      //
-      //
-      // await tester.pumpUntilFound(closeDialogButton.first,
-      //     duration: Durations.long2, tries: 20);
-      // await tester.pump(Durations.long2);
-      //
-      // await tester.pump(const Duration(milliseconds: 1000));
-
-      //enter to pop-up
-      await slowSearchAndToggleText(tester, 'Boost');
-      await tester.pump(const Duration(milliseconds: 1000));
-      //close via Continue button
-      await findAndPressTextButton(tester, "Continue");
-      await tester.pump(Durations.long2);
-
-      /// go back and unlock all coins for the next test
-      await pressHamburgerMenu(tester);
-      await tester.pump(Durations.long2);
-
-      // go to tags
-      await findAndTapActivitySlideButton(tester);
-
-      /// Unlock all coins in the Untagged for the next test
-
-      // Find all instances of the CoinTagSwitch
-      switchFinder = find.byType(CoinTagSwitch);
-      await tester.pump(Durations.long2);
-
-      // Check if the tag is locked
-      if (switchFinder.evaluate().isEmpty) {
-        // Unlock it for the next test
-        await findAndTapCoinLockButton(tester);
-        await findAndPressTextButton(tester, 'Unlock');
-
-        // Wait for the lock animation/state to finish unlocking
-        await tester.pumpUntilCondition(
-          tries: 100,
-          duration: const Duration(milliseconds: 200),
-          condition: () {
-            // Re-check the Rive widget state dynamically each try
-            final isLocked = coinLockKey.currentState?.isLocked ?? true;
-            return isLocked == false; // stop when unlocked
-          },
-        );
-      }
-
-      // go home, fix to refresh home page
-      await tester.pump(Durations.long2);
-      await findAndPressTextButton(tester, "Accounts");
-
-      stopwatch.stop();
-      debugPrint(
-        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
-      );
-    });
     testWidgets('<Fee % test>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 
@@ -2726,6 +2559,187 @@ Future<void> main() async {
       /// turn off the tor for the next test
       await findAndPressTextButton(tester, 'Privacy');
       await enablePerformance(tester);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
+    testWidgets('<Boost screen>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
+      final coinLockKey = GlobalKey<CoinLockButtonState>();
+
+      await goBackHome(tester);
+
+      await disableAllNetworks(tester);
+
+      //const hotSignetReceiveAddress =
+      //    'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql';
+      // TODO: fill this wallet if there is no money from here https://signet257.bublina.eu.org/
+      // TODO: when getting more coins you need to wait for the transaction confirmation before running the tests!!!
+
+      const hotSignetSendAddress =
+          'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql'; // send coins to this address from base wallet
+
+      await tester.pump(Durations.long2);
+
+      await fromHomeToAdvancedMenu(tester);
+
+      bool isSettingsSignetSwitchOn = await isSlideSwitchOn(tester, 'Signet');
+      bool isSettingsTaprootSwitchOn =
+          await isSlideSwitchOn(tester, 'Receive to Taproot');
+      bool isSettingsViewSatsSwitchOn =
+          await isSlideSwitchOn(tester, 'View Amount in Sats');
+
+      if (!isSettingsViewSatsSwitchOn) {
+        // find And Toggle DisplayFiat Switch
+        await findAndToggleSettingsSwitch(tester, 'View Amount in Sats');
+      }
+
+      if (!isSettingsSignetSwitchOn) {
+        // find And Toggle Signet Switch
+        await tester.pump(Durations.long2);
+        await findAndToggleSettingsSwitch(tester, 'Signet');
+        await tester.pump(Durations.long2);
+        final closeDialogButton = find.byIcon(Icons.close);
+        await tester.tap(closeDialogButton.last, warnIfMissed: false);
+        await tester.pump(Durations.long2);
+      }
+
+      if (!isSettingsTaprootSwitchOn) {
+        // find And Toggle Taproot Switch
+        await tester.pump(Durations.long2);
+        await findAndToggleSettingsSwitch(tester, 'Receive to Taproot');
+        await tester.pump(Durations.long2);
+        await findAndPressTextButton(tester, "Confirm");
+        await tester.pump(Durations.long2);
+      }
+
+      // go back to accounts
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+
+      await checkSync(tester, waitAccSync: "Signet");
+      await tester.pump(Durations.long2);
+
+      await sendFromBaseWallet(tester, hotSignetSendAddress);
+
+      // go to tags
+      await findAndTapActivitySlideButton(tester);
+
+      /// lock all coins in the Untagged
+      // Find all instances of the CoinTagSwitch
+      Finder switchFinder = find.byType(CoinTagSwitch);
+
+      // Check if the tag is locked
+      if (switchFinder.evaluate().isNotEmpty) {
+        // If there's a CoinTagSwitch, lock all of the Coins by tapping the CoinLockButton
+        await findAndTapCoinLockButton(tester);
+        await findAndPressTextButton(tester, 'Lock');
+
+        // 🕒 Wait for the Rive animation/state to reflect locked status
+        await tester.pumpUntilCondition(
+          tries: 100,
+          duration: const Duration(milliseconds: 200),
+          condition: () {
+            final isLocked = coinLockKey.currentState?.isLocked ?? false;
+            return isLocked == true; // ✅ Stop when actually locked
+          },
+        );
+      }
+
+      // go to activity
+      await findAndTapActivitySlideButton(tester);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+
+      // go to tags
+      await findAndTapActivitySlideButton(tester);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+
+      /// Check if the tag is locked (retry for good measures, it is bugged somehow)
+      if (switchFinder.evaluate().isNotEmpty) {
+        // If there's a CoinTagSwitch, lock all of the Coins by tapping the CoinLockButton
+        await findAndTapCoinLockButton(tester);
+        await findAndPressTextButton(tester, 'Lock');
+
+        // 🕒 Wait for the Rive animation/state to reflect locked status
+        await tester.pumpUntilCondition(
+          tries: 100,
+          duration: const Duration(milliseconds: 200),
+          condition: () {
+            final isLocked = coinLockKey.currentState?.isLocked ?? false;
+            return isLocked == true; // ✅ Stop when actually locked
+          },
+        );
+      }
+
+      // go to Activity
+      await findAndTapActivitySlideButton(tester);
+      await tester.pump(Durations.long2);
+      await tester.pump(Durations.long2);
+
+      await findFirstTextButtonAndPress(tester, 'Sent');
+
+      /// Test does not press on X for some reason, it works on iOS but only sometimes
+      // enter to pop-up
+      // await slowSearchAndToggleText(tester, 'Boost');
+      //
+      // await tester.pump(const Duration(milliseconds: 1000));
+
+      //close via X button
+      // final closeDialogButton = find.byIcon(Icons.close);
+      //
+      //
+      // await tester.pumpUntilFound(closeDialogButton.first,
+      //     duration: Durations.long2, tries: 20);
+      // await tester.pump(Durations.long2);
+      //
+      // await tester.pump(const Duration(milliseconds: 1000));
+
+      //enter to pop-up
+      await slowSearchAndToggleText(tester, 'Boost');
+      await tester.pump(const Duration(milliseconds: 1000));
+      //close via Continue button
+      await findAndPressTextButton(tester, "Continue");
+      await tester.pump(Durations.long2);
+
+      /// go back and unlock all coins for the next test
+      await pressHamburgerMenu(tester);
+      await tester.pump(Durations.long2);
+
+      // go to tags
+      await findAndTapActivitySlideButton(tester);
+
+      /// Unlock all coins in the Untagged for the next test
+
+      // Find all instances of the CoinTagSwitch
+      switchFinder = find.byType(CoinTagSwitch);
+      await tester.pump(Durations.long2);
+
+      // Check if the tag is locked
+      if (switchFinder.evaluate().isEmpty) {
+        // Unlock it for the next test
+        await findAndTapCoinLockButton(tester);
+        await findAndPressTextButton(tester, 'Unlock');
+
+        // Wait for the lock animation/state to finish unlocking
+        await tester.pumpUntilCondition(
+          tries: 100,
+          duration: const Duration(milliseconds: 200),
+          condition: () {
+            // Re-check the Rive widget state dynamically each try
+            final isLocked = coinLockKey.currentState?.isLocked ?? true;
+            return isLocked == false; // stop when unlocked
+          },
+        );
+      }
+
+      // go home, fix to refresh home page
+      await tester.pump(Durations.long2);
+      await findAndPressTextButton(tester, "Accounts");
 
       stopwatch.stop();
       debugPrint(
