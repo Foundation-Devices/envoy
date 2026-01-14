@@ -191,7 +191,10 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
               ),
               onPressed: () async {
                 if (context.canPop()) {
-                  context.pop();
+                  final exit = await showExitWarning(context);
+                  if (exit && context.mounted) {
+                    context.go(ROUTE_ACCOUNTS_HOME);
+                  }
                 }
               },
             ),
@@ -250,7 +253,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
             return Container(
               margin: const EdgeInsets.symmetric(
                 vertical: EnvoySpacing.medium1,
-                horizontal: EnvoySpacing.medium3,
+                horizontal: EnvoySpacing.large1,
               ),
               child: Wrap(
                 alignment: WrapAlignment.center,

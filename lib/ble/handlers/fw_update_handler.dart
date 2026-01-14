@@ -39,6 +39,7 @@ class FwUpdateHandler extends PassportMessageHandler {
 
   Set<PrimeFwUpdateStep> _completedUpdateStates = {};
   String newVersion = "";
+  String currentVersion = "";
 
   // Transfer rate estimator
   // reset this every time a new transfer starts
@@ -80,7 +81,7 @@ class FwUpdateHandler extends PassportMessageHandler {
       api.QuantumLinkMessage message, String bleId) async {
     if (message
         case api.QuantumLinkMessage_FirmwareUpdateCheckRequest updateRequest) {
-      final currentVersion = updateRequest.field0.currentVersion;
+      currentVersion = updateRequest.field0.currentVersion;
       _handleFwUpdateCheckRequest(currentVersion);
     } else if (message
         case api.QuantumLinkMessage_FirmwareFetchRequest fetchRequest) {
@@ -109,7 +110,7 @@ class FwUpdateHandler extends PassportMessageHandler {
     } catch (e) {
       kPrint("failed to fetch patches: $e");
       _updateDownloadState(
-          S().firmware_downloadingUpdate_header, EnvoyStepState.ERROR);
+          S().firmware_updateError_downloadFailed, EnvoyStepState.ERROR);
       await _handleFirmwareError(
         S().firmware_updateError_downloadFailed,
       );
@@ -146,7 +147,7 @@ class FwUpdateHandler extends PassportMessageHandler {
       } catch (e) {
         _updateFwUpdateState(PrimeFwUpdateStep.error);
         kPrint("failed to transfer firmware: $e");
-        await _handleFirmwareError(S().firmware_updateError_downloadFailed);
+        await _handleFirmwareError(S().firmware_updateError_receivingFailed);
         return;
       }
     }

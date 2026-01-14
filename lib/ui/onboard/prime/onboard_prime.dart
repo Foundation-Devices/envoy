@@ -9,6 +9,7 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/home/settings/bluetooth_diag.dart';
@@ -17,8 +18,10 @@ import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
@@ -155,36 +158,49 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
       setState(() {
         bleConnectState = BleConnectState.idle;
       });
+      String message = "";
       if (e is PlatformException) {
         //only for Android
         if (e.code == "BLUETOOTH_DISABLED") {
           final bool? allowed = await BluetoothChannel().requestEnableBle();
           if (allowed == true) {
             return _connectToPrime();
+          } else {
+            message = "Unable to connect to device, Error code ${e.code}";
           }
         }
       }
       if (mounted) {
         setState(() {
-          bleConnectState = BleConnectState.invalidId;
+          bleConnectState = BleConnectState.idle;
         });
 
-        // showEnvoyDialog(
-        //     context: context,
-        //     w
-        //     builder: (context) => AlertDialog(
-        //           title: const Text("Unable to connect "),
-        //           content: Text(e.toString()),
-        //           actions: [
-        //             TextButton(
-        //               onPressed: () {
-        //                 Navigator.pop(context);
-        //               },
-        //               child: const Text("OK"),
-        //             ),
-        //           ],
-        //         ));
-        kPrint(e);
+        //handle specific errors
+        if (e is BleSetupTimeoutException) {
+          message = S().onboarding_modalBluetoothUnableConnect_content;
+        }
+
+        showEnvoyDialog(
+          context: context,
+          dismissible: true,
+          dialog: EnvoyPopUp(
+            icon: EnvoyIcons.alert,
+            typeOfMessage: PopUpState.warning,
+            showCloseButton: false,
+            content: message,
+            title: S().onboarding_modalBluetoothUnableConnect_header,
+            primaryButtonLabel: S().component_retry,
+            secondaryButtonLabel: S().component_dismiss,
+            onSecondaryButtonTap: (BuildContext context) {
+              Navigator.pop(context);
+            },
+            onPrimaryButtonTap: (BuildContext context) async {
+              Navigator.pop(context);
+              _connectToPrime();
+            },
+          ),
+        );
+        kPrint(e, stackTrace: stack);
         EnvoyReport().log("BleConnect", e.toString(), stackTrace: stack);
       }
     }

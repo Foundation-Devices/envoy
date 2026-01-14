@@ -17,6 +17,8 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:foundation_api/foundation_api.dart';
+import 'package:envoy/ui/routes/routes.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 class BleConnectionState {
   final String message;
@@ -68,6 +70,9 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
 
       if (response.onboardingComplete) {
         await addDevice(response);
+        UpdatesManager().checkAndStoreLatestPrimeFirmware(
+            _pairingResponse?.passportFirmwareVersion.field0);
+        await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
         await EnvoySeed().generateAndBackupWalletSilently();
         //no need to send security challenge if onboarding is already complete
         try {
@@ -113,6 +118,9 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
       try {
         if (_pairingResponse != null) {
           await addDevice(_pairingResponse!);
+          UpdatesManager().checkAndStoreLatestPrimeFirmware(
+              _pairingResponse?.passportFirmwareVersion.field0);
+          await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
         }
         await EnvoySeed().generateAndBackupWalletSilently();
         await BluetoothManager().sendExchangeRateHistory();

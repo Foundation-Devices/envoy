@@ -26,6 +26,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
@@ -58,13 +59,23 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
     final mainNetAccounts = ref.watch(mainnetAccountsProvider(null));
     final allowBuyInEnvoy = ref.watch(allowBuyInEnvoyProvider);
     final showDefaultAccounts = ref.watch(showDefaultAccountProvider);
+    final hasPassphraseAccounts =
+        ref.watch(primePassphraseAccountsProvider).isNotEmpty;
+
+    // Auto-switch to default accounts when passphrase accounts become empty
+    ref.listen(primePassphraseAccountsProvider,
+        (List<EnvoyAccount>? previous, List<EnvoyAccount> next) {
+      if (next.isEmpty && !ref.read(showDefaultAccountProvider)) {
+        ref.read(showDefaultAccountProvider.notifier).state = true;
+      }
+    });
 
     return Stack(
       children: [
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (ref.watch(primePassphraseAccountsProvider).isNotEmpty)
+            if (hasPassphraseAccounts)
               Padding(
                 padding: const EdgeInsets.only(
                     left: 20, right: 20, top: EnvoySpacing.medium2),
@@ -83,7 +94,24 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
                   ),
                 ),
               ),
-            const Flexible(child: AccountsList()),
+            Flexible(
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                layoutBuilder:
+                    (Widget? currentChild, List<Widget> previousChildren) {
+                  return Stack(
+                    alignment: Alignment.topCenter,
+                    children: <Widget>[
+                      ...previousChildren,
+                      if (currentChild != null) currentChild,
+                    ],
+                  );
+                },
+                child: showDefaultAccounts
+                    ? const DefaultAccountsList(key: ValueKey('default'))
+                    : const PassphraseAccountsList(key: ValueKey('passphrase')),
+              ),
+            ),
           ],
         ),
         Padding(
@@ -160,26 +188,22 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
   bool get wantKeepAlive => true;
 }
 
-//ignore: must_be_immutable
-class AccountsList extends ConsumerStatefulWidget {
-  const AccountsList({super.key});
+/// Widget for displaying default (non-passphrase) accounts with reordering support
+class DefaultAccountsList extends ConsumerStatefulWidget {
+  const DefaultAccountsList({super.key});
 
   @override
-  ConsumerState<AccountsList> createState() => _AccountsListState();
+  ConsumerState<DefaultAccountsList> createState() =>
+      _DefaultAccountsListState();
 }
 
-class _AccountsListState extends ConsumerState<AccountsList> {
+class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
   final ScrollController _scrollController = ScrollController();
   final double _accountHeight = 124;
   bool _onReOrderStart = false;
 
   //keep order state in the widget to avoid unnecessary rebuilds
   List<String> _accountsOrder = [];
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -189,23 +213,16 @@ class _AccountsListState extends ConsumerState<AccountsList> {
 
   @override
   Widget build(BuildContext context) {
-    bool showDefaultAccounts = ref.watch(showDefaultAccountProvider);
     List<EnvoyAccount> primePassphraseAccounts =
         ref.watch(primePassphraseAccountsProvider);
     List<EnvoyAccount> accounts = ref.watch(accountsProvider);
 
-    if (!showDefaultAccounts && primePassphraseAccounts.isNotEmpty) {
-      accounts = primePassphraseAccounts;
-    }
-
-    if (showDefaultAccounts) {
-      accounts = accounts.where((account) {
-        if (primePassphraseAccounts.contains(account)) return false;
-        if (account.seedHasPassphrase) return false;
-
-        return true;
-      }).toList();
-    }
+    // Filter to only default accounts (exclude passphrase accounts)
+    accounts = accounts.where((account) {
+      if (primePassphraseAccounts.contains(account)) return false;
+      if (account.seedHasPassphrase) return false;
+      return true;
+    }).toList();
 
     final listContentHeight = accounts.length * _accountHeight;
 
@@ -339,8 +356,7 @@ class _AccountsListState extends ConsumerState<AccountsList> {
           });
           await EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
         },
-        children: buildListItems(
-            accounts, showDefaultAccounts ? _accountsOrder : null),
+        children: _buildListItems(accounts, _accountsOrder),
       ),
     );
 
@@ -352,11 +368,11 @@ class _AccountsListState extends ConsumerState<AccountsList> {
         : scrollView;
   }
 
-  List<Widget> buildListItems(
-      List<EnvoyAccount> accounts, List<String>? accountsOrder) {
+  List<Widget> _buildListItems(
+      List<EnvoyAccount> accounts, List<String> accountsOrder) {
     final List<Widget> items = [];
 
-    final orderToUse = accountsOrder == null || accountsOrder.isEmpty
+    final orderToUse = accountsOrder.isEmpty
         ? accounts.map((e) => e.id).toList()
         : accountsOrder;
 
@@ -381,6 +397,60 @@ class _AccountsListState extends ConsumerState<AccountsList> {
       }
     }
     return items;
+  }
+}
+
+/// Widget for displaying passphrase accounts (no reordering)
+class PassphraseAccountsList extends ConsumerWidget {
+  const PassphraseAccountsList({super.key});
+
+  static const double _accountHeight = 124;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final List<EnvoyAccount> accounts =
+        ref.watch(primePassphraseAccountsProvider);
+
+    if (accounts.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(EnvoySpacing.medium2),
+        child: EmptyAccountsCard(),
+      );
+    }
+
+    return ScrollGradientMask(
+      start: 0.00,
+      topGradientValue: 0.045,
+      bottomGradientValue: 0.845,
+      end: 0.89,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        physics: const BouncingScrollPhysics(),
+        itemCount: accounts.length + 2, // +2 for header and footer spacing
+        itemBuilder: (context, index) {
+          // Header spacing
+          if (index == 0) {
+            return const SizedBox(height: 20);
+          }
+          // Footer spacing
+          if (index == accounts.length + 1) {
+            return const SizedBox(height: 80);
+          }
+          final account = accounts[index - 1];
+          return SizedBox(
+            height: _accountHeight,
+            child: AccountListTile(
+              account,
+              onTap: () async {
+                clearFilterState(ref);
+                ref.read(selectedAccountProvider.notifier).state = account;
+                context.go(ROUTE_ACCOUNT_DETAIL, extra: account);
+              },
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 

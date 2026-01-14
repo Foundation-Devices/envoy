@@ -13,6 +13,8 @@ import 'src/rust/frb_generated.dart';
 import 'src/rust/api/http.dart' as http;
 export 'src/rust/api/http.dart';
 
+import 'dart:convert';
+
 class GetFileRequest {
   String path;
   String uri;
@@ -59,7 +61,12 @@ class HttpTor {
     String? body,
     Map<String, String>? headers,
   }) async {
-    return _makeHttpRequest(http.Verb.get_, uri, body: body, headers: headers);
+    return _makeHttpRequest(
+      http.Verb.get_,
+      uri,
+      body: body == null ? null : utf8.encode(body),
+      headers: headers,
+    );
   }
 
   Future<http.Response> post(
@@ -67,7 +74,25 @@ class HttpTor {
     String? body,
     Map<String, String>? headers,
   }) async {
-    return _makeHttpRequest(http.Verb.post, uri, body: body, headers: headers);
+    return _makeHttpRequest(
+      http.Verb.post,
+      uri,
+      body: body == null ? null : utf8.encode(body),
+      headers: headers,
+    );
+  }
+
+  Future<http.Response> postBytes(
+    String uri, {
+    required List<int> body,
+    Map<String, String>? headers,
+  }) async {
+    return _makeHttpRequest(
+      http.Verb.post,
+      uri,
+      body: Uint8List.fromList(body),
+      headers: headers,
+    );
   }
 
   Future<String> getIp() async {
@@ -100,7 +125,7 @@ class HttpTor {
   Future<http.Response> _makeHttpRequest(
     http.Verb verb,
     String uri, {
-    String? body,
+    Uint8List? body,
     Map<String, String>? headers,
   }) async {
     await tor.isReady();
@@ -125,7 +150,7 @@ class HttpTor {
     http.Verb verb,
     String uri,
     int torPort, {
-    String? body,
+    Uint8List? body,
     Map<String, String>? headers,
   }) async {
     // pretend to be wget to avoid cloudflare captchas and other challenges

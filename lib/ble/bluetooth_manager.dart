@@ -27,11 +27,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:permission_handler/permission_handler.dart';
-
 import 'handlers/account_handler.dart';
 import 'handlers/heartbeat_handler.dart';
 import 'handlers/magic_backup_handler.dart';
-import 'handlers/passphrase_handler.dart';
+
 import 'handlers/shards_handler.dart';
 import 'quantum_link_router.dart';
 
@@ -78,8 +77,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   late final ShardsHandler _bleShardsHandler = ShardsHandler(this);
   late final ScvHandler _scvAccountHandler = ScvHandler(this);
   late final BleOnboardHandler _bleOnboardHandler = BleOnboardHandler(this);
-  late final BlePassphraseHandler _blePassphraseHandler =
-      BlePassphraseHandler(this, _passphraseEventStream);
 
   late final FwUpdateHandler _fwUpdateHandler = FwUpdateHandler(
     this,
@@ -169,13 +166,15 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     _messageRouter.registerHandler(_bleShardsHandler);
     _messageRouter.registerHandler(_bleAccountHandler);
     _messageRouter.registerHandler(_bleOnboardHandler);
-    _messageRouter.registerHandler(_blePassphraseHandler);
     _messageRouter.registerHandler(_fwUpdateHandler);
     _messageRouter.registerHandler(_scvAccountHandler);
     _messageRouter.registerHandler(_heartbeatHandler);
     _messageRouter.registerHandler(DeviceHandler(this));
     _messageRouter.registerHandler(TimeZoneHandler(this));
 
+    if (bleId.isEmpty && Devices().getPrimeDevices.isNotEmpty) {
+      bleId = Devices().getPrimeDevices.first.bleId;
+    }
     await listen(id: bleId);
     kPrint("QL Identity: $_qlIdentity");
     await restoreQuantumLinkIdentity();
@@ -451,6 +450,12 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
               kPrint("Got the Broadcast Transaction");
               _transactionStream.add(transaction);
             }
+            if (value.message
+                case api.QuantumLinkMessage_ApplyPassphrase applyPassphrase) {
+              kPrint(
+                  "Got ApplyPassphrase event: ${applyPassphrase.field0.fingerprint}");
+              _passphraseEventStream.add(applyPassphrase.field0);
+            }
           }
         }, onError: (e) {
           kPrint("Error decoding: $e");
@@ -656,7 +661,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     return _writeWithProgress(message);
   }
 
-  Future<void> reconnect(Device device) async {
-    await BluetoothChannel().reconnect(device);
+  Future<void> reconnect(String id) async {
+    await BluetoothChannel().reconnect(id);
   }
 }

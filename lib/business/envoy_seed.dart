@@ -432,12 +432,15 @@ class EnvoySeed {
 
   Future<bool> deleteMagicBackup() async {
     final seed = await get();
+    if (seed == null) {
+      return false;
+    }
     Settings().setSyncToCloud(false);
     if (Settings().torEnabled()) {
       await Tor.instance.isReady();
     }
     return await Backup.delete(
-            seedWords: seed!,
+            seedWords: seed,
             serverUrl: Settings().envoyServerAddress,
             proxyPort: Tor.instance.port) ==
         202;

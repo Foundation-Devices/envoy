@@ -7,6 +7,7 @@ import 'dart:io';
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
@@ -22,14 +23,12 @@ bool _isScanDialogOpen = false;
 //QrScanner is a descendant of showModalBottomSheet with  isScrollControlled set to true,
 //which doesnt support safeArea, so we need to manually add padding to the top of the scanner,
 // https://github.com/flutter/flutter/issues/103585
-double _topPadding = 0;
 Future showScannerDialog(
     {required BuildContext context,
     Widget? child,
     required Function(BuildContext context) onBackPressed,
     required ScannerDecoder decoder,
     QrIntentInfoType infoType = QrIntentInfoType.qrCode}) {
-  _topPadding = MediaQuery.of(context).padding.top;
   return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -163,34 +162,30 @@ class _QrScannerState extends State<QrScanner>
             )
           else
             const SizedBox(),
-        Padding(
-          padding: EdgeInsets.only(top: _topPadding),
-          child: Scaffold(
-            primary: true,
-            backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              // Get rid of the shadow
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              leading: IconButton(
-                  icon: const Icon(
-                    Icons.close_rounded,
-                    size: 25,
-                    color: Colors.white54,
+        Positioned(
+          top: EnvoySpacing.medium3,
+          left: 0,
+          right: 0,
+          child: SafeArea(
+            child: Material(
+              color: Colors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded,
+                        size: 25, color: Colors.white54),
+                    onPressed: () => widget.onBackPressed(context),
                   ),
-                  onPressed: () {
-                    widget.onBackPressed(context);
-                  }),
-              actions: [
-                IconButton(
-                    onPressed: () {
-                      showScanDialog(context, widget.infoType);
-                    },
-                    icon: const Icon(Icons.info_outline, color: Colors.white54))
-              ],
+                  IconButton(
+                    icon: const Icon(Icons.info_outline, color: Colors.white54),
+                    onPressed: () => showScanDialog(context, widget.infoType),
+                  ),
+                ],
+              ),
             ),
           ),
-        )
+        ),
       ],
     );
   }
