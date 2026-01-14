@@ -29,12 +29,40 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>com.foundationdevices.envoy</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>envoy</string>
+            </array>
+        </dict>
+    </array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAccessorySetupBluetoothNames</key>
+	<array>
+		<string>Passport Prime</string>
+		<string>Prime</string>
+	</array>
+	<key>NSAccessorySetupBluetoothServices</key>
+	<array>
+		<string>6E400001-B5A3-F393-E0A9-E50E24DCCA9E</string>
+	</array>
+	<key>NSAccessorySetupKitSupports</key>
+	<array>
+		<string>Bluetooth</string>
+	</array>
+    <key>FlutterDeepLinkingEnabled</key>
+    <true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Our app uses bluetooth to find, connect and transfer data between different devices</string>
 	<key>NSBluetoothWhileInUseUsageDescription</key>
@@ -72,18 +100,5 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
-    <key>NSAccessorySetupKitSupports</key>
-    <array>
-      <string>Bluetooth</string>
-    </array>
-    <key>NSAccessorySetupBluetoothServices</key>
-    <array>
-      <string>6E400001-B5A3-F393-E0A9-E50E24DCCA9E</string>
-    </array>
-    <key>NSAccessorySetupBluetoothNames</key>
-    <array>
-      <string>Passport Prime</string>
-      <string>Prime</string>
-    </array>
 </dict>
 </plist>
