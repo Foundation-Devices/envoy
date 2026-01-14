@@ -30,6 +30,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:envoy/business/settings.dart';
 
 enum EscapeHatchTap { logo, text }
 
@@ -117,6 +118,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
           onTap: () {
             registerEscapeTap(EscapeHatchTap.logo);
           },
+          onLongPress: () {
+            if (kDebugMode || ref.read(devModeEnabledProvider)) {
+              Settings().skipPrimeSecurityCheck = true;
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Security check disabled"),
+              ));
+            }
+          },
           child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.25,
             child: Image.asset(
@@ -142,10 +151,20 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const SizedBox(height: EnvoySpacing.medium1),
-                        Text(
-                          S().welcome_screen_heading,
-                          style: EnvoyTypography.heading,
-                          textAlign: TextAlign.center,
+                        GestureDetector(
+                          onLongPress: () {
+                            ref.read(devModeEnabledProvider.notifier).state =
+                                true;
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("Dev mode enabled"),
+                            ));
+                          },
+                          child: Text(
+                            S().welcome_screen_heading,
+                            style: EnvoyTypography.heading,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                         const Padding(
                             padding: EdgeInsets.all(EnvoySpacing.small)),
