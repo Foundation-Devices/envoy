@@ -133,7 +133,7 @@ class ConnectivityManager {
     //if tor is enabled, but both electrum and ngu are unreachable, restart tor
     if (torEnabled && (!nguConnected && !electrumConnected)) {
       // If Tor itself works, don't treat this as a Tor failure
-      if (await _torSanityOk()) return;
+      if (await _isTorReachable()) return;
 
       // tor can be flaky, so only restart after several failed attempts,
       // in this case after 5 failed network checks
@@ -147,7 +147,7 @@ class ConnectivityManager {
     }
   }
 
-  Future<bool> _torSanityOk() async {
+  Future<bool> _isTorReachable() async {
     try {
       final r = await HttpTor().get(
           "http://sanityunhavm6aolhyye4h6kbdlxjmc7zw2y7nadbni6vd43agm7xvid.onion");
