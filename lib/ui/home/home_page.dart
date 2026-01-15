@@ -452,6 +452,7 @@ class HomePageState extends ConsumerState<HomePage>
       case HomePageBackgroundState.about:
         ref.read(homePageBackgroundProvider.notifier).state =
             HomePageBackgroundState.menu;
+
         ref.read(backupPageProvider.notifier).state = false;
         return false;
 

@@ -82,7 +82,7 @@ class _QrScannerState extends State<QrScanner>
 
   @override
   void initState() {
-    _userInteractionTimer = Timer(const Duration(milliseconds: 3500), () {
+    _userInteractionTimer = Timer(const Duration(seconds: 8), () {
       if (mounted && widget.infoType != QrIntentInfoType.none) {
         showScanDialog(context, widget.infoType);
         _userInteractionTimer.cancel();
