@@ -410,7 +410,10 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
             EnvoyButton(
               S().common_button_contactSupport,
               type: EnvoyButtonTypes.secondary,
-              onTap: () {},
+              onTap: () {
+                launchUrl(Uri.parse(
+                    "https://community.foundation.xyz/c/passport-prime/12"));
+              },
             ),
             const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           ],
