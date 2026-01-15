@@ -401,9 +401,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        if (ref.watch(firmWareUpdateProvider).state == EnvoyStepState.ERROR)
-          EnvoyStepItem(
-              step: ref.watch(firmWareUpdateProvider), highlight: false),
+        EnvoyStepItem(
+            step: ref.watch(fwDownloadStateProvider), highlight: false),
         Column(
           mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.max,
