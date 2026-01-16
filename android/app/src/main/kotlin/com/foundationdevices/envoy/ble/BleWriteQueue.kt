@@ -12,9 +12,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.measureTimedValue
 
 
 private const val TAG = "BleQueue"
+
+// Minimum time between write operations to respect BLE throughput limits. ( out of oder issue on prime)
+// To stay under this limit, we need to ensure: time_per_write >= packet_size / 80kBps
+// For a 240-byte packet: 240 bytes / 80 bytes/ms = 3ms (247 mtu)
+const val MIN_WRITE_CYCLE_MS = 3L
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BleWriteQueue(
@@ -34,8 +40,10 @@ class BleWriteQueue(
                     req.result.complete(false)
                     continue
                 }
-                val before = System.currentTimeMillis()
-                val ok = performWrite(req.data)
+
+                val (ok, duration) = measureTimedValue {
+                    performWrite(req.data)
+                }
                 if (!ok) {
                     Log.e(TAG, "Write failed, clearing")
                     isActive = false
@@ -45,11 +53,11 @@ class BleWriteQueue(
                     }
                     break
                 } else {
-                    val after = System.currentTimeMillis()
-                    val difference = after - before
-                    Log.w(TAG, "Write took ${after - before}ms for ${req.data.size} bytes")
-                    if (difference < 3) {
-                        delay(3 - difference)
+                    val durationMs = duration.inWholeMilliseconds
+                    // Throttle writes to respect BLE throughput limits (~80 kBps).
+                    // If the write completed faster than MIN_WRITE_CYCLE_MS, we delay
+                    if (durationMs < MIN_WRITE_CYCLE_MS) {
+                        delay(MIN_WRITE_CYCLE_MS - durationMs)
                     }
                 }
                 req.result.complete(true)

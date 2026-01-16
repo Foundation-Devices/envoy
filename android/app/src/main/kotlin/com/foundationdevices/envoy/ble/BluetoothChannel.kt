@@ -380,7 +380,7 @@ class BluetoothChannel(
             result.error("FILE_NOT_FOUND", "File does not exist: $path", null)
             return
         }
-        val safeResult = SafeResult(result)
+        val safeResult = com.foundationdevices.envoy.ble.SafeResult(result)
         val priority = BluetoothGatt.CONNECTION_PRIORITY_HIGH
         val priorityResult = bluetoothGatt?.requestConnectionPriority(priority)
         Log.d(TAG, "  Requested high connection priority for transfer  : ${if (priorityResult == true) "✓ Success" else "✗ Failed"}")
@@ -822,7 +822,6 @@ class BluetoothChannel(
             Log.d(TAG, "MTU CHANGED EVENT")
             Log.d(TAG, "  Device: ${gatt?.device?.address}")
             Log.d(TAG, "  New MTU: $mtu bytes")
-            Log.d(TAG, "  Status: ${getGattStatusString(status)}")
             Log.d(TAG, "  Previous MTU: $currentMtu bytes")
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.d(TAG, "  ✓ MTU negotiation successful")
@@ -836,92 +835,57 @@ class BluetoothChannel(
 
         @SuppressLint("MissingPermission")
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-            Log.d(TAG, "════════════════════════════════════════")
-            Log.d(TAG, "CONNECTION STATE CHANGE")
-            Log.d(TAG, "  Device: ${gatt?.device?.address} (${gatt?.device?.name})")
-            Log.d(TAG, "  Status: ${getGattStatusString(status)}")
-            Log.d(TAG, "  New State: ${getConnectionStateString(newState)}")
-            Log.d(TAG, "  Bond State: ${gatt?.device?.let { getBondStateString(it.bondState) }}")
-
             when (newState) {
                 BluetoothProfile.STATE_CONNECTED -> {
-                    Log.d(TAG, "────────────────────────────────────────")
                     Log.d(TAG, "✓ CONNECTED TO GATT SERVER")
-                    Log.d(TAG, "  Device Type: ${gatt?.device?.type?.let { getDeviceTypeString(it) }}")
-
                     connectedDevice = gatt?.device
                     bleWriteQueue?.restart()
-
                     if (!checkBluetoothPermissions()) {
-                        Log.e(TAG, "  ✗ Missing Bluetooth permissions")
                         return
                     }
-
                     if (connectedDevice?.bondState == BluetoothDevice.BOND_BONDED) {
-                        Log.d(TAG, "  ✓ Device is bonded")
                         sendConnectionEvent(
                             type = BluetoothConnectionEventType.DEVICE_CONNECTED
                         )
-                    } else {
-                        Log.d(TAG, "  ⚠ Device is not bonded yet")
                     }
 
-                    // Request MTU
-                    Log.d(TAG, "────────────────────────────────────────")
-                    Log.d(TAG, "REQUESTING MTU")
                     val requestMtu = bluetoothGatt?.requestMtu(247)
-                    Log.d(TAG, "  Requested MTU: 247 bytes")
-                    Log.d(TAG, "  Request sent: ${if (requestMtu == true) "✓ Success" else "✗ Failed"}")
-
+                    if (requestMtu == true) {
+                        Log.i(TAG, "onConnectionStateChange: MTU request sent 247")
+                    }
                     bluetoothGatt?.apply {
-                        // Set connection priority
-                        Log.d(TAG, "────────────────────────────────────────")
-                        Log.d(TAG, "SETTING CONNECTION PARAMETERS")
-                        val priority = BluetoothGatt.CONNECTION_PRIORITY_BALANCED
-                        val priorityResult = requestConnectionPriority(priority)
-                        Log.d(TAG, "  Priority: ${getConnectionPriorityString(priority)}")
-                        Log.d(TAG, "  Request result: ${if (priorityResult) "✓ Success" else "✗ Failed"}")
+                        //TODO: use method channel to enable high priority connection from flutter side
+                        //use only for large data transfers
+                        requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_BALANCED)
 
-                        // Set preferred PHY
-                        Log.d(TAG, "────────────────────────────────────────")
-                        Log.d(TAG, "SETTING PREFERRED PHY")
-                        Log.d(TAG, "  TX PHY: 2M")
-                        Log.d(TAG, "  RX PHY: 2M")
-                        Log.d(TAG, "  PHY Options: 2M")
                         setPreferredPhy(
                             BluetoothDevice.PHY_LE_2M,  // txPhy
                             BluetoothDevice.PHY_LE_2M,  // rxPhy
                             BluetoothDevice.PHY_LE_2M
                         )
-                    }
+                        Log.i(TAG, "onConnectionStateChange: setPreferredPhy 2M")
 
+                    }
+                    Log.i(TAG, "onConnectionStateChange: requestMtu $requestMtu")
                     // Discover services
                     if (checkBluetoothPermissions()) {
-                        Log.d(TAG, "────────────────────────────────────────")
-                        Log.d(TAG, "SCHEDULING SERVICE DISCOVERY")
-                        Log.d(TAG, "  Delay: ${BLUETOOTH_DISCOVERY_DELAY_MS}ms")
                         scope.launch {
                             delay(BLUETOOTH_DISCOVERY_DELAY_MS)
-                            Log.d(TAG, "  Starting service discovery...")
-                            val discoveryResult = gatt?.discoverServices()
-                            Log.d(TAG, "  Discovery request: ${if (discoveryResult == true) "✓ Success" else "✗ Failed"}")
+                            gatt?.discoverServices()
                         }
                     }
 
-                    if (connectedDevice != null) {
-                        sendConnectionEvent(
-                            BluetoothConnectionEventType.DEVICE_CONNECTED,
-                        )
+                    if (connectedDevice == null) {
+                        Log.i(TAG, "onConnectionStateChange: ")
+                        return
                     }
-                    Log.d(TAG, "════════════════════════════════════════")
+                    sendConnectionEvent(
+                        BluetoothConnectionEventType.DEVICE_CONNECTED,
+                    )
                 }
 
                 BluetoothProfile.STATE_DISCONNECTED -> {
-                    Log.d(TAG, "────────────────────────────────────────")
-                    Log.d(TAG, "✗ DISCONNECTED FROM GATT SERVER")
-                    Log.d(TAG, "  Reason: ${getGattStatusString(status)}")
-                    Log.d(TAG, "════════════════════════════════════════")
-
+                    Log.d(TAG, "Disconnected from GATT server")
                     sendConnectionEvent(
                         BluetoothConnectionEventType.DEVICE_DISCONNECTED,
                     )
@@ -930,123 +894,74 @@ class BluetoothChannel(
                     writeCharacteristic = null
                     readCharacteristic = null
                 }
-
-                BluetoothProfile.STATE_CONNECTING -> {
-                    Log.d(TAG, "  ⟳ Connecting...")
-                    Log.d(TAG, "════════════════════════════════════════")
-                }
-
-                BluetoothProfile.STATE_DISCONNECTING -> {
-                    Log.d(TAG, "  ⟳ Disconnecting...")
-                    Log.d(TAG, "════════════════════════════════════════")
-                }
             }
-        }
-
-        override fun onPhyUpdate(gatt: BluetoothGatt?, txPhy: Int, rxPhy: Int, status: Int) {
-            super.onPhyUpdate(gatt, txPhy, rxPhy, status)
-            Log.d(TAG, "════════════════════════════════════════")
-            Log.d(TAG, "PHY UPDATE EVENT")
-            Log.d(TAG, "  Device: ${gatt?.device?.address}")
-            Log.d(TAG, "  TX PHY: ${getPhyString(txPhy)}")
-            Log.d(TAG, "  RX PHY: ${getPhyString(rxPhy)}")
-            Log.d(TAG, "  Status: ${getGattStatusString(status)}")
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.d(TAG, "  ✓ PHY update successful")
-            } else {
-                Log.e(TAG, "  ✗ PHY update failed")
-            }
-            Log.d(TAG, "════════════════════════════════════════")
-        }
-
-        override fun onPhyRead(gatt: BluetoothGatt?, txPhy: Int, rxPhy: Int, status: Int) {
-            super.onPhyRead(gatt, txPhy, rxPhy, status)
-            Log.d(TAG, "════════════════════════════════════════")
-            Log.d(TAG, "PHY READ EVENT")
-            Log.d(TAG, "  Device: ${gatt?.device?.address}")
-            Log.d(TAG, "  Current TX PHY: ${getPhyString(txPhy)}")
-            Log.d(TAG, "  Current RX PHY: ${getPhyString(rxPhy)}")
-            Log.d(TAG, "  Status: ${getGattStatusString(status)}")
-            Log.d(TAG, "════════════════════════════════════════")
         }
 
         @SuppressLint("MissingPermission")
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-            Log.d(TAG, "════════════════════════════════════════")
-            Log.d(TAG, "SERVICE DISCOVERY COMPLETE")
-            Log.d(TAG, "  Device: ${gatt?.device?.address}")
-            Log.d(TAG, "  Status: ${getGattStatusString(status)}")
-
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.d(TAG, "  ✓ Services discovered successfully")
-                Log.d(TAG, "────────────────────────────────────────")
-                Log.d(TAG, "DISCOVERED SERVICES:")
-                gatt?.services?.forEach { service ->
-                    Log.d(TAG, "  Service: ${service.uuid}")
-                    Log.d(TAG, "    Characteristics: ${service.characteristics.size}")
-                }
+                Log.d(TAG, "Services discovered successfully")
 
                 val service = gatt?.getService(PRIME_SERVICE_UUID)
                 if (service != null) {
-                    Log.d(TAG, "────────────────────────────────────────")
-                    Log.d(TAG, "✓ FOUND PRIME SERVICE: ${service.uuid}")
-                    Log.d(TAG, "  Characteristics count: ${service.characteristics.size}")
+                    Log.d(TAG, "Found Prime service: ${service.uuid}")
 
                     // Find characteristics
                     service.characteristics.forEach { characteristic ->
                         val properties = characteristic.properties
                         val propertiesString = getPropertiesString(properties)
-                        val permissions = characteristic.permissions
 
-                        Log.d(TAG, "────────────────────────────────────────")
-                        Log.d(TAG, "Characteristic: ${characteristic.uuid}")
-                        Log.d(TAG, "  Properties: $propertiesString")
-                        Log.d(TAG, "  Permissions: ${getPermissionsString(permissions)}")
-                        Log.d(TAG, "  Write Type: ${getWriteTypeString(characteristic.writeType)}")
-                        Log.d(TAG, "  Descriptors: ${characteristic.descriptors.size}")
+                        Log.d(
+                            TAG,
+                            "Found characteristic: ${characteristic.uuid} (properties: $propertiesString)"
+                        )
 
                         when {
                             properties and BluetoothGattCharacteristic.PROPERTY_WRITE != 0 ||
                                     properties and BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE != 0 -> {
-                                Log.d(TAG, "  → Configured as WRITE characteristic")
+
                                 bleWriteQueue = BleWriteQueue(
                                     gatt, characteristic,
-                                    CoroutineScope(Dispatchers.IO)
+                                    CoroutineScope(
+                                        Dispatchers.IO
+                                    )
                                 )
                                 writeCharacteristic = characteristic
                             }
 
                             properties and BluetoothGattCharacteristic.PROPERTY_READ != 0 ||
                                     properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY != 0 -> {
-                                Log.d(TAG, "  → Configured as READ/NOTIFY characteristic")
                                 readCharacteristic = characteristic
 
                                 // Enable notifications if supported
                                 if (properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY != 0) {
-                                    Log.d(TAG, "  ⟳ Enabling notifications...")
                                     val notificationEnabled =
                                         gatt.setCharacteristicNotification(characteristic, true)
-                                    Log.d(TAG, "  Notification enabled: ${if (notificationEnabled) "✓" else "✗"}")
-
                                     val descriptor = characteristic.getDescriptor(CCCD_UUID)
                                     if (descriptor != null) {
-                                        Log.d(TAG, "  ✓ Found CCCD descriptor")
                                         val enableNotificationValue =
                                             BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-                                        val writeResult = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                            gatt.writeDescriptor(descriptor, enableNotificationValue)
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                            // Android 13+ (API 33): new overload
+                                            gatt.writeDescriptor(
+                                                descriptor,
+                                                enableNotificationValue
+                                            )
                                         } else {
+                                            // Older APIs: legacy call
                                             @Suppress("DEPRECATION")
                                             descriptor.value = enableNotificationValue
                                             @Suppress("DEPRECATION")
                                             gatt.writeDescriptor(descriptor)
                                         }
-                                        Log.d(TAG, "  CCCD write initiated: ${if (writeResult == BluetoothStatusCodes.SUCCESS || writeResult == true) "✓" else "✗"}")
                                     } else {
-                                        Log.e(TAG, "  ✗ CCCD descriptor not found!")
-                                        Log.e(TAG, "  Available descriptors:")
+                                        Log.e(
+                                            TAG,
+                                            "CCCD descriptor not found! Notifications won't work"
+                                        )
+                                        Log.e(TAG, "   Available descriptors:")
                                         characteristic.descriptors.forEach { desc ->
-                                            Log.e(TAG, "    - ${desc.uuid}")
+                                            Log.e(TAG, "   - ${desc.uuid}")
                                         }
                                     }
                                 }
@@ -1054,17 +969,15 @@ class BluetoothChannel(
                         }
                     }
 
-                    Log.d(TAG, "────────────────────────────────────────")
-                    Log.d(TAG, "CHARACTERISTICS CONFIGURATION SUMMARY:")
-                    Log.d(TAG, "  Write: ${writeCharacteristic?.uuid ?: "None"}")
-                    Log.d(TAG, "  Read:  ${readCharacteristic?.uuid ?: "None"}")
+                    Log.d(TAG, " Characteristics Summary:")
+                    Log.d(TAG, "  - Write characteristic: ${writeCharacteristic?.uuid ?: "None"}")
+                    Log.d(TAG, "  - Read characteristic: ${readCharacteristic?.uuid ?: "None"}")
                 } else {
-                    Log.w(TAG, "  ✗ Prime service not found")
+                    Log.w(TAG, "Prime service not found")
                 }
             } else {
-                Log.e(TAG, "  ✗ Service discovery failed")
+                Log.e(TAG, "Service discovery failed with status: $status")
             }
-            Log.d(TAG, "════════════════════════════════════════")
         }
 
         @SuppressLint("MissingPermission")
@@ -1078,34 +991,35 @@ class BluetoothChannel(
                 bleWriteQueue?.onCharacteristicWrite(status)
             }
             if (status == BluetoothGatt.GATT_SUCCESS) {
+
                 if (!checkBluetoothPermissions()) {
                     Log.d(TAG, "permission denied")
                     return
                 }
                 if (writeRetryCount > 0) {
-                    Log.d(TAG, "  ✓ Write success after $writeRetryCount retries")
+                    Log.d(TAG, "  - Success after $writeRetryCount retries")
                 }
 
                 // Clear retry data on success
                 pendingWriteData = null
                 writeRetryCount = 0
             } else {
-                Log.e(TAG, "════════════════════════════════════════")
-                Log.e(TAG, "CHARACTERISTIC WRITE ERROR")
-                Log.e(TAG, "  Characteristic: ${characteristic?.uuid}")
-                Log.e(TAG, "  Status: ${getGattStatusString(status)}")
-                Log.e(TAG, "  Retry attempt: $writeRetryCount/$MAX_WRITE_RETRIES")
-                Log.e(TAG, "  Data size: ${pendingWriteData?.size ?: 0} bytes")
-                Log.e(TAG, "════════════════════════════════════════")
-
+                Log.e(TAG, "WRITE ERROR:")
+                Log.e(TAG, "  - Characteristic: ${characteristic?.uuid}")
+                Log.e(TAG, "  - Status: $status")
+                Log.e(TAG, "  - Retry attempt: $writeRetryCount/$MAX_WRITE_RETRIES")
                 // Retry logic
                 if (writeRetryCount < MAX_WRITE_RETRIES && pendingWriteData != null && characteristic != null && gatt != null) {
                     writeRetryCount++
-                    Log.d(TAG, "⟳ Retrying write (attempt $writeRetryCount/$MAX_WRITE_RETRIES)")
+                    Log.d(
+                        TAG,
+                        "Retrying write operation (attempt $writeRetryCount/$MAX_WRITE_RETRIES)"
+                    )
                     scope.launch {
                         delay(RETRY_DELAY_MS)
                         val writeSuccess =
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                // API 33+
                                 if (pendingWriteData != null) {
                                     val success = gatt.writeCharacteristic(
                                         characteristic,
@@ -1113,30 +1027,31 @@ class BluetoothChannel(
                                         characteristic.writeType
                                     )
                                     if (success != BluetoothStatusCodes.SUCCESS) {
-                                        Log.e(TAG, "  ✗ writeCharacteristic error: ${getGattStatusString(success)}")
+                                        Log.e(TAG, "Error writeCharacteristic : $success")
                                     }
                                     success == BluetoothStatusCodes.SUCCESS
                                 } else {
-                                    Log.e(TAG, "  ✗ pendingWriteData is null")
+                                    Log.e(TAG, "Error  pendingWriteData: is null")
                                     false
                                 }
+
                             } else {
+                                // Below API 33
                                 @Suppress("DEPRECATION")
                                 characteristic.value = pendingWriteData
                                 @Suppress("DEPRECATION")
                                 gatt.writeCharacteristic(characteristic)
                             }
                         if (!writeSuccess) {
-                            Log.e(TAG, "  ✗ Failed to write characteristic on retry")
-                        } else {
-                            Log.d(TAG, "  ✓ Retry write initiated")
+                            Log.e(TAG, "Failed to write characteristic on retry")
                         }
                     }
+
                     return
                 }
 
-                // Max retries reached
-                Log.e(TAG, "✗ Write failed after $MAX_WRITE_RETRIES retries")
+                // Max retries reached, send error
+                Log.e(TAG, "Write failed after $MAX_WRITE_RETRIES retries")
                 pendingWriteData = null
                 writeRetryCount = 0
             }
@@ -1219,91 +1134,59 @@ class BluetoothChannel(
             status: Int
         ) {
             if (descriptor?.uuid == CCCD_UUID) {
-                Log.d(TAG, "════════════════════════════════════════")
-                Log.d(TAG, "CCCD DESCRIPTOR WRITE")
-                Log.d(TAG, "  Characteristic: ${descriptor.characteristic?.uuid}")
-                Log.d(TAG, "  Status: ${getGattStatusString(status)}")
                 if (status == BluetoothGatt.GATT_SUCCESS) {
-                    Log.d(TAG, "  ✓ Notifications enabled successfully")
+                    Log.d(TAG, "CCCD write successful - Notifications enabled")
                 } else {
-                    Log.e(TAG, "  ✗ Failed to enable notifications")
+                    Log.e(TAG, "CCCD write failed with status: $status")
                 }
-                Log.d(TAG, "════════════════════════════════════════")
             }
         }
     }
 
-    // Helper functions for readable logging
-    private fun getConnectionStateString(state: Int): String {
-        return when (state) {
-            BluetoothProfile.STATE_DISCONNECTED -> "DISCONNECTED"
-            BluetoothProfile.STATE_CONNECTING -> "CONNECTING"
-            BluetoothProfile.STATE_CONNECTED -> "CONNECTED"
-            BluetoothProfile.STATE_DISCONNECTING -> "DISCONNECTING"
-            else -> "UNKNOWN ($state)"
+
+    private fun getConnectedPeripheralId(): String? {
+        return connectedDevice?.address
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun isConnected(): Boolean {
+        if (!checkBluetoothPermissions()) return false
+
+        val device = connectedDevice ?: return false
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            bluetoothManager.getConnectionState(
+                device,
+                BluetoothProfile.GATT
+            ) == BluetoothProfile.STATE_CONNECTED
+        } else {
+            @Suppress("DEPRECATION")
+            bluetoothGatt?.getConnectionState(device) == BluetoothProfile.STATE_CONNECTED
         }
     }
 
-    private fun getGattStatusString(status: Int): String {
-        return when (status) {
-            BluetoothGatt.GATT_SUCCESS -> "SUCCESS"
-            BluetoothGatt.GATT_READ_NOT_PERMITTED -> "READ_NOT_PERMITTED"
-            BluetoothGatt.GATT_WRITE_NOT_PERMITTED -> "WRITE_NOT_PERMITTED"
-            BluetoothGatt.GATT_INSUFFICIENT_AUTHENTICATION -> "INSUFFICIENT_AUTHENTICATION"
-            BluetoothGatt.GATT_REQUEST_NOT_SUPPORTED -> "REQUEST_NOT_SUPPORTED"
-            BluetoothGatt.GATT_INSUFFICIENT_ENCRYPTION -> "INSUFFICIENT_ENCRYPTION"
-            BluetoothGatt.GATT_INVALID_OFFSET -> "INVALID_OFFSET"
-            BluetoothGatt.GATT_INVALID_ATTRIBUTE_LENGTH -> "INVALID_ATTRIBUTE_LENGTH"
-            BluetoothGatt.GATT_CONNECTION_CONGESTED -> "CONNECTION_CONGESTED"
-            BluetoothGatt.GATT_FAILURE -> "FAILURE"
-            133 -> "GATT_ERROR (133 - Connection issue)"
-            else -> "UNKNOWN ($status)"
+    private fun checkBluetoothPermissions(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val hasConnectPermission = ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH_CONNECT
+            ) == PackageManager.PERMISSION_GRANTED
+            val hasScanPermission = ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH_SCAN
+            ) == PackageManager.PERMISSION_GRANTED
+            return hasConnectPermission && hasScanPermission
+        } else {
+            val hasBluetoothPermission = ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH
+            ) == PackageManager.PERMISSION_GRANTED
+            val hasBluetoothAdminPermission = ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH_ADMIN
+            ) == PackageManager.PERMISSION_GRANTED
+            return hasBluetoothPermission && hasBluetoothAdminPermission
         }
-    }
-
-    private fun getPhyString(phy: Int): String {
-        return when (phy) {
-            BluetoothDevice.PHY_LE_1M -> "1M"
-            BluetoothDevice.PHY_LE_2M -> "2M"
-            BluetoothDevice.PHY_LE_CODED -> "CODED"
-            else -> "UNKNOWN ($phy)"
-        }
-    }
-
-    private fun getConnectionPriorityString(priority: Int): String {
-        return when (priority) {
-            BluetoothGatt.CONNECTION_PRIORITY_BALANCED -> "BALANCED"
-            BluetoothGatt.CONNECTION_PRIORITY_HIGH -> "HIGH"
-            BluetoothGatt.CONNECTION_PRIORITY_LOW_POWER -> "LOW_POWER"
-            else -> "UNKNOWN ($priority)"
-        }
-    }
-
-    private fun getDeviceTypeString(type: Int): String {
-        return when (type) {
-            BluetoothDevice.DEVICE_TYPE_CLASSIC -> "CLASSIC"
-            BluetoothDevice.DEVICE_TYPE_LE -> "LE"
-            BluetoothDevice.DEVICE_TYPE_DUAL -> "DUAL"
-            else -> "UNKNOWN ($type)"
-        }
-    }
-
-    private fun getWriteTypeString(writeType: Int): String {
-        return when (writeType) {
-            BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT -> "DEFAULT"
-            BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE -> "NO_RESPONSE"
-            BluetoothGattCharacteristic.WRITE_TYPE_SIGNED -> "SIGNED"
-            else -> "UNKNOWN ($writeType)"
-        }
-    }
-
-    private fun getPermissionsString(permissions: Int): String {
-        val perms = mutableListOf<String>()
-        if (permissions and BluetoothGattCharacteristic.PERMISSION_READ != 0) perms.add("READ")
-        if (permissions and BluetoothGattCharacteristic.PERMISSION_WRITE != 0) perms.add("WRITE")
-        if (permissions and BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED != 0) perms.add("READ_ENCRYPTED")
-        if (permissions and BluetoothGattCharacteristic.PERMISSION_WRITE_ENCRYPTED != 0) perms.add("WRITE_ENCRYPTED")
-        return if (perms.isEmpty()) "NONE" else perms.joinToString(" | ")
     }
 
     private fun getPropertiesString(properties: Int): String {
@@ -1314,36 +1197,6 @@ class BluetoothChannel(
         if (properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY != 0) props.add("NOTIFY")
         if (properties and BluetoothGattCharacteristic.PROPERTY_INDICATE != 0) props.add("INDICATE")
         return if (props.isEmpty()) "NONE" else props.joinToString(" | ")
-    }
-
-    private fun checkBluetoothPermissions(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.BLUETOOTH_CONNECT
-            ) == PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.BLUETOOTH_SCAN
-                    ) == PackageManager.PERMISSION_GRANTED
-        } else {
-            ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.BLUETOOTH
-            ) == PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.BLUETOOTH_ADMIN
-                    ) == PackageManager.PERMISSION_GRANTED
-        }
-    }
-
-    private fun isConnected(): Boolean {
-        return connectedDevice != null && bluetoothGatt != null
-    }
-
-    private fun getConnectedPeripheralId(): String? {
-        return connectedDevice?.address
     }
 
     fun cleanup() {
@@ -1446,19 +1299,19 @@ class SafeResult(private val result: MethodChannel.Result) {
     private val lock = AtomicBoolean(false)
 
     fun success(value: Any?) {
-        if (lock.compareAndSet(expectedValue = false, newValue = true)) {
+        if (lock.compareAndSet(false, true)) {
             result.success(value)
         }
     }
 
     fun error(code: String, message: String?, details: Any?) {
-        if (lock.compareAndSet(expectedValue = false, newValue = true)) {
+        if (lock.compareAndSet(false, true)) {
             result.error(code, message, details)
         }
     }
 
     fun notImplemented() {
-        if (lock.compareAndSet(expectedValue = false, newValue = true)) {
+        if (lock.compareAndSet(false, true)) {
             result.notImplemented()
         }
     }
