@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -15,6 +16,10 @@ import 'package:envoy/business/blog_post.dart';
 class FeedManager {
   static const vimeoToken = "141c53cdd50a0285e03885dc6f444f9a";
   static const vimeoAccountId = "210701027";
+
+  static const _clearnetFeed = 'https://foundation.xyz/feed';
+  static const _onionFeed =
+      'http://wmkivkyzuekkp54zhnt6jdn776xxymxs6oevzcgvbjoe5ovp2og2nlqd.onion/feed/';
 
   List<Video> videos = [];
   List<BlogPost> blogs = [];
@@ -37,7 +42,9 @@ class FeedManager {
 
     _addVideosFromVimeo();
 
-    HttpTor().get("https://foundation.xyz/feed").then((response) {
+    final feedUrl = Settings().usingTor ? _onionFeed : _clearnetFeed;
+
+    HttpTor().get(feedUrl).then((response) {
       RssFeed feed = RssFeed.parse(response.body);
       _addBlogPostsFromRssFeed(feed);
     }).catchError((error) {
