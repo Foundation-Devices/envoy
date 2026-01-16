@@ -417,6 +417,7 @@ class _DevOptions extends ConsumerWidget {
                         loading = true;
                       });
                       await EnvoySeed().delete();
+                      await EnvoySeed().deleteMagicBackup();
                       setState(() {
                         loading = false;
                       });

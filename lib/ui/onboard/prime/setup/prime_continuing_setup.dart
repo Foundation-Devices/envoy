@@ -181,7 +181,7 @@ class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
 
                       return Container(
                         margin: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.medium1,
+                          vertical: EnvoySpacing.medium3,
                           horizontal: EnvoySpacing.medium2,
                         ),
                         child: Wrap(
