@@ -10,6 +10,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -33,6 +34,7 @@ class BleWriteQueue(
                     req.result.complete(false)
                     continue
                 }
+                val before = System.currentTimeMillis()
                 val ok = performWrite(req.data)
                 if (!ok) {
                     Log.e(TAG, "Write failed, clearing")
@@ -42,6 +44,13 @@ class BleWriteQueue(
                         queue.tryReceive().getOrNull()?.result?.complete(false)
                     }
                     break
+                } else {
+                    val after = System.currentTimeMillis()
+                    val difference = after - before
+                    Log.w(TAG, "Write took ${after - before}ms for ${req.data.size} bytes")
+                    if (difference < 3) {
+                        delay(3 - difference)
+                    }
                 }
                 req.result.complete(true)
             }
