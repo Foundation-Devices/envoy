@@ -473,9 +473,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
             }
           }
         }, onError: (e) {
-          kPrint("ID: $id");
-          kPrint("bleid: $bleId");
-          kPrint("xid: $_recipientXid");
           kPrint("Error decoding: $e");
         });
       });
