@@ -3,8 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
-import 'package:envoy/business/local_storage.dart';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:crypto/crypto.dart';
+import 'package:envoy/business/local_storage.dart';
 import 'package:http_tor/http_tor.dart';
 
 class Media {
@@ -35,7 +38,11 @@ class Media {
 
     if (await LocalStorage().fileExists(path)) {
       final bytes = await LocalStorage().readFileBytes(path);
-      if (_looksLikeImage(bytes)) return bytes;
+
+      if (await _looksLikeImage(bytes)) {
+        return bytes;
+      }
+
       await LocalStorage().deleteFile(path);
     }
 
@@ -56,7 +63,8 @@ class Media {
       if (response.statusCode != 200) return;
 
       final bytes = response.bodyBytes;
-      if (!_looksLikeImage(bytes)) return;
+
+      if (!await _looksLikeImage(bytes)) return;
 
       await LocalStorage().saveFileBytes(path, bytes);
     } catch (_) {
@@ -64,33 +72,21 @@ class Media {
     }
   }
 
-  bool _looksLikeImage(List<int> bytes) {
-    if (bytes.length < 12) return false;
+  Future<bool> _looksLikeImage(List<int> bytes) async {
+    if (bytes.isEmpty) return false;
 
-    // JPEG
-    if (bytes[0] == 0xFF && bytes[1] == 0xD8) return true;
-
-    // PNG
-    if (bytes[0] == 0x89 &&
-        bytes[1] == 0x50 &&
-        bytes[2] == 0x4E &&
-        bytes[3] == 0x47) {
-      return true;
-    }
-
-    // WebP ("RIFF....WEBP")
-    if (bytes[0] == 0x52 &&
-        bytes[1] == 0x49 &&
-        bytes[2] == 0x46 &&
-        bytes[3] == 0x46) {
-      if (bytes[8] == 0x57 &&
-          bytes[9] == 0x45 &&
-          bytes[10] == 0x42 &&
-          bytes[11] == 0x50) {
+    try {
+      final buffer =
+          await ui.ImmutableBuffer.fromUint8List(Uint8List.fromList(bytes));
+      try {
+        final descriptor = await ui.ImageDescriptor.encoded(buffer);
+        descriptor.dispose();
         return true;
+      } finally {
+        buffer.dispose();
       }
+    } catch (_) {
+      return false;
     }
-
-    return false;
   }
 }
