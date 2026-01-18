@@ -3,7 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:io';
+
 import 'package:archive/archive_io.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -29,11 +31,14 @@ class LocalStorage {
   static Future<LocalStorage> init() async {
     var singleton = LocalStorage._instance;
     await singleton._initAsync();
+
     return singleton;
   }
 
   LocalStorage._internal() {
-    kPrint("Instance of LocalStorage created!");
+    if (Platform.isIOS) {
+      _performKeychainMigration();
+    }
   }
 
   Future<void> _initAsync() async {
@@ -143,5 +148,37 @@ class LocalStorage {
     final folderName = path.replaceAll('.tar', '');
     await extractFileToDisk(
         '${appSupportDir.path}/$path', '${appSupportDir.path}/$folderName');
+  }
+
+  //IOS keychain previous secure storage configuration to new configuration.
+  //configuration changed to support iOS Keychain synchronizable across different
+  //devices
+  void _performKeychainMigration() async {
+    final storage = FlutterSecureStorage();
+    final allValues = await storage.readAll();
+    //already migrated or nothing to migrate
+    if (allValues.isEmpty) {
+      return;
+    }
+    for (var key in allValues.keys) {
+      if (allValues[key] != null) {
+        await secureStorage.write(key: key, value: allValues[key]);
+      }
+    }
+    // Verify all values migrated successfully to new storage configuration
+    bool allMigrated = true;
+    for (var key in allValues.keys) {
+      final migratedValue = await secureStorage.read(key: key);
+      if (migratedValue != allValues[key]) {
+        allMigrated = false;
+        EnvoyReport().log("LocalStorage", "Migration failed for key: $key");
+        break;
+      }
+    }
+    // Delete all from old storage if migration successful
+    if (allMigrated) {
+      await storage.deleteAll();
+      kPrint("Old keychain storage cleared after successful migration");
+    }
   }
 }

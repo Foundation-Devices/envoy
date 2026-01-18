@@ -70,10 +70,15 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       if (escapeHatchTaps.length == secretCombination.length) {
         escapeHatchTaps.clear();
         try {
+          //old storage configuration
           FlutterSecureStorage storage = const FlutterSecureStorage();
           await storage.deleteAll();
+
           await EnvoySeed().removeSeedFromNonSecure();
           await EnvoySeed().removeSeedFromSecure();
+          //new storage configuration, delete all entries from secure storage fixes
+          // issue where old seeds were not deleted properly
+          await LocalStorage().secureStorage.deleteAll();
           await Future.delayed(const Duration(milliseconds: 500));
           scaffold.showSnackBar(const SnackBar(
             content: Text("Envoy Seed deleted!"), // TODO: FIGMA

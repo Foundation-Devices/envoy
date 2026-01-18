@@ -155,7 +155,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               padding: EdgeInsets.all(
                   kDebugMode || devModeEnabled ? marginBetweenItems : 0)),
           SliverToBoxAdapter(
-            child: kDebugMode || devModeEnabled
+            child: kDebugMode || devModeEnabled || kProfileMode
                 ? GestureDetector(
                     onTap: () {
                       showDialog(
@@ -417,7 +417,6 @@ class _DevOptions extends ConsumerWidget {
                         loading = true;
                       });
                       await EnvoySeed().delete();
-                      await EnvoySeed().deleteMagicBackup();
                       setState(() {
                         loading = false;
                       });
