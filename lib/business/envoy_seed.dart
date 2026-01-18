@@ -8,8 +8,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:backup/backup.dart';
 import 'package:backup/backup.dart' as backup_lib;
+import 'package:backup/backup.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/legacy/legacy_account.dart';
 import 'package:envoy/account/sync_manager.dart';
@@ -23,6 +23,7 @@ import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/migrations/migration_manager.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -34,7 +35,6 @@ import 'package:flutter/services.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:tor/tor.dart';
 import 'package:uuid/uuid.dart';
-import 'package:envoy/ui/routes/routes.dart';
 
 const String SEED_KEY = "seed";
 const String WALLET_DERIVED_PREFS = "wallet_derived";
@@ -75,9 +75,12 @@ class EnvoySeed {
         try {
           await LocalStorage().deleteSecure(SEED_KEY);
           await LocalStorage().deleteFile(LOCAL_SECRET_FILE_NAME);
+          await LocalStorage().secureStorage.deleteAll();
         } finally {
           await clearDeleteFlag();
         }
+      } else if (hotWalletsExist) {
+        await clearDeleteFlag();
       }
     } catch (er) {
       EnvoyReport().log("EnvoySeed Init", er.toString());
@@ -741,6 +744,8 @@ class EnvoySeed {
     String? secure = await _getSecure();
     String? nonSecure = await _getNonSecure();
 
+    kPrint(
+        "Retrieved seed from secure: ${secure != null}, non-secure: ${nonSecure != null}");
     if (secure != null && nonSecure != null) {
       return secure;
 
@@ -812,6 +817,9 @@ class EnvoySeed {
 
   Future<void> removeSeedFromSecure() async {
     await LocalStorage().deleteSecure(SEED_KEY);
+    //delete all entries from secure storage fixes issue where old seeds were
+    //not deleted properly
+    await LocalStorage().secureStorage.deleteAll();
   }
 
   Future<String?> _getNonSecure() async {
