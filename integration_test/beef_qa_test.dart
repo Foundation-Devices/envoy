@@ -1532,16 +1532,19 @@ Future<void> main() async {
 
       await findAndPressTextButton(tester, "Receive");
 
+      // refresh Receive scren
+      await findAndPressTextButton(tester, "OK");
+      await findAndPressTextButton(tester, "Receive");
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+      await tester.pump(Durations.long1);
+      await tester.pump();
+      //
+
       // pump until address change on screen
       final nonTaprootFinder = find.text('bc1q');
       await tester.pumpUntilFound(nonTaprootFinder,
-          duration: Durations.long1, tries: 30);
-
-      // refresh Receive scren
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
-      await tester.pump(Durations.extralong4);
-      await tester.pump();
+          duration: Durations.long1, tries: 50);
 
       // Grab the second address
       final address2 = await getAddressFromReceiveScreen(tester);
