@@ -5,9 +5,10 @@
 import 'dart:io';
 
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/business/settings.dart';
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/home/home_state.dart';
@@ -15,6 +16,7 @@ import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -28,9 +30,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:envoy/ui/routes/accounts_router.dart';
-import 'package:envoy/ui/components/pop_up.dart';
-import 'package:envoy/business/envoy_seed.dart';
 
 class EraseWalletsAndBackupsWarning extends StatefulWidget {
   const EraseWalletsAndBackupsWarning({super.key});
@@ -509,15 +508,8 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       await Future.delayed(const Duration(seconds: 1));
 
       final seed = EnvoySeed();
-      bool isDeleted = true;
 
-      if (Settings().syncToCloud) {
-        isDeleted = await seed.deleteMagicBackup();
-      }
-
-      if (isDeleted) {
-        isDeleted = await seed.delete();
-      }
+      final isDeleted = await seed.delete();
 
       setState(() {
         _isDeleted = isDeleted;
