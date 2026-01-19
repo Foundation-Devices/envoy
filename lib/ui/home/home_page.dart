@@ -662,7 +662,14 @@ class HomePageState extends ConsumerState<HomePage>
                     child: Container(
                       child: _backgroundShown
                           ? BackButtonListener(
-                              onBackButtonPressed: () {
+                              onBackButtonPressed: () async {
+                                final rootNav =
+                                    Navigator.of(context, rootNavigator: true);
+
+                                // If a dialog is on top, let Navigator close it.
+                                if (rootNav.canPop()) {
+                                  return false;
+                                }
                                 return handleBackgroundBackPressed();
                               },
                               child: background)
