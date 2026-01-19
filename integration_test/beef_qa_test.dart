@@ -565,7 +565,7 @@ Future<void> main() async {
       String tapTheAboveCardsPrompt =
           "Tap any of the above cards to receive Bitcoin.";
       Finder tapCardsPromptFinder = find.text(tapTheAboveCardsPrompt);
-      expect(tapCardsPromptFinder, findsOneWidget);
+      await tester.pumpUntilFound(tapCardsPromptFinder);
 
       // Dismiss prompt via opening account
       await fromHomeToHotWallet(tester);
@@ -579,7 +579,7 @@ Future<void> main() async {
 
       String swipeBalancePrompt = "Swipe to show and hide your balance.";
       Finder swipeBalancePromptFinder = find.text(swipeBalancePrompt);
-      expect(swipeBalancePromptFinder, findsOneWidget);
+      await tester.pumpUntilFound(swipeBalancePromptFinder);
 
       // check Dismiss button functionality
       final dismissButton = find.text('Dismiss');
@@ -597,7 +597,7 @@ Future<void> main() async {
       expect(tapCardsPromptFinder, findsNothing);
 
       swipeBalancePromptFinder = find.text(swipeBalancePrompt);
-      expect(swipeBalancePromptFinder, findsOneWidget);
+      await tester.pumpUntilFound(swipeBalancePromptFinder);
 
       const String reorderPromptMessage =
           "Hold to drag and reorder your accounts.";
@@ -625,8 +625,7 @@ Future<void> main() async {
       await tester.tap(dismissButton);
       await tester.pump(Durations.long2);
 
-      reorderPromptFinder = find.text(reorderPromptMessage);
-      expect(reorderPromptFinder, findsOneWidget);
+      await tester.pumpUntilFound(reorderPromptFinder);
 
       await scrollHome(tester, 1200);
       await tester.pump(Durations.long2);
@@ -1502,10 +1501,19 @@ Future<void> main() async {
       await tester.pump(Durations.extralong4);
       await tester.pump();
 
+      // refresh Receive scren
+      await findAndPressTextButton(tester, "OK");
+      await findAndPressTextButton(tester, "Receive");
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+      await tester.pump(Durations.long1);
+      await tester.pump();
+      //
+
       // pump until address change on screen
       final taprootFinder = find.text('bc1p');
       await tester.pumpUntilFound(taprootFinder,
-          duration: Durations.long1, tries: 30);
+          duration: Durations.long1, tries: 50);
 
       // copy Taproot address
       final address1 = await getAddressFromReceiveScreen(tester);
@@ -1532,16 +1540,19 @@ Future<void> main() async {
 
       await findAndPressTextButton(tester, "Receive");
 
+      // refresh Receive scren
+      await findAndPressTextButton(tester, "OK");
+      await findAndPressTextButton(tester, "Receive");
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+      await tester.pump(Durations.long1);
+      await tester.pump();
+      //
+
       // pump until address change on screen
       final nonTaprootFinder = find.text('bc1q');
       await tester.pumpUntilFound(nonTaprootFinder,
-          duration: Durations.long1, tries: 30);
-
-      // refresh Receive scren
-      await pressHamburgerMenu(tester);
-      await pressHamburgerMenu(tester);
-      await tester.pump(Durations.extralong4);
-      await tester.pump();
+          duration: Durations.long1, tries: 50);
 
       // Grab the second address
       final address2 = await getAddressFromReceiveScreen(tester);

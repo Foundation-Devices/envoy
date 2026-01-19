@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/video.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
@@ -15,6 +16,10 @@ import 'package:envoy/business/blog_post.dart';
 class FeedManager {
   static const vimeoToken = "141c53cdd50a0285e03885dc6f444f9a";
   static const vimeoAccountId = "210701027";
+
+  static const _clearnetFeed = 'https://foundation.xyz/feed';
+  static const _onionFeed =
+      'http://wmkivkyzuekkp54zhnt6jdn776xxymxs6oevzcgvbjoe5ovp2og2nlqd.onion/feed/';
 
   List<Video> videos = [];
   List<BlogPost> blogs = [];
@@ -37,7 +42,9 @@ class FeedManager {
 
     _addVideosFromVimeo();
 
-    HttpTor().get("https://foundation.xyz/feed").then((response) {
+    final feedUrl = Settings().usingTor ? _onionFeed : _clearnetFeed;
+
+    HttpTor().get(feedUrl).then((response) {
       RssFeed feed = RssFeed.parse(response.body);
       _addBlogPostsFromRssFeed(feed);
     }).catchError((error) {
@@ -153,11 +160,27 @@ class FeedManager {
     return currentVideos;
   }
 
+  static Uri _rewriteToOnionIfUsingTor(String url) {
+    final originalUri = Uri.parse(url);
+
+    // Only rewrite when we’re in Tor mode
+    if (!Settings().usingTor) return originalUri;
+    // only rewrite URLs that point to foundation.xyz.
+    if (originalUri.host != 'foundation.xyz') return originalUri;
+
+    final onionHost = Uri.parse(_onionFeed).host;
+
+    return originalUri.replace(scheme: 'http', host: onionHost);
+  }
+
   Future<void> _addBlogPostsFromRssFeed(RssFeed feed) async {
     List<BlogPost> currentBlogPosts = [];
 
     for (RssItem item in feed.items!) {
       String? thumbnailUrl = item.content?.images.firstOrNull;
+      if (thumbnailUrl != null) {
+        thumbnailUrl = _rewriteToOnionIfUsingTor(thumbnailUrl).toString();
+      }
       String htmlContent = item.content!.value;
 
       List<String> tags = [];

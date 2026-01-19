@@ -13,6 +13,7 @@ import 'package:backup/backup.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/legacy/legacy_account.dart';
 import 'package:envoy/account/sync_manager.dart';
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
@@ -673,6 +674,8 @@ class EnvoySeed {
     }
 
     Devices().restore(hasExitingSetup: hasExistingSetup);
+
+    BluetoothManager().restoreAfterRecovery();
   }
 
   List<LegacyAccount> getLegacyAccountsFromMBJson(Map<String, String> data) {
@@ -729,12 +732,19 @@ class EnvoySeed {
     final backupBytes = File(encryptedBackupFilePath).readAsBytesSync();
 
     try {
-      await FileSaver.instance.saveAs(
-        name: encryptedBackupFileName,
-        bytes: backupBytes,
-        fileExtension: encryptedBackupFileExtension,
-        mimeType: MimeType.text,
-      );
+      if (Platform.isAndroid) {
+        await _platform.invokeMethod('save_document', {
+          'from': encryptedBackupFilePath,
+          'mimeType': MimeType.text.type,
+        });
+      } else {
+        await FileSaver.instance.saveAs(
+          name: encryptedBackupFileName,
+          bytes: backupBytes,
+          fileExtension: encryptedBackupFileExtension,
+          mimeType: MimeType.text,
+        );
+      }
     } catch (e) {
       kPrint(e);
     }
