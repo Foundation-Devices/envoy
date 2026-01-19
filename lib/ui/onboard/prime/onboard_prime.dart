@@ -2,14 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:io';
-
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
-import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/home/settings/bluetooth_diag.dart';
@@ -18,15 +14,10 @@ import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
-import 'package:envoy/util/bug_report_helper.dart';
-import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -37,16 +28,8 @@ class OnboardPrimeWelcome extends StatefulWidget {
   State<OnboardPrimeWelcome> createState() => _OnboardPrimeWelcomeState();
 }
 
-const String primeSerialPref = "prime_serial";
-
-enum BleConnectState { idle, invalidId, connecting, connected }
-
-String? _bleIdCache;
-
 class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   final s = Settings();
-  BleConnectState bleConnectState = BleConnectState.idle;
-  final regex = RegExp(r'^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$');
   int colorWay = 1;
   bool onboardingComplete = false;
 
@@ -60,150 +43,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         onboardingComplete = int.tryParse(params["o"] ?? "0") == 1;
         colorWay = int.tryParse(param) ?? 1;
       });
-      _checkIfDeviceConnected();
     });
-  }
-
-  Future<void> _connectToPrime() async {
-    // Check Bluetooth permissions
-    bool isDenied = false;
-    if (Platform.isAndroid) {
-      await BluetoothManager().getPermissions();
-      isDenied = await BluetoothManager.isBluetoothDenied();
-      if (!isDenied) {
-        await BluetoothManager().getPermissions();
-      }
-    }
-    String? bleId;
-
-    if (mounted) {
-      // Get the initial bleId from the router (if available)
-      bleId = GoRouter.of(context).state.uri.queryParameters["p"];
-      if (GoRouter.of(context).state.uri.queryParameters["p"] == null &&
-          _bleIdCache != null) {
-        bleId = _bleIdCache;
-      }
-      _bleIdCache = bleId;
-    }
-
-    if (isDenied && mounted) {
-      // Navigate to the permission denied screen and wait for result
-      final result = await context.pushNamed(
-        ONBOARD_BLUETOOTH_DENIED,
-        queryParameters: {"p": bleId ?? ""},
-      );
-
-      // If user provided a bleId, use it; else exit
-      if (result is String) {
-        bleId = result;
-      } else {
-        return;
-      }
-    }
-
-    if (!mounted) return;
-
-    setState(() {
-      bleConnectState = BleConnectState.connecting;
-    });
-
-    try {
-      final regex = RegExp(r'^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$');
-      // kPrint("bleId $bleId");
-      if (regex.hasMatch(bleId ?? "")) {
-        if (Platform.isIOS) {
-          final bleId = GoRouter.of(context).state.uri.queryParameters["p"];
-          if (regex.hasMatch(bleId ?? "")) {
-            final setUpSuccess = await BluetoothChannel().showAccessorySetup();
-            if (setUpSuccess) {
-              if (mounted) {
-                setState(() {
-                  bleConnectState = BleConnectState.connected;
-                });
-              }
-              if (context.mounted && mounted) {
-                context.goNamed(ONBOARD_PRIME_BLUETOOTH,
-                    extra: onboardingComplete);
-              }
-            }
-          }
-        } else {
-          await BluetoothManager().getPermissions();
-        }
-
-        final connectionStatus =
-            await BluetoothManager().setupBle(id: bleId!, colorWay: colorWay);
-
-        if (!connectionStatus && mounted) {
-          setState(() {
-            bleConnectState = BleConnectState.idle;
-          });
-          //on ios accessory setup handles connection failures
-          if (!Platform.isIOS) {
-            throw Exception("Failed to connect to Prime device.");
-          }
-        }
-        if (mounted && connectionStatus) {
-          setState(() {
-            bleConnectState = BleConnectState.connected;
-          });
-          if (context.mounted && mounted) {
-            context.goNamed(ONBOARD_PRIME_BLUETOOTH, extra: onboardingComplete);
-          }
-        }
-      } else {
-        throw Exception("Invalid Prime Serial");
-      }
-    } catch (e, stack) {
-      setState(() {
-        bleConnectState = BleConnectState.idle;
-      });
-      String message = "";
-      if (e is PlatformException) {
-        //only for Android
-        if (e.code == "BLUETOOTH_DISABLED") {
-          final bool? allowed = await BluetoothChannel().requestEnableBle();
-          if (allowed == true) {
-            return _connectToPrime();
-          } else {
-            message = "Unable to connect to device, Error code ${e.code}";
-          }
-        }
-      }
-      if (mounted) {
-        setState(() {
-          bleConnectState = BleConnectState.idle;
-        });
-
-        //handle specific errors
-        if (e is BleSetupTimeoutException) {
-          message = S().onboarding_modalBluetoothUnableConnect_content;
-        }
-
-        showEnvoyDialog(
-          context: context,
-          dismissible: true,
-          dialog: EnvoyPopUp(
-            icon: EnvoyIcons.alert,
-            typeOfMessage: PopUpState.warning,
-            showCloseButton: false,
-            content: message,
-            title: S().onboarding_modalBluetoothUnableConnect_header,
-            primaryButtonLabel: S().component_retry,
-            secondaryButtonLabel: S().component_dismiss,
-            onSecondaryButtonTap: (BuildContext context) {
-              Navigator.pop(context);
-            },
-            onPrimaryButtonTap: (BuildContext context) async {
-              Navigator.pop(context);
-              _connectToPrime();
-            },
-          ),
-        );
-        kPrint(e, stackTrace: stack);
-        EnvoyReport().log("BleConnect", e.toString(), stackTrace: stack);
-      }
-    }
   }
 
   @override
@@ -327,29 +167,14 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     const SizedBox(height: EnvoySpacing.medium1),
-                    Opacity(
-                      opacity: (bleConnectState == BleConnectState.invalidId ||
-                              bleConnectState == BleConnectState.connecting)
-                          ? 0.5
-                          : 1,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Opacity(
-                            opacity:
-                                bleConnectState == BleConnectState.connecting
-                                    ? 0.5
-                                    : 1,
-                            child:
-                                EnvoyButton(S().component_continue, onTap: () {
-                              _connectToPrime();
-                            }),
-                          ),
-                          if (bleConnectState == BleConnectState.connecting)
-                            const CupertinoActivityIndicator(),
-                        ],
-                      ),
-                    ),
+                    EnvoyButton(S().component_continue, onTap: () {
+                      final params =
+                          GoRouter.of(context).state.uri.queryParameters;
+                      context.goNamed(
+                        ONBOARD_PRIME_BLUETOOTH,
+                        queryParameters: params,
+                      );
+                    }),
                     const SizedBox(height: EnvoySpacing.small),
                   ],
                 ),
@@ -359,21 +184,5 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         ),
       );
     });
-  }
-
-  void _checkIfDeviceConnected() async {
-    final bleId = GoRouter.of(context).state.uri.queryParameters["p"];
-
-    final status = await BluetoothChannel().getCurrentDeviceStatus();
-    if (status.connected && status.peripheralId == bleId) {
-      if (mounted) {
-        setState(() {
-          bleConnectState = BleConnectState.connected;
-        });
-      }
-      if (context.mounted && mounted) {
-        context.goNamed(ONBOARD_PRIME_BLUETOOTH, extra: onboardingComplete);
-      }
-    }
   }
 }

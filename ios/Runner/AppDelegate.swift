@@ -5,6 +5,7 @@ import UniformTypeIdentifiers
 import Foundation
 import AccessorySetupKit
 import CoreBluetooth
+import Security
 
 private let methodChannel = "envoy"
 private let sdCardEventChannel = "sd_card_events"
@@ -29,8 +30,6 @@ func getSdCardBookmark() -> URL {
     // tiny hidden textfield used to prevent screenshots (original idea kept)
     let secureTextField = UITextField(frame: CGRect(x: 0, y: 0, width: 1, height: 1))
     
-    // Bluetooth management
-    
 
     
     // MARK: - Application lifecycle
@@ -50,7 +49,10 @@ func getSdCardBookmark() -> URL {
         setUpSecureScreen(window: window)
         
         let bluetoothChannel = BluetoothChannel(flutterController: controller)
-
+        
+        // --- DEBUG: Run this for keychain audit ---
+        //  auditKeychainItems()
+        // ----------------------------
 
         
         envoyMethodChannel.setMethodCallHandler({ [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
@@ -130,11 +132,55 @@ func getSdCardBookmark() -> URL {
         }
         
         GeneratedPluginRegistrant.register(with: self)
-        
+            
         // Bluetooth channel is already initialized in the property declaration
         
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
+    
+    
+    // Helper function to print Keychain attributes
+    func auditKeychainItems() {
+          print("\n--- STARTING KEYCHAIN AUDIT ---")
+          
+          // helper to run a query
+          func runQuery(sync: Bool) {
+              let typeLabel = sync ? "☁️ iCLOUD (Synchronizable)" : "🏠 LOCAL (Not-Synchronizable)"
+              
+              let query: [String: Any] = [
+                  kSecClass as String: kSecClassGenericPassword,
+                  kSecReturnAttributes as String: true,
+                  kSecMatchLimit as String: kSecMatchLimitAll,
+                  kSecAttrSynchronizable as String: sync // Explicitly targeting one partition
+              ]
+
+              var result: AnyObject?
+              let status = SecItemCopyMatching(query as CFDictionary, &result)
+
+              if status == errSecSuccess {
+                  if let items = result as? [[String: Any]] {
+                      print("\nChecking \(typeLabel): FOUND \(items.count) ITEMS")
+                      for item in items {
+                          let key = item[kSecAttrAccount as String] as? String ?? "Unknown"
+                          let access = item[kSecAttrAccessible as String] as? String ?? "Unknown"
+                          print("   • Key: '\(key)' | Access: \(access) ")
+                      }
+                  }
+              } else if status == errSecItemNotFound {
+                  print("\nChecking \(typeLabel): EMPTY (No items found)")
+              } else {
+                  print("\nChecking \(typeLabel): ERROR \(status)")
+              }
+          }
+
+          // 1. Check Local
+          runQuery(sync: false)
+          
+          // 2. Check iCloud
+          runQuery(sync: true)
+          
+          print("\n--- AUDIT COMPLETE ---\n")
+      }
     
     // Deep links
     override func application(_ application: UIApplication,
