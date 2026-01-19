@@ -729,12 +729,19 @@ class EnvoySeed {
     final backupBytes = File(encryptedBackupFilePath).readAsBytesSync();
 
     try {
-      await FileSaver.instance.saveAs(
-        name: encryptedBackupFileName,
-        bytes: backupBytes,
-        fileExtension: encryptedBackupFileExtension,
-        mimeType: MimeType.text,
-      );
+      if (Platform.isAndroid) {
+        await _platform.invokeMethod('save_document', {
+          'from': encryptedBackupFilePath,
+          'mimeType': MimeType.text.type,
+        });
+      } else {
+        await FileSaver.instance.saveAs(
+          name: encryptedBackupFileName,
+          bytes: backupBytes,
+          fileExtension: encryptedBackupFileExtension,
+          mimeType: MimeType.text,
+        );
+      }
     } catch (e) {
       kPrint(e);
     }
