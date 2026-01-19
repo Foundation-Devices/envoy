@@ -44,6 +44,7 @@ import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/stripe.dart';
 import 'generated/l10n.dart';
+import 'package:tor/util.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,13 +77,14 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
       kPrint("Error initializing BluetoothManager: $e", stackTrace: stack);
     }
   }
-  // // This is notoriously low on iOS, causing 'too many open files errors'
-  // kPrint("Process nofile_limit: ${getNofileLimit()}");
-  //
-  // // Requesting a high number. The API will return the best we can get
-  // // ~10k on iPhone 11 which is much better than the default 256
-  // kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
-  //
+  // This is notoriously low on iOS and GrapheneOS,
+  // causing 'too many open files' errors
+  kPrint("Process nofile_limit: ${getNofileLimit()}");
+
+  // Requesting a high number. The API will return the best we can get
+  // ~10k on iPhone 11 which is much better than the default 256
+  kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
+
   await LocalStorage.init();
   await RiveNative.init();
   NgAccountManager.init();
