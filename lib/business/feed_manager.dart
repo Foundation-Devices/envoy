@@ -160,11 +160,27 @@ class FeedManager {
     return currentVideos;
   }
 
+  static Uri _rewriteToOnionIfUsingTor(String url) {
+    final originalUri = Uri.parse(url);
+
+    // Only rewrite when we’re in Tor mode
+    if (!Settings().usingTor) return originalUri;
+    // only rewrite URLs that point to foundation.xyz.
+    if (originalUri.host != 'foundation.xyz') return originalUri;
+
+    final onionHost = Uri.parse(_onionFeed).host;
+
+    return originalUri.replace(scheme: 'http', host: onionHost);
+  }
+
   Future<void> _addBlogPostsFromRssFeed(RssFeed feed) async {
     List<BlogPost> currentBlogPosts = [];
 
     for (RssItem item in feed.items!) {
       String? thumbnailUrl = item.content?.images.firstOrNull;
+      if (thumbnailUrl != null) {
+        thumbnailUrl = _rewriteToOnionIfUsingTor(thumbnailUrl).toString();
+      }
       String htmlContent = item.content!.value;
 
       List<String> tags = [];
