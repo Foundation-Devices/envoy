@@ -138,9 +138,9 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
         icon: EnvoyIcons.alert,
         typeOfMessage: PopUpState.warning,
         showCloseButton: true,
-        content: "Do you want to exit the onboarding ?",
-        primaryButtonLabel: "Cancel",
-        secondaryButtonLabel: "Exit",
+        content: S().onboarding_connectionModalAbort_content,
+        primaryButtonLabel: S().component_cancel,
+        secondaryButtonLabel: S().component_exit,
         onPrimaryButtonTap: (context) async {
           completer.complete(false);
           Navigator.pop(context);
