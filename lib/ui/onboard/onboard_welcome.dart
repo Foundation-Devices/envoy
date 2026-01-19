@@ -28,6 +28,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:envoy/business/settings.dart';
@@ -69,7 +70,16 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       if (escapeHatchTaps.length == secretCombination.length) {
         escapeHatchTaps.clear();
         try {
+          //old storage configuration
+          FlutterSecureStorage storage = const FlutterSecureStorage();
+          await storage.deleteAll();
+
           await EnvoySeed().removeSeedFromNonSecure();
+          await EnvoySeed().removeSeedFromSecure();
+          //new storage configuration, delete all entries from secure storage fixes
+          // issue where old seeds were not deleted properly
+          await LocalStorage().secureStorage.deleteAll();
+          await Future.delayed(const Duration(milliseconds: 500));
           scaffold.showSnackBar(const SnackBar(
             content: Text("Envoy Seed deleted!"), // TODO: FIGMA
           ));

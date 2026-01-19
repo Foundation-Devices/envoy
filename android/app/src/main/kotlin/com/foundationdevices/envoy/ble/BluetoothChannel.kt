@@ -380,8 +380,10 @@ class BluetoothChannel(
             result.error("FILE_NOT_FOUND", "File does not exist: $path", null)
             return
         }
-        val safeResult = SafeResult(result)
-
+        val safeResult = com.foundationdevices.envoy.ble.SafeResult(result)
+        val priority = BluetoothGatt.CONNECTION_PRIORITY_HIGH
+        val priorityResult = bluetoothGatt?.requestConnectionPriority(priority)
+        Log.d(TAG, "  Requested high connection priority for transfer  : ${if (priorityResult == true) "✓ Success" else "✗ Failed"}")
         transferJob = scope.launch(Dispatchers.IO) {
             try {
                 val fileSize = file.length()
@@ -436,6 +438,11 @@ class BluetoothChannel(
                     safeResult.error("FILE_READ_ERROR", "Failed to read file: ${e.message}", null)
                 }
             }
+        }
+        transferJob?.invokeOnCompletion {
+            val priority = BluetoothGatt.CONNECTION_PRIORITY_BALANCED
+            val priorityResult = bluetoothGatt?.requestConnectionPriority(priority)
+            Log.d(TAG, "  Requested balance connection priority after transfer  : ${if (priorityResult == true) "✓ Success" else "✗ Failed"}")
         }
     }
 
@@ -811,7 +818,18 @@ class BluetoothChannel(
 
         override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
             super.onMtuChanged(gatt, mtu, status)
-            Log.d(TAG, "MTU changed to $mtu (status: $status)")
+            Log.d(TAG, "════════════════════════════════════════")
+            Log.d(TAG, "MTU CHANGED EVENT")
+            Log.d(TAG, "  Device: ${gatt?.device?.address}")
+            Log.d(TAG, "  New MTU: $mtu bytes")
+            Log.d(TAG, "  Previous MTU: $currentMtu bytes")
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.d(TAG, "  ✓ MTU negotiation successful")
+                Log.d(TAG, "  Max data per packet: ${mtu - 3} bytes")
+            } else {
+                Log.e(TAG, "  ✗ MTU negotiation failed")
+            }
+            Log.d(TAG, "════════════════════════════════════════")
             currentMtu = mtu
         }
 
@@ -819,7 +837,7 @@ class BluetoothChannel(
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             when (newState) {
                 BluetoothProfile.STATE_CONNECTED -> {
-                    Log.d(TAG, "Connected to GATT server")
+                    Log.d(TAG, "✓ CONNECTED TO GATT SERVER")
                     connectedDevice = gatt?.device
                     bleWriteQueue?.restart()
                     if (!checkBluetoothPermissions()) {
