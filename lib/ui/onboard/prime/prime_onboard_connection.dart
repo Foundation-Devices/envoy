@@ -137,7 +137,8 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
       dialog: EnvoyPopUp(
         icon: EnvoyIcons.alert,
         typeOfMessage: PopUpState.warning,
-        showCloseButton: true,
+        showCloseButton: false,
+        title: S().onboarding_connectionModalAbort_header,
         content: S().onboarding_connectionModalAbort_content,
         primaryButtonLabel: S().component_cancel,
         secondaryButtonLabel: S().component_exit,

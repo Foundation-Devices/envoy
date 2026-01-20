@@ -2148,10 +2148,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_connectionModalAbort_content":
             MessageLookupByLibrary.simpleMessage(
-          "Are you sure to exit the onboarding?",
+          "Only continue with this if you explicitly wish to lose all progress and start the Passport onboarding process from the beginning.",
         ),
         "onboarding_connectionModalAbort_header":
-            MessageLookupByLibrary.simpleMessage("Abort Onboarding?"),
+            MessageLookupByLibrary.simpleMessage("Exit Onboarding?"),
         "onboarding_connectionNoUpdates_noUpdates":
             MessageLookupByLibrary.simpleMessage("No Updates Available"),
         "onboarding_connectionUpdatesAvailable_updatesAvailable":
