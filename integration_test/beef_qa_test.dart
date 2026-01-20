@@ -393,6 +393,59 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
+    testWidgets('<Activity text alignment>', (tester) async {
+      final stopwatch = Stopwatch()..start();
+
+      await goBackHome(tester);
+      await checkSync(tester);
+      await findAndPressTextButton(tester, "Activity");
+
+      checkActivityAlignment(tester);
+
+      /// Turn the Fiat OFF
+      // Go to settings
+      await pressHamburgerMenu(tester);
+      await tapSettingsButton(tester);
+
+      // Check that the fiat toggle exists
+      bool isSettingsFiatSwitchOn =
+          await isSlideSwitchOn(tester, 'Display Fiat Values');
+
+      // If it is ON, turn it OFF
+      if (isSettingsFiatSwitchOn) {
+        // find And Toggle DisplayFiat Switch
+        await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
+      }
+
+      // go back to Activity
+      await pressHamburgerMenu(tester);
+      await pressHamburgerMenu(tester);
+
+      checkActivityAlignment(tester);
+
+      /// Turn the Fiat back ON
+      // Go to settings
+      await pressHamburgerMenu(tester);
+      await tapSettingsButton(tester);
+
+      // Check that the fiat toggle exists
+      isSettingsFiatSwitchOn =
+          await isSlideSwitchOn(tester, 'Display Fiat Values');
+
+      // If it is OFF, turn it ON
+      if (!isSettingsFiatSwitchOn) {
+        // find And Toggle DisplayFiat Switch
+        await findAndToggleSettingsSwitch(tester, 'Display Fiat Values');
+      }
+
+      // go back to Home
+      await goBackHome(tester);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
     testWidgets('<Test taproot modal>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
       await goBackHome(tester);
