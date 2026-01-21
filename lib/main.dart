@@ -132,7 +132,9 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
 }
 
 class EnvoyApp extends StatefulWidget {
-  const EnvoyApp({super.key});
+  final Uri? deepLinkUri;
+
+  const EnvoyApp({super.key, this.deepLinkUri});
 
   @override
   State<EnvoyApp> createState() => _EnvoyAppState();
@@ -143,6 +145,14 @@ class _EnvoyAppState extends State<EnvoyApp> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(BluetoothManager());
+
+    // Handle deep link after app initialization if provided,
+    // this is primarily used for biometric authentication flow.
+    if (widget.deepLinkUri != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        mainRouter.go(widget.deepLinkUri.toString());
+      });
+    }
   }
 
   @override
