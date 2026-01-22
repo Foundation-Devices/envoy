@@ -248,27 +248,36 @@ class EnvoyBottomNavBar extends StatelessWidget {
       );
 
   @override
-  Widget build(final BuildContext context) => Container(
-        color: Colors.transparent,
-        child: SizedBox(
-          width: double.infinity,
-          height: 73,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: items.map((final item) {
-              final int index = items.indexOf(item);
-              return Flexible(
-                child: GestureDetector(
-                  onTap: () {
-                    onItemSelected(index);
-                  },
-                  child: Container(
-                      color: Colors.transparent,
-                      child: _buildItem(item, selectedIndex == index)),
-                ),
-              );
-            }).toList(),
+  Widget build(final BuildContext context) => Semantics(
+        container: true,
+        explicitChildNodes: true,
+        child: Container(
+          color: Colors.transparent,
+          child: SizedBox(
+            width: double.infinity,
+            height: 73,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: items.map((final item) {
+                final int index = items.indexOf(item);
+                return Expanded(
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => onItemSelected(index),
+                      child: Semantics(
+                        label: item.title,
+                        button: true,
+                        enabled: true,
+                        excludeSemantics: false,
+                        child: _buildItem(item, selectedIndex == index),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
           ),
         ),
       );

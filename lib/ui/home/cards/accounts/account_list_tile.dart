@@ -124,11 +124,13 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                 },
                 child: Stack(children: [
                   Positioned.fill(
-                    child: CustomPaint(
-                      isComplex: true,
-                      willChange: false,
-                      painter: StripePainter(
-                        EnvoyColors.gray1000.applyOpacity(0.4),
+                    child: IgnorePointer(
+                      child: CustomPaint(
+                        isComplex: true,
+                        willChange: false,
+                        painter: StripePainter(
+                          EnvoyColors.gray1000.applyOpacity(0.4),
+                        ),
                       ),
                     ),
                   ),
