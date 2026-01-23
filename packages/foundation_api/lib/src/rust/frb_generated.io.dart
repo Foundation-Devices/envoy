@@ -362,6 +362,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TimezoneResponse dco_decode_box_autoadd_timezone_response(dynamic raw);
 
   @protected
+  int dco_decode_box_autoadd_u_8(dynamic raw);
+
+  @protected
   VerificationResult dco_decode_box_autoadd_verification_result(dynamic raw);
 
   @protected
@@ -473,6 +476,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PassportMessage? dco_decode_opt_box_autoadd_passport_message(dynamic raw);
+
+  @protected
+  int? dco_decode_opt_box_autoadd_u_8(dynamic raw);
 
   @protected
   PairingRequest dco_decode_pairing_request(dynamic raw);
@@ -908,6 +914,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  int sse_decode_box_autoadd_u_8(SseDeserializer deserializer);
+
+  @protected
   VerificationResult sse_decode_box_autoadd_verification_result(
       SseDeserializer deserializer);
 
@@ -1033,6 +1042,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   PassportMessage? sse_decode_opt_box_autoadd_passport_message(
       SseDeserializer deserializer);
+
+  @protected
+  int? sse_decode_opt_box_autoadd_u_8(SseDeserializer deserializer);
 
   @protected
   PairingRequest sse_decode_pairing_request(SseDeserializer deserializer);
@@ -1477,6 +1489,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       TimezoneResponse self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_u_8(int self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_verification_result(
       VerificationResult self, SseSerializer serializer);
 
@@ -1605,6 +1620,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_passport_message(
       PassportMessage? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_8(int? self, SseSerializer serializer);
 
   @protected
   void sse_encode_pairing_request(
