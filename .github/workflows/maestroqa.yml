@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2024 Foundation Devices, Inc. <hello@foundation.xyz>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Maestro QA
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 1 * * *'  # Run daily at 1 AM UTC (after Beef QA)
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  maestro-qa:
+    runs-on: [ self-hosted, macOS, ARM64 ]
+
+    steps:
+      - uses: extractions/setup-just@v1
+      - uses: actions/checkout@v4
+
+      - name: Install bindgen-cli (for aws-lc-sys)
+        run: cargo install --force --locked bindgen-cli
+
+      - name: Build ffi
+        run: ./scripts/build_ffi_ios.sh
+
+      - name: Run Maestro QA Tests
+        run: just maestro-qa

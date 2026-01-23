@@ -168,6 +168,7 @@ class _AdvancedSettingsOptionsState
                                             padding: const EdgeInsets.only(
                                                 bottom: 2),
                                             child: EnvoyToggle(
+                                              label: "Magic Backup Toggle",
                                               value: Settings().syncToCloud,
                                               onChanged: (bool value) async {
                                                 if (!value) {
