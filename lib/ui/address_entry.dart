@@ -10,6 +10,7 @@ import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/payment_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
@@ -174,6 +175,9 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                                     decoder: PaymentQrDecoder(
                                         onAddressValidated:
                                             (address, amount, message) {
+                                          EnvoyToast.dismissPreviousToasts(
+                                              context,
+                                              rootNavigator: true);
                                           Navigator.of(context,
                                                   rootNavigator: true)
                                               .pop();

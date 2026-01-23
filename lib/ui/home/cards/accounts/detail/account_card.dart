@@ -49,6 +49,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/payment_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -322,6 +323,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
                             decoder: PaymentQrDecoder(
                                 account: account,
                                 onAztecoScan: (aztecoVoucher) {
+                                  EnvoyToast.dismissPreviousToasts(context,
+                                      rootNavigator: true);
                                   navigator.pop();
                                   showEnvoyDialog(
                                       context: context,
@@ -330,6 +333,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
                                           AztecoDialog(aztecoVoucher, account));
                                 },
                                 btcPayVoucherScan: (voucher) {
+                                  EnvoyToast.dismissPreviousToasts(context,
+                                      rootNavigator: true);
                                   navigator.pop();
                                   showEnvoyDialog(
                                       context: context,
@@ -338,6 +343,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
                                 },
                                 onAddressValidated:
                                     (address, amount, message) async {
+                                  EnvoyToast.dismissPreviousToasts(context,
+                                      rootNavigator: true);
                                   if (navigator.canPop()) {
                                     navigator.pop();
                                   }
