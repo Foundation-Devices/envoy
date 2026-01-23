@@ -261,19 +261,14 @@ class EnvoyBottomNavBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: items.map((final item) {
                 final int index = items.indexOf(item);
-                return Expanded(
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () => onItemSelected(index),
-                      child: Semantics(
-                        label: item.title,
-                        button: true,
-                        enabled: true,
-                        excludeSemantics: false,
-                        child: _buildItem(item, selectedIndex == index),
-                      ),
-                    ),
+                return Flexible(
+                  child: GestureDetector(
+                    onTap: () {
+                      onItemSelected(index);
+                    },
+                    child: Container(
+                        color: Colors.transparent,
+                        child: _buildItem(item, selectedIndex == index)),
                   ),
                 );
               }).toList(),
