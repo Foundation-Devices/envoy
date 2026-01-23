@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Maestro Android Test Runner for Envoy
 # Usage: ./run_android_maestro.sh [test_name.yaml]
 
