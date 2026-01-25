@@ -6,8 +6,6 @@
 import 'dart:async';
 
 import 'package:animations/animations.dart';
-import 'package:bluart/bluart.dart';
-import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/button.dart';
@@ -39,19 +37,15 @@ class PrimeOnboardParing extends ConsumerStatefulWidget {
   ConsumerState<PrimeOnboardParing> createState() => _PrimeOnboardParingState();
 }
 
-XidDocument? primeXid;
-
 class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   bool canPop = true;
 
   //TODO: use provider to get firmware update status
   bool updateAvailable = false;
-  BleDevice? device;
 
   @override
   void initState() {
     super.initState();
-    resetOnboardingPrimeProviders();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       try {
         _connectBLE();
@@ -88,30 +82,9 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
         });
       }
       String id = LocalStorage().prefs.getString(primeSerialPref) ?? "";
-      device = BleDevice(id: id, name: "Passport Prime", connected: false);
       kPrint("Connecting to Prime with ID: $id");
-
-      if (primeXid != null) {
-        try {
-          final pairResult = await BluetoothManager().pair(primeXid!);
-          if (pairResult == false) {
-            throw Exception("Pairing failed");
-          }
-        } catch (e, stack) {
-          debugPrintStack(stackTrace: stack);
-          setState(() {
-            canPop = true;
-          });
-          // await bleStepNotifier.updateStep(
-          //     "Unable to pair", EnvoyStepState.ERROR);
-          return;
-        }
-      }
       // await bleStepNotifier.updateStep(
       //     "Connecting to Prime", EnvoyStepState.LOADING);
-      setState(() {
-        device = BleDevice(id: id, name: "Passport Prime", connected: true);
-      });
       await Future.delayed(const Duration(milliseconds: 200));
       // await bleStepNotifier.updateStep(
       //     S().onboarding_connectionIntro_connectedToPrime,

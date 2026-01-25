@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
@@ -17,6 +18,7 @@ import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -37,6 +39,7 @@ import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+QLConnection? _onboardingDevice;
 // TODO: remove this, store somewhere else
 final estimatedTimeProvider = StateProvider<int>((ref) => 0);
 final bleMacRegex = RegExp(r'^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$');
@@ -154,10 +157,15 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           await BluetoothManager().getPermissions();
         }
 
-        final connectionStatus = await BluetoothManager()
+        _onboardingDevice = await BluetoothManager()
             .setupBle(id: bleId ?? "", colorWay: colorWay);
 
-        if (!connectionStatus && mounted) {
+        ref.read(onboardingDeviceProvider.notifier).state = _onboardingDevice;
+        if (_onboardingDevice == null) {
+          throw Exception("Got null device when trying to connect to Prime.");
+        }
+        final connectionStatus = _onboardingDevice!.lastDeviceStatus;
+        if (!connectionStatus.connected && mounted) {
           setState(() {
             bleConnectState = BleConnectState.idle;
           });
@@ -166,7 +174,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             throw Exception("Failed to connect to Prime device.");
           }
         }
-        if (mounted && connectionStatus) {
+        if (mounted && connectionStatus.connected) {
           setState(() {
             bleConnectState = BleConnectState.connected;
           });
@@ -409,7 +417,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   Future<bool> pairWithPrime(XidDocument payload) async {
-    return await BluetoothManager().pair(payload);
+    return await _onboardingDevice?.pair(payload) ?? false;
   }
 
   Future<void> showCommunicationModal(BuildContext context) async {

@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
@@ -29,7 +28,6 @@ import 'package:envoy/ui/widgets/scanner/decoders/device_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/pair_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
-import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
@@ -322,84 +320,67 @@ void scanForDevice(BuildContext context, WidgetRef ref) async {
     }
   }
 
-  void disconnectExistingPrimeDialog(BuildContext context) {
-    showEnvoyDialog(
-      context: context,
-      dismissible: true,
-      dialog: EnvoyPopUp(
-        icon: EnvoyIcons.alert,
-        title: S().manage_deviceDetailsModalDisconnectExistingPassport_header,
-        typeOfMessage: PopUpState.warning,
-        showCloseButton: true,
-        content:
-            S().manage_deviceDetailsModalDisconnectExistingPassport_content,
-        secondaryButtonLabel: S().component_cancel,
-        primaryButtonLabel:
-            S().manage_deviceDetailsModalDisconnectExistingPassport_header,
-        onSecondaryButtonTap: (context) {
-          Navigator.pop(context);
-        },
-        onPrimaryButtonTap: (context) async {
-          Navigator.pop(context);
-          Navigator.pop(context);
-          await Future.delayed(const Duration(milliseconds: 500));
-          if (Devices().getPrimeDevices.isNotEmpty && context.mounted) {
-            final device = Devices().getPrimeDevices.first;
-            removeExistingPrime(context, device);
-          } else {
-            EnvoyReport().log("ScanForDevice",
-                "No existing Prime device found when trying to remove existing Prime during pairing.");
-          }
-        },
-      ),
-    );
-  }
-
   //if an existing ble connection exists, try to pair with that device
   Future pairWithDevice(XidDocument xid) async {
     if (!context.mounted) return;
     Navigator.pop(context);
-    final connected = await BluetoothChannel().getCurrentDeviceStatus();
-    if (connected.connected) {
-      final device = Devices().getPrimeDevices.firstWhereOrNull((device) =>
-          device.peripheralId == connected.peripheralId ||
-          device.bleId == connected.peripheralId);
-      if (device != null && context.mounted && device.onboardingComplete) {
-        disconnectExistingPrimeDialog(context);
-        return;
-      } else {
-        showRepairProgressDialog();
-        try {
-          await BluetoothManager().pair(xid);
-          final paringResponse =
-              await BluetoothManager().bleOnboardHandler.waitForPairResponse();
-          if (context.mounted) {
-            Navigator.pop(context); //remove loading dialog
-            if (!paringResponse.onboardingComplete) {
-              context.goNamed(ONBOARD_PRIME_PAIR);
-            } else {
-              context.goNamed(ONBOARD_REPAIRING);
-            }
-          }
-        } catch (e) {
-          if (context.mounted) {
-            Navigator.pop(context);
-            EnvoyToast(
-              replaceExisting: true,
-              duration: const Duration(seconds: 6),
-              message: e.toString(),
-              isDismissible: true,
-              onActionTap: () {
-                EnvoyToast.dismissPreviousToasts(context);
-              },
-              icon: const Icon(
-                Icons.info_outline,
-                color: EnvoyColors.accentPrimary,
-              ),
-            ).show(context);
-          }
+    //TODO: multi
+    final connectionStatus = await BluetoothChannel().getConnectedDevices();
+    final connected = connectionStatus.firstWhereOrNull((dev) {
+      for (final device in Devices().getPrimeDevices) {
+        if (dev.deviceId != device.peripheralId &&
+            dev.deviceId != device.bleId) {
+          return false;
         }
       }
+      return true;
+    });
+    kPrint(
+        "Existing connected devices: ${connectionStatus.map((e) => e.deviceId).join(", ")}");
+    kPrint("Existing connected devicesconnected : $connected");
+    if (connected != null) {
+      kPrint("Found existing connected device: ${connected.deviceId}");
+      final bleDevice = BluetoothChannel().getDeviceChannel(connected.deviceId);
+      showRepairProgressDialog();
+      ref.read(onboardingDeviceProvider.notifier).state = bleDevice;
+      try {
+        await bleDevice.pair(xid);
+        final paringResponse =
+            await bleDevice.qlHandler.bleOnboardHandler.waitForPairResponse();
+        if (context.mounted) {
+          Navigator.pop(context); //remove loading dialog
+          resetOnboardingPrimeProviders(ProviderScope.containerOf(context));
+          if (!paringResponse.onboardingComplete) {
+            context.goNamed(ONBOARD_PRIME_PAIR);
+          } else {
+            context.goNamed(ONBOARD_REPAIRING);
+          }
+        }
+      } catch (e) {
+        if (context.mounted) {
+          Navigator.pop(context);
+          EnvoyToast(
+            replaceExisting: true,
+            duration: const Duration(seconds: 6),
+            message: e.toString(),
+            isDismissible: true,
+            onActionTap: () {
+              EnvoyToast.dismissPreviousToasts(context);
+            },
+            icon: const Icon(
+              Icons.info_outline,
+              color: EnvoyColors.accentPrimary,
+            ),
+          ).show(context);
+        }
+      }
+    } else if (Devices().getPrimeDevices.isEmpty) {
+      // if (device != null && context.mounted && device.onboardingComplete) {
+      //   disconnectExistingPrimeDialog(context);
+      //   return;
+      // } else {
+      //
+      // }
     } else {
       if (context.mounted) {
         showEnvoyDialog(
@@ -439,10 +420,6 @@ void scanForDevice(BuildContext context, WidgetRef ref) async {
             final uri = Uri.parse(payload);
             final params = uri.queryParameters;
             if (params.containsKey("p")) {
-              if (Devices().getPrimeDevices.isNotEmpty && context.mounted) {
-                disconnectExistingPrimeDialog(context);
-                return;
-              }
               context.pushNamed(ONBOARD_PRIME, queryParameters: params);
             } else if (params.containsKey("t")) {
               context.pushNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);

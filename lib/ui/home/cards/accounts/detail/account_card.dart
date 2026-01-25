@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:animations/animations.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
-import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
@@ -894,7 +893,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
 
                           if (device != null &&
                               device.type == DeviceType.passportPrime) {
-                            BluetoothManager().sendAccountUpdate(
+                            device.qlConnection().qlHandler.bleAccountHandler.sendAccountUpdate(
                                 api.AccountUpdate(
                                     accountId: account.id,
                                     update: (await handler.toRemoteUpdate())));

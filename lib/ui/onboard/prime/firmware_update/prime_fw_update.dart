@@ -287,12 +287,13 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     //TODO: fix rive with databindings.
     // ignore: deprecated_member_use
     _controller?.stateMachine.boolean('happy')?.value = true;
+    final fwHandler = ref.watch(onboardingDeviceProvider)?.qlHandler.fwUpdateHandler;
 
     return Column(
       children: [
         Text(
           S().firmware_updateSuccess_content1(
-              "KeyOS v${BluetoothManager().fwUpdateHandler.newVersion}"),
+              "KeyOS v${fwHandler?.newVersion ?? ''}"),
           textAlign: TextAlign.center,
           style:
               EnvoyTypography.body.copyWith(color: EnvoyColors.textSecondary),
@@ -309,13 +310,17 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
   }
 
   Widget _updateIntroWidget(BuildContext context) {
+    final fwHandler = ref.watch(onboardingDeviceProvider)?.qlHandler.fwUpdateHandler;
+    final newVersion = fwHandler?.newVersion ?? '';
+    final currentVersion = fwHandler?.currentVersion ?? '';
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
           children: [
             Text(
-              "KeyOS v${BluetoothManager().fwUpdateHandler.newVersion}",
+              "KeyOS v$newVersion",
               textAlign: TextAlign.center,
               style: EnvoyTypography.button
                   .copyWith(color: EnvoyColors.textSecondary),
@@ -335,7 +340,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
               padding: const EdgeInsets.all(EnvoySpacing.small),
               child: Text(
                 S().firmware_updateAvailable_content2(
-                    "KeyOS v${BluetoothManager().fwUpdateHandler.currentVersion}"),
+                    "KeyOS v$currentVersion"),
                 textAlign: TextAlign.center,
                 style: EnvoyTypography.body
                     .copyWith(color: EnvoyColors.textSecondary),
@@ -364,12 +369,12 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
           padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
           child: EnvoyButton(
             S().firmware_updateAvailable_whatsNew(
-                "KeyOS v${BluetoothManager().fwUpdateHandler.newVersion}"),
+                "KeyOS v$newVersion"),
             type: EnvoyButtonTypes.secondary,
             onTap: () {
               launchUrl(
                 Uri.parse(
-                  "https://github.com/Foundation-Devices/KeyOS-Releases/releases/tag/${BluetoothManager().fwUpdateHandler.newVersion}",
+                  "https://github.com/Foundation-Devices/KeyOS-Releases/releases/tag/$newVersion",
                 ),
               );
             },

@@ -2,13 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -73,8 +74,12 @@ class _PrimeReconnectState extends ConsumerState<PrimeReconnect> {
 
   void _listenForPairingState() async {
     try {
-      final devices = Devices();
-      final targetBleId = BluetoothManager().bleId;
+      QLConnection? currentOnboardingDevice = ref.read(onboardingDeviceProvider);
+      if(currentOnboardingDevice == null) {
+        throw Exception("No onboarding device found");
+      }
+      Devices devices = Devices();
+      final targetBleId = currentOnboardingDevice.deviceId;
       bool foundDevice = false;
 
       _deviceListener = () {

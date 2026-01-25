@@ -47,28 +47,6 @@ import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
 
-//TODO: multi device support, pass device id
-final primeConnectedStateProvider = Provider<StepModel>((ref) {
-  final connectionStatus = ref.watch(deviceConnectionStatusStreamProvider);
-  return connectionStatus.maybeMap(
-    data: (data) {
-      final isConnected = data.value.connected;
-      if (isConnected) {
-        return StepModel(
-            stepName: S().onboarding_connectionIntro_connectedToPrime,
-            state: EnvoyStepState.FINISHED);
-      } else {
-        return StepModel(
-            stepName: "Reconnecting to Passport", // TODO: localazy
-            state: EnvoyStepState.LOADING);
-      }
-    },
-    orElse: () => StepModel(
-        stepName: "Reconnecting to Passport", // TODO: localazy
-        state: EnvoyStepState.LOADING),
-  );
-});
-
 final transferTransactionStateProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
   return StepNotifier(
@@ -194,14 +172,14 @@ class _TxReviewState extends ConsumerState<TxReview> {
     final Device? device =
         Devices().getDeviceBySerial(account.deviceSerial ?? "");
     final bool isPrime = device?.type == DeviceType.passportPrime;
-    if (isPrime && psbt != null) {
+    if (isPrime && psbt != null && device != null) {
       kPrint("Sending to prime $psbt");
       ref.read(transferTransactionStateProvider.notifier).updateStep(
             "Transferring Transaction", //TODO: localazy
             EnvoyStepState.LOADING,
           );
 
-      await BluetoothManager().sendPsbt(account.id, psbt);
+      await device.qlConnection().qlHandler.txHandler.sendPsbt(account.id, psbt);
       ref.read(transferTransactionStateProvider.notifier).updateStep(
             "Transaction transferred", //TODO: localazy
             EnvoyStepState.FINISHED,
@@ -566,26 +544,24 @@ class _TransactionReviewScreenState
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
         _initTxStream();
-        final isConnected =
-            ref.read(connectedDeviceProvider).value?.connected ?? false;
-        final EnvoyAccount? account = ref.read(selectedAccountProvider);
-        final Device? device =
-            Devices().getDeviceBySerial(account?.deviceSerial ?? "");
-        if (!isConnected &&
-            device != null &&
-            device.type == DeviceType.passportPrime) {
-          final deviceId =
-              Platform.isAndroid ? device.bleId : device.peripheralId;
-          BluetoothManager().reconnect(deviceId);
-        }
       },
     );
   }
 
   void _initTxStream() {
     try {
-      _primeTransactionsSubscription = BluetoothManager()
-          .transactionStream
+      EnvoyAccount? account = ref.watch(selectedAccountProvider);
+      final Device? device =
+          Devices().getDeviceBySerial(account?.deviceSerial ?? "");
+      if (device == null) {
+        kPrint("No device found for account, cannot init tx stream");
+        return;
+      }
+      _primeTransactionsSubscription = device
+          .qlConnection()
+          .qlHandler
+          .txHandler
+          .txBroadcast
           .listen((QuantumLinkMessage_BroadcastTransaction message) async {
         if (!mounted) {
           return;
@@ -656,8 +632,10 @@ class _TransactionReviewScreenState
     final Device? device =
         Devices().getDeviceBySerial(account.deviceSerial ?? "");
     bool isPrime = device?.type == DeviceType.passportPrime;
-    final bool isConnected =
-        ref.watch(connectedDeviceProvider).value?.connected ?? false;
+    if (device == null) {
+      isPrime = false;
+    }
+    final bool isConnected = ref.read(isPrimeConnectedProvider(device));
     if (isConnected) {
       _primeConnectionState = StepModel(
           stepName: S().onboarding_connectionIntro_connectedToPrime,

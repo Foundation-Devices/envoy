@@ -2,15 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
-import 'package:envoy/ui/home/settings/bluetooth_diag.dart';
 import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -38,6 +37,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final params = GoRouter.of(context).state.uri.queryParameters;
+      resetOnboardingPrimeProviders(ProviderScope.containerOf(context));
       setState(() {
         final param = params["c"] ?? "1";
         onboardingComplete = int.tryParse(params["o"] ?? "0") == 1;
@@ -81,14 +81,6 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
             automaticallyImplyLeading: false,
           ),
           header: GestureDetector(
-            onLongPress: () {
-              BluetoothManager().getPermissions();
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const BluetoothDiagnosticsPage(),
-                  ));
-            },
             child: Transform.translate(
               offset: const Offset(0, 85),
               child: Image.asset(

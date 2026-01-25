@@ -84,7 +84,7 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
   Widget build(BuildContext context) {
     final Locale activeLocale = Localizations.localeOf(context);
     final isConnected =
-        ref.watch(isPrimeConnectedProvider(widget.device.bleId));
+        ref.watch(isPrimeConnectedProvider(widget.device));
     final listItemTheme = Theme.of(context)
         .textTheme
         .labelMedium

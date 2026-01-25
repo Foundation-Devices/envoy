@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
@@ -70,8 +69,9 @@ final fwTransferStateProvider =
 
 final primeFwSigVerifyStateProvider = Provider<StepModel>((ref) {
   final update = ref.watch(primeUpdateStateProvider);
+  final device = ref.watch(onboardingDeviceProvider);
   final completedUpdateStates =
-      BluetoothManager().fwUpdateHandler.completedUpdateStates;
+      device?.qlHandler.fwUpdateHandler.completedUpdateStates ?? {};
   if (update == PrimeFwUpdateStep.verifying) {
     return StepModel(
         stepName: S().firmware_updatingPrime_verifying,
@@ -92,8 +92,9 @@ final primeFwSigVerifyStateProvider = Provider<StepModel>((ref) {
 
 final primeFwInstallStateProvider = Provider<StepModel>((ref) {
   final update = ref.watch(primeUpdateStateProvider);
+  final device = ref.watch(onboardingDeviceProvider);
   final completedUpdateStates =
-      BluetoothManager().fwUpdateHandler.completedUpdateStates;
+      device?.qlHandler.fwUpdateHandler.completedUpdateStates ?? {};
   if (update == PrimeFwUpdateStep.installing) {
     return StepModel(
         stepName: S().firmware_updatingPrime_installingUpdate,
@@ -113,8 +114,9 @@ final primeFwInstallStateProvider = Provider<StepModel>((ref) {
 
 final primeFwRebootStateProvider = Provider<StepModel>((ref) {
   final update = ref.watch(primeUpdateStateProvider);
+  final device = ref.watch(onboardingDeviceProvider);
   final completedUpdateStates =
-      BluetoothManager().fwUpdateHandler.completedUpdateStates;
+      device?.qlHandler.fwUpdateHandler.completedUpdateStates ?? {};
   if (update == PrimeFwUpdateStep.rebooting) {
     return StepModel(
         stepName: S().firmware_updatingPrime_primeRestarting,

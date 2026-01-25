@@ -5,7 +5,6 @@
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/channels/ble_status.dart';
-import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
@@ -30,8 +29,14 @@ import 'package:go_router/go_router.dart';
 bool _isDialogShowing = false;
 
 /// Starts listening for Bluetooth disconnection events and shows a dialog if disconnected
-void startBluetoothDisconnectionListener(BuildContext context, WidgetRef ref) {
-  ref.listen(deviceConnectionStatusStreamProvider, (previous, next) {
+void startBluetoothDisconnectionListener(
+    BuildContext context, WidgetRef ref) {
+  final qlConnection  = ref.read(onboardingDeviceProvider);
+  if(qlConnection == null){
+    return;
+  }
+  ref.listen(deviceConnectionStatusStreamProvider(qlConnection.deviceId),
+      (previous, next) {
     final lastState = ref.read(primeUpdateStateProvider);
     final isRebooting = lastState == PrimeFwUpdateStep.rebooting ||
         lastState == PrimeFwUpdateStep.installing;
@@ -95,11 +100,15 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
       _isReconnecting = true;
     });
 
+    final qlConnection = ref.read(onboardingDeviceProvider);
+    if (qlConnection == null) {
+      return;
+    }
     try {
-      if (BluetoothChannel().lastDeviceStatus.peripheralId == null) {
+      if (qlConnection.lastDeviceStatus.peripheralId == null) {
         throw Exception("No Previous connection...");
       }
-      String deviceId = BluetoothChannel().lastDeviceStatus.peripheralId ?? "";
+      String deviceId = qlConnection.lastDeviceStatus.peripheralId ?? "";
       //  if (Devices().getPrimeDevices.isEmpty) {
       //    //TODO: localize
       //    // throw Exception("No Prime devices available to reconnect");
@@ -109,7 +118,7 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
       //      "Attempting to reconnect to device... ${BluetoothChannel().lastDeviceStatus.}");
       await BluetoothManager().reconnect(deviceId);
       await Future.delayed(const Duration(seconds: 2));
-      if (BluetoothChannel().lastDeviceStatus.connected && mounted) {
+      if (qlConnection.lastDeviceStatus.connected && mounted) {
         Navigator.pop(context);
         EnvoyToast(
           backgroundColor: Colors.lightBlue,
@@ -184,7 +193,8 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
                   borderRadius: BorderRadius.circular(EnvoySpacing.small),
                   type: EnvoyButtonTypes.secondary,
                   onTap: () {
-                    resetOnboardingPrimeProviders();
+                    resetOnboardingPrimeProviders(
+                        ProviderScope.containerOf(context));
                     Navigator.of(context).pop();
                     context.go("/");
                   },
