@@ -35,9 +35,11 @@ class FwTransferProgress {
 }
 
 class FwUpdateHandler extends PassportMessageHandler {
-  FwUpdateHandler(super.writer);
+  FwUpdateHandler(super.connection);
 
   Set<PrimeFwUpdateStep> _completedUpdateStates = {};
+
+  //TODO: multi device, move this to somewhere per-device
   String newVersion = "";
   String currentVersion = "";
 
@@ -77,8 +79,7 @@ class FwUpdateHandler extends PassportMessageHandler {
   }
 
   @override
-  Future<void> handleMessage(
-      api.QuantumLinkMessage message, String bleId) async {
+  Future<void> handleMessage(api.QuantumLinkMessage message) async {
     if (message
         case api.QuantumLinkMessage_FirmwareUpdateCheckRequest updateRequest) {
       currentVersion = updateRequest.field0.currentVersion;
@@ -111,9 +112,7 @@ class FwUpdateHandler extends PassportMessageHandler {
       kPrint("failed to fetch patches: $e");
       _updateDownloadState(
           S().firmware_updateError_downloadFailed, EnvoyStepState.ERROR);
-      await _handleFirmwareError(
-        S().firmware_updateError_downloadFailed,
-      );
+      await _handleFirmwareError(S().firmware_updateError_downloadFailed);
       return;
     }
 
@@ -160,7 +159,7 @@ class FwUpdateHandler extends PassportMessageHandler {
     // reset this every time a new transfer starts
     _transferEstimator.reset();
 
-    BluetoothChannel().writeProgressStream().listen((progress) {
+    qlConnection.writeProgressStream().listen((progress) {
       if (progress.id == tempFile.path) {
         _processProgress(progress);
       }
@@ -189,9 +188,9 @@ class FwUpdateHandler extends PassportMessageHandler {
 
     if (ready) {
       kPrint("Firmware payload encoded to file: ${tempFile.path}");
-      final bool = await BluetoothChannel().transmitFromFile(tempFile.path);
-      if (!bool) {
-        await writer.writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(
+      final success = await qlConnection.transmitFromFile(tempFile.path);
+      if (!success) {
+        await qlConnection.writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(
           api.FirmwareFetchEvent.error(
               error: "Firmware payload transmission failed!"),
         ));
@@ -199,7 +198,7 @@ class FwUpdateHandler extends PassportMessageHandler {
         kPrint("Firmware payload transmission failed!");
         return;
       }
-      kPrint("Firmware payload sent successfully! $bool");
+      kPrint("Firmware payload sent successfully! $success");
     }
   }
 
@@ -217,14 +216,14 @@ class FwUpdateHandler extends PassportMessageHandler {
         S().onboarding_connectionChecking_forUpdates, EnvoyStepState.LOADING);
     if (patches.isEmpty) {
       _updateFetchState(stepUpdate, EnvoyStepState.FINISHED);
-      writer.writeMessage(api.QuantumLinkMessage.firmwareUpdateCheckResponse(
+      qlConnection.writeMessage(api.QuantumLinkMessage.firmwareUpdateCheckResponse(
           api.FirmwareUpdateCheckResponse_NotAvailable()));
     } else {
       newVersion = patches.last.version;
       final response = api.QuantumLinkMessage.firmwareUpdateCheckResponse(
           api.FirmwareUpdateCheckResponse.available(
               updateAvailableMessage(patches)));
-      await writer.writeMessage(response);
+      await qlConnection.writeMessage(response);
     }
 
     _updateFetchState(stepUpdate, EnvoyStepState.FINISHED);
@@ -238,7 +237,8 @@ class FwUpdateHandler extends PassportMessageHandler {
   }
 
   Future<void> sendFirmwareFetchEvent(api.FirmwareFetchEvent event) async {
-    await writer.writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(event));
+    await qlConnection
+        .writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(event));
   }
 
   api.FirmwareUpdateAvailable updateAvailableMessage(List<PrimePatch> patches) {
@@ -269,6 +269,7 @@ class FwUpdateHandler extends PassportMessageHandler {
   void _updateDownloadState(String message, EnvoyStepState state) {
     _downloadState.sink.add(FwUpdateState(message: message, step: state));
   }
+
   //end ui stete updates
 
   void _handleOnboardingState(api.FirmwareInstallEvent event) {
@@ -282,7 +283,7 @@ class FwUpdateHandler extends PassportMessageHandler {
       _updateFwUpdateState(PrimeFwUpdateStep.finished);
     }, error: (event) {
       // Cancel any ongoing transfer
-      unawaited(BluetoothChannel().cancelTransfer());
+      unawaited(qlConnection.cancelTransfer());
       EnvoyReport()
           .log("fw_update_handler", "Firmware install error: ${event.error}");
       _updateFwUpdateState(PrimeFwUpdateStep.error);

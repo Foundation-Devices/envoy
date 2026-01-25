@@ -8,17 +8,19 @@ import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
-import 'package:envoy/channels/bluetooth_channel.dart';
+import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:foundation_api/foundation_api.dart';
-import 'package:envoy/ui/routes/routes.dart';
-import 'package:envoy/util/envoy_storage.dart';
 
 class BleConnectionState {
   final String message;
@@ -28,7 +30,7 @@ class BleConnectionState {
 }
 
 class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
-  BleOnboardHandler(super.writer);
+  BleOnboardHandler(super.connection);
 
   api.PairingResponse? _pairingResponse;
   final Set<OnboardingState> _completedOnboardingStates = {};
@@ -53,8 +55,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
   }
 
   @override
-  Future<void> handleMessage(
-      api.QuantumLinkMessage message, String bleId) async {
+  Future<void> handleMessage(api.QuantumLinkMessage message) async {
     if (message case api.QuantumLinkMessage_PairingResponse response) {
       _handlePairingResponse(response.field0);
     } else if (message case api.QuantumLinkMessage_OnboardingState state) {
@@ -83,7 +84,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
         }
         return;
       }
-      BluetoothManager().scvAccountHandler.sendSecurityChallenge();
+      qlConnection.qlHandler.scvAccountHandler.sendSecurityChallenge();
     } catch (e, stack) {
       EnvoyReport().log("BleOnboardHandler", e.toString(), stackTrace: stack);
       updateBlePairState("Unable to complete pairing.", EnvoyStepState.ERROR);
@@ -94,16 +95,40 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
     final deviceColor = response.passportColor == PassportColor.dark
         ? DeviceColor.dark
         : DeviceColor.light;
-    final peripheralId = BluetoothChannel().lastDeviceStatus.peripheralId;
-
-    await BluetoothManager().addDevice(
-      response.passportSerial.field0,
-      sanitizeVersion(response.passportFirmwareVersion.field0),
-      BluetoothManager().bleId,
-      deviceColor,
-      peripheralId: peripheralId ?? "",
-      onboardingComplete: response.onboardingComplete,
-    );
+    try {
+      if (qlConnection.recipientXid == null) {
+        throw Exception("Recipient XID is null");
+      }
+      if (qlConnection.senderXid == null) {
+        throw Exception("Sender XID is null");
+      }
+      final recipientXid =
+          await api.serializeXidDocument(xidDocument: qlConnection.recipientXid!);
+      final senderXid =
+          await api.serializeQlIdentity(quantumLinkIdentity: qlConnection.senderXid!);
+      QLConnection.debugIdentitiesQuantumLinkIdentity(identity: qlConnection.senderXid!,message: "SAVING");
+      QLConnection.debugIdentitiesXidDocument(recipient: qlConnection.recipientXid!,message: "SAVING recipientXid");
+      final device = Device(
+        "Prime",
+        DeviceType.passportPrime,
+        response.passportSerial.field0,
+        DateTime.now(),
+        response.passportFirmwareVersion.field0,
+        EnvoyColors.listAccountTileColors[0],
+        bleId: qlConnection.deviceId,
+        deviceColor: deviceColor,
+        xid: recipientXid,
+        senderXid: senderXid,
+        peripheralId: qlConnection.deviceId,
+        onboardingComplete: response.onboardingComplete,
+        primeBackupEnabled: Settings().syncToCloud,
+      );
+      await Devices().add(device);
+    } catch (e, stack) {
+      debugPrintStack(stackTrace: stack);
+      EnvoyReport().log("BleOnboardHandler", "Error adding device: $e",
+          stackTrace: stack);
+    }
   }
 
   void _handleOnboardingState(OnboardingState onboardingState) async {
@@ -114,7 +139,6 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
     }
 
     if (onboardingState == api.OnboardingState.completed) {
-      await Devices().markPrimeOnboarded(true);
       try {
         if (_pairingResponse != null) {
           await addDevice(_pairingResponse!);
@@ -123,7 +147,10 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
           await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
         }
         await EnvoySeed().generateAndBackupWalletSilently();
-        await BluetoothManager().sendExchangeRateHistory();
+        if(qlConnection.getDevice() != null) {
+          await Devices().markPrimeOnboarded(true,qlConnection.getDevice()!);
+        }
+        await qlConnection.qlHandler.bleAccountHandler.sendExchangeRateHistory();
       } catch (e) {
         kPrint("Could not finish onboarding: ${e.toString()}");
       }

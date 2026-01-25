@@ -9,7 +9,7 @@ import 'package:foundation_api/foundation_api.dart' as api;
 /// Handler for heartbeat messages over Quantum Link.
 /// Responds to incoming heartbeat messages by sending a heartbeat back.
 class HeartbeatHandler extends PassportMessageHandler {
-  HeartbeatHandler(super.writer);
+  HeartbeatHandler(super.connection);
 
   @override
   bool canHandle(api.QuantumLinkMessage message) {
@@ -17,8 +17,7 @@ class HeartbeatHandler extends PassportMessageHandler {
   }
 
   @override
-  Future<void> handleMessage(
-      api.QuantumLinkMessage message, String bleId) async {
+  Future<void> handleMessage(api.QuantumLinkMessage message) async {
     if (message case api.QuantumLinkMessage_Heartbeat _) {
       kPrint("Received heartbeat, sending heartbeat response");
       await _sendHeartbeatResponse();
@@ -27,7 +26,7 @@ class HeartbeatHandler extends PassportMessageHandler {
 
   Future<void> _sendHeartbeatResponse() async {
     final heartbeat = api.Heartbeat();
-    await writer.writeMessage(api.QuantumLinkMessage.heartbeat(heartbeat));
+    await qlConnection.writeMessage(api.QuantumLinkMessage.heartbeat(heartbeat));
     kPrint("Heartbeat response sent");
   }
 }

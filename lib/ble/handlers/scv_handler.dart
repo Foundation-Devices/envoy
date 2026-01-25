@@ -20,7 +20,7 @@ class ScvUpdateState {
 
 /// Handler for SCV messages over Quantum Link.
 class ScvHandler extends PassportMessageHandler {
-  ScvHandler(super.writer);
+  ScvHandler(super.connection);
 
   final StreamController<ScvUpdateState> _scvUpdateController =
       StreamController<ScvUpdateState>.broadcast();
@@ -35,8 +35,7 @@ class ScvHandler extends PassportMessageHandler {
   }
 
   @override
-  Future<void> handleMessage(
-      api.QuantumLinkMessage message, String bleId) async {
+  Future<void> handleMessage(api.QuantumLinkMessage message) async {
     if (message
         case api.QuantumLinkMessage_SecurityCheck(field0: final check)) {
       if (check is api.SecurityCheck_ChallengeResponse) {
@@ -89,7 +88,7 @@ class ScvHandler extends PassportMessageHandler {
   Future<void> sendSecurityChallengeVerificationResult(
       api.VerificationResult result) async {
     final message = api.SecurityCheck.verificationResult(result);
-    await writer.writeMessage(api.QuantumLinkMessage.securityCheck(message));
+    await qlConnection.writeMessage(api.QuantumLinkMessage.securityCheck(message));
   }
 
   void sendSecurityChallenge() async {
@@ -105,7 +104,7 @@ class ScvHandler extends PassportMessageHandler {
 
     final request = api.SecurityCheck.challengeRequest(challenge);
     kPrint("writing security challenge");
-    await writer.writeMessage(api.QuantumLinkMessage.securityCheck(request));
+    await qlConnection.writeMessage(api.QuantumLinkMessage.securityCheck(request));
     kPrint("successfully wrote security challenge");
   }
 
