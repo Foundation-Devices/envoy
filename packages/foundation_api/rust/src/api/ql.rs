@@ -109,7 +109,7 @@ pub async fn decode(
     let n = chunk.header.total_chunks;
     let msg_id = chunk.header.message_id;
 
-    debug!("receiving data id: {msg_id} {m}/{n}");
+    //debug!("receiving data id: {msg_id} {m}/{n}");
     //debug!("DECHUNKER: {:?}", decoder.inner);
 
     match decoder.inner.insert_chunk(chunk) {
