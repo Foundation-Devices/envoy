@@ -6,9 +6,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:envoy/channels/accessory.dart';
+import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/util/console.dart';
-import 'package:envoy/util/stream_replay_cache.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -22,43 +22,39 @@ class BleSetupTimeoutException implements Exception {
   String toString() => 'BleSetupTimeoutException: $message';
 }
 
-/// Manages Bluetooth communication via platform channels for iOS
-/// Handles method channel calls and event streams for BLE operations
+/// Manages shared Bluetooth operations and multiple BLE device connections.
+///
+/// Shared operations (handled here):
+/// - Bluetooth permissions and enabling
+/// - Device scanning and discovery
+/// - Managing known device MAC addresses
+///
+/// Device-specific operations (handled by QLConnection):
+/// - GATT connection and state
+/// - Data transfer (read/write)
+/// - Connection events and progress tracking
+///
+/// Channel naming:
+/// - Main channel: envoy/bluetooth (for shared operations)
+/// - Device channels: envoy/bluetooth/{deviceId}, envoy/ble/read/{deviceId}, etc.
 class BluetoothChannel {
-  // Method channel for BLE operations (setup/control operations)
-  final bleMethodChannel = const MethodChannel("envoy/bluetooth");
-  final writeProgressChannel = const EventChannel('envoy/ble/write/progress');
+  // Main method channel for shared BLE operations
+  final _methodChannel = const MethodChannel("envoy/bluetooth");
 
-  // Binary message channel for BLE data (incoming data from device)
-  final bleReadChannel = const BasicMessageChannel(
-    'envoy/ble/read',
-    BinaryCodec(),
-  );
+  // Map of device channels, keyed by device ID (MAC address/Device UUID)
+  final Map<String, QLConnection> _deviceChannels = {};
 
-  // Binary message channel for BLE writes (outgoing data to device)
-  final bleWriteChannel = const BasicMessageChannel(
-    'envoy/ble/write',
-    BinaryCodec(),
-  );
+  // Stream controller for device channel changes
+  final _deviceChannelsController =
+      StreamController<List<QLConnection>>.broadcast();
 
-  // Event channel for BLE connection state events
-  final bleConnectionEventChannel =
-      const EventChannel('envoy/bluetooth/connection/stream');
+  /// Stream that emits the current list of device channels whenever it changes
+  Stream<List<QLConnection>> get deviceChannelsStream =>
+      _deviceChannelsController.stream.asBroadcastStream();
 
-  var _lastDeviceStatus = DeviceStatus(connected: false);
-
-  DeviceStatus get lastDeviceStatus => _lastDeviceStatus;
-
-  final _readController = StreamController<Uint8List>.broadcast();
-
-  Stream<Uint8List> get dataStream => listenToDataEvents();
-
-  // Replay stream for device status with latest value caching
-  // New subscribers immediately receive the last known status
-  Stream<DeviceStatus> get deviceStatusStream =>
-      _deviceStatusStatusStream.replayLatest(_lastDeviceStatus);
-
-  StreamSubscription? _deviceStatusSubscription;
+  /// Get the current list of device channels
+  List<QLConnection> get deviceChannels => _deviceChannels.values.toList();
+ 
 
   static final BluetoothChannel _instance = BluetoothChannel._internal();
 
@@ -66,144 +62,151 @@ class BluetoothChannel {
     return _instance;
   }
 
-  late final Stream<DeviceStatus> _deviceStatusStatusStream =
-      bleConnectionEventChannel.receiveBroadcastStream().map((dynamic event) {
-    if (event is Map<dynamic, dynamic>) {
-      return DeviceStatus.fromMap(event);
-    } else {
-      return DeviceStatus(connected: false);
+  BluetoothChannel._internal();
+
+
+  /// Get or create a device channel for the given device ID.
+  /// This creates the device-specific channels if they don't exist.
+  QLConnection getDeviceChannel(String deviceId) {
+    if (!_deviceChannels.containsKey(deviceId)) {
+      kPrint("Creating new QLConnection for device: $deviceId");
+      _deviceChannels[deviceId] = QLConnection(deviceId);
+      _notifyDeviceChannelsChanged();
     }
-  }).asBroadcastStream();
-
-  late final Stream<WriteProgress> _writeProgressStream =
-      writeProgressChannel.receiveBroadcastStream().map((dynamic event) {
-    if (event is Map<dynamic, dynamic>) {
-      return WriteProgress.fromMap(event);
-    } else {
-      return WriteProgress(
-          progress: 0.0, id: "", totalBytes: 0, bytesProcessed: 0);
-    }
-  }).asBroadcastStream();
-
-  Stream<DeviceStatus> get listenToDeviceConnectionEvents =>
-      deviceStatusStream.where((status) => status.isConnectionEvent);
-
-  BluetoothChannel._internal() {
-    bleReadChannel.setMessageHandler((ByteData? message) async {
-      if (message != null) {
-        final data = message.buffer.asUint8List();
-        _readController.add(data);
-      }
-      return ByteData(0);
-    });
-
-    _deviceStatusSubscription =
-        _deviceStatusStatusStream.listen((DeviceStatus event) {
-      _lastDeviceStatus = event;
-      debugPrint(
-          "Ble Connection Event: connected=${event.connected}, bonded=${event.bonded}, "
-          "peripheralId=${event.peripheralId}");
-    });
+    return _deviceChannels[deviceId]!;
   }
 
-  Future<DeviceStatus> getCurrentDeviceStatus() async {
-    try {
-      final result = await bleMethodChannel
-          .invokeMethod<Map<dynamic, dynamic>>('getCurrentDeviceStatus');
-
-      if (result != null) {
-        return DeviceStatus.fromMap(result);
-      } else {
-        return DeviceStatus(connected: false);
-      }
-    } catch (e, stack) {
-      debugPrintStack(
-          label: "Error getting current device status: $e", stackTrace: stack);
-      return DeviceStatus(connected: false);
-    }
+  /// Check if a device channel exists
+  bool hasDeviceChannel(String deviceId) {
+    return _deviceChannels.containsKey(deviceId);
   }
 
-  /// Write all data chunks to the connected BLE device
-  /// Returns true if successful, false otherwise
-  Future<bool> writeAll(List<Uint8List> data) async {
-    if (!Platform.isIOS && !Platform.isAndroid) {
-      throw Exception("BLE write is only supported on iOS and Android");
-    }
-
-    try {
-      // Concatenate all chunks into single binary data
-      var totalLength = 0;
-      for (final chunk in data) {
-        totalLength += chunk.length;
-      }
-
-      final combinedData = Uint8List(totalLength);
-      var offset = 0;
-      for (final chunk in data) {
-        combinedData.setRange(offset, offset + chunk.length, chunk);
-        offset += chunk.length;
-      }
-      // Send binary data through write channel
-      final result =
-          await bleWriteChannel.send(ByteData.sublistView(combinedData));
-
-      if (result != null && result.lengthInBytes > 0) {
-        final successByte = result.getUint8(0);
-        debugPrint("BLE binary write result: success=$successByte");
-        return successByte == 1;
-      }
-
-      return false;
-    } catch (e, stack) {
-      debugPrintStack(
-          label: "Error writing binary data over BLE: $e", stackTrace: stack);
-      return false;
-    }
+  /// Remove and dispose a device channel
+  void removeDeviceChannel(String deviceId) {
+    final channel = _deviceChannels.remove(deviceId);
+    channel?.dispose();
+    kPrint("Removed device channel: $deviceId");
+    _notifyDeviceChannelsChanged();
   }
 
-  /// Get the device name of the  Host device (iOS and Android)
+  void _notifyDeviceChannelsChanged() {
+    _deviceChannelsController.add(_deviceChannels.values.toList());
+  }
+
+  /// Get all device IDs with active channels
+  List<String> get activeDeviceIds => _deviceChannels.keys.toList();
+
+  // ==================== Shared Operations ====================
+
+  /// Get the device name of the host device (iOS and Android)
   Future<String> getDeviceName() async {
-    final String name = await bleMethodChannel.invokeMethod('deviceName');
+    final String name = await _methodChannel.invokeMethod('deviceName');
     return name;
   }
 
-  /// Pair with a BLE device (iOS and Android)
-  /// Returns the BluetoothConnectionStatus after pairing and connecting
-  /// on IOS this will show the accessory setup sheet
-  /// on Android this will initiate the android bonding dialog
-  Future<DeviceStatus> setupBle(String deviceId, int colorWay) async {
+  /// Request to enable Bluetooth
+  Future<bool?> requestEnableBle() async {
+    return await _methodChannel.invokeMethod<bool>("enableBluetooth");
+  }
+
+  /// Get list of connected devices
+  Future<List<ConnectedDeviceInfo>> getConnectedDevices() async {
+    try {
+      final result = await _methodChannel.invokeMethod('getConnectedDevices');
+      if (result is List) {
+        return result
+            .map((item) =>
+                ConnectedDeviceInfo.fromMap(Map<dynamic, dynamic>.from(item)))
+            .toList();
+      }
+      return [];
+    } catch (e, stack) {
+      kPrint('Error getting connected devices: $e', stackTrace: stack);
+      return [];
+    }
+  }
+
+  /// Remove a device from the native side
+  Future<bool> removeDevice(String deviceId) async {
+    try {
+      final result = await _methodChannel
+          .invokeMethod<bool>('removeDevice', {'deviceId': deviceId});
+      if (result == true) {
+        removeDeviceChannel(deviceId);
+      }
+      return result ?? false;
+    } catch (e) {
+      debugPrint("Error removing device: $e");
+      return false;
+    }
+  }
+
+  /// Start scanning for BLE devices
+  Future<bool> startScan({String? deviceId}) async {
+    try {
+      final result = await _methodChannel.invokeMethod<Map<dynamic, dynamic>>(
+          'startScan', deviceId != null ? {'deviceId': deviceId} : null);
+      return result?['scanning'] == true;
+    } catch (e) {
+      debugPrint("Error starting scan: $e");
+      return false;
+    }
+  }
+
+  /// Stop scanning for BLE devices
+  Future<bool> stopScan() async {
+    try {
+      final result =
+          await _methodChannel.invokeMethod<Map<dynamic, dynamic>>('stopScan');
+      return result?['scanning'] == false;
+    } catch (e) {
+      debugPrint("Error stopping scan: $e");
+      return false;
+    }
+  }
+
+  // ==================== Pairing and Connection ====================
+
+  /// Pair with a BLE device (iOS and Android).
+  /// Returns the QLConnection after pairing and connecting.
+  /// On iOS this will show the accessory setup sheet.
+  /// On Android this will initiate the android bonding dialog.
+  Future<QLConnection> setupBle(String deviceId, int colorWay) async {
     if (Platform.isIOS) {
-      final status = await bleMethodChannel
+      final status = await _methodChannel
           .invokeMethod("showAccessorySetup", {"c": colorWay});
       if (status is bool && !status) {
-        return DeviceStatus(connected: false);
+        return getDeviceChannel(deviceId);
       }
     } else {
-      //Android will wait for event after initiating pairing
-      await bleMethodChannel
-          .invokeMethod("pair", {"deviceId": deviceId}).timeout(
-              Duration(seconds: 10), onTimeout: () {
+      // Android: Call native pair first to create QLConnection and register channels
+      // This must happen before we create QLConnection on Dart side
+      await _methodChannel.invokeMethod("pair", {"deviceId": deviceId}).timeout(
+          Duration(seconds: 10), onTimeout: () {
         throw BleSetupTimeoutException("Pairing timed out");
       });
     }
+
+    // Now create the device channel after native side has registered its channels
+    final deviceChannel = getDeviceChannel(deviceId);
+
     bool initiateBonding = false;
-    final connect = await listenToDeviceConnectionEvents.firstWhere(
+    final connect = await deviceChannel.connectionEvents.firstWhere(
       (event) {
+        debugPrint("[$deviceId] events $event");
         try {
           if (event.connected &&
               !initiateBonding &&
               !event.bonded &&
               Platform.isAndroid) {
             initiateBonding = true;
-            kPrint("Initiating bonding ");
-            bleMethodChannel.invokeMethod(
-              "bond",
-            );
+            kPrint("[$deviceId] Initiating bonding");
+            deviceChannel.bond();
           }
         } catch (e) {
-          debugPrint("Error during bonding initiation: $e");
+          debugPrint("[$deviceId] Error during bonding initiation: $e");
         }
-        //IOS doesn't have bonding state, just connected state
+        // iOS doesn't have bonding state, just connected state
         if (Platform.isIOS) {
           return event.connected;
         }
@@ -212,7 +215,23 @@ class BluetoothChannel {
     ).timeout(Duration(seconds: 10), onTimeout: () {
       throw BleSetupTimeoutException("Pairing timed out");
     });
-    return connect;
+    if (connect.connected) {
+      return deviceChannel;
+    } else {
+      throw BleSetupTimeoutException("Pairing timed out");
+    }
+  }
+
+  /// Prepare a device for connection by creating native BleDevice and registering channels.
+  /// This must be called BEFORE creating the Dart QLConnection.
+  Future<void> prepareDevice(String deviceId) async {
+    await _methodChannel.invokeMethod("prepareDevice", {"deviceId": deviceId});
+  }
+
+  /// Reconnect to a previously paired device.
+  /// prepareDevice() should be called first to register native channels.
+  Future<void> reconnect(String deviceId) async {
+    await _methodChannel.invokeMethod("reconnect", {"deviceId": deviceId});
   }
 
   /// Show the iOS accessory sheet for BLE pairing
@@ -221,7 +240,7 @@ class BluetoothChannel {
       throw Exception("showAccessorySetup is only supported on iOS");
     }
     try {
-      return await bleMethodChannel.invokeMethod<bool?>("showAccessorySetup") ??
+      return await _methodChannel.invokeMethod<bool?>("showAccessorySetup") ??
           false;
     } catch (e) {
       debugPrint("Error showing accessory sheet: $e");
@@ -229,81 +248,15 @@ class BluetoothChannel {
     }
   }
 
-  /// Listen to BLE data events (iOS and Android)
-  /// Returns a stream of BLE data events
-  Stream<Uint8List> listenToDataEvents() {
-    if (!Platform.isIOS && !Platform.isAndroid) {
-      return Stream.empty();
-    }
-    return _readController.stream;
-  }
+  // ==================== iOS Specific ====================
 
-  Future<void> disconnect() async {
-    await bleMethodChannel.invokeMethod("disconnect");
-  }
-
-  /// Dispose of stream subscriptions
-  void dispose() {
-    _deviceStatusSubscription?.cancel();
-  }
-
-  Stream<WriteProgress> writeProgressStream() {
-    return _writeProgressStream;
-  }
-
-  Stream<WriteProgress> getWriteProgress(String id) {
-    kPrint("Getting write progress for id: $id");
-    return _writeProgressStream
-        .where((progress) => progress.id == id)
-        .asBroadcastStream();
-  }
-
-  /// Send large data by writing to file and passing path to host platform
-  Future<bool> transmitFromFile(String path) async {
-    try {
-      await bleMethodChannel.invokeMethod("transmitFromFile", {"path": path});
-      return true;
-    } catch (e, stack) {
-      debugPrintStack(label: "Error sending large data: $e", stackTrace: stack);
-      return false;
-    }
-  }
-
-  /// Cancel ongoing transfer
-  Future<bool> cancelTransfer() async {
-    try {
-      await bleMethodChannel.invokeMethod("cancelTransfer");
-      return true;
-    } catch (e, stack) {
-      debugPrintStack(label: ": $e", stackTrace: stack);
-      return false;
-    }
-  }
-
-  // Create a file in the ble cache directory
-  // file will be removed after transmission
-  static Future<File> getBleCacheFile(String filename) async {
-    final appPath = await getApplicationCacheDirectory();
-    final bleCacheDir = Directory('${appPath.path}/ble_cache');
-    if (!await bleCacheDir.exists()) {
-      await bleCacheDir.create(recursive: true);
-    }
-    // quantum link file, .qlf ? maybe ? this includes chunked QL messages
-    final file = File('${bleCacheDir.path}/ble_$filename.qlf');
-    return file;
-  }
-
-  Future reconnect(String id) async {
-    await bleMethodChannel.invokeMethod("reconnect", {"bleId": id});
-  }
-
-  //IOS only
+  /// Get accessories (iOS only)
   Future<List<AccessoryInfo>> getAccessories() async {
     if (!Platform.isIOS) {
       throw Exception("getAccessories is only supported on iOS");
     }
     try {
-      final result = await bleMethodChannel.invokeMethod('getAccessories');
+      final result = await _methodChannel.invokeMethod('getAccessories');
 
       if (result is List) {
         return result
@@ -319,7 +272,31 @@ class BluetoothChannel {
     }
   }
 
-  Future<bool?> requestEnableBle() async {
-    return await bleMethodChannel.invokeMethod<bool>("enableBluetooth");
+  /// Create a file in the BLE cache directory.
+  /// File will be removed after transmission.
+  static Future<File> getBleCacheFile(String filename) async {
+    final appPath = await getApplicationCacheDirectory();
+    final bleCacheDir = Directory('${appPath.path}/ble_cache');
+    if (!await bleCacheDir.exists()) {
+      await bleCacheDir.create(recursive: true);
+    }
+    // quantum link file, .qlf - this includes chunked QL messages
+    final file = File('${bleCacheDir.path}/ble_$filename.qlf');
+    return file;
+  }
+
+  /// Dispose all device channels
+  void dispose() {
+    for (final channel in _deviceChannels.values) {
+      channel.dispose();
+    }
+    _deviceChannels.clear();
+  }
+
+  void resetDeviceChannels() {
+    for (final channel in _deviceChannels.values) {
+      channel.dispose();
+    }
+    _deviceChannels.clear();
   }
 }

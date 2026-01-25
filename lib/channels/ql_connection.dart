@@ -9,7 +9,6 @@ import 'package:crypto/crypto.dart';
 import 'package:envoy/ble/ql_handlers.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
-import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';

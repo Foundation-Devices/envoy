@@ -5,24 +5,25 @@
 
 import 'dart:async';
 
-import 'package:envoy/business/devices.dart';
+import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/util/console.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 
 /// Handler for incoming `api.QuantumLinkMessage`.
 /// Implement `canHandle` and `handle`.
 abstract class PassportMessageHandler {
-  final EnvoyMessageWriter writer;
+  final QLConnection qlConnection;
+  PassportMessageHandler(this.qlConnection);
 
-  PassportMessageHandler(this.writer);
-
-  Future<void> handleMessage(api.QuantumLinkMessage message, String bleId);
+  Future<void> handleMessage(
+      api.QuantumLinkMessage message);
 
   /// Return true if this handler should receive [message].
   bool canHandle(api.QuantumLinkMessage message);
 
   ///
-  void onDeviceStatus(api.DeviceStatus stauts, Device device) {}
+  void onDeviceStatus(api.DeviceStatus status) {}
 }
 
 /// Writer used by handlers to send messages to the device.
@@ -44,26 +45,24 @@ class PassportMessageRouter {
     _qlHandlers.add(handler);
   }
 
-  Future<void> dispatch(api.PassportMessage message, String bleId) async {
+  Future<void> dispatch(api.PassportMessage message) async {
     final qMessage = message.message;
     for (final handler in _qlHandlers) {
       if (handler.canHandle(qMessage)) {
         kPrint(
             "Handler ${handler.runtimeType} CAN handle message ${(qMessage.runtimeType)}");
-      }
-      if (handler.canHandle(qMessage)) {
         try {
           //allows multiple handlers to handle same types
-          unawaited(handler.handleMessage(qMessage, bleId));
-        } catch (e) {
+          unawaited(handler.handleMessage(qMessage));
+        } catch (e, stack) {
+          debugPrintStack(stackTrace: stack);
           kPrint("Error handling message ${message.runtimeType}: $e");
         }
         try {
           //handlers who wants to know device status
-          handler.onDeviceStatus(
-              message.status, Devices().getPrimeDevices.first);
+          handler.onDeviceStatus(message.status);
         } catch (e) {
-          kPrint("Error handling message ${message.runtimeType}: $e");
+          // kPrint("Error handling message ${message.runtimeType}: $e");
         }
       }
     }
