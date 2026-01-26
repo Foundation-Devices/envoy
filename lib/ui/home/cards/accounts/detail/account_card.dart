@@ -893,8 +893,11 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
 
                           if (device != null &&
                               device.type == DeviceType.passportPrime) {
-                            device.qlConnection().qlHandler.bleAccountHandler.sendAccountUpdate(
-                                api.AccountUpdate(
+                            device
+                                .qlConnection()
+                                .qlHandler
+                                .bleAccountHandler
+                                .sendAccountUpdate(api.AccountUpdate(
                                     accountId: account.id,
                                     update: (await handler.toRemoteUpdate())));
                           }

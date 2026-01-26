@@ -436,7 +436,6 @@ class QLConnection with EnvoyMessageWriter {
     kPrint("[$deviceId] QL identity set up for reconnect");
   }
 
-
   Device? getDevice() {
     final device = Devices().getPrimeDevices.firstWhereOrNull(
         (d) => d.bleId == deviceId || d.peripheralId == deviceId);
@@ -456,7 +455,6 @@ class QLConnection with EnvoyMessageWriter {
     kPrint(
         "$message DebugIdentities quantumLinkIdentity: ${sha256.convert(serialXidSerial).toString()}\n\n");
   }
-
 
   Future<bool> encodeToFile(
       {required Uint8List message,
