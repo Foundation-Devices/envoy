@@ -54,7 +54,6 @@ class BluetoothChannel {
 
   /// Get the current list of device channels
   List<QLConnection> get deviceChannels => _deviceChannels.values.toList();
- 
 
   static final BluetoothChannel _instance = BluetoothChannel._internal();
 
@@ -63,7 +62,6 @@ class BluetoothChannel {
   }
 
   BluetoothChannel._internal();
-
 
   /// Get or create a device channel for the given device ID.
   /// This creates the device-specific channels if they don't exist.

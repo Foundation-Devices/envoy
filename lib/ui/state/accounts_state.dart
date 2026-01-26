@@ -6,12 +6,12 @@ import 'package:async/async.dart';
 import 'package:collection/collection.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/sync_manager.dart';
-import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
+import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:ngwallet/ngwallet.dart';
 
 final _accountOrderStream = StreamProvider<List<String>>(((ref) {
@@ -163,49 +163,52 @@ final accountsZeroBalanceProvider = Provider<bool>((ref) {
 
 final showDefaultAccountProvider = StateProvider<bool>((ref) => true);
 
+final qlConnectionsStreamProvider = StreamProvider<List<QLConnection>>((ref) {
+  return BluetoothChannel().deviceChannelsStream;
+});
+
 /// Stores the current passphrase fingerprint (XFP) for Prime devices.
 /// (null if no passphrase)
 final primePassphraseFingerprintProvider =
     StateProvider<String?>((ref) => null);
 
 /// Listens to ApplyPassphrase events from Prime and auto-switches view
-final _passphraseEventStreamProvider =
-    StreamProvider<api.ApplyPassphrase>((ref) {
-  return BluetoothManager().passphraseEventStream;
-});
+final passphraseEventHandlerProvider = Provider((ref) {
+  final qlConnections = ref.watch(qlConnectionsStreamProvider).value ?? [];
+  for (final qlConnection in qlConnections) {
+    final sub = qlConnection.qlHandler.bleAccountHandler.applyPassphraseStream
+        .listen((event) {
+      if (event == null) return;
+      final fingerprint = event.fingerprint;
+      kPrint("ApplyPassphrase event received in UI: fingerprint=$fingerprint");
 
-/// Provider that handles ApplyPassphrase events and updates UI state
-final passphraseEventHandlerProvider = Provider<void>((ref) {
-  ref.listen(_passphraseEventStreamProvider, (previous, next) {
-    final event = next.valueOrNull;
-    if (event == null) return;
+      // Update the fingerprint map
+      ref.read(primePassphraseFingerprintProvider.notifier).state = fingerprint;
 
-    final fingerprint = event.fingerprint;
-    kPrint("ApplyPassphrase event received in UI: fingerprint=$fingerprint");
-
-    // Update the fingerprint map
-    ref.read(primePassphraseFingerprintProvider.notifier).state = fingerprint;
-
-    // Auto-switch view based on passphrase state
-    if (fingerprint != null) {
-      // Prime applied a passphrase - switch to passphrase view
-      kPrint("Auto-switching to passphrase view");
-      ref.read(showDefaultAccountProvider.notifier).state = false;
-    } else {
-      // Prime cleared passphrase - switch to default view
-      kPrint("Auto-switching to default view");
-      ref.read(showDefaultAccountProvider.notifier).state = true;
-    }
-  });
+      // Auto-switch view based on passphrase state
+      if (fingerprint != null) {
+        // Prime applied a passphrase - switch to passphrase view
+        kPrint("Auto-switching to passphrase view");
+        ref.read(showDefaultAccountProvider.notifier).state = false;
+      } else {
+        // Prime cleared passphrase - switch to default view
+        kPrint("Auto-switching to default view");
+        ref.read(showDefaultAccountProvider.notifier).state = true;
+      }
+    });
+    ref.onDispose(() {
+      sub.cancel();
+    });
+  }
 });
 
 final primePassphraseAccountsProvider = Provider<List<EnvoyAccount>>((ref) {
   final accounts = ref.watch(accountsProvider);
-  final appliedPasshpraseFingerprint =
+  final appliedPassphraseFingerprint =
       ref.watch(primePassphraseFingerprintProvider);
 
   return accounts.where((account) {
     return account.seedHasPassphrase &&
-        account.xfp == appliedPasshpraseFingerprint;
+        account.xfp == appliedPassphraseFingerprint;
   }).toList();
 });
