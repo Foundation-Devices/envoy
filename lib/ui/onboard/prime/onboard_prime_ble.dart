@@ -157,8 +157,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           await BluetoothManager().getPermissions();
         }
 
-        _onboardingDevice = await BluetoothManager()
-            .setupBle(id: bleId ?? "", colorWay: colorWay);
+        _onboardingDevice =
+            await BluetoothChannel().setupBle(bleId ?? "", colorWay);
 
         ref.read(onboardingDeviceProvider.notifier).state = _onboardingDevice;
         if (_onboardingDevice == null) {

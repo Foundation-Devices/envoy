@@ -287,7 +287,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     //TODO: fix rive with databindings.
     // ignore: deprecated_member_use
     _controller?.stateMachine.boolean('happy')?.value = true;
-    final fwHandler = ref.watch(onboardingDeviceProvider)?.qlHandler.fwUpdateHandler;
+    final fwHandler =
+        ref.watch(onboardingDeviceProvider)?.qlHandler.fwUpdateHandler;
 
     return Column(
       children: [
@@ -310,7 +311,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
   }
 
   Widget _updateIntroWidget(BuildContext context) {
-    final fwHandler = ref.watch(onboardingDeviceProvider)?.qlHandler.fwUpdateHandler;
+    final fwHandler =
+        ref.watch(onboardingDeviceProvider)?.qlHandler.fwUpdateHandler;
     final newVersion = fwHandler?.newVersion ?? '';
     final currentVersion = fwHandler?.currentVersion ?? '';
 
@@ -339,8 +341,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
             Padding(
               padding: const EdgeInsets.all(EnvoySpacing.small),
               child: Text(
-                S().firmware_updateAvailable_content2(
-                    "KeyOS v$currentVersion"),
+                S().firmware_updateAvailable_content2("KeyOS v$currentVersion"),
                 textAlign: TextAlign.center,
                 style: EnvoyTypography.body
                     .copyWith(color: EnvoyColors.textSecondary),
@@ -368,8 +369,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         Padding(
           padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
           child: EnvoyButton(
-            S().firmware_updateAvailable_whatsNew(
-                "KeyOS v$newVersion"),
+            S().firmware_updateAvailable_whatsNew("KeyOS v$newVersion"),
             type: EnvoyButtonTypes.secondary,
             onTap: () {
               launchUrl(

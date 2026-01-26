@@ -74,8 +74,9 @@ class _PrimeReconnectState extends ConsumerState<PrimeReconnect> {
 
   void _listenForPairingState() async {
     try {
-      QLConnection? currentOnboardingDevice = ref.read(onboardingDeviceProvider);
-      if(currentOnboardingDevice == null) {
+      QLConnection? currentOnboardingDevice =
+          ref.read(onboardingDeviceProvider);
+      if (currentOnboardingDevice == null) {
         throw Exception("No onboarding device found");
       }
       Devices devices = Devices();
