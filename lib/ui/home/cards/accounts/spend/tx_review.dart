@@ -179,7 +179,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
             EnvoyStepState.LOADING,
           );
 
-      await device.qlConnection().qlHandler.txHandler.sendPsbt(account.id, psbt);
+      await device
+          .qlConnection()
+          .qlHandler
+          .txHandler
+          .sendPsbt(account.id, psbt);
       ref.read(transferTransactionStateProvider.notifier).updateStep(
             "Transaction transferred", //TODO: localazy
             EnvoyStepState.FINISHED,
