@@ -97,6 +97,13 @@ enum EnvoyIcons {
   stripe_text,
   refresh,
   prime_front,
+  wallet_coin,
+  fee,
+  receipt,
+  change,
+  eye,
+  sd_card,
+  stopwatch,
   locked,
   unlocked,
 }
