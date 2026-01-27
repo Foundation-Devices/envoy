@@ -8,6 +8,7 @@ import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -220,6 +221,11 @@ class HomePageState extends ConsumerState<HomePage>
         }
       }
 
+      SyncManager().onFullScanFinished((account, success) {
+        if (!mounted) return;
+        _notifyAboutAccRescanFinishedToast(account, success: success);
+      });
+
       if (event == ConnectivityManagerEvent.foundationServerDown &&
           _serverDownWarningDisplayedMoreThan5minAgo &&
           mounted) {
@@ -374,6 +380,25 @@ class HomePageState extends ConsumerState<HomePage>
           EnvoyToast.dismissPreviousToasts(context);
           showEnvoyDialog(dialog: const TorWarning(), context: context);
         },
+      ).show(context);
+    }
+  }
+
+  void _notifyAboutAccRescanFinishedToast(EnvoyAccount account,
+      {required bool success}) {
+    if (context.mounted) {
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        duration: const Duration(seconds: 3),
+        message: success
+            ? S().rescanAccount_toast_rescanningSuccessful(account.name)
+            : S().rescanAccount_toast_rescanningFailed(account.name),
+        icon: EnvoyIcon(
+          success ? EnvoyIcons.info : EnvoyIcons.alert,
+          color:
+              success ? EnvoyColors.accentPrimary : EnvoyColors.accentSecondary,
+        ),
       ).show(context);
     }
   }

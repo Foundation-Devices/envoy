@@ -95,6 +95,7 @@ enum EnvoyIcons {
   qr_scan,
   stripe,
   stripe_text,
+  refresh,
   prime_front,
   locked,
   unlocked,
