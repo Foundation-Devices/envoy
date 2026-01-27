@@ -3,6 +3,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/uniform_resource.dart';
+import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/envoy_colors.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:flutter/material.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class UnableToDecodeException implements Exception {
@@ -42,5 +46,29 @@ abstract class ScannerDecoder {
       }
     }
     return urDecoder.decoded;
+  }
+
+  /// Allow subclasses to handle decoding errors in their own way
+  void onDecodeError(
+    BuildContext context,
+    Exception e, {
+    VoidCallback? onRetry,
+    VoidCallback? onCancel,
+  }) {
+    // Default behavior: show EnvoyToast and reset scanning when retry is tapped
+    EnvoyToast(
+      replaceExisting: true,
+      message: e.toString(),
+      actionButtonText: S().component_retry,
+      isDismissible: false,
+      onActionTap: () {
+        EnvoyToast.dismissPreviousToasts(context);
+        if (onRetry != null) onRetry();
+      },
+      icon: const Icon(
+        Icons.info_outline,
+        color: EnvoyColors.white95,
+      ),
+    ).show(context);
   }
 }

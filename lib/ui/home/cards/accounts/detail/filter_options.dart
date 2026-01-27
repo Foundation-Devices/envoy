@@ -464,12 +464,14 @@ class CheckBoxFilterItem extends StatelessWidget {
 
   final String text;
   final GestureTapCallback onTap;
+  final String? subtitle;
 
   const CheckBoxFilterItem(
       {super.key,
       required this.checked,
       required this.text,
-      required this.onTap});
+      required this.onTap,
+      this.subtitle});
 
   @override
   Widget build(BuildContext context) {
@@ -500,10 +502,22 @@ class CheckBoxFilterItem extends StatelessWidget {
                     ),
             ),
             const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-            Text(
-              text,
-              style: EnvoyTypography.body
-                  .copyWith(color: new_color_scheme.EnvoyColors.textPrimary),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  text,
+                  style: EnvoyTypography.body.copyWith(
+                      color: new_color_scheme.EnvoyColors.textPrimary),
+                ),
+                if (subtitle != null)
+                  Text(
+                    subtitle!,
+                    style: EnvoyTypography.info.copyWith(
+                        color: new_color_scheme.EnvoyColors.textTertiary),
+                  ),
+              ],
             )
           ],
         ),
