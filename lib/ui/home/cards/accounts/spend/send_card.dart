@@ -42,7 +42,7 @@ class _SendCardState extends ConsumerState<SendCard>
   Future<void> _onPaste(ParseResult parsed) async {
     setState(() {
       if (parsed.address != null) {
-        _controller.text = parsed.address!;
+        _controller.text = _formatAddress(parsed.address!);
         ref.read(spendAddressProvider.notifier).state = parsed.address!;
       }
 
@@ -54,6 +54,17 @@ class _SendCardState extends ConsumerState<SendCard>
         }
       }
     });
+  }
+
+  String _formatAddress(String address) {
+    final buffer = StringBuffer();
+    for (int i = 0; i < address.length; i++) {
+      buffer.write(address[i]);
+      if ((i + 1) % 4 == 0 && i != address.length - 1) {
+        buffer.write(' ');
+      }
+    }
+    return buffer.toString();
   }
 
   @override

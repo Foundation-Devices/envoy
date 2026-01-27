@@ -19,6 +19,7 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 
 enum BroadcastProgress {
   inProgress,
@@ -254,6 +255,7 @@ void clearSpendState(ProviderContainer ref) {
     ref.read(displayFiatSendAmountProvider.notifier).state = 0;
     ref.read(coinSelectionStateProvider.notifier).reset();
     ref.read(spendTransactionProvider.notifier).reset();
+    ref.read(selectedFeeOptionProvider.notifier).state = FeeOption.standard;
   } catch (e, s) {
     kPrint("Error clearing spend state: $e", stackTrace: s);
   }

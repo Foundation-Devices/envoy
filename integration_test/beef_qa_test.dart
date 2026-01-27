@@ -9,6 +9,7 @@ import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coin_balance_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_switch.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+
 //import 'package:envoy/ui/widgets/card_swipe_wrapper.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/console.dart';
@@ -347,6 +348,34 @@ Future<void> main() async {
       final sendAmount = find.text("0.");
       expect(sendAmount.first, findsOneWidget);
 
+      await goBackHome(tester);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
+    testWidgets('<Delete wallet warning pt.1>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
+      await goBackHome(tester);
+
+      // go to backups
+      await pressHamburgerMenu(tester);
+      await tapSettingsButton(tester, buttonText: "BACKUPS");
+
+      // press erase wallet
+      await findAndPressTextButton(tester, "Erase Mobile Wallet and Backups");
+
+      // skip two dialogs
+      await findAndTapPopUpText(tester, "Continue");
+      await findAndTapPopUpText(tester, "Continue");
+
+      // check that the warning dialog did not pop
+      final textFinder = find.text("Keep Your Seed Private");
+      await tester.pumpUntilFound(textFinder,
+          tries: 10, duration: Durations.long1);
+
       stopwatch.stop();
       debugPrint(
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
@@ -393,6 +422,7 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
+
     testWidgets('<Activity text alignment>', (tester) async {
       final stopwatch = Stopwatch()..start();
 
@@ -440,6 +470,33 @@ Future<void> main() async {
 
       // go back to Home
       await goBackHome(tester);
+
+      stopwatch.stop();
+      debugPrint(
+        '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+      );
+    });
+
+    testWidgets('<Delete wallet warning pt.2>', (tester) async {
+      final stopwatch = Stopwatch()..start(); // Start timer
+
+      await goBackHome(tester);
+
+      // go to backups
+      await pressHamburgerMenu(tester);
+      await tapSettingsButton(tester, buttonText: "BACKUPS");
+
+      // press erase wallet
+      await findAndPressTextButton(tester, "Erase Mobile Wallet");
+
+      // skip two dialogs
+      await findAndTapPopUpText(tester, "Continue");
+      await findAndTapPopUpText(tester, "Continue");
+
+      // check that the warning dialog did pop
+      final warningDialogFinder = find.text("Delete Accounts anyway");
+      await tester.pumpUntilFound(warningDialogFinder,
+          tries: 10, duration: Durations.long1);
 
       stopwatch.stop();
       debugPrint(

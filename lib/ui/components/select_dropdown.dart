@@ -101,7 +101,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
           color: widget.isDropdownActive
               ? EnvoyColors.surface2
               : EnvoyColors.surface2.applyOpacity(0.5),
-          borderRadius: BorderRadius.circular(EnvoySpacing.small),
+          borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
           border: Border.all(
             color: (!isFocused && widget.isDropdownActive)
                 ? EnvoyColors.accentPrimary

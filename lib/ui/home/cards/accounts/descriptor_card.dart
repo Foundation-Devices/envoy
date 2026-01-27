@@ -4,20 +4,17 @@
 
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/envoy_bar.dart';
 import 'package:envoy/ui/components/select_dropdown.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
-import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -91,93 +88,80 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
   @override
   Widget build(BuildContext context) {
     String descriptor = descriptors[selectedIndex].$2;
-    return SingleChildScrollView(
-      // ENV-2081
-      physics: NeverScrollableScrollPhysics(),
+    return Padding(
+      padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
       child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(mainAxisSize: MainAxisSize.min, children: [
             Flexible(
               child: Padding(
-                padding: const EdgeInsets.all(EnvoySpacing.medium2),
-                child: Column(
-                  children: [
-                    QrTab(
-                      title: widget.account.name,
-                      subtitle: S().manage_account_descriptor_subheading,
-                      account: widget.account,
-                      qr: EnvoyQR(
-                        data: descriptor,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: EnvoySpacing.medium1,
-                          left: EnvoySpacing.xs,
-                          right: EnvoySpacing.xs),
-                      child: EnvoyDropdown(
-                        options: options,
-                        initialIndex: selectedIndex,
-                        onOptionChanged: (selectedOption) {
-                          if (selectedOption != null) {
-                            setState(() {
-                              selectedIndex = int.parse(selectedOption.value);
-                            });
-                          }
-                        },
-                      ),
-                    ),
-                  ],
+                padding: const EdgeInsets.only(
+                  left: EnvoySpacing.medium2,
+                  right: EnvoySpacing.medium2,
+                ),
+                child: QrTab(
+                  title: widget.account.name,
+                  subtitle: S().manage_account_descriptor_subheading,
+                  account: widget.account,
+                  qr: EnvoyQR(
+                    data: descriptor,
+                  ),
                 ),
               ),
             ),
-            //TODO: add dropdown to switch between descriptors
-
-            Padding(
-              padding: const EdgeInsets.only(bottom: EnvoySpacing.large1),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: EnvoySpacing.large3),
-                    child: IconButton(
-                        onPressed: () {
-                          Clipboard.setData(ClipboardData(text: descriptor));
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text(
-                                "Descriptor copied to clipboard!"), //TODO: FIGMA
-                          ));
-                        },
-                        icon: const EnvoyIcon(EnvoyIcons.copy)),
-                  ),
-                  EnvoyTextButton(
-                    onTap: () {
-                      context.pop();
-                    },
-                    label: S().component_ok,
-                    textStyle: EnvoyTypography.subheading.copyWith(
-                        fontWeight: FontWeight.w400,
-                        color: EnvoyColors.darkTeal),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: EnvoySpacing.large3),
-                    child: IconButton(
-                        onPressed: () {
-                          SharePlus.instance.share(ShareParams(
-                            text: descriptor,
-                          ));
-                        },
-                        icon: const EnvoyIcon(EnvoyIcons.share)),
-                  ),
-                ],
-              ),
-            ),
           ]),
+          Padding(
+            padding: const EdgeInsets.only(
+              top: EnvoySpacing.medium1,
+              left: EnvoySpacing.medium2,
+              right: EnvoySpacing.medium2,
+            ),
+            child: EnvoyDropdown(
+              options: options,
+              initialIndex: selectedIndex,
+              onOptionChanged: (selectedOption) {
+                if (selectedOption != null) {
+                  setState(() {
+                    selectedIndex = int.parse(selectedOption.value);
+                  });
+                }
+              },
+            ),
+          ),
+          const SizedBox(),
+          EnvoyBar(
+            bottomPadding: EnvoySpacing.large1,
+            items: [
+              EnvoyBarItem(
+                icon: EnvoyIcons.download,
+                text: S().receive_qr_copy,
+                onTap: () {
+                  // TODO: add "Download QR" code
+                },
+              ),
+              EnvoyBarItem(
+                  icon: EnvoyIcons.copy,
+                  text: S().receive_qr_copy,
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: descriptor));
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content:
+                          Text("Descriptor copied to clipboard!"), //TODO: FIGMA
+                    ));
+                  }),
+              EnvoyBarItem(
+                  icon: EnvoyIcons.externalLink,
+                  text: S().receive_qr_share,
+                  onTap: () {
+                    SharePlus.instance.share(ShareParams(
+                      text: descriptor,
+                    ));
+                  }),
+            ],
+          )
+        ],
+      ),
     );
   }
 }
