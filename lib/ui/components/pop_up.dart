@@ -181,10 +181,10 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 ),
               if (widget.icon != null)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
                   child: EnvoyIcon(
                     widget.icon!,
-                    size: EnvoyIconSize.big,
+                    size: EnvoyIconSize.mediumLarge,
                     color: _color,
                   ),
                 ),
@@ -219,7 +219,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 ),
               if (widget.onLearnMore != null)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
                   child: GestureDetector(
                     onTap: () {
                       widget.onLearnMore!();
