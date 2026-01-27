@@ -15,6 +15,9 @@ class DeviceDecoder extends ScannerDecoder {
   ArcMutexDecoder? qrDecoder;
   PrimeQlPayloadDecoder? primeQlPayloadDecoder;
 
+  //to avoid sending invalid code through onScan when scanning UR codes
+  String previousCode = "";
+
   DeviceDecoder(
       {required this.onScan, required this.pairPayloadDecoder, this.onXidScan});
 
@@ -23,7 +26,8 @@ class DeviceDecoder extends ScannerDecoder {
     if (barCode.code == null) {
       return;
     }
-    if (barCode.code?.toUpperCase().startsWith("UR:ENVELOPE") == true) {
+    if (barCode.code?.toUpperCase().startsWith("UR:ENVELOPE") == true ||
+        primeQlPayloadDecoder != null) {
       if (primeQlPayloadDecoder == null) {
         qrDecoder = await getQrDecoder();
         primeQlPayloadDecoder = PrimeQlPayloadDecoder(
@@ -40,12 +44,14 @@ class DeviceDecoder extends ScannerDecoder {
       primeQlPayloadDecoder!.onDetectBarCode(barCode);
       progressCallBack
           ?.call(primeQlPayloadDecoder!.urDecoder.urDecoder.progress);
-      return;
     } else if (barCode.code?.toLowerCase().startsWith("ur:") == true) {
       pairPayloadDecoder.onDetectBarCode(barCode);
       progressCallBack?.call(pairPayloadDecoder.urDecoder.urDecoder.progress);
     } else {
-      onScan(barCode.code!);
+      if (!previousCode.toLowerCase().startsWith("ur:")) {
+        onScan(barCode.code!);
+      }
     }
+    previousCode = barCode.code ?? "";
   }
 }

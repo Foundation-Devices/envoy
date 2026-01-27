@@ -26,6 +26,7 @@ use ngwallet::transaction;
 use ngwallet::transaction::Output;
 
 use anyhow::anyhow;
+use ngwallet::db::RedbMetaStorage;
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
@@ -310,6 +311,15 @@ impl EnvoyAccountHandler {
         Ok(())
     }
 
+    pub fn set_archived(&mut self, archived: bool) -> anyhow::Result<()> {
+        {
+            let account = self.ng_account.lock().unwrap();
+            account.config.write().unwrap().archived = archived;
+        }
+        self.send_update();
+        Ok(())
+    }
+
     #[frb(sync)]
     pub fn get_directory_path(&self) -> String {
         self.directory_path.clone()
@@ -382,6 +392,7 @@ impl EnvoyAccountHandler {
                     tags,
                     xfp: account.get_xfp().to_lowercase(),
                     external_public_descriptors,
+                    archived: config.archived,
                 })
             }
             Err(error) => Err(anyhow!("Failed to lock account: {}", error)),
@@ -1023,20 +1034,8 @@ impl EnvoyAccountHandler {
         db_path: String,
     ) -> anyhow::Result<EnvoyAccountHandler> {
         let descriptors = Self::get_descriptors(&config.descriptors, db_path.clone());
-
-        let ng_account = NgAccountBuilder::default()
-            .name(config.name.clone())
-            .color(config.color.clone())
-            .descriptors(descriptors)
-            .device_serial(config.device_serial)
-            .date_added(config.date_added)
-            .date_synced(None)
-            .account_path(Some(db_path.clone()))
-            .network(config.network)
-            .id(config.id.clone())
-            .preferred_address_type(config.preferred_address_type)
-            .index(config.index)
-            .build_from_file(Some(db_path.clone()));
+        let meta_storage = Arc::new(RedbMetaStorage::from_file(Some(db_path.clone()))?);
+        let ng_account = NgAccount::new_from_descriptors(config.clone(), meta_storage, descriptors);
 
         match ng_account {
             Ok(account) => match account.persist() {

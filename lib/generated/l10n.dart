@@ -56,10 +56,6 @@ class S {
 
   // skipped getter for the ':' key
 
-  // skipped getter for the 'Pull to scan' key
-
-  // skipped getter for the 'Pull to sync' key
-
   /// `6:15`
   String get _ {
     return Intl.message('6:15', name: '_', desc: '', args: []);
@@ -805,6 +801,26 @@ class S {
     );
   }
 
+  /// `Keep Your Seed Private`
+  String get backups_erase_wallets_and_backups_show_seed_heading {
+    return Intl.message(
+      'Keep Your Seed Private',
+      name: 'backups_erase_wallets_and_backups_show_seed_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!`
+  String get backups_erase_wallets_and_backups_show_seed_subheading {
+    return Intl.message(
+      'Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!',
+      name: 'backups_erase_wallets_and_backups_show_seed_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Unable to Continue`
   String get backups_magicToManualErrorModal_header {
     return Intl.message(
@@ -1065,6 +1081,16 @@ class S {
     return Intl.message(
       'This is an on-chain voucher. It cannot be redeemed to a Testnet or Signet account.',
       name: 'btcpay_redeem_modal_wrongNetwork_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Firmware`
+  String get btn_firmware_version {
+    return Intl.message(
+      'Firmware',
+      name: 'btn_firmware_version',
       desc: '',
       args: [],
     );
@@ -2527,6 +2553,26 @@ class S {
     );
   }
 
+  /// `12 Word Seed`
+  String get component_12WordSeed {
+    return Intl.message(
+      '12 Word Seed',
+      name: 'component_12WordSeed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `24 Word Seed`
+  String get component_24WordSeed {
+    return Intl.message(
+      '24 Word Seed',
+      name: 'component_24WordSeed',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Apply`
   String get component_Apply {
     return Intl.message('Apply', name: 'component_Apply', desc: '', args: []);
@@ -2632,6 +2678,11 @@ class S {
     );
   }
 
+  /// `Exit`
+  String get component_exit {
+    return Intl.message('Exit', name: 'component_exit', desc: '', args: []);
+  }
+
   /// `Filter`
   String get component_filter {
     return Intl.message('Filter', name: 'component_filter', desc: '', args: []);
@@ -2707,6 +2758,16 @@ class S {
     return Intl.message(
       'Recover',
       name: 'component_recover',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover with QR Code`
+  String get component_recoverWithQR {
+    return Intl.message(
+      'Recover with QR Code',
+      name: 'component_recoverWithQR',
       desc: '',
       args: [],
     );
@@ -2805,6 +2866,16 @@ class S {
   /// `Yes`
   String get component_yes {
     return Intl.message('Yes', name: 'component_yes', desc: '', args: []);
+  }
+
+  /// `Disconnect`
+  String get componet_disconnect {
+    return Intl.message(
+      'Disconnect',
+      name: 'componet_disconnect',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Contact Ramp for support`
@@ -2979,6 +3050,86 @@ class S {
     );
   }
 
+  /// `Accessory removed, please reconnect Prime.`
+  String get device_deviceDetailsPrimeRemoved_accessoryRemoved {
+    return Intl.message(
+      'Accessory removed, please reconnect Prime.',
+      name: 'device_deviceDetailsPrimeRemoved_accessoryRemoved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reconnect Passport`
+  String get device_deviceDetailsPrimeRemoved_reconnectPassport {
+    return Intl.message(
+      'Reconnect Passport',
+      name: 'device_deviceDetailsPrimeRemoved_reconnectPassport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connected`
+  String get device_deviceDetailsPrime_connected {
+    return Intl.message(
+      'Connected',
+      name: 'device_deviceDetailsPrime_connected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connection`
+  String get device_deviceDetailsPrime_connection {
+    return Intl.message(
+      'Connection',
+      name: 'device_deviceDetailsPrime_connection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disconnected`
+  String get device_deviceDetailsPrime_disconnected {
+    return Intl.message(
+      'Disconnected',
+      name: 'device_deviceDetailsPrime_disconnected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Security Check`
+  String get device_deviceDetailsPrime_securityCheck {
+    return Intl.message(
+      'Security Check',
+      name: 'device_deviceDetailsPrime_securityCheck',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep both devices nearby.`
+  String get devices_connectingToPrime_content {
+    return Intl.message(
+      'Keep both devices nearby.',
+      name: 'devices_connectingToPrime_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connecting to Prime`
+  String get devices_connectingToPrime_header {
+    return Intl.message(
+      'Connecting to Prime',
+      name: 'devices_connectingToPrime_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Buy Passport`
   String get devices_empty_modal_video_cta1 {
     return Intl.message(
@@ -3004,6 +3155,46 @@ class S {
     return Intl.message(
       'Secure your Bitcoin with Passport.',
       name: 'devices_empty_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your device is now ready to use.`
+  String get devices_reconnectedSuccess_content {
+    return Intl.message(
+      'Your device is now ready to use.',
+      name: 'devices_reconnectedSuccess_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device Reconnected Successfully!`
+  String get devices_reconnectedSuccess_header {
+    return Intl.message(
+      'Device Reconnected Successfully!',
+      name: 'devices_reconnectedSuccess_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connecting to Passport Prime`
+  String get devices_reconnecting_content {
+    return Intl.message(
+      'Connecting to Passport Prime',
+      name: 'devices_reconnecting_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reconnecting`
+  String get devices_reconnecting_header {
+    return Intl.message(
+      'Reconnecting',
+      name: 'devices_reconnecting_header',
       desc: '',
       args: [],
     );
@@ -4459,9 +4650,14 @@ class S {
     );
   }
 
-  /// `~ `
+  /// `Newest first`
   String get filter_sortBy_newest {
-    return Intl.message('~ ', name: 'filter_sortBy_newest', desc: '', args: []);
+    return Intl.message(
+      'Newest first',
+      name: 'filter_sortBy_newest',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Oldest first`
@@ -5246,6 +5442,16 @@ class S {
     );
   }
 
+  /// `Retry`
+  String get magic_setup_recovery_fail_Android_CTA1 {
+    return Intl.message(
+      'Retry',
+      name: 'magic_setup_recovery_fail_Android_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Recover with QR Code`
   String get magic_setup_recovery_fail_Android_CTA2 {
     return Intl.message(
@@ -5296,10 +5502,10 @@ class S {
     );
   }
 
-  /// `Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.\n`
+  /// `Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.`
   String get magic_setup_recovery_fail_connectivity_subheading {
     return Intl.message(
-      'Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.\n',
+      'Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.',
       name: 'magic_setup_recovery_fail_connectivity_subheading',
       desc: '',
       args: [],
@@ -5486,10 +5692,40 @@ class S {
     );
   }
 
-  /// `Are you sure you want to disconnect Passport?\nThis will remove the device from Envoy alongside any connected accounts.`
+  /// `On the current software version, Envoy can only support one Passport Prime connection. \nThis will change with an upcoming update, but for now you must disconnect from your existing Passport Prime before setting up a new one.`
+  String get manage_deviceDetailsModalDisconnectExistingPassport_content {
+    return Intl.message(
+      'On the current software version, Envoy can only support one Passport Prime connection. \nThis will change with an upcoming update, but for now you must disconnect from your existing Passport Prime before setting up a new one.',
+      name: 'manage_deviceDetailsModalDisconnectExistingPassport_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disconnect`
+  String get manage_deviceDetailsModalDisconnectExistingPassport_disconnect {
+    return Intl.message(
+      'Disconnect',
+      name: 'manage_deviceDetailsModalDisconnectExistingPassport_disconnect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disconnect Existing Prime`
+  String get manage_deviceDetailsModalDisconnectExistingPassport_header {
+    return Intl.message(
+      'Disconnect Existing Prime',
+      name: 'manage_deviceDetailsModalDisconnectExistingPassport_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to disconnect Passport?\n\nThis will remove the device from Envoy alongside any connected accounts.`
   String get manage_device_deletePassportWarning {
     return Intl.message(
-      'Are you sure you want to disconnect Passport?\nThis will remove the device from Envoy alongside any connected accounts.',
+      'Are you sure you want to disconnect Passport?\n\nThis will remove the device from Envoy alongside any connected accounts.',
       name: 'manage_device_deletePassportWarning',
       desc: '',
       args: [],
@@ -5526,10 +5762,20 @@ class S {
     );
   }
 
-  /// `EDIT DEVICE NAME`
+  /// `Disconnect`
+  String get manage_device_details_menu_disconnectDevice {
+    return Intl.message(
+      'Disconnect',
+      name: 'manage_device_details_menu_disconnectDevice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Device Name`
   String get manage_device_details_menu_editDevice {
     return Intl.message(
-      'EDIT DEVICE NAME',
+      'Edit Device Name',
       name: 'manage_device_details_menu_editDevice',
       desc: '',
       args: [],
@@ -5561,6 +5807,26 @@ class S {
     return Intl.message(
       'This will discard any coin selection changes. Do you want to proceed?',
       name: 'manual_coin_preselection_dialog_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Existing Wallet Detected`
+  String get manual_onboardDisableMB_magicBackupDetected_heading {
+    return Intl.message(
+      'Existing Wallet Detected',
+      name: 'manual_onboardDisableMB_magicBackupDetected_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy found an existing wallet in your personal cloud and will recover it now. To disable Magic Backups or permanently erase this wallet, please visit the backups menu.`
+  String get manual_onboardDisableMB_magicBackupDetected_subheading {
+    return Intl.message(
+      'Envoy found an existing wallet in your personal cloud and will recover it now. To disable Magic Backups or permanently erase this wallet, please visit the backups menu.',
+      name: 'manual_onboardDisableMB_magicBackupDetected_subheading',
       desc: '',
       args: [],
     );
@@ -6694,6 +6960,26 @@ class S {
     );
   }
 
+  /// `Are you sure to exit the onboarding?`
+  String get onboarding_connectionModalAbort_content {
+    return Intl.message(
+      'Are you sure to exit the onboarding?',
+      name: 'onboarding_connectionModalAbort_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Abort Onboarding?`
+  String get onboarding_connectionModalAbort_header {
+    return Intl.message(
+      'Abort Onboarding?',
+      name: 'onboarding_connectionModalAbort_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No Updates Available`
   String get onboarding_connectionNoUpdates_noUpdates {
     return Intl.message(
@@ -6844,10 +7130,30 @@ class S {
     );
   }
 
-  /// `Setting up a Passport Core on firmware v2.3.5 or earlier?`
+  /// `Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.`
+  String get onboarding_modalBluetoothUnableConnect_content {
+    return Intl.message(
+      'Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.',
+      name: 'onboarding_modalBluetoothUnableConnect_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to Connect`
+  String get onboarding_modalBluetoothUnableConnect_header {
+    return Intl.message(
+      'Unable to Connect',
+      name: 'onboarding_modalBluetoothUnableConnect_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you setting up a Passport Core on firmware v2.3.5 or earlier?`
   String get onboarding_passpportSelectCamera_sub235VersionAlert {
     return Intl.message(
-      'Setting up a Passport Core on firmware v2.3.5 or earlier?',
+      'Are you setting up a Passport Core on firmware v2.3.5 or earlier?',
       name: 'onboarding_passpportSelectCamera_sub235VersionAlert',
       desc: '',
       args: [],
@@ -6914,10 +7220,10 @@ class S {
     );
   }
 
-  /// `Also known as a “cold wallet.” Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.`
+  /// `Also known as a “cold wallet”. Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.`
   String get onboarding_tutorialColdWallet_content {
     return Intl.message(
-      'Also known as a “cold wallet.” Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.',
+      'Also known as a “cold wallet”. Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.',
       name: 'onboarding_tutorialColdWallet_content',
       desc: '',
       args: [],
@@ -8154,6 +8460,36 @@ class S {
     );
   }
 
+  /// `Rescanning failed for {accoutname} `
+  String rescanAccount_toast_rescanningFailed(Object accoutname) {
+    return Intl.message(
+      'Rescanning failed for $accoutname ',
+      name: 'rescanAccount_toast_rescanningFailed',
+      desc: '',
+      args: [accoutname],
+    );
+  }
+
+  /// `Rescanning started. Please do not close Envoy.`
+  String get rescanAccount_toast_rescanningStarted {
+    return Intl.message(
+      'Rescanning started. Please do not close Envoy.',
+      name: 'rescanAccount_toast_rescanningStarted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rescanning was successful for {accoutname} `
+  String rescanAccount_toast_rescanningSuccessful(Object accoutname) {
+    return Intl.message(
+      'Rescanning was successful for $accoutname ',
+      name: 'rescanAccount_toast_rescanningSuccessful',
+      desc: '',
+      args: [accoutname],
+    );
+  }
+
   /// `Ensure you are scanning a security check QR code from Passport.`
   String get scv_cameraModalUnexpectedQrFormat_content {
     return Intl.message(
@@ -9294,6 +9630,16 @@ class S {
     return Intl.message(
       'New Envoy update available',
       name: 'toast_newEnvoyUpdateAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Re-pairing with Prime was successful.`
+  String get toast_repairingSuccessful_content {
+    return Intl.message(
+      'Re-pairing with Prime was successful.',
+      name: 'toast_repairingSuccessful_content',
       desc: '',
       args: [],
     );

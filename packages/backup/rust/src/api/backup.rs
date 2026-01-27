@@ -77,7 +77,7 @@ impl Backup {
     pub fn get_reqwest_client(proxy_port: i32) -> reqwest::Client {
         if proxy_port > 0 {
             let proxy =
-                reqwest::Proxy::all("socks5://127.0.0.1:".to_owned() + &proxy_port.to_string())
+                reqwest::Proxy::all("socks5h://127.0.0.1:".to_owned() + &proxy_port.to_string())
                     .unwrap();
             reqwest::Client::builder()
                 .proxy(proxy)
@@ -233,9 +233,7 @@ impl Backup {
         };
 
         let status = res.status();
-        if status.as_u16() == 400 {
-            return Err(GetBackupException::SeedNotFound);
-        }
+
         if status.as_u16() == 404 {
             return Err(GetBackupException::BackupNotFound);
         }
@@ -249,10 +247,7 @@ impl Backup {
         };
 
         // Decode hex and decrypt backup, mapping failures to BackupNotFound
-        let parsed = match FromHex::from_hex(&response.backup) {
-            Ok(p) => p,
-            Err(_) => return Err(GetBackupException::BackupNotFound),
-        };
+        let parsed: Vec<u8> = FromHex::from_hex(&response.backup).unwrap_or_default();
 
         Ok(parsed)
     }

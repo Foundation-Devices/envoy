@@ -62,6 +62,11 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m16(AccountName) =>
       "Tap the Account ${AccountName} on Passport, choose ‘Verify Address’ and scan the QR code below.";
 
+  static String m17(accoutname) => "Rescanning failed for ${accoutname} ";
+
+  static String m18(accoutname) =>
+      "Rescanning was successful for ${accoutname} ";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "_": MessageLookupByLibrary.simpleMessage("6:15"),
@@ -285,6 +290,12 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "backups_erase_wallets_and_backups_show_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Show Seed"),
+        "backups_erase_wallets_and_backups_show_seed_heading":
+            MessageLookupByLibrary.simpleMessage("Keep Your Seed Private"),
+        "backups_erase_wallets_and_backups_show_seed_subheading":
+            MessageLookupByLibrary.simpleMessage(
+          "Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!",
+        ),
         "backups_magicToManualErrorModal_header":
             MessageLookupByLibrary.simpleMessage("Unable to Continue"),
         "backups_magicToManualErrorModal_subheader":
@@ -350,6 +361,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "This is an on-chain voucher. It cannot be redeemed to a Testnet or Signet account.",
         ),
+        "btn_firmware_version":
+            MessageLookupByLibrary.simpleMessage("Firmware"),
         "buy_bitcoin_accountSelection_chooseAccount":
             MessageLookupByLibrary.simpleMessage("Choose different account"),
         "buy_bitcoin_accountSelection_heading":
@@ -779,6 +792,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "common_button_contactSupport": MessageLookupByLibrary.simpleMessage(
           "Contact Support",
         ),
+        "component_12WordSeed": MessageLookupByLibrary.simpleMessage(
+          "12 Word Seed",
+        ),
+        "component_24WordSeed": MessageLookupByLibrary.simpleMessage(
+          "24 Word Seed",
+        ),
         "component_Apply": MessageLookupByLibrary.simpleMessage("Apply"),
         "component_advanced": MessageLookupByLibrary.simpleMessage("Advanced"),
         "component_apply": MessageLookupByLibrary.simpleMessage("Apply"),
@@ -797,6 +816,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_dontShowAgain": MessageLookupByLibrary.simpleMessage(
           "Don’t show again",
         ),
+        "component_exit": MessageLookupByLibrary.simpleMessage("Exit"),
         "component_filter": MessageLookupByLibrary.simpleMessage("Filter"),
         "component_filter_button_all":
             MessageLookupByLibrary.simpleMessage("All"),
@@ -813,6 +833,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "component_ok": MessageLookupByLibrary.simpleMessage("OK"),
         "component_recover": MessageLookupByLibrary.simpleMessage("Recover"),
+        "component_recoverWithQR": MessageLookupByLibrary.simpleMessage(
+          "Recover with QR Code",
+        ),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Redeem"),
         "component_reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "component_resetFilter": MessageLookupByLibrary.simpleMessage(
@@ -831,6 +854,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_update": MessageLookupByLibrary.simpleMessage("Update"),
         "component_warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "component_yes": MessageLookupByLibrary.simpleMessage("Yes"),
+        "componet_disconnect":
+            MessageLookupByLibrary.simpleMessage("Disconnect"),
         "contactRampForSupport": MessageLookupByLibrary.simpleMessage(
           "Contact Ramp for support",
         ),
@@ -888,6 +913,30 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Your wallet was successfully deleted",
         ),
+        "device_deviceDetailsPrimeRemoved_accessoryRemoved":
+            MessageLookupByLibrary.simpleMessage(
+          "Accessory removed, please reconnect Prime.",
+        ),
+        "device_deviceDetailsPrimeRemoved_reconnectPassport":
+            MessageLookupByLibrary.simpleMessage("Reconnect Passport"),
+        "device_deviceDetailsPrime_connected":
+            MessageLookupByLibrary.simpleMessage(
+          "Connected",
+        ),
+        "device_deviceDetailsPrime_connection":
+            MessageLookupByLibrary.simpleMessage("Connection"),
+        "device_deviceDetailsPrime_disconnected":
+            MessageLookupByLibrary.simpleMessage("Disconnected"),
+        "device_deviceDetailsPrime_securityCheck":
+            MessageLookupByLibrary.simpleMessage("Security Check"),
+        "devices_connectingToPrime_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Keep both devices nearby.",
+        ),
+        "devices_connectingToPrime_header":
+            MessageLookupByLibrary.simpleMessage(
+          "Connecting to Prime",
+        ),
         "devices_empty_modal_video_cta1": MessageLookupByLibrary.simpleMessage(
           "Buy Passport",
         ),
@@ -896,6 +945,20 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
           "Secure your Bitcoin with Passport.",
+        ),
+        "devices_reconnectedSuccess_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Your device is now ready to use.",
+        ),
+        "devices_reconnectedSuccess_header":
+            MessageLookupByLibrary.simpleMessage(
+          "Device Reconnected Successfully!",
+        ),
+        "devices_reconnecting_content": MessageLookupByLibrary.simpleMessage(
+          "Connecting to Passport Prime",
+        ),
+        "devices_reconnecting_header": MessageLookupByLibrary.simpleMessage(
+          "Reconnecting",
         ),
         "empty_tag_modal_subheading": m4,
         "envoy_account_tos_cta":
@@ -1330,7 +1393,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sortBy_lowest": MessageLookupByLibrary.simpleMessage(
           "Lowest value",
         ),
-        "filter_sortBy_newest": MessageLookupByLibrary.simpleMessage("~ "),
+        "filter_sortBy_newest": MessageLookupByLibrary.simpleMessage(
+          "Newest first",
+        ),
         "filter_sortBy_oldest": MessageLookupByLibrary.simpleMessage(
           "Oldest first",
         ),
@@ -1559,6 +1624,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Envoy is creating a secure Bitcoin wallet seed, which will be stored end-to-end encrypted in your iCloud Keychain.",
         ),
+        "magic_setup_recovery_fail_Android_CTA1":
+            MessageLookupByLibrary.simpleMessage("Retry"),
         "magic_setup_recovery_fail_Android_CTA2":
             MessageLookupByLibrary.simpleMessage("Recover with QR Code"),
         "magic_setup_recovery_fail_Android_subheading":
@@ -1575,7 +1642,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Connection Error"),
         "magic_setup_recovery_fail_connectivity_subheading":
             MessageLookupByLibrary.simpleMessage(
-          "Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.\n",
+          "Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.",
         ),
         "magic_setup_recovery_fail_heading":
             MessageLookupByLibrary.simpleMessage(
@@ -1641,9 +1708,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "manage_account_rename_heading": MessageLookupByLibrary.simpleMessage(
           "Rename Account",
         ),
+        "manage_deviceDetailsModalDisconnectExistingPassport_content":
+            MessageLookupByLibrary.simpleMessage(
+          "On the current software version, Envoy can only support one Passport Prime connection. \nThis will change with an upcoming update, but for now you must disconnect from your existing Passport Prime before setting up a new one.",
+        ),
+        "manage_deviceDetailsModalDisconnectExistingPassport_disconnect":
+            MessageLookupByLibrary.simpleMessage("Disconnect"),
+        "manage_deviceDetailsModalDisconnectExistingPassport_header":
+            MessageLookupByLibrary.simpleMessage("Disconnect Existing Prime"),
         "manage_device_deletePassportWarning":
             MessageLookupByLibrary.simpleMessage(
-          "Are you sure you want to disconnect Passport?\nThis will remove the device from Envoy alongside any connected accounts.",
+          "Are you sure you want to disconnect Passport?\n\nThis will remove the device from Envoy alongside any connected accounts.",
         ),
         "manage_device_details_devicePaired":
             MessageLookupByLibrary.simpleMessage(
@@ -1656,8 +1731,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "manage_device_details_heading": MessageLookupByLibrary.simpleMessage(
           "DEVICE DETAILS",
         ),
+        "manage_device_details_menu_disconnectDevice":
+            MessageLookupByLibrary.simpleMessage("Disconnect"),
         "manage_device_details_menu_editDevice":
-            MessageLookupByLibrary.simpleMessage("EDIT DEVICE NAME"),
+            MessageLookupByLibrary.simpleMessage("Edit Device Name"),
         "manage_device_rename_modal_heading":
             MessageLookupByLibrary.simpleMessage(
           "Rename your Passport",
@@ -1669,6 +1746,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_coin_preselection_dialog_description":
             MessageLookupByLibrary.simpleMessage(
           "This will discard any coin selection changes. Do you want to proceed?",
+        ),
+        "manual_onboardDisableMB_magicBackupDetected_heading":
+            MessageLookupByLibrary.simpleMessage("Existing Wallet Detected"),
+        "manual_onboardDisableMB_magicBackupDetected_subheading":
+            MessageLookupByLibrary.simpleMessage(
+          "Envoy found an existing wallet in your personal cloud and will recover it now. To disable Magic Backups or permanently erase this wallet, please visit the backups menu.",
         ),
         "manual_setup_change_from_magic_header":
             MessageLookupByLibrary.simpleMessage("Magic Backups deactivated"),
@@ -2006,6 +2089,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Passport Prime Connected",
         ),
+        "onboarding_connectionModalAbort_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Are you sure to exit the onboarding?",
+        ),
+        "onboarding_connectionModalAbort_header":
+            MessageLookupByLibrary.simpleMessage("Abort Onboarding?"),
         "onboarding_connectionNoUpdates_noUpdates":
             MessageLookupByLibrary.simpleMessage("No Updates Available"),
         "onboarding_connectionUpdatesAvailable_updatesAvailable":
@@ -2050,9 +2139,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "onboarding_magicUserMobileUploading_header":
             MessageLookupByLibrary.simpleMessage("Uploading Your Backup"),
         "onboarding_migrating_xOfYSynced": m11,
+        "onboarding_modalBluetoothUnableConnect_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.",
+        ),
+        "onboarding_modalBluetoothUnableConnect_header":
+            MessageLookupByLibrary.simpleMessage("Unable to Connect"),
         "onboarding_passpportSelectCamera_sub235VersionAlert":
             MessageLookupByLibrary.simpleMessage(
-          "Setting up a Passport Core on firmware v2.3.5 or earlier?",
+          "Are you setting up a Passport Core on firmware v2.3.5 or earlier?",
         ),
         "onboarding_passpportSelectCamera_tapHere":
             MessageLookupByLibrary.simpleMessage("Tap here"),
@@ -2074,7 +2169,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Set up Mobile Wallet"),
         "onboarding_tutorialColdWallet_content":
             MessageLookupByLibrary.simpleMessage(
-          "Also known as a “cold wallet.” Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.",
+          "Also known as a “cold wallet”. Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.",
         ),
         "onboarding_tutorialColdWallet_header":
             MessageLookupByLibrary.simpleMessage("Passport Wallet"),
@@ -2450,6 +2545,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "rescanAccount_sizeModal_header": MessageLookupByLibrary.simpleMessage(
           "Rescan Account",
         ),
+        "rescanAccount_toast_rescanningFailed": m17,
+        "rescanAccount_toast_rescanningStarted":
+            MessageLookupByLibrary.simpleMessage(
+          "Rescanning started. Please do not close Envoy.",
+        ),
+        "rescanAccount_toast_rescanningSuccessful": m18,
         "scv_cameraModalUnexpectedQrFormat_content":
             MessageLookupByLibrary.simpleMessage(
           "Ensure you are scanning a security check QR code from Passport.",
@@ -2787,6 +2888,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "toast_newEnvoyUpdateAvailable": MessageLookupByLibrary.simpleMessage(
           "New Envoy update available",
+        ),
+        "toast_repairingSuccessful_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Re-pairing with Prime was successful.",
         ),
         "torToast_learnMore_retryTorConnection":
             MessageLookupByLibrary.simpleMessage("Retry Tor Connection"),

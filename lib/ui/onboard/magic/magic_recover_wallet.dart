@@ -35,7 +35,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:envoy/ui/onboard/manual/manual_setup_import_backup.dart';
 
 class MagicRecoverWallet extends ConsumerStatefulWidget {
   const MagicRecoverWallet({super.key});
@@ -89,6 +88,8 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     );
 
     // Set initial indeterminate state
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller?.stateMachine.boolean("indeterminate")?.value = true;
 
     setState(() => _isInitialized = true);
@@ -102,17 +103,6 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   }
 
   void _tryAutomaticRecovery() async {
-    String? seed = await EnvoySeed().get();
-    if (!Settings().syncToCloud && seed != null) {
-      if (mounted) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const ManualSetupImportBackup()));
-      }
-
-      return;
-    }
     ref.read(triedAutomaticRecovery.notifier).state = true;
     await Future.delayed(const Duration(seconds: 1));
     var success = false;
@@ -168,16 +158,28 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   void _setUnhappyState() {
     if (_controller?.stateMachine == null) return;
     final stateMachine = _controller!.stateMachine;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("indeterminate")?.value = false;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("happy")?.value = false;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("unhappy")?.value = true;
   }
 
   void _setHappyState() {
     if (_controller?.stateMachine == null) return;
     final stateMachine = _controller!.stateMachine;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("indeterminate")?.value = false;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("happy")?.value = true;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("unhappy")?.value = false;
   }
 
@@ -760,8 +762,14 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   }
 
   void _setIndeterminateState() {
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller?.stateMachine.boolean("indeterminate")?.value = true;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller?.stateMachine.boolean("happy")?.value = false;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller?.stateMachine.boolean("unhappy")?.value = false;
   }
 

@@ -5,7 +5,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:envoy/business/devices.dart';
 import 'package:envoy/channels/accessory.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/util/console.dart';
@@ -13,6 +12,15 @@ import 'package:envoy/util/stream_replay_cache.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+
+class BleSetupTimeoutException implements Exception {
+  final String message;
+
+  BleSetupTimeoutException(this.message);
+
+  @override
+  String toString() => 'BleSetupTimeoutException: $message';
+}
 
 /// Manages Bluetooth communication via platform channels for iOS
 /// Handles method channel calls and event streams for BLE operations
@@ -172,13 +180,20 @@ class BluetoothChannel {
       }
     } else {
       //Android will wait for event after initiating pairing
-      unawaited(bleMethodChannel.invokeMethod("pair", {"deviceId": deviceId}));
+      await bleMethodChannel
+          .invokeMethod("pair", {"deviceId": deviceId}).timeout(
+              Duration(seconds: 10), onTimeout: () {
+        throw BleSetupTimeoutException("Pairing timed out");
+      });
     }
     bool initiateBonding = false;
     final connect = await listenToDeviceConnectionEvents.firstWhere(
       (event) {
         try {
-          if (event.connected && !initiateBonding && !event.bonded) {
+          if (event.connected &&
+              !initiateBonding &&
+              !event.bonded &&
+              Platform.isAndroid) {
             initiateBonding = true;
             kPrint("Initiating bonding ");
             bleMethodChannel.invokeMethod(
@@ -188,9 +203,15 @@ class BluetoothChannel {
         } catch (e) {
           debugPrint("Error during bonding initiation: $e");
         }
-        return event.connected;
+        //IOS doesn't have bonding state, just connected state
+        if (Platform.isIOS) {
+          return event.connected;
+        }
+        return event.connected && event.bonded;
       },
-    );
+    ).timeout(Duration(seconds: 10), onTimeout: () {
+      throw BleSetupTimeoutException("Pairing timed out");
+    });
     return connect;
   }
 
@@ -248,6 +269,17 @@ class BluetoothChannel {
     }
   }
 
+  /// Cancel ongoing transfer
+  Future<bool> cancelTransfer() async {
+    try {
+      await bleMethodChannel.invokeMethod("cancelTransfer");
+      return true;
+    } catch (e, stack) {
+      debugPrintStack(label: ": $e", stackTrace: stack);
+      return false;
+    }
+  }
+
   // Create a file in the ble cache directory
   // file will be removed after transmission
   static Future<File> getBleCacheFile(String filename) async {
@@ -261,9 +293,8 @@ class BluetoothChannel {
     return file;
   }
 
-  Future reconnect(Device device) async {
-    final bluetoothId = Platform.isIOS ? device.peripheralId : device.bleId;
-    await bleMethodChannel.invokeMethod("reconnect", {"bleId": bluetoothId});
+  Future reconnect(String id) async {
+    await bleMethodChannel.invokeMethod("reconnect", {"bleId": id});
   }
 
   //IOS only
@@ -286,5 +317,9 @@ class BluetoothChannel {
       kPrint('Error getting accessories: $e', stackTrace: stack);
       return [];
     }
+  }
+
+  Future<bool?> requestEnableBle() async {
+    return await bleMethodChannel.invokeMethod<bool>("enableBluetooth");
   }
 }

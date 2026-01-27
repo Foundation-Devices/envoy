@@ -647,6 +647,27 @@ class NgAccountManager extends ChangeNotifier {
           stackTrace: stacktrace);
     }
   }
+
+  Future<void> renameAccountAndSync(
+    EnvoyAccount account,
+    String newName,
+  ) async {
+    final handler = account.handler;
+    if (handler == null) return;
+
+    final index =
+        _accountsHandler.indexWhere((element) => element.$1.id == account.id);
+    if (index != -1) {
+      final (_, existingHandler) = _accountsHandler[index];
+      _accountsHandler[index] = (
+        account.copyWith(name: newName),
+        existingHandler,
+      );
+      notifyListeners();
+    }
+
+    await handler.renameAccount(name: newName);
+  }
 }
 
 List<T> sortByAccountOrder<T>(

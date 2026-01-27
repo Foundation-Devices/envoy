@@ -11,30 +11,34 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/glow.dart';
-import 'package:envoy/ui/onboard/passport_scanner_screen.dart';
+import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/theme/new_envoy_color.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/device_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/pair_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 double cardButtonHeight = 125;
 
@@ -203,8 +207,9 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                         title: S()
                                             .onboarding_welcome_setUpPassport,
                                         onTap: () {
+                                          WakelockPlus.enable();
                                           try {
-                                            scanForDevice(context);
+                                            scanForDevice(context, ref);
                                           } catch (e) {
                                             kPrint(e);
                                           }
@@ -232,14 +237,36 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
   }
 }
 
-void scanForDevice(BuildContext context) async {
+void removeExistingPrime(BuildContext context, Device device) {
+  showEnvoyDialog(
+      context: context,
+      dialog: EnvoyPopUp(
+        icon: EnvoyIcons.alert,
+        typeOfMessage: PopUpState.warning,
+        showCloseButton: true,
+        content: S().manage_device_deletePassportWarning,
+        primaryButtonLabel: S().component_delete,
+        onPrimaryButtonTap: (context) {
+          Devices().deleteDevice(device);
+
+          // Pop the dialog
+          Navigator.pop(context);
+
+          // Go back to devices list
+          context.go(ROUTE_DEVICES);
+        },
+      ));
+}
+
+void scanForDevice(BuildContext context, WidgetRef ref) async {
+  ref.read(bleConnectionProvider);
   void showRepairProgressDialog() {
     if (context.mounted) {
       showEnvoyDialog(
         context: context,
         dismissible: true,
         dialog: Container(
-          width: 240,
+          width: MediaQuery.sizeOf(context).width * 0.8,
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(
               Radius.circular(EnvoySpacing.medium2),
@@ -260,24 +287,32 @@ void scanForDevice(BuildContext context) async {
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-                    child: CupertinoActivityIndicator(
+                    child: CircularProgressIndicator(
                       color: EnvoyColors.accentPrimary,
-                      radius: 24,
+                      backgroundColor: NewEnvoyColor.neutral200,
                     ),
                   ),
+                  SizedBox(height: EnvoySpacing.medium2),
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-                    //TODO: Localize
-                    child: Text("Pairing with Prime...",
+                    child: Text(S().devices_connectingToPrime_header,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.heading.copyWith(
+                          color: EnvoyColors.textPrimary,
+                        )),
+                  ),
+                  SizedBox(height: EnvoySpacing.medium1),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+                    child: Text(S().devices_connectingToPrime_content,
                         textAlign: TextAlign.center,
                         style: EnvoyTypography.body.copyWith(
                           color: EnvoyColors.textPrimary,
                         )),
                   ),
-                  Padding(
-                      padding:
-                          const EdgeInsets.only(top: EnvoySpacing.medium3)),
+                  SizedBox(height: EnvoySpacing.medium2),
                 ],
               ),
             ),
@@ -285,6 +320,39 @@ void scanForDevice(BuildContext context) async {
         ),
       );
     }
+  }
+
+  void disconnectExistingPrimeDialog(BuildContext context) {
+    showEnvoyDialog(
+      context: context,
+      dismissible: true,
+      dialog: EnvoyPopUp(
+        icon: EnvoyIcons.alert,
+        title: S().manage_deviceDetailsModalDisconnectExistingPassport_header,
+        typeOfMessage: PopUpState.warning,
+        showCloseButton: true,
+        content:
+            S().manage_deviceDetailsModalDisconnectExistingPassport_content,
+        secondaryButtonLabel: S().component_cancel,
+        primaryButtonLabel:
+            S().manage_deviceDetailsModalDisconnectExistingPassport_header,
+        onSecondaryButtonTap: (context) {
+          Navigator.pop(context);
+        },
+        onPrimaryButtonTap: (context) async {
+          Navigator.pop(context);
+          Navigator.pop(context);
+          await Future.delayed(const Duration(milliseconds: 500));
+          if (Devices().getPrimeDevices.isNotEmpty && context.mounted) {
+            final device = Devices().getPrimeDevices.first;
+            removeExistingPrime(context, device);
+          } else {
+            EnvoyReport().log("ScanForDevice",
+                "No existing Prime device found when trying to remove existing Prime during pairing.");
+          }
+        },
+      ),
+    );
   }
 
   //if an existing ble connection exists, try to pair with that device
@@ -297,33 +365,38 @@ void scanForDevice(BuildContext context) async {
           device.peripheralId == connected.peripheralId ||
           device.bleId == connected.peripheralId);
       if (device != null && context.mounted && device.onboardingComplete) {
-        showEnvoyDialog(
-          context: context,
-          dismissible: true,
-          dialog: EnvoyPopUp(
-            icon: EnvoyIcons.alert,
-            typeOfMessage: PopUpState.warning,
-            showCloseButton: true,
-            content:
-                "Please disconnect from your existing Passport Prime before setting up a new one",
-            primaryButtonLabel: S().component_back,
-            onPrimaryButtonTap: (context) async {
-              Navigator.pop(context);
-            },
-          ),
-        );
+        disconnectExistingPrimeDialog(context);
         return;
       } else {
         showRepairProgressDialog();
-        await BluetoothManager().pair(xid);
-        final paringResponse =
-            await BluetoothManager().bleOnboardHandler.waitForPairResponse();
-        if (context.mounted) {
-          Navigator.pop(context); //remove loading dialog
-          if (!paringResponse.onboardingComplete) {
-            context.goNamed(ONBOARD_PRIME_PAIR);
-          } else {
-            context.goNamed(ONBOARD_REPAIRING);
+        try {
+          await BluetoothManager().pair(xid);
+          final paringResponse =
+              await BluetoothManager().bleOnboardHandler.waitForPairResponse();
+          if (context.mounted) {
+            Navigator.pop(context); //remove loading dialog
+            if (!paringResponse.onboardingComplete) {
+              context.goNamed(ONBOARD_PRIME_PAIR);
+            } else {
+              context.goNamed(ONBOARD_REPAIRING);
+            }
+          }
+        } catch (e) {
+          if (context.mounted) {
+            Navigator.pop(context);
+            EnvoyToast(
+              replaceExisting: true,
+              duration: const Duration(seconds: 6),
+              message: e.toString(),
+              isDismissible: true,
+              onActionTap: () {
+                EnvoyToast.dismissPreviousToasts(context);
+              },
+              icon: const Icon(
+                Icons.info_outline,
+                color: EnvoyColors.accentPrimary,
+              ),
+            ).show(context);
           }
         }
       }
@@ -367,21 +440,7 @@ void scanForDevice(BuildContext context) async {
             final params = uri.queryParameters;
             if (params.containsKey("p")) {
               if (Devices().getPrimeDevices.isNotEmpty && context.mounted) {
-                showEnvoyDialog(
-                  context: context,
-                  dismissible: true,
-                  dialog: EnvoyPopUp(
-                    icon: EnvoyIcons.alert,
-                    typeOfMessage: PopUpState.warning,
-                    showCloseButton: true,
-                    content:
-                        "Please disconnect from your existing Passport Prime before setting up a new one.",
-                    primaryButtonLabel: S().component_back,
-                    onPrimaryButtonTap: (context) async {
-                      Navigator.pop(context);
-                    },
-                  ),
-                );
+                disconnectExistingPrimeDialog(context);
                 return;
               }
               context.pushNamed(ONBOARD_PRIME, queryParameters: params);
@@ -407,7 +466,6 @@ void scanForDevice(BuildContext context) async {
 }
 
 void addPassportAccount(Binary binary, BuildContext context) async {
-  final scaffold = ScaffoldMessenger.of(context);
   final goRouter = GoRouter.of(context);
   try {
     final paringResult = await NgAccountManager().addPassportAccount(binary);
@@ -434,16 +492,41 @@ void addPassportAccount(Binary binary, BuildContext context) async {
     goRouter.pop();
     //pop overlay
     goRouter.pop();
-    scaffold.showSnackBar(const SnackBar(
-      //TODO: Localize
-      content: Text("Account already connected"), // TODO: FIGMA
-    ));
+    if (context.mounted) {
+      EnvoyToast(
+        replaceExisting: true,
+        duration: const Duration(seconds: 6),
+        //TODO: Localize
+        message: "Account already connected",
+        isDismissible: true,
+        onActionTap: () {
+          EnvoyToast.dismissPreviousToasts(context);
+        },
+        icon: const Icon(
+          Icons.info_outline,
+          color: EnvoyColors.accentPrimary,
+        ),
+      ).show(context);
+    }
     return;
   } catch (e) {
     goRouter.pop();
-    scaffold.showSnackBar(const SnackBar(
-      content: Text("An unexpected error occurred. Please try again."),
-    )); // TODO: FIGMA
+    if (context.mounted) {
+      EnvoyToast(
+        replaceExisting: true,
+        duration: const Duration(seconds: 6),
+        //TODO: Localize
+        message: "An unexpected error occurred. Please try again.",
+        isDismissible: true,
+        onActionTap: () {
+          EnvoyToast.dismissPreviousToasts(context);
+        },
+        icon: const Icon(
+          Icons.info_outline,
+          color: EnvoyColors.accentPrimary,
+        ),
+      ).show(context);
+    }
   }
 }
 

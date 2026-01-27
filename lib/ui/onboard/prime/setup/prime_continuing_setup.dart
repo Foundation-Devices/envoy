@@ -125,8 +125,19 @@ class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
           child: EnvoyScaffold(
         removeAppBarPadding: true,
         topBarActions: const [],
-        topBarLeading: BackButton(
-          color: Colors.black,
+        topBarLeading: IconButton(
+          icon: const EnvoyIcon(
+            EnvoyIcons.chevron_left,
+            color: Colors.black,
+          ),
+          onPressed: () async {
+            if (context.canPop()) {
+              final shouldExit = await showExitWarning(context);
+              if (shouldExit && context.mounted) {
+                context.go(ROUTE_ACCOUNTS_HOME);
+              }
+            }
+          },
         ),
         child: Container(
           padding: const EdgeInsets.symmetric(
@@ -170,7 +181,7 @@ class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
 
                       return Container(
                         margin: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.medium1,
+                          vertical: EnvoySpacing.medium3,
                           horizontal: EnvoySpacing.medium2,
                         ),
                         child: Wrap(

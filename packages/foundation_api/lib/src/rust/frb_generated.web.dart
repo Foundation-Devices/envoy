@@ -300,6 +300,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dco_decode_box_autoadd_firmware_update_check_response(dynamic raw);
 
   @protected
+  Heartbeat dco_decode_box_autoadd_heartbeat(dynamic raw);
+
+  @protected
   PairingRequest dco_decode_box_autoadd_pairing_request(dynamic raw);
 
   @protected
@@ -353,6 +356,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   StartMagicBackup dco_decode_box_autoadd_start_magic_backup(dynamic raw);
+
+  @protected
+  TimezoneRequest dco_decode_box_autoadd_timezone_request(dynamic raw);
+
+  @protected
+  TimezoneResponse dco_decode_box_autoadd_timezone_response(dynamic raw);
+
+  @protected
+  int dco_decode_box_autoadd_u_8(dynamic raw);
 
   @protected
   VerificationResult dco_decode_box_autoadd_verification_result(dynamic raw);
@@ -428,6 +440,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  Heartbeat dco_decode_heartbeat(dynamic raw);
+
+  @protected
   int dco_decode_i_32(dynamic raw);
 
   @protected
@@ -444,9 +459,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
-
-  @protected
-  List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw);
 
   @protected
   OnboardingState dco_decode_onboarding_state(dynamic raw);
@@ -466,6 +478,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PassportMessage? dco_decode_opt_box_autoadd_passport_message(dynamic raw);
+
+  @protected
+  int? dco_decode_opt_box_autoadd_u_8(dynamic raw);
 
   @protected
   PairingRequest dco_decode_pairing_request(dynamic raw);
@@ -538,6 +553,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   StartMagicBackup dco_decode_start_magic_backup(dynamic raw);
+
+  @protected
+  TimezoneRequest dco_decode_timezone_request(dynamic raw);
+
+  @protected
+  TimezoneResponse dco_decode_timezone_response(dynamic raw);
 
   @protected
   int dco_decode_u_16(dynamic raw);
@@ -820,6 +841,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  Heartbeat sse_decode_box_autoadd_heartbeat(SseDeserializer deserializer);
+
+  @protected
   PairingRequest sse_decode_box_autoadd_pairing_request(
       SseDeserializer deserializer);
 
@@ -882,6 +906,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   StartMagicBackup sse_decode_box_autoadd_start_magic_backup(
       SseDeserializer deserializer);
+
+  @protected
+  TimezoneRequest sse_decode_box_autoadd_timezone_request(
+      SseDeserializer deserializer);
+
+  @protected
+  TimezoneResponse sse_decode_box_autoadd_timezone_response(
+      SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_box_autoadd_u_8(SseDeserializer deserializer);
 
   @protected
   VerificationResult sse_decode_box_autoadd_verification_result(
@@ -968,6 +1003,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  Heartbeat sse_decode_heartbeat(SseDeserializer deserializer);
+
+  @protected
   int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
@@ -988,10 +1026,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
-  List<QuantumLinkMessage> sse_decode_list_quantum_link_message(
-      SseDeserializer deserializer);
-
-  @protected
   OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer);
 
   @protected
@@ -1010,6 +1044,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   PassportMessage? sse_decode_opt_box_autoadd_passport_message(
       SseDeserializer deserializer);
+
+  @protected
+  int? sse_decode_opt_box_autoadd_u_8(SseDeserializer deserializer);
 
   @protected
   PairingRequest sse_decode_pairing_request(SseDeserializer deserializer);
@@ -1089,6 +1126,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   StartMagicBackup sse_decode_start_magic_backup(SseDeserializer deserializer);
+
+  @protected
+  TimezoneRequest sse_decode_timezone_request(SseDeserializer deserializer);
+
+  @protected
+  TimezoneResponse sse_decode_timezone_response(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_16(SseDeserializer deserializer);
@@ -1373,6 +1416,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FirmwareUpdateCheckResponse self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_heartbeat(
+      Heartbeat self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_pairing_request(
       PairingRequest self, SseSerializer serializer);
 
@@ -1434,6 +1481,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_start_magic_backup(
       StartMagicBackup self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_timezone_request(
+      TimezoneRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_timezone_response(
+      TimezoneResponse self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_u_8(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_verification_result(
@@ -1520,6 +1578,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FirmwareUpdateCheckResponse self, SseSerializer serializer);
 
   @protected
+  void sse_encode_heartbeat(Heartbeat self, SseSerializer serializer);
+
+  @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
 
   @protected
@@ -1542,10 +1603,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_quantum_link_message(
-      List<QuantumLinkMessage> self, SseSerializer serializer);
-
-  @protected
   void sse_encode_onboarding_state(
       OnboardingState self, SseSerializer serializer);
 
@@ -1565,6 +1622,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_passport_message(
       PassportMessage? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_8(int? self, SseSerializer serializer);
 
   @protected
   void sse_encode_pairing_request(
@@ -1651,6 +1711,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_start_magic_backup(
       StartMagicBackup self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_timezone_request(
+      TimezoneRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_timezone_response(
+      TimezoneResponse self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_16(int self, SseSerializer serializer);

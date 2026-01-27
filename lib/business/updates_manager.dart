@@ -33,7 +33,7 @@ class UpdatesManager {
 
   static Future<UpdatesManager> init() async => _instance;
 
-  void fetchUpdates() {
+  Future<void> fetchUpdates() async {
     for (var device in [DeviceType.passportGen1, DeviceType.passportGen12]) {
       Server()
           .fetchFirmwareUpdateInfo(device.id)
@@ -41,6 +41,32 @@ class UpdatesManager {
           .catchError((e) {
         kPrint("Couldn't fetch firmware for device $device: $e");
       });
+    }
+
+    final primeDevices = Devices().getPrimeDevices;
+    if (primeDevices.isNotEmpty) {
+      await checkAndStoreLatestPrimeFirmware(
+          primeDevices.first.firmwareVersion);
+    }
+  }
+
+  Future<void> checkAndStoreLatestPrimeFirmware(
+      String? currentFirmwareVersion) async {
+    if (currentFirmwareVersion == null) {
+      return;
+    }
+
+    final patches = await Server().fetchPrimePatches(currentFirmwareVersion);
+
+    // TODO: Check this against a live endpoint
+    if (patches.isNotEmpty) {
+      EnvoyStorage().addNewFirmware(
+          DeviceType.passportPrime.index, patches.first.version, "");
+    }
+    // The update check returned no patches, which indicates no newer firmware is available.
+    else {
+      EnvoyStorage().addNewFirmware(
+          DeviceType.passportPrime.index, currentFirmwareVersion, "");
     }
   }
 
@@ -228,11 +254,7 @@ class UpdatesManager {
   }
 
   Future<bool> shouldUpdate(String version, DeviceType type) async {
-    // Remove the v and keep only letters and numbers (Prime sends us NULL chars sometimes)
-    final sanitizedString =
-        version.replaceAll("v", "").replaceAll(RegExp(r'[^a-zA-Z0-9.]'), '');
-
-    final parsedVersion = Version.parse(sanitizedString);
+    final parsedVersion = Version.parse(sanitizeVersion(version));
     final storedVersionString =
         await getStoredFirmwareVersionString(type.index);
     if (storedVersionString == null) return false;
@@ -241,4 +263,9 @@ class UpdatesManager {
         Version.parse(storedVersionString.replaceAll("v", ""));
     return currentVersion > parsedVersion;
   }
+}
+
+String sanitizeVersion(String version) {
+  // Remove the v and keep only letters and numbers (Prime sends us NULL chars sometimes)
+  return version.replaceAll("v", "").replaceAll(RegExp(r'[^a-zA-Z0-9.]'), '');
 }

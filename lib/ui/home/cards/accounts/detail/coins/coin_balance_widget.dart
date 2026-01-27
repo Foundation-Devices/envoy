@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -23,8 +24,10 @@ import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/rive_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
+import 'package:envoy/ui/envoy_colors.dart';
 
 //Widget that displays the balance,lock icon etc of a coin
 
@@ -460,36 +463,84 @@ class CoinLockButtonState extends State<CoinLockButton> {
   bool _isInitialized = false;
   rive.RiveWidgetController? _controller;
 
-  /// 👇 Public getter so tests (via GlobalKey) can read the current lock state
+  bool _showRive = false;
+  Timer? _hideTimer;
+
   bool get isLocked =>
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       _controller?.stateMachine.boolean("Lock")?.value ?? widget.locked;
 
   void _initRive(rive.File riveFile) {
-    if (_controller == null) {
-      _controller = rive.RiveWidgetController(
-        riveFile,
-        stateMachineSelector:
-            rive.StateMachineSelector.byName('CoinStateMachine'),
-      );
+    if (_controller != null) return;
 
-      _controller?.stateMachine.boolean("Lock")?.value = widget.locked;
+    _controller = rive.RiveWidgetController(
+      riveFile,
+      stateMachineSelector:
+          rive.StateMachineSelector.byName('CoinStateMachine'),
+    );
 
-      setState(() => _isInitialized = true);
-    }
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
+    _controller?.stateMachine.boolean("Lock")?.value = widget.locked;
+
+    setState(() => _isInitialized = true);
+  }
+
+  void _playTransitionWindow() {
+    _hideTimer?.cancel();
+    setState(() => _showRive = true);
+
+    _hideTimer = Timer(const Duration(milliseconds: 1600), () {
+      if (mounted) setState(() => _showRive = false);
+    });
   }
 
   @override
   void didUpdateWidget(covariant CoinLockButton oldWidget) {
     super.didUpdateWidget(oldWidget);
+
     if (widget.locked != oldWidget.locked) {
+      // Update the Rive input only on change.
+      //TODO: fix rive with databindings.
+      // ignore: deprecated_member_use
       _controller?.stateMachine.boolean("Lock")?.value = widget.locked;
+
+      _playTransitionWindow();
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    _controller?.stateMachine.boolean("Lock")?.value = widget.locked;
+  void dispose() {
+    _hideTimer?.cancel();
+    super.dispose();
+  }
 
+  Widget _staticIcon() {
+    final color = widget.locked ? EnvoyColors.copper : EnvoyColors.darkTeal;
+    final borderColor = widget.locked ? EnvoyColors.copper : EnvoyColors.grey85;
+    final icon = widget.locked ? "locked" : "unlocked";
+
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: borderColor,
+          width: 1,
+        ),
+      ),
+      child: SvgPicture.asset(
+        "assets/components/icons/$icon.svg",
+        width: 18.0,
+        height: 18.0,
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, child) {
       final riveFile = ref.watch(coinLockRiveProvider);
 
@@ -499,17 +550,32 @@ class CoinLockButtonState extends State<CoinLockButton> {
         });
       }
 
+      final canShowRive =
+          riveFile != null && _isInitialized && _controller != null;
+
       return GestureDetector(
-        onTap: widget.gestureTapCallback,
+        onTap: () {
+          _playTransitionWindow();
+          widget.gestureTapCallback();
+        },
         behavior: HitTestBehavior.opaque,
         child: SizedBox(
           height: 38,
           width: 50,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-            child: riveFile != null && _isInitialized && _controller != null
-                ? rive.RiveWidget(controller: _controller!)
-                : const SizedBox.shrink(),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: (_showRive && canShowRive)
+                  ? rive.RiveWidget(
+                      key: const ValueKey('rive'),
+                      controller: _controller!,
+                    )
+                  : SizedBox(
+                      key: const ValueKey('icon'),
+                      child: Center(child: _staticIcon()),
+                    ),
+            ),
           ),
         ),
       );

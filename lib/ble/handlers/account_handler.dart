@@ -63,6 +63,7 @@ class BleAccountHandler extends PassportMessageHandler {
         final handler = acc.handler;
         if (handler != null) {
           await handler.renameAccount(name: config.name);
+          await handler.setArchived(archived: config.archived);
           kPrint("Account updated!");
           return;
         }

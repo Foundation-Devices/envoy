@@ -2,36 +2,36 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:io';
 import 'dart:math';
 
-import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
-import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
+import 'package:envoy/ui/home/setup_overlay.dart' show addPassportAccount;
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/routes.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
-import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/device_decoder.dart'
+    show DeviceDecoder;
+import 'package:envoy/ui/widgets/scanner/decoders/pair_decoder.dart'
+    show PairPayloadDecoder;
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
-import 'package:envoy/util/console.dart';
-import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart' show EnvoyToast;
 import 'package:envoy/util/haptics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rive/rive.dart' as rive;
+import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:envoy/business/settings.dart';
 
 enum EscapeHatchTap { logo, text }
 
@@ -57,6 +57,7 @@ final triedAutomaticRecovery = StateProvider((ref) => false);
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   List<EscapeHatchTap> escapeHatchTaps = [];
+  bool escapeHatchAccessed = false;
 
   Future<void> registerEscapeTap(EscapeHatchTap tap) async {
     final scaffold = ScaffoldMessenger.of(context);
@@ -68,9 +69,19 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             .getRange(0, min(escapeHatchTaps.length, secretCombination.length))
             .toList())) {
       if (escapeHatchTaps.length == secretCombination.length) {
+        escapeHatchAccessed = true;
         escapeHatchTaps.clear();
         try {
+          //old storage configuration
+          FlutterSecureStorage storage = const FlutterSecureStorage();
+          await storage.deleteAll();
+
           await EnvoySeed().removeSeedFromNonSecure();
+          await EnvoySeed().removeSeedFromSecure();
+          //new storage configuration, delete all entries from secure storage fixes
+          // issue where old seeds were not deleted properly
+          await LocalStorage().secureStorage.deleteAll();
+          await Future.delayed(const Duration(milliseconds: 500));
           scaffold.showSnackBar(const SnackBar(
             content: Text("Envoy Seed deleted!"), // TODO: FIGMA
           ));
@@ -119,6 +130,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
           onTap: () {
             registerEscapeTap(EscapeHatchTap.logo);
           },
+          onLongPress: () {
+            if (escapeHatchAccessed) {
+              Settings().skipPrimeSecurityCheck = true;
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Security check disabled"),
+              ));
+            }
+          },
           child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.25,
             child: Image.asset(
@@ -144,10 +163,20 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const SizedBox(height: EnvoySpacing.medium1),
-                        Text(
-                          S().welcome_screen_heading,
-                          style: EnvoyTypography.heading,
-                          textAlign: TextAlign.center,
+                        GestureDetector(
+                          onLongPress: () {
+                            ref.read(devModeEnabledProvider.notifier).state =
+                                true;
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("Dev mode enabled"),
+                            ));
+                          },
+                          child: Text(
+                            S().welcome_screen_heading,
+                            style: EnvoyTypography.heading,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                         const Padding(
                             padding: EdgeInsets.all(EnvoySpacing.small)),
@@ -202,7 +231,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       ),
                       title: S().onboarding_welcome_setUpPassport,
                       onTap: () {
-                        context.goNamed(ONBOARD_PASSPORT_SCAN);
+                        WakelockPlus.enable();
+                        showScanner(context);
+                        // context.goNamed(ONBOARD_PASSPORT_SCAN);
                       },
                     ),
                   ),
@@ -215,145 +246,45 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     );
   }
 
-// ignore: unused_element
-  void showScanDialog(BuildContext context) async {
-    bool promptDismissed = await EnvoyStorage()
-        .checkPromptDismissed(DismissiblePrompt.scanToConnect);
+  void showScanner(BuildContext context) {
+    showScannerDialog(
+      context: context,
+      onBackPressed: (context) {
+        Navigator.pop(context);
+      },
+      decoder: DeviceDecoder(pairPayloadDecoder: PairPayloadDecoder(
+        onScan: (binary) {
+          addPassportAccount(binary, context);
+        },
+      ), onScan: (String payload) {
+        final uri = Uri.parse(payload);
+        final params = uri.queryParameters;
 
-    if (!promptDismissed && context.mounted) {
-      final assetPath =
-          Platform.isIOS ? "assets/ios_scan.riv" : "assets/android_scan.riv";
-
-      rive.File? file;
-      rive.RiveWidgetController? controller;
-
-      try {
-        file = await rive.File.asset(assetPath, riveFactory: rive.Factory.rive);
-        controller = rive.RiveWidgetController(file!);
-        if (context.mounted) {
-          showEnvoyDialog(
-                  context: context,
-                  useRootNavigator: true,
-                  dialog: StatefulBuilder(
-                    builder: (context, setState) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width * 0.85,
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(EnvoySpacing.medium2),
-                          ),
-                          color: EnvoyColors.textPrimaryInverse,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(EnvoySpacing.medium2),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(
-                                  height: 200,
-                                  child: rive.RiveWidget(
-                                    controller: controller!,
-                                    fit: rive.Fit.contain,
-                                  ),
-                                ),
-                                //TODO: add more context instead of dismissible
-                                // GestureDetector(
-                                //   onTap: () {
-                                //     setState(() {
-                                //       dismissed = !dismissed;
-                                //     });
-                                //   },
-                                //   child: Row(
-                                //     crossAxisAlignment: CrossAxisAlignment.center,
-                                //     mainAxisAlignment: MainAxisAlignment.center,
-                                //     children: [
-                                //       SizedBox(
-                                //         child: EnvoyCheckbox(
-                                //           value: dismissed,
-                                //           onChanged: (value) {
-                                //             if (value != null) {
-                                //               setState(() {
-                                //                 dismissed = value;
-                                //               });
-                                //             }
-                                //           },
-                                //         ),
-                                //       ),
-                                //       Text(
-                                //         S().component_dontShowAgain,
-                                //         style: Theme.of(context)
-                                //             .textTheme
-                                //             .bodyMedium
-                                //             ?.copyWith(
-                                //               color: dismissed
-                                //                   ? Colors.black
-                                //                   : const Color(0xff808080),
-                                //             ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
-                                EnvoyButton(
-                                  label: "Continue",
-                                  type: ButtonType.primary,
-                                  state: ButtonState.defaultState,
-                                  onTap: () {
-                                    // if (dismissed) {
-                                    //   EnvoyStorage().addPromptState(
-                                    //       DismissiblePrompt.scanToConnect);
-                                    // }
-                                    // Navigator.pop(context);
-
-                                    showScannerDialog(
-                                        showInfoDialog: true,
-                                        context: context,
-                                        onBackPressed: (context) {
-                                          Navigator.pop(context);
-                                        },
-                                        decoder: GenericQrDecoder(
-                                            onScan: (String payload) {
-                                          Navigator.pop(context);
-                                          final uri = Uri.parse(payload);
-                                          kPrint(
-                                              "BLE UriParams ${uri.queryParameters}");
-
-                                          kPrint(
-                                              "Bl Devices ${Devices().getPrimeDevices.map((e) => "${e.name} ${e.peripheralId} ${e.bleId}").join(", ")}");
-                                          context.pushNamed(
-                                            ONBOARD_PRIME,
-                                            queryParameters:
-                                                uri.queryParameters,
-                                          );
-                                        }));
-                                  },
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  dismissible: true)
-              .then((_) {
-            // Clean up resources when dialog is dismissed
-            controller?.dispose();
-            file?.dispose();
-          });
+        if (params.containsKey("p")) {
+          context.pop();
+          context.goNamed(ONBOARD_PRIME, queryParameters: params);
+        } else if (params.containsKey("t")) {
+          context.pop();
+          context.goNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
+        } else {
+          context.pop();
+          EnvoyToast(
+            replaceExisting: true,
+            duration: const Duration(seconds: 6),
+            message: "Invalid QR code",
+            isDismissible: true,
+            onActionTap: () {
+              EnvoyToast.dismissPreviousToasts(context);
+            },
+            icon: const Icon(
+              Icons.info_outline,
+              color: EnvoyColors.accentPrimary,
+            ),
+          ).show(context);
         }
-      } catch (e) {
-        // Handle error loading Rive file
-        kPrint('Error loading Rive file: $e');
-        controller?.dispose();
-        file?.dispose();
-      }
-    } else {
-      if (context.mounted) {
-        context.goNamed(ONBOARD_PRIME);
-      }
-    }
+      }),
+      child: LegacyFirmwareAlert(),
+    );
   }
 }
 
@@ -561,6 +492,118 @@ class _EnvoyWelcomeButtonState extends State<EnvoyWelcomeButton> {
           ),
         );
       },
+    );
+  }
+}
+
+class LegacyFirmwareAlert extends StatefulWidget {
+  const LegacyFirmwareAlert({super.key});
+
+  @override
+  State<LegacyFirmwareAlert> createState() => _LegacyFirmwareAlertState();
+}
+
+class _LegacyFirmwareAlertState extends State<LegacyFirmwareAlert>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _heightAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+
+    _heightAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    );
+  }
+
+  void _toggleAdvanced() {
+    if (_controller.isCompleted) {
+      _controller.reverse();
+    } else {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
+          alignment: Alignment.center,
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: _toggleAdvanced,
+                child: AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    return Transform.rotate(
+                      angle: _controller.value * pi,
+                      child: child,
+                    );
+                  },
+                  child: const Icon(
+                    Icons.keyboard_arrow_up_sharp,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizeTransition(
+                sizeFactor: _heightAnimation,
+                axisAlignment: -1.0, // slide down from top
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.medium3,
+                      vertical: EnvoySpacing.small),
+                  child: Column(
+                    children: [
+                      Text(
+                        S().onboarding_passpportSelectCamera_sub235VersionAlert,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: EnvoyColors.textPrimaryInverse,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(EnvoySpacing.small),
+                        child: TextButton(
+                          child: Text(
+                            S().onboarding_passpportSelectCamera_tapHere,
+                            style: EnvoyTypography.button.copyWith(
+                              color: EnvoyColors.textPrimaryInverse,
+                            ),
+                          ),
+                          onPressed: () async {
+                            context.goNamed(ONBOARD_PASSPORT_SETUP);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

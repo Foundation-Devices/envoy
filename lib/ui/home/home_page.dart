@@ -27,7 +27,11 @@ import 'package:envoy/ui/home/migration_dialogs.dart';
 import 'package:envoy/ui/home/top_bar_home.dart';
 import 'package:envoy/ui/lock/session_manager.dart';
 import 'package:envoy/ui/migrations/migration_manager.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -36,6 +40,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/tor_warning.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/ui/widgets/tutorial_page.dart';
 import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
@@ -46,6 +51,8 @@ import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/ui/routes/routes.dart';
 
 final _fullScreenProvider = Provider((ref) {
   bool fullScreen = ref.watch(hideBottomNavProvider);
@@ -57,6 +64,8 @@ final _fullScreenProvider = Provider((ref) {
 final currentVersionDeprecatedProvider = FutureProvider<bool>((ref) {
   return Server().checkForForceUpdate();
 });
+
+bool isCurrentlyOnboarding = false;
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -198,9 +207,13 @@ class HomePageState extends ConsumerState<HomePage>
       // If Tor is broken surface a warning
       if (event == ConnectivityManagerEvent.torConnectedDoesntWork ||
           event == ConnectivityManagerEvent.foundationServerDown) {
+        bool isOnboarded =
+            LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
         if (_torWarningDisplayedMoreThan5minAgo &&
             Settings().usingTor &&
             ConnectivityManager().torEnabled &&
+            isOnboarded &&
+            !isCurrentlyOnboarding &&
             mounted) {
           _notifyAboutTor();
           _torWarningDisplayedMoreThan5minAgo = false;
@@ -264,6 +277,11 @@ class HomePageState extends ConsumerState<HomePage>
       final router = Navigator.of(context);
       SessionManager().bind(router);
       notifyAboutNetworkMigrationDialog(context);
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) {
+          _showTutorialIfNeeded(context);
+        }
+      });
     });
   }
 
@@ -567,6 +585,13 @@ class HomePageState extends ConsumerState<HomePage>
       },
     );
 
+    ref.listen(
+      onboardingStateStreamProvider,
+      (previous, next) {
+        _showTutorialIfNeeded(context);
+      },
+    );
+
     double shieldTotalTop = _backgroundShown
         ? screenHeight + 20
         : optionsShown
@@ -716,6 +741,58 @@ class HomePageState extends ConsumerState<HomePage>
 
   static HomePageState? of(BuildContext context) {
     return context.findAncestorStateOfType<HomePageState>();
+  }
+
+  bool _tutorialIsInProgress = false;
+
+  //Show tutorial if needed
+  //overlay will be shown only when there are two wallets (hot and prime)
+  //and the bluetooth onboarding step 'walletConnected' is completed
+  void _showTutorialIfNeeded(BuildContext context) async {
+    if (_tutorialIsInProgress) {
+      return;
+    }
+    //wait for user to land on home screen. before showing tutorial
+    await Future.delayed(Duration(milliseconds: 600));
+    final route = ref.read(routePathProvider);
+    //if user moved to diffrent screen, do
+    if (route != ROUTE_ACCOUNTS_HOME) {
+      return;
+    }
+    final dismissed = await EnvoyStorage()
+        .checkPromptDismissed(DismissiblePrompt.primeAccountTutorial);
+    if (dismissed) {
+      return;
+    }
+    final accounts = ref
+        .read(accountsProvider)
+        .where((account) => account.network == Network.bitcoin);
+
+    final hasPrimeAccount = accounts.any((account) {
+      final device = Devices().getDeviceBySerial(account.deviceSerial ?? "");
+      return device?.type == DeviceType.passportPrime;
+    });
+
+    if (accounts.length == 2 && hasPrimeAccount) {
+      // make sure there are two wallets hot and prime
+      final hasHotWallet = accounts.any((account) => account.isHot);
+      if (hasHotWallet) {
+        if (context.mounted) {
+          _tutorialIsInProgress = true;
+          await Navigator.of(context, rootNavigator: true).push(
+            PageRouteBuilder(
+              opaque: false,
+              fullscreenDialog: true,
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  AccountTutorialOverlay(
+                accounts: accounts.toList(),
+              ),
+            ),
+          );
+          _tutorialIsInProgress = false;
+        }
+      }
+    }
   }
 }
 

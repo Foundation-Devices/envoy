@@ -30,6 +30,7 @@ pub struct EnvoyAccount {
     pub tags: Vec<String>,
     pub xfp: String,
     pub external_public_descriptors: Vec<(AddressType, String)>,
+    pub archived: bool,
 }
 
 #[derive(Clone)]

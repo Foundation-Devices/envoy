@@ -248,10 +248,10 @@ dependencies = [
 
 [[package]]
 name = "backup-shard"
-version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=3.3.0#37f94abccd6bb7e1124f1752813a3cba6e374c6e"
+version = "0.3.0"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.4.1#bf750cf8b073add2ae62938fcd27c339a806dd6f"
 dependencies = [
- "minicbor 0.24.4",
+ "dcbor",
  "zeroize",
 ]
 
@@ -801,7 +801,7 @@ dependencies = [
 [[package]]
 name = "btp"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.0.0#e7e8b1bae285ba0bf7224673eecdcb16f54ca5ce"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.4.1#bf750cf8b073add2ae62938fcd27c339a806dd6f"
 dependencies = [
  "bytemuck",
  "consts",
@@ -1592,7 +1592,7 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "2.0.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.0.0#e7e8b1bae285ba0bf7224673eecdcb16f54ca5ce"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.4.1#bf750cf8b073add2ae62938fcd27c339a806dd6f"
 dependencies = [
  "bc-components",
  "bc-envelope",
@@ -2682,7 +2682,7 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?rev=1a0935d25b7d2d542dea9e222586a64bea9bfd6f#1a0935d25b7d2d542dea9e222586a64bea9bfd6f"
+source = "git+https://github.com/Foundation-Devices/ngwallet?branch=envoy-2.2#dd9b439341d6499ceffe31bd2a4146e70a12d1c1"
 dependencies = [
  "anyhow",
  "bdk_core",
@@ -3274,7 +3274,7 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.0.0#e7e8b1bae285ba0bf7224673eecdcb16f54ca5ce"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.4.1#bf750cf8b073add2ae62938fcd27c339a806dd6f"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3570,6 +3570,7 @@ version = "0.1.0"
 dependencies = [
  "backup-shard",
  "flutter_rust_bridge",
+ "log",
  "minicbor 1.1.0",
  "minicbor-derive 0.17.0",
 ]

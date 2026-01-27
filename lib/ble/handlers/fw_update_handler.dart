@@ -17,6 +17,7 @@ import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/ntp.dart';
+import 'package:envoy/util/transfer_rate_estimator.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 
 class FwUpdateState {
@@ -36,14 +37,13 @@ class FwTransferProgress {
 class FwUpdateHandler extends PassportMessageHandler {
   FwUpdateHandler(super.writer);
 
-  final chunkSize = BigInt.from(200000);
-
   Set<PrimeFwUpdateStep> _completedUpdateStates = {};
   String newVersion = "";
+  String currentVersion = "";
 
-  // Track transfer speed for ETA calculation
-  DateTime? _transferStartTime;
-  DateTime? _lastUpdateTime;
+  // Transfer rate estimator
+  // reset this every time a new transfer starts
+  final _transferEstimator = TransferRateEstimator();
 
   final _fetchState = StreamController<FwUpdateState>.broadcast();
   final _downloadState = StreamController<FwUpdateState>.broadcast();
@@ -81,7 +81,7 @@ class FwUpdateHandler extends PassportMessageHandler {
       api.QuantumLinkMessage message, String bleId) async {
     if (message
         case api.QuantumLinkMessage_FirmwareUpdateCheckRequest updateRequest) {
-      final currentVersion = updateRequest.field0.currentVersion;
+      currentVersion = updateRequest.field0.currentVersion;
       _handleFwUpdateCheckRequest(currentVersion);
     } else if (message
         case api.QuantumLinkMessage_FirmwareFetchRequest fetchRequest) {
@@ -110,7 +110,7 @@ class FwUpdateHandler extends PassportMessageHandler {
     } catch (e) {
       kPrint("failed to fetch patches: $e");
       _updateDownloadState(
-          S().firmware_downloadingUpdate_header, EnvoyStepState.ERROR);
+          S().firmware_updateError_downloadFailed, EnvoyStepState.ERROR);
       await _handleFirmwareError(
         S().firmware_updateError_downloadFailed,
       );
@@ -147,7 +147,7 @@ class FwUpdateHandler extends PassportMessageHandler {
       } catch (e) {
         _updateFwUpdateState(PrimeFwUpdateStep.error);
         kPrint("failed to transfer firmware: $e");
-        await _handleFirmwareError(S().firmware_updateError_downloadFailed);
+        await _handleFirmwareError(S().firmware_updateError_receivingFailed);
         return;
       }
     }
@@ -157,8 +157,8 @@ class FwUpdateHandler extends PassportMessageHandler {
     final tempFile =
         await BluetoothChannel.getBleCacheFile(patches.hashCode.toString());
 
-    _transferStartTime = null;
-    _lastUpdateTime = null;
+    // reset this every time a new transfer starts
+    _transferEstimator.reset();
 
     BluetoothChannel().writeProgressStream().listen((progress) {
       if (progress.id == tempFile.path) {
@@ -184,7 +184,7 @@ class FwUpdateHandler extends PassportMessageHandler {
         sender: BluetoothManager().qlIdentity!,
         recipient: BluetoothManager().recipientXid!,
         path: tempFile.path,
-        chunkSize: chunkSize,
+        chunkSize: bleChunkSize,
         timestamp: timestampSeconds);
 
     if (ready) {
@@ -256,6 +256,7 @@ class FwUpdateHandler extends PassportMessageHandler {
     );
   }
 
+  //UI state updates
   void _updateFetchState(String message, EnvoyStepState state) {
     _fetchState.sink.add(FwUpdateState(message: message, step: state));
   }
@@ -268,6 +269,7 @@ class FwUpdateHandler extends PassportMessageHandler {
   void _updateDownloadState(String message, EnvoyStepState state) {
     _downloadState.sink.add(FwUpdateState(message: message, step: state));
   }
+  //end ui stete updates
 
   void _handleOnboardingState(api.FirmwareInstallEvent event) {
     event.map(updateVerified: (event) {
@@ -279,6 +281,8 @@ class FwUpdateHandler extends PassportMessageHandler {
     }, success: (event) {
       _updateFwUpdateState(PrimeFwUpdateStep.finished);
     }, error: (event) {
+      // Cancel any ongoing transfer
+      unawaited(BluetoothChannel().cancelTransfer());
       EnvoyReport()
           .log("fw_update_handler", "Firmware install error: ${event.error}");
       _updateFwUpdateState(PrimeFwUpdateStep.error);
@@ -290,37 +294,16 @@ class FwUpdateHandler extends PassportMessageHandler {
     final totalBytes = wProgress.totalBytes;
     final bytesProcessed = wProgress.bytesProcessed;
 
-    _transferStartTime ??= DateTime.now();
-    _lastUpdateTime ??= DateTime.now();
+    final remainingTime = _transferEstimator.updateProgress(
+      bytesProcessed: bytesProcessed,
+      totalBytes: totalBytes,
+      progress: progress,
+    );
 
-    String remainingTime = "";
-
-    if (bytesProcessed > 0 && totalBytes > 0 && progress > 0.01) {
-      final now = DateTime.now();
-      final elapsedSeconds = now.difference(_transferStartTime!).inSeconds;
-
-      if (elapsedSeconds > 0) {
-        final bytesPerSecond = bytesProcessed / elapsedSeconds;
-        final remainingBytes = totalBytes - bytesProcessed;
-
-        if (bytesPerSecond > 0) {
-          final secondsRemaining = (remainingBytes / bytesPerSecond).ceil();
-
-          if (secondsRemaining < 60) {
-            remainingTime = "$secondsRemaining sec";
-          } else if (secondsRemaining < 3600) {
-            final minutes = (secondsRemaining / 60).ceil();
-            remainingTime = "$minutes min";
-          } else {
-            final hours = (secondsRemaining / 3600).floor();
-            final minutes = ((secondsRemaining % 3600) / 60).ceil();
-            remainingTime = "${hours}h ${minutes}m";
-          }
-        }
-      }
+    // If null, update was throttled
+    if (remainingTime == null) {
+      return;
     }
-
-    _lastUpdateTime = DateTime.now();
 
     _transferProgress.sink.add(
       FwTransferProgress(
@@ -328,5 +311,18 @@ class FwUpdateHandler extends PassportMessageHandler {
         remainingTime: remainingTime,
       ),
     );
+  }
+
+  void reset() {
+    _updateFwUpdateState(PrimeFwUpdateStep.idle);
+    _updateFetchState(
+        S().onboarding_connectionIntro_checkForUpdates, EnvoyStepState.IDLE);
+    _updateDownloadState(
+        S().firmware_updatingDownload_downloading, EnvoyStepState.IDLE);
+    _transferProgress.sink.add(FwTransferProgress(
+      progress: 0,
+      remainingTime: "",
+    ));
+    newVersion = "";
   }
 }

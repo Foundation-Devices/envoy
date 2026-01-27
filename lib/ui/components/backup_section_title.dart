@@ -5,6 +5,7 @@
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -29,21 +30,28 @@ class BackupSectionTitle extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            GestureDetector(
-              onTap: onIconTap,
-              child: EnvoyIcon(
-                icon,
-                color: EnvoyColors.textPrimaryInverse,
+        Expanded(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: onIconTap,
+                child: EnvoyIcon(
+                  icon,
+                  color: EnvoyColors.textPrimaryInverse,
+                ),
               ),
-            ),
-            Text(
-              title,
-              style: EnvoyTypography.body
-                  .copyWith(color: EnvoyColors.textPrimaryInverse),
-            ),
-          ],
+              const SizedBox(width: EnvoySpacing.xs),
+              Expanded(
+                child: Text(
+                  title,
+                  overflow: TextOverflow.ellipsis,
+                  style: EnvoyTypography.body
+                      .copyWith(color: EnvoyColors.textPrimaryInverse),
+                ),
+              ),
+            ],
+          ),
         ),
         EnvoySwitch(value: switchValue, onChanged: onSwitch),
       ],

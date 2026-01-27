@@ -14,6 +14,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:tor/tor.dart';
 
 const bool isTest = bool.fromEnvironment('IS_TEST', defaultValue: false);
 
@@ -68,7 +69,10 @@ class SyncManager {
       if (NgAccountManager().accounts.isEmpty) {
         return;
       }
-      _syncAll();
+      //wait for any active operations to finish
+      if (_activeSyncOperations.isEmpty) {
+        _syncAll();
+      }
 
       if (!isTest) {
         dumpProgress();
@@ -304,6 +308,14 @@ class SyncManager {
     }
 
     try {
+      if (Settings().usingTor && Tor.instance.port == -1) {
+        if (_enableLogging) {
+          kPrint(
+              "Skipping Scan because Tor is not ready yet $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
+              silenceInTests: true);
+        }
+        return;
+      }
       // Use the scheduler to run this task in the background
       WalletUpdate update = await EnvoyAccountHandler.scanWallet(
           scanRequest: fullScanRequest, electrumServer: server, torPort: port);
@@ -347,6 +359,14 @@ class SyncManager {
   Future<void> _performWalletSync(EnvoyAccount account, String server,
       SyncRequest syncRequest, int? port, AddressType addressType) async {
     try {
+      if (Settings().usingTor && Tor.instance.port == -1) {
+        if (_enableLogging) {
+          kPrint(
+              "Skipping sync because Tor is not ready yet $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
+              silenceInTests: true);
+        }
+        return;
+      }
       _currentLoading.sink.add(Syncing(account.id));
       DateTime time = DateTime.now();
       if (_enableLogging) {
@@ -402,12 +422,16 @@ class SyncManager {
             "Error syncing $addressType - ${account.name} | ${account.network} | $server | Tor: $port $e",
             silenceInTests: true);
       }
-      EnvoyReport().log(
-          "Error applying sync $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
-          e.toString());
-      // Let ConnectivityManager know that we can't reach Electrum
+      //less noisy logging for non-mainnet networks
       if (account.network == Network.bitcoin) {
+        // Let ConnectivityManager know that we can't reach Electrum
         ConnectivityManager().electrumFailure();
+        EnvoyReport().log(
+            "Error applying sync $addressType - ${account.name} | ${account.network} | $server | Tor: $port",
+            e.toString());
+      } else {
+        kPrint(
+            "Unable to reach Electrum for sync $addressType - ${account.name} | ${account.network} | $server | Tor: $port");
       }
     } finally {
       _currentLoading.sink.add(None());

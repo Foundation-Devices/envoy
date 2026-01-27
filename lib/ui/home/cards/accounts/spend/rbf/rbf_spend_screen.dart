@@ -89,6 +89,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       stateMachineSelector: rive.StateMachineSelector.byName('STM'),
     );
 
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     _controller?.stateMachine.boolean("indeterminate")?.value = true;
 
     setState(() => _isInitialized = true);
@@ -102,8 +104,14 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     bool indeterminate = progress == BroadcastProgress.inProgress;
 
     final stateMachine = _controller!.stateMachine;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("indeterminate")?.value = indeterminate;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("happy")?.value = happy;
+    //TODO: fix rive with databindings.
+    // ignore: deprecated_member_use
     stateMachine.boolean("unhappy")?.value = unhappy;
   }
 
