@@ -4,7 +4,6 @@
 
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -12,7 +11,6 @@ import 'package:envoy/ui/components/envoy_loaders.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
-import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -21,7 +19,6 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/bug_report_helper.dart';
-import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -92,24 +89,26 @@ class ConnectionLostModal extends ConsumerStatefulWidget {
 class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
   bool _isReconnecting = false;
 
+  //TODO: implement device speicific reconnect
   Future<void> _attemptReconnect() async {
     setState(() {
       _isReconnecting = true;
     });
 
     try {
-      if (Devices().getPrimeDevices.isEmpty) {
-        //TODO: localize
-        throw Exception("No Prime devices available to reconnect");
+      if (BluetoothChannel().lastDeviceStatus.peripheralId == null) {
+        throw Exception("No Previous connection...");
       }
-      kPrint(
-          "Attempting to reconnect to device... ${BluetoothChannel().lastDeviceStatus.connected}");
-      BluetoothManager().reconnect(Devices().getPrimeDevices.first);
-      await BluetoothChannel().deviceStatusStream.firstWhere((status) {
-        return status.connected;
-      }).timeout(const Duration(seconds: 10), onTimeout: () {
-        throw Exception("Reconnection timed out");
-      });
+      String deviceId = BluetoothChannel().lastDeviceStatus.peripheralId ?? "";
+      //  if (Devices().getPrimeDevices.isEmpty) {
+      //    //TODO: localize
+      //    // throw Exception("No Prime devices available to reconnect");
+      //   deviceId =    Devices().getPrimeDevices.firs.
+      //  }
+      //  kPrint(
+      //      "Attempting to reconnect to device... ${BluetoothChannel().lastDeviceStatus.}");
+      await BluetoothManager().reconnect(deviceId);
+      await Future.delayed(const Duration(seconds: 2));
       if (BluetoothChannel().lastDeviceStatus.connected && mounted) {
         Navigator.pop(context);
         EnvoyToast(
@@ -151,9 +150,6 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isOnboardingComplete =
-        LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
-
     return Padding(
       padding: const EdgeInsets.all(EnvoySpacing.medium2),
       child: Column(
@@ -181,18 +177,18 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
           const SizedBox(height: EnvoySpacing.medium3),
           Column(
             children: [
-              isOnboardingComplete
-                  ? EnvoyButton(
-                      S().firmware_updateModalConnectionLost_exit,
-                      borderRadius: BorderRadius.circular(EnvoySpacing.small),
-                      type: EnvoyButtonTypes.secondary,
-                      onTap: () {
-                        resetOnboardingPrimeProviders(ref);
-                        Navigator.of(context).pop();
-                        context.go("/");
-                      },
-                    )
-                  : SizedBox.shrink(),
+              if (Devices().getPrimeDevices.isEmpty ||
+                  !Devices().getPrimeDevices.first.onboardingComplete)
+                EnvoyButton(
+                  S().firmware_updateModalConnectionLost_exit,
+                  borderRadius: BorderRadius.circular(EnvoySpacing.small),
+                  type: EnvoyButtonTypes.secondary,
+                  onTap: () {
+                    resetOnboardingPrimeProviders();
+                    Navigator.of(context).pop();
+                    context.go("/");
+                  },
+                ),
               const SizedBox(height: EnvoySpacing.medium1),
               EnvoyButton(
                 _isReconnecting

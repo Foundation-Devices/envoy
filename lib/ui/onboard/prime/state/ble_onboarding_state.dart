@@ -183,4 +183,8 @@ final connectAccountProvider = Provider<StepModel>((ref) {
   }
 });
 
-void resetOnboardingPrimeProviders(WidgetRef ref) {}
+void resetOnboardingPrimeProviders() {
+  BluetoothManager().fwUpdateHandler.reset();
+  BluetoothManager().bleOnboardHandler.reset();
+  BluetoothManager().scvAccountHandler.reset();
+}

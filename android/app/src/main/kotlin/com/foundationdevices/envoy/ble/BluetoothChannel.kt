@@ -1,7 +1,10 @@
+@file:OptIn(ExperimentalAtomicApi::class)
+
 package com.foundationdevices.envoy.ble
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
@@ -26,6 +29,8 @@ import android.os.Handler
 import android.os.Looper
 import android.os.ParcelUuid
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.core.app.ActivityCompat
 import io.flutter.plugin.common.BasicMessageChannel
 import io.flutter.plugin.common.BinaryCodec
@@ -44,9 +49,15 @@ import java.io.File
 import java.io.FileInputStream
 import java.nio.ByteBuffer
 import java.util.UUID
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 
-class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMessenger) :
+class BluetoothChannel(
+    private val context: Context,
+    private val activity: ComponentActivity,
+    binaryMessenger: BinaryMessenger
+) :
     MethodChannel.MethodCallHandler {
 
     companion object {
@@ -57,6 +68,8 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         private const val BLE_CONNECTION_STREAM_NAME = "envoy/bluetooth/connection/stream"
         private const val BLE_WRITE_PROGRESS_STREAM_NAME = "envoy/ble/write/progress"
         private const val BLUETOOTH_DISCOVERY_DELAY_MS = 500L
+
+        private const val BLE_PACKET_SIZE = 244 // Max BLE packet size for Envoy Prime
 
         // Service UUID for Prime device
         private val PRIME_SERVICE_UUID = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E")
@@ -244,9 +257,34 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             "getConnectedPeripheralId" -> result.success(getConnectedPeripheralId())
             "isConnected" -> result.success(isConnected())
             "cancelTransfer" -> cancelTransfer(result)
-
+            "enableBluetooth" -> enableBluetooth(result)
             else -> result.notImplemented()
         }
+    }
+
+    private var pendingEnableResult: MethodChannel.Result? = null
+
+    //handler for enableBluetooth, this needs to be registered before activity onResume
+    val enableBtLauncher =
+        activity.registerForActivityResult(StartActivityForResult()) { res ->
+            pendingEnableResult?.success(res.resultCode == Activity.RESULT_OK)
+            pendingEnableResult = null
+        }
+
+    private fun enableBluetooth(result: MethodChannel.Result) {
+        if (bluetoothAdapter?.isEnabled == true) {
+            result.success(true)
+        }
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH_CONNECT
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        pendingEnableResult = result
+        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+        enableBtLauncher.launch(enableBtIntent)
     }
 
     private fun cancelTransfer(result: MethodChannel.Result) {
@@ -342,21 +380,26 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             result.error("FILE_NOT_FOUND", "File does not exist: $path", null)
             return
         }
-
+        val safeResult = com.foundationdevices.envoy.ble.SafeResult(result)
+        val priority = BluetoothGatt.CONNECTION_PRIORITY_HIGH
+        val priorityResult = bluetoothGatt?.requestConnectionPriority(priority)
+        Log.d(TAG, "  Requested high connection priority for transfer  : ${if (priorityResult == true) "✓ Success" else "✗ Failed"}")
         transferJob = scope.launch(Dispatchers.IO) {
             try {
                 val fileSize = file.length()
                 var bytesProcessed = 0L
-                val chunkSize = 244
+                var writeError = false
+
                 // Use forEachChunk extension function
                 file.inputStream().use { stream ->
-                    stream.forEachChunk(chunkSize) { chunk ->
+                    stream.forEachChunk(BLE_PACKET_SIZE) { chunk ->
                         // Await the enqueue
                         val success = bleWriteQueue?.enqueue(chunk) ?: false
                         if (!success) {
                             Log.e(TAG, "Failed to enqueue data at byte $bytesProcessed")
+                            writeError = true
                             withContext(Dispatchers.Main) {
-                                result.error(
+                                safeResult.error(
                                     "WRITE_ERROR",
                                     "Failed to write data at byte $bytesProcessed",
                                     null
@@ -370,12 +413,13 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                         sendWriteProgress(progress, path, bytesProcessed, fileSize)
                     }
                 }
+                file.delete()
+
 
                 // Send final progress update
                 sendWriteProgress(1.0f, path, fileSize, fileSize)
-                file.delete()
                 withContext(Dispatchers.Main) {
-                    result.success(
+                    safeResult.success(
                         mapOf(
                             "success" to true,
                             "message" to "Large data processed successfully"
@@ -386,14 +430,19 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
                 if (e is CancellationException) {
                     Log.w(TAG, "transmission cancelled: ${e.message}")
                     withContext(Dispatchers.Main) {
-                        result.error("TRANSFER_CANCELLED", "Data transmission cancelled", null)
+                        safeResult.error("TRANSFER_CANCELLED", "Data transmission cancelled", null)
                     }
                     return@launch
                 }
                 withContext(Dispatchers.Main) {
-                    result.error("FILE_READ_ERROR", "Failed to read file: ${e.message}", null)
+                    safeResult.error("FILE_READ_ERROR", "Failed to read file: ${e.message}", null)
                 }
             }
+        }
+        transferJob?.invokeOnCompletion {
+            val priority = BluetoothGatt.CONNECTION_PRIORITY_BALANCED
+            val priorityResult = bluetoothGatt?.requestConnectionPriority(priority)
+            Log.d(TAG, "  Requested balance connection priority after transfer  : ${if (priorityResult == true) "✓ Success" else "✗ Failed"}")
         }
     }
 
@@ -447,8 +496,8 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             Log.e(TAG, "BLE Write Queue is not initialized")
             return failureBuffer
         }
-        if (data.size > 244) {
-            data.chunked(244).forEach { chunk ->
+        if (data.size > BLE_PACKET_SIZE) {
+            data.chunked(BLE_PACKET_SIZE).forEach { chunk ->
                 val result = bleWriteQueue?.enqueue(chunk) ?: false
                 if (!result) {
                     Log.e(TAG, "Failed to enqueue chunk of size ${chunk.size}")
@@ -530,15 +579,15 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             result.error("BLUETOOTH_DISABLED", "Bluetooth is not enabled", null)
             return
         }
+        bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
 
-        val scanner = bluetoothLeScanner
-        if (scanner == null) {
+        if (bluetoothLeScanner == null) {
             result.error("SCANNER_ERROR", "Bluetooth LE scanner not available", null)
             return
         }
 
         try {
-            scanner.stopScan(scanCallback)
+            bluetoothLeScanner?.stopScan(scanCallback)
         } catch (e: Exception) {
             Log.w(TAG, "No ongoing scan to stop: ${e.message}")
         }
@@ -563,12 +612,12 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
             .build()
 
         try {
-            scanner.startScan(scanFilters, scanSettings, scanCallback)
+            bluetoothLeScanner?.startScan(scanFilters, scanSettings, scanCallback)
 
             result.success(mapOf("scanning" to true, "message" to "Scan started"))
             mainHandler.postDelayed({
                 try {
-                    scanner.stopScan(scanCallback)
+                    bluetoothLeScanner?.stopScan(scanCallback)
 
                     sendConnectionEvent(
                         type = BluetoothConnectionEventType.SCAN_STOPPED,
@@ -769,7 +818,18 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
 
         override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
             super.onMtuChanged(gatt, mtu, status)
-            Log.d(TAG, "MTU changed to $mtu (status: $status)")
+            Log.d(TAG, "════════════════════════════════════════")
+            Log.d(TAG, "MTU CHANGED EVENT")
+            Log.d(TAG, "  Device: ${gatt?.device?.address}")
+            Log.d(TAG, "  New MTU: $mtu bytes")
+            Log.d(TAG, "  Previous MTU: $currentMtu bytes")
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.d(TAG, "  ✓ MTU negotiation successful")
+                Log.d(TAG, "  Max data per packet: ${mtu - 3} bytes")
+            } else {
+                Log.e(TAG, "  ✗ MTU negotiation failed")
+            }
+            Log.d(TAG, "════════════════════════════════════════")
             currentMtu = mtu
         }
 
@@ -777,7 +837,7 @@ class BluetoothChannel(private val context: Context, binaryMessenger: BinaryMess
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             when (newState) {
                 BluetoothProfile.STATE_CONNECTED -> {
-                    Log.d(TAG, "Connected to GATT server")
+                    Log.d(TAG, "✓ CONNECTED TO GATT SERVER")
                     connectedDevice = gatt?.device
                     bleWriteQueue?.restart()
                     if (!checkBluetoothPermissions()) {
@@ -1231,4 +1291,28 @@ fun ByteArray.chunked(size: Int): List<ByteArray> {
         index += size
     }
     return chunks
+}
+
+
+class SafeResult(private val result: MethodChannel.Result) {
+    @OptIn(ExperimentalAtomicApi::class)
+    private val lock = AtomicBoolean(false)
+
+    fun success(value: Any?) {
+        if (lock.compareAndSet(false, true)) {
+            result.success(value)
+        }
+    }
+
+    fun error(code: String, message: String?, details: Any?) {
+        if (lock.compareAndSet(false, true)) {
+            result.error(code, message, details)
+        }
+    }
+
+    fun notImplemented() {
+        if (lock.compareAndSet(false, true)) {
+            result.notImplemented()
+        }
+    }
 }

@@ -116,7 +116,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
     final goRouter = GoRouter.of(context);
 
     if (!walletGenerated) {
-      Settings().syncToCloud = true;
+      Settings().setSyncToCloud(true);
       Settings().store();
 
       await EnvoySeed().generate();

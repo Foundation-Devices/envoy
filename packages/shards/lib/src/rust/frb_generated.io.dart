@@ -26,19 +26,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
-  ShardBackUp dco_decode_box_autoadd_shard_back_up(dynamic raw);
-
-  @protected
   List<int> dco_decode_list_prim_u_8_loose(dynamic raw);
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
-  List<ShardBackUp> dco_decode_list_shard_back_up(dynamic raw);
+  List<ShardBackup> dco_decode_list_shard_backup(dynamic raw);
 
   @protected
-  ShardBackUp dco_decode_shard_back_up(dynamic raw);
+  Uint8List? dco_decode_opt_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  ShardBackup dco_decode_shard_backup(dynamic raw);
+
+  @protected
+  ShardBackupFile dco_decode_shard_backup_file(dynamic raw);
 
   @protected
   BigInt dco_decode_u_64(dynamic raw);
@@ -59,20 +62,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
-  ShardBackUp sse_decode_box_autoadd_shard_back_up(
-      SseDeserializer deserializer);
-
-  @protected
   List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer);
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
-  List<ShardBackUp> sse_decode_list_shard_back_up(SseDeserializer deserializer);
+  List<ShardBackup> sse_decode_list_shard_backup(SseDeserializer deserializer);
 
   @protected
-  ShardBackUp sse_decode_shard_back_up(SseDeserializer deserializer);
+  Uint8List? sse_decode_opt_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  ShardBackup sse_decode_shard_backup(SseDeserializer deserializer);
+
+  @protected
+  ShardBackupFile sse_decode_shard_backup_file(SseDeserializer deserializer);
 
   @protected
   BigInt sse_decode_u_64(SseDeserializer deserializer);
@@ -100,10 +105,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_shard_back_up(
-      ShardBackUp self, SseSerializer serializer);
-
-  @protected
   void sse_encode_list_prim_u_8_loose(List<int> self, SseSerializer serializer);
 
   @protected
@@ -111,11 +112,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_shard_back_up(
-      List<ShardBackUp> self, SseSerializer serializer);
+  void sse_encode_list_shard_backup(
+      List<ShardBackup> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_shard_back_up(ShardBackUp self, SseSerializer serializer);
+  void sse_encode_opt_list_prim_u_8_strict(
+      Uint8List? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_shard_backup(ShardBackup self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_shard_backup_file(
+      ShardBackupFile self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_64(BigInt self, SseSerializer serializer);

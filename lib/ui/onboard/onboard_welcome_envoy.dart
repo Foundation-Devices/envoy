@@ -6,11 +6,14 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/routes.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -221,27 +224,66 @@ class _OnboardEnvoyWelcomeScreenState
   void initState() {
     if (mounted) {
       Future.delayed(const Duration(milliseconds: 100)).then((value) async {
+        String? seed = await EnvoySeed().get();
         //while pop back to home, welcome screen will init again, so we need to check if we already tried automatic recovery
         if (mounted) {
-          if (!ref.read(triedAutomaticRecovery) &&
-              !ref.read(successfulSetupWallet) &&
-              !_checkedMagicBackUpInWelcomeScreen) {
-            try {
-              _checkedMagicBackUpInWelcomeScreen = true;
-              //make sure automatic recovery only once
-              if (await EnvoySeed().get() != null && mounted) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const MagicRecoverWallet()));
+          //user disabled magicbackup,but we found seed in keychain/android
+          if (!Settings().syncToCloud && seed != null) {
+            //shows user warning about existing seed and proceeds to recover
+            await _showSeedAlert();
+            if (mounted) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const MagicRecoverWallet()));
+            }
+          } else {
+            if (!ref.read(triedAutomaticRecovery) &&
+                !ref.read(successfulSetupWallet) &&
+                !_checkedMagicBackUpInWelcomeScreen) {
+              try {
+                _checkedMagicBackUpInWelcomeScreen = true;
+                //make sure automatic recovery only once
+                if (await EnvoySeed().get() != null && mounted) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MagicRecoverWallet()));
+                }
+              } catch (e) {
+                //no-op
               }
-            } catch (e) {
-              //no-op
             }
           }
         }
       });
     }
     super.initState();
+  }
+
+  //ENV-2656
+  //user chose to opt-out magic backup
+  //but user has a Seed in Keychain/AndroiBackup
+  //user needs to recover current seed and go through delete flow in order disable magic backup
+  Future _showSeedAlert() async {
+    await showEnvoyDialog(
+      context: context,
+      dismissible: false,
+      dialog: EnvoyPopUp(
+        icon: EnvoyIcons.info,
+        typeOfMessage: PopUpState.deafult,
+        showCloseButton: false,
+        title: S().manual_onboardDisableMB_magicBackupDetected_heading,
+        customWidget: Text(
+          S().manual_onboardDisableMB_magicBackupDetected_subheading,
+          textAlign: TextAlign.center,
+          style: EnvoyTypography.info,
+        ),
+        primaryButtonLabel: S().component_continue,
+        onPrimaryButtonTap: (context) async {
+          Navigator.pop(context);
+        },
+      ),
+    );
   }
 }

@@ -44,6 +44,7 @@ import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/stripe.dart';
 import 'generated/l10n.dart';
+import 'package:tor/util.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,13 +77,14 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
       kPrint("Error initializing BluetoothManager: $e", stackTrace: stack);
     }
   }
-  // // This is notoriously low on iOS, causing 'too many open files errors'
-  // kPrint("Process nofile_limit: ${getNofileLimit()}");
-  //
-  // // Requesting a high number. The API will return the best we can get
-  // // ~10k on iPhone 11 which is much better than the default 256
-  // kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
-  //
+  // This is notoriously low on iOS and GrapheneOS,
+  // causing 'too many open files' errors
+  kPrint("Process nofile_limit: ${getNofileLimit()}");
+
+  // Requesting a high number. The API will return the best we can get
+  // ~10k on iPhone 11 which is much better than the default 256
+  kPrint("Process nofile_limit bumped to: ${setNofileLimit(16384)}");
+
   await LocalStorage.init();
   await RiveNative.init();
   NgAccountManager.init();
@@ -130,7 +132,9 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
 }
 
 class EnvoyApp extends StatefulWidget {
-  const EnvoyApp({super.key});
+  final Uri? deepLinkUri;
+
+  const EnvoyApp({super.key, this.deepLinkUri});
 
   @override
   State<EnvoyApp> createState() => _EnvoyAppState();
@@ -141,6 +145,14 @@ class _EnvoyAppState extends State<EnvoyApp> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(BluetoothManager());
+
+    // Handle deep link after app initialization if provided,
+    // this is primarily used for biometric authentication flow.
+    if (widget.deepLinkUri != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        mainRouter.go(widget.deepLinkUri.toString());
+      });
+    }
   }
 
   @override

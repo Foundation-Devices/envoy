@@ -108,4 +108,9 @@ class ScvHandler extends PassportMessageHandler {
     await writer.writeMessage(api.QuantumLinkMessage.securityCheck(request));
     kPrint("successfully wrote security challenge");
   }
+
+  void reset() {
+    updateScvState(
+        S().firmware_updatingDownload_downloading, EnvoyStepState.IDLE);
+  }
 }

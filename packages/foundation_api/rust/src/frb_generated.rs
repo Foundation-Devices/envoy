@@ -1810,6 +1810,7 @@ const _: fn() = || {
         let EnvoyMessage = None::<foundation_api::api::message::EnvoyMessage>.unwrap();
         let _: foundation_api::api::message::QuantumLinkMessage = EnvoyMessage.message;
         let _: u32 = EnvoyMessage.timestamp;
+        let _: Option<u8> = EnvoyMessage.protocol_version;
     }
     {
         let EnvoyStatus = None::<foundation_api::api::status::EnvoyStatus>.unwrap();
@@ -1885,6 +1886,9 @@ const _: fn() = || {
         foundation_api::api::firmware::FirmwareUpdateCheckResponse::NotAvailable => {}
     }
     {
+        let Heartbeat = None::<foundation_api::api::status::Heartbeat>.unwrap();
+    }
+    {
         let PairingRequest = None::<foundation_api::api::pairing::PairingRequest>.unwrap();
         let _: Vec<u8> = PairingRequest.xid_document;
         let _: String = PairingRequest.device_name;
@@ -1907,6 +1911,7 @@ const _: fn() = || {
         let PassportMessage = None::<foundation_api::api::message::PassportMessage>.unwrap();
         let _: foundation_api::api::message::QuantumLinkMessage = PassportMessage.message;
         let _: foundation_api::api::status::DeviceStatus = PassportMessage.status;
+        let _: Option<u8> = PassportMessage.protocol_version;
     }
     {
         let PassportSerial_ = None::<foundation_api::api::passport::PassportSerial>.unwrap();
@@ -2035,6 +2040,15 @@ const _: fn() = || {
         foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupResult(field0) => {
             let _: foundation_api::api::backup::RestoreMagicBackupResult = field0;
         }
+        foundation_api::api::message::QuantumLinkMessage::Heartbeat(field0) => {
+            let _: foundation_api::api::status::Heartbeat = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::TimezoneRequest(field0) => {
+            let _: foundation_api::api::status::TimezoneRequest = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::TimezoneResponse(field0) => {
+            let _: foundation_api::api::status::TimezoneResponse = field0;
+        }
     }
     match None::<foundation_api::api::backup::RestoreMagicBackupEvent>.unwrap() {
         foundation_api::api::backup::RestoreMagicBackupEvent::NotFound => {}
@@ -2103,6 +2117,14 @@ const _: fn() = || {
         let _: foundation_api::api::backup::SeedFingerprint = StartMagicBackup.seed_fingerprint;
         let _: u32 = StartMagicBackup.total_chunks;
         let _: [u8; 32] = StartMagicBackup.hash;
+    }
+    {
+        let TimezoneRequest = None::<foundation_api::api::status::TimezoneRequest>.unwrap();
+    }
+    {
+        let TimezoneResponse = None::<foundation_api::api::status::TimezoneResponse>.unwrap();
+        let _: i32 = TimezoneResponse.offset_minutes;
+        let _: String = TimezoneResponse.zone;
     }
     match None::<foundation_api::api::scv::VerificationResult>.unwrap() {
         foundation_api::api::scv::VerificationResult::Success => {}
@@ -2511,9 +2533,11 @@ impl SseDecode for foundation_api::api::message::EnvoyMessage {
         let mut var_message =
             <foundation_api::api::message::QuantumLinkMessage>::sse_decode(deserializer);
         let mut var_timestamp = <u32>::sse_decode(deserializer);
+        let mut var_protocolVersion = <Option<u8>>::sse_decode(deserializer);
         return foundation_api::api::message::EnvoyMessage {
             message: var_message,
             timestamp: var_timestamp,
+            protocol_version: var_protocolVersion,
         };
     }
 }
@@ -2720,6 +2744,13 @@ impl SseDecode for foundation_api::api::firmware::FirmwareUpdateCheckResponse {
     }
 }
 
+impl SseDecode for foundation_api::api::status::Heartbeat {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        return foundation_api::api::status::Heartbeat {};
+    }
+}
+
 impl SseDecode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2851,6 +2882,17 @@ impl SseDecode for Option<foundation_api::api::message::PassportMessage> {
     }
 }
 
+impl SseDecode for Option<u8> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<u8>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for foundation_api::api::pairing::PairingRequest {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2911,9 +2953,11 @@ impl SseDecode for foundation_api::api::message::PassportMessage {
         let mut var_message =
             <foundation_api::api::message::QuantumLinkMessage>::sse_decode(deserializer);
         let mut var_status = <foundation_api::api::status::DeviceStatus>::sse_decode(deserializer);
+        let mut var_protocolVersion = <Option<u8>>::sse_decode(deserializer);
         return foundation_api::api::message::PassportMessage {
             message: var_message,
             status: var_status,
+            protocol_version: var_protocolVersion,
         };
     }
 }
@@ -3217,6 +3261,25 @@ impl SseDecode for foundation_api::api::message::QuantumLinkMessage {
                     var_field0,
                 );
             }
+            31 => {
+                let mut var_field0 =
+                    <foundation_api::api::status::Heartbeat>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::Heartbeat(var_field0);
+            }
+            32 => {
+                let mut var_field0 =
+                    <foundation_api::api::status::TimezoneRequest>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::TimezoneRequest(
+                    var_field0,
+                );
+            }
+            33 => {
+                let mut var_field0 =
+                    <foundation_api::api::status::TimezoneResponse>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::TimezoneResponse(
+                    var_field0,
+                );
+            }
             _ => {
                 unimplemented!("");
             }
@@ -3393,6 +3456,25 @@ impl SseDecode for foundation_api::api::backup::StartMagicBackup {
             seed_fingerprint: var_seedFingerprint,
             total_chunks: var_totalChunks,
             hash: var_hash,
+        };
+    }
+}
+
+impl SseDecode for foundation_api::api::status::TimezoneRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        return foundation_api::api::status::TimezoneRequest {};
+    }
+}
+
+impl SseDecode for foundation_api::api::status::TimezoneResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_offsetMinutes = <i32>::sse_decode(deserializer);
+        let mut var_zone = <String>::sse_decode(deserializer);
+        return foundation_api::api::status::TimezoneResponse {
+            offset_minutes: var_offsetMinutes,
+            zone: var_zone,
         };
     }
 }
@@ -4050,6 +4132,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::message::
         [
             self.0.message.into_into_dart().into_dart(),
             self.0.timestamp.into_into_dart().into_dart(),
+            self.0.protocol_version.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -4339,6 +4422,23 @@ impl
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::status::Heartbeat> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        Vec::<u8>::new().into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::status::Heartbeat>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::status::Heartbeat>>
+    for foundation_api::api::status::Heartbeat
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::status::Heartbeat> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart
     for FrbWrapper<foundation_api::api::firmware::InstallErrorStage>
 {
@@ -4502,6 +4602,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::message::
         [
             self.0.message.into_into_dart().into_dart(),
             self.0.status.into_into_dart().into_dart(),
+            self.0.protocol_version.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -4767,6 +4868,15 @@ impl flutter_rust_bridge::IntoDart
             }
             foundation_api::api::message::QuantumLinkMessage::RestoreMagicBackupResult(field0) => {
                 [30.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::Heartbeat(field0) => {
+                [31.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::TimezoneRequest(field0) => {
+                [32.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::TimezoneResponse(field0) => {
+                [33.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
             _ => {
                 unimplemented!("");
@@ -5034,6 +5144,44 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::backup::S
     for foundation_api::api::backup::StartMagicBackup
 {
     fn into_into_dart(self) -> FrbWrapper<foundation_api::api::backup::StartMagicBackup> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::status::TimezoneRequest> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        Vec::<u8>::new().into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::status::TimezoneRequest>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::status::TimezoneRequest>>
+    for foundation_api::api::status::TimezoneRequest
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::status::TimezoneRequest> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::status::TimezoneResponse> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.offset_minutes.into_into_dart().into_dart(),
+            self.0.zone.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::status::TimezoneResponse>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::status::TimezoneResponse>>
+    for foundation_api::api::status::TimezoneResponse
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::status::TimezoneResponse> {
         self.into()
     }
 }
@@ -5378,6 +5526,7 @@ impl SseEncode for foundation_api::api::message::EnvoyMessage {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <foundation_api::api::message::QuantumLinkMessage>::sse_encode(self.message, serializer);
         <u32>::sse_encode(self.timestamp, serializer);
+        <Option<u8>>::sse_encode(self.protocol_version, serializer);
     }
 }
 
@@ -5535,6 +5684,11 @@ impl SseEncode for foundation_api::api::firmware::FirmwareUpdateCheckResponse {
     }
 }
 
+impl SseEncode for foundation_api::api::status::Heartbeat {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+}
+
 impl SseEncode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5660,6 +5814,16 @@ impl SseEncode for Option<foundation_api::api::message::PassportMessage> {
     }
 }
 
+impl SseEncode for Option<u8> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <u8>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for foundation_api::api::pairing::PairingRequest {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5713,6 +5877,7 @@ impl SseEncode for foundation_api::api::message::PassportMessage {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <foundation_api::api::message::QuantumLinkMessage>::sse_encode(self.message, serializer);
         <foundation_api::api::status::DeviceStatus>::sse_encode(self.status, serializer);
+        <Option<u8>>::sse_encode(self.protocol_version, serializer);
     }
 }
 
@@ -5954,6 +6119,18 @@ impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
                     field0, serializer,
                 );
             }
+            foundation_api::api::message::QuantumLinkMessage::Heartbeat(field0) => {
+                <i32>::sse_encode(31, serializer);
+                <foundation_api::api::status::Heartbeat>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::TimezoneRequest(field0) => {
+                <i32>::sse_encode(32, serializer);
+                <foundation_api::api::status::TimezoneRequest>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::TimezoneResponse(field0) => {
+                <i32>::sse_encode(33, serializer);
+                <foundation_api::api::status::TimezoneResponse>::sse_encode(field0, serializer);
+            }
             _ => {
                 unimplemented!("");
             }
@@ -6102,6 +6279,19 @@ impl SseEncode for foundation_api::api::backup::StartMagicBackup {
         );
         <u32>::sse_encode(self.total_chunks, serializer);
         <[u8; 32]>::sse_encode(self.hash, serializer);
+    }
+}
+
+impl SseEncode for foundation_api::api::status::TimezoneRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+}
+
+impl SseEncode for foundation_api::api::status::TimezoneResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.offset_minutes, serializer);
+        <String>::sse_encode(self.zone, serializer);
     }
 }
 

@@ -4,11 +4,13 @@
 
 name: Android build
 
-on: [ workflow_dispatch ]
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'  # Run daily at 2 AM UTC
 
 jobs:
   build-android:
-    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: [ self-hosted, Linux, X64 ]
 
     steps:

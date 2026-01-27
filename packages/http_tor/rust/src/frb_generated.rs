@@ -339,7 +339,7 @@ fn wire__crate__api__http__request_impl(
             let api_verb = <crate::api::http::Verb>::sse_decode(&mut deserializer);
             let api_url = <String>::sse_decode(&mut deserializer);
             let api_tor_port = <i32>::sse_decode(&mut deserializer);
-            let api_body = <Option<String>>::sse_decode(&mut deserializer);
+            let api_body = <Option<Vec<u8>>>::sse_decode(&mut deserializer);
             let api_headers =
                 <std::collections::HashMap<String, String>>::sse_decode(&mut deserializer);
             deserializer.end();
@@ -481,11 +481,11 @@ impl SseDecode for Vec<(String, String)> {
     }
 }
 
-impl SseDecode for Option<String> {
+impl SseDecode for Option<Vec<u8>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
-            return Some(<String>::sse_decode(deserializer));
+            return Some(<Vec<u8>>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -836,12 +836,12 @@ impl SseEncode for Vec<(String, String)> {
     }
 }
 
-impl SseEncode for Option<String> {
+impl SseEncode for Option<Vec<u8>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
-            <String>::sse_encode(value, serializer);
+            <Vec<u8>>::sse_encode(value, serializer);
         }
     }
 }
