@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/pages/scv/scv_intro.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:go_router/go_router.dart';
 
 class TouPage extends StatefulWidget {
   final bool fromExternal;
@@ -62,10 +64,10 @@ class _TouPageState extends State<TouPage> {
                             horizontal: EnvoySpacing.medium1),
                         child: GestureDetector(
                           onTap: () {
-                            if (widget.fromExternal) {
-                              SystemNavigator.pop();
-                            } else {
+                            if (Navigator.canPop(context)) {
                               Navigator.pop(context);
+                            } else {
+                              context.go(ROUTE_ACCOUNTS_HOME);
                             }
                           },
                           child: const Icon(Icons.arrow_back_ios_rounded,
@@ -78,11 +80,7 @@ class _TouPageState extends State<TouPage> {
                         child: IconButton(
                           icon: const Icon(Icons.close),
                           onPressed: () {
-                            if (widget.fromExternal) {
-                              SystemNavigator.pop();
-                            } else {
-                              Navigator.of(context).pop();
-                            }
+                            context.go(ROUTE_ACCOUNTS_HOME);
                           },
                         ),
                       ),
