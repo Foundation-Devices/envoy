@@ -1810,6 +1810,7 @@ const _: fn() = || {
         let EnvoyMessage = None::<foundation_api::api::message::EnvoyMessage>.unwrap();
         let _: foundation_api::api::message::QuantumLinkMessage = EnvoyMessage.message;
         let _: u32 = EnvoyMessage.timestamp;
+        let _: Option<u8> = EnvoyMessage.protocol_version;
     }
     {
         let EnvoyStatus = None::<foundation_api::api::status::EnvoyStatus>.unwrap();
@@ -1910,6 +1911,7 @@ const _: fn() = || {
         let PassportMessage = None::<foundation_api::api::message::PassportMessage>.unwrap();
         let _: foundation_api::api::message::QuantumLinkMessage = PassportMessage.message;
         let _: foundation_api::api::status::DeviceStatus = PassportMessage.status;
+        let _: Option<u8> = PassportMessage.protocol_version;
     }
     {
         let PassportSerial_ = None::<foundation_api::api::passport::PassportSerial>.unwrap();
@@ -2531,9 +2533,11 @@ impl SseDecode for foundation_api::api::message::EnvoyMessage {
         let mut var_message =
             <foundation_api::api::message::QuantumLinkMessage>::sse_decode(deserializer);
         let mut var_timestamp = <u32>::sse_decode(deserializer);
+        let mut var_protocolVersion = <Option<u8>>::sse_decode(deserializer);
         return foundation_api::api::message::EnvoyMessage {
             message: var_message,
             timestamp: var_timestamp,
+            protocol_version: var_protocolVersion,
         };
     }
 }
@@ -2878,6 +2882,17 @@ impl SseDecode for Option<foundation_api::api::message::PassportMessage> {
     }
 }
 
+impl SseDecode for Option<u8> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<u8>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for foundation_api::api::pairing::PairingRequest {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2938,9 +2953,11 @@ impl SseDecode for foundation_api::api::message::PassportMessage {
         let mut var_message =
             <foundation_api::api::message::QuantumLinkMessage>::sse_decode(deserializer);
         let mut var_status = <foundation_api::api::status::DeviceStatus>::sse_decode(deserializer);
+        let mut var_protocolVersion = <Option<u8>>::sse_decode(deserializer);
         return foundation_api::api::message::PassportMessage {
             message: var_message,
             status: var_status,
+            protocol_version: var_protocolVersion,
         };
     }
 }
@@ -4115,6 +4132,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::message::
         [
             self.0.message.into_into_dart().into_dart(),
             self.0.timestamp.into_into_dart().into_dart(),
+            self.0.protocol_version.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -4584,6 +4602,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::message::
         [
             self.0.message.into_into_dart().into_dart(),
             self.0.status.into_into_dart().into_dart(),
+            self.0.protocol_version.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -5507,6 +5526,7 @@ impl SseEncode for foundation_api::api::message::EnvoyMessage {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <foundation_api::api::message::QuantumLinkMessage>::sse_encode(self.message, serializer);
         <u32>::sse_encode(self.timestamp, serializer);
+        <Option<u8>>::sse_encode(self.protocol_version, serializer);
     }
 }
 
@@ -5794,6 +5814,16 @@ impl SseEncode for Option<foundation_api::api::message::PassportMessage> {
     }
 }
 
+impl SseEncode for Option<u8> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <u8>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for foundation_api::api::pairing::PairingRequest {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5847,6 +5877,7 @@ impl SseEncode for foundation_api::api::message::PassportMessage {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <foundation_api::api::message::QuantumLinkMessage>::sse_encode(self.message, serializer);
         <foundation_api::api::status::DeviceStatus>::sse_encode(self.status, serializer);
+        <Option<u8>>::sse_encode(self.protocol_version, serializer);
     }
 }
 
