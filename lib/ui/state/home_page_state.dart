@@ -19,7 +19,17 @@ class HomePageAccountsState {
 
 enum HomePageDevicesState { list, details }
 
-enum HomePageBackgroundState { hidden, menu, settings, backups, support, about }
+enum HomePageBackgroundState {
+  hidden,
+  menu,
+  settings,
+  backups,
+  support,
+  about,
+  fiatChooser,
+  logs,
+  licence
+}
 
 enum DismissiblePrompt {
   hideAmount,

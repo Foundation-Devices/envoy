@@ -70,7 +70,6 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                             hasScrollBody: true,
                             child: Builder(builder: (context) {
                               const TextStyle textTheme = TextStyle(
-                                  overflow: TextOverflow.fade,
                                   fontSize: 15,
                                   color: Colors.black87,
                                   fontWeight: FontWeight.bold);
@@ -103,16 +102,12 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                                                       minScaleFactor: .8),
                                               style: textTheme),
                                           Flexible(
-                                              child: Text(
-                                            word,
-                                            style: textTheme,
-                                            maxLines: 1,
-                                            textScaler: MediaQuery.of(context)
-                                                .textScaler
-                                                .clamp(
-                                                    maxScaleFactor: 1.5,
-                                                    minScaleFactor: .8),
-                                            softWrap: false,
+                                              child: FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                              word,
+                                              style: textTheme,
+                                            ),
                                           )),
                                         ],
                                       ),
@@ -155,10 +150,10 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                                         .add(Tuple(value, element));
                                   });
 
-                                  return Builder(builder: (context) {
-                                    return Row(
+                                  return SingleChildScrollView(
+                                    child: Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                          CrossAxisAlignment.start,
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       mainAxisSize: MainAxisSize.max,
@@ -170,8 +165,8 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                                             child: _buildMnemonicColumn(
                                                 section2WithIndex)),
                                       ],
-                                    );
-                                  });
+                                    ),
+                                  );
                                 },
                                 itemCount: widget.seed.length == 12 ? 1 : 2,
                               );
@@ -242,10 +237,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
 
   Widget _buildMnemonicColumn(List<Tuple<int, String>> list) {
     const TextStyle textTheme = TextStyle(
-        overflow: TextOverflow.fade,
-        fontSize: 15,
-        color: Colors.black87,
-        fontWeight: FontWeight.bold);
+        fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: list.map((word) {
@@ -260,12 +252,14 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
           child: Row(
             children: [
               Text("${word.item1}. ", style: textTheme),
-              Flexible(
-                  child: Text(
-                word.item2,
-                style: textTheme,
-                maxLines: 1,
-                softWrap: false,
+              Expanded(
+                  child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  word.item2,
+                  style: textTheme,
+                ),
               )),
             ],
           ),

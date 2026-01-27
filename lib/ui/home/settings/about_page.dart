@@ -12,6 +12,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 
 class AboutPage extends ConsumerStatefulWidget {
   const AboutPage({super.key});
@@ -87,6 +88,8 @@ class _AboutPageState extends ConsumerState<AboutPage> {
               AboutButton(
                 S().about_show,
                 onTap: () {
+                  ref.read(homePageBackgroundProvider.notifier).state =
+                      HomePageBackgroundState.licence;
                   showLicensePage(
                       context: context,
                       applicationName: "Envoy", // TODO: FIGMA
