@@ -318,7 +318,7 @@ Future<void> tapSettingsButton(
   String buttonText = "SETTINGS",
   Duration wait = Durations.extralong4,
 }) async {
-  await tester.pump();
+  await tester.pump(Durations.long2);
 
   final buttonFinder = find.text(buttonText);
   expect(buttonFinder, findsOneWidget,
@@ -326,7 +326,7 @@ Future<void> tapSettingsButton(
 
   await tester.tap(buttonFinder);
   await tester.pump(wait);
-  await tester.pump();
+  await tester.pump(Durations.long2);
 }
 
 Future<String?> findCurrentFiatInSettings(WidgetTester tester) async {
@@ -1701,7 +1701,7 @@ Future<void> openDeviceCard(WidgetTester tester, String deviceName) async {
 
 Future<void> openEditDevice(WidgetTester tester) async {
   await tester.pump();
-  final editNameButton = find.text('EDIT DEVICE NAME');
+  final editNameButton = find.text('Edit Device Name');
   expect(editNameButton, findsOneWidget);
 
   await tester.tap(editNameButton);
@@ -1711,7 +1711,7 @@ Future<void> openEditDevice(WidgetTester tester) async {
 Future<void> openMenuAndPressDeleteDevice(WidgetTester tester) async {
   await openDotsMenu(tester);
   await tester.pump();
-  final editNameButton = find.text('DELETE');
+  final editNameButton = find.text('Disconnect');
   expect(editNameButton, findsOneWidget);
 
   await tester.tap(editNameButton);

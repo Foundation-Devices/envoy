@@ -88,6 +88,7 @@ class EnvoyPopUp extends StatefulWidget {
     this.learnMoreText = '',
     this.customWidget,
     this.showCloseButton = true,
+    this.primaryButtonColor,
   });
 
   final String? title;
@@ -108,6 +109,7 @@ class EnvoyPopUp extends StatefulWidget {
   final String learnMoreText;
   final Widget? customWidget;
   final bool showCloseButton;
+  final Color? primaryButtonColor;
 
   @override
   State<EnvoyPopUp> createState() => _EnvoyPopUpState();
@@ -276,7 +278,7 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                 EnvoyButton(widget.primaryButtonLabel,
                     type: EnvoyButtonTypes.primary, onTap: () {
                   widget.onPrimaryButtonTap?.call(context);
-                }),
+                }, backgroundColor: widget.primaryButtonColor),
             ],
           ),
         ),

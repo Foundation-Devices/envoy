@@ -103,6 +103,8 @@ enum EnvoyIcons {
   eye,
   sd_card,
   stopwatch,
+  locked,
+  unlocked,
 }
 
 class EnvoyIcon extends StatelessWidget {

@@ -52,7 +52,7 @@ class _EnvoyButtonState extends State<EnvoyButton> {
           textColor = Colors.white;
           break;
         case EnvoyButtonTypes.secondary:
-          textColor = EnvoyColors.accentPrimary;
+          textColor = EnvoyColors.textSecondary;
           break;
         case EnvoyButtonTypes.tertiary:
           textColor = EnvoyColors.accentPrimary;
@@ -134,28 +134,31 @@ class _EnvoyButtonState extends State<EnvoyButton> {
           return BoxDecoration(
               color: widget.backgroundColor ?? EnvoyColors.accentPrimary,
               borderRadius: widget.borderRadius ??
-                  const BorderRadius.all(Radius.circular(13.0)));
+                  const BorderRadius.all(
+                      Radius.circular(EnvoySpacing.medium1)));
         }
       case EnvoyButtonTypes.secondary:
         {
           return BoxDecoration(
               color: widget.backgroundColor ?? EnvoyColors.surface3,
               borderRadius: widget.borderRadius ??
-                  const BorderRadius.all(Radius.circular(13.0)));
+                  const BorderRadius.all(
+                      Radius.circular(EnvoySpacing.medium1)));
         }
 
       case EnvoyButtonTypes.tertiary:
         return BoxDecoration(
             color: widget.backgroundColor,
             borderRadius: widget.borderRadius ??
-                const BorderRadius.all(Radius.circular(13.0)));
+                const BorderRadius.all(Radius.circular(EnvoySpacing.medium1)));
 
       case EnvoyButtonTypes.primaryModal:
         {
           return BoxDecoration(
               color: EnvoyColors.accentPrimary,
               borderRadius: widget.borderRadius ??
-                  const BorderRadius.all(Radius.circular(13.0)));
+                  const BorderRadius.all(
+                      Radius.circular(EnvoySpacing.medium1)));
         }
     }
   }

@@ -11,7 +11,6 @@ on:
 
 jobs:
   build-ios:
-    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: [ self-hosted, macOS, ARM64 ]
 
     steps:

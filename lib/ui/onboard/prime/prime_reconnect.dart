@@ -12,6 +12,7 @@ import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -163,12 +164,24 @@ class _PrimeReconnectState extends ConsumerState<PrimeReconnect> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      _success
-                          ? "Device Paired Successfully!"
-                          : "Waiting for Device to Pair...",
-                      style: Theme.of(context).textTheme.titleSmall,
-                      textAlign: TextAlign.center,
+                    Column(
+                      children: [
+                        Text(
+                          _success
+                              ? S().devices_reconnectedSuccess_header
+                              : S().devices_reconnecting_header,
+                          style: EnvoyTypography.heading,
+                          textAlign: TextAlign.center,
+                        ),
+                        Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
+                        Text(
+                          _success
+                              ? S().devices_reconnectedSuccess_content
+                              : S().devices_reconnecting_content,
+                          style: EnvoyTypography.body,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                     SizedBox(
                         width: double.infinity,

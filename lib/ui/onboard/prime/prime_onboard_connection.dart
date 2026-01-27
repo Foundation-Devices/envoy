@@ -13,7 +13,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
-import 'package:envoy/ui/onboard/prime/onboard_prime.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -24,12 +23,14 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/console.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+//TODO: this needs to go, once multiple primes are supported
+const String primeSerialPref = "prime_serial";
 
 class PrimeOnboardParing extends ConsumerStatefulWidget {
   const PrimeOnboardParing({super.key});
@@ -50,6 +51,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   @override
   void initState() {
     super.initState();
+    resetOnboardingPrimeProviders();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       try {
         _connectBLE();
@@ -184,8 +186,19 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            leading: CupertinoNavigationBarBackButton(
-              color: Colors.white,
+            leading: IconButton(
+              icon: const EnvoyIcon(
+                EnvoyIcons.chevron_left,
+                color: EnvoyColors.solidWhite,
+              ),
+              onPressed: () async {
+                if (context.canPop()) {
+                  final exit = await showExitWarning(context);
+                  if (exit && context.mounted) {
+                    context.go(ROUTE_ACCOUNTS_HOME);
+                  }
+                }
+              },
             ),
             automaticallyImplyLeading: false,
           ),
@@ -242,7 +255,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
             return Container(
               margin: const EdgeInsets.symmetric(
                 vertical: EnvoySpacing.medium1,
-                horizontal: EnvoySpacing.medium3,
+                horizontal: EnvoySpacing.large1,
               ),
               child: Wrap(
                 alignment: WrapAlignment.center,

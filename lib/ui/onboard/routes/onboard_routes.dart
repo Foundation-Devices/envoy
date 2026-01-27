@@ -22,7 +22,6 @@ import 'package:envoy/ui/pages/wallet/single_wallet_pair_success.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:envoy/ui/onboard/passport_scanner_screen.dart';
 
 /*
 * named onboarding routes
@@ -63,21 +62,15 @@ final onboardRoutes = GoRoute(
   routes: [
     primeRoutes,
     GoRoute(
-        path: "passport_scan",
-        name: ONBOARD_PASSPORT_SCAN,
-        builder: (context, state) => const PassportScannerScreen(),
-        routes: [
-          GoRoute(
-            path: "welcome",
-            name: ONBOARD_PASSPORT_SETUP,
-            builder: (context, state) => const OnboardPassportWelcomeScreen(),
-          ),
-          GoRoute(
-            path: "tou",
-            name: ONBOARD_PASSPORT_TOU,
-            builder: (context, state) => const TouPage(),
-          ),
-        ]),
+      path: "welcome",
+      name: ONBOARD_PASSPORT_SETUP,
+      builder: (context, state) => const OnboardPassportWelcomeScreen(),
+    ),
+    GoRoute(
+      path: "tou",
+      name: ONBOARD_PASSPORT_TOU,
+      builder: (context, state) => const TouPage(),
+    ),
     GoRoute(
       path: "scv_success",
       name: ONBOARD_PASSPORT_SCV_SUCCESS,

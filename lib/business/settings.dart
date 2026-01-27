@@ -50,6 +50,10 @@ final allowBuyInEnvoyProvider = Provider((ref) {
   return ref.watch(settingsProvider).isAllowedBuyInEnvoy();
 });
 
+final devModeEnabledProvider = StateProvider<bool>((ref) {
+  return false;
+});
+
 @JsonSerializable()
 class Settings extends ChangeNotifier {
   @override
@@ -77,7 +81,6 @@ class Settings extends ChangeNotifier {
   static final List<String> defaultTorServers = [
     "mocmguuik7rws4bclpcoz2ldfzesjolatrzggaxfl37hjpreap777yqd.onion:50001",
     "l7wsl4yghqvdgp4ullod67ydb54ttxs3nnvctblbofl7umw6j72e5did.onion:50001",
-    "vtdblqfka4iqbvjscagwglbg4wxmc42hvf5i7htr3dipnbqz5eiwqrqd.onion:50001"
   ];
   static String currentDefaultTorServer =
       selectRandomServerFrom(defaultTorServers);
@@ -104,7 +107,6 @@ class Settings extends ChangeNotifier {
     List<String> servers = [
       "mainnet-0.foundation.xyz",
       "mainnet-1.foundation.xyz",
-      "mainnet-2.foundation.xyz"
     ];
 
     String protocol = ssl ? "ssl://" : "tcp://";
@@ -282,7 +284,9 @@ class Settings extends ChangeNotifier {
       case Environment.staging:
         return "https://staging.envoy.foundation.xyz";
       case Environment.production:
-        return "https://envoy.foundation.xyz";
+        return usingTor
+            ? "http://sb6kqsauvr2cw5n7nkel5jbwdvdjksfhwj62tpcruxtt2r2bg763mrid.onion"
+            : "https://envoy.foundation.xyz";
     }
   }
 
@@ -320,6 +324,10 @@ class Settings extends ChangeNotifier {
     allowScreenshotsSetting = allowScreenshots;
     store();
   }
+
+  // Dev option - not persisted
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool skipPrimeSecurityCheck = false;
 
   @JsonKey(defaultValue: false)
   bool showTestnetAccountsSetting = false;
@@ -447,27 +455,6 @@ class Settings extends ChangeNotifier {
       }
     }
 
-    // ENV-2224
-    // Normalize default Electrum server: if current is not one of our defaults, pick a fresh one.
-    if (singleton.usingDefaultElectrumServer) {
-      final current = singleton.selectedElectrumAddress;
-
-      // All current clearnet defaults (both tcp and ssl, though we prefer ssl when selecting)
-      final allowedDefaults = <String>{
-        ...getDefaultFulcrumServers(ssl: true),
-        ...getDefaultFulcrumServers(ssl: false),
-      };
-
-      if (!allowedDefaults.contains(current)) {
-        final newDefault =
-            selectRandomServerFrom(getDefaultFulcrumServers(ssl: true));
-        currentDefaultServer = newDefault; // update static default
-        singleton.selectedElectrumAddress =
-            newDefault; // persist chosen default
-        await singleton.store();
-      }
-    }
-
     return singleton;
   }
 
@@ -494,6 +481,22 @@ class Settings extends ChangeNotifier {
   static Future<void> restore({bool fromBackup = false}) async {
     if (ls.prefs.containsKey(SETTINGS_PREFS)) {
       var json = jsonDecode(ls.prefs.getString(SETTINGS_PREFS)!);
+
+      // Migration: fix outdated default server.
+      final selected = json["selectedElectrumAddress"] as String?;
+      final usingDefault = json["usingDefaultElectrumServer"] as bool? ?? true;
+      final allowedDefaults = <String>{
+        ...getDefaultFulcrumServers(ssl: true),
+        ...getDefaultFulcrumServers(ssl: false),
+      };
+      final shouldFixDefault = usingDefault &&
+          selected != null &&
+          !allowedDefaults.contains(selected);
+      if (shouldFixDefault) {
+        json["selectedElectrumAddress"] =
+            selectRandomServerFrom(getDefaultFulcrumServers(ssl: true));
+        json["usingDefaultElectrumServer"] = true;
+      }
 
       if (fromBackup) {
         if (Settings().nodeChangedInAdvanced ||

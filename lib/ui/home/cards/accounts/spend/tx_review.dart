@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:animations/animations.dart';
@@ -588,7 +589,9 @@ class _TransactionReviewScreenState
         if (!isConnected &&
             device != null &&
             device.type == DeviceType.passportPrime) {
-          BluetoothManager().reconnect(device);
+          final deviceId =
+              Platform.isAndroid ? device.bleId : device.peripheralId;
+          BluetoothManager().reconnect(deviceId);
         }
       },
     );
@@ -1078,8 +1081,9 @@ class _TransactionReviewScreenState
   void checkConnectivity(bool isConnected, Device device) async {
     await Future.delayed(const Duration(milliseconds: 500));
     if (!isConnected) {
+      final deviceId = Platform.isAndroid ? device.bleId : device.peripheralId;
       // try to connect to prime
-      BluetoothManager().reconnect(device);
+      BluetoothManager().reconnect(deviceId);
     }
   }
 
@@ -1089,18 +1093,21 @@ class _TransactionReviewScreenState
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        EnvoyStepItem(step: _primeConnectionState, highlight: false),
+        EnvoyStepItem(
+          step: _primeConnectionState,
+        ),
         SizedBox(
           height: EnvoySpacing.medium1,
         ),
         EnvoyStepItem(
-            step: ref.watch(transferTransactionStateProvider),
-            highlight: false),
+          step: ref.watch(transferTransactionStateProvider),
+        ),
         SizedBox(
           height: EnvoySpacing.medium1,
         ),
         EnvoyStepItem(
-            step: ref.watch(signTransactionStateProvider), highlight: false),
+          step: ref.watch(signTransactionStateProvider),
+        ),
       ],
     );
   }

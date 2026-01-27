@@ -77,7 +77,7 @@ impl Backup {
     pub fn get_reqwest_client(proxy_port: i32) -> reqwest::Client {
         if proxy_port > 0 {
             let proxy =
-                reqwest::Proxy::all("socks5://127.0.0.1:".to_owned() + &proxy_port.to_string())
+                reqwest::Proxy::all("socks5h://127.0.0.1:".to_owned() + &proxy_port.to_string())
                     .unwrap();
             reqwest::Client::builder()
                 .proxy(proxy)

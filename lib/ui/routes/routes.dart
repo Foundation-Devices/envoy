@@ -24,6 +24,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/send_qr_review.dart';
+import 'package:envoy/ui/home/home_page.dart';
 
 const ROUTE_SPLASH = 'onboard';
 const WALLET_SUCCESS = "wallet_ready";
@@ -77,11 +78,13 @@ final GoRouter mainRouter = GoRouter(
     // If user tries to access home but hasn't onboarded yet → redirect to onboarding
     if (state.fullPath == ROUTE_ACCOUNTS_HOME && !isOnboardingComplete) {
       await WakelockPlus.enable(); // keep screen awake during onboarding
+      isCurrentlyOnboarding = true;
       return state.namedLocation(ROUTE_SPLASH);
     }
 
     // If user has completed onboarding and goes to home → disable wakelock
     if (isOnboardingComplete && state.fullPath == ROUTE_ACCOUNTS_HOME) {
+      isCurrentlyOnboarding = false;
       await WakelockPlus.disable();
     }
 
@@ -97,16 +100,22 @@ final GoRouter mainRouter = GoRouter(
         final params = state.uri.queryParameters;
 
         if (params.containsKey("p")) {
+          WakelockPlus.enable();
+          isCurrentlyOnboarding = true;
           return state.namedLocation(ONBOARD_PRIME, queryParameters: params);
         }
 
         if (params.containsKey("t")) {
+          WakelockPlus.enable();
+          isCurrentlyOnboarding = true;
           return state.namedLocation(TOU_EXTERNAL, queryParameters: params);
         }
 
         if (LocalStorage().prefs.getBool(PREFS_ONBOARDED) != true) {
+          isCurrentlyOnboarding = true;
           return ROUTE_SPLASH;
         } else {
+          isCurrentlyOnboarding = false;
           return ROUTE_ACCOUNTS_HOME;
         }
       },

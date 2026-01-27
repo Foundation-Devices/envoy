@@ -17,6 +17,8 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:foundation_api/foundation_api.dart';
+import 'package:envoy/ui/routes/routes.dart';
+import 'package:envoy/util/envoy_storage.dart';
 
 class BleConnectionState {
   final String message;
@@ -62,26 +64,16 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
 
   void _handlePairingResponse(api.PairingResponse response) async {
     try {
-      final deviceColor = response.passportColor == PassportColor.dark
-          ? DeviceColor.dark
-          : DeviceColor.light;
-      final peripheralId = BluetoothChannel().lastDeviceStatus.peripheralId;
-      await BluetoothManager().addDevice(
-        response.passportSerial.field0,
-        sanitizeVersion(response.passportFirmwareVersion.field0),
-        BluetoothManager().bleId,
-        deviceColor,
-        peripheralId: peripheralId ?? "",
-        onboardingComplete: response.onboardingComplete,
-      );
-
       updateBlePairState(S().onboarding_connectionIntro_connectedToPrime,
           EnvoyStepState.FINISHED);
       _pairingResponse = response;
 
-      EnvoySeed().generateAndBackupWalletSilently();
-
       if (response.onboardingComplete) {
+        await addDevice(response);
+        UpdatesManager().checkAndStoreLatestPrimeFirmware(
+            _pairingResponse?.passportFirmwareVersion.field0);
+        await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
+        await EnvoySeed().generateAndBackupWalletSilently();
         //no need to send security challenge if onboarding is already complete
         try {
           BluetoothManager().sendExchangeRateHistory();
@@ -98,7 +90,23 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
     }
   }
 
-  void _handleOnboardingState(OnboardingState onboardingState) {
+  Future<void> addDevice(api.PairingResponse response) async {
+    final deviceColor = response.passportColor == PassportColor.dark
+        ? DeviceColor.dark
+        : DeviceColor.light;
+    final peripheralId = BluetoothChannel().lastDeviceStatus.peripheralId;
+
+    await BluetoothManager().addDevice(
+      response.passportSerial.field0,
+      sanitizeVersion(response.passportFirmwareVersion.field0),
+      BluetoothManager().bleId,
+      deviceColor,
+      peripheralId: peripheralId ?? "",
+      onboardingComplete: response.onboardingComplete,
+    );
+  }
+
+  void _handleOnboardingState(OnboardingState onboardingState) async {
     if (!_completedOnboardingStates.contains(onboardingState)) {
       _completedOnboardingStates.add(onboardingState);
       kPrint(
@@ -106,11 +114,18 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
     }
 
     if (onboardingState == api.OnboardingState.completed) {
+      await Devices().markPrimeOnboarded(true);
       try {
-        BluetoothManager().sendExchangeRateHistory();
+        if (_pairingResponse != null) {
+          await addDevice(_pairingResponse!);
+          UpdatesManager().checkAndStoreLatestPrimeFirmware(
+              _pairingResponse?.passportFirmwareVersion.field0);
+          await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
+        }
+        await EnvoySeed().generateAndBackupWalletSilently();
+        await BluetoothManager().sendExchangeRateHistory();
       } catch (e) {
-        kPrint(
-            "Could not send exchange rate history at onboarding completion: ${e.toString()}");
+        kPrint("Could not finish onboarding: ${e.toString()}");
       }
     }
     _onboardingState.sink.add(onboardingState);
@@ -135,7 +150,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
   }
 
   void reset() {
-    _pairingResponse = null;
     _completedOnboardingStates.clear();
+    updateBlePairState("Connecting to device", EnvoyStepState.IDLE);
   }
 }

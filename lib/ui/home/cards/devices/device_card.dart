@@ -368,26 +368,41 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
           height: 10,
         ),
         GestureDetector(
-          child: Text(S().component_delete.toUpperCase(),
+          child: Text(S().manage_device_details_menu_disconnectDevice,
               style: const TextStyle(color: EnvoyColors.copperLight500)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
+            final bool isPrime = widget.device.type == DeviceType.passportPrime;
             showEnvoyDialog(
                 context: context,
                 dialog: EnvoyPopUp(
                   icon: EnvoyIcons.alert,
                   typeOfMessage: PopUpState.warning,
-                  showCloseButton: true,
-                  title: S().component_areYouSure,
-                  content: S().manage_device_deletePassportWarning,
-                  primaryButtonLabel: S().component_delete,
+                  showCloseButton: false,
+                  title: isPrime
+                      ? S()
+                          .manage_deviceDetailsModalDisconnectExistingPassport_header
+                      : S().component_areYouSure,
+                  content: isPrime
+                      ? S()
+                          .manage_deviceDetailsModalDisconnectExistingPassport_content
+                      : S().manage_device_deletePassportWarning,
+                  primaryButtonLabel: S().componet_disconnect,
+                  primaryButtonColor: EnvoyColors.warning,
                   onPrimaryButtonTap: (context) {
                     Devices().deleteDevice(widget.device);
+
                     // Pop the dialog
-                    Navigator.pop(context);
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    }
 
                     // Go back to devices list
                     context.go(ROUTE_DEVICES);
+                  },
+                  secondaryButtonLabel: S().component_cancel,
+                  onSecondaryButtonTap: (context) {
+                    Navigator.pop(context);
                   },
                 ));
           },

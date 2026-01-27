@@ -51,17 +51,33 @@ class BleWriteQueue {
 
                 Task {
                     let success = await self.performWrite(data: request.data)
-                    if !success {
-                        print("ERROR - BleWriteQueue: Write failed, clearing queue")
-                        self.isActive = false
-                        request.completion(false)
-                        self.clearQueue()
-                        self.isProcessing = false
-                        return
+                    self.queue.async { [weak self] in
+                        guard let self = self else {
+                            request.completion(false)
+                            return
+                        }
+                        
+                        if !success {
+                            print("ERROR - BleWriteQueue: Write failed, clearing queue")
+                            self.isActive = false
+                            request.completion(false)
+                            self.clearQueue()
+                            self.isProcessing = false
+                            return
+                        }
+                        request.completion(true)
+                        self.currentRequest = nil
+                        
+                        // Continue processing if there are more items
+                        if !self.writeQueue.isEmpty {
+                            self.processQueue()
+                        } else {
+                            self.isProcessing = false
+                        }
                     }
-                    request.completion(true)
-                    self.currentRequest = nil
                 }
+                
+                return
             }
         }
     }
@@ -161,7 +177,7 @@ class BleWriteQueue {
         writeQueue.removeAll()
     }
 
-    private class WriteRequest {
+    private final class WriteRequest: @unchecked Sendable {
         let data: Data
         let completion: (Bool) -> Void
 

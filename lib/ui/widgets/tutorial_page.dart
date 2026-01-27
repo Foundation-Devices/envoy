@@ -6,19 +6,21 @@ import 'dart:ui';
 
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
-import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/util/envoy_storage.dart' show EnvoyStorage;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-
-final dialogPageProvider = StateProvider<int>((ref) => 1);
+import 'package:ngwallet/ngwallet.dart';
 
 class AccountTutorialOverlay extends ConsumerStatefulWidget {
+  final List<EnvoyAccount> accounts;
   const AccountTutorialOverlay({
     super.key,
+    required this.accounts,
   });
 
   @override
@@ -26,119 +28,165 @@ class AccountTutorialOverlay extends ConsumerStatefulWidget {
       _AccountTutorialOverlayState();
 }
 
-class _AccountTutorialOverlayState extends ConsumerState<AccountTutorialOverlay>
-    with SingleTickerProviderStateMixin {
+class _AccountTutorialOverlayState
+    extends ConsumerState<AccountTutorialOverlay> {
+  int currentPageNumber = 1;
+
+  bool _visible = true;
+  bool _closing = false;
+
+  void _requestClose() {
+    if (_closing) return;
+    EnvoyStorage().addPromptState(DismissiblePrompt.primeAccountTutorial);
+
+    setState(() {
+      _visible = false;
+      _closing = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final accounts = ref.watch(accountsProvider);
-    final currentPageNumber = ref.watch(dialogPageProvider);
-    const double accountCardHeight = 114;
+    final accounts = widget.accounts;
 
     return PopScope(
       canPop: false,
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: TweenAnimationBuilder(
-              duration: const Duration(milliseconds: 300),
-              tween: ColorTween(begin: Colors.transparent, end: Colors.black),
-              builder: (context, value, child) {
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                    value ?? Colors.transparent,
-                    const Color(0x00000000),
-                  ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-                  child: child,
-                );
-              },
-              child: TweenAnimationBuilder(
-                duration: const Duration(milliseconds: 300),
-                tween: Tween<double>(begin: 0, end: 5),
-                builder: (context, value, child) {
-                  return BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: value, sigmaY: value),
-                      child: child);
-                },
-                child: Scaffold(
-                  appBar: AppBar(
-                    backgroundColor: Colors.transparent,
-                    automaticallyImplyLeading: false,
-                    elevation: 0,
-                    centerTitle: true,
-                    title: Text(
-                      S().bottomNav_accounts.toUpperCase(),
-                      style: EnvoyTypography.subheading
-                          .copyWith(color: Colors.white),
-                    ),
-                    actions: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: EnvoySpacing.xs),
-                        child: IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
+      child: TweenAnimationBuilder<double>(
+        duration: const Duration(milliseconds: 300),
+        tween: Tween<double>(begin: 0, end: _visible ? 1 : 0),
+        onEnd: () {
+          if (!_visible && mounted) Navigator.of(context).pop();
+        },
+        builder: (context, t, child) {
+          return IgnorePointer(
+            ignoring: _closing,
+            child: Opacity(
+              opacity: t,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: TweenAnimationBuilder(
+                      duration: const Duration(milliseconds: 300),
+                      tween: ColorTween(
+                          begin: Colors.transparent, end: Colors.black),
+                      builder: (context, value, child) {
+                        return Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  colors: [
+                                value ?? Colors.transparent,
+                                const Color(0x00000000),
+                              ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter)),
+                          child: child,
+                        );
+                      },
+                      child: TweenAnimationBuilder(
+                        duration: const Duration(milliseconds: 300),
+                        tween: Tween<double>(begin: 0, end: 5),
+                        builder: (context, value, child) {
+                          return BackdropFilter(
+                              filter: ImageFilter.blur(
+                                  sigmaX: value, sigmaY: value),
+                              child: child);
+                        },
+                        child: Scaffold(
+                          appBar: AppBar(
+                            backgroundColor: Colors.transparent,
+                            automaticallyImplyLeading: false,
+                            elevation: 0,
+                            centerTitle: true,
+                            title: Text(
+                              S().bottomNav_accounts.toUpperCase(),
+                              style: EnvoyTypography.subheading
+                                  .copyWith(color: Colors.white),
+                            ),
+                            actions: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    right: EnvoySpacing.xs),
+                                child: IconButton(
+                                  icon: const Icon(Icons.close),
+                                  onPressed: () {
+                                    EnvoyStorage().addPromptState(
+                                        DismissiblePrompt.primeAccountTutorial);
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          body: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: EnvoySpacing.medium1),
+                            child: ListView.builder(
+                              padding: const EdgeInsets.only(
+                                  top: EnvoySpacing.medium1),
+                              itemBuilder: (context, index) {
+                                final account = accounts[index];
+
+                                bool active = false;
+                                if (account.isHot) {
+                                  //For mobile wallet
+                                  active = currentPageNumber == 1;
+                                } else {
+                                  //For prime
+                                  active = currentPageNumber == 2;
+                                }
+
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.all(EnvoySpacing.small),
+                                  child: AnimatedOpacity(
+                                    opacity: active ? 1 : 0.1,
+                                    duration: Duration(milliseconds: 300),
+                                    child: AnimatedScale(
+                                      scale: active ? 1 : 0.98,
+                                      duration: Duration(milliseconds: 200),
+                                      child: AccountListTile(
+                                        key: ValueKey(account.id),
+                                        account,
+                                        draggable: false,
+                                        onTap: () {},
+                                      ),
+                                    ),
+                                  ), // Keeps space when hidden
+                                );
+                              },
+                              itemCount: accounts.length,
+                            ),
+                          ),
                         ),
                       ),
-                    ],
-                  ),
-                  body: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium1),
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      transitionBuilder:
-                          (Widget child, Animation<double> animation) {
-                        return FadeTransition(opacity: animation, child: child);
-                      },
-                      child: ListView.builder(
-                        key: ValueKey(currentPageNumber),
-                        padding:
-                            const EdgeInsets.only(top: EnvoySpacing.medium1),
-                        itemBuilder: (context, index) {
-                          final account = accounts[index];
-
-                          return Padding(
-                            padding: const EdgeInsets.all(EnvoySpacing.small),
-                            child: index == currentPageNumber - 1
-                                ? AccountListTile(
-                                    key: ValueKey(account.id),
-                                    account,
-                                    draggable: false,
-                                    onTap: () {},
-                                  )
-                                : const SizedBox(
-                                    height:
-                                        accountCardHeight), // Keeps space when hidden
-                          );
-                        },
-                        itemCount: accounts.length,
-                      ),
                     ),
                   ),
-                ),
+                  Positioned(
+                    bottom: EnvoySpacing.medium3,
+                    left: 0,
+                    right: 0,
+                    child: TutorialDialog(
+                      onPageSet: (int page) {
+                        setState(() => currentPageNumber = page);
+                      },
+                      onDone: _requestClose,
+                      titles: [
+                        S().onboarding_tutorialHotWallet_header,
+                        S().onboarding_tutorialColdWallet_header,
+                      ],
+                      descriptions: [
+                        S().onboarding_tutorialHotWallet_content,
+                        S().onboarding_tutorialColdWallet_content,
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          Positioned(
-            bottom: EnvoySpacing.medium3,
-            left: 0,
-            right: 0,
-            child: TutorialDialog(
-              titles: [
-                S().onboarding_tutorialHotWallet_header,
-                S().onboarding_tutorialColdWallet_header
-              ],
-              descriptions: [
-                S().onboarding_tutorialHotWallet_content,
-                S().onboarding_tutorialColdWallet_content,
-              ],
-            ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -147,11 +195,15 @@ class _AccountTutorialOverlayState extends ConsumerState<AccountTutorialOverlay>
 class TutorialDialog extends ConsumerStatefulWidget {
   final List<String> titles;
   final List<String> descriptions;
+  final Function(int page) onPageSet;
+  final VoidCallback onDone;
 
   const TutorialDialog({
     super.key,
     required this.titles,
     required this.descriptions,
+    required this.onPageSet,
+    required this.onDone,
   });
 
   @override
@@ -159,24 +211,24 @@ class TutorialDialog extends ConsumerStatefulWidget {
 }
 
 class _TutorialDialogState extends ConsumerState<TutorialDialog> {
+  int pageNumber = 1;
   @override
   Widget build(BuildContext context) {
-    final pageNumber = ref.watch(dialogPageProvider);
-    final pageNotifier = ref.read(dialogPageProvider.notifier);
-
     final int totalPages = widget.titles.length; // Dynamic total page count
 
     void nextPage() {
       if (pageNumber < totalPages) {
-        pageNotifier.state++;
+        pageNumber++;
+        widget.onPageSet(pageNumber);
       } else {
-        Navigator.of(context).pop(); // Close dialog on "Done"
+        widget.onDone();
       }
     }
 
     void prevPage() {
       if (pageNumber > 1) {
-        pageNotifier.state--;
+        pageNumber--;
+        widget.onPageSet(pageNumber);
       }
     }
 
@@ -223,8 +275,9 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
                           Text(
                             widget.titles[pageNumber - 1],
                             textAlign: TextAlign.center,
-                            style: EnvoyTypography.subheading.copyWith(
-                                color: EnvoyColors.textPrimaryInverse),
+                            style: EnvoyTypography.heading
+                                .copyWith(color: EnvoyColors.textPrimaryInverse)
+                                .setWeight(FontWeight.w600),
                           ),
                           const SizedBox(height: EnvoySpacing.medium1),
                           SizedBox(
@@ -233,8 +286,8 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
                               child: Text(
                                 widget.descriptions[pageNumber - 1],
                                 textAlign: TextAlign.center,
-                                style: EnvoyTypography.info
-                                    .copyWith(color: EnvoyColors.textTertiary),
+                                style: EnvoyTypography.body.copyWith(
+                                    color: EnvoyColors.contentTertiary),
                               ),
                             ),
                           ),

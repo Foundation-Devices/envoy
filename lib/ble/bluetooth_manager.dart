@@ -5,13 +5,16 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:envoy/ble/handlers/device_handler.dart';
 import 'package:envoy/ble/handlers/fw_update_handler.dart';
 import 'package:envoy/ble/handlers/onboard_handler.dart';
 import 'package:envoy/ble/handlers/scv_handler.dart';
+import 'package:envoy/ble/handlers/timezone_handler.dart' show TimeZoneHandler;
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
 import 'package:envoy/business/scv_server.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -24,10 +27,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:permission_handler/permission_handler.dart';
-
 import 'handlers/account_handler.dart';
+import 'handlers/heartbeat_handler.dart';
 import 'handlers/magic_backup_handler.dart';
-import 'handlers/passphrase_handler.dart';
+
 import 'handlers/shards_handler.dart';
 import 'quantum_link_router.dart';
 
@@ -46,10 +49,6 @@ final isPrimeConnectedProvider = Provider.family<bool, String>((ref, bleId) {
   return status.connected == true;
 });
 
-final sendProgressProvider =
-    StateNotifierProvider<SendProgressNotifier, double>(
-  (ref) => SendProgressNotifier(ref),
-);
 //TODO: refactor with new fw update progress tracking
 final remainingTimeProvider = StateProvider<Duration>((ref) => Duration.zero);
 
@@ -78,12 +77,12 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   late final ShardsHandler _bleShardsHandler = ShardsHandler(this);
   late final ScvHandler _scvAccountHandler = ScvHandler(this);
   late final BleOnboardHandler _bleOnboardHandler = BleOnboardHandler(this);
-  late final BlePassphraseHandler _blePassphraseHandler =
-      BlePassphraseHandler(this, _passphraseEventStream);
 
   late final FwUpdateHandler _fwUpdateHandler = FwUpdateHandler(
     this,
   );
+
+  late final HeartbeatHandler _heartbeatHandler = HeartbeatHandler(this);
 
   //
   BleMagicBackupHandler get magicBackupHandler => _bleMagicBackupHandler;
@@ -144,27 +143,10 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 
   Stream<double> get writeProgressStream => _writeProgressController.stream;
 
-  //TODO: firmware update progress tracking with new progress stream
-  // int _totalFirmwareChunks = 0;
-  // int _sentFirmwareChunks = 0;
-  // bool _isUpdatingFirmware = false;
-
-  void startFirmwareUpdate({required int totalChunks}) {
-    // _totalFirmwareChunks = totalChunks;
-    // _sentFirmwareChunks = 0;
-    // _isUpdatingFirmware = true;
-    _writeProgressController.add(0.0);
-  }
-
-  void endFirmwareUpdate() {
-    // _isUpdatingFirmware = false;
-    // _totalFirmwareChunks = 0;
-    // _sentFirmwareChunks = 0;
-  }
-
   String bleId = "";
 
   api.QuantumLinkIdentity? get qlIdentity => _qlIdentity;
+
   api.XidDocument? get recipientXid => _recipientXid;
 
   static Future<BluetoothManager> init() async {
@@ -184,10 +166,15 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     _messageRouter.registerHandler(_bleShardsHandler);
     _messageRouter.registerHandler(_bleAccountHandler);
     _messageRouter.registerHandler(_bleOnboardHandler);
-    _messageRouter.registerHandler(_blePassphraseHandler);
     _messageRouter.registerHandler(_fwUpdateHandler);
     _messageRouter.registerHandler(_scvAccountHandler);
+    _messageRouter.registerHandler(_heartbeatHandler);
+    _messageRouter.registerHandler(DeviceHandler(this));
+    _messageRouter.registerHandler(TimeZoneHandler(this));
 
+    if (bleId.isEmpty && Devices().getPrimeDevices.isNotEmpty) {
+      bleId = Devices().getPrimeDevices.first.bleId;
+    }
     await listen(id: bleId);
     kPrint("QL Identity: $_qlIdentity");
     await restoreQuantumLinkIdentity();
@@ -195,6 +182,21 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     _aridCache = await api.getAridCache();
     kPrint("QL Identity: $_qlIdentity");
     initBluetooth();
+  }
+
+  Future<void> restoreAfterRecovery() async {
+    final primes = Devices().getPrimeDevices;
+    final newBleId = primes.isNotEmpty ? primes.first.bleId : "";
+
+    if (newBleId.isEmpty) return;
+
+    if (bleId != newBleId) {
+      bleId = newBleId;
+      await listen(id: newBleId);
+    }
+
+    await restoreQuantumLinkIdentity();
+    await restorePrimes();
   }
 
   Future<void> restoreQuantumLinkIdentity() async {
@@ -377,7 +379,14 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 
   @override
   Future<bool> writeMessage(api.QuantumLinkMessage message) async {
-    kPrint("Sending message: $message");
+    if (!BluetoothChannel().lastDeviceStatus.connected) {
+      await BluetoothChannel().deviceStatusStream.firstWhere((status) {
+        return status.connected == true;
+      }).timeout(Duration(seconds: 10), onTimeout: () {
+        throw Exception("Failed to send message, device not connected");
+      });
+    }
+    kPrint("Sending message: ${message.runtimeType}");
     await _writeWithProgress(message);
     return true;
   }
@@ -387,13 +396,20 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       {bool onboardingComplete = false, String peripheralId = ""}) async {
     final recipientXid =
         await api.serializeXidDocument(xidDocument: _recipientXid!);
-    final device = Device("Prime", DeviceType.passportPrime, serialNumber,
-        DateTime.now(), firmwareVersion, EnvoyColors.listAccountTileColors[0],
-        bleId: bleId,
-        deviceColor: deviceColor,
-        xid: recipientXid,
-        peripheralId: peripheralId,
-        onboardingComplete: onboardingComplete);
+    final device = Device(
+      "Prime",
+      DeviceType.passportPrime,
+      serialNumber,
+      DateTime.now(),
+      firmwareVersion,
+      EnvoyColors.listAccountTileColors[0],
+      bleId: bleId,
+      deviceColor: deviceColor,
+      xid: recipientXid,
+      peripheralId: peripheralId,
+      onboardingComplete: onboardingComplete,
+      primeBackupEnabled: Settings().syncToCloud,
+    );
     Devices().add(device);
   }
 
@@ -440,7 +456,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       _bluetoothChannel.listenToDataEvents().listen((payload) {
         decode(payload).then((value) async {
           if (value != null) {
-            unawaited(_messageRouter.dispatch(value.message, id));
+            unawaited(_messageRouter.dispatch(value, id));
             _passportMessageStream.add(value);
             kPrint(
                 "Got Passport message type: ${value.message.runtimeType} ${value.message}");
@@ -449,8 +465,12 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
               kPrint("Got the Broadcast Transaction");
               _transactionStream.add(transaction);
             }
-          } else {
-            kPrint("QL Decoded message is null");
+            if (value.message
+                case api.QuantumLinkMessage_ApplyPassphrase applyPassphrase) {
+              kPrint(
+                  "Got ApplyPassphrase event: ${applyPassphrase.field0.fingerprint}");
+              _passphraseEventStream.add(applyPassphrase.field0);
+            }
           }
         }, onError: (e) {
           kPrint("Error decoding: $e");
@@ -535,6 +555,10 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     if (Devices().getPrimeDevices.isEmpty || _recipientXid == null) {
       return;
     }
+    //TODO: support multi device
+    if (Devices().getPrimeDevices.first.onboardingComplete) {
+      return;
+    }
     kPrint(
         "Preparing to send exchange rate to Prime... $_sendingData devices ${Devices().getPrimeDevices.length}");
     try {
@@ -570,6 +594,11 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     if (_sendingData) return;
 
     if (Devices().getPrimeDevices.isEmpty || _recipientXid == null) {
+      return;
+    }
+    //TODO: support multi device
+
+    if (Devices().getPrimeDevices.first.onboardingComplete) {
       return;
     }
     try {
@@ -614,24 +643,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     });
   }
 
-  // Future<void> sendFirmwareUpdateInfo(List<PrimePatch> patches) async {
-  //   if (patches.isEmpty) {
-  //     writeMessage(api.QuantumLinkMessage.firmwareUpdateCheckResponse(
-  //         api.FirmwareUpdateCheckResponse_NotAvailable()));
-  //     return;
-  //   }
-  //
-  //   final response = api.QuantumLinkMessage.firmwareUpdateCheckResponse(
-  //       api.FirmwareUpdateCheckResponse.available(api.FirmwareUpdateAvailable(
-  //           version: patches.last.version,
-  //           timestamp: patches.last.releaseDate.millisecondsSinceEpoch,
-  //           totalSize: 100,
-  //           changelog: patches.last.changelog,
-  //           patchCount: patches.length)));
-  //
-  //   await writeMessage(response);
-  // }
-
   Future<Stream<double>> _writeWithProgress(
       api.QuantumLinkMessage message) async {
     _sendingData = true;
@@ -665,65 +676,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     return _writeWithProgress(message);
   }
 
-  Future<void> reconnect(Device device) async {
-    await BluetoothChannel().reconnect(device);
-  }
-}
-
-class SendProgressNotifier extends StateNotifier<double> {
-  final Ref ref;
-  StreamSubscription<WriteProgress>? _sub;
-  DateTime? _startTime;
-  Duration _elapsed = Duration.zero;
-
-  SendProgressNotifier(this.ref) : super(0.0);
-
-  void listen(String path) {
-    _sub = BluetoothChannel().getWriteProgress(path).listen(
-      (event) {
-        final progress = event.progress;
-        setProgress(progress);
-      },
-      onDone: () {
-        state = 0.0;
-        ref.read(remainingTimeProvider.notifier).state = Duration.zero;
-      },
-      onError: (_) {
-        state = 0.0;
-        ref.read(remainingTimeProvider.notifier).state = Duration.zero;
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _sub?.cancel();
-    super.dispose();
-  }
-
-  void setProgress(double progress) {
-    state = progress;
-    if (_startTime == null && progress > 0) {
-      _startTime = DateTime.now();
-      _elapsed = Duration.zero;
-    }
-
-    state = progress * 100;
-
-    if (_startTime != null) {
-      final now = DateTime.now();
-      _elapsed = now.difference(_startTime!);
-      final elapsedSeconds = _elapsed.inMilliseconds / 1000.0;
-
-      if (progress > 0 && progress < 1 && elapsedSeconds > 0) {
-        final speed = progress / elapsedSeconds;
-        final remainingSeconds =
-            ((1.0 - progress) / speed).clamp(0, double.infinity);
-        ref.read(remainingTimeProvider.notifier).state =
-            Duration(seconds: remainingSeconds.round());
-      } else {
-        ref.read(remainingTimeProvider.notifier).state = Duration.zero;
-      }
-    }
+  Future<void> reconnect(String id) async {
+    await BluetoothChannel().reconnect(id);
   }
 }

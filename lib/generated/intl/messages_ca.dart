@@ -69,9 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage(
-          "Foundation Devices, Inc.\n6 Liberty Square #6018\nBoston, MA 02109 USA",
-        ),
+        "_": MessageLookupByLibrary.simpleMessage("6:15"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage(
           "Versió de l\'aplicació",
         ),
@@ -299,6 +297,12 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "backups_erase_wallets_and_backups_show_seed_CTA":
             MessageLookupByLibrary.simpleMessage("Mostra les Paraules"),
+        "backups_erase_wallets_and_backups_show_seed_heading":
+            MessageLookupByLibrary.simpleMessage("Keep Your Seed Private"),
+        "backups_erase_wallets_and_backups_show_seed_subheading":
+            MessageLookupByLibrary.simpleMessage(
+          "Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!",
+        ),
         "backups_magicToManualErrorModal_header":
             MessageLookupByLibrary.simpleMessage("Unable to Continue"),
         "backups_magicToManualErrorModal_subheader":
@@ -807,6 +811,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "common_button_contactSupport": MessageLookupByLibrary.simpleMessage(
           "Contact Support",
         ),
+        "component_12WordSeed": MessageLookupByLibrary.simpleMessage(
+          "12 Word Seed",
+        ),
+        "component_24WordSeed": MessageLookupByLibrary.simpleMessage(
+          "24 Word Seed",
+        ),
         "component_Apply": MessageLookupByLibrary.simpleMessage("Aplica"),
         "component_advanced": MessageLookupByLibrary.simpleMessage("Advanced"),
         "component_apply": MessageLookupByLibrary.simpleMessage("Apply"),
@@ -844,6 +854,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "component_ok": MessageLookupByLibrary.simpleMessage("D\'ACORD"),
         "component_recover": MessageLookupByLibrary.simpleMessage("Recover"),
+        "component_recoverWithQR": MessageLookupByLibrary.simpleMessage(
+          "Recover with QR Code",
+        ),
         "component_redeem": MessageLookupByLibrary.simpleMessage("Bescanviar"),
         "component_reset": MessageLookupByLibrary.simpleMessage("Reinicia"),
         "component_resetFilter": MessageLookupByLibrary.simpleMessage(
@@ -1656,6 +1669,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Envoy està creant una clau segura per a la cartera de Bitcoin, que s\'emmagatzemarà encriptada d\'extrem a extrem en el teu Clauer d\'iCloud.",
         ),
+        "magic_setup_recovery_fail_Android_CTA1":
+            MessageLookupByLibrary.simpleMessage("Retry"),
         "magic_setup_recovery_fail_Android_CTA2":
             MessageLookupByLibrary.simpleMessage("Recuperació amb codi QR"),
         "magic_setup_recovery_fail_Android_subheading":
@@ -1778,6 +1793,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "manual_coin_preselection_dialog_description":
             MessageLookupByLibrary.simpleMessage(
           "Això descartarà qualsevol canvi de selecció de monedes. Vols continuar?",
+        ),
+        "manual_onboardDisableMB_magicBackupDetected_heading":
+            MessageLookupByLibrary.simpleMessage("Existing Wallet Detected"),
+        "manual_onboardDisableMB_magicBackupDetected_subheading":
+            MessageLookupByLibrary.simpleMessage(
+          "Envoy found an existing wallet in your personal cloud and will recover it now. To disable Magic Backups or permanently erase this wallet, please visit the backups menu.",
         ),
         "manual_setup_change_from_magic_header":
             MessageLookupByLibrary.simpleMessage("Magic Backups deactivated"),
@@ -2185,6 +2206,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "onboarding_magicUserMobileUploading_header":
             MessageLookupByLibrary.simpleMessage("Uploading Your Backup"),
         "onboarding_migrating_xOfYSynced": m11,
+        "onboarding_modalBluetoothUnableConnect_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.",
+        ),
+        "onboarding_modalBluetoothUnableConnect_header":
+            MessageLookupByLibrary.simpleMessage("Unable to Connect"),
         "onboarding_passpportSelectCamera_sub235VersionAlert":
             MessageLookupByLibrary.simpleMessage(
           "Are you setting up a Passport Core on firmware v2.3.5 or earlier?",
@@ -2209,7 +2236,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Set up Mobile Wallet"),
         "onboarding_tutorialColdWallet_content":
             MessageLookupByLibrary.simpleMessage(
-          "Also known as a “cold wallet.” Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.",
+          "Also known as a “cold wallet”. Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.",
         ),
         "onboarding_tutorialColdWallet_header":
             MessageLookupByLibrary.simpleMessage("Passport Wallet"),

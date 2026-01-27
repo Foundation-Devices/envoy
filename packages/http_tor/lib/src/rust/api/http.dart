@@ -39,7 +39,7 @@ Future<Response> request({
   required Verb verb,
   required String url,
   required int torPort,
-  String? body,
+  Uint8List? body,
   required Map<String, String> headers,
 }) => RustLib.instance.api.crateApiHttpRequest(
   verb: verb,

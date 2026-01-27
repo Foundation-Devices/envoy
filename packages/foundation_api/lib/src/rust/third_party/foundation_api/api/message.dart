@@ -21,14 +21,17 @@ part 'message.freezed.dart';
 class EnvoyMessage {
   final QuantumLinkMessage message;
   final int timestamp;
+  final int? protocolVersion;
 
   const EnvoyMessage({
     required this.message,
     required this.timestamp,
+    this.protocolVersion,
   });
 
   @override
-  int get hashCode => message.hashCode ^ timestamp.hashCode;
+  int get hashCode =>
+      message.hashCode ^ timestamp.hashCode ^ protocolVersion.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -36,20 +39,24 @@ class EnvoyMessage {
       other is EnvoyMessage &&
           runtimeType == other.runtimeType &&
           message == other.message &&
-          timestamp == other.timestamp;
+          timestamp == other.timestamp &&
+          protocolVersion == other.protocolVersion;
 }
 
 class PassportMessage {
   final QuantumLinkMessage message;
   final DeviceStatus status;
+  final int? protocolVersion;
 
   const PassportMessage({
     required this.message,
     required this.status,
+    this.protocolVersion,
   });
 
   @override
-  int get hashCode => message.hashCode ^ status.hashCode;
+  int get hashCode =>
+      message.hashCode ^ status.hashCode ^ protocolVersion.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -57,7 +64,8 @@ class PassportMessage {
       other is PassportMessage &&
           runtimeType == other.runtimeType &&
           message == other.message &&
-          status == other.status;
+          status == other.status &&
+          protocolVersion == other.protocolVersion;
 }
 
 @freezed
@@ -157,4 +165,13 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.restoreMagicBackupResult(
     RestoreMagicBackupResult field0,
   ) = QuantumLinkMessage_RestoreMagicBackupResult;
+  const factory QuantumLinkMessage.heartbeat(
+    Heartbeat field0,
+  ) = QuantumLinkMessage_Heartbeat;
+  const factory QuantumLinkMessage.timezoneRequest(
+    TimezoneRequest field0,
+  ) = QuantumLinkMessage_TimezoneRequest;
+  const factory QuantumLinkMessage.timezoneResponse(
+    TimezoneResponse field0,
+  ) = QuantumLinkMessage_TimezoneResponse;
 }

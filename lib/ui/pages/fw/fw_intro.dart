@@ -28,9 +28,10 @@ class _FwIntroPageState extends State<FwIntroPage> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      canPop: !widget.fwPagePayload.onboarding,
       child: CustomOnboardingPage(
         key: const Key("fw_intro"),
+        showBackArrow: !widget.fwPagePayload.onboarding,
         mainWidget: _downloading
             ? const SizedBox(
                 height: 184,
