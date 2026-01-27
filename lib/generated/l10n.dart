@@ -6960,20 +6960,20 @@ class S {
     );
   }
 
-  /// `Are you sure to exit the onboarding?`
+  /// `Only continue with this if you explicitly wish to lose all progress and start the Passport onboarding process from the beginning.`
   String get onboarding_connectionModalAbort_content {
     return Intl.message(
-      'Are you sure to exit the onboarding?',
+      'Only continue with this if you explicitly wish to lose all progress and start the Passport onboarding process from the beginning.',
       name: 'onboarding_connectionModalAbort_content',
       desc: '',
       args: [],
     );
   }
 
-  /// `Abort Onboarding?`
+  /// `Exit Onboarding?`
   String get onboarding_connectionModalAbort_header {
     return Intl.message(
-      'Abort Onboarding?',
+      'Exit Onboarding?',
       name: 'onboarding_connectionModalAbort_header',
       desc: '',
       args: [],

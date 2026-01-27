@@ -22,6 +22,51 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
 
+/// Stores the first-seen timestamps for unconfirmed transactions.
+final txFirstSeenCacheProvider =
+    StateNotifierProvider<TxFirstSeenNotifier, Map<String, DateTime>>((ref) {
+  return TxFirstSeenNotifier();
+});
+
+class TxFirstSeenNotifier extends StateNotifier<Map<String, DateTime>> {
+  bool _isLoaded = false;
+
+  TxFirstSeenNotifier() : super({}) {
+    _loadFromStorage();
+  }
+
+  Future<void> _loadFromStorage() async {
+    final stored = await EnvoyStorage().getAllTxFirstSeen();
+    state = stored;
+    _isLoaded = true;
+  }
+
+  bool get isLoaded => _isLoaded;
+
+  /// Records the first time we see an unconfirmed transaction.
+  /// Returns the stored DateTime (existing or newly created).
+  DateTime recordFirstSeen(String txId) {
+    if (state.containsKey(txId)) {
+      return state[txId]!;
+    }
+    final now = DateTime.now();
+    state = {...state, txId: now};
+    EnvoyStorage().setTxFirstSeen(txId, now);
+    return now;
+  }
+
+  /// Removes the first-seen record when a transaction confirms.
+  void removeFirstSeen(String txId) {
+    if (state.containsKey(txId)) {
+      state = Map.from(state)..remove(txId);
+      EnvoyStorage().deleteTxFirstSeen(txId);
+    }
+  }
+
+  /// Gets the first-seen timestamp for a transaction, if any.
+  DateTime? getFirstSeen(String txId) => state[txId];
+}
+
 final pendingTransactionsProvider =
     Provider.family<List<EnvoyTransaction>, String?>((ref, String? accountId) {
   List<EnvoyTransaction> pendingTransactions = [];
@@ -133,7 +178,46 @@ final walletTransactionsProvider =
     Provider.family<List<EnvoyTransaction>, String?>((ref, String? accountId) {
   final transactions =
       ref.watch(accountStateProvider(accountId))?.transactions ?? [];
-  return transactions.map((tx) => EnvoyTransaction.copyFrom(tx)).toList();
+  final firstSeenNotifier = ref.read(txFirstSeenCacheProvider.notifier);
+  final firstSeenCache = ref.watch(txFirstSeenCacheProvider);
+  final isLoaded = firstSeenNotifier.isLoaded;
+
+  // Collect txIds that need first-seen recording or cleanup (done after build)
+  final txIdsToRecord = <String>[];
+  final txIdsToRemove = <String>[];
+
+  final result = transactions.map((tx) {
+    DateTime? firstSeen;
+    if (!tx.isConfirmed) {
+      // For unconfirmed transactions, get the first-seen timestamp from cache
+      firstSeen = firstSeenCache[tx.txId];
+      if (firstSeen == null && isLoaded) {
+        txIdsToRecord.add(tx.txId);
+        // Use current time as placeholder for this build cycle
+        firstSeen = DateTime.now();
+      }
+    } else {
+      // Schedule cleanup for after build completes
+      if (firstSeenCache.containsKey(tx.txId)) {
+        txIdsToRemove.add(tx.txId);
+      }
+    }
+    return EnvoyTransaction.copyFrom(tx, firstSeen: firstSeen);
+  }).toList();
+
+  // Schedule state updates after build completes
+  if (isLoaded && (txIdsToRecord.isNotEmpty || txIdsToRemove.isNotEmpty)) {
+    Future.microtask(() {
+      for (final txId in txIdsToRecord) {
+        firstSeenNotifier.recordFirstSeen(txId);
+      }
+      for (final txId in txIdsToRemove) {
+        firstSeenNotifier.removeFirstSeen(txId);
+      }
+    });
+  }
+
+  return result;
 });
 
 final allTxProvider = Provider<List<EnvoyTransaction>>((ref) {

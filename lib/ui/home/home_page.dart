@@ -479,6 +479,18 @@ class HomePageState extends ConsumerState<HomePage>
     final currentState = ref.read(homePageBackgroundProvider);
 
     switch (currentState) {
+      case HomePageBackgroundState.fiatChooser:
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.settings;
+        return false;
+      case HomePageBackgroundState.logs:
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.settings;
+        return false;
+      case HomePageBackgroundState.licence:
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.about;
+        return false;
       case HomePageBackgroundState.settings:
       case HomePageBackgroundState.backups:
       case HomePageBackgroundState.support:
@@ -676,7 +688,14 @@ class HomePageState extends ConsumerState<HomePage>
                     child: Container(
                       child: _backgroundShown
                           ? BackButtonListener(
-                              onBackButtonPressed: () {
+                              onBackButtonPressed: () async {
+                                final rootNav =
+                                    Navigator.of(context, rootNavigator: true);
+
+                                // If a dialog is on top, let Navigator close it.
+                                if (rootNav.canPop()) {
+                                  return false;
+                                }
                                 return handleBackgroundBackPressed();
                               },
                               child: background)
