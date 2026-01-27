@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names///
 
+import 'dart:async';
+
 import 'package:backup/backup.dart' as backup_lib;
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
@@ -42,8 +44,11 @@ class BleMagicBackupHandler extends PassportMessageHandler {
       await _handleMagicBackupEnabledRequest(enabledRequest.field0);
     } else if (message
         case api.QuantumLinkMessage_PrimeMagicBackupEnabled enabled) {
-      // TODO: enable/disable prime backup
-      Devices().updatePrimeBackupStatus(enabled.field0.enabled);
+      final device = qlConnection.getDevice();
+      if (device != null) {
+        unawaited(
+            Devices().updatePrimeBackupStatus(enabled.field0.enabled, device));
+      }
     } else if (message
         case api.QuantumLinkMessage_PrimeMagicBackupStatusRequest
             enabledRequest) {
@@ -176,7 +181,10 @@ class BleMagicBackupHandler extends PassportMessageHandler {
             api.EnvoyMagicBackupEnabledResponse(
                 enabled: Settings().syncToCloud)));
 
-    Devices().updatePrimeBackupStatus(Settings().syncToCloud);
+    final device = qlConnection.getDevice();
+    if (device != null) {
+      await Devices().updatePrimeBackupStatus(Settings().syncToCloud, device);
+    }
   }
 
   Future<void> _handleStatusRequest(

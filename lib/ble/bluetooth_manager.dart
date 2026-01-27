@@ -221,7 +221,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
         isDenied = await Permission.bluetooth.isDenied ||
             await Permission.bluetoothConnect.isDenied ||
             await Permission.bluetoothScan.isDenied;
-            await Permission.locationWhenInUse.isDenied;
+        await Permission.locationWhenInUse.isDenied;
       } else {
         isDenied = await Permission.bluetooth.isDenied ||
             await Permission.bluetoothConnect.isDenied ||

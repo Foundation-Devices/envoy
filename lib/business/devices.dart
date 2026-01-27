@@ -327,12 +327,12 @@ class Devices extends ChangeNotifier {
     return devices.firstWhereOrNull((device) => device.serial == serialNumber);
   }
 
-  void updatePrimeBackupStatus(bool isEnabled) {
+  Future updatePrimeBackupStatus(bool isEnabled, Device targetDevice) async {
     for (var device in devices) {
-      if (device.bleId == BluetoothManager().bleId &&
+      if (device.serial == targetDevice.serial &&
           device.type == DeviceType.passportPrime) {
         device.primeBackupEnabled = isEnabled;
-        storeDevices();
+        await storeDevices();
         notifyListeners();
         return;
       }

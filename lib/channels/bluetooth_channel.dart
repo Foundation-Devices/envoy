@@ -104,7 +104,7 @@ class BluetoothChannel {
 
   /// Get the device name of the host device (iOS and Android)
   Future<int> getAPILevel() async {
-    if(!Platform.isAndroid){
+    if (!Platform.isAndroid) {
       throw Exception("getAPILevel is only supported on Android");
     }
     final int name = await _methodChannel.invokeMethod('apiLevel');
