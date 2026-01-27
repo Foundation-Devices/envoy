@@ -17,7 +17,9 @@ use foundation_api::bc_xid::XIDDocument;
 use foundation_api::dcbor;
 use foundation_api::dcbor::{CBORCase, CBOR};
 use foundation_api::firmware::{FirmwareChunk, FirmwareFetchEvent};
-use foundation_api::message::{EnvoyMessage, PassportMessage, QuantumLinkMessage};
+use foundation_api::message::{
+    EnvoyMessage, PassportMessage, QuantumLinkMessage, PROTOCOL_VERSION,
+};
 use foundation_api::quantum_link::{ARIDCache, QuantumLink, QuantumLinkIdentity};
 use log::debug;
 
@@ -195,7 +197,11 @@ pub async fn encode_to_magic_backup_file(
 
     let messages: Vec<EnvoyMessage> = split_backup_into_chunks(payload, chunk_size)
         .into_iter()
-        .map(|message| EnvoyMessage { message, timestamp })
+        .map(|message| EnvoyMessage {
+            message,
+            timestamp,
+            protocol_version: Some(PROTOCOL_VERSION),
+        })
         .collect();
 
     for message in messages {
@@ -255,7 +261,11 @@ pub async fn encode_to_update_file(
             patch_bytes.as_slice(),
             chunk_size,
         )
-        .map(|message| EnvoyMessage { message, timestamp });
+        .map(|message| EnvoyMessage {
+            message,
+            timestamp,
+            protocol_version: Some(PROTOCOL_VERSION),
+        });
 
         for message in envoy_messages {
             let envelope = QuantumLink::seal(

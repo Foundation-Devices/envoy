@@ -1846,6 +1846,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  int dco_decode_box_autoadd_u_8(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
   VerificationResult dco_decode_box_autoadd_verification_result(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_verification_result(raw);
@@ -1973,11 +1979,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   EnvoyMessage dco_decode_envoy_message(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 2)
-      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
     return EnvoyMessage(
       message: dco_decode_quantum_link_message(arr[0]),
       timestamp: dco_decode_u_32(arr[1]),
+      protocolVersion: dco_decode_opt_box_autoadd_u_8(arr[2]),
     );
   }
 
@@ -2233,6 +2240,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  int? dco_decode_opt_box_autoadd_u_8(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_u_8(raw);
+  }
+
+  @protected
   PairingRequest dco_decode_pairing_request(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -2280,11 +2293,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PassportMessage dco_decode_passport_message(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 2)
-      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
     return PassportMessage(
       message: dco_decode_quantum_link_message(arr[0]),
       status: dco_decode_device_status(arr[1]),
+      protocolVersion: dco_decode_opt_box_autoadd_u_8(arr[2]),
     );
   }
 
@@ -3355,6 +3369,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  int sse_decode_box_autoadd_u_8(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_u_8(deserializer));
+  }
+
+  @protected
   VerificationResult sse_decode_box_autoadd_verification_result(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3468,7 +3488,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_message = sse_decode_quantum_link_message(deserializer);
     var var_timestamp = sse_decode_u_32(deserializer);
-    return EnvoyMessage(message: var_message, timestamp: var_timestamp);
+    var var_protocolVersion = sse_decode_opt_box_autoadd_u_8(deserializer);
+    return EnvoyMessage(
+        message: var_message,
+        timestamp: var_timestamp,
+        protocolVersion: var_protocolVersion);
   }
 
   @protected
@@ -3749,6 +3773,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  int? sse_decode_opt_box_autoadd_u_8(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_u_8(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   PairingRequest sse_decode_pairing_request(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_xidDocument = sse_decode_list_prim_u_8_strict(deserializer);
@@ -3794,7 +3829,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_message = sse_decode_quantum_link_message(deserializer);
     var var_status = sse_decode_device_status(deserializer);
-    return PassportMessage(message: var_message, status: var_status);
+    var var_protocolVersion = sse_decode_opt_box_autoadd_u_8(deserializer);
+    return PassportMessage(
+        message: var_message,
+        status: var_status,
+        protocolVersion: var_protocolVersion);
   }
 
   @protected
@@ -4825,6 +4864,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_u_8(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_8(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_verification_result(
       VerificationResult self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4919,6 +4964,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_quantum_link_message(self.message, serializer);
     sse_encode_u_32(self.timestamp, serializer);
+    sse_encode_opt_box_autoadd_u_8(self.protocolVersion, serializer);
   }
 
   @protected
@@ -5157,6 +5203,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_opt_box_autoadd_u_8(int? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_u_8(self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_pairing_request(
       PairingRequest self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5195,6 +5251,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_quantum_link_message(self.message, serializer);
     sse_encode_device_status(self.status, serializer);
+    sse_encode_opt_box_autoadd_u_8(self.protocolVersion, serializer);
   }
 
   @protected
