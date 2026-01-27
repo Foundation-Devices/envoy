@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:http_tor/http_tor.dart';
 import 'package:tor/tor.dart';
 import 'package:envoy/business/settings.dart';
 
@@ -131,6 +132,9 @@ class ConnectivityManager {
   void checkTor() async {
     //if tor is enabled, but both electrum and ngu are unreachable, restart tor
     if (torEnabled && (!nguConnected && !electrumConnected)) {
+      // If Tor itself works, don't treat this as a Tor failure
+      if (await _isTorReachable()) return;
+
       // tor can be flaky, so only restart after several failed attempts,
       // in this case after 5 failed network checks
       failedTorConnectivityAttempts++;
@@ -140,6 +144,18 @@ class ConnectivityManager {
       EnvoyReport().log("tor",
           "Unreachable via Tor -> NGU: ${nguConnected ? 'ok' : 'fail'}, Electrum: ${electrumConnected ? 'ok' : 'fail'}");
       events.add(ConnectivityManagerEvent.torConnectedDoesntWork);
+    }
+  }
+
+  Future<bool> _isTorReachable() async {
+    try {
+      final r = await HttpTor().get(
+          "http://sanityunhavm6aolhyye4h6kbdlxjmc7zw2y7nadbni6vd43agm7xvid.onion");
+      return r.statusCode == 200;
+    } on TimeoutException {
+      return false;
+    } catch (_) {
+      return false;
     }
   }
 

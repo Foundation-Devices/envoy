@@ -424,6 +424,7 @@ void scanForDevice(BuildContext context, WidgetRef ref) async {
 
   showScannerDialog(
       context: context,
+      infoType: QrIntentInfoType.prime,
       onBackPressed: (context) {
         Navigator.pop(context);
       },
@@ -466,7 +467,6 @@ void scanForDevice(BuildContext context, WidgetRef ref) async {
 }
 
 void addPassportAccount(Binary binary, BuildContext context) async {
-  final scaffold = ScaffoldMessenger.of(context);
   final goRouter = GoRouter.of(context);
   try {
     final paringResult = await NgAccountManager().addPassportAccount(binary);
@@ -493,16 +493,41 @@ void addPassportAccount(Binary binary, BuildContext context) async {
     goRouter.pop();
     //pop overlay
     goRouter.pop();
-    scaffold.showSnackBar(const SnackBar(
-      //TODO: Localize
-      content: Text("Account already connected"), // TODO: FIGMA
-    ));
+    if (context.mounted) {
+      EnvoyToast(
+        replaceExisting: true,
+        duration: const Duration(seconds: 6),
+        //TODO: Localize
+        message: "Account already connected",
+        isDismissible: true,
+        onActionTap: () {
+          EnvoyToast.dismissPreviousToasts(context);
+        },
+        icon: const Icon(
+          Icons.info_outline,
+          color: EnvoyColors.accentPrimary,
+        ),
+      ).show(context);
+    }
     return;
   } catch (e) {
     goRouter.pop();
-    scaffold.showSnackBar(const SnackBar(
-      content: Text("An unexpected error occurred. Please try again."),
-    )); // TODO: FIGMA
+    if (context.mounted) {
+      EnvoyToast(
+        replaceExisting: true,
+        duration: const Duration(seconds: 6),
+        //TODO: Localize
+        message: "An unexpected error occurred. Please try again.",
+        isDismissible: true,
+        onActionTap: () {
+          EnvoyToast.dismissPreviousToasts(context);
+        },
+        icon: const Icon(
+          Icons.info_outline,
+          color: EnvoyColors.accentPrimary,
+        ),
+      ).show(context);
+    }
   }
 }
 

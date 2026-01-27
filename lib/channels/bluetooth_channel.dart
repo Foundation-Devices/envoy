@@ -190,7 +190,10 @@ class BluetoothChannel {
     final connect = await listenToDeviceConnectionEvents.firstWhere(
       (event) {
         try {
-          if (event.connected && !initiateBonding && !event.bonded) {
+          if (event.connected &&
+              !initiateBonding &&
+              !event.bonded &&
+              Platform.isAndroid) {
             initiateBonding = true;
             kPrint("Initiating bonding ");
             bleMethodChannel.invokeMethod(
@@ -200,7 +203,11 @@ class BluetoothChannel {
         } catch (e) {
           debugPrint("Error during bonding initiation: $e");
         }
-        return event.connected;
+        //IOS doesn't have bonding state, just connected state
+        if (Platform.isIOS) {
+          return event.connected;
+        }
+        return event.connected && event.bonded;
       },
     ).timeout(Duration(seconds: 10), onTimeout: () {
       throw BleSetupTimeoutException("Pairing timed out");
