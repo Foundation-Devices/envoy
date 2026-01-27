@@ -89,7 +89,7 @@ class EnvoyButtonState extends State<EnvoyButton> {
             duration: _animationsDuration,
             decoration: BoxDecoration(
               color: _getBackgroundColor(),
-              borderRadius: BorderRadius.circular(EnvoySpacing.small),
+              borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
             ),
             child: Center(
               child: Stack(

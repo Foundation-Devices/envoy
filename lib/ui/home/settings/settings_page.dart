@@ -32,6 +32,7 @@ import 'package:envoy/ui/state/app_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/region_manager.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -99,6 +100,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               height: s.selectedFiat == null ? 0 : 52,
               child: GestureDetector(
                 onTap: () {
+                  ref.read(homePageBackgroundProvider.notifier).state =
+                      HomePageBackgroundState.fiatChooser;
                   showModalBottomSheet<void>(
                     context: context,
                     isScrollControlled: true,
@@ -326,15 +329,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   : const SizedBox.shrink(),
               ListTile(
                 dense: true,
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const EnvoyLogsScreen(),
-                      ));
-                },
                 contentPadding: const EdgeInsets.all(0),
                 title: SettingText(S().settings_viewEnvoyLogs, onTap: () {
+                  ref.read(homePageBackgroundProvider.notifier).state =
+                      HomePageBackgroundState.logs;
                   Navigator.push(
                       context,
                       MaterialPageRoute(
