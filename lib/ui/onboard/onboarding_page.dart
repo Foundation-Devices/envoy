@@ -240,6 +240,7 @@ class CustomOnboardingPage extends StatelessWidget {
   final List<Widget> buttons;
   final Function? onLinkTextTap;
   final double? topPadding;
+  final bool showBackArrow;
 
   const CustomOnboardingPage({
     super.key,
@@ -249,6 +250,7 @@ class CustomOnboardingPage extends StatelessWidget {
     required this.buttons,
     this.onLinkTextTap,
     this.topPadding,
+    this.showBackArrow = false,
   });
 
   @override
@@ -258,44 +260,71 @@ class CustomOnboardingPage extends StatelessWidget {
         canPop: false,
         child: Scaffold(
           body: OnboardPageBackground(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: EnvoySpacing.medium1,
-                  right: EnvoySpacing.medium1,
-                  bottom: EnvoySpacing.medium2),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(height: topPadding ?? EnvoySpacing.xl),
-                          mainWidget,
-                          const SizedBox(height: EnvoySpacing.medium3),
-                          Text(
-                            title,
-                            style: EnvoyTypography.heading,
-                            textAlign: TextAlign.center,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: EnvoySpacing.medium1,
+                        right: EnvoySpacing.medium1,
+                        bottom: EnvoySpacing.medium2),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(height: topPadding ?? EnvoySpacing.xl),
+                                mainWidget,
+                                const SizedBox(height: EnvoySpacing.medium3),
+                                Material(
+                                  type: MaterialType.transparency,
+                                  child: DefaultTextStyle.merge(
+                                    style: const TextStyle(
+                                        decoration: TextDecoration.none),
+                                    child: Text(
+                                      title,
+                                      style: EnvoyTypography.heading,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: EnvoySpacing.medium3),
+                                LinkText(
+                                  text: subheading,
+                                  textStyle: EnvoyTypography.body.copyWith(
+                                      color: EnvoyColors.textSecondary),
+                                  textAlign: TextAlign.center,
+                                  onTap: onLinkTextTap,
+                                ),
+                                const SizedBox(height: EnvoySpacing.medium3),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: EnvoySpacing.medium3),
-                          LinkText(
-                            text: subheading,
-                            textStyle: EnvoyTypography.body
-                                .copyWith(color: EnvoyColors.textSecondary),
-                            textAlign: TextAlign.center,
-                            onTap: onLinkTextTap,
-                          ),
-                          const SizedBox(height: EnvoySpacing.medium3),
-                        ],
-                      ),
+                        ),
+                        ...buttons,
+                      ],
                     ),
                   ),
-                  ...buttons,
-                ],
-              ),
+                ),
+                if (showBackArrow)
+                  Positioned(
+                    left: 0,
+                    top: 0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(EnvoySpacing.small),
+                      child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Icon(Icons.arrow_back_ios_rounded,
+                              size: EnvoySpacing.medium2)),
+                    ),
+                  ),
+              ],
             ),
           ),
         ),

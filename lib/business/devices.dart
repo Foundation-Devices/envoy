@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
@@ -41,7 +42,7 @@ class Device {
   @JsonKey(defaultValue: "")
   final String peripheralId;
   @JsonKey(defaultValue: false)
-  final bool onboardingComplete;
+  bool onboardingComplete;
   @Uint8ListConverter()
   final Uint8List? xid;
   final DateTime datePaired;
@@ -97,10 +98,10 @@ class Devices extends ChangeNotifier {
   //reconnect to all paired primes
   //TODO: fix simultaneous connections
   Future<void> connect() async {
-    kPrint("Connecting to primes...");
     if (getPrimeDevices.isEmpty) {
       return;
     }
+    kPrint("Connecting to primes...");
     await BluetoothManager().getPermissions();
     //wait for the bluetooth manager to initialize
     await Future.delayed(const Duration(seconds: 1));
@@ -114,10 +115,12 @@ class Devices extends ChangeNotifier {
               "Bluetooth permissions denied, cannot connect to device ${device.name}");
           await BluetoothManager().getPermissions();
         }
+        final deviceId =
+            Platform.isAndroid ? device.bleId : device.peripheralId;
 
         //OS will try to reconnect to bonded device automatically,
         //but we call connect to ensure our app connects to it
-        await BluetoothManager().reconnect(device);
+        await BluetoothManager().reconnect(deviceId);
       }
     }
   }
@@ -154,9 +157,9 @@ class Devices extends ChangeNotifier {
     _ls.prefs.remove(DEVICES_PREFS);
   }
 
-  void storeDevices() {
+  Future storeDevices() async {
     String json = jsonEncode(devices);
-    _ls.prefs.setString(DEVICES_PREFS, json);
+    await _ls.prefs.setString(DEVICES_PREFS, json);
   }
 
   void restore({bool hasExitingSetup = false}) {
@@ -193,6 +196,17 @@ class Devices extends ChangeNotifier {
     }
 
     storeDevices();
+    notifyListeners();
+  }
+
+  Future markPrimeUpdated(String serial, String firmwareVersion) async {
+    for (var device in getPrimeDevices) {
+      if (serial == device.serial) {
+        device.firmwareVersion = firmwareVersion;
+      }
+    }
+
+    await storeDevices();
     notifyListeners();
   }
 
@@ -248,9 +262,10 @@ class Devices extends ChangeNotifier {
     return devices.firstWhereOrNull((device) => device.serial == serialNumber);
   }
 
-  void updatePrimeBackupStatus(String bleId, bool isEnabled) {
+  void updatePrimeBackupStatus(bool isEnabled) {
     for (var device in devices) {
-      if (device.bleId == bleId && device.type == DeviceType.passportPrime) {
+      if (device.bleId == BluetoothManager().bleId &&
+          device.type == DeviceType.passportPrime) {
         device.primeBackupEnabled = isEnabled;
         storeDevices();
         notifyListeners();
@@ -261,6 +276,17 @@ class Devices extends ChangeNotifier {
 
   bool hasNonPrimeDevices() {
     return devices.any((device) => device.type != DeviceType.passportPrime);
+  }
+
+  Future<void> markPrimeOnboarded(bool onboarded) async {
+    for (var device in devices) {
+      if (device.type == DeviceType.passportPrime) {
+        device.onboardingComplete = onboarded;
+        await storeDevices();
+        notifyListeners();
+        return;
+      }
+    }
   }
 }
 

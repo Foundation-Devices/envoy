@@ -103,7 +103,7 @@ abstract class RustLibApi extends BaseApi {
     required Verb verb,
     required String url,
     required int torPort,
-    String? body,
+    Uint8List? body,
     required Map<String, String> headers,
   });
 
@@ -331,7 +331,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required Verb verb,
     required String url,
     required int torPort,
-    String? body,
+    Uint8List? body,
     required Map<String, String> headers,
   }) {
     return handler.executeNormal(
@@ -341,7 +341,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_verb(verb, serializer);
           sse_encode_String(url, serializer);
           sse_encode_i_32(torPort, serializer);
-          sse_encode_opt_String(body, serializer);
+          sse_encode_opt_list_prim_u_8_strict(body, serializer);
           sse_encode_Map_String_String_None(headers, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
@@ -493,9 +493,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  String? dco_decode_opt_String(dynamic raw) {
+  Uint8List? dco_decode_opt_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null ? null : dco_decode_String(raw);
+    return raw == null ? null : dco_decode_list_prim_u_8_strict(raw);
   }
 
   @protected
@@ -717,11 +717,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  String? sse_decode_opt_String(SseDeserializer deserializer) {
+  Uint8List? sse_decode_opt_list_prim_u_8_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     if (sse_decode_bool(deserializer)) {
-      return (sse_decode_String(deserializer));
+      return (sse_decode_list_prim_u_8_strict(deserializer));
     } else {
       return null;
     }
@@ -967,12 +967,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_opt_String(String? self, SseSerializer serializer) {
+  void sse_encode_opt_list_prim_u_8_strict(
+    Uint8List? self,
+    SseSerializer serializer,
+  ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     sse_encode_bool(self != null, serializer);
     if (self != null) {
-      sse_encode_String(self, serializer);
+      sse_encode_list_prim_u_8_strict(self, serializer);
     }
   }
 

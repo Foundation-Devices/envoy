@@ -5,6 +5,7 @@
 
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:http_tor/http_tor.dart';
@@ -22,7 +23,7 @@ class ScvServer {
 
   final LocalStorage _ls = LocalStorage();
   static const String SCV_CHALLENGE_PREFS = "scv_challenge";
-  Challenge? storedChallenge;
+  Challenge? _storedChallenge;
 
   static final ScvServer _instance = ScvServer._internal();
 
@@ -41,37 +42,39 @@ class ScvServer {
     // Get the SCV challenge from storage
     // If not there, get it from Server and store it
     if (_restoreChallege() == false) {
-      getChallenge().then((challenge) {
-        _storeChallenge(challenge);
+      getChallenge().then((challenge) async {
+        await _storeChallenge(challenge);
       });
     }
   }
 
-  void _storeChallenge(Challenge challenge) {
-    storedChallenge = challenge;
+  Future<void> _storeChallenge(Challenge challenge) async {
+    _storedChallenge = challenge;
     String json = jsonEncode(challenge.toJson());
-    _ls.prefs.setString(SCV_CHALLENGE_PREFS, json);
+    await _ls.prefs.setString(SCV_CHALLENGE_PREFS, json);
   }
 
   bool _restoreChallege() {
     if (_ls.prefs.containsKey(SCV_CHALLENGE_PREFS)) {
       var challenge = jsonDecode(_ls.prefs.getString(SCV_CHALLENGE_PREFS)!);
-      storedChallenge = Challenge.fromJson(challenge);
+      _storedChallenge = Challenge.fromJson(challenge);
       return true;
     }
 
     return false;
   }
 
-  void _clearChallenge() {
+  Future<void> _clearChallenge() async {
     if (_ls.prefs.containsKey(SCV_CHALLENGE_PREFS)) {
-      _ls.prefs.remove(SCV_CHALLENGE_PREFS);
+      await _ls.prefs.remove(SCV_CHALLENGE_PREFS);
     }
+
+    _storedChallenge = null;
   }
 
   Future<Challenge> getChallenge() async {
-    if (storedChallenge != null) {
-      return storedChallenge!;
+    if (_storedChallenge != null) {
+      return _storedChallenge!;
     }
 
     final response = await http.get('$serverAddress/challenge');
@@ -89,7 +92,8 @@ class ScvServer {
 
   Future<bool> validate(Challenge challenge, List<String> responseWords) async {
     // Clear stored challenge and fetch it again
-    _clearChallenge();
+
+    await _clearChallenge();
     getChallenge().then((challenge) {
       _storeChallenge(challenge);
     });
@@ -137,37 +141,40 @@ class ScvServer {
   }
 
   Future<bool> isProofVerified(Uint8List data) async {
-    return true;
-    // final uri = '$primeSecurityCheckUrl/verify';
-    // final dataStr = data.map((d) => d.toString()).join(",");
-    //
-    // try {
-    //   kPrint("isProofVerified payload $dataStr");
-    //   final response = await http.post(
-    //     uri,
-    //     body: data.toList().toString(),
-    //     headers: {'Content-Type': 'application/octet-stream'},
-    //   );
-    //
-    //   kPrint("response status code: ${response.statusCode}");
-    //   if (response.statusCode == 200) {
-    //     List<int> rawVerificationMessage = response.bodyBytes;
-    //     kPrint("response status data 32: ${rawVerificationMessage[32]}");
-    //     kPrint("rawVerificationMessage {rawVerificationMessage}");
-    //     // Error code is the 33rd byte in the response
-    //     final errorCode = rawVerificationMessage.length > 32
-    //         ? rawVerificationMessage[32]
-    //         : -1;
-    //     kPrint('Error code: $errorCode');
-    //     return errorCode == 0; // 0 means `ErrorCode::Ok`
-    //   } else {
-    //     kPrint('Error: ${response.statusCode}');
-    //     return false;
-    //   }
-    // } catch (e) {
-    //   kPrint("failed to verify proof {$e}");
-    //   return false;
-    // }
+    if (Settings().skipPrimeSecurityCheck) {
+      return true;
+    }
+
+    final uri = '$primeSecurityCheckUrl/verify';
+    final dataStr = data.map((d) => d.toString()).join(",");
+
+    try {
+      kPrint("isProofVerified payload $dataStr");
+      final response = await http.postBytes(
+        uri,
+        body: data.toList(),
+        headers: {'Content-Type': 'application/octet-stream'},
+      );
+
+      kPrint("response status code: ${response.statusCode}");
+      if (response.statusCode == 200) {
+        List<int> rawVerificationMessage = response.bodyBytes;
+        kPrint("response status data 32: ${rawVerificationMessage[32]}");
+        kPrint("rawVerificationMessage $rawVerificationMessage");
+        // Error code is the 33rd byte in the response
+        final errorCode = rawVerificationMessage.length > 32
+            ? rawVerificationMessage[32]
+            : -1;
+        kPrint('Error code: $errorCode');
+        return errorCode == 0; // 0 means `ErrorCode::Ok`
+      } else {
+        kPrint('Error: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      kPrint("failed to verify proof {$e}");
+      return false;
+    }
   }
 }
 

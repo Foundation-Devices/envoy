@@ -44,7 +44,7 @@ class BleMagicBackupHandler extends PassportMessageHandler {
     } else if (message
         case api.QuantumLinkMessage_PrimeMagicBackupEnabled enabled) {
       // TODO: enable/disable prime backup
-      Devices().updatePrimeBackupStatus(bleId, enabled.field0.enabled);
+      Devices().updatePrimeBackupStatus(enabled.field0.enabled);
     } else if (message
         case api.QuantumLinkMessage_PrimeMagicBackupStatusRequest
             enabledRequest) {
@@ -117,7 +117,9 @@ class BleMagicBackupHandler extends PassportMessageHandler {
         final tempFile = await BluetoothChannel.getBleCacheFile(
             payloadRes.hashCode.toString());
         await BluetoothManager().encodeToFile(
-            message: payloadRes, filePath: tempFile.path, chunkSize: 10000);
+            message: payloadRes,
+            filePath: tempFile.path,
+            chunkSize: bleChunkSize.toInt());
         await BluetoothChannel().transmitFromFile(tempFile.path);
         kPrint("Restore magic backup file sent!");
       } else {
@@ -164,9 +166,7 @@ class BleMagicBackupHandler extends PassportMessageHandler {
             api.EnvoyMagicBackupEnabledResponse(
                 enabled: Settings().syncToCloud)));
 
-    if (Settings().syncToCloud) {
-      Devices().updatePrimeBackupStatus(bleId, true);
-    }
+    Devices().updatePrimeBackupStatus(Settings().syncToCloud);
   }
 
   Future<void> _handleStatusRequest(

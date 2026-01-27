@@ -38,7 +38,7 @@ class ShardsHandler extends PassportMessageHandler {
       } catch (e, _) {
         kPrint("Shard backup failure: $e");
         writer.writeMessage(api.QuantumLinkMessage.backupShardResponse(
-            api.BackupShardResponse_Success()));
+            api.BackupShardResponse_Error(error: e.toString())));
       }
     }
     if (message
@@ -77,7 +77,7 @@ class ShardsHandler extends PassportMessageHandler {
         final result = await writer.writeMessage(
             api.QuantumLinkMessage.restoreShardResponse(
                 api.RestoreShardResponse_Success(
-                    shard: api.Shard(field0: shard.shard))));
+                    shard: api.Shard(field0: shard))));
 
         kPrint("Shard restored! success ? $result");
       } catch (e, _) {

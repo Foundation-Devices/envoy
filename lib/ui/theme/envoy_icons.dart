@@ -97,6 +97,8 @@ enum EnvoyIcons {
   stripe_text,
   refresh,
   prime_front,
+  locked,
+  unlocked,
 }
 
 class EnvoyIcon extends StatelessWidget {

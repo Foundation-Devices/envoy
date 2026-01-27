@@ -36,6 +36,7 @@ enum DismissiblePrompt {
   openTxDetailsInExplorer,
   buyTxWarning,
   scanToConnect,
+  primeAccountTutorial,
 
   ///warning for exiting manual coin selection
   txDiscardWarning,

@@ -3,30 +3,26 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/ble/bluetooth_manager.dart';
-import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
-import 'package:envoy/ui/components/envoy_bar.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
-import 'package:envoy/ui/home/cards/buy_bitcoin_account_selection.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/ui/theme/envoy_typography.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/build_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 
 class AddressCard extends ConsumerStatefulWidget {
   final EnvoyAccount account;
@@ -53,11 +49,6 @@ class _AddressCardState extends ConsumerState<AddressCard> {
     String address = "";
     final isTaprootEnabled = Settings().enableTaprootSetting == true;
     final noTaprootXpub = accountHasNoTaprootXpub(account);
-    final Device? device =
-        Devices().getDeviceBySerial(account?.deviceSerial ?? "");
-    bool isPrime = device?.type == DeviceType.passportPrime;
-    final bool isPrimeConnected =
-        ref.watch(isPrimeConnectedProvider(device?.bleId ?? ""));
 
     if (isTaprootEnabled && noTaprootXpub) {
       final segwitAddressRecord = account?.nextAddress.firstWhere(
@@ -114,81 +105,53 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                     showWarningOnCopy: false,
                   ),
                 ),
-                const SizedBox(height: EnvoySpacing.medium1),
-                // TODO: add other buttons/link texts here!!!
-
-                widget.account.isHot
-                    ? SizedBox.shrink()
-                    : GestureDetector(
-                        onTap: () {
-                          if (isPrimeConnected) {
-                            // TODO: if prime is connected via ble, verify address via QL
-                          } else {
-                            if (mounted) {
-                              showEnvoyDialog(
-                                context: context,
-                                blurColor: Colors.black,
-                                useRootNavigator: true,
-                                linearGradient: true,
-                                dialog: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.9,
-                                  child: VerifyAddressDialog(
-                                    address: address,
-                                    accountName: account?.name ?? "",
-                                  ),
-                                ),
-                              );
-                            }
-                          }
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            EnvoyIcon(
-                              isPrime ? EnvoyIcons.quantum : EnvoyIcons.qr_scan,
-                              color: EnvoyColors.accentPrimary,
-                            ),
-                            const SizedBox(width: EnvoySpacing.small),
-                            Text(
-                              S().buy_bitcoin_accountSelection_verify,
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.button.copyWith(
-                                color: EnvoyColors.accentPrimary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                const SizedBox(height: EnvoySpacing.medium3),
               ],
             ),
           ),
         ),
-        EnvoyBar(
-          items: [
-            EnvoyBarItem(
-              icon: EnvoyIcons.envelope,
-              text: S().receive_qr_signMessage,
-              onTap: () {
-                // TODO: add "Sign Message" code
-              },
+        Container(
+          margin: const EdgeInsets.only(
+            left: EnvoySpacing.medium2,
+            right: EnvoySpacing.medium2,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(
+                left: EnvoySpacing.large2,
+                right: EnvoySpacing.large2,
+                bottom: EnvoySpacing.large1),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                    onPressed: () {
+                      _copyAddressToClipboard(context, address);
+                    },
+                    icon: const EnvoyIcon(
+                      EnvoyIcons.copy,
+                      color: EnvoyColors.accentPrimary,
+                    )),
+                EnvoyTextButton(
+                  onTap: () {
+                    GoRouter.of(context).pop();
+                  },
+                  label: S().component_ok,
+                ),
+                IconButton(
+                    onPressed: () {
+                      SharePlus.instance.share(ShareParams(
+                        text: "bitcoin:$address",
+                      ));
+                    },
+                    icon: const EnvoyIcon(
+                      EnvoyIcons.externalLink,
+                      color: EnvoyColors.accentPrimary,
+                    )),
+              ],
             ),
-            EnvoyBarItem(
-              icon: EnvoyIcons.copy,
-              text: S().receive_qr_copy,
-              onTap: () => _copyAddressToClipboard(context, address),
-            ),
-            EnvoyBarItem(
-              icon: EnvoyIcons.externalLink,
-              text: S().receive_qr_share,
-              onTap: () => SharePlus.instance.share(
-                ShareParams(text: "bitcoin:$address"),
-              ),
-            ),
-          ],
-        )
+          ),
+        ),
       ]),
     );
   }

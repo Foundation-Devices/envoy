@@ -5,8 +5,10 @@
 import 'dart:io';
 
 import 'package:envoy/account/accounts_manager.dart';
+import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_method_channel.dart';
 import 'package:envoy/ui/home/home_state.dart';
@@ -14,6 +16,7 @@ import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -27,9 +30,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
-import 'package:envoy/ui/routes/accounts_router.dart';
-import 'package:envoy/ui/components/pop_up.dart';
-import 'package:envoy/business/envoy_seed.dart';
 
 class EraseWalletsAndBackupsWarning extends StatefulWidget {
   const EraseWalletsAndBackupsWarning({super.key});
@@ -468,6 +468,28 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
                       ],
                     ),
                   ),
+                if (_isDeleted && !_deleteInProgress)
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        bottom: EnvoySpacing.medium2,
+                        right: EnvoySpacing.medium2,
+                        left: EnvoySpacing.medium2),
+                    child: EnvoyButton(S().component_continue,
+                        type: EnvoyButtonTypes.primary, onTap: () {
+                      if (Platform.isAndroid) {
+                        context.pushNamed(WALLET_BACKUP_WARNING, extra: true);
+                      } else {
+                        // Show home page and navigate to accounts
+                        context.goNamed("/");
+
+                        ref.read(homePageBackgroundProvider.notifier).state =
+                            HomePageBackgroundState.hidden;
+                        ref.read(homePageTabProvider.notifier).state =
+                            HomePageTabState.accounts;
+                        ref.read(homePageTitleProvider.notifier).state = "";
+                      }
+                    }),
+                  ),
               ],
             ),
           ),
@@ -485,42 +507,19 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
       //wait for animation
       await Future.delayed(const Duration(seconds: 1));
 
-      bool isDeleted = await EnvoySeed().delete();
+      final seed = EnvoySeed();
+
+      final isDeleted = await seed.delete();
+
       setState(() {
         _isDeleted = isDeleted;
+        _deleteInProgress = false;
       });
 
       if (_isDeleted) {
         _setAnimationState(indeterminate: false, happy: true, unhappy: false);
       } else {
         _setAnimationState(indeterminate: false, happy: false, unhappy: true);
-      }
-
-      setState(() {
-        _deleteInProgress = false;
-      });
-      await Future.delayed(const Duration(milliseconds: 2000));
-
-      if (_isDeleted) {
-        //Show android backup info
-        if (Platform.isAndroid) {
-          await Future.delayed(const Duration(milliseconds: 300));
-          if (mounted) {
-            context.pushNamed(WALLET_BACKUP_WARNING, extra: true);
-          }
-        } else {
-          //wait for pop animation to finish
-          await Future.delayed(const Duration(milliseconds: 300));
-          // Show home page and navigate to accounts
-          if (mounted) {
-            context.goNamed("/");
-          }
-          ref.read(homePageBackgroundProvider.notifier).state =
-              HomePageBackgroundState.hidden;
-          ref.read(homePageTabProvider.notifier).state =
-              HomePageTabState.accounts;
-          ref.read(homePageTitleProvider.notifier).state = "";
-        }
       }
     } catch (e) {
       kPrint(e);

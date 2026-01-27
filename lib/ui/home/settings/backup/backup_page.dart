@@ -408,8 +408,12 @@ class _BackupPageState extends ConsumerState<BackupPage>
   // TODO: implement logic
   Widget primeBackupSection(Device device, Future<DateTime?> lastCloudBackup,
       DateTime? lastEnvoyServerBackup, Locale activeLocale) {
+    String colorDeviceName = device.deviceColor == DeviceColor.dark
+        ? "Midnight Bronze"
+        : "Arctic Copper";
+
     String info = '${S().prime_info_serialNumber(device.serial)}\n'
-        '${S().prime_info_color(device.deviceColor.name)}\n'
+        '${S().prime_info_color(colorDeviceName)}\n'
         '${S().prime_info_firmware(device.firmwareVersion)}';
 
     return Column(

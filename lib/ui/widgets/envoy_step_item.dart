@@ -4,9 +4,9 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 //TODO: add more concrete states based on bluetooth implementation
@@ -21,8 +21,9 @@ class StepModel {
 
 class EnvoyStepItem extends StatefulWidget {
   final StepModel? step;
-  final bool highlight;
-  const EnvoyStepItem({super.key, this.step, this.highlight = false});
+  final bool? highlight;
+
+  const EnvoyStepItem({super.key, this.step, this.highlight});
 
   @override
   State<EnvoyStepItem> createState() => _EnvoyStepItemState();
@@ -39,15 +40,18 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
 
     final Widget leading = switch (step.state) {
       EnvoyStepState.LOADING => const CupertinoActivityIndicator(
-          color: Colors.black,
+          color: EnvoyColors.contentSecondary,
           radius: 12,
         ),
-      EnvoyStepState.FINISHED =>
-        const Icon(CupertinoIcons.checkmark_alt, color: Colors.black),
+      EnvoyStepState.FINISHED => const EnvoyIcon(
+          EnvoyIcons.check,
+          color: EnvoyColors.contentSecondary,
+        ),
       EnvoyStepState.ERROR => const Icon(
           CupertinoIcons.exclamationmark_triangle,
           color: EnvoyColors.copper500),
-      EnvoyStepState.IDLE => const Icon(CupertinoIcons.arrow_right),
+      EnvoyStepState.IDLE => const Icon(CupertinoIcons.arrow_right,
+          color: EnvoyColors.contentTertiary),
       _ => Container()
     };
     return AnimatedOpacity(
@@ -55,6 +59,7 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
       duration: const Duration(milliseconds: 320),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           leading,
@@ -64,17 +69,31 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
               step.stepName,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center, // center text itself
-              style: EnvoyTypography.body.copyWith(
-                fontWeight: widget.highlight ? FontWeight.w800 : null,
-                color: step.state == EnvoyStepState.ERROR
-                    ? EnvoyColors.copper500
-                    : null,
+              textAlign: TextAlign.start,
+              textWidthBasis: TextWidthBasis.longestLine,
+              style: EnvoyTypography.info.copyWith(
+                color: _color(step),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Color? _color(StepModel step) {
+    if (step.state == EnvoyStepState.ERROR) {
+      return EnvoyColors.copper500;
+    }
+
+    if (widget.highlight != null) {
+      return widget.highlight!
+          ? EnvoyColors.contentSecondary
+          : EnvoyColors.contentTertiary;
+    } else {
+      return widget.step?.state == EnvoyStepState.LOADING
+          ? EnvoyColors.contentSecondary
+          : EnvoyColors.contentTertiary;
+    }
   }
 }

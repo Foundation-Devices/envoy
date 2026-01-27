@@ -56,11 +56,10 @@ class S {
 
   // skipped getter for the ':' key
 
-  // skipped getter for the 'FW_Version_No.' key
-
-  // skipped getter for the 'Pull to scan' key
-
-  // skipped getter for the 'Pull to sync' key
+  /// `6:15`
+  String get _ {
+    return Intl.message('6:15', name: '_', desc: '', args: []);
+  }
 
   /// `App Version`
   String get about_appVersion {
@@ -797,6 +796,26 @@ class S {
     return Intl.message(
       'Show Seed',
       name: 'backups_erase_wallets_and_backups_show_seed_CTA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep Your Seed Private`
+  String get backups_erase_wallets_and_backups_show_seed_heading {
+    return Intl.message(
+      'Keep Your Seed Private',
+      name: 'backups_erase_wallets_and_backups_show_seed_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!`
+  String get backups_erase_wallets_and_backups_show_seed_subheading {
+    return Intl.message(
+      'Remember to always keep your seed words private. Anyone with access to this seed can spend your Bitcoin!',
+      name: 'backups_erase_wallets_and_backups_show_seed_subheading',
       desc: '',
       args: [],
     );
@@ -2534,6 +2553,26 @@ class S {
     );
   }
 
+  /// `12 Word Seed`
+  String get component_12WordSeed {
+    return Intl.message(
+      '12 Word Seed',
+      name: 'component_12WordSeed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `24 Word Seed`
+  String get component_24WordSeed {
+    return Intl.message(
+      '24 Word Seed',
+      name: 'component_24WordSeed',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Apply`
   String get component_Apply {
     return Intl.message('Apply', name: 'component_Apply', desc: '', args: []);
@@ -2719,6 +2758,16 @@ class S {
     return Intl.message(
       'Recover',
       name: 'component_recover',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover with QR Code`
+  String get component_recoverWithQR {
+    return Intl.message(
+      'Recover with QR Code',
+      name: 'component_recoverWithQR',
       desc: '',
       args: [],
     );
@@ -4601,9 +4650,14 @@ class S {
     );
   }
 
-  /// `~ `
+  /// `Newest first`
   String get filter_sortBy_newest {
-    return Intl.message('~ ', name: 'filter_sortBy_newest', desc: '', args: []);
+    return Intl.message(
+      'Newest first',
+      name: 'filter_sortBy_newest',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Oldest first`
@@ -5388,6 +5442,16 @@ class S {
     );
   }
 
+  /// `Retry`
+  String get magic_setup_recovery_fail_Android_CTA1 {
+    return Intl.message(
+      'Retry',
+      name: 'magic_setup_recovery_fail_Android_CTA1',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Recover with QR Code`
   String get magic_setup_recovery_fail_Android_CTA2 {
     return Intl.message(
@@ -5438,20 +5502,20 @@ class S {
     );
   }
 
-  /// `Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.\n`
+  /// `Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.`
   String get magic_setup_recovery_fail_connectivity_subheading {
     return Intl.message(
-      'Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.\n',
+      'Envoy is unable to connect to the Foundation server to retrieve your Magic Backup data.\n\nYou can retry, import your own Envoy Backup File, or continue without one.',
       name: 'magic_setup_recovery_fail_connectivity_subheading',
       desc: '',
       args: [],
     );
   }
 
-  /// `Import Your Seed`
+  /// `Recovery Unsuccessful`
   String get magic_setup_recovery_fail_heading {
     return Intl.message(
-      'Import Your Seed',
+      'Recovery Unsuccessful',
       name: 'magic_setup_recovery_fail_heading',
       desc: '',
       args: [],
@@ -5743,6 +5807,26 @@ class S {
     return Intl.message(
       'This will discard any coin selection changes. Do you want to proceed?',
       name: 'manual_coin_preselection_dialog_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Existing Wallet Detected`
+  String get manual_onboardDisableMB_magicBackupDetected_heading {
+    return Intl.message(
+      'Existing Wallet Detected',
+      name: 'manual_onboardDisableMB_magicBackupDetected_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy found an existing wallet in your personal cloud and will recover it now. To disable Magic Backups or permanently erase this wallet, please visit the backups menu.`
+  String get manual_onboardDisableMB_magicBackupDetected_subheading {
+    return Intl.message(
+      'Envoy found an existing wallet in your personal cloud and will recover it now. To disable Magic Backups or permanently erase this wallet, please visit the backups menu.',
+      name: 'manual_onboardDisableMB_magicBackupDetected_subheading',
       desc: '',
       args: [],
     );
@@ -7046,6 +7130,26 @@ class S {
     );
   }
 
+  /// `Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.`
+  String get onboarding_modalBluetoothUnableConnect_content {
+    return Intl.message(
+      'Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.',
+      name: 'onboarding_modalBluetoothUnableConnect_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to Connect`
+  String get onboarding_modalBluetoothUnableConnect_header {
+    return Intl.message(
+      'Unable to Connect',
+      name: 'onboarding_modalBluetoothUnableConnect_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Are you setting up a Passport Core on firmware v2.3.5 or earlier?`
   String get onboarding_passpportSelectCamera_sub235VersionAlert {
     return Intl.message(
@@ -7116,10 +7220,10 @@ class S {
     );
   }
 
-  /// `Also known as a “cold wallet.” Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.`
+  /// `Also known as a “cold wallet”. Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.`
   String get onboarding_tutorialColdWallet_content {
     return Intl.message(
-      'Also known as a “cold wallet.” Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.',
+      'Also known as a “cold wallet”. Spending from this wallet requires authorization from your Passport device. \n\nYour Passport Master Key is always stored securely offline.\n\nUse this wallet to secure the majority of your Bitcoin savings.',
       name: 'onboarding_tutorialColdWallet_content',
       desc: '',
       args: [],

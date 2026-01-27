@@ -311,6 +311,15 @@ impl EnvoyAccountHandler {
         Ok(())
     }
 
+    pub fn set_archived(&mut self, archived: bool) -> anyhow::Result<()> {
+        {
+            let account = self.ng_account.lock().unwrap();
+            account.config.write().unwrap().archived = archived;
+        }
+        self.send_update();
+        Ok(())
+    }
+
     #[frb(sync)]
     pub fn get_directory_path(&self) -> String {
         self.directory_path.clone()
