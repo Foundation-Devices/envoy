@@ -57,6 +57,7 @@ final triedAutomaticRecovery = StateProvider((ref) => false);
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   List<EscapeHatchTap> escapeHatchTaps = [];
+  bool escapeHatchAccessed = false;
 
   Future<void> registerEscapeTap(EscapeHatchTap tap) async {
     final scaffold = ScaffoldMessenger.of(context);
@@ -68,6 +69,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             .getRange(0, min(escapeHatchTaps.length, secretCombination.length))
             .toList())) {
       if (escapeHatchTaps.length == secretCombination.length) {
+        escapeHatchAccessed = true;
         escapeHatchTaps.clear();
         try {
           //old storage configuration
@@ -129,7 +131,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             registerEscapeTap(EscapeHatchTap.logo);
           },
           onLongPress: () {
-            if (kDebugMode || ref.read(devModeEnabledProvider)) {
+            if (escapeHatchAccessed) {
               Settings().skipPrimeSecurityCheck = true;
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text("Security check disabled"),

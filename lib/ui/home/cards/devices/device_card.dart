@@ -391,8 +391,11 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                   primaryButtonColor: EnvoyColors.warning,
                   onPrimaryButtonTap: (context) {
                     Devices().deleteDevice(widget.device);
+
                     // Pop the dialog
-                    Navigator.pop(context);
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    }
 
                     // Go back to devices list
                     context.go(ROUTE_DEVICES);
