@@ -4,7 +4,6 @@
 // ignore_for_file: constant_identifier_names///
 import 'dart:async';
 
-import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -77,7 +76,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
         await EnvoySeed().generateAndBackupWalletSilently();
         //no need to send security challenge if onboarding is already complete
         try {
-          BluetoothManager().sendExchangeRateHistory();
+          qlConnection.qlHandler.bleAccountHandler.sendExchangeRateHistory();
         } catch (e) {
           kPrint(
               "Could not send exchange rate history at onboarding completion: ${e.toString()}");
@@ -102,12 +101,15 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
       if (qlConnection.senderXid == null) {
         throw Exception("Sender XID is null");
       }
-      final recipientXid =
-          await api.serializeXidDocument(xidDocument: qlConnection.recipientXid!);
-      final senderXid =
-          await api.serializeQlIdentity(quantumLinkIdentity: qlConnection.senderXid!);
-      QLConnection.debugIdentitiesQuantumLinkIdentity(identity: qlConnection.senderXid!,message: "SAVING");
-      QLConnection.debugIdentitiesXidDocument(recipient: qlConnection.recipientXid!,message: "SAVING recipientXid");
+      final recipientXid = await api.serializeXidDocument(
+          xidDocument: qlConnection.recipientXid!);
+      final senderXid = await api.serializeQlIdentity(
+          quantumLinkIdentity: qlConnection.senderXid!);
+      QLConnection.debugIdentitiesQuantumLinkIdentity(
+          identity: qlConnection.senderXid!, message: "SAVING");
+      QLConnection.debugIdentitiesXidDocument(
+          recipient: qlConnection.recipientXid!,
+          message: "SAVING recipientXid");
       final device = Device(
         "Prime",
         DeviceType.passportPrime,
@@ -147,10 +149,11 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
           await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
         }
         await EnvoySeed().generateAndBackupWalletSilently();
-        if(qlConnection.getDevice() != null) {
-          await Devices().markPrimeOnboarded(true,qlConnection.getDevice()!);
+        if (qlConnection.getDevice() != null) {
+          await Devices().markPrimeOnboarded(true, qlConnection.getDevice()!);
         }
-        await qlConnection.qlHandler.bleAccountHandler.sendExchangeRateHistory();
+        await qlConnection.qlHandler.bleAccountHandler
+            .sendExchangeRateHistory();
       } catch (e) {
         kPrint("Could not finish onboarding: ${e.toString()}");
       }

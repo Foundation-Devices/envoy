@@ -190,7 +190,8 @@ class FwUpdateHandler extends PassportMessageHandler {
       kPrint("Firmware payload encoded to file: ${tempFile.path}");
       final success = await qlConnection.transmitFromFile(tempFile.path);
       if (!success) {
-        await qlConnection.writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(
+        await qlConnection
+            .writeMessage(api.QuantumLinkMessage.firmwareFetchEvent(
           api.FirmwareFetchEvent.error(
               error: "Firmware payload transmission failed!"),
         ));
@@ -216,8 +217,9 @@ class FwUpdateHandler extends PassportMessageHandler {
         S().onboarding_connectionChecking_forUpdates, EnvoyStepState.LOADING);
     if (patches.isEmpty) {
       _updateFetchState(stepUpdate, EnvoyStepState.FINISHED);
-      qlConnection.writeMessage(api.QuantumLinkMessage.firmwareUpdateCheckResponse(
-          api.FirmwareUpdateCheckResponse_NotAvailable()));
+      qlConnection.writeMessage(
+          api.QuantumLinkMessage.firmwareUpdateCheckResponse(
+              api.FirmwareUpdateCheckResponse_NotAvailable()));
     } else {
       newVersion = patches.last.version;
       final response = api.QuantumLinkMessage.firmwareUpdateCheckResponse(

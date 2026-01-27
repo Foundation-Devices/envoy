@@ -82,8 +82,9 @@ class ShardsHandler extends PassportMessageHandler {
         kPrint("Shard restored! success ? $result");
       } catch (e, _) {
         kPrint("Shard restore failure: $e");
-        await qlConnection.writeMessage(api.QuantumLinkMessage.backupShardResponse(
-            api.BackupShardResponse_Error(error: e.toString())));
+        await qlConnection.writeMessage(
+            api.QuantumLinkMessage.backupShardResponse(
+                api.BackupShardResponse_Error(error: e.toString())));
       }
     }
   }

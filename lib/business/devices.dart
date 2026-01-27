@@ -116,14 +116,14 @@ class Device {
   }
 
 // //getter for connection associated with this device
-QLConnection  qlConnection() {
-  if (type != DeviceType.passportPrime) {
-    throw UnimplementedError(
-        "This method is only supported for Passport Prime devices");
+  QLConnection qlConnection() {
+    if (type != DeviceType.passportPrime) {
+      throw UnimplementedError(
+          "This method is only supported for Passport Prime devices");
+    }
+    final id = Platform.isAndroid ? bleId : peripheralId;
+    return BluetoothChannel().getDeviceChannel(id);
   }
-  final id = Platform.isAndroid ? bleId : peripheralId;
-  return BluetoothChannel().getDeviceChannel(id);
-}
 }
 
 class Devices extends ChangeNotifier {
@@ -171,15 +171,14 @@ class Devices extends ChangeNotifier {
         final deviceId =
             Platform.isAndroid ? device.bleId : device.peripheralId;
 
-        // 1. Create native BleDevice on platform level and sets
-        // up event channels and method channels
+        // 1. Create native BleDevice on platform level and sets-up
+        //event-channels and method channels
         await BluetoothChannel().prepareDevice(deviceId);
 
         await Future.delayed(const Duration(milliseconds: 1500));
 
         // 2. Create Dart QLConnection - connects to platform BleDevice eventChannel/methodChannel
-        final qlConnection =
-            BluetoothChannel().getDeviceChannel(deviceId);
+        final qlConnection = BluetoothChannel().getDeviceChannel(deviceId);
 
         // 3. Set up XIDs before connection so messages can be decoded
         await qlConnection.reconnect(device);
@@ -227,7 +226,7 @@ class Devices extends ChangeNotifier {
     await _ls.prefs.setString(DEVICES_PREFS, json);
   }
 
-  void restore({bool hasExitingSetup = false}) {
+  Future restore({bool hasExitingSetup = false}) async {
     if (!hasExitingSetup) {
       devices.clear();
     }
@@ -243,7 +242,7 @@ class Devices extends ChangeNotifier {
         }
       }
     }
-    storeDevices();
+    await storeDevices();
     notifyListeners();
   }
 
@@ -275,17 +274,18 @@ class Devices extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteDevice(Device device) {
+  void deleteDevice(Device device) async {
+    if (device.type == DeviceType.passportPrime) {
+      final qlConnection = device.qlConnection();
+      await qlConnection.disconnect();
+      qlConnection.dispose();
+    }
     // Delete connected accounts
-    NgAccountManager().deleteDeviceAccounts(device);
+    await NgAccountManager().deleteDeviceAccounts(device);
 
     devices.remove(device);
-    storeDevices();
+    await storeDevices();
     notifyListeners();
-
-    if (device.type == DeviceType.passportPrime) {
-      BluetoothManager().removeConnectedDevice();
-    }
   }
 
   String getDeviceName(String serialNumber) {

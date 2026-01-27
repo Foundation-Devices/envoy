@@ -98,14 +98,6 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   await Settings.restore();
   await ExchangeRate.init();
 
-  if (!integrationTestsRunning) {
-    try {
-      BluetoothManager().setupExchangeRateListener();
-    } catch (e, stack) {
-      kPrint("Error setting up exchange rate listener: $e", stackTrace: stack);
-    }
-  }
-
   EnvoyReport().init();
   await Tor.init(enabled: Settings().torEnabled());
   await HttpTor.init(Tor.instance, EnvoyScheduler().parallel);

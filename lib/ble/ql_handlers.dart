@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
 import 'package:envoy/ble/handlers/account_handler.dart';
 import 'package:envoy/ble/handlers/device_handler.dart';
 import 'package:envoy/ble/handlers/fw_update_handler.dart';

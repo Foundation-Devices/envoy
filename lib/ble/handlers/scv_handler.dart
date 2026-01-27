@@ -88,7 +88,8 @@ class ScvHandler extends PassportMessageHandler {
   Future<void> sendSecurityChallengeVerificationResult(
       api.VerificationResult result) async {
     final message = api.SecurityCheck.verificationResult(result);
-    await qlConnection.writeMessage(api.QuantumLinkMessage.securityCheck(message));
+    await qlConnection
+        .writeMessage(api.QuantumLinkMessage.securityCheck(message));
   }
 
   void sendSecurityChallenge() async {
@@ -104,7 +105,8 @@ class ScvHandler extends PassportMessageHandler {
 
     final request = api.SecurityCheck.challengeRequest(challenge);
     kPrint("writing security challenge");
-    await qlConnection.writeMessage(api.QuantumLinkMessage.securityCheck(request));
+    await qlConnection
+        .writeMessage(api.QuantumLinkMessage.securityCheck(request));
     kPrint("successfully wrote security challenge");
   }
 

@@ -3,6 +3,7 @@
 package com.foundationdevices.envoy.ble
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -12,7 +13,6 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -120,6 +120,10 @@ class BluetoothChannel(
             "startScan" -> startDeviceScan(call, result)
             "stopScan" -> stopDeviceScan(result)
             "pair" -> pairWithDevice(call, result)
+            "apiLevel" -> {
+                result.success(Build.VERSION.SDK_INT)
+            }
+
             "prepareDevice" -> prepareDevice(call, result)
             "reconnect" -> reconnect(call, result)
             "getConnectedDevices" -> getConnectedDevices(result)
@@ -145,8 +149,7 @@ class BluetoothChannel(
             return
         }
         if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.BLUETOOTH_CONNECT
+                context, Manifest.permission.BLUETOOTH_CONNECT
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             result.error("PERMISSION_ERROR", "Bluetooth connect permission not granted", null)
@@ -354,14 +357,14 @@ class BluetoothChannel(
                     bluetoothLeScanner?.stopScan(scanCallback)
                     sendScanEvent(BluetoothConnectionEventType.SCAN_STOPPED)
                 } catch (e: Exception) {
-                    Log.w(TAG, "Error stopping scan: ${e.message}")
+                    Log.w(TAG, "startDeviceScan: Error stopping scan: ${e.message}")
                 }
             }, 15000)
         } catch (e: SecurityException) {
-            Log.e(TAG, "Security exception during scan: ${e.message}")
+            Log.e(TAG, "startDeviceScan: FAILED - Security exception: ${e.message}")
             result.error("SECURITY_ERROR", "Missing scan permission: ${e.message}", null)
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to start scan: ${e.message}")
+            Log.e(TAG, "startDeviceScan: FAILED - Exception: ${e.message}")
             result.error("SCAN_ERROR", "Failed to start scan: ${e.message}", null)
         }
     }
@@ -388,12 +391,16 @@ class BluetoothChannel(
             result?.device?.let { device ->
                 sendScanEvent(BluetoothConnectionEventType.DEVICE_FOUND, device)
 
-                // Auto-connect to Prime device
-                if (device.name?.contains("Prime", ignoreCase = true) == true ||
+                val isKnownDevice = knownPrimeDevicesMAC.contains(device.address)
+                val isPrimeByName = device.name?.contains("Prime", ignoreCase = true) == true
+                val isPrimeByService =
                     result.scanRecord?.serviceUuids?.any { it.uuid == PRIME_SERVICE_UUID } == true
-                ) {
+
+                if (isKnownDevice || isPrimeByName || isPrimeByService) {
                     bluetoothLeScanner?.stopScan(this)
                     connectToDevice(device)
+                } else {
+                    Log.d(TAG, "onScanResult: No match, ignoring device")
                 }
             }
         }
@@ -412,17 +419,14 @@ class BluetoothChannel(
                 SCAN_FAILED_INTERNAL_ERROR -> "Internal error"
                 else -> "Unknown error ($errorCode)"
             }
-            Log.e(TAG, "BLE scan failed: $errorMessage")
             sendScanEvent(BluetoothConnectionEventType.SCAN_ERROR)
         }
     }
 
-    // ==================== Device Connection ====================
-
     @SuppressLint("MissingPermission")
     private fun connectToDevice(device: BluetoothDevice) {
         if (!checkBluetoothPermissions()) {
-            Log.e(TAG, "Missing Bluetooth permissions for connection")
+            Log.e(TAG, "connectToDevice: FAILED - Missing Bluetooth permissions")
             return
         }
 
@@ -471,12 +475,13 @@ class BluetoothChannel(
         val device = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE, BluetoothDevice::class.java)
         } else {
-            @Suppress("DEPRECATION")
-            intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+            @Suppress("DEPRECATION") intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
         }
 
-        val bondState = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.BOND_NONE)
-        val previousBondState = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, BluetoothDevice.BOND_NONE)
+        val bondState =
+            intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.BOND_NONE)
+        val previousBondState =
+            intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, BluetoothDevice.BOND_NONE)
 
         if (!checkBluetoothPermissions()) {
             Log.w(TAG, "Missing permissions for bonding state change")
@@ -497,7 +502,6 @@ class BluetoothChannel(
             return
         }
 
-        Log.d(TAG, "Bonding state changed for $deviceId: ${getBondStateString(previousBondState)} -> ${getBondStateString(bondState)}")
 
         // Route the bonding event to the appropriate BleDevice
         devices[deviceId]?.onBondingStateChanged(bondState)
@@ -511,8 +515,6 @@ class BluetoothChannel(
             else -> "UNKNOWN ($bondState)"
         }
     }
-
-    // ==================== Event Sending ====================
 
     @SuppressLint("MissingPermission")
     private fun sendScanEvent(type: BluetoothConnectionEventType, device: BluetoothDevice? = null) {
@@ -541,22 +543,18 @@ class BluetoothChannel(
     private fun checkBluetoothPermissions(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val hasConnectPermission = ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.BLUETOOTH_CONNECT
+                context, Manifest.permission.BLUETOOTH_CONNECT
             ) == PackageManager.PERMISSION_GRANTED
             val hasScanPermission = ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.BLUETOOTH_SCAN
+                context, Manifest.permission.BLUETOOTH_SCAN
             ) == PackageManager.PERMISSION_GRANTED
             hasConnectPermission && hasScanPermission
         } else {
             val hasBluetoothPermission = ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.BLUETOOTH
+                context, Manifest.permission.BLUETOOTH
             ) == PackageManager.PERMISSION_GRANTED
             val hasBluetoothAdminPermission = ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.BLUETOOTH_ADMIN
+                context, Manifest.permission.BLUETOOTH_ADMIN
             ) == PackageManager.PERMISSION_GRANTED
             hasBluetoothPermission && hasBluetoothAdminPermission
         }

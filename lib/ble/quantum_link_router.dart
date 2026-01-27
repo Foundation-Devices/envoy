@@ -16,8 +16,7 @@ abstract class PassportMessageHandler {
   final QLConnection qlConnection;
   PassportMessageHandler(this.qlConnection);
 
-  Future<void> handleMessage(
-      api.QuantumLinkMessage message);
+  Future<void> handleMessage(api.QuantumLinkMessage message);
 
   /// Return true if this handler should receive [message].
   bool canHandle(api.QuantumLinkMessage message);

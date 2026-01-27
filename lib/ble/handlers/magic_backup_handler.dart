@@ -122,8 +122,10 @@ class BleMagicBackupHandler extends PassportMessageHandler {
         await qlConnection.transmitFromFile(tempFile.path);
         kPrint("Restore magic backup file sent!");
       } else {
-        qlConnection.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
-            api.RestoreMagicBackupEvent.error(error: "Empty backup payload")));
+        qlConnection.writeMessage(
+            api.QuantumLinkMessage_RestoreMagicBackupEvent(
+                api.RestoreMagicBackupEvent.error(
+                    error: "Empty backup payload")));
       }
     } catch (e, stack) {
       EnvoyReport().log("PrimeMagicBackup", "Error restoring magic backup: $e",
@@ -158,8 +160,9 @@ class BleMagicBackupHandler extends PassportMessageHandler {
                     api.RestoreMagicBackupEvent.error(error: "invalidSeed")));
         }
       } else {
-        qlConnection.writeMessage(api.QuantumLinkMessage_RestoreMagicBackupEvent(
-            api.RestoreMagicBackupEvent.error(error: "$e")));
+        qlConnection.writeMessage(
+            api.QuantumLinkMessage_RestoreMagicBackupEvent(
+                api.RestoreMagicBackupEvent.error(error: "$e")));
       }
     }
   }

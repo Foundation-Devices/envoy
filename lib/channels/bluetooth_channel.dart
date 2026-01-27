@@ -102,6 +102,15 @@ class BluetoothChannel {
     return name;
   }
 
+  /// Get the device name of the host device (iOS and Android)
+  Future<int> getAPILevel() async {
+    if(!Platform.isAndroid){
+      throw Exception("getAPILevel is only supported on Android");
+    }
+    final int name = await _methodChannel.invokeMethod('apiLevel');
+    return name;
+  }
+
   /// Request to enable Bluetooth
   Future<bool?> requestEnableBle() async {
     return await _methodChannel.invokeMethod<bool>("enableBluetooth");

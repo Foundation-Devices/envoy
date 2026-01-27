@@ -15,8 +15,8 @@ class TransactionHandler extends PassportMessageHandler {
   TransactionHandler(super.connection);
 
   final StreamController<api.QuantumLinkMessage_BroadcastTransaction>
-  _txBroadcast =
-  StreamController<api.QuantumLinkMessage_BroadcastTransaction>.broadcast();
+      _txBroadcast =
+      StreamController<api.QuantumLinkMessage_BroadcastTransaction>.broadcast();
 
   Stream<api.QuantumLinkMessage_BroadcastTransaction> get txBroadcast =>
       _txBroadcast.stream.asBroadcastStream();

@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names///
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
@@ -12,7 +14,13 @@ import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:ngwallet/ngwallet.dart';
 
 class BleAccountHandler extends PassportMessageHandler {
-  BleAccountHandler(super.connection){
+  final _applyPassphraseStream =
+      StreamController<api.ApplyPassphrase?>.broadcast();
+
+  Stream<api.ApplyPassphrase?> get applyPassphraseStream =>
+      _applyPassphraseStream.stream.asBroadcastStream();
+
+  BleAccountHandler(super.connection) {
     setupExchangeRateListener();
   }
 
@@ -20,10 +28,8 @@ class BleAccountHandler extends PassportMessageHandler {
   bool canHandle(api.QuantumLinkMessage message) {
     return message is api.QuantumLinkMessage_AccountUpdate ||
         message is api.QuantumLinkMessage_CreateMagicBackupEvent ||
-        message is api.QuantumLinkMessage_RestoreMagicBackupRequest;
+        message is api.QuantumLinkMessage_ApplyPassphrase;
   }
-
-
 
   void setupExchangeRateListener() {
     ExchangeRate().addListener(() async {
@@ -31,12 +37,14 @@ class BleAccountHandler extends PassportMessageHandler {
     });
   }
 
-
   @override
   Future<void> handleMessage(api.QuantumLinkMessage message) async {
     if (message case api.QuantumLinkMessage_AccountUpdate accountUpdate) {
       kPrint("Got account update message: ${accountUpdate.field0.accountId}");
       _handleAccountUpdate(accountUpdate.field0);
+    } else if (message
+        case api.QuantumLinkMessage_ApplyPassphrase applyPassphrase) {
+      _applyPassphraseStream.add(applyPassphrase.field0);
     }
   }
 
@@ -90,11 +98,9 @@ class BleAccountHandler extends PassportMessageHandler {
     kPrint("Account added!");
   }
 
-
-
-
   Future<void> sendAccountUpdate(api.AccountUpdate accountUpdate) async {
-    await qlConnection.writeMessage(api.QuantumLinkMessage.accountUpdate(accountUpdate));
+    await qlConnection
+        .writeMessage(api.QuantumLinkMessage.accountUpdate(accountUpdate));
   }
 
   bool _sendingData = false;
@@ -102,8 +108,9 @@ class BleAccountHandler extends PassportMessageHandler {
 
   Future<void> sendExchangeRate() async {
     if (_sendingData) return;
-    kPrint(
-        "Preparing to send exchange rate to Prime... $_sendingData devices ${qlConnection.deviceId}");
+    if (!(qlConnection.getDevice()?.onboardingComplete ?? false)) {
+      return;
+    }
     try {
       _sendingData = true;
       final exchangeRate = ExchangeRate();
@@ -123,7 +130,8 @@ class BleAccountHandler extends PassportMessageHandler {
         timestamp: BigInt.from(timestamp / 1000),
       );
 
-      qlConnection.writeMessage(api.QuantumLinkMessage.exchangeRate(exchangeRateMessage));
+      qlConnection.writeMessage(
+          api.QuantumLinkMessage.exchangeRate(exchangeRateMessage));
 
       _lastSentBtcPrice = currentExchange;
     } catch (e) {
@@ -132,8 +140,6 @@ class BleAccountHandler extends PassportMessageHandler {
       _sendingData = false;
     }
   }
-
-
 
   Future<void> sendExchangeRateHistory() async {
     if (_sendingData) return;
@@ -172,7 +178,4 @@ class BleAccountHandler extends PassportMessageHandler {
       _sendingData = false;
     }
   }
-
-
-
 }
