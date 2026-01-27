@@ -15,7 +15,7 @@ flutter_rust_bridge = "=2.11.1"
 
 #ngwallet = { path = "../../../../ngwallet", features = ["envoy"] }
 #ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", tag = "2.4.0", features = ["envoy"] }
-ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", branch="envoy-2.2", features = ["envoy"] }
+ngwallet = {  git = "https://github.com/Foundation-Devices/ngwallet", rev = "70a666e826a9550f6bbf504b8584a4aeb4d9e5cb", features = ["envoy"] }
 
 bip39 = { version = "2.1.0", features = ["rand"] }
 # TODO: Check if this is necessary for the iOS build.

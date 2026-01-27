@@ -28,6 +28,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:envoy/business/settings.dart';
@@ -56,6 +57,7 @@ final triedAutomaticRecovery = StateProvider((ref) => false);
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   List<EscapeHatchTap> escapeHatchTaps = [];
+  bool escapeHatchAccessed = false;
 
   Future<void> registerEscapeTap(EscapeHatchTap tap) async {
     final scaffold = ScaffoldMessenger.of(context);
@@ -67,9 +69,19 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             .getRange(0, min(escapeHatchTaps.length, secretCombination.length))
             .toList())) {
       if (escapeHatchTaps.length == secretCombination.length) {
+        escapeHatchAccessed = true;
         escapeHatchTaps.clear();
         try {
+          //old storage configuration
+          FlutterSecureStorage storage = const FlutterSecureStorage();
+          await storage.deleteAll();
+
           await EnvoySeed().removeSeedFromNonSecure();
+          await EnvoySeed().removeSeedFromSecure();
+          //new storage configuration, delete all entries from secure storage fixes
+          // issue where old seeds were not deleted properly
+          await LocalStorage().secureStorage.deleteAll();
+          await Future.delayed(const Duration(milliseconds: 500));
           scaffold.showSnackBar(const SnackBar(
             content: Text("Envoy Seed deleted!"), // TODO: FIGMA
           ));
@@ -119,7 +131,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             registerEscapeTap(EscapeHatchTap.logo);
           },
           onLongPress: () {
-            if (kDebugMode || ref.read(devModeEnabledProvider)) {
+            if (escapeHatchAccessed) {
               Settings().skipPrimeSecurityCheck = true;
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text("Security check disabled"),
@@ -484,10 +496,46 @@ class _EnvoyWelcomeButtonState extends State<EnvoyWelcomeButton> {
   }
 }
 
-class LegacyFirmwareAlert extends StatelessWidget {
-  const LegacyFirmwareAlert({
-    super.key,
-  });
+class LegacyFirmwareAlert extends StatefulWidget {
+  const LegacyFirmwareAlert({super.key});
+
+  @override
+  State<LegacyFirmwareAlert> createState() => _LegacyFirmwareAlertState();
+}
+
+class _LegacyFirmwareAlertState extends State<LegacyFirmwareAlert>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _heightAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+
+    _heightAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    );
+  }
+
+  void _toggleAdvanced() {
+    if (_controller.isCompleted) {
+      _controller.reverse();
+    } else {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -501,29 +549,56 @@ class LegacyFirmwareAlert extends StatelessWidget {
           alignment: Alignment.center,
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium3),
-                child: Text(
-                  S().onboarding_passpportSelectCamera_sub235VersionAlert,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: EnvoyColors.textPrimaryInverse,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              TextButton(
-                child: Text(
-                  S().onboarding_passpportSelectCamera_tapHere,
-                  style: EnvoyTypography.button.copyWith(
-                    color: EnvoyColors.textPrimaryInverse,
+              GestureDetector(
+                onTap: _toggleAdvanced,
+                child: AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    return Transform.rotate(
+                      angle: _controller.value * pi,
+                      child: child,
+                    );
+                  },
+                  child: const Icon(
+                    Icons.keyboard_arrow_up_sharp,
+                    color: Colors.white,
                   ),
                 ),
-                onPressed: () async {
-                  context.pop();
-                  context.pushNamed(ONBOARD_PASSPORT_SETUP);
-                },
+              ),
+              SizeTransition(
+                sizeFactor: _heightAnimation,
+                axisAlignment: -1.0, // slide down from top
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.medium3,
+                      vertical: EnvoySpacing.small),
+                  child: Column(
+                    children: [
+                      Text(
+                        S().onboarding_passpportSelectCamera_sub235VersionAlert,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: EnvoyColors.textPrimaryInverse,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(EnvoySpacing.small),
+                        child: TextButton(
+                          child: Text(
+                            S().onboarding_passpportSelectCamera_tapHere,
+                            style: EnvoyTypography.button.copyWith(
+                              color: EnvoyColors.textPrimaryInverse,
+                            ),
+                          ),
+                          onPressed: () async {
+                            context.goNamed(ONBOARD_PASSPORT_SETUP);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

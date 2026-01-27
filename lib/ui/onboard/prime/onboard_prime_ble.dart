@@ -8,23 +8,28 @@ import 'dart:io';
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
-import 'package:envoy/ui/onboard/prime/prime_onboard_connection.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/prime_ql_payload_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/util/bug_report_helper.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foundation_api/foundation_api.dart';
@@ -34,6 +39,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 // TODO: remove this, store somewhere else
 final estimatedTimeProvider = StateProvider<int>((ref) => 0);
+final bleMacRegex = RegExp(r'^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$');
+
+enum BleConnectState { idle, invalidId, connecting, connected }
+
+String? _bleIdCache;
 
 class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
   const OnboardPrimeBluetooth({super.key});
@@ -51,6 +61,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   bool dialogShown = false;
   bool scanForPayload = false;
   bool onboardingCompleted = false;
+  BleConnectState bleConnectState = BleConnectState.idle;
+  int colorWay = 1;
 
   Completer<QuantumLinkMessage_BroadcastTransaction>? _completer;
 
@@ -62,7 +74,17 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   @override
   void initState() {
     super.initState();
-    _listenForPassportMessages();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final params = GoRouter.of(context).state.uri.queryParameters;
+      setState(() {
+        final param = params["c"] ?? "1";
+        onboardingCompleted = int.tryParse(params["o"] ?? "0") == 1;
+        colorWay = int.tryParse(param) ?? 1;
+      });
+      if (GoRouter.of(context).state.extra is bool) {
+        onboardingCompleted = GoRouter.of(context).state.extra as bool;
+      }
+    });
   }
 
   @override
@@ -72,11 +94,183 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     super.dispose();
   }
 
-  void _listenForPassportMessages() {
-    onboardingCompleted = GoRouter.of(context).state.extra as bool? ?? false;
+  StreamSubscription? _connectionMonitorSubscription;
+
+  Future<void> _connectToPrime() async {
+    // Check Bluetooth permissions
+    bool isDenied = false;
+    if (Platform.isAndroid) {
+      await BluetoothManager().getPermissions();
+      isDenied = await BluetoothManager.isBluetoothDenied();
+    }
+    String? bleId;
+
+    if (mounted) {
+      // Get the initial bleId from the router (if available)
+      bleId = GoRouter.of(context).state.uri.queryParameters["p"];
+      if (GoRouter.of(context).state.uri.queryParameters["p"] == null &&
+          _bleIdCache != null) {
+        bleId = _bleIdCache;
+      }
+      _bleIdCache = bleId;
+    }
+
+    if (isDenied && mounted) {
+      // Navigate to the permission denied screen and wait for result
+      final result = await context.pushNamed(
+        ONBOARD_BLUETOOTH_DENIED,
+        queryParameters: {"p": bleId ?? ""},
+      );
+
+      // If user provided a bleId, use it; else exit
+      if (result is String) {
+        bleId = result;
+      } else {
+        return;
+      }
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      bleConnectState = BleConnectState.connecting;
+    });
+
+    try {
+      if (bleMacRegex.hasMatch(bleId ?? "")) {
+        if (Platform.isIOS) {
+          final setUpSuccess = await BluetoothChannel().showAccessorySetup();
+          if (setUpSuccess) {
+            if (mounted) {
+              setState(() {
+                bleConnectState = BleConnectState.connected;
+              });
+            }
+            if (context.mounted && mounted) {
+              return showQLScanner(context);
+            }
+          }
+        } else {
+          await BluetoothManager().getPermissions();
+        }
+
+        final connectionStatus = await BluetoothManager()
+            .setupBle(id: bleId ?? "", colorWay: colorWay);
+
+        if (!connectionStatus && mounted) {
+          setState(() {
+            bleConnectState = BleConnectState.idle;
+          });
+          //on ios accessory setup handles connection failures
+          if (!Platform.isIOS) {
+            throw Exception("Failed to connect to Prime device.");
+          }
+        }
+        if (mounted && connectionStatus) {
+          setState(() {
+            bleConnectState = BleConnectState.connected;
+          });
+          if (context.mounted && mounted) {
+            showQLScanner(context);
+          }
+        }
+      } else {
+        throw Exception("Invalid Prime Serial");
+      }
+    } catch (e, stack) {
+      setState(() {
+        bleConnectState = BleConnectState.idle;
+      });
+      String message = "";
+      if (e is PlatformException) {
+        //only for Android
+        if (e.code == "BLUETOOTH_DISABLED") {
+          final bool? allowed = await BluetoothChannel().requestEnableBle();
+          if (allowed == true) {
+            return _connectToPrime();
+          } else {
+            message = "Unable to connect to device, Error code ${e.code}";
+          }
+        }
+      }
+      if (mounted) {
+        setState(() {
+          bleConnectState = BleConnectState.idle;
+        });
+
+        //handle specific errors
+        if (e is BleSetupTimeoutException) {
+          message = S().onboarding_modalBluetoothUnableConnect_content;
+        }
+
+        showEnvoyDialog(
+          context: context,
+          dismissible: true,
+          dialog: EnvoyPopUp(
+            icon: EnvoyIcons.alert,
+            typeOfMessage: PopUpState.warning,
+            showCloseButton: false,
+            content: message,
+            title: S().onboarding_modalBluetoothUnableConnect_header,
+            primaryButtonLabel: S().component_retry,
+            secondaryButtonLabel: S().component_dismiss,
+            onSecondaryButtonTap: (BuildContext context) {
+              Navigator.pop(context);
+            },
+            onPrimaryButtonTap: (BuildContext context) async {
+              Navigator.pop(context);
+              _connectToPrime();
+            },
+          ),
+        );
+        kPrint(e, stackTrace: stack);
+        EnvoyReport().log("BleConnect", e.toString(), stackTrace: stack);
+      }
+    }
   }
 
-  StreamSubscription? _connectionMonitorSubscription;
+  void showQLScanner(BuildContext context) async {
+    final qrDecoder = await getQrDecoder();
+
+    if (!context.mounted) return;
+
+    await showScannerDialog(
+      infoType: QrIntentInfoType.prime,
+      context: context,
+      onBackPressed: (ctx) {
+        if (ctx.mounted) Navigator.pop(ctx);
+      },
+      decoder: PrimeQlPayloadDecoder(
+        decoder: qrDecoder,
+        onScan: (XidDocument payload) async {
+          // TODO: process XidDocument for connection
+          if (!context.mounted) return;
+
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
+
+          await Future.delayed(
+            const Duration(milliseconds: 200),
+          );
+
+          if (!onboardingCompleted) {
+            await pairWithPrime(payload);
+            if (!context.mounted) return;
+            context.goNamed(ONBOARD_PRIME_PAIR);
+          } else {
+            if (context.mounted) {
+              context.goNamed(ONBOARD_REPAIRING);
+            }
+            await Future.delayed(
+              const Duration(milliseconds: 400),
+            );
+            await pairWithPrime(payload);
+          }
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -185,51 +379,27 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                 },
               ),
               const SizedBox(height: EnvoySpacing.small),
-              EnvoyButton(
-                S().onboarding_bluetoothIntro_connect,
-                onTap: () async {
-                  final qrDecoder = await getQrDecoder();
-
-                  if (!context.mounted) return;
-
-                  await showScannerDialog(
-                    infoType: QrIntentInfoType.prime,
-                    context: context,
-                    onBackPressed: (ctx) {
-                      if (ctx.mounted) Navigator.pop(ctx);
-                    },
-                    decoder: PrimeQlPayloadDecoder(
-                      decoder: qrDecoder,
-                      onScan: (XidDocument payload) async {
-                        // TODO: process XidDocument for connection
-
-                        if (!context.mounted) return;
-
-                        if (Navigator.canPop(context)) {
-                          Navigator.pop(context);
-                        }
-
-                        await Future.delayed(
-                          const Duration(milliseconds: 200),
-                        );
-
-                        if (!onboardingCompleted) {
-                          await pairWithPrime(payload);
-                          if (!context.mounted) return;
-                          context.goNamed(ONBOARD_PRIME_PAIR);
-                        } else {
-                          if (context.mounted) {
-                            context.goNamed(ONBOARD_REPAIRING);
-                          }
-                          await Future.delayed(
-                            const Duration(milliseconds: 400),
-                          );
-                          await pairWithPrime(payload);
-                        }
-                      },
+              Opacity(
+                opacity: (bleConnectState == BleConnectState.invalidId ||
+                        bleConnectState == BleConnectState.connecting)
+                    ? 0.5
+                    : 1,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Opacity(
+                      opacity: bleConnectState == BleConnectState.connecting
+                          ? 0.5
+                          : 1,
+                      child: EnvoyButton(S().onboarding_bluetoothIntro_connect,
+                          onTap: () {
+                        _connectToPrime();
+                      }),
                     ),
-                  );
-                },
+                    if (bleConnectState == BleConnectState.connecting)
+                      const CupertinoActivityIndicator(),
+                  ],
+                ),
               ),
             ],
           ),
@@ -250,41 +420,14 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       dismissible: false,
       dialog: QuantumLinkCommunicationInfo(
         onContinue: () async {
-          final qrDecoder = await getQrDecoder();
-
-          if (!context.mounted) return;
-
-          await showScannerDialog(
-            infoType: QrIntentInfoType.prime,
-            context: context,
-            onBackPressed: (ctx) {
-              if (ctx.mounted) Navigator.pop(ctx);
-            },
-            decoder: PrimeQlPayloadDecoder(
-              decoder: qrDecoder,
-              onScan: (XidDocument payload) async {
-                // TODO: process XidDocument for connection
-
-                if (!context.mounted) return;
-
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                }
-
-                primeXid = payload;
-                await Future.delayed(const Duration(milliseconds: 200));
-                if (!context.mounted) return;
-                context.goNamed(ONBOARD_PRIME_PAIR);
-                await Future.delayed(const Duration(milliseconds: 300));
-              },
-            ),
-          );
+          showQLScanner(context);
         },
       ),
     );
   }
 }
 
+//TODO: QL intro implmenentation
 //TODO: implement platform specific copy with appropriate
 class QuantumLinkCommunicationInfo extends StatefulWidget {
   final GestureTapCallback onContinue;

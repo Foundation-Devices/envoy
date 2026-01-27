@@ -75,24 +75,34 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
             if (data != null) {
                 val uri = data.data
                 if (uri != null && firmware != null) {
-                    val output = applicationContext.contentResolver.openOutputStream(uri)
-                    output?.write(firmware!!.readBytes())
-                    output?.flush()
-                    output?.close()
+                    try {
+                        // Open with "wt" to truncate existing content
+                        val pfd = applicationContext.contentResolver.openFileDescriptor(uri, "wt")
+                        if (pfd != null) {
+                            val output = java.io.FileOutputStream(pfd.fileDescriptor)
+                            output.write(firmware!!.readBytes())
+                            output.flush()
+                            
+                            // fsync to ensure it's on disk
+                            Os.fsync(pfd.fileDescriptor)
+                            
+                            output.close()
+                            pfd.close()
 
-                    // Get the file descriptor and fsync to make sure it's on the SD
-                    val pfd = applicationContext.contentResolver.openFileDescriptor(uri, "w")
-                    Os.fsync(pfd!!.fileDescriptor)
-
-                    pfd.close()
-
-                    // Boolean down the chute means success
-                    Handler().postDelayed(
-                        {
-                            sdCardEventSink?.success(true)
-                        },
-                        1000
-                    )
+                            // Boolean down the chute means success
+                            Handler().postDelayed(
+                                {
+                                    sdCardEventSink?.success(true)
+                                },
+                                1000
+                            )
+                        } else {
+                            sdCardEventSink?.success(false)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        sdCardEventSink?.success(false)
+                    }
                 }
             }
         } else if (requestCode == saveFileRequestCode && resultCode == RESULT_CANCELED) {
@@ -134,18 +144,25 @@ class MainActivity : FlutterFragmentActivity(), EventChannel.StreamHandler {
                     val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
                     intent.addCategory(Intent.CATEGORY_OPENABLE)
                     intent.type = "application/firmware"
-
-                    if (file != null) {
-                        intent.putExtra(
-                            Intent.EXTRA_TITLE,
-                            file.name
-                        )
-                    }
-
-                    //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, call.argument("path") as String?)
+                    intent.putExtra(Intent.EXTRA_TITLE, file?.name)
 
                     startActivityForResult(intent, saveFileRequestCode)
                     result.success(true)
+                }
+
+                "save_document" -> {
+                   val file = (call.argument("from") as String?)?.let { File(it) }
+                   firmware = file
+                   
+                   val mimeType = call.argument("mimeType") as String?
+
+                   val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+                   intent.addCategory(Intent.CATEGORY_OPENABLE)
+                   intent.type = mimeType ?: "text/plain"
+                   intent.putExtra(Intent.EXTRA_TITLE, file?.name)
+
+                   startActivityForResult(intent, saveFileRequestCode)
+                   result.success(true) 
                 }
 
                 "data_changed" -> {

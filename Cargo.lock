@@ -248,8 +248,8 @@ dependencies = [
 
 [[package]]
 name = "backup-shard"
-version = "0.2.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.2.0#b8311078f9ea34b1708aa05e275baa4003547668"
+version = "0.3.0"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.4.1#bf750cf8b073add2ae62938fcd27c339a806dd6f"
 dependencies = [
  "dcbor",
  "zeroize",
@@ -801,7 +801,7 @@ dependencies = [
 [[package]]
 name = "btp"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.3.1#a4dab4eedfcb1e216e4f486ed3acd91fa1dd419d"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.4.1#bf750cf8b073add2ae62938fcd27c339a806dd6f"
 dependencies = [
  "bytemuck",
  "consts",
@@ -1592,7 +1592,7 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "2.0.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.3.1#a4dab4eedfcb1e216e4f486ed3acd91fa1dd419d"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.4.1#bf750cf8b073add2ae62938fcd27c339a806dd6f"
 dependencies = [
  "bc-components",
  "bc-envelope",
@@ -2682,7 +2682,7 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?branch=envoy-2.2#dd9b439341d6499ceffe31bd2a4146e70a12d1c1"
+source = "git+https://github.com/Foundation-Devices/ngwallet?rev=70a666e826a9550f6bbf504b8584a4aeb4d9e5cb#70a666e826a9550f6bbf504b8584a4aeb4d9e5cb"
 dependencies = [
  "anyhow",
  "bdk_core",
@@ -3274,7 +3274,7 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.3.1#a4dab4eedfcb1e216e4f486ed3acd91fa1dd419d"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.4.1#bf750cf8b073add2ae62938fcd27c339a806dd6f"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3468,9 +3468,9 @@ dependencies = [
 
 [[package]]
 name = "rsa"
-version = "0.9.9"
+version = "0.9.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "40a0376c50d0358279d9d643e4bf7b7be212f1f4ff1da9070a7b54d22ef75c88"
+checksum = "b8573f03f5883dcaebdfcf4725caa1ecb9c15b2ef50c43a07b816e06799bb12d"
 dependencies = [
  "const-oid",
  "digest",

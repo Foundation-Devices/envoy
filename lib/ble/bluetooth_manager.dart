@@ -184,6 +184,21 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     initBluetooth();
   }
 
+  Future<void> restoreAfterRecovery() async {
+    final primes = Devices().getPrimeDevices;
+    final newBleId = primes.isNotEmpty ? primes.first.bleId : "";
+
+    if (newBleId.isEmpty) return;
+
+    if (bleId != newBleId) {
+      bleId = newBleId;
+      await listen(id: newBleId);
+    }
+
+    await restoreQuantumLinkIdentity();
+    await restorePrimes();
+  }
+
   Future<void> restoreQuantumLinkIdentity() async {
     final qlIdentity = await EnvoyStorage().getQuantumLinkIdentity();
 
