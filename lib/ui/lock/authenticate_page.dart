@@ -13,16 +13,38 @@ import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:local_auth/error_codes.dart' as auth_error;
 import 'package:local_auth/local_auth.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
+
+final GlobalKey<NavigatorState> authRouterKey =
+    GlobalKey<NavigatorState>(debugLabel: "authNavigator");
+
+final GoRouter authRouter = GoRouter(
+  navigatorKey: authRouterKey,
+  initialLocation: "/",
+  debugLogDiagnostics: true,
+  routes: <RouteBase>[
+    GoRoute(
+        path: "/",
+        name: "/",
+        builder: (context, state) {
+          // Extract deep link URI from route state if present
+          final Uri? deepLinkUri = state.uri.queryParameters.isNotEmpty
+              ? state.uri
+              : (state.extra is Uri ? state.extra as Uri : null);
+          return AuthenticatePage(deepLinkUri: deepLinkUri);
+        }),
+  ],
+);
 
 class AuthenticateApp extends StatelessWidget {
   const AuthenticateApp({super.key});
@@ -32,22 +54,24 @@ class AuthenticateApp extends StatelessWidget {
     final envoyTextTheme =
         GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
 
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: const [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: S.delegate.supportedLocales,
-        theme: ThemeData(
-          textTheme: envoyTextTheme,
-          primaryColor: EnvoyColors.accentPrimary,
-          brightness: Brightness.light,
-          scaffoldBackgroundColor: Colors.transparent,
-        ),
-        home: Builder(builder: (c) => const AuthenticatePage()));
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
+      theme: ThemeData(
+        textTheme: envoyTextTheme,
+        primaryColor: EnvoyColors.accentPrimary,
+        brightness: Brightness.light,
+        scaffoldBackgroundColor: Colors.transparent,
+      ),
+      routerConfig: authRouter,
+      // home: Builder(builder: (c) => const AuthenticatePage())
+    );
   }
 }
 
@@ -57,7 +81,14 @@ class AuthenticatePage extends StatefulWidget {
   ///will pop the blur overlay
   final bool sessionAuthenticate;
 
-  const AuthenticatePage({super.key, this.sessionAuthenticate = false});
+  /// Deep link URI to pass to EnvoyApp after authentication
+  final Uri? deepLinkUri;
+
+  const AuthenticatePage({
+    super.key,
+    this.sessionAuthenticate = false,
+    this.deepLinkUri,
+  });
 
   @override
   State<AuthenticatePage> createState() => _AuthenticatePageState();
@@ -133,7 +164,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
           mainNavigatorKey.currentState?.mounted == true) {
         mainNavigatorKey.currentState!.pop();
       } else {
-        runApp(const EnvoyApp());
+        runApp(EnvoyApp(deepLinkUri: widget.deepLinkUri));
       }
     }
 
@@ -340,7 +371,7 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
       if (useAuth == true) {
         initiateAuth();
       } else {
-        runApp(const EnvoyApp());
+        runApp(EnvoyApp(deepLinkUri: widget.deepLinkUri));
       }
     });
   }

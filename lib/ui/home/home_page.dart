@@ -51,6 +51,8 @@ import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/ui/routes/routes.dart';
 
 final _fullScreenProvider = Provider((ref) {
   bool fullScreen = ref.watch(hideBottomNavProvider);
@@ -62,6 +64,8 @@ final _fullScreenProvider = Provider((ref) {
 final currentVersionDeprecatedProvider = FutureProvider<bool>((ref) {
   return Server().checkForForceUpdate();
 });
+
+bool isCurrentlyOnboarding = false;
 
 class HomePageNotification extends Notification {
   final String? title;
@@ -203,9 +207,13 @@ class HomePageState extends ConsumerState<HomePage>
       // If Tor is broken surface a warning
       if (event == ConnectivityManagerEvent.torConnectedDoesntWork ||
           event == ConnectivityManagerEvent.foundationServerDown) {
+        bool isOnboarded =
+            LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
         if (_torWarningDisplayedMoreThan5minAgo &&
             Settings().usingTor &&
             ConnectivityManager().torEnabled &&
+            isOnboarded &&
+            !isCurrentlyOnboarding &&
             mounted) {
           _notifyAboutTor();
           _torWarningDisplayedMoreThan5minAgo = false;
