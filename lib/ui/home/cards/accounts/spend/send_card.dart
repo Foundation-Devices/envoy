@@ -26,7 +26,12 @@ import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
-  const SendCard({super.key});
+  final String? transferAddress;
+
+  const SendCard({
+    super.key,
+    required this.transferAddress,
+  });
 
   @override
   ConsumerState<SendCard> createState() => _SendCardState();
@@ -85,6 +90,13 @@ class _SendCardState extends ConsumerState<SendCard>
       account = ref.read(selectedAccountProvider);
       // Ensure validation error state is cleared on initialization
       ref.read(spendValidationErrorProvider.notifier).state = null;
+
+      // Auto-set the transfer address if provided
+      if (widget.transferAddress != null) {
+        _controller.text = widget.transferAddress!;
+        ref.read(spendAddressProvider.notifier).state = widget.transferAddress!;
+      }
+
       if (ref.read(spendAmountProvider) != 0) {
         setAmount(ref.read(spendAmountProvider));
       }

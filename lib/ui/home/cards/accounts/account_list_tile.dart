@@ -31,12 +31,16 @@ class AccountListTile extends ConsumerStatefulWidget {
   final void Function() onTap;
   final EnvoyAccount account;
   final bool draggable;
+  final bool inactive;
+  final bool useHero;
 
   const AccountListTile(
     this.account, {
     super.key,
     required this.onTap,
     this.draggable = true,
+    this.inactive = false,
+    this.useHero = true,
   });
 
   @override
@@ -274,8 +278,8 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                 ),
                               ),
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: EnvoySpacing.small),
                                 child: EnvoyAmount(
                                     account: widget.account,
                                     amountSats: balance.toInt(),
