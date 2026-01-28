@@ -15,6 +15,7 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/envoy_bar.dart';
+import 'package:envoy/ui/components/envoy_loaders.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
@@ -61,7 +62,6 @@ import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart' as ngwallet;
 import 'package:ngwallet/ngwallet.dart';
-import 'package:flutter/cupertino.dart';
 
 //ignore: must_be_immutable
 class AccountCard extends ConsumerStatefulWidget {
@@ -207,11 +207,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   ],
                 );
               },
-              refreshIndicator: const CupertinoActivityIndicator(
-                key: ValueKey("refresh"),
-                color: Colors.black,
-                radius: 12,
-              ),
+              refreshIndicator:
+                  const EnvoyActivityIndicator(key: ValueKey("refresh")),
               child: SizedBox(
                 height: MediaQuery.of(context).size.height,
                 width: double.infinity,
@@ -1262,6 +1259,7 @@ class _EnvoyPullToRefreshState extends State<EnvoyPullToRefresh>
     super.initState();
     _springController = AnimationController(vsync: this);
     _springController.addListener(() {
+      if (!mounted || _refreshing) return; // do not animate while refreshing
       setState(() {
         _dragOffset = _springAnimation.value;
       });
@@ -1277,6 +1275,8 @@ class _EnvoyPullToRefreshState extends State<EnvoyPullToRefresh>
   double get _progress => (_dragOffset / triggerDistance).clamp(0, 1);
 
   void _animateBack({double to = 0}) {
+    if (_refreshing) return; // block animations during refresh
+
     _springAnimation = Tween<double>(
       begin: _dragOffset,
       end: to,
@@ -1294,7 +1294,9 @@ class _EnvoyPullToRefreshState extends State<EnvoyPullToRefresh>
   Future<void> _triggerRefresh() async {
     setState(() => _refreshing = true);
 
-    _animateBack(to: maxIndicatorPull);
+    // Snap and lock at maxIndicatorPull while refreshing
+    _springController.stop();
+    setState(() => _dragOffset = maxIndicatorPull);
 
     await widget.onRefresh();
 
@@ -1341,7 +1343,8 @@ class _EnvoyPullToRefreshState extends State<EnvoyPullToRefresh>
             });
           },
           onVerticalDragEnd: (_) {
-            if (_dragOffset >= triggerDistance && !_refreshing) {
+            if (_refreshing) return; // prevent extra animation triggers
+            if (_dragOffset >= triggerDistance) {
               _triggerRefresh();
             } else {
               _animateBack(to: 0);
