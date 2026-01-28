@@ -380,6 +380,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
                               },
                               onAddressValidated:
                                   (address, amount, message) async {
+                                EnvoyToast.dismissPreviousToasts(context,
+                                    rootNavigator: true);
                                 if (navigator.canPop()) {
                                   navigator.pop();
                                 }
