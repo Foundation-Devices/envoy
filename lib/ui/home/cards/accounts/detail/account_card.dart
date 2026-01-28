@@ -106,36 +106,43 @@ class _AccountCardState extends ConsumerState<AccountCard>
           ref.read(selectedAccountProvider) ?? NgAccountManager().accounts[0];
       ref.read(homePageTitleProvider.notifier).state = "";
 
-      ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
-          optionsWidget: Container(),
-          rightAction: Consumer(
-            builder: (context, ref, child) {
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  Navigator.of(context).push(
-                    PageRouteBuilder(
-                      opaque: false,
-                      pageBuilder: (_, __, ___) => AccountOptions(account),
-                    ),
-                  );
-                },
-                child: Container(
-                  height: 55,
-                  width: 55,
-                  color: Colors.transparent,
-                  child: Icon(
-                    Icons.more_horiz_outlined,
-                  ),
-                ),
-              );
-            },
-          ));
+      String path = ref.watch(routePathProvider);
+
+      // env211 - to eliminate right action in neighbouring screens
+      path == ROUTE_ACCOUNT_DETAIL
+          ? ref.read(homeShellOptionsProvider.notifier).state =
+              HomeShellOptions(
+                  optionsWidget: Container(),
+                  rightAction: Consumer(
+                    builder: (context, ref, child) {
+                      return GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              opaque: false,
+                              pageBuilder: (_, __, ___) =>
+                                  AccountOptions(account),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          height: 55,
+                          width: 55,
+                          color: Colors.transparent,
+                          child: Icon(
+                            Icons.more_horiz_outlined,
+                          ),
+                        ),
+                      );
+                    },
+                  ))
+          : ref.read(homeShellOptionsProvider.notifier).state == null;
 
       bool showOverlay = ref.read(showSpendRequirementOverlayProvider);
       bool isInEditMode =
           ref.read(spendEditModeProvider) != SpendOverlayContext.hidden;
-      String path = ref.read(routePathProvider);
+
       if ((showOverlay || isInEditMode) && path == ROUTE_ACCOUNT_DETAIL) {
         ref.read(hideBottomNavProvider.notifier).state = true;
       }
@@ -161,6 +168,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
 
     bool txFiltersEnabled = ref.watch(isTransactionFiltersEnabled);
     bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);
+
+    var scanInProgress = SyncManager().isAccountFullScanInProgress(account);
 
     return MediaQuery.removePadding(
       context: context,
@@ -225,9 +234,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                         },
                       ),
                     ),
-                    SyncManager().isAccountFullScanInProgress(account)
-                        ? RescanningIndicator()
-                        : SizedBox.shrink(),
+                    scanInProgress ? RescanningIndicator() : SizedBox.shrink(),
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),
                       child: (transactions.isNotEmpty || txFiltersEnabled)
@@ -283,19 +290,22 @@ class _AccountCardState extends ConsumerState<AccountCard>
               padding: const EdgeInsets.only(top: EnvoySpacing.xs),
               child: EnvoyBar(
                 showDividers: true,
-                enabled: !SyncManager().isAccountFullScanInProgress(account),
-                bottomPadding: EnvoySpacing.large1,
                 items: [
                   EnvoyBarItem(
                     icon: EnvoyIcons.transfer,
                     text: S().receive_tx_list_transfer,
+                    enabled: !scanInProgress &&
+                        ref.watch(accountsCountByNetworkProvider(
+                                account.network)) >=
+                            2,
                     onTap: () {
-                      // TODO: add "Transfer" code
+                      context.go(ROUTE_ACCOUNT_TRANSFER, extra: account.id);
                     },
                   ),
                   EnvoyBarItem(
                     icon: EnvoyIcons.receive,
                     text: S().receive_tx_list_receive,
+                    //enabled: !scanInProgress, // TODO we should leave this enabled if the scan is in progress???
                     onTap: () {
                       if (accountHasNoTaprootXpub(account) &&
                           Settings().taprootEnabled()) {
@@ -326,6 +336,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   EnvoyBarItem(
                     icon: EnvoyIcons.send,
                     text: S().receive_tx_list_send,
+                    enabled: !scanInProgress,
                     onTap: () async {
                       clearSpendState(ProviderScope.containerOf(context));
                       await Future.delayed(const Duration(milliseconds: 50));
@@ -340,6 +351,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   EnvoyBarItem(
                     icon: EnvoyIcons.externalLink,
                     text: S().receive_tx_list_scan,
+                    enabled: !scanInProgress,
                     onTap: () {
                       final navigator =
                           Navigator.of(context, rootNavigator: true);
@@ -368,6 +380,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
                               },
                               onAddressValidated:
                                   (address, amount, message) async {
+                                EnvoyToast.dismissPreviousToasts(context,
+                                    rootNavigator: true);
                                 if (navigator.canPop()) {
                                   navigator.pop();
                                 }

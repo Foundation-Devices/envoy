@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -18,6 +19,7 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -134,10 +136,10 @@ class SpendRequirementOverlayState
   final Alignment _endAlignment = const Alignment(0.0, 1.01);
 
   ///overlay is minimized
-  final Alignment _minimizedAlignment = const Alignment(0.0, 1.3);
+  final Alignment _minimizedAlignment = const Alignment(0.0, 1.7);
 
   ///hidden from the viewport
-  final Alignment _startAlignment = const Alignment(0.0, 1.99);
+  final Alignment _startAlignment = const Alignment(0.0, 2.99);
 
   late Alignment _dragAlignment = _startAlignment;
 
@@ -275,6 +277,9 @@ class SpendRequirementOverlayState
     //hide when dialog is shown, we dont want to remove overlay from the widget tree
     //if the user chose to stay in the coin selection screen and we need to show the overlay again
 
+    var scanInProgress =
+        SyncManager().isAccountFullScanInProgress(widget.account);
+
     return BackButtonListener(
       onBackButtonPressed: () async {
         if (inTagSelectionMode && !ref.read(coinDetailsActiveProvider)) {
@@ -356,7 +361,7 @@ class SpendRequirementOverlayState
             child: Transform.scale(
               scale: 1.0,
               child: SizedBox(
-                  height: 245,
+                  height: 370,
                   width: MediaQuery.of(context).size.width,
                   child: Container(
                     decoration: BoxDecoration(
@@ -388,8 +393,8 @@ class SpendRequirementOverlayState
                               width: 40,
                               height: 4,
                               margin: const EdgeInsets.only(
-                                  top: EnvoySpacing.xs,
-                                  bottom: EnvoySpacing.small),
+                                top: EnvoySpacing.medium1,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.grey,
                                 borderRadius: BorderRadius.circular(2),
@@ -402,7 +407,7 @@ class SpendRequirementOverlayState
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: EnvoySpacing.small,
-                                    vertical: EnvoySpacing.small,
+                                    vertical: EnvoySpacing.medium3,
                                   ),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
@@ -498,31 +503,57 @@ class SpendRequirementOverlayState
                                   opacity: _isInMinimizedState ? 0 : 1,
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
-                                      horizontal: EnvoySpacing.small,
+                                      horizontal: EnvoySpacing.medium1,
                                     ),
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
                                       children: [
-                                        EnvoyButton(
-                                          enabled: valid,
-                                          type: EnvoyButtonTypes.primaryModal,
-                                          inTagSelectionMode
-                                              ? S().tagged_tagDetails_sheet_cta1
-                                              : S().component_continue,
-                                          onTap: () =>
-                                              onPrimaryButtonTap(context),
-                                        ),
-                                        const Padding(
-                                            padding: EdgeInsets.all(
-                                                EnvoySpacing.xs)),
                                         inTagSelectionMode
                                             ? coinSelectionButton(
                                                 valid: valid,
                                                 inTagSelectionMode:
                                                     inTagSelectionMode)
                                             : transactionEditButton(context),
+                                        const SizedBox(
+                                            height: EnvoySpacing.medium1),
+                                        EnvoyButton(
+                                            enabled: valid &&
+                                                !scanInProgress &&
+                                                ref.watch(
+                                                        accountsCountByNetworkProvider(
+                                                            widget.account
+                                                                .network)) >=
+                                                    2 &&
+                                                !(spendEditMode ==
+                                                    SpendOverlayContext
+                                                        .editCoins),
+                                            leading: EnvoyIcon(
+                                                EnvoyIcons.transfer,
+                                                color:
+                                                    EnvoyColors.textSecondary),
+                                            type: EnvoyButtonTypes.secondary,
+                                            S()
+                                                .tagged_tagDetails_sheet_transferSelected,
+                                            onTap: () => onPrimaryButtonTap(
+                                                context,
+                                                ROUTE_ACCOUNT_TRANSFER)),
+                                        const SizedBox(
+                                            height: EnvoySpacing.medium1),
+                                        EnvoyButton(
+                                          enabled: valid && !scanInProgress,
+                                          leading: EnvoyIcon(
+                                              EnvoyIcons.arrow_up_right,
+                                              color: EnvoyColors
+                                                  .textPrimaryInverse),
+                                          type: EnvoyButtonTypes.primaryModal,
+                                          inTagSelectionMode
+                                              ? S().tagged_tagDetails_sheet_cta1
+                                              : S().component_continue,
+                                          onTap: () => onPrimaryButtonTap(
+                                              context, ROUTE_ACCOUNT_SEND),
+                                        ),
                                         Padding(
                                             padding: EdgeInsets.only(
                                                 bottom: MediaQuery.of(context)
@@ -575,9 +606,11 @@ class SpendRequirementOverlayState
           ? S().tagged_tagDetails_sheet_cta2
           : S().tagged_tagDetails_sheet_retag_cta2;
     }
+
     return EnvoyButton(
       enabled: valid,
       type: EnvoyButtonTypes.secondary,
+      leading: EnvoyIcon(EnvoyIcons.tag, color: EnvoyColors.textSecondary),
       buttonText,
       onTap: () async {
         if (dialogOpen) return; // Prevent opening multiple dialogs
@@ -678,7 +711,7 @@ class SpendRequirementOverlayState
     );
   }
 
-  Future<void> onPrimaryButtonTap(BuildContext context) async {
+  Future<void> onPrimaryButtonTap(BuildContext context, String path) async {
     final scope = ProviderScope.containerOf(context);
     final navigator = Navigator.of(context);
     final mode = ref.read(spendEditModeProvider);
@@ -730,7 +763,14 @@ class SpendRequirementOverlayState
           SpendOverlayContext.hidden;
       ref.read(hideBottomNavProvider.notifier).state = false;
       _dismiss();
-      mainRouter.go(ROUTE_ACCOUNT_SEND);
+
+      if (path == ROUTE_ACCOUNT_TRANSFER) {
+        if (context.mounted) {
+          mainRouter.go(ROUTE_ACCOUNT_TRANSFER, extra: account?.id);
+        }
+      } else {
+        mainRouter.go(ROUTE_ACCOUNT_SEND);
+      }
       return;
     }
   }
@@ -867,11 +907,15 @@ class _SpendSelectionCancelWarningState
       primaryButtonLabel: S().component_yes,
       onPrimaryButtonTap: (context) {
         hideCoinSnack(ref);
-        Navigator.of(context).pop(true);
+        if (context.mounted) {
+          Navigator.of(context).pop(true);
+        }
       },
       tertiaryButtonLabel: S().component_no,
       onTertiaryButtonTap: (context) {
-        Navigator.of(context).pop(false);
+        if (context.mounted) {
+          Navigator.of(context).pop(false);
+        }
       },
       checkBoxText: S().component_dontShowAgain,
       checkedValue: isDismissed,

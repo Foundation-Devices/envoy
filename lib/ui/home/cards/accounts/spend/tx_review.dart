@@ -774,8 +774,6 @@ class _TransactionReviewScreenState
                       enabled: !transactionModel.loading,
                       S().component_cancel,
                       type: EnvoyButtonTypes.tertiary,
-                      borderRadius: const BorderRadius.all(
-                          Radius.circular(EnvoySpacing.small)),
                       onTap: () {
                         showEnvoyDialog(
                             context: context,
@@ -786,8 +784,6 @@ class _TransactionReviewScreenState
                   const Padding(padding: EdgeInsets.all(6)),
                   EnvoyButton(
                     enabled: enableButton,
-                    borderRadius: const BorderRadius.all(
-                        Radius.circular(EnvoySpacing.small)),
                     leading: isPrime
                         ? EnvoyIcon(
                             transactionModel.isFinalized

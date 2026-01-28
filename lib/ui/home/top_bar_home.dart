@@ -325,7 +325,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         return S().header_buyBitcoin;
       case ROUTE_SELECT_ACCOUNT:
         return S().header_buyBitcoin;
-
+      case ROUTE_ACCOUNT_TRANSFER:
+        return S().bottomNav_transfer;
       default:
         return S().menu_heading;
     }
@@ -393,6 +394,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
         break;
       case ROUTE_ACCOUNT_SEND:
+        ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
+        break;
+      case ROUTE_ACCOUNT_TRANSFER:
         ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
         break;
       case ROUTE_ACTIVITY:
