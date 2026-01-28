@@ -66,6 +66,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private var deviceReady = false
     private var reconnectionTimer: Timer?
     private var reconnectionAttempts: Int = 0
+    private var isShuttingDown = false
     
     private let bleQueue = DispatchQueue(label: "com.envoy.ble", qos: .userInteractive)
 
@@ -184,11 +185,41 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         // Use the shared BLE queue for all BLE operations
         centralManager = CBCentralManager(
             delegate: self,
-            queue: bleQueue,  
+            queue: bleQueue,
             options: [
                 CBCentralManagerOptionRestoreIdentifierKey: restoreIdentifier
             ]
         )
+    }
+
+    /// Clean up Bluetooth resources before app termination.
+    /// This prevents CoreBluetooth callbacks from firing after Flutter engine is destroyed.
+    func cleanup() {
+        // Set flag first to prevent any further Flutter channel communication
+        isShuttingDown = true
+
+        // Stop any pending reconnection timers
+        stopReconnection()
+
+        // Cancel any ongoing transfer tasks
+        transferTask?.cancel()
+        transferTask = nil
+
+        // Clear all Flutter sinks to prevent callbacks to destroyed engine
+        eventSink = nil
+        connectionEventSink = nil
+        writeStreamSink = nil
+
+        // Disconnect from peripheral if connected
+        if let peripheral = connectedPeripheral, let central = centralManager {
+            central.cancelPeripheralConnection(peripheral)
+        }
+        connectedPeripheral = nil
+
+        // Remove delegate to prevent further callbacks
+        centralManager?.delegate = nil
+        centralManager = nil
+
     }
 
     private func reconnect(result: @escaping FlutterResult) {
@@ -1037,6 +1068,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     }
 
     private func sendBinaryData(_ data: Data) {
+        guard !isShuttingDown else { return }
         guard let binaryChannel = bleBinaryChannel else {
             print("Warning: No binary channel available for data transmission")
             return
@@ -1181,6 +1213,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         type: String? = nil,
         error: String? = nil
     ) {
+        guard !isShuttingDown else { return }
 
         let connectionData: [String: Any] = [
             "type": type,
@@ -1207,6 +1240,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     }
     
     private func sendWriteProgress(_ progress: Float, id: String, bytesProcessed: Int64 = 0, totalBytes: Int64 = 0) {
+        guard !isShuttingDown else { return }
         guard let sink = writeStreamSink else { return }
         
         let stateData: [String: Any] = [
@@ -1220,6 +1254,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     }
 
     private func sendBluetoothState(_ state: CBManagerState) {
+        guard !isShuttingDown else { return }
         guard let sink = eventSink else { return }
 
         let stateString: String
@@ -1321,7 +1356,7 @@ class ProgressStreamHandler: NSObject, FlutterStreamHandler {
     }
 
     func onCancel(withArguments arguments: Any?) -> FlutterError? {
-        bluetoothChannel?.connectionEventSink = nil
+        bluetoothChannel?.writeStreamSink = nil
         return nil
     }
 }
