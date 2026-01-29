@@ -11,11 +11,28 @@ import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/console.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 
+/// Type of security check error
+enum ScvErrorType {
+  /// No error
+  none,
+
+  /// Network error - couldn't reach Foundation servers
+  networkError,
+
+  /// Verification failed - device may be tampered with
+  verificationFailed,
+}
+
 class ScvUpdateState {
   final String message;
   final EnvoyStepState step;
+  final ScvErrorType errorType;
 
-  ScvUpdateState({required this.message, required this.step});
+  ScvUpdateState({
+    required this.message,
+    required this.step,
+    this.errorType = ScvErrorType.none,
+  });
 }
 
 /// Handler for SCV messages over Quantum Link.
@@ -43,20 +60,37 @@ class ScvHandler extends PassportMessageHandler {
         final proofResult = check.field0;
         if (proofResult is api.ChallengeResponseResult_Success) {
           final proofData = proofResult.data;
-          bool isVerified = await ScvServer().isProofVerified(proofData);
-          if (isVerified) {
-            updateScvState(S().onboarding_connectionChecking_SecurityPassed,
-                EnvoyStepState.FINISHED);
-            await sendSecurityChallengeVerificationResult(
-                api.VerificationResult.success());
-          } else {
-            await sendSecurityChallengeVerificationResult(
-                api.VerificationResult.error(error: "SVC verification failed"));
+          final verificationResult = await ScvServer().verifyProof(proofData);
 
-            updateScvState(
-                S().onboarding_connectionIntroError_securityCheckFailed,
-                EnvoyStepState.ERROR);
-            return;
+          switch (verificationResult) {
+            case ScvVerificationResult.success:
+              updateScvState(S().onboarding_connectionChecking_SecurityPassed,
+                  EnvoyStepState.FINISHED);
+              await sendSecurityChallengeVerificationResult(
+                  api.VerificationResult.success());
+              break;
+
+            case ScvVerificationResult.networkError:
+              // Network error - send Error to Prime and show pending state
+              await sendSecurityChallengeVerificationResult(
+                  api.VerificationResult.error(
+                      error:
+                          "Network error: Unable to reach Foundation servers"));
+              updateScvState(
+                  "Security Check Pending", // TODO: Figma
+                  EnvoyStepState.ERROR,
+                  errorType: ScvErrorType.networkError);
+              return;
+
+            case ScvVerificationResult.verificationFailed:
+              // Actual verification failure - send Failure to Prime
+              await sendSecurityChallengeVerificationResult(
+                  api.VerificationResult.failure());
+              updateScvState(
+                  S().onboarding_connectionIntroError_securityCheckFailed,
+                  EnvoyStepState.ERROR,
+                  errorType: ScvErrorType.verificationFailed);
+              return;
           }
         } else if (proofResult is api.ChallengeResponseResult_Error) {
           final proofError = proofResult.error;
@@ -81,8 +115,10 @@ class ScvHandler extends PassportMessageHandler {
     } else if (message case api.QuantumLinkMessage_PairingResponse _) {}
   }
 
-  void updateScvState(String message, EnvoyStepState step) {
-    final state = ScvUpdateState(message: message, step: step);
+  void updateScvState(String message, EnvoyStepState step,
+      {ScvErrorType errorType = ScvErrorType.none}) {
+    final state =
+        ScvUpdateState(message: message, step: step, errorType: errorType);
     _scvUpdateController.add(state);
   }
 
