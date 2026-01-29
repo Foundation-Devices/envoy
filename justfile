@@ -102,9 +102,9 @@ docker-beef: docker-build-linux
 qa:
     ./scripts/run_integration_tests.sh
 
-maestro-qa:
-    ./scripts/run_ios_maestro.sh --build
+maestroqa:
+    ./scripts/run_maestro.sh --build
 
-maestro-qa-android:
-    ./scripts/run_android_maestro.sh --build
+maestroqaios:
+    ./scripts/run_ios_maestro.sh --build
 

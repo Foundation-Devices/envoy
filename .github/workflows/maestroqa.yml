@@ -39,10 +39,10 @@ jobs:
           echo "Found $DEVICE_COUNT device(s)"
 
       - name: Build Android FFI
-        run: ./scripts/build_ffi.sh
+        run: ./scripts/build_ffi_android.sh
 
       - name: Run Maestro Android Tests (builds and installs APK)
-        run: just maestro-qa-android
+        run: just maestroqa
 
   maestro-qa-ios:
     if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'both' }}
@@ -55,8 +55,8 @@ jobs:
       - name: Install bindgen-cli (for aws-lc-sys)
         run: cargo install --force --locked bindgen-cli
 
-      - name: Build ffi
+      - name: Build iOS FFI
         run: ./scripts/build_ffi_ios.sh
 
-      - name: Run Maestro QA Tests
-        run: just maestro-qa
+      - name: Run Maestro iOS Tests (builds and installs app)
+        run: just maestroqaios
