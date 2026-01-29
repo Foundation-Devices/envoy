@@ -22,6 +22,16 @@ class DeviceDecoder extends ScannerDecoder {
       {required this.onScan, required this.pairPayloadDecoder, this.onXidScan});
 
   @override
+  void reset() {
+    super.reset();
+    previousCode = "";
+    pairPayloadDecoder.reset();
+    // Reset prime decoder by setting to null so it gets recreated with fresh ArcMutexDecoder
+    primeQlPayloadDecoder = null;
+    qrDecoder = null;
+  }
+
+  @override
   Future<void> onDetectBarCode(Barcode barCode) async {
     if (barCode.code == null) {
       return;
@@ -32,6 +42,7 @@ class DeviceDecoder extends ScannerDecoder {
         qrDecoder = await getQrDecoder();
         primeQlPayloadDecoder = PrimeQlPayloadDecoder(
           decoder: qrDecoder!,
+          refreshDecoder: getQrDecoder,
           onScan: (xidDocument) {
             if (onXidScan != null) {
               onXidScan!(xidDocument);
@@ -41,11 +52,11 @@ class DeviceDecoder extends ScannerDecoder {
             progressCallBack?.call(progress);
           });
       }
-      primeQlPayloadDecoder!.onDetectBarCode(barCode);
+      await primeQlPayloadDecoder!.onDetectBarCode(barCode);
       progressCallBack
           ?.call(primeQlPayloadDecoder!.urDecoder.urDecoder.progress);
     } else if (barCode.code?.toLowerCase().startsWith("ur:") == true) {
-      pairPayloadDecoder.onDetectBarCode(barCode);
+      await pairPayloadDecoder.onDetectBarCode(barCode);
       progressCallBack?.call(pairPayloadDecoder.urDecoder.urDecoder.progress);
     } else {
       if (!previousCode.toLowerCase().startsWith("ur:")) {

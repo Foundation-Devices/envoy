@@ -16,7 +16,7 @@ class UnableToDecodeException implements Exception {
 
 abstract class ScannerDecoder {
   Function(double progress)? _progressCallBack;
-  final UniformResourceReader _urDecoder = UniformResourceReader();
+  UniformResourceReader _urDecoder = UniformResourceReader();
   bool _processing = false;
 
   ScannerDecoder();
@@ -40,12 +40,18 @@ abstract class ScannerDecoder {
         _urDecoder.receive(barCode.code?.toLowerCase() ?? "");
         progressCallBack?.call(_urDecoder.urDecoder.progress);
       } catch (e) {
+        reset(); // clear bad partial state so next scan can work
         throw UnableToDecodeException();
       } finally {
         _processing = false;
       }
     }
     return urDecoder.decoded;
+  }
+
+  void reset() {
+    _processing = false;
+    _urDecoder = UniformResourceReader();
   }
 
   /// Allow subclasses to handle decoding errors in their own way

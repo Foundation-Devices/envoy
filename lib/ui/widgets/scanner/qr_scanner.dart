@@ -78,6 +78,8 @@ class _QrScannerState extends State<QrScanner>
 
   bool _viewReady = false;
 
+  bool _isProcessingScan = false; //prevent overlapping decodes
+
   @override
   void initState() {
     _userInteractionTimer = Timer(const Duration(seconds: 8), () {
@@ -210,6 +212,10 @@ class _QrScannerState extends State<QrScanner>
     _qrStreamSubscription =
         controller.scannedDataStream.listen((barcode) async {
       _userInteractionTimer.cancel();
+
+      // if a decode is already running, ignore new frames
+      if (_isProcessingScan) return;
+
       if (_isScanDialogOpen) {
         navigator.pop();
         _isScanDialogOpen = false;
@@ -225,39 +231,19 @@ class _QrScannerState extends State<QrScanner>
         }
       }
 
+      _isProcessingScan = true;
+
       try {
         await widget.decoder.onDetectBarCode(barcode);
-      } on UnableToDecodeException catch (e) {
-        if (context.mounted) {
-          widget.decoder.onDecodeError(
-            context,
-            e,
-            onRetry: () {
-              Navigator.pop(context); // Close popup first
-              setState(() {
-                _lastScan = "";
-                _progress = 0;
-                _lastCodeDetected = "";
-                _lastRawBytesDetected = [];
-              });
-              controller.resumeCamera();
-            },
-            onCancel: () {
-              Navigator.pop(context); // Close popup
-              Navigator.pop(context); // Close camera
-            },
-          );
-          controller.pauseCamera();
-        }
       } catch (e) {
         if (context.mounted) {
           widget.decoder.onDecodeError(
             context,
-            e as Exception,
+            e is Exception ? e : Exception(e.toString()),
             onRetry: () {
               setState(() {
                 _lastScan = "";
-                _progress = 0;
+                _progress = 0.0;
                 _lastCodeDetected = "";
                 _lastRawBytesDetected = [];
               });
@@ -266,6 +252,7 @@ class _QrScannerState extends State<QrScanner>
         }
       } finally {
         _lastScan = barcode.code ?? '';
+        _isProcessingScan = false;
       }
     });
     // ENV-252: hack to get camera on CalyxOS
