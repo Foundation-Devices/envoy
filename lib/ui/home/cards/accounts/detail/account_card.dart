@@ -921,7 +921,6 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                                 EnvoyButton(
                                   S().component_save,
                                   onTap: () async {
-                                    navigator.pop();
                                     Device? device = Devices()
                                         .getDeviceBySerial(
                                             widget.account.deviceSerial ?? "");

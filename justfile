@@ -105,3 +105,6 @@ qa:
 maestro-qa:
     ./scripts/run_ios_maestro.sh --build
 
+maestro-qa-android:
+    ./scripts/run_android_maestro.sh --build
+

@@ -5,11 +5,12 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # Maestro Android Test Runner for Envoy
-# Usage: ./run_android_maestro.sh [test_name.yaml]
+# Usage: ./run_android_maestro.sh [--device <device_id>] [test_name.yaml]
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_tests"
+DEVICE_ID=""
 
 # Colors for output
 RED='\033[0;31m'
@@ -78,6 +79,25 @@ print_summary() {
 
 print_header
 
+# Parse arguments
+BUILD_APP=false
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --device)
+            DEVICE_ID="$2"
+            shift 2
+            ;;
+        --build)
+            BUILD_APP=true
+            shift
+            ;;
+        *)
+            TEST_ARG="$1"
+            shift
+            ;;
+    esac
+done
+
 # Check if maestro is installed
 if ! command -v maestro &> /dev/null; then
     echo -e "${RED}✗ Error: Maestro is not installed or not in PATH${NC}"
@@ -87,6 +107,44 @@ fi
 
 echo -e "${GREEN}✓${NC} Maestro found: $(which maestro)"
 echo -e "${GREEN}✓${NC} Tests directory: $TESTS_DIR"
+
+# Auto-detect device if not specified
+if [ -z "$DEVICE_ID" ]; then
+    DEVICE_ID=$(adb devices | grep -w "device" | head -1 | awk '{print $1}')
+    if [ -z "$DEVICE_ID" ]; then
+        echo -e "${RED}✗ Error: No Android device found. Please connect a device.${NC}"
+        exit 1
+    fi
+fi
+
+echo -e "${GREEN}✓${NC} Using device: $DEVICE_ID"
+
+# Build and install app if requested
+if [ "$BUILD_APP" = true ]; then
+    echo ""
+    echo -e "${YELLOW}Building Android APK...${NC}"
+    cd "$PROJECT_ROOT"
+    flutter build apk --debug
+
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}✗ Error: Failed to build APK${NC}"
+        exit 1
+    fi
+
+    echo -e "${YELLOW}Installing APK on device $DEVICE_ID...${NC}"
+    adb -s "$DEVICE_ID" install -r build/app/outputs/flutter-apk/app-debug.apk
+
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}✗ Error: Failed to install APK${NC}"
+        exit 1
+    fi
+
+    echo -e "${GREEN}✓${NC} APK installed successfully"
+    echo ""
+fi
+
+# Build maestro command with device
+MAESTRO_CMD="maestro --device $DEVICE_ID"
 
 PASSED=0
 FAILED=0
@@ -99,7 +157,7 @@ run_single_test() {
     print_test_start "$test_name"
 
     # Run maestro and capture output
-    OUTPUT=$(maestro test "$test_file" 2>&1)
+    OUTPUT=$($MAESTRO_CMD test "$test_file" 2>&1)
     EXIT_CODE=$?
 
     if [ $EXIT_CODE -eq 0 ]; then
@@ -115,8 +173,8 @@ run_single_test() {
 }
 
 # Check if a specific test was provided
-if [ -n "$1" ]; then
-    TEST_FILE="$TESTS_DIR/$1"
+if [ -n "$TEST_ARG" ]; then
+    TEST_FILE="$TESTS_DIR/$TEST_ARG"
     if [ ! -f "$TEST_FILE" ]; then
         echo -e "${RED}✗ Error: Test file not found: $TEST_FILE${NC}"
         exit 1
@@ -143,6 +201,18 @@ if [ ${#FAILED_TESTS[@]} -gt 0 ]; then
         echo -e "  ${RED}•${NC} $test"
     done
     echo ""
+fi
+
+# Uninstall app after tests
+echo -e "${YELLOW}Uninstalling app...${NC}"
+adb -s "$DEVICE_ID" uninstall com.foundationdevices.envoy > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}✓${NC} App uninstalled"
+else
+    echo -e "${YELLOW}⚠${NC} App was not installed or already removed"
+fi
+
+if [ ${#FAILED_TESTS[@]} -gt 0 ]; then
     exit 1
 fi
 
