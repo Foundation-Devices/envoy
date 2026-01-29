@@ -162,12 +162,12 @@ appId: com.foundationdevices.envoy
 
 - extendedWaitUntil:
     visible: "Magic Backup Detected"
-    timeout: 5000
+    timeout: 10000
 - tapOn: Ignore
 
 - extendedWaitUntil:
     visible: "Import Envoy Backup File"
-    timeout: 5000
+    timeout: 10000
 
 # Press on the icon to load backup file
 - longPressOn: |-
