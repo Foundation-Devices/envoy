@@ -7,12 +7,15 @@ import 'dart:async';
 import 'package:animations/animations.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/components/envoy_bar.dart';
+import 'package:envoy/ui/components/envoy_loaders.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_dialog.dart';
@@ -27,7 +30,6 @@ import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/cancel_transaction.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/transaction/transactions_details.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
-import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/home/home_state.dart';
@@ -35,7 +37,6 @@ import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
-import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/hide_balance_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
@@ -46,9 +47,11 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/tx_utils.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
+import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/payment_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/blur_container_transform.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -103,32 +106,43 @@ class _AccountCardState extends ConsumerState<AccountCard>
           ref.read(selectedAccountProvider) ?? NgAccountManager().accounts[0];
       ref.read(homePageTitleProvider.notifier).state = "";
 
-      ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
-          optionsWidget: AccountOptions(account),
-          rightAction: Consumer(
-            builder: (context, ref, child) {
-              bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  HomePageState.of(context)?.toggleOptions();
-                },
-                child: Container(
-                  height: 55,
-                  width: 55,
-                  color: Colors.transparent,
-                  child: Icon(
-                    menuVisible ? Icons.close : Icons.more_horiz_outlined,
-                  ),
-                ),
-              );
-            },
-          ));
+      String path = ref.watch(routePathProvider);
+
+      // env211 - to eliminate right action in neighbouring screens
+      path == ROUTE_ACCOUNT_DETAIL
+          ? ref.read(homeShellOptionsProvider.notifier).state =
+              HomeShellOptions(
+                  optionsWidget: Container(),
+                  rightAction: Consumer(
+                    builder: (context, ref, child) {
+                      return GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              opaque: false,
+                              pageBuilder: (_, __, ___) =>
+                                  AccountOptions(account),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          height: 55,
+                          width: 55,
+                          color: Colors.transparent,
+                          child: Icon(
+                            Icons.more_horiz_outlined,
+                          ),
+                        ),
+                      );
+                    },
+                  ))
+          : ref.read(homeShellOptionsProvider.notifier).state == null;
 
       bool showOverlay = ref.read(showSpendRequirementOverlayProvider);
       bool isInEditMode =
           ref.read(spendEditModeProvider) != SpendOverlayContext.hidden;
-      String path = ref.read(routePathProvider);
+
       if ((showOverlay || isInEditMode) && path == ROUTE_ACCOUNT_DETAIL) {
         ref.read(hideBottomNavProvider.notifier).state = true;
       }
@@ -155,6 +169,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
     bool txFiltersEnabled = ref.watch(isTransactionFiltersEnabled);
     bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);
 
+    var scanInProgress = SyncManager().isAccountFullScanInProgress(account);
+
     return MediaQuery.removePadding(
       context: context,
       removeTop: true,
@@ -163,229 +179,231 @@ class _AccountCardState extends ConsumerState<AccountCard>
       removeRight: true,
       child: Scaffold(
         body: PopScope(
-          canPop: !isMenuOpen,
-          onPopInvokedWithResult: (bool didPop, _) async {
-            if (!didPop) {
-              HomePageState.of(context)?.toggleOptions();
-            }
-          },
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 20,
-                  bottom: 0,
-                  left: 20,
-                  right: 20,
-                ),
-                child: AccountListTile(account, onTap: () {
-                  Navigator.pop(context);
-                  ref.read(homePageAccountsProvider.notifier).state =
-                      HomePageAccountsState(
-                          HomePageAccountsNavigationState.list);
-                }),
-              ),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                child: (transactions.isNotEmpty || txFiltersEnabled)
-                    ? Container(
-                        padding: const EdgeInsets.only(
-                            top: EnvoySpacing.medium2,
-                            bottom: EnvoySpacing.small),
-                        child: const FilterOptions(),
-                      )
-                    : const SizedBox.shrink(),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-
-                      ///proper padding to align with top sections, based on UI design
-                      left: 20,
-                      right: 20,
-                      top: EnvoySpacing.small),
-                  child: account.dateSynced == null
-                      ? ListView.builder(
-                          padding: EdgeInsets.zero,
-                          itemCount: 4,
-                          itemBuilder: (BuildContext context, int index) {
-                            return const GhostListTile();
-                          },
-                        )
-                      : _getMainWidget(context, transactions, txFiltersEnabled),
-                ),
-              ),
-            ],
-          ),
-        ),
-        bottomNavigationBar: Consumer(
-          builder: (context, ref, child) {
-            bool hide = ref.watch(showSpendRequirementOverlayProvider);
-            bool isInEditMode =
-                ref.watch(spendEditModeProvider) != SpendOverlayContext.hidden;
-            return IgnorePointer(
-              ignoring: (hide || isInEditMode),
-              child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  opacity: (hide || isInEditMode) ? 0 : 1,
-                  child: child),
-            );
-          },
-          child: Container(
-            height: 100,
-            decoration: const BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: EnvoyColors.textPrimaryInverse,
-                  spreadRadius: 0,
-                  blurRadius: 24,
-                  offset: Offset(0, -8), // changes position of shadow
-                ),
-                BoxShadow(
-                  color: EnvoyColors.textPrimaryInverse,
-                  spreadRadius: 12,
-                  blurRadius: 24,
-                ),
-              ],
-            ),
-            padding: const EdgeInsets.only(
-                left: EnvoySpacing.large1,
-                right: EnvoySpacing.large1,
-                bottom: EnvoySpacing.medium3),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: EnvoyTextButton(
-                        label: S().receive_tx_list_receive,
+            canPop: !isMenuOpen,
+            onPopInvokedWithResult: (bool didPop, _) async {
+              if (!didPop) {
+                HomePageState.of(context)?.toggleOptions();
+              }
+            },
+            child: EnvoyPullToRefresh(
+              onRefresh: () => SyncManager().syncAccount(account),
+              pullIndicator: (progress) {
+                return Column(
+                  key: ValueKey("pull"),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    EnvoyIcon(
+                      EnvoyIcons.refresh,
+                      color: EnvoyColors.textTertiary,
+                    ),
+                    const SizedBox(height: EnvoySpacing.small),
+                    Opacity(
+                      opacity: progress,
+                      child: Text(
+                        S().rescanAccount_pullToSync_pullToSync,
+                        style: TextStyle(color: EnvoyColors.textTertiary),
+                      ),
+                    ),
+                  ],
+                );
+              },
+              refreshIndicator:
+                  const EnvoyActivityIndicator(key: ValueKey("refresh")),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: double.infinity,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 20,
+                        bottom: 0,
+                        left: 20,
+                        right: 20,
+                      ),
+                      child: AccountListTile(
+                        account,
                         onTap: () {
-                          if (accountHasNoTaprootXpub(account) &&
-                              Settings().taprootEnabled()) {
-                            showEnvoyPopUp(
-                              context,
-                              icon: EnvoyIcons.info,
-                              showCloseButton: true,
-                              title: S().taproot_passport_dialog_heading,
-                              S().taproot_passport_dialog_subheading,
-                              S().taproot_passport_dialog_reconnect,
-                              (BuildContext modalContext) {
-                                Navigator.pop(modalContext);
-                                scanForDevice(context, ref);
-                              },
-                              secondaryButtonLabel:
-                                  S().taproot_passport_dialog_later,
-                              onSecondaryButtonTap: (BuildContext context) {
-                                Navigator.pop(context);
-                                context.go(ROUTE_ACCOUNT_RECEIVE,
-                                    extra: account.id);
-                              },
-                            );
-                          } else {
+                          Navigator.pop(context);
+                          ref.read(homePageAccountsProvider.notifier).state =
+                              HomePageAccountsState(
+                                  HomePageAccountsNavigationState.list);
+                        },
+                      ),
+                    ),
+                    scanInProgress ? RescanningIndicator() : SizedBox.shrink(),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      child: (transactions.isNotEmpty || txFiltersEnabled)
+                          ? Container(
+                              padding: const EdgeInsets.only(
+                                top: EnvoySpacing.medium2,
+                                bottom: EnvoySpacing.small,
+                              ),
+                              child: const FilterOptions(),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          ///proper padding to align with top sections, based on UI design
+                          left: 20,
+                          right: 20,
+                          top: EnvoySpacing.small,
+                        ),
+                        child: account.dateSynced == null
+                            ? ListView.builder(
+                                padding: EdgeInsets.zero,
+                                itemCount: 4,
+                                itemBuilder: (_, __) => const GhostListTile(),
+                              )
+                            : _getMainWidget(
+                                context,
+                                // TODO: fix transactions can be seen under EnvoyBar while scrolling
+                                transactions,
+                                txFiltersEnabled,
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )),
+        bottomNavigationBar: Consumer(
+            builder: (context, ref, child) {
+              bool hide = ref.watch(showSpendRequirementOverlayProvider);
+              bool isInEditMode = ref.watch(spendEditModeProvider) !=
+                  SpendOverlayContext.hidden;
+              return IgnorePointer(
+                ignoring: (hide || isInEditMode),
+                child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 200),
+                    opacity: (hide || isInEditMode) ? 0 : 1,
+                    child: child),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(top: EnvoySpacing.xs),
+              child: EnvoyBar(
+                showDividers: true,
+                items: [
+                  EnvoyBarItem(
+                    icon: EnvoyIcons.transfer,
+                    text: S().receive_tx_list_transfer,
+                    enabled: !scanInProgress &&
+                        ref.watch(accountsCountByNetworkProvider(
+                                account.network)) >=
+                            2,
+                    onTap: () {
+                      context.go(ROUTE_ACCOUNT_TRANSFER, extra: account.id);
+                    },
+                  ),
+                  EnvoyBarItem(
+                    icon: EnvoyIcons.receive,
+                    text: S().receive_tx_list_receive,
+                    //enabled: !scanInProgress, // TODO we should leave this enabled if the scan is in progress???
+                    onTap: () {
+                      if (accountHasNoTaprootXpub(account) &&
+                          Settings().taprootEnabled()) {
+                        showEnvoyPopUp(
+                          context,
+                          icon: EnvoyIcons.info,
+                          showCloseButton: true,
+                          title: S().taproot_passport_dialog_heading,
+                          S().taproot_passport_dialog_subheading,
+                          S().taproot_passport_dialog_reconnect,
+                          (BuildContext modalContext) {
+                            Navigator.pop(modalContext);
+                            scanForDevice(context, ref);
+                          },
+                          secondaryButtonLabel:
+                              S().taproot_passport_dialog_later,
+                          onSecondaryButtonTap: (BuildContext context) {
+                            Navigator.pop(context);
                             context.go(ROUTE_ACCOUNT_RECEIVE,
                                 extra: account.id);
-                          }
-                        }),
+                          },
+                        );
+                      } else {
+                        context.go(ROUTE_ACCOUNT_RECEIVE, extra: account.id);
+                      }
+                    },
                   ),
-                ),
-                QrShield(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: const EnvoyIcon(
-                        EnvoyIcons.scan,
-                        size: EnvoyIconSize.medium,
-                        color: EnvoyColors.accentPrimary,
-                      ),
-                      onPressed: () {
-                        final navigator =
-                            Navigator.of(context, rootNavigator: true);
-                        final goRouter = GoRouter.of(context);
-                        QrIntentInfoType qrType = QrIntentInfoType.qrCode;
-                        if (!account.isHot) {
-                          final device = Devices()
-                              .getDeviceBySerial(account.deviceSerial ?? "");
-                          if (device != null &&
-                              device.type == DeviceType.passportPrime) {
-                            qrType = QrIntentInfoType.prime;
-                          } else {
-                            qrType = QrIntentInfoType.core;
-                          }
-                        }
-                        showScannerDialog(
-                            context: context,
-                            onBackPressed: (context) {
-                              Navigator.of(context).pop();
-                            },
-                            infoType: qrType,
-                            decoder: PaymentQrDecoder(
-                                account: account,
-                                onAztecoScan: (aztecoVoucher) {
+                  EnvoyBarItem(
+                    icon: EnvoyIcons.send,
+                    text: S().receive_tx_list_send,
+                    enabled: !scanInProgress,
+                    onTap: () async {
+                      clearSpendState(ProviderScope.containerOf(context));
+                      await Future.delayed(const Duration(milliseconds: 50));
+                      if (context.mounted) {
+                        context.go(ROUTE_ACCOUNT_SEND);
+                      }
+                      return;
+                      // widget.navigator!.push(
+                      //     SendCard(widget.account, navigator: widget.navigator));
+                    },
+                  ),
+                  EnvoyBarItem(
+                    icon: EnvoyIcons.externalLink,
+                    text: S().receive_tx_list_scan,
+                    enabled: !scanInProgress,
+                    onTap: () {
+                      final navigator =
+                          Navigator.of(context, rootNavigator: true);
+                      final goRouter = GoRouter.of(context);
+                      showScannerDialog(
+                          context: context,
+                          onBackPressed: (context) {
+                            Navigator.of(context).pop();
+                          },
+                          decoder: PaymentQrDecoder(
+                              account: account,
+                              onAztecoScan: (aztecoVoucher) {
+                                navigator.pop();
+                                showEnvoyDialog(
+                                    context: context,
+                                    useRootNavigator: true,
+                                    dialog:
+                                        AztecoDialog(aztecoVoucher, account));
+                              },
+                              btcPayVoucherScan: (voucher) {
+                                navigator.pop();
+                                showEnvoyDialog(
+                                    context: context,
+                                    useRootNavigator: true,
+                                    dialog: BtcPayDialog(voucher, account));
+                              },
+                              onAddressValidated:
+                                  (address, amount, message) async {
+                                EnvoyToast.dismissPreviousToasts(context,
+                                    rootNavigator: true);
+                                if (navigator.canPop()) {
                                   navigator.pop();
-                                  showEnvoyDialog(
-                                      context: context,
-                                      useRootNavigator: true,
-                                      dialog:
-                                          AztecoDialog(aztecoVoucher, account));
-                                },
-                                btcPayVoucherScan: (voucher) {
-                                  navigator.pop();
-                                  showEnvoyDialog(
-                                      context: context,
-                                      useRootNavigator: true,
-                                      dialog: BtcPayDialog(voucher, account));
-                                },
-                                onAddressValidated:
-                                    (address, amount, message) async {
-                                  if (navigator.canPop()) {
-                                    navigator.pop();
-                                  }
-                                  //wait for the dialog to close,200ms based on material bottom_sheet.dart
-                                  await Future.delayed(
-                                      const Duration(milliseconds: 200));
-                                  if (!ref.context.mounted) {
-                                    return;
-                                  }
-                                  ref
-                                      .read(spendAddressProvider.notifier)
-                                      .state = address;
-                                  ref.read(spendAmountProvider.notifier).state =
-                                      amount;
-                                  ref
-                                      .read(stagingTxNoteProvider.notifier)
-                                      .state = message;
-                                  goRouter.go(ROUTE_ACCOUNT_SEND, extra: {
-                                    "address": address,
-                                    "amount": amount
-                                  });
-                                }));
-                      },
-                    ),
+                                }
+                                //wait for the dialog to close,200ms based on material bottom_sheet.dart
+                                await Future.delayed(
+                                    const Duration(milliseconds: 200));
+                                if (!ref.context.mounted) {
+                                  return;
+                                }
+                                ref.read(spendAddressProvider.notifier).state =
+                                    address;
+                                ref.read(spendAmountProvider.notifier).state =
+                                    amount;
+                                ref.read(stagingTxNoteProvider.notifier).state =
+                                    message;
+                                goRouter.go(ROUTE_ACCOUNT_SEND, extra: {
+                                  "address": address,
+                                  "amount": amount
+                                });
+                              }));
+                    },
                   ),
-                ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: EnvoyTextButton(
-                      onTap: () async {
-                        clearSpendState(ProviderScope.containerOf(context));
-                        await Future.delayed(const Duration(milliseconds: 50));
-                        if (context.mounted) {
-                          context.go(ROUTE_ACCOUNT_SEND);
-                        }
-                        return;
-                        // widget.navigator!.push(
-                        //     SendCard(widget.account, navigator: widget.navigator));
-                      },
-                      label: S().receive_tx_list_send,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+                ],
+              ),
+            )),
       ),
     );
   }
@@ -562,6 +580,7 @@ class TransactionListTile extends ConsumerWidget {
       currency = (transaction as BtcPayTransaction).currency;
     }
     return BlurContainerTransform(
+      // TODO: fix blur moving while refresh
       useRootNavigator: true,
       closedBuilder: (context, action) {
         return GestureDetector(
@@ -805,160 +824,536 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
   @override
   Widget build(context) {
     final account = ref.watch(accountStateProvider(widget.account.id));
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const Divider(),
-        const SizedBox(
-          height: 10,
-        ),
-        GestureDetector(
-          child: Text(
-            S().manage_account_menu_showDescriptor.toUpperCase(),
-            style: const TextStyle(color: Colors.white),
-          ),
-          onTap: () {
-            if (accountHasNoTaprootXpub(widget.account) &&
-                Settings().taprootEnabled()) {
-              showEnvoyPopUp(
-                context,
-                icon: EnvoyIcons.info,
-                showCloseButton: true,
-                title: S().taproot_passport_dialog_heading,
-                S().taproot_passport_dialog_subheading,
-                S().taproot_passport_dialog_reconnect,
-                (BuildContext modalContext) {
-                  Navigator.pop(modalContext);
-                  HomePageState.of(context)?.toggleOptions();
-                  scanForDevice(context, ref);
-                },
-                secondaryButtonLabel: S().taproot_passport_dialog_later,
-                onSecondaryButtonTap: (BuildContext modalContext) {
-                  Navigator.pop(modalContext);
-                  HomePageState.of(context)?.toggleOptions();
-                  context.go(ROUTE_ACCOUNT_DESCRIPTOR,
-                      extra: widget.account.id);
-                },
-              );
-            } else {
-              HomePageState.of(context)?.toggleOptions();
-              context.go(ROUTE_ACCOUNT_DESCRIPTOR, extra: widget.account.id);
-            }
-          },
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        GestureDetector(
-          child: Text(
-            S().manage_account_menu_editAccountName.toUpperCase(),
-            style: const TextStyle(color: Colors.white),
-          ),
-          onTap: () {
-            ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
-            bool isKeyboardShown = false;
-            textEntry = TextEntry(
-              focusNode: focusNode,
-              maxLength: 20,
-              placeholder: account?.name ?? "",
-            );
-            showEnvoyDialog(
-              context: context,
-              dialog: Builder(
-                builder: (context) {
-                  if (!isKeyboardShown) {
-                    Future.delayed(const Duration(milliseconds: 200)).then((_) {
-                      if (context.mounted) {
-                        FocusScope.of(context).requestFocus(focusNode);
-                      }
-                    });
-                    isKeyboardShown = true;
-                  }
-                  return EnvoyDialog(
-                    title: S().manage_account_rename_heading,
-                    content: textEntry,
-                    actions: [
-                      EnvoyButton(
-                        S().component_save,
-                        onTap: () async {
-                          final navigator = Navigator.of(context);
-                          Device? device = Devices().getDeviceBySerial(
-                              widget.account.deviceSerial ?? "");
-                          final handler = account?.handler;
-                          if (handler == null || account == null) {
-                            return;
-                          }
+    final navigator = Navigator.of(context);
 
-                          await NgAccountManager().renameAccountAndSync(
-                              account, textEntry.enteredText);
-
-                          if (device != null &&
-                              device.type == DeviceType.passportPrime) {
-                            BluetoothManager().sendAccountUpdate(
-                                api.AccountUpdate(
-                                    accountId: account.id,
-                                    update: (await handler.toRemoteUpdate())));
-                          }
-                          navigator.pop();
-                        },
-                      ),
-                    ],
-                  );
-                },
+    return Stack(children: [
+      GestureDetector(
+        onTap: () => navigator.pop(),
+        // close when tapping outside
+        child: Container(
+          color: Colors.black.applyOpacity(0.4),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 80, right: EnvoySpacing.xs),
+        child: Align(
+          alignment: Alignment.topRight,
+          child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
               ),
-            );
-          },
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        GestureDetector(
-          child: Text(S().component_delete.toUpperCase(),
-              style: const TextStyle(color: EnvoyColors.accentSecondary)),
-          onTap: () {
-            ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
-            if (!widget.account.isHot) {
-              showEnvoyDialog(
-                  context: context,
-                  dialog: EnvoyPopUp(
-                    icon: EnvoyIcons.alert,
-                    typeOfMessage: PopUpState.warning,
-                    showCloseButton: true,
-                    customWidget: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          S().manage_account_remove_heading,
-                          style: EnvoyTypography.info,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(
-                          height: EnvoySpacing.medium1,
-                        ),
-                        Text(
-                          S().manage_account_remove_subheading,
-                          style: EnvoyTypography.info,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(
-                          height: EnvoySpacing.medium1,
-                        ),
-                      ],
-                    ),
-                    primaryButtonLabel: S().component_delete,
-                    onPrimaryButtonTap: (context) async {
-                      Navigator.pop(context);
-                      GoRouter.of(context).pop();
-                      await Future.delayed(const Duration(milliseconds: 50));
-                      await NgAccountManager().deleteAccount(widget.account);
+              width: 250,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: EnvoySpacing.xs),
+                  _MenuItem(
+                    label: S().exploreAdresses_activityOptions_showDescriptor,
+                    icon: EnvoyIcons.info,
+                    onTap: () {
+                      navigator.pop();
+                      if (accountHasNoTaprootXpub(widget.account) &&
+                          Settings().taprootEnabled()) {
+                        showEnvoyPopUp(
+                          context,
+                          icon: EnvoyIcons.info,
+                          showCloseButton: true,
+                          title: S().taproot_passport_dialog_heading,
+                          S().taproot_passport_dialog_subheading,
+                          S().taproot_passport_dialog_reconnect,
+                          (modalContext) {
+                            Navigator.pop(modalContext);
+                            HomePageState.of(context)?.toggleOptions();
+                            scanForDevice(context, ref);
+                          },
+                          secondaryButtonLabel:
+                              S().taproot_passport_dialog_later,
+                          onSecondaryButtonTap: (modalContext) {
+                            Navigator.pop(modalContext);
+                            HomePageState.of(context)?.toggleOptions();
+                            context.go(ROUTE_ACCOUNT_DESCRIPTOR,
+                                extra: widget.account.id);
+                          },
+                        );
+                      } else {
+                        HomePageState.of(context)?.toggleOptions();
+                        context.go(ROUTE_ACCOUNT_DESCRIPTOR,
+                            extra: widget.account.id);
+                      }
                     },
-                  ));
+                  ),
+                  _MenuItem(
+                    label: S().exploreAdresses_activityOptions_editAccountName,
+                    icon: EnvoyIcons.edit,
+                    onTap: () {
+                      navigator.pop();
+                      ref
+                          .read(homePageOptionsVisibilityProvider.notifier)
+                          .state = false;
+
+                      bool isKeyboardShown = false;
+                      textEntry = TextEntry(
+                        focusNode: focusNode,
+                        maxLength: 20,
+                        placeholder: account?.name ?? "",
+                      );
+
+                      showEnvoyDialog(
+                        context: context,
+                        dialog: Builder(
+                          builder: (context) {
+                            if (!isKeyboardShown) {
+                              Future.delayed(const Duration(milliseconds: 200))
+                                  .then((_) {
+                                if (context.mounted) {
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
+                                }
+                              });
+                              isKeyboardShown = true;
+                            }
+                            return EnvoyDialog(
+                              title: S().manage_account_rename_heading,
+                              content: textEntry,
+                              actions: [
+                                EnvoyButton(
+                                  S().component_save,
+                                  onTap: () async {
+                                    navigator.pop();
+                                    Device? device = Devices()
+                                        .getDeviceBySerial(
+                                            widget.account.deviceSerial ?? "");
+                                    final handler = account?.handler;
+                                    if (handler == null) return;
+
+                                    await handler.renameAccount(
+                                        name: textEntry.enteredText);
+
+                                    if (device != null &&
+                                        device.type ==
+                                            DeviceType.passportPrime &&
+                                        account?.id != null) {
+                                      BluetoothManager().sendAccountUpdate(
+                                        api.AccountUpdate(
+                                          accountId: account!.id,
+                                          update:
+                                              await handler.toRemoteUpdate(),
+                                        ),
+                                      );
+                                    }
+                                    navigator.pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  _MenuItem(
+                    label: S().exploreAdresses_activityOptions_exploreAddresses,
+                    icon: EnvoyIcons.list,
+                    onTap: () {
+                      navigator.pop();
+                      // TODO
+                    },
+                  ),
+                  _MenuItem(
+                    label: S().receive_qr_signMessage,
+                    icon: EnvoyIcons.envelope,
+                    onTap: () {
+                      navigator.pop();
+                      // TODO
+                    },
+                  ),
+                  _MenuItem(
+                    label: S().receive_qr_rescanAccount,
+                    icon: EnvoyIcons.refresh,
+                    onTap: () {
+                      navigator.pop();
+                      showEnvoyDialog(
+                          context: context,
+                          dialog: RescanAccountDialog(account: widget.account));
+                    },
+                  ),
+                  _MenuItem(
+                    label: S().exploreAdresses_activityOptions_deleteAccount,
+                    icon: EnvoyIcons.close,
+                    color: EnvoyColors.accentSecondary,
+                    useDivider: false,
+                    onTap: () {
+                      navigator.pop();
+                      ref
+                          .read(homePageOptionsVisibilityProvider.notifier)
+                          .state = false;
+
+                      if (!widget.account.isHot) {
+                        showEnvoyDialog(
+                          context: context,
+                          dialog: EnvoyPopUp(
+                            icon: EnvoyIcons.alert,
+                            typeOfMessage: PopUpState.warning,
+                            showCloseButton: true,
+                            customWidget: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  S().manage_account_remove_heading,
+                                  style: EnvoyTypography.info,
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: EnvoySpacing.medium1),
+                                Text(
+                                  S().manage_account_remove_subheading,
+                                  style: EnvoyTypography.info,
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: EnvoySpacing.medium1),
+                              ],
+                            ),
+                            primaryButtonLabel: S().component_delete,
+                            onPrimaryButtonTap: (context) async {
+                              Navigator.pop(context);
+                              GoRouter.of(context).pop();
+                              await Future.delayed(
+                                  const Duration(milliseconds: 50));
+                              await NgAccountManager()
+                                  .deleteAccount(widget.account);
+                            },
+                          ),
+                        );
+                      } else {
+                        ref.read(homePageBackgroundProvider.notifier).state =
+                            HomePageBackgroundState.backups;
+                        navigator.pop();
+                      }
+                    },
+                  ),
+                  const SizedBox(height: EnvoySpacing.xs),
+                ],
+              )),
+        ),
+      ),
+    ]);
+  }
+}
+
+class _MenuItem extends StatelessWidget {
+  final String label;
+  final EnvoyIcons icon;
+  final Color color;
+  final VoidCallback onTap;
+  final bool useDivider;
+
+  const _MenuItem(
+      {required this.label,
+      required this.icon,
+      required this.onTap,
+      this.color = EnvoyColors.textPrimary,
+      this.useDivider = true});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      type: MaterialType.transparency,
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.medium1,
+                vertical: 12,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    label,
+                    style: EnvoyTypography.body.copyWith(color: color),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(width: EnvoySpacing.xs),
+                  EnvoyIcon(icon, color: color),
+                ],
+              ),
+            ),
+          ),
+          useDivider ? const Divider(height: 0) : const SizedBox()
+        ],
+      ),
+    );
+  }
+}
+
+class RescanAccountDialog extends ConsumerStatefulWidget {
+  final EnvoyAccount account;
+
+  const RescanAccountDialog({
+    super.key,
+    required this.account,
+  });
+
+  @override
+  ConsumerState<RescanAccountDialog> createState() =>
+      _RescanAccountDialogState();
+}
+
+class _RescanAccountDialogState extends ConsumerState<RescanAccountDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return EnvoyPopUp(
+      icon: EnvoyIcons.info,
+      typeOfMessage: PopUpState.deafult,
+      showCloseButton: false,
+      customWidget: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            S().rescanAccount_sizeModal_header,
+            style: EnvoyTypography.heading,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: EnvoySpacing.medium1),
+          Text(
+            S().rescanAccount_sizeModal_content,
+            style: EnvoyTypography.info,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: EnvoySpacing.medium1),
+
+          // TODO: learn more link/button (if they provide one)
+          // onLearnMore: () {
+          //   launchUrl(Uri.parse(
+          //       "https://......."));
+          // },
+
+          EnvoyButton(
+            S().rescanAccount_sizeModal_1000Addresses,
+            type: EnvoyButtonTypes.secondary,
+            onTap: () async {
+              Navigator.pop(context);
+              _showRescanToastStarted();
+              await SyncManager().initiateAccountFullScan(widget.account, 1000);
+            },
+          ),
+        ],
+      ),
+      secondaryButtonLabel: S().rescanAccount_sizeModal_500Addresses,
+      onSecondaryButtonTap: (context) async {
+        Navigator.pop(context);
+        _showRescanToastStarted();
+        await SyncManager().initiateAccountFullScan(widget.account, 500);
+      },
+      primaryButtonLabel: S().rescanAccount_sizeModal_300Addresses,
+      onPrimaryButtonTap: (context) async {
+        Navigator.pop(context);
+        _showRescanToastStarted();
+        await SyncManager().initiateAccountFullScan(widget.account, 300);
+      },
+    );
+  }
+
+  void _showRescanToastStarted() {
+    EnvoyToast(
+      backgroundColor: EnvoyColors.accentPrimary,
+      replaceExisting: true,
+      duration: const Duration(seconds: 4),
+      message: S().rescanAccount_toast_rescanningStarted,
+      icon: const EnvoyIcon(
+        EnvoyIcons.info,
+        color: EnvoyColors.accentPrimary,
+      ),
+    ).show(context);
+  }
+}
+
+class RescanningIndicator extends StatelessWidget {
+  const RescanningIndicator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: EnvoySpacing.medium1),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(22),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color.fromRGBO(0, 0, 0, 0.40),
+                  blurRadius: 8,
+                  offset: Offset(0, 0),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(22),
+              child: const SizedBox(
+                height: 3,
+                child: LinearProgressIndicator(
+                  backgroundColor: EnvoyColors.textPrimaryInverse,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    EnvoyColors.textTertiary,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: EnvoySpacing.small),
+          Text(
+            S().rescanAccount_rescanning_rescanningAccount,
+            textAlign: TextAlign.center,
+            style: EnvoyTypography.info.copyWith(
+              color: EnvoyColors.textTertiary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class EnvoyPullToRefresh extends StatefulWidget {
+  final Widget child;
+  final Future<void> Function() onRefresh;
+
+  /// shown during pull (receives progress 0-1)
+  final Widget Function(double progress) pullIndicator;
+
+  /// shown when refreshing begins
+  final Widget refreshIndicator;
+
+  const EnvoyPullToRefresh({
+    super.key,
+    required this.child,
+    required this.onRefresh,
+    required this.pullIndicator,
+    required this.refreshIndicator,
+  });
+
+  @override
+  State<EnvoyPullToRefresh> createState() => _EnvoyPullToRefreshState();
+}
+
+class _EnvoyPullToRefreshState extends State<EnvoyPullToRefresh>
+    with TickerProviderStateMixin {
+  double _dragOffset = 0;
+  bool _refreshing = false;
+
+  static const double triggerDistance = 100;
+  static const double maxIndicatorPull = 80;
+
+  late AnimationController _springController;
+  late Animation<double> _springAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _springController = AnimationController(vsync: this);
+    _springController.addListener(() {
+      if (!mounted || _refreshing) return; // do not animate while refreshing
+      setState(() {
+        _dragOffset = _springAnimation.value;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _springController.dispose();
+    super.dispose();
+  }
+
+  double get _progress => (_dragOffset / triggerDistance).clamp(0, 1);
+
+  void _animateBack({double to = 0}) {
+    if (_refreshing) return; // block animations during refresh
+
+    _springAnimation = Tween<double>(
+      begin: _dragOffset,
+      end: to,
+    ).animate(
+      CurvedAnimation(
+        parent: _springController,
+        curve: Curves.easeOutBack,
+      ),
+    );
+
+    _springController.duration = const Duration(milliseconds: 350);
+    _springController.forward(from: 0);
+  }
+
+  Future<void> _triggerRefresh() async {
+    setState(() => _refreshing = true);
+
+    // Snap and lock at maxIndicatorPull while refreshing
+    _springController.stop();
+    setState(() => _dragOffset = maxIndicatorPull);
+
+    await widget.onRefresh();
+
+    setState(() => _refreshing = false);
+    _animateBack(to: 0);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        // INDICATOR
+        Positioned(
+          top: -maxIndicatorPull + _dragOffset.clamp(0, maxIndicatorPull),
+          left: 0,
+          right: 0,
+          height: 95,
+          child: Center(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 150),
+              child: _refreshing
+                  ? widget.refreshIndicator
+                  : widget.pullIndicator(_progress),
+            ),
+          ),
+        ),
+
+        // CONTENT
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onVerticalDragStart: (_) {
+            if (_refreshing) return;
+            _springController.stop();
+          },
+          onVerticalDragUpdate: (details) {
+            if (_refreshing) return;
+            if (details.delta.dy < 0) return; // only downward pull
+
+            setState(() {
+              _dragOffset += details.delta.dy / 2;
+              if (_dragOffset > triggerDistance) {
+                _dragOffset = triggerDistance;
+              }
+            });
+          },
+          onVerticalDragEnd: (_) {
+            if (_refreshing) return; // prevent extra animation triggers
+            if (_dragOffset >= triggerDistance) {
+              _triggerRefresh();
             } else {
-              ref.read(homePageBackgroundProvider.notifier).state =
-                  HomePageBackgroundState.backups;
-              GoRouter.of(context).pop();
+              _animateBack(to: 0);
             }
           },
+          child: Transform.translate(
+            offset: Offset(0, _dragOffset),
+            child: widget.child,
+          ),
         ),
       ],
     );

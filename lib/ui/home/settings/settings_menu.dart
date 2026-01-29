@@ -11,7 +11,6 @@ import 'package:envoy/ui/home/settings/about_page.dart';
 import 'package:envoy/ui/home/settings/backup/backup_page.dart';
 import 'package:envoy/ui/home/settings/settings_page.dart';
 import 'package:envoy/ui/home/settings/support_page.dart';
-import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -20,7 +19,6 @@ import 'package:envoy/util/easing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsMenu extends ConsumerStatefulWidget {
@@ -39,20 +37,6 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
     Settings().store();
   }
 
-  void onNativeBackPressed(bool didPop) {
-    if (!didPop) {
-      if (_currentPage is! SettingsMenuWidget) {
-        _goBackToMenu();
-      } else if (ref.read(homePageBackgroundProvider) ==
-          HomePageBackgroundState.menu) {
-        ref.read(homePageBackgroundProvider.notifier).state =
-            HomePageBackgroundState.hidden;
-        ref.read(homePageTitleProvider.notifier).state = "";
-        GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     ref.listen<HomePageBackgroundState>(homePageBackgroundProvider, (_, next) {
@@ -62,17 +46,9 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
       selectPage(next, context);
     });
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (bool didPop, _) async {
-        if (!didPop) {
-          onNativeBackPressed(didPop);
-        }
-      },
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 250),
-        child: _currentPage,
-      ),
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 250),
+      child: _currentPage,
     );
   }
 

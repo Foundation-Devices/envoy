@@ -8,6 +8,7 @@ import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/components/envoy_loaders.dart';
 import 'package:envoy/ui/components/stripe_painter.dart';
 import 'package:envoy/ui/loader_ghost.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
@@ -30,12 +31,16 @@ class AccountListTile extends ConsumerStatefulWidget {
   final void Function() onTap;
   final EnvoyAccount account;
   final bool draggable;
+  final bool inactive;
+  final bool useHero;
 
   const AccountListTile(
     this.account, {
     super.key,
     required this.onTap,
     this.draggable = true,
+    this.inactive = false,
+    this.useHero = true,
   });
 
   @override
@@ -192,7 +197,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                           builder: (context, ref, child) {
                             final hide = ref.watch(
                                 balanceHideStateStatusProvider(account!.id));
-                            if (hide || isScanning) {
+                            if (hide) {
                               return Container(
                                 decoration: ShapeDecoration(
                                   color: const Color(0xFFF8F8F8),
@@ -211,15 +216,56 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                       LoaderGhost(
                                         width: 200,
                                         height: 24,
-                                        animate: isScanning,
                                       ),
                                       LoaderGhost(
                                         width: 50,
                                         height: 24,
-                                        animate: isScanning,
                                       ),
                                     ],
                                   ),
+                                ),
+                              );
+                            }
+                            if (isScanning) {
+                              return Container(
+                                decoration: ShapeDecoration(
+                                  color: const Color(0xFFF8F8F8),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        EnvoySpacing.medium1),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.all(EnvoySpacing.xs),
+                                  child: Stack(
+                                      alignment: AlignmentDirectional.center,
+                                      children: [
+                                        SizedBox.expand(
+                                          child: LoaderGhost(
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            const EnvoyActivityIndicator(
+                                                radius: 8),
+                                            const SizedBox(
+                                                width: EnvoySpacing.xs),
+                                            Text(
+                                              S().accounts_loading_loadingAccount,
+                                              textAlign: TextAlign.center,
+                                              style: EnvoyTypography.info
+                                                  .copyWith(
+                                                      color: EnvoyColors
+                                                          .textTertiary),
+                                            ),
+                                          ],
+                                        ),
+                                      ]),
                                 ),
                               );
                             }
@@ -232,8 +278,8 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
                                 ),
                               ),
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: EnvoySpacing.small),
                                 child: EnvoyAmount(
                                     account: widget.account,
                                     amountSats: balance.toInt(),

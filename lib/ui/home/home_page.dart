@@ -8,6 +8,7 @@ import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -220,6 +221,11 @@ class HomePageState extends ConsumerState<HomePage>
         }
       }
 
+      SyncManager().onFullScanFinished((account, success) {
+        if (!mounted) return;
+        _notifyAboutAccRescanFinishedToast(account, success: success);
+      });
+
       if (event == ConnectivityManagerEvent.foundationServerDown &&
           _serverDownWarningDisplayedMoreThan5minAgo &&
           mounted) {
@@ -378,6 +384,25 @@ class HomePageState extends ConsumerState<HomePage>
     }
   }
 
+  void _notifyAboutAccRescanFinishedToast(EnvoyAccount account,
+      {required bool success}) {
+    if (context.mounted) {
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        duration: const Duration(seconds: 3),
+        message: success
+            ? S().rescanAccount_toast_rescanningSuccessful(account.name)
+            : S().rescanAccount_toast_rescanningFailed(account.name),
+        icon: EnvoyIcon(
+          success ? EnvoyIcons.info : EnvoyIcons.alert,
+          color:
+              success ? EnvoyColors.accentPrimary : EnvoyColors.accentSecondary,
+        ),
+      ).show(context);
+    }
+  }
+
   void _notifyAboutFoundationServerDown() {
     if (context.mounted) {
       EnvoyToast(
@@ -454,12 +479,25 @@ class HomePageState extends ConsumerState<HomePage>
     final currentState = ref.read(homePageBackgroundProvider);
 
     switch (currentState) {
+      case HomePageBackgroundState.fiatChooser:
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.settings;
+        return false;
+      case HomePageBackgroundState.logs:
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.settings;
+        return false;
+      case HomePageBackgroundState.licence:
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.about;
+        return false;
       case HomePageBackgroundState.settings:
       case HomePageBackgroundState.backups:
       case HomePageBackgroundState.support:
       case HomePageBackgroundState.about:
         ref.read(homePageBackgroundProvider.notifier).state =
             HomePageBackgroundState.menu;
+
         ref.read(backupPageProvider.notifier).state = false;
         return false;
 

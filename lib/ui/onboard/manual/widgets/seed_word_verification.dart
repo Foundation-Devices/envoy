@@ -203,8 +203,14 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
       }
       final randomIndexList = randomIndexes.toList();
       _puzzleOptions = List.generate(4, (index) {
-        List<String> options = List.generate(3,
-            (index) => filteredSeed[random.nextInt(filteredSeed.length - 1)]);
+        List<String> options = [];
+        while (options.length < 3) {
+          String wrongWord =
+              filteredSeed[random.nextInt(filteredSeed.length - 1)];
+          if (!options.contains(wrongWord)) {
+            options.add(wrongWord);
+          }
+        }
         String word = widget.seed[randomIndexList[index]];
         options.add(word);
         options.shuffle();

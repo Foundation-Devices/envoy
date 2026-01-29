@@ -6,7 +6,7 @@ use anyhow::Context;
 use flutter_rust_bridge::for_generated::anyhow;
 use foundation_api::bc_envelope::prelude::*;
 use foundation_api::bc_xid::XIDDocument;
-use foundation_api::message::{PassportMessage, QuantumLinkMessage};
+use foundation_api::message::{PassportMessage, QuantumLinkMessage, PROTOCOL_VERSION};
 use foundation_api::pairing::PairingResponse;
 use foundation_api::passport::{
     PassportColor, PassportFirmwareVersion, PassportModel, PassportSerial,
@@ -76,6 +76,7 @@ pub async fn decode_ble_message(_data: Vec<u8>) -> PassportMessage {
             version: "1.0.0".to_string(),
             battery_level: 100,
         },
+        protocol_version: Some(PROTOCOL_VERSION),
     }
 }
 

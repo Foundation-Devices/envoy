@@ -9,7 +9,7 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
-import 'package:envoy/ui/home/setup_overlay.dart' show addPassportAccount;
+import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/routes.dart';
@@ -252,37 +252,40 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       onBackPressed: (context) {
         Navigator.pop(context);
       },
-      decoder: DeviceDecoder(pairPayloadDecoder: PairPayloadDecoder(
-        onScan: (binary) {
-          addPassportAccount(binary, context);
-        },
-      ), onScan: (String payload) {
-        final uri = Uri.parse(payload);
-        final params = uri.queryParameters;
-
-        if (params.containsKey("p")) {
-          context.pop();
-          context.goNamed(ONBOARD_PRIME, queryParameters: params);
-        } else if (params.containsKey("t")) {
-          context.pop();
-          context.goNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
-        } else {
-          context.pop();
-          EnvoyToast(
-            replaceExisting: true,
-            duration: const Duration(seconds: 6),
-            message: "Invalid QR code",
-            isDismissible: true,
-            onActionTap: () {
-              EnvoyToast.dismissPreviousToasts(context);
+      decoder: DeviceDecoder(
+          pairPayloadDecoder: PairPayloadDecoder(
+            onScan: (binary) {
+              addPassportAccount(binary, context);
             },
-            icon: const Icon(
-              Icons.info_outline,
-              color: EnvoyColors.accentPrimary,
-            ),
-          ).show(context);
-        }
-      }),
+          ),
+          onXidScan: (xid) => pairWithDevice(context, xid),
+          onScan: (String payload) {
+            final uri = Uri.parse(payload);
+            final params = uri.queryParameters;
+
+            if (params.containsKey("p")) {
+              context.pop();
+              context.goNamed(ONBOARD_PRIME, queryParameters: params);
+            } else if (params.containsKey("t")) {
+              context.pop();
+              context.goNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
+            } else {
+              context.pop();
+              EnvoyToast(
+                replaceExisting: true,
+                duration: const Duration(seconds: 6),
+                message: "Invalid QR code",
+                isDismissible: true,
+                onActionTap: () {
+                  EnvoyToast.dismissPreviousToasts(context);
+                },
+                icon: const Icon(
+                  Icons.info_outline,
+                  color: EnvoyColors.accentPrimary,
+                ),
+              ).show(context);
+            }
+          }),
       child: LegacyFirmwareAlert(),
     );
   }
@@ -496,10 +499,46 @@ class _EnvoyWelcomeButtonState extends State<EnvoyWelcomeButton> {
   }
 }
 
-class LegacyFirmwareAlert extends StatelessWidget {
-  const LegacyFirmwareAlert({
-    super.key,
-  });
+class LegacyFirmwareAlert extends StatefulWidget {
+  const LegacyFirmwareAlert({super.key});
+
+  @override
+  State<LegacyFirmwareAlert> createState() => _LegacyFirmwareAlertState();
+}
+
+class _LegacyFirmwareAlertState extends State<LegacyFirmwareAlert>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _heightAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+
+    _heightAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    );
+  }
+
+  void _toggleAdvanced() {
+    if (_controller.isCompleted) {
+      _controller.reverse();
+    } else {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -513,29 +552,56 @@ class LegacyFirmwareAlert extends StatelessWidget {
           alignment: Alignment.center,
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium3),
-                child: Text(
-                  S().onboarding_passpportSelectCamera_sub235VersionAlert,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: EnvoyColors.textPrimaryInverse,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              TextButton(
-                child: Text(
-                  S().onboarding_passpportSelectCamera_tapHere,
-                  style: EnvoyTypography.button.copyWith(
-                    color: EnvoyColors.textPrimaryInverse,
+              GestureDetector(
+                onTap: _toggleAdvanced,
+                child: AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    return Transform.rotate(
+                      angle: _controller.value * pi,
+                      child: child,
+                    );
+                  },
+                  child: const Icon(
+                    Icons.keyboard_arrow_up_sharp,
+                    color: Colors.white,
                   ),
                 ),
-                onPressed: () async {
-                  context.pop();
-                  context.pushNamed(ONBOARD_PASSPORT_SETUP);
-                },
+              ),
+              SizeTransition(
+                sizeFactor: _heightAnimation,
+                axisAlignment: -1.0, // slide down from top
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.medium3,
+                      vertical: EnvoySpacing.small),
+                  child: Column(
+                    children: [
+                      Text(
+                        S().onboarding_passpportSelectCamera_sub235VersionAlert,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: EnvoyColors.textPrimaryInverse,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(EnvoySpacing.small),
+                        child: TextButton(
+                          child: Text(
+                            S().onboarding_passpportSelectCamera_tapHere,
+                            style: EnvoyTypography.button.copyWith(
+                              color: EnvoyColors.textPrimaryInverse,
+                            ),
+                          ),
+                          onPressed: () async {
+                            context.goNamed(ONBOARD_PASSPORT_SETUP);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
