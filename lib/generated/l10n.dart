@@ -56,6 +56,8 @@ class S {
 
   // skipped getter for the ':' key
 
+  // skipped getter for the 'FW_Version_No.' key
+
   /// `6:15`
   String get _ {
     return Intl.message('6:15', name: '_', desc: '', args: []);
@@ -2553,6 +2555,16 @@ class S {
     );
   }
 
+  /// `Retry`
+  String get common_button_retry {
+    return Intl.message(
+      'Retry',
+      name: 'common_button_retry',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `12 Word Seed`
   String get component_12WordSeed {
     return Intl.message(
@@ -2848,6 +2860,11 @@ class S {
     );
   }
 
+  /// `Unpair`
+  String get component_unpair {
+    return Intl.message('Unpair', name: 'component_unpair', desc: '', args: []);
+  }
+
   /// `Update`
   String get component_update {
     return Intl.message('Update', name: 'component_update', desc: '', args: []);
@@ -3055,6 +3072,26 @@ class S {
     return Intl.message(
       'Accessory removed, please reconnect Prime.',
       name: 'device_deviceDetailsPrimeRemoved_accessoryRemoved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complete Accessory Set Up`
+  String get device_deviceDetailsPrimeRemoved_completeAccessorySetup {
+    return Intl.message(
+      'Complete Accessory Set Up',
+      name: 'device_deviceDetailsPrimeRemoved_completeAccessorySetup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pair Passport Again`
+  String get device_deviceDetailsPrimeRemoved_pairPassportAgain {
+    return Intl.message(
+      'Pair Passport Again',
+      name: 'device_deviceDetailsPrimeRemoved_pairPassportAgain',
       desc: '',
       args: [],
     );
@@ -5712,21 +5749,61 @@ class S {
     );
   }
 
-  /// `Disconnect Existing Prime`
+  /// `Unpair Existing Prime`
   String get manage_deviceDetailsModalDisconnectExistingPassport_header {
     return Intl.message(
-      'Disconnect Existing Prime',
+      'Unpair Existing Prime',
       name: 'manage_deviceDetailsModalDisconnectExistingPassport_header',
       desc: '',
       args: [],
     );
   }
 
-  /// `Are you sure you want to disconnect Passport?\n\nThis will remove the device from Envoy alongside any connected accounts.`
+  /// `Re-connect QuantumLink`
+  String get manage_deviceDetailsReconnectQL_reconnect {
+    return Intl.message(
+      'Re-connect QuantumLink',
+      name: 'manage_deviceDetailsReconnectQL_reconnect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pair Again`
+  String get manage_deviceDetailsUnpaired_pairAgain {
+    return Intl.message(
+      'Pair Again',
+      name: 'manage_deviceDetailsUnpaired_pairAgain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to unpair Passport?\nThis will remove the device from Envoy alongside any connected accounts.`
   String get manage_device_deletePassportWarning {
     return Intl.message(
-      'Are you sure you want to disconnect Passport?\n\nThis will remove the device from Envoy alongside any connected accounts.',
+      'Are you sure you want to unpair Passport?\nThis will remove the device from Envoy alongside any connected accounts.',
       name: 'manage_device_deletePassportWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Quantum Link`
+  String get manage_device_details_QuantumLink {
+    return Intl.message(
+      'Quantum Link',
+      name: 'manage_device_details_QuantumLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Active`
+  String get manage_device_details_active {
+    return Intl.message(
+      'Active',
+      name: 'manage_device_details_active',
       desc: '',
       args: [],
     );
@@ -5752,11 +5829,31 @@ class S {
     );
   }
 
+  /// `Disconnected`
+  String get manage_device_details_disconnected {
+    return Intl.message(
+      'Disconnected',
+      name: 'manage_device_details_disconnected',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `DEVICE DETAILS`
   String get manage_device_details_heading {
     return Intl.message(
       'DEVICE DETAILS',
       name: 'manage_device_details_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Inactive`
+  String get manage_device_details_inactive {
+    return Intl.message(
+      'Inactive',
+      name: 'manage_device_details_inactive',
       desc: '',
       args: [],
     );
@@ -5777,6 +5874,26 @@ class S {
     return Intl.message(
       'Edit Device Name',
       name: 'manage_device_details_menu_editDevice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unpair Passport`
+  String get manage_device_details_menu_unpairPassport {
+    return Intl.message(
+      'Unpair Passport',
+      name: 'manage_device_details_menu_unpairPassport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unpaired`
+  String get manage_device_details_unpaired {
+    return Intl.message(
+      'Unpaired',
+      name: 'manage_device_details_unpaired',
       desc: '',
       args: [],
     );
@@ -6870,10 +6987,40 @@ class S {
     );
   }
 
-  /// `This device may not be genuine or may have been tampered with during shipping.`
+  /// `Envoy failed to connect to Foundation Servers. Please make sure you are connected to the internet.`
+  String get onboarding_connectionIntroError2_content {
+    return Intl.message(
+      'Envoy failed to connect to Foundation Servers. Please make sure you are connected to the internet.',
+      name: 'onboarding_connectionIntroError2_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to communicate with the security server. Check your internet connection and try again.`
+  String get onboarding_connectionIntroErrorInternet_content {
+    return Intl.message(
+      'Unable to communicate with the security server. Check your internet connection and try again.',
+      name: 'onboarding_connectionIntroErrorInternet_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Security Check Pending`
+  String get onboarding_connectionIntroErrorInternet_securityCheckPending {
+    return Intl.message(
+      'Security Check Pending',
+      name: 'onboarding_connectionIntroErrorInternet_securityCheckPending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This device may not be genuine or may have been tampered with during shipping. Contact support for assistance.`
   String get onboarding_connectionIntroError_content {
     return Intl.message(
-      'This device may not be genuine or may have been tampered with during shipping.',
+      'This device may not be genuine or may have been tampered with during shipping. Contact support for assistance.',
       name: 'onboarding_connectionIntroError_content',
       desc: '',
       args: [],
@@ -6895,6 +7042,16 @@ class S {
     return Intl.message(
       'Security Check Failed',
       name: 'onboarding_connectionIntroError_securityCheckFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Security Check Pending`
+  String get onboarding_connectionIntroError_securityCheckPending {
+    return Intl.message(
+      'Security Check Pending',
+      name: 'onboarding_connectionIntroError_securityCheckPending',
       desc: '',
       args: [],
     );
@@ -6960,20 +7117,20 @@ class S {
     );
   }
 
-  /// `Are you sure to exit the onboarding?`
+  /// `Only continue with this if you explicitly wish to lose all progress and start the Passport onboarding process from the beginning.`
   String get onboarding_connectionModalAbort_content {
     return Intl.message(
-      'Are you sure to exit the onboarding?',
+      'Only continue with this if you explicitly wish to lose all progress and start the Passport onboarding process from the beginning.',
       name: 'onboarding_connectionModalAbort_content',
       desc: '',
       args: [],
     );
   }
 
-  /// `Abort Onboarding?`
+  /// `Exit Onboarding?`
   String get onboarding_connectionModalAbort_header {
     return Intl.message(
-      'Abort Onboarding?',
+      'Exit Onboarding?',
       name: 'onboarding_connectionModalAbort_header',
       desc: '',
       args: [],
