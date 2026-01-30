@@ -809,6 +809,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "common_button_contactSupport": MessageLookupByLibrary.simpleMessage(
           "Contact Support",
         ),
+        "common_button_retry": MessageLookupByLibrary.simpleMessage("Retry"),
         "component_12WordSeed": MessageLookupByLibrary.simpleMessage(
           "12 Word Seed",
         ),
@@ -873,6 +874,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_tryAgain": MessageLookupByLibrary.simpleMessage(
           "Tentar Novamente",
         ),
+        "component_unpair": MessageLookupByLibrary.simpleMessage("Unpair"),
         "component_update": MessageLookupByLibrary.simpleMessage("Actualizar"),
         "component_warning": MessageLookupByLibrary.simpleMessage("AVISO"),
         "component_yes": MessageLookupByLibrary.simpleMessage("Sim"),
@@ -941,6 +943,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Accessory removed, please reconnect Prime.",
         ),
+        "device_deviceDetailsPrimeRemoved_completeAccessorySetup":
+            MessageLookupByLibrary.simpleMessage("Complete Accessory Set Up"),
+        "device_deviceDetailsPrimeRemoved_pairPassportAgain":
+            MessageLookupByLibrary.simpleMessage("Pair Passport Again"),
         "device_deviceDetailsPrimeRemoved_reconnectPassport":
             MessageLookupByLibrary.simpleMessage("Reconnect Passport"),
         "device_deviceDetailsPrime_connected":
@@ -1750,10 +1756,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "manage_deviceDetailsModalDisconnectExistingPassport_disconnect":
             MessageLookupByLibrary.simpleMessage("Disconnect"),
         "manage_deviceDetailsModalDisconnectExistingPassport_header":
-            MessageLookupByLibrary.simpleMessage("Disconnect Existing Prime"),
+            MessageLookupByLibrary.simpleMessage("Unpair Existing Prime"),
+        "manage_deviceDetailsReconnectQL_reconnect":
+            MessageLookupByLibrary.simpleMessage("Re-connect QuantumLink"),
+        "manage_deviceDetailsUnpaired_pairAgain":
+            MessageLookupByLibrary.simpleMessage("Pair Again"),
         "manage_device_deletePassportWarning":
             MessageLookupByLibrary.simpleMessage(
           "Tens a certeza que queres eliminar o Passport?\nEsta operação vai remover o dispositivo da Envoy bem como qualquer conta associada.",
+        ),
+        "manage_device_details_QuantumLink":
+            MessageLookupByLibrary.simpleMessage(
+          "Quantum Link",
+        ),
+        "manage_device_details_active": MessageLookupByLibrary.simpleMessage(
+          "Active",
         ),
         "manage_device_details_devicePaired":
             MessageLookupByLibrary.simpleMessage(
@@ -1763,13 +1780,25 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Número de Série",
         ),
+        "manage_device_details_disconnected":
+            MessageLookupByLibrary.simpleMessage(
+          "Disconnected",
+        ),
         "manage_device_details_heading": MessageLookupByLibrary.simpleMessage(
           "DETALHES DO DISPOSITIVO",
+        ),
+        "manage_device_details_inactive": MessageLookupByLibrary.simpleMessage(
+          "Inactive",
         ),
         "manage_device_details_menu_disconnectDevice":
             MessageLookupByLibrary.simpleMessage("Disconnect"),
         "manage_device_details_menu_editDevice":
             MessageLookupByLibrary.simpleMessage("EDITAR NOME DO DISPOSITIVO"),
+        "manage_device_details_menu_unpairPassport":
+            MessageLookupByLibrary.simpleMessage("Unpair Passport"),
+        "manage_device_details_unpaired": MessageLookupByLibrary.simpleMessage(
+          "Unpaired",
+        ),
         "manage_device_rename_modal_heading":
             MessageLookupByLibrary.simpleMessage(
           "Altera o nome do Passport",
@@ -2122,14 +2151,26 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Security Check Passed"),
         "onboarding_connectionChecking_forUpdates":
             MessageLookupByLibrary.simpleMessage("Checking for Updates"),
+        "onboarding_connectionIntroError2_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Envoy failed to connect to Foundation Servers. Please make sure you are connected to the internet.",
+        ),
+        "onboarding_connectionIntroErrorInternet_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Unable to communicate with the security server. Check your internet connection and try again.",
+        ),
+        "onboarding_connectionIntroErrorInternet_securityCheckPending":
+            MessageLookupByLibrary.simpleMessage("Security Check Pending"),
         "onboarding_connectionIntroError_content":
             MessageLookupByLibrary.simpleMessage(
-          "This device may not be genuine or may have been tampered with during shipping.",
+          "This device may not be genuine or may have been tampered with during shipping. Contact support for assistance.",
         ),
         "onboarding_connectionIntroError_exitSetup":
             MessageLookupByLibrary.simpleMessage("Exit Setup"),
         "onboarding_connectionIntroError_securityCheckFailed":
             MessageLookupByLibrary.simpleMessage("Security Check Failed"),
+        "onboarding_connectionIntroError_securityCheckPending":
+            MessageLookupByLibrary.simpleMessage("Security Check Pending"),
         "onboarding_connectionIntroWarning_content":
             MessageLookupByLibrary.simpleMessage(
           "Ensure Passport Prime is powered on and near your phone.",

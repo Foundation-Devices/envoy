@@ -16,6 +16,18 @@ import 'package:foundation_api/foundation_api.dart';
 // Generated
 part 'scv_server.g.dart';
 
+/// Result of SCV verification that distinguishes between different error types
+enum ScvVerificationResult {
+  /// Verification succeeded - device is genuine
+  success,
+
+  /// Network error - couldn't reach Foundation servers
+  networkError,
+
+  /// Verification failed - device may be tampered with
+  verificationFailed,
+}
+
 class ScvServer {
   static HttpTor http = HttpTor();
   static String serverAddress = "https://validate.foundation.xyz";
@@ -141,8 +153,14 @@ class ScvServer {
   }
 
   Future<bool> isProofVerified(Uint8List data) async {
+    final result = await verifyProof(data);
+    return result == ScvVerificationResult.success;
+  }
+
+  /// Verifies the proof and returns a detailed result
+  Future<ScvVerificationResult> verifyProof(Uint8List data) async {
     if (Settings().skipPrimeSecurityCheck) {
-      return true;
+      return ScvVerificationResult.success;
     }
 
     final uri = '$primeSecurityCheckUrl/verify';
@@ -166,14 +184,21 @@ class ScvServer {
             ? rawVerificationMessage[32]
             : -1;
         kPrint('Error code: $errorCode');
-        return errorCode == 0; // 0 means `ErrorCode::Ok`
+        if (errorCode == 0) {
+          return ScvVerificationResult.success;
+        } else {
+          // Server responded but verification failed - device may be tampered
+          return ScvVerificationResult.verificationFailed;
+        }
       } else {
         kPrint('Error: ${response.statusCode}');
-        return false;
+        // Server returned non-200 status - treat as network/server error
+        return ScvVerificationResult.networkError;
       }
     } catch (e) {
       kPrint("failed to verify proof {$e}");
-      return false;
+      // Exception occurred - likely network error
+      return ScvVerificationResult.networkError;
     }
   }
 }
