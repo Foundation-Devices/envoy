@@ -66,6 +66,10 @@ class StepNotifier extends StateNotifier<StepModel> {
 
 final bleConnectionProvider = Provider<StepModel>((ref) {
   final asyncState = ref.watch(blePairingStreamProvider);
+  final lastState = BluetoothManager().bleOnboardHandler.lastBleState;
+  if (!asyncState.hasValue && lastState != null) {
+    return StepModel(stepName: lastState.message, state: lastState.step);
+  }
   return asyncState.when(
     data: (data) {
       return StepModel(stepName: data.message, state: data.step);
@@ -83,6 +87,11 @@ final bleConnectionProvider = Provider<StepModel>((ref) {
 
 final deviceSecurityProvider = Provider<SecurityStepModel>((ref) {
   final asyncState = ref.watch(scvStateProvider);
+  final lastState = BluetoothManager().scvAccountHandler.lastScvState;
+  if (!asyncState.hasValue && lastState != null) {
+    return SecurityStepModel(
+        stepName: lastState.message, state: lastState.step);
+  }
   return asyncState.when(
     data: (data) {
       return SecurityStepModel(
