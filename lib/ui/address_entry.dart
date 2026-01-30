@@ -5,6 +5,8 @@
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -12,6 +14,7 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/payment_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/business/bitcoin_parser.dart';
@@ -19,6 +22,7 @@ import 'package:envoy/ui/state/app_unit_state.dart';
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 
 class AddressEntry extends ConsumerStatefulWidget {
@@ -78,11 +82,21 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: _verticalPadding),
-                    child: EnvoyIcon(EnvoyIcons.transfer,
-                        size: EnvoyIconSize.extraSmall,
-                        color: EnvoyColors.accentPrimary),
+                  GestureDetector(
+                    onTap: () {
+                      if (ref.read(accountsCountByNetworkProvider(
+                              widget.account.network)) >=
+                          2) {
+                        context.go(ROUTE_ACCOUNT_TRANSFER,
+                            extra: widget.account.id);
+                      }
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: _verticalPadding),
+                      child: EnvoyIcon(EnvoyIcons.transfer,
+                          size: EnvoyIconSize.extraSmall,
+                          color: EnvoyColors.accentPrimary),
+                    ),
                   ),
 
                   Padding(
@@ -219,6 +233,8 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
                           },
                           decoder: PaymentQrDecoder(
                             onAddressValidated: (address, amount, message) {
+                              EnvoyToast.dismissPreviousToasts(context,
+                                  rootNavigator: true);
                               Navigator.of(context, rootNavigator: true).pop();
                               widget.controller?.text = formatAddress(address);
                               ref.read(stagingTxNoteProvider.notifier).state =

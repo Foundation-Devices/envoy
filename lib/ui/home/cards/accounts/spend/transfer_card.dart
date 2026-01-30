@@ -8,8 +8,10 @@ import 'package:envoy/ui/components/account_selector.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/envoy_loaders.dart';
-import 'package:envoy/ui/home/cards/purchase_completed.dart';
+import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:flutter/material.dart';
@@ -20,29 +22,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/account.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
-import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/ui/components/pop_up.dart';
-import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
-import 'package:envoy/ui/shield.dart';
-import 'accounts/account_list_tile.dart';
-import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
 
-GlobalKey<ChooseAccountState> chooseAccountKey =
-    GlobalKey<ChooseAccountState>();
+class SelectAccountTransfer extends ConsumerStatefulWidget {
+  final EnvoyAccount transferAccount;
 
-class SelectAccount extends ConsumerStatefulWidget {
-  const SelectAccount({super.key});
+  SelectAccountTransfer(this.transferAccount) : super(key: UniqueKey());
 
   @override
-  ConsumerState<SelectAccount> createState() => _SelectAccountState();
+  ConsumerState<SelectAccountTransfer> createState() =>
+      _SelectAccountTransferState();
 }
 
-class _SelectAccountState extends ConsumerState<SelectAccount> {
+class _SelectAccountTransferState extends ConsumerState<SelectAccountTransfer> {
   EnvoyAccount? selectedAccount;
   GestureTapCallback? onTap;
-  String? address;
+  String? selectedAccAddress;
   bool _canPop = true;
   final Map<String, String?> accountAddressCache = {};
   bool isRampOpen = false;
@@ -52,19 +49,27 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
   @override
   void initState() {
     super.initState();
+
     Future.microtask(() async {
-      final account = ref.read(mainnetAccountsProvider(null)).firstOrNull;
+      ref.read(backupPageProvider.notifier).state = false;
+
+      final network = widget.transferAccount.network;
+
+      // Get accounts based on the transfer account's network
+      final filteredAccounts = _getAccountsByNetwork(network, ref);
+
+      final account = filteredAccounts.firstOrNull;
       if (account == null) return;
 
       setState(() {
-        selectedAccount = ref.read(mainnetAccountsProvider(null)).first;
+        selectedAccount = account;
         ref.read(homeShellOptionsProvider.notifier).state = null;
       });
 
       try {
         final addr = account.getPreferredAddress();
         setState(() {
-          address = addr;
+          selectedAccAddress = addr;
           if (selectedAccount != null && selectedAccount?.id != null) {
             accountAddressCache[account.id] = addr;
           }
@@ -73,6 +78,15 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
         debugPrint('Failed to get address: $e');
       }
     });
+  }
+
+  List<EnvoyAccount> _getAccountsByNetwork(Network network, WidgetRef ref) {
+    return switch (network) {
+      Network.signet => ref.read(signetAccountsProvider(null)),
+      Network.testnet4 => ref.read(testnetAccountsProvider(null)),
+      Network.bitcoin => ref.read(mainnetAccountsProvider(null)),
+      _ => <EnvoyAccount>[],
+    };
   }
 
   @override
@@ -84,18 +98,18 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
   void updateSelectedAccount(EnvoyAccount account) async {
     setState(() {
       selectedAccount = account;
-      address = null;
+      selectedAccAddress = null;
     });
     if (accountAddressCache.containsKey(selectedAccount?.id) &&
         accountAddressCache[selectedAccount?.id] != null) {
       setState(() {
-        address = accountAddressCache[selectedAccount?.id];
+        selectedAccAddress = accountAddressCache[selectedAccount?.id];
       });
     } else {
       String? address = account.getPreferredAddress();
       // Separate setState call to avoid UI lag during the async operation
       setState(() {
-        this.address = address;
+        selectedAccAddress = address;
         accountAddressCache[selectedAccount!.id] = address;
       });
     }
@@ -103,11 +117,10 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
 
   @override
   Widget build(BuildContext context) {
-    List<EnvoyAccount> filteredAccounts = [];
+    final network = widget.transferAccount.network;
 
-    if (selectedAccount != null) {
-      filteredAccounts = ref.watch(mainnetAccountsProvider(selectedAccount));
-    }
+    final filteredAccounts = _getAccountsByNetwork(network, ref);
+
     if ((selectedAccount == null)) {
       return const Center(child: CircularProgressIndicator());
     } else {
@@ -115,14 +128,17 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
         canPop: _canPop,
         onPopInvokedWithResult: (didPop, _) {
           if (!didPop) {
+            // Back was intercepted (e.g. overlay open) → just close overlay.
             accountChooserKey.currentState?.dismiss();
-          } else if (didPop && !isRampOpen) {
-            showBuyBitcoinOptions(ref);
+            return;
           }
+          // Route actually popped (leaving transfer screen).
+          clearSpendState(ProviderScope.containerOf(
+              context)); // TODO: do I need to clear when exiting the transfer screen (in app back)
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(
-              vertical: EnvoySpacing.medium2, horizontal: EnvoySpacing.medium2),
+              vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium2),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -132,16 +148,40 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        S().buy_bitcoin_accountSelection_heading,
+                        S().transfer_fromTo_transferFrom,
                         style: EnvoyTypography.subheading,
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(
+                        height: EnvoySpacing.small,
+                      ),
+                      AccountListTile(
+                        widget.transferAccount,
+                        draggable: false,
+                        // ˇˇˇ avoid duplicate account in stack (this is just "transfer-from" preview)
+                        useHero: false,
+                        onTap: () {
+                          /// do nothing on press
+                        },
+                      ),
+                      const SizedBox(
                         height: EnvoySpacing.medium2,
+                      ),
+                      Text(
+                        S().transfer_fromTo_transferTo,
+                        style: EnvoyTypography.subheading,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(
+                        height: EnvoySpacing.small,
                       ),
                       StackedAccountChooser(
                         key: accountChooserKey,
-                        account: selectedAccount ?? filteredAccounts.first,
+                        transferAccount: widget.transferAccount,
+                        account: // do not pass transfer acc as a selected acc !!!
+                            selectedAccount?.id == widget.transferAccount.id
+                                ? filteredAccounts.last
+                                : selectedAccount ?? filteredAccounts.first,
                         accounts: filteredAccounts,
                         onOverlayChanges: (bool visible) {
                           setState(() {
@@ -179,9 +219,9 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(
-                        height: EnvoySpacing.medium1,
+                        height: EnvoySpacing.small,
                       ),
-                      getAddressWidget(address),
+                      getAddressWidget(selectedAccAddress),
                     ],
                   ),
                 ),
@@ -190,100 +230,43 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (!selectedAccount!.isHot)
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: EnvoySpacing.small),
-                      child: EnvoyButton(
-                        label: S().buy_bitcoin_accountSelection_verify,
-                        icon: EnvoyIcons.verifyAddress,
-                        type: ButtonType.secondary,
-                        state: ButtonState.defaultState,
-                        onTap: () {
-                          if (mounted) {
-                            showEnvoyDialog(
-                              context: context,
-                              blurColor: Colors.black,
-                              useRootNavigator: true,
-                              linearGradient: true,
-                              dialog: SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                child: VerifyAddressDialog(
-                                  address: address!,
-                                  accountName: selectedAccount!.name,
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: EnvoySpacing.large1),
-                    child: EnvoyButton(
-                      label: S().component_continue,
-                      type: ButtonType.primary,
+                    EnvoyButton(
+                      label: S().buy_bitcoin_accountSelection_verify,
+                      icon: EnvoyIcons.verifyAddress,
+                      type: ButtonType.secondary,
                       state: ButtonState.defaultState,
-                      onTap: () async {
-                        bool dismissed = await EnvoyStorage()
-                            .checkPromptDismissed(
-                                DismissiblePrompt.leavingEnvoy);
-                        if (!dismissed && context.mounted) {
-                          showEnvoyPopUp(
-                              context,
-                              title: S()
-                                  .buy_bitcoin_accountSelection_modal_heading,
-                              S().buy_bitcoin_accountSelection_modal_subheading,
-                              S().send_keyboard_address_confirm,
-                              (BuildContext context) async {
-                                setState(() {
-                                  isRampOpen = true;
-                                });
-                                Navigator.pop(context);
-
-                                if (context.mounted) {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .push(
-                                    MaterialPageRoute(builder: (context) {
-                                      return MediaQuery.removePadding(
-                                          context: context,
-                                          child: fullScreenShield(
-                                              PurchaseComplete(
-                                                  selectedAccount!, address!)));
-                                    }),
-                                  );
-                                }
-                              },
-                              icon: EnvoyIcons.info,
-                              checkBoxText: S().component_dontShowAgain,
-                              checkedValue: dismissed,
-                              onCheckBoxChanged: (checkedValue) {
-                                if (!checkedValue) {
-                                  EnvoyStorage().addPromptState(
-                                      DismissiblePrompt.leavingEnvoy);
-                                } else if (checkedValue) {
-                                  EnvoyStorage().removePromptState(
-                                      DismissiblePrompt.leavingEnvoy);
-                                }
-                              });
-                        } else {
-                          if (context.mounted) {
-                            setState(() {
-                              isRampOpen = true;
-                            });
-
-                            Navigator.of(context, rootNavigator: true).push(
-                              MaterialPageRoute(builder: (context) {
-                                return MediaQuery.removePadding(
-                                    context: context,
-                                    child: fullScreenShield(PurchaseComplete(
-                                        selectedAccount!, address!)));
-                              }),
-                            );
-                          }
+                      onTap: () {
+                        if (mounted) {
+                          showEnvoyDialog(
+                            context: context,
+                            blurColor: Colors.black,
+                            useRootNavigator: true,
+                            linearGradient: true,
+                            dialog: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              child: VerifyAddressDialog(
+                                address: selectedAccAddress!,
+                                accountName: selectedAccount!.name,
+                              ),
+                            ),
+                          );
                         }
                       },
                     ),
+                  const SizedBox(height: EnvoySpacing.medium1),
+                  EnvoyButton(
+                    label: S().component_continue,
+                    type: ButtonType.primary,
+                    state: ButtonState.defaultState,
+                    onTap: () async {
+                      await Future.delayed(const Duration(milliseconds: 50));
+                      if (context.mounted) {
+                        context.go(ROUTE_ACCOUNT_SEND,
+                            extra: selectedAccAddress);
+                      }
+                    },
                   ),
+                  const SizedBox(height: EnvoySpacing.large1),
                 ],
               )
             ],

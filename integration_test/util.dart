@@ -715,6 +715,41 @@ Future<void> scrollFindAndTapText(WidgetTester tester, String text,
       'Widget with text "$text" not found after scrolling $maxScrolls times.');
 }
 
+void checkActivityAlignment(WidgetTester tester) {
+  // 1) First "Send" or first "Received"
+  final sendFinder = find.text('Sent');
+  final receivedFinder = find.text('Received');
+
+  final Finder labelFinder = sendFinder.evaluate().isNotEmpty
+      ? sendFinder.first
+      : receivedFinder.first;
+
+  expect(labelFinder, findsOneWidget);
+
+  final double labelY = tester.getTopLeft(labelFinder).dy;
+  debugPrint('Label Y = $labelY');
+
+  // 2) First EnvoyIcon that is btc or sats
+  final Finder btcOrSatsAll = find.byWidgetPredicate(
+    (widget) =>
+        widget is EnvoyIcon &&
+        (widget.icon == EnvoyIcons.btc || widget.icon == EnvoyIcons.sats),
+    description: 'EnvoyIcon btc|sats',
+  );
+
+  final Finder iconFinder = btcOrSatsAll.first;
+  expect(iconFinder, findsOneWidget);
+
+  final double iconY = tester.getTopLeft(iconFinder).dy;
+  debugPrint('Icon Y = $iconY');
+
+  // 3) Compare
+  final double diff = (labelY - iconY).abs();
+  debugPrint('ΔY (abs) = $diff');
+
+  expect(diff, lessThanOrEqualTo(4.0));
+}
+
 Future<void> onboardingAndEnterSeed(
     WidgetTester tester, List<String> seed) async {
   await tester.pump(Durations.long2);
