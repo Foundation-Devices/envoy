@@ -73,9 +73,14 @@ pub async fn get_file(
     let handle = rt.spawn(async move {
         let client: reqwest::Client = if tor_port > 0 {
             let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{}", tor_port))?;
-            reqwest::Client::builder().proxy(proxy).build()?
+            reqwest::Client::builder()
+                .timeout(Duration::from_secs(30))
+                .proxy(proxy)
+                .build()?
         } else {
-            reqwest::Client::builder().build()?
+            reqwest::Client::builder()
+                .timeout(Duration::from_secs(30))
+                .build()?
         };
 
         let mut res = client.get(&url).send().await?;
@@ -129,9 +134,14 @@ pub fn request(
 ) -> Result<Response> {
     let client: reqwest::blocking::Client = if tor_port > 0 {
         let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{}", tor_port))?;
-        reqwest::blocking::Client::builder().proxy(proxy).build()?
+        reqwest::blocking::Client::builder()
+            .timeout(Duration::from_secs(30))
+            .proxy(proxy)
+            .build()?
     } else {
-        reqwest::blocking::Client::builder().build()?
+        reqwest::blocking::Client::builder()
+            .timeout(Duration::from_secs(30))
+            .build()?
     };
 
     let mut header_map = HeaderMap::new();
@@ -167,9 +177,14 @@ pub fn request(
 pub fn get_ip(tor_port: i32) -> Result<String> {
     let client: reqwest::blocking::Client = if tor_port > 0 {
         let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{}", tor_port))?;
-        reqwest::blocking::Client::builder().proxy(proxy).build()?
+        reqwest::blocking::Client::builder()
+            .timeout(Duration::from_secs(30))
+            .proxy(proxy)
+            .build()?
     } else {
-        reqwest::blocking::Client::builder().build()?
+        reqwest::blocking::Client::builder()
+            .timeout(Duration::from_secs(30))
+            .build()?
     };
 
     let response = client.get("https://icanhazip.com").send()?;
