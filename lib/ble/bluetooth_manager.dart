@@ -505,22 +505,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     writeMessage(api.QuantumLinkMessage.onboardingState(state));
   }
 
-  Future<void> sendSecurityChallengeRequest() async {
-    kPrint("sending security challenge");
-    api.ChallengeRequest? challenge = await ScvServer().getPrimeChallenge();
-
-    if (challenge == null) {
-      // TODO: SCV what now?
-      kPrint("No challenge available");
-      return;
-    }
-
-    final request = api.SecurityCheck.challengeRequest(challenge);
-    kPrint("writing security challenge");
-    await writeMessage(api.QuantumLinkMessage.securityCheck(request));
-    kPrint("successfully wrote security challenge");
-  }
-
   Future<void> sendSecurityChallengeVerificationResult(
       api.VerificationResult result) async {
     final message = api.SecurityCheck.verificationResult(result);
