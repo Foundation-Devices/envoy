@@ -22,11 +22,14 @@ class ScvUpdateState {
 class ScvHandler extends PassportMessageHandler {
   ScvHandler(super.writer);
 
+  ScvUpdateState? _lastState;
   final StreamController<ScvUpdateState> _scvUpdateController =
       StreamController<ScvUpdateState>.broadcast();
 
   Stream<ScvUpdateState> get scvUpdateController =>
       _scvUpdateController.stream.asBroadcastStream();
+
+  ScvUpdateState? get lastScvState => _lastState;
 
   @override
   bool canHandle(api.QuantumLinkMessage message) {
@@ -84,6 +87,7 @@ class ScvHandler extends PassportMessageHandler {
   void updateScvState(String message, EnvoyStepState step) {
     final state = ScvUpdateState(message: message, step: step);
     _scvUpdateController.add(state);
+    _lastState = state;
   }
 
   Future<void> sendSecurityChallengeVerificationResult(

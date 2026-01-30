@@ -11,14 +11,14 @@ import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:foundation_api/foundation_api.dart';
-import 'package:envoy/ui/routes/routes.dart';
-import 'package:envoy/util/envoy_storage.dart';
 
 class BleConnectionState {
   final String message;
@@ -32,6 +32,8 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
 
   api.PairingResponse? _pairingResponse;
   final Set<OnboardingState> _completedOnboardingStates = {};
+  BleConnectionState? _lastState;
+
   final StreamController<BleConnectionState> _blePairingState =
       StreamController<BleConnectionState>.broadcast();
 
@@ -41,10 +43,13 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
   Stream<BleConnectionState> get blePairingState =>
       _blePairingState.stream.asBroadcastStream();
 
+  BleConnectionState? get lastBleState => _lastState;
+
   Stream<OnboardingState> get onboardingState =>
       _onboardingState.stream.asBroadcastStream();
 
   Set<OnboardingState> get completedSteps => _completedOnboardingStates;
+  bool get pairingDone => _pairingResponse != null;
 
   @override
   bool canHandle(api.QuantumLinkMessage message) {
@@ -83,6 +88,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
         }
         return;
       }
+
       BluetoothManager().scvAccountHandler.sendSecurityChallenge();
     } catch (e, stack) {
       EnvoyReport().log("BleOnboardHandler", e.toString(), stackTrace: stack);
@@ -133,6 +139,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
 
   void updateBlePairState(String message, EnvoyStepState step) {
     final state = BleConnectionState(message: message, step: step);
+    _lastState = state;
     _blePairingState.add(state);
   }
 
@@ -150,6 +157,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
   }
 
   void reset() {
+    _pairingResponse = null;
     _completedOnboardingStates.clear();
     updateBlePairState("Connecting to device", EnvoyStepState.IDLE);
   }
