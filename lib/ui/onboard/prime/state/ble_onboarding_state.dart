@@ -89,7 +89,8 @@ final deviceSecurityProvider = Provider<SecurityStepModel>((ref) {
   final asyncState = ref.watch(scvStateProvider);
   final lastState = BluetoothManager().scvAccountHandler.lastScvState;
   if (!asyncState.hasValue && lastState != null) {
-    return StepModel(stepName: lastState.message, state: lastState.step);
+    return SecurityStepModel(
+        stepName: lastState.message, state: lastState.step);
   }
   return asyncState.when(
     data: (data) {
