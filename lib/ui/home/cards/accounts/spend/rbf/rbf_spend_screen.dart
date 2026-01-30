@@ -47,6 +47,8 @@ import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:envoy/business/devices.dart';
+import 'package:envoy/ui/components/step_indicator.dart';
 
 final rbfSpendStateProvider = StateProvider<RBFSpendState?>((ref) => null);
 
@@ -142,6 +144,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         !(_broadcastProgress == BroadcastProgress.inProgress) && !_rebuildingTx;
     ProviderContainer scope = ProviderScope.containerOf(context);
 
+    final Device? device =
+        Devices().getDeviceBySerial(account.deviceSerial ?? "");
+    bool isPrime = device?.type == DeviceType.passportPrime;
+
     return CoinSelectionOverlay(
       child: Builder(builder: (context) {
         return PopScope(
@@ -179,6 +185,15 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                           extendBody: true,
                           extendBodyBehindAppBar: true,
                           removeAppBarPadding: true,
+                          topBarLeading: IconButton(
+                            icon: const EnvoyIcon(
+                              EnvoyIcons.chevron_left,
+                              color: EnvoyColors.textPrimary,
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
                           bottom: ClipRRect(
                             borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(8),
@@ -229,45 +244,30 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: EnvoySpacing.small),
-                                  child: AppBar(
-                                    backgroundColor: Colors.transparent,
-                                    automaticallyImplyLeading: false,
-                                    titleSpacing:
-                                        0, // Don't show the leading button
-                                    title: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        IconButton(
-                                          icon: const EnvoyIcon(
-                                            EnvoyIcons.chevron_left,
-                                            color: EnvoyColors.textPrimary,
-                                          ),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            S().replaceByFee_boost_tx_heading,
-                                            textAlign: TextAlign.center,
-                                            style: EnvoyTypography.subheading
-                                                .copyWith(
-                                                    color: EnvoyColors
-                                                        .textPrimary),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: EnvoySpacing.medium2,
-                                        )
-                                      ],
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(
+                                    height: EnvoySpacing.medium1,
+                                  ),
+                                  if (!account.isHot && !isPrime)
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          bottom: EnvoySpacing.medium2),
+                                      child: StepIndicator(
+                                          currentStep:
+                                              rbfState.draftTx.isFinalized
+                                                  ? 3
+                                                  : 0),
                                     ),
-                                  )),
+                                  Text(
+                                    S().replaceByFee_boost_tx_heading,
+                                    textAlign: TextAlign.center,
+                                    style: EnvoyTypography.subheading.copyWith(
+                                        color: EnvoyColors.textPrimary),
+                                  ),
+                                ],
+                              ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: EnvoySpacing.small,
@@ -309,18 +309,16 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                                 transactionModel.canModify,
                                             loading: transactionModel.loading,
                                             address: rbfState.receiveAddress,
-                                            onFeeTap:
-                                                (transactionModel.isFinalized &&
-                                                        !account.isHot)
-                                                    ? null
-                                                    : () {
-                                                        _showFeeChooser(
-                                                          context,
-                                                          ref,
-                                                          rbfState.draftTx
-                                                              .transaction,
-                                                        );
-                                                      },
+                                            onFeeTap: showReviewCoin
+                                                ? () {
+                                                    _showFeeChooser(
+                                                      context,
+                                                      ref,
+                                                      rbfState
+                                                          .draftTx.transaction,
+                                                    );
+                                                  }
+                                                : null,
                                           );
                                         }),
                                       ],
