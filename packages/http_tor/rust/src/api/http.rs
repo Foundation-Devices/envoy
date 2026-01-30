@@ -38,6 +38,9 @@ pub struct Progress {
     pub total: u64,
 }
 
+const REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
+const CONNECT_TIMEOUT: Duration = Duration::from_secs(10);
+
 lazy_static! {
     static ref RUNTIME: Result<Runtime> = Builder::new_multi_thread()
         .enable_all()
@@ -74,12 +77,14 @@ pub async fn get_file(
         let client: reqwest::Client = if tor_port > 0 {
             let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{}", tor_port))?;
             reqwest::Client::builder()
-                .timeout(Duration::from_secs(30))
+                .connect_timeout(CONNECT_TIMEOUT)
+                .timeout(REQUEST_TIMEOUT)
                 .proxy(proxy)
                 .build()?
         } else {
             reqwest::Client::builder()
-                .timeout(Duration::from_secs(30))
+                .connect_timeout(CONNECT_TIMEOUT)
+                .timeout(REQUEST_TIMEOUT)
                 .build()?
         };
 
@@ -135,12 +140,14 @@ pub fn request(
     let client: reqwest::blocking::Client = if tor_port > 0 {
         let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{}", tor_port))?;
         reqwest::blocking::Client::builder()
-            .timeout(Duration::from_secs(30))
+            .connect_timeout(CONNECT_TIMEOUT)
+            .timeout(REQUEST_TIMEOUT)
             .proxy(proxy)
             .build()?
     } else {
         reqwest::blocking::Client::builder()
-            .timeout(Duration::from_secs(30))
+            .connect_timeout(CONNECT_TIMEOUT)
+            .timeout(REQUEST_TIMEOUT)
             .build()?
     };
 
@@ -178,12 +185,14 @@ pub fn get_ip(tor_port: i32) -> Result<String> {
     let client: reqwest::blocking::Client = if tor_port > 0 {
         let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{}", tor_port))?;
         reqwest::blocking::Client::builder()
-            .timeout(Duration::from_secs(30))
+            .connect_timeout(CONNECT_TIMEOUT)
+            .timeout(REQUEST_TIMEOUT)
             .proxy(proxy)
             .build()?
     } else {
         reqwest::blocking::Client::builder()
-            .timeout(Duration::from_secs(30))
+            .connect_timeout(CONNECT_TIMEOUT)
+            .timeout(REQUEST_TIMEOUT)
             .build()?
     };
 
