@@ -7,7 +7,7 @@ import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/send_qr_review.dart';
+
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
@@ -28,10 +28,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
-<<<<<<< HEAD
-import 'package:envoy/ui/home/home_page.dart';
-=======
->>>>>>> 3390ef4a5 (fix: reset home shell nav state on deeplink navigation)
 
 const ROUTE_SPLASH = 'onboard';
 const WALLET_SUCCESS = "wallet_ready";
