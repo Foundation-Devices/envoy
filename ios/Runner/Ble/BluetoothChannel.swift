@@ -545,7 +545,9 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             guard let accessory = event.accessory else { return }
             initWithAccessory(accessory: accessory)
         case .activated:
-            print("Accessory discovery session activated .")
+            print("Accessory discovery session activated.")
+            // Check for existing accessories and auto-connect
+           checkAndConnectToExistingAccessories()
         case .accessoryRemoved:
             handleAccessoryRemoved()
         case .pickerDidPresent:
@@ -597,6 +599,46 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         }
     }
 
+
+    private func checkAndConnectToExistingAccessories() {
+        let accessories = session.accessories
+
+        guard let existingAccessory = accessories.first else {
+            print("No existing accessories found on app open")
+            return
+        }
+
+        print("Found existing accessory on app open: \(existingAccessory.displayName)")
+
+        // Initialize with the existing accessory
+        primeAccessory = existingAccessory
+
+        // Initialize CoreBluetooth manager if needed
+        if centralManager == nil {
+            setupBluetoothManager()
+        }
+
+        // If accessory has Bluetooth identifier, connect to it
+        if let bluetoothId = existingAccessory.bluetoothIdentifier {
+            print("Auto-connecting to existing accessory with Bluetooth ID: \(bluetoothId)")
+
+            // Send connecting event to Flutter
+//            sendConnectionEvent(
+//                connected: false,
+//                peripheralId: bluetoothId.uuidString,
+//                peripheralName: existingAccessory.displayName,
+//                type: "connecting"
+//            )
+
+            // Connect if central manager is ready, otherwise it will connect when powered on
+            if let central = centralManager, central.state == .poweredOn {
+                print("connectToAccessoryPeripheral ID: \(bluetoothId)")
+                connectToAccessoryPeripheral(bluetoothId: bluetoothId)
+            }
+        } else {
+            print("Existing accessory has no Bluetooth ID yet")
+        }
+    }
 
     private func handleAccessoryRemoved() {
         guard let accessory = primeAccessory else { return }
