@@ -77,7 +77,7 @@ class ScvHandler extends PassportMessageHandler {
                       error:
                           "Network error: Unable to reach Foundation servers"));
               updateScvState(
-                  "Security Check Pending", // TODO: Figma
+                  S().onboarding_connectionIntroErrorInternet_securityCheckPending,
                   EnvoyStepState.ERROR,
                   errorType: ScvErrorType.networkError);
               return;

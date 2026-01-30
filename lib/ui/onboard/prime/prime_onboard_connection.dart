@@ -301,7 +301,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
       children: [
         Text(
           isNetworkError
-              ? "Envoy failed to connect to Foundation Servers. Please make sure you are connected to the internet." // TODO: Figma
+              ? S().onboarding_connectionIntroErrorInternet_content
               : S().onboarding_connectionIntroError_content,
           style: EnvoyTypography.body.copyWith(
             color: EnvoyColors.copperLight500,
@@ -330,7 +330,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
             }
           },
           label: isNetworkError
-              ? "Retry" // TODO: Figma
+              ? S().common_button_retry
               : S().common_button_contactSupport,
           type: ButtonType.primary,
         ),
