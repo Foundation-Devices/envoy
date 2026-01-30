@@ -2748,6 +2748,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return VerificationResult_Error(
           error: dco_decode_String(raw[1]),
         );
+      case 2:
+        return VerificationResult_Failure();
       default:
         throw Exception("unreachable");
     }
@@ -4237,6 +4239,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 1:
         var var_error = sse_decode_String(deserializer);
         return VerificationResult_Error(error: var_error);
+      case 2:
+        return VerificationResult_Failure();
       default:
         throw UnimplementedError('');
     }
@@ -5602,6 +5606,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case VerificationResult_Error(error: final error):
         sse_encode_i_32(1, serializer);
         sse_encode_String(error, serializer);
+      case VerificationResult_Failure():
+        sse_encode_i_32(2, serializer);
     }
   }
 }

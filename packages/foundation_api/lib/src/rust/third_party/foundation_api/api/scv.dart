@@ -61,4 +61,5 @@ sealed class VerificationResult with _$VerificationResult {
   const factory VerificationResult.error({
     required String error,
   }) = VerificationResult_Error;
+  const factory VerificationResult.failure() = VerificationResult_Failure;
 }

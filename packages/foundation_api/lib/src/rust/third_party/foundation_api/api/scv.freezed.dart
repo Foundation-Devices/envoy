@@ -966,18 +966,21 @@ mixin _$VerificationResult {
   TResult when<TResult extends Object?>({
     required TResult Function() success,
     required TResult Function(String error) error,
+    required TResult Function() failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? success,
     TResult? Function(String error)? error,
+    TResult? Function()? failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? success,
     TResult Function(String error)? error,
+    TResult Function()? failure,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -985,18 +988,21 @@ mixin _$VerificationResult {
   TResult map<TResult extends Object?>({
     required TResult Function(VerificationResult_Success value) success,
     required TResult Function(VerificationResult_Error value) error,
+    required TResult Function(VerificationResult_Failure value) failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(VerificationResult_Success value)? success,
     TResult? Function(VerificationResult_Error value)? error,
+    TResult? Function(VerificationResult_Failure value)? failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(VerificationResult_Success value)? success,
     TResult Function(VerificationResult_Error value)? error,
+    TResult Function(VerificationResult_Failure value)? failure,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -1070,6 +1076,7 @@ class _$VerificationResult_SuccessImpl extends VerificationResult_Success {
   TResult when<TResult extends Object?>({
     required TResult Function() success,
     required TResult Function(String error) error,
+    required TResult Function() failure,
   }) {
     return success();
   }
@@ -1079,6 +1086,7 @@ class _$VerificationResult_SuccessImpl extends VerificationResult_Success {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? success,
     TResult? Function(String error)? error,
+    TResult? Function()? failure,
   }) {
     return success?.call();
   }
@@ -1088,6 +1096,7 @@ class _$VerificationResult_SuccessImpl extends VerificationResult_Success {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? success,
     TResult Function(String error)? error,
+    TResult Function()? failure,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -1101,6 +1110,7 @@ class _$VerificationResult_SuccessImpl extends VerificationResult_Success {
   TResult map<TResult extends Object?>({
     required TResult Function(VerificationResult_Success value) success,
     required TResult Function(VerificationResult_Error value) error,
+    required TResult Function(VerificationResult_Failure value) failure,
   }) {
     return success(this);
   }
@@ -1110,6 +1120,7 @@ class _$VerificationResult_SuccessImpl extends VerificationResult_Success {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(VerificationResult_Success value)? success,
     TResult? Function(VerificationResult_Error value)? error,
+    TResult? Function(VerificationResult_Failure value)? failure,
   }) {
     return success?.call(this);
   }
@@ -1119,6 +1130,7 @@ class _$VerificationResult_SuccessImpl extends VerificationResult_Success {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(VerificationResult_Success value)? success,
     TResult Function(VerificationResult_Error value)? error,
+    TResult Function(VerificationResult_Failure value)? failure,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -1207,6 +1219,7 @@ class _$VerificationResult_ErrorImpl extends VerificationResult_Error {
   TResult when<TResult extends Object?>({
     required TResult Function() success,
     required TResult Function(String error) error,
+    required TResult Function() failure,
   }) {
     return error(this.error);
   }
@@ -1216,6 +1229,7 @@ class _$VerificationResult_ErrorImpl extends VerificationResult_Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? success,
     TResult? Function(String error)? error,
+    TResult? Function()? failure,
   }) {
     return error?.call(this.error);
   }
@@ -1225,6 +1239,7 @@ class _$VerificationResult_ErrorImpl extends VerificationResult_Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? success,
     TResult Function(String error)? error,
+    TResult Function()? failure,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -1238,6 +1253,7 @@ class _$VerificationResult_ErrorImpl extends VerificationResult_Error {
   TResult map<TResult extends Object?>({
     required TResult Function(VerificationResult_Success value) success,
     required TResult Function(VerificationResult_Error value) error,
+    required TResult Function(VerificationResult_Failure value) failure,
   }) {
     return error(this);
   }
@@ -1247,6 +1263,7 @@ class _$VerificationResult_ErrorImpl extends VerificationResult_Error {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(VerificationResult_Success value)? success,
     TResult? Function(VerificationResult_Error value)? error,
+    TResult? Function(VerificationResult_Failure value)? failure,
   }) {
     return error?.call(this);
   }
@@ -1256,6 +1273,7 @@ class _$VerificationResult_ErrorImpl extends VerificationResult_Error {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(VerificationResult_Success value)? success,
     TResult Function(VerificationResult_Error value)? error,
+    TResult Function(VerificationResult_Failure value)? failure,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -1277,4 +1295,120 @@ abstract class VerificationResult_Error extends VerificationResult {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$VerificationResult_ErrorImplCopyWith<_$VerificationResult_ErrorImpl>
       get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$VerificationResult_FailureImplCopyWith<$Res> {
+  factory _$$VerificationResult_FailureImplCopyWith(
+          _$VerificationResult_FailureImpl value,
+          $Res Function(_$VerificationResult_FailureImpl) then) =
+      __$$VerificationResult_FailureImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$VerificationResult_FailureImplCopyWithImpl<$Res>
+    extends _$VerificationResultCopyWithImpl<$Res,
+        _$VerificationResult_FailureImpl>
+    implements _$$VerificationResult_FailureImplCopyWith<$Res> {
+  __$$VerificationResult_FailureImplCopyWithImpl(
+      _$VerificationResult_FailureImpl _value,
+      $Res Function(_$VerificationResult_FailureImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of VerificationResult
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$VerificationResult_FailureImpl extends VerificationResult_Failure {
+  const _$VerificationResult_FailureImpl() : super._();
+
+  @override
+  String toString() {
+    return 'VerificationResult.failure()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$VerificationResult_FailureImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() success,
+    required TResult Function(String error) error,
+    required TResult Function() failure,
+  }) {
+    return failure();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? success,
+    TResult? Function(String error)? error,
+    TResult? Function()? failure,
+  }) {
+    return failure?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? success,
+    TResult Function(String error)? error,
+    TResult Function()? failure,
+    required TResult orElse(),
+  }) {
+    if (failure != null) {
+      return failure();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(VerificationResult_Success value) success,
+    required TResult Function(VerificationResult_Error value) error,
+    required TResult Function(VerificationResult_Failure value) failure,
+  }) {
+    return failure(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(VerificationResult_Success value)? success,
+    TResult? Function(VerificationResult_Error value)? error,
+    TResult? Function(VerificationResult_Failure value)? failure,
+  }) {
+    return failure?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(VerificationResult_Success value)? success,
+    TResult Function(VerificationResult_Error value)? error,
+    TResult Function(VerificationResult_Failure value)? failure,
+    required TResult orElse(),
+  }) {
+    if (failure != null) {
+      return failure(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class VerificationResult_Failure extends VerificationResult {
+  const factory VerificationResult_Failure() = _$VerificationResult_FailureImpl;
+  const VerificationResult_Failure._() : super._();
 }
