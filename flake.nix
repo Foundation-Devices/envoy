@@ -10,14 +10,16 @@
     fenix.url = "github:nix-community/fenix";
   };
 
-  outputs = {
-    nixpkgs,
-    flake-utils,
-    fenix,
-    ...
-  }:
+  outputs =
+    {
+      nixpkgs,
+      flake-utils,
+      fenix,
+      ...
+    }:
     flake-utils.lib.eachDefaultSystem (
-      system: let
+      system:
+      let
         pkgs = import nixpkgs {
           inherit system;
           config = {
@@ -33,17 +35,38 @@
           cmdLineToolsVersion = "8.0";
           toolsVersion = "26.1.1";
           platformToolsVersion = "34.0.5";
-          buildToolsVersions = ["30.0.3" "33.0.1" "34.0.0" "35.0.0"];
+          buildToolsVersions = [
+            "30.0.3"
+            "33.0.1"
+            "34.0.0"
+            "35.0.0"
+          ];
           includeEmulator = false;
           emulatorVersion = "31.3.10";
-          platformVersions = ["28" "29" "30" "31" "33" "34" "35" "36"];
+          platformVersions = [
+            "28"
+            "29"
+            "30"
+            "31"
+            "33"
+            "34"
+            "35"
+            "36"
+          ];
           includeSources = false;
           includeSystemImages = false;
-          systemImageTypes = ["google_apis_playstore"];
-          abiVersions = ["arm64-v8a"]; # Only 64-bit ARM
-          cmakeVersions = ["3.10.2" "3.18.1" "3.22.1"];
+          systemImageTypes = [ "google_apis_playstore" ];
+          abiVersions = [ "arm64-v8a" ]; # Only 64-bit ARM
+          cmakeVersions = [
+            "3.10.2"
+            "3.18.1"
+            "3.22.1"
+          ];
           includeNDK = true;
-          ndkVersions = ["25.1.8937393" "27.0.12077973"];
+          ndkVersions = [
+            "25.1.8937393"
+            "27.0.12077973"
+          ];
           useGoogleAPIs = false;
           useGoogleTVAddOns = false;
           includeExtras = [
@@ -51,11 +74,12 @@
           ];
         };
 
-        darwinPackages = let
-          xcodeenv = import (nixpkgs + "/pkgs/development/mobile/xcodeenv") {inherit (pkgs) callPackage;};
-        in
+        darwinPackages =
+          let
+            xcodeenv = import (nixpkgs + "/pkgs/development/mobile/xcodeenv") { inherit (pkgs) callPackage; };
+          in
           lib.optionals pkgs.stdenv.isDarwin [
-            (xcodeenv.composeXcodeWrapper {versions = ["16.0"];})
+            (xcodeenv.composeXcodeWrapper { versions = [ "16.0" ]; })
           ];
 
         rustToolchain = fenix.packages.${system}.fromToolchainFile {
@@ -63,7 +87,13 @@
           sha256 = "sha256-SJwZ8g0zF2WrKDVmHrVG3pD2RGoQeo24MEXnNx5FyuI=";
         };
 
-        buildInputs = with pkgs;
+        # Localazy CLI wrapper using npx
+        localazy-cli = pkgs.writeShellScriptBin "localazy" ''
+          exec ${pkgs.nodejs}/bin/npx @localazy/cli "$@"
+        '';
+
+        buildInputs =
+          with pkgs;
           [
             # Rust tools
             rustToolchain
@@ -86,6 +116,10 @@
             reuse
             go
             unzip
+            nodejs
+
+            # Localazy CLI
+            localazy-cli
 
             # Build tools - multiStdenv provides better cross-compilation support
             gnumake
@@ -175,7 +209,8 @@
             pcre2.dev
           ]
           ++ darwinPackages;
-      in {
+      in
+      {
         customPackages = buildInputs;
         devShells.default = pkgs.mkShell {
           inherit buildInputs;
@@ -190,7 +225,7 @@
             # Flutter setup
             export FLUTTER_ROOT="${pkgs.flutter}"
             export PATH="$FLUTTER_ROOT/bin:$PATH"
-            
+
             # Remove rustup from PATH to use Nix Rust
             export PATH=$(echo $PATH | tr ':' '\n' | grep -v ".cargo/bin" | tr '\n' ':')
 

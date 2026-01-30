@@ -2131,6 +2131,7 @@ const _: fn() = || {
         foundation_api::api::scv::VerificationResult::Error { error } => {
             let _: String = error;
         }
+        foundation_api::api::scv::VerificationResult::Failure => {}
     }
 };
 
@@ -3538,6 +3539,9 @@ impl SseDecode for foundation_api::api::scv::VerificationResult {
             1 => {
                 let mut var_error = <String>::sse_decode(deserializer);
                 return foundation_api::api::scv::VerificationResult::Error { error: var_error };
+            }
+            2 => {
+                return foundation_api::api::scv::VerificationResult::Failure;
             }
             _ => {
                 unimplemented!("");
@@ -5193,6 +5197,7 @@ impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::scv::Veri
             foundation_api::api::scv::VerificationResult::Error { error } => {
                 [1.into_dart(), error.into_into_dart().into_dart()].into_dart()
             }
+            foundation_api::api::scv::VerificationResult::Failure => [2.into_dart()].into_dart(),
             _ => {
                 unimplemented!("");
             }
@@ -6361,6 +6366,9 @@ impl SseEncode for foundation_api::api::scv::VerificationResult {
             foundation_api::api::scv::VerificationResult::Error { error } => {
                 <i32>::sse_encode(1, serializer);
                 <String>::sse_encode(error, serializer);
+            }
+            foundation_api::api::scv::VerificationResult::Failure => {
+                <i32>::sse_encode(2, serializer);
             }
             _ => {
                 unimplemented!("");
