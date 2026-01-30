@@ -51,7 +51,6 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   @override
   void initState() {
     super.initState();
-    resetOnboardingPrimeProviders();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       try {
         _connectBLE();
@@ -81,6 +80,11 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   }
 
   Future<void> _connectBLE() async {
+    // User scanned XID from outside onboarding scanner, and connected QL link
+    if (BluetoothManager().bleOnboardHandler.pairingDone) {
+      kPrint("Already connected to Prime, skipping connection step.");
+      return;
+    }
     try {
       if (mounted) {
         setState(() {
@@ -93,6 +97,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
 
       if (primeXid != null) {
         try {
+          resetOnboardingPrimeProviders();
           final pairResult = await BluetoothManager().pair(primeXid!);
           if (pairResult == false) {
             throw Exception("Pairing failed");
@@ -102,28 +107,12 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
           setState(() {
             canPop = true;
           });
-          // await bleStepNotifier.updateStep(
-          //     "Unable to pair", EnvoyStepState.ERROR);
           return;
         }
       }
-      // await bleStepNotifier.updateStep(
-      //     "Connecting to Prime", EnvoyStepState.LOADING);
       setState(() {
         device = BleDevice(id: id, name: "Passport Prime", connected: true);
       });
-      await Future.delayed(const Duration(milliseconds: 200));
-      // await bleStepNotifier.updateStep(
-      //     S().onboarding_connectionIntro_connectedToPrime,
-      //     EnvoyStepState.FINISHED);
-
-      await Future.delayed(const Duration(milliseconds: 1000));
-      //
-      // await ref.read(deviceSecurityProvider.notifier).updateStep(
-      //     S().onboarding_connectionIntro_checkingDeviceSecurity,
-      //     EnvoyStepState.LOADING);
-      //
-      // await BluetoothManager().sendSecurityChallengeRequest();
     } catch (e) {
       kPrint(e);
     }
