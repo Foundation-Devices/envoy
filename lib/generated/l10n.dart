@@ -56,6 +56,8 @@ class S {
 
   // skipped getter for the ':' key
 
+  // skipped getter for the 'FW_Version_No.' key
+
   /// `6:15`
   String get _ {
     return Intl.message('6:15', name: '_', desc: '', args: []);
@@ -1428,7 +1430,7 @@ class S {
 
   /// `Non-custodial, peer-to-peer Bitcoin purchases.`
   String
-      get buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl_subheading {
+  get buy_bitcoin_buyOptions_peerToPeer_options_card_hodlHodl_subheading {
     return Intl.message(
       'Non-custodial, peer-to-peer Bitcoin purchases.',
       name:
@@ -2553,6 +2555,16 @@ class S {
     );
   }
 
+  /// `Retry`
+  String get common_button_retry {
+    return Intl.message(
+      'Retry',
+      name: 'common_button_retry',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `12 Word Seed`
   String get component_12WordSeed {
     return Intl.message(
@@ -2848,6 +2860,11 @@ class S {
     );
   }
 
+  /// `Unpair`
+  String get component_unpair {
+    return Intl.message('Unpair', name: 'component_unpair', desc: '', args: []);
+  }
+
   /// `Update`
   String get component_update {
     return Intl.message('Update', name: 'component_update', desc: '', args: []);
@@ -3055,6 +3072,26 @@ class S {
     return Intl.message(
       'Accessory removed, please reconnect Prime.',
       name: 'device_deviceDetailsPrimeRemoved_accessoryRemoved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complete Accessory Set Up`
+  String get device_deviceDetailsPrimeRemoved_completeAccessorySetup {
+    return Intl.message(
+      'Complete Accessory Set Up',
+      name: 'device_deviceDetailsPrimeRemoved_completeAccessorySetup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pair Passport Again`
+  String get device_deviceDetailsPrimeRemoved_pairPassportAgain {
+    return Intl.message(
+      'Pair Passport Again',
+      name: 'device_deviceDetailsPrimeRemoved_pairPassportAgain',
       desc: '',
       args: [],
     );
@@ -5182,7 +5219,7 @@ class S {
 
   /// `Tap any of the above cards to receive Bitcoin.`
   String
-      get hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt {
+  get hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt {
     return Intl.message(
       'Tap any of the above cards to receive Bitcoin.',
       name:
@@ -5712,21 +5749,61 @@ class S {
     );
   }
 
-  /// `Disconnect Existing Prime`
+  /// `Unpair Existing Prime`
   String get manage_deviceDetailsModalDisconnectExistingPassport_header {
     return Intl.message(
-      'Disconnect Existing Prime',
+      'Unpair Existing Prime',
       name: 'manage_deviceDetailsModalDisconnectExistingPassport_header',
       desc: '',
       args: [],
     );
   }
 
-  /// `Are you sure you want to disconnect Passport?\n\nThis will remove the device from Envoy alongside any connected accounts.`
+  /// `Re-connect QuantumLink`
+  String get manage_deviceDetailsReconnectQL_reconnect {
+    return Intl.message(
+      'Re-connect QuantumLink',
+      name: 'manage_deviceDetailsReconnectQL_reconnect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pair Again`
+  String get manage_deviceDetailsUnpaired_pairAgain {
+    return Intl.message(
+      'Pair Again',
+      name: 'manage_deviceDetailsUnpaired_pairAgain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to unpair Passport?\nThis will remove the device from Envoy alongside any connected accounts.`
   String get manage_device_deletePassportWarning {
     return Intl.message(
-      'Are you sure you want to disconnect Passport?\n\nThis will remove the device from Envoy alongside any connected accounts.',
+      'Are you sure you want to unpair Passport?\nThis will remove the device from Envoy alongside any connected accounts.',
       name: 'manage_device_deletePassportWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Quantum Link`
+  String get manage_device_details_QuantumLink {
+    return Intl.message(
+      'Quantum Link',
+      name: 'manage_device_details_QuantumLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Active`
+  String get manage_device_details_active {
+    return Intl.message(
+      'Active',
+      name: 'manage_device_details_active',
       desc: '',
       args: [],
     );
@@ -5752,11 +5829,31 @@ class S {
     );
   }
 
+  /// `Disconnected`
+  String get manage_device_details_disconnected {
+    return Intl.message(
+      'Disconnected',
+      name: 'manage_device_details_disconnected',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `DEVICE DETAILS`
   String get manage_device_details_heading {
     return Intl.message(
       'DEVICE DETAILS',
       name: 'manage_device_details_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Inactive`
+  String get manage_device_details_inactive {
+    return Intl.message(
+      'Inactive',
+      name: 'manage_device_details_inactive',
       desc: '',
       args: [],
     );
@@ -5777,6 +5874,26 @@ class S {
     return Intl.message(
       'Edit Device Name',
       name: 'manage_device_details_menu_editDevice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unpair Passport`
+  String get manage_device_details_menu_unpairPassport {
+    return Intl.message(
+      'Unpair Passport',
+      name: 'manage_device_details_menu_unpairPassport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unpaired`
+  String get manage_device_details_unpaired {
+    return Intl.message(
+      'Unpaired',
+      name: 'manage_device_details_unpaired',
       desc: '',
       args: [],
     );
@@ -5994,7 +6111,7 @@ class S {
 
   /// `Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again.`
   String
-      get manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading {
+  get manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading {
     return Intl.message(
       'Envoy is unable to verify your seed. Please confirm that you correctly recorded your seed and try again.',
       name:
@@ -6286,7 +6403,7 @@ class S {
 
   /// `If you continue without a backup file, your wallet settings, additional accounts, Tags and Notes will not be restored.`
   String
-      get manual_setup_recovery_import_backup_modal_fail_connectivity_subheading {
+  get manual_setup_recovery_import_backup_modal_fail_connectivity_subheading {
     return Intl.message(
       'If you continue without a backup file, your wallet settings, additional accounts, Tags and Notes will not be restored.',
       name:
@@ -6348,7 +6465,7 @@ class S {
 
   /// `Carefully re-type your passphrase so Envoy can open your Envoy Backup File.`
   String
-      get manual_setup_recovery_import_backup_re_enter_passphrase_subheading {
+  get manual_setup_recovery_import_backup_re_enter_passphrase_subheading {
     return Intl.message(
       'Carefully re-type your passphrase so Envoy can open your Envoy Backup File.',
       name:
@@ -6440,7 +6557,7 @@ class S {
 
   /// `Passphrases are case and space sensitive. Enter with care.`
   String
-      get manual_setup_verify_seed_12_words_enter_passphrase_modal_subheading {
+  get manual_setup_verify_seed_12_words_enter_passphrase_modal_subheading {
     return Intl.message(
       'Passphrases are case and space sensitive. Enter with care.',
       name:
@@ -6452,7 +6569,7 @@ class S {
 
   /// `[[Passphrases]] are an advanced feature.`
   String
-      get manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2 {
+  get manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2 {
     return Intl.message(
       '[[Passphrases]] are an advanced feature.',
       name:
@@ -6464,7 +6581,7 @@ class S {
 
   /// `If you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.`
   String
-      get manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading {
+  get manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading {
     return Intl.message(
       'If you do not understand the implications of using one, close this box and continue without one.\n\nFoundation has no way to recover a lost or incorrect passphrase.',
       name:
@@ -6486,7 +6603,7 @@ class S {
 
   /// `Please carefully re-enter your passphrase.`
   String
-      get manual_setup_verify_seed_12_words_verify_passphrase_modal_subheading {
+  get manual_setup_verify_seed_12_words_verify_passphrase_modal_subheading {
     return Intl.message(
       'Please carefully re-enter your passphrase.',
       name:
@@ -6648,7 +6765,7 @@ class S {
 
   /// `Pending Android Auto Backup (once daily)`
   String
-      get manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup {
+  get manual_toggle_on_seed_not_backedup_pending_android_seed_pending_backup {
     return Intl.message(
       'Pending Android Auto Backup (once daily)',
       name:
@@ -6660,7 +6777,7 @@ class S {
 
   /// `Pending backup to iCloud Keychain`
   String
-      get manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup {
+  get manual_toggle_on_seed_not_backedup_pending_iOS_seed_pending_backup {
     return Intl.message(
       'Pending backup to iCloud Keychain',
       name:
@@ -6870,10 +6987,40 @@ class S {
     );
   }
 
-  /// `This device may not be genuine or may have been tampered with during shipping.`
+  /// `Envoy failed to connect to Foundation Servers. Please make sure you are connected to the internet.`
+  String get onboarding_connectionIntroError2_content {
+    return Intl.message(
+      'Envoy failed to connect to Foundation Servers. Please make sure you are connected to the internet.',
+      name: 'onboarding_connectionIntroError2_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to communicate with the security server. Check your internet connection and try again.`
+  String get onboarding_connectionIntroErrorInternet_content {
+    return Intl.message(
+      'Unable to communicate with the security server. Check your internet connection and try again.',
+      name: 'onboarding_connectionIntroErrorInternet_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Security Check Pending`
+  String get onboarding_connectionIntroErrorInternet_securityCheckPending {
+    return Intl.message(
+      'Security Check Pending',
+      name: 'onboarding_connectionIntroErrorInternet_securityCheckPending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This device may not be genuine or may have been tampered with during shipping. Contact support for assistance.`
   String get onboarding_connectionIntroError_content {
     return Intl.message(
-      'This device may not be genuine or may have been tampered with during shipping.',
+      'This device may not be genuine or may have been tampered with during shipping. Contact support for assistance.',
       name: 'onboarding_connectionIntroError_content',
       desc: '',
       args: [],
@@ -6895,6 +7042,16 @@ class S {
     return Intl.message(
       'Security Check Failed',
       name: 'onboarding_connectionIntroError_securityCheckFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Security Check Pending`
+  String get onboarding_connectionIntroError_securityCheckPending {
+    return Intl.message(
+      'Security Check Pending',
+      name: 'onboarding_connectionIntroError_securityCheckPending',
       desc: '',
       args: [],
     );
