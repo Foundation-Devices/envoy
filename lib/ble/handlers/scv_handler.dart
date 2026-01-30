@@ -75,14 +75,7 @@ class ScvHandler extends PassportMessageHandler {
 
             case ScvVerificationResult.networkError:
               // Network error - send Error to Prime and show pending state
-              await sendSecurityChallengeVerificationResult(
-                  api.VerificationResult.error(
-                      error:
-                          "Network error: Unable to reach Foundation servers"));
-              updateScvState(
-                  S().onboarding_connectionIntroErrorInternet_securityCheckPending,
-                  EnvoyStepState.ERROR,
-                  errorType: ScvErrorType.networkError);
+              await sendNetworkError();
               return;
 
             case ScvVerificationResult.verificationFailed:
@@ -118,6 +111,16 @@ class ScvHandler extends PassportMessageHandler {
     } else if (message case api.QuantumLinkMessage_PairingResponse _) {}
   }
 
+  Future<void> sendNetworkError() async {
+    // Network error - send Error to Prime and show pending state
+    await sendSecurityChallengeVerificationResult(api.VerificationResult.error(
+        error: "Network error: Unable to reach Foundation servers"));
+    updateScvState(
+        S().onboarding_connectionIntroErrorInternet_securityCheckPending,
+        EnvoyStepState.ERROR,
+        errorType: ScvErrorType.networkError);
+  }
+
   void updateScvState(String message, EnvoyStepState step,
       {ScvErrorType errorType = ScvErrorType.none}) {
     final state =
@@ -138,8 +141,7 @@ class ScvHandler extends PassportMessageHandler {
         EnvoyStepState.LOADING);
     api.ChallengeRequest? challenge = await ScvServer().getPrimeChallenge();
     if (challenge == null) {
-      // TODO: SCV what now?
-      kPrint("No challenge available");
+      sendNetworkError();
       return;
     }
 
