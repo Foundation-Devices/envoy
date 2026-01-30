@@ -1,0 +1,44 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+- launchApp:
+      clearState: false
+
+# make sure you entered the app again before testing
+- extendedWaitUntil:
+    visible: "ACCOUNTS"
+    timeout: 720000  # wait up to 12 min for it to appear
+
+  
+- tapOn:
+    id: hamburger_menu
+
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+- tapOn: Advanced
+
+# Check if switch is ON, if so tap it to turn OFF
+- runFlow:
+    when:
+      visible:
+        id: "setting_toggle_on"
+        index: 4
+    commands:
+      - tapOn:
+          id: "setting_toggle_on"
+          index: 4
+      # Wait for UI to update
+      - wait:
+          seconds: 1
+
+# Wait for the switch to be OFF (with timeout)
+- extendedWaitUntil:
+    visible:
+      id: "setting_toggle_off"
+      index: 4
+    timeout: 5000

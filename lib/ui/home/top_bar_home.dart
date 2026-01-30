@@ -141,52 +141,57 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       // Get rid of the shadow
       elevation: 0,
       backgroundColor: Colors.transparent,
-      leading: AnimatedOpacity(
-        duration: _animationsDuration,
-        opacity: (optionsShown || inEditMode) ? 0.0 : 1.0,
-        child: HamburgerMenu(
-          iconState: state,
-          onPressed: () async {
-            if (homePageDropState != HomePageBackgroundState.hidden) {
-              if (homePageDropState != HomePageBackgroundState.menu) {
-                ref.read(homePageBackgroundProvider.notifier).state =
-                    HomePageBackgroundState.menu;
-                ref.read(backupPageProvider.notifier).state = false;
-              } else {
-                ref.read(homePageBackgroundProvider.notifier).state =
-                    HomePageBackgroundState.hidden;
-                ref.read(homePageTitleProvider.notifier).state = "";
-              }
-            } else {
-              if (state == HamburgerState.idle) {
-                ref.read(homePageBackgroundProvider.notifier).state =
-                    HomePageBackgroundState.menu;
-                ref.read(homePageTitleProvider.notifier).state =
-                    S().menu_heading.toUpperCase();
-              } else if (state == HamburgerState.back) {
-                if (path == ROUTE_SELECT_ACCOUNT ||
-                    path == ROUTE_PEER_TO_PEER) {
-                  showBuyBitcoinOptions(ref);
-                  context.go(ROUTE_BUY_BITCOIN);
+      leading: Semantics(
+        container: true,
+        identifier: 'hamburger_menu',
+        button: true,
+        child: AnimatedOpacity(
+          duration: _animationsDuration,
+          opacity: (optionsShown || inEditMode) ? 0.0 : 1.0,
+          child: HamburgerMenu(
+            iconState: state,
+            onPressed: () async {
+              if (homePageDropState != HomePageBackgroundState.hidden) {
+                if (homePageDropState != HomePageBackgroundState.menu) {
+                  ref.read(homePageBackgroundProvider.notifier).state =
+                      HomePageBackgroundState.menu;
+                  ref.read(backupPageProvider.notifier).state = false;
+                } else {
+                  ref.read(homePageBackgroundProvider.notifier).state =
+                      HomePageBackgroundState.hidden;
+                  ref.read(homePageTitleProvider.notifier).state = "";
                 }
-
-                if (path == ROUTE_SELECT_REGION &&
-                    await EnvoyStorage().getCountry() != null) {
-                  if (context.mounted) {
+              } else {
+                if (state == HamburgerState.idle) {
+                  ref.read(homePageBackgroundProvider.notifier).state =
+                      HomePageBackgroundState.menu;
+                  ref.read(homePageTitleProvider.notifier).state =
+                      S().menu_heading.toUpperCase();
+                } else if (state == HamburgerState.back) {
+                  if (path == ROUTE_SELECT_ACCOUNT ||
+                      path == ROUTE_PEER_TO_PEER) {
+                    showBuyBitcoinOptions(ref);
                     context.go(ROUTE_BUY_BITCOIN);
                   }
-                } else if (path == ROUTE_BUY_BITCOIN) {
-                  if (context.mounted) {
-                    GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
-                  }
-                } else {
-                  if (context.mounted && GoRouter.of(context).canPop()) {
-                    GoRouter.of(context).pop();
+
+                  if (path == ROUTE_SELECT_REGION &&
+                      await EnvoyStorage().getCountry() != null) {
+                    if (context.mounted) {
+                      context.go(ROUTE_BUY_BITCOIN);
+                    }
+                  } else if (path == ROUTE_BUY_BITCOIN) {
+                    if (context.mounted) {
+                      GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
+                    }
+                  } else {
+                    if (context.mounted && GoRouter.of(context).canPop()) {
+                      GoRouter.of(context).pop();
+                    }
                   }
                 }
               }
-            }
-          },
+            },
+          ),
         ),
       ),
       centerTitle: true,
@@ -531,6 +536,7 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
         : MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
+              excludeFromSemantics: true,
               behavior: HitTestBehavior.opaque,
               onTap: () {
                 FocusScope.of(context).unfocus(); // ENV-2125

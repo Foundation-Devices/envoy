@@ -274,52 +274,64 @@ class PrimaryAmountWidget extends StatelessWidget {
     final unitSpacing =
         style == PrimaryAmountWidgetStyle.normal ? 2.0 : EnvoySpacing.xs;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-            padding: EdgeInsets.only(right: unitSpacing),
-            child: unit == AmountDisplayUnit.fiat
-                ? Text(
-                    symbolFiat,
-                    textHeightBehavior: const TextHeightBehavior(
-                      applyHeightToFirstAscent: false,
-                      applyHeightToLastDescent: false,
-                    ),
-                    style: sendScreen
-                        ? EnvoyTypography.digitsMedium
-                            .copyWith(color: EnvoyColors.textSecondary)
-                        : textStyleFiatSymbol,
-                  )
-                : (envoyAccount?.network == Network.bitcoin
-                    ? EnvoyIcon(
-                        unit == AmountDisplayUnit.btc ? iconBtc : iconSat,
-                        size: iconSize,
-                        color: iconColor,
+    return Semantics(
+      container: true,
+      explicitChildNodes: true,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Semantics(
+            container: true,
+            identifier: 'primary_amount_icon',
+            child: Padding(
+                padding: EdgeInsets.only(right: unitSpacing),
+                child: unit == AmountDisplayUnit.fiat
+                    ? Text(
+                        symbolFiat,
+                        textHeightBehavior: const TextHeightBehavior(
+                          applyHeightToFirstAscent: false,
+                          applyHeightToLastDescent: false,
+                        ),
+                        style: sendScreen
+                            ? EnvoyTypography.digitsMedium
+                                .copyWith(color: EnvoyColors.textSecondary)
+                            : textStyleFiatSymbol,
                       )
-                    : getNonMainnetIcon(unit, badgeColor!, envoyAccount!,
-                        iconSize: iconSize, iconColor: iconColor))),
-        RichText(
-          textScaler: TextScaler.linear(textScaleFactor),
-          text: TextSpan(
-            children: unit == AmountDisplayUnit.btc
-                ? buildPrimaryBtcTextSpans(amountSats, decimalSeparator,
-                    groupSeparator, textStyleBlack, textStyleGray)
-                : unit == AmountDisplayUnit.fiat
-                    ? buildFiatTextSpans(
-                        amountSats,
-                        fxRateFiat!,
-                        textStyleBlack,
-                        locale,
-                        decimalSeparator,
-                        groupSeparator,
-                        millionaireMode: millionaireMode)
-                    : buildPrimarySatsTextSpans(amountSats, groupSeparator,
-                        textStyleBlack, textStyleGray),
+                    : (envoyAccount?.network == Network.bitcoin
+                        ? EnvoyIcon(
+                            unit == AmountDisplayUnit.btc ? iconBtc : iconSat,
+                            size: iconSize,
+                            color: iconColor,
+                          )
+                        : getNonMainnetIcon(unit, badgeColor!, envoyAccount!,
+                            iconSize: iconSize, iconColor: iconColor))),
           ),
-        ),
-      ],
+          Semantics(
+            container: true,
+            identifier: 'primary_amount_value',
+            child: RichText(
+              textScaler: TextScaler.linear(textScaleFactor),
+              text: TextSpan(
+                children: unit == AmountDisplayUnit.btc
+                    ? buildPrimaryBtcTextSpans(amountSats, decimalSeparator,
+                        groupSeparator, textStyleBlack, textStyleGray)
+                    : unit == AmountDisplayUnit.fiat
+                        ? buildFiatTextSpans(
+                            amountSats,
+                            fxRateFiat!,
+                            textStyleBlack,
+                            locale,
+                            decimalSeparator,
+                            groupSeparator,
+                            millionaireMode: millionaireMode)
+                        : buildPrimarySatsTextSpans(amountSats, groupSeparator,
+                            textStyleBlack, textStyleGray),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -377,47 +389,59 @@ class SecondaryAmountWidget extends StatelessWidget {
         ? EnvoyColors.textPrimary
         : EnvoyColors.accentPrimary;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-            padding: const EdgeInsets.only(right: 2.0),
-            child: unit == AmountDisplayUnit.btc
-                ? (envoyAccount?.network == Network.bitcoin
-                    ? EnvoyIcon(
-                        iconBtc,
-                        size: EnvoyIconSize.extraSmall,
-                        color: iconColor,
-                      )
-                    : getNonMainnetIcon(unit, badgeColor!, envoyAccount!,
-                        iconSize: EnvoyIconSize.extraSmall,
-                        iconColor: iconColor))
-                : Text(
-                    symbolFiat,
-                    textHeightBehavior: const TextHeightBehavior(
-                      applyHeightToFirstAscent: false,
-                      applyHeightToLastDescent: false,
-                    ),
-                    style: textStyle,
-                  )),
-        RichText(
-          textScaler: TextScaler.linear(textScaleFactor),
-          text: TextSpan(
-              children: unit == AmountDisplayUnit.fiat
-                  ? buildFiatTextSpans(
-                      amountSats,
-                      fxRateFiat!,
-                      displayFiat: displayFiat,
-                      textStyle,
-                      locale,
-                      decimalSeparator,
-                      groupSeparator,
-                      millionaireMode: millionaireMode)
-                  : buildSecondaryBtcTextSpans(amountSats, decimalSeparator,
-                      groupSeparator, textStyle, textStyle)),
-        ),
-      ],
+    return Semantics(
+      container: true,
+      explicitChildNodes: true,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Semantics(
+            container: true,
+            identifier: 'secondary_amount_icon',
+            child: Padding(
+                padding: const EdgeInsets.only(right: 2.0),
+                child: unit == AmountDisplayUnit.btc
+                    ? (envoyAccount?.network == Network.bitcoin
+                        ? EnvoyIcon(
+                            iconBtc,
+                            size: EnvoyIconSize.extraSmall,
+                            color: iconColor,
+                          )
+                        : getNonMainnetIcon(unit, badgeColor!, envoyAccount!,
+                            iconSize: EnvoyIconSize.extraSmall,
+                            iconColor: iconColor))
+                    : Text(
+                        symbolFiat,
+                        textHeightBehavior: const TextHeightBehavior(
+                          applyHeightToFirstAscent: false,
+                          applyHeightToLastDescent: false,
+                        ),
+                        style: textStyle,
+                      )),
+          ),
+          Semantics(
+            container: true,
+            identifier: 'secondary_amount_value',
+            child: RichText(
+              textScaler: TextScaler.linear(textScaleFactor),
+              text: TextSpan(
+                  children: unit == AmountDisplayUnit.fiat
+                      ? buildFiatTextSpans(
+                          amountSats,
+                          fxRateFiat!,
+                          displayFiat: displayFiat,
+                          textStyle,
+                          locale,
+                          decimalSeparator,
+                          groupSeparator,
+                          millionaireMode: millionaireMode)
+                      : buildSecondaryBtcTextSpans(amountSats, decimalSeparator,
+                          groupSeparator, textStyle, textStyle)),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -267,11 +267,11 @@ fi
 # ------------------------------------------------------------
 # Cleanup
 # ------------------------------------------------------------
-echo -e "${YELLOW}Uninstalling app...${NC}"
-$ADB_CMD -s "$DEVICE_ID" uninstall com.foundationdevices.envoy >/dev/null 2>&1 || true
-
-if [ $FAILED -gt 0 ]; then
-    exit 1
-fi
-
-exit 0
+#echo -e "${YELLOW}Uninstalling app...${NC}"
+#$ADB_CMD -s "$DEVICE_ID" uninstall com.foundationdevices.envoy >/dev/null 2>&1 || true
+#
+#if [ $FAILED -gt 0 ]; then
+#    exit 1
+#fi
+#
+#exit 0
