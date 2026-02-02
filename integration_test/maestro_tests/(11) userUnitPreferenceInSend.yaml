@@ -1,0 +1,145 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+- launchApp:
+    clearState: false
+
+# make sure you entered the app again before testing
+- extendedWaitUntil:
+    visible: "ACCOUNTS"
+    timeout: 720000  # wait up to 12 min for it to appear
+
+# 1) Go to settings
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+# 2) Check that the fiat toggle exists
+
+- assertVisible:
+    id: Show Fiat Toggle-true
+
+# 3) Check that it can toggle just fine, leave it enabled (leave default fiat value)
+- tapOn:
+    id: Show Fiat Toggle-true
+# refresh toggle name
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+- assertVisible:
+    id: Show Fiat Toggle-false
+
+- tapOn:
+    id: Show Fiat Toggle-false
+
+# refresh toggle name
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+- assertVisible:
+    id: Show Fiat Toggle-true
+
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# tap first mainet acc with money
+- tapOn: GH TEST ACC (#1)
+- tapOn: Send
+
+# check if the numbers are in sats
+- assertVisible:
+    id: envoy_icon_sats
+
+# go back
+- tapOn:
+    id: hamburger_menu
+- tapOn: Send
+
+# check if the numbers are in sats
+- assertVisible:
+    id: envoy_icon_sats
+
+# change to fiat
+- tapOn: |-
+    0
+    $
+    0.00
+
+# go back
+- tapOn:
+    id: hamburger_menu
+- tapOn: Send
+
+# check if you are entering dollars
+- assertVisible:
+    text: $
+
+# change to btc
+- tapOn: |-
+    $
+    0
+    0
+
+# go back
+- tapOn:
+    id: hamburger_menu
+- tapOn: Send
+
+#  check if the unit is BTC
+- assertVisible:
+    id: envoy_icon_btc
+
+# With the unit in btc, paste a valid address, enter a valid amount, tap Confirm
+- tapOn: Enter address
+- inputText: "bc1qcjwyecualcytzgud5ruwrj642fng4tvp8nsgr2"
+- tapOn: Back
+
+# change to sats so you can enter with test
+- tapOn: |-
+    0
+    $
+    0.00
+
+# enter amount
+- tapOn: "5"
+- tapOn: "6"
+- tapOn: "7"
+
+# change to btc
+- tapOn: |-
+    567
+    $
+    0.44
+- tapOn: |-
+    $
+    0.44
+    567
+
+# go to staging
+- tapOn: Confirm
+
+# now wait for it to go to staging
+- extendedWaitUntil:
+    visible: |-
+      Check Transaction Details
+      Confirm the transaction details are correct before continuing.
+    timeout: 15000
+
+# check if the unit in the Staging is BTC
+- assertVisible:
+    id: envoy_icon_btc
+    index: 1
+
