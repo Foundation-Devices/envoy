@@ -73,10 +73,8 @@ appId: com.foundationdevices.envoy
     id: envoy_icon_sats
 
 # change to fiat
-- tapOn: |-
-    0
-    $
-    0.00
+- tapOn:
+    id: envoy_icon_sats
 
 # go back
 - tapOn:
@@ -88,10 +86,8 @@ appId: com.foundationdevices.envoy
     text: $
 
 # change to btc
-- tapOn: |-
-    $
-    0
-    0
+- assertNotVisible:
+    id: envoy_icon_sats
 
 # go back
 - tapOn:
@@ -108,10 +104,8 @@ appId: com.foundationdevices.envoy
 - tapOn: Back
 
 # change to sats so you can enter with test
-- tapOn: |-
-    0
-    $
-    0.00
+- tapOn:
+    id: envoy_icon_btc
 
 # enter amount
 - tapOn: "5"
@@ -119,14 +113,11 @@ appId: com.foundationdevices.envoy
 - tapOn: "7"
 
 # change to btc
-- tapOn: |-
-    567
-    $
-    0.44
-- tapOn: |-
-    $
-    0.44
-    567
+- tapOn:
+    id: envoy_icon_btc
+- tapOn:
+    id: envoy_icon_sats
+
 
 # go to staging
 - tapOn: Confirm
