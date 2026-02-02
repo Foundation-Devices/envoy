@@ -5,7 +5,7 @@
 appId: com.foundationdevices.envoy
 ---
 - launchApp:
-      clearState: false
+    clearState: false
 
 # make sure you entered the app again before testing
 - extendedWaitUntil:
@@ -13,11 +13,11 @@ appId: com.foundationdevices.envoy
     timeout: 720000  # wait up to 12 min for it to appear
 
 - tapOn:
-      id: hamburger_menu
+    id: hamburger_menu
 
 - tapOn: |-
-      BACKUPS
-      BACKUPS
+    BACKUPS
+    BACKUPS
 
 - tapOn: Erase Mobile Wallet
 

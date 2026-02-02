@@ -5,7 +5,7 @@
 appId: com.foundationdevices.envoy
 ---
 - launchApp:
-      clearState: false
+    clearState: false
 
 # make sure you entered the app again before testing
 - extendedWaitUntil:

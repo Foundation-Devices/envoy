@@ -15,8 +15,8 @@ appId: com.foundationdevices.envoy
 - tapOn: Continue
 - tapOn: Back
 - tapOn: |-
-      Create a 
-      Mobile Wallet
+    Create a 
+    Mobile Wallet
 - tapOn: Recover
 
 
