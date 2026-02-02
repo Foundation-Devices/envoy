@@ -1,0 +1,60 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+- launchApp:
+    clearState: false
+
+# make sure you entered the app again before testing
+- extendedWaitUntil:
+    visible: "ACCOUNTS"
+    timeout: 720000  # wait up to 12 min for it to appear
+
+- tapOn:
+    id: hamburger_menu
+
+- tapOn: Back
+
+# comfirm you are back to home
+- assertVisible: ACCOUNTS
+
+- tapOn:
+    id: hamburger_menu
+
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+- tapOn: Back
+
+# confirm you are back to Envoy
+- assertVisible: ENVOY
+
+- tapOn: |-
+    BACKUPS
+    BACKUPS
+
+- tapOn: Back
+
+# confirm you are back to Envoy
+- assertVisible: ENVOY
+
+- tapOn: |-
+    SUPPORT
+    SUPPORT
+
+- tapOn: Back
+
+# confirm you are back to Envoy
+- assertVisible: ENVOY
+
+- tapOn: |-
+    ABOUT
+    ABOUT
+
+- tapOn: Back
+
+# confirm you are back to Envoy
+- assertVisible: ENVOY
