@@ -115,23 +115,29 @@ class _AccountCardState extends ConsumerState<AccountCard>
                   optionsWidget: Container(),
                   rightAction: Consumer(
                     builder: (context, ref, child) {
-                      return GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          Navigator.of(context).push(
-                            PageRouteBuilder(
-                              opaque: false,
-                              pageBuilder: (_, __, ___) =>
-                                  AccountOptions(account),
+                      return Semantics(
+                        identifier: 'Account Options Button',
+                        container: true,
+                        button: true,
+                        excludeSemantics: true,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            Navigator.of(context).push(
+                              PageRouteBuilder(
+                                opaque: false,
+                                pageBuilder: (_, __, ___) =>
+                                    AccountOptions(account),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            height: 55,
+                            width: 55,
+                            color: Colors.transparent,
+                            child: Icon(
+                              Icons.more_horiz_outlined,
                             ),
-                          );
-                        },
-                        child: Container(
-                          height: 55,
-                          width: 55,
-                          color: Colors.transparent,
-                          child: Icon(
-                            Icons.more_horiz_outlined,
                           ),
                         ),
                       );
@@ -872,13 +878,11 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                               S().taproot_passport_dialog_later,
                           onSecondaryButtonTap: (modalContext) {
                             Navigator.pop(modalContext);
-                            HomePageState.of(context)?.toggleOptions();
-                            context.go(ROUTE_ACCOUNT_DESCRIPTOR,
+                            modalContext.go(ROUTE_ACCOUNT_DESCRIPTOR,
                                 extra: widget.account.id);
                           },
                         );
                       } else {
-                        HomePageState.of(context)?.toggleOptions();
                         context.go(ROUTE_ACCOUNT_DESCRIPTOR,
                             extra: widget.account.id);
                       }

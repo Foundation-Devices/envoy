@@ -221,7 +221,14 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
             ? AbsorbPointer(
                 absorbing: false,
                 child: AnimatedSwitcher(
-                    duration: _animationsDuration, child: rightAction),
+                    duration: _animationsDuration,
+                    child: Semantics(
+                      identifier: 'Right Action Button',
+                      container: true,
+                      button: true,
+                      excludeSemantics: true,
+                      child: rightAction,
+                    )),
               )
             : Opacity(
                 opacity: (inEditMode || backDropEnabled) ? 0.0 : 1.0,
@@ -267,7 +274,13 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
                                           ),
                                         ),
                                       )
-                                    : rightAction)))),
+                                    : Semantics(
+                                        identifier: 'Right Action Button',
+                                        container: true,
+                                        button: true,
+                                        excludeSemantics: true,
+                                        child: rightAction,
+                                      ))))),
               )
       ],
     );

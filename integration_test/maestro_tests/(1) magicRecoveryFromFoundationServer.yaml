@@ -20,115 +20,115 @@ appId: com.foundationdevices.envoy
 - tapOn: Recover
 
 
-###### 12 word err test ENV-2315 #####
+##### 12 word err test ENV-2315 #####
 
-## Insert seed words (12 word)
-#- tapOn: 12 Word Seed
-#- tapOn: "1. "
-#- inputText: "bacon"
-#- tapOn: "2. "
-#- inputText: "bacon"
-#- tapOn: "3. "
-#- inputText: "bacon"
-#- tapOn: "4. "
-#- inputText: "bacon"
-#- tapOn: "5. "
-#- inputText: "bacon"
-#- tapOn: "6. "
-#- inputText: "bacon"
-#- tapOn: "7. "
-#- inputText: "bacon"
-#- tapOn: "8. "
-#- inputText: "bacon"
-#- tapOn: "9. "
-#- inputText: "bacon"
-#- tapOn: "10. "
-#- inputText: "bacon"
-#- tapOn: "11. "
-#- inputText: "bacon"
-#- tapOn: "12. "
-#- inputText: "bacon"
-#
-#- tapOn: Enter Your Seed
-#- tapOn: Done
-#
-## Check that error popup shows up
-#- assertVisible: That seed appears to be invalid. Please check the words entered, including the order they are in and try again.
-#- tapOn: Back
-#
-#- extendedWaitUntil:
-#    visible: Back button - Seed
-#    timeout: 5000
-#
-## back to seed menu
-#- tapOn: Back button - Seed
-#
-###############################################################################
-#
-############################### 24 word error test ENV-2315 #####
-#
-## Insert seed words (24 word)
-#- tapOn: 24 Word Seed
-#- tapOn: "1. "
-#- inputText: "bacon"
-#- tapOn: "2. "
-#- inputText: "bacon"
-#- tapOn: "3. "
-#- inputText: "bacon"
-#- tapOn: "4. "
-#- inputText: "bacon"
-#- tapOn: "5. "
-#- inputText: "bacon"
-#- tapOn: "6. "
-#- inputText: "bacon"
-#- tapOn: "7. "
-#- inputText: "bacon"
-#- tapOn: "8. "
-#- inputText: "bacon"
-#- tapOn: "9. "
-#- inputText: "bacon"
-#- tapOn: "10. "
-#- inputText: "bacon"
-#- tapOn: "11. "
-#- inputText: "bacon"
-#- tapOn: "12. "
-#- inputText: "bacon"
-#
-## Second page of 24 word seed
-#- tapOn: "13. "
-#- inputText: "bacon"
-#- tapOn: "14. "
-#- inputText: "bacon"
-#- tapOn: "15. "
-#- inputText: "bacon"
-#- tapOn: "16. "
-#- inputText: "bacon"
-#- tapOn: "17. "
-#- inputText: "bacon"
-#- tapOn: "18. "
-#- inputText: "bacon"
-#- tapOn: "19. "
-#- inputText: "bacon"
-#- tapOn: "20. "
-#- inputText: "bacon"
-#- tapOn: "21. "
-#- inputText: "bacon"
-#- tapOn: "22. "
-#- inputText: "bacon"
-#- tapOn: "23. "
-#- inputText: "bacon"
-#- tapOn: "24. "
-#- inputText: "hour"
-#
-#- tapOn: Enter Your Seed
-#- tapOn: Done
-#
-## Check that error popup shows up
-#- assertVisible: That seed appears to be invalid. Please check the words entered, including the order they are in and try again.
-#- tapOn: Back
-## back to seed menu
-#- tapOn: Back button - Seed
-###################################### end of ENV-2315
+# Insert seed words (12 word)
+- tapOn: 12 Word Seed
+- tapOn: "1. "
+- inputText: "bacon"
+- tapOn: "2. "
+- inputText: "bacon"
+- tapOn: "3. "
+- inputText: "bacon"
+- tapOn: "4. "
+- inputText: "bacon"
+- tapOn: "5. "
+- inputText: "bacon"
+- tapOn: "6. "
+- inputText: "bacon"
+- tapOn: "7. "
+- inputText: "bacon"
+- tapOn: "8. "
+- inputText: "bacon"
+- tapOn: "9. "
+- inputText: "bacon"
+- tapOn: "10. "
+- inputText: "bacon"
+- tapOn: "11. "
+- inputText: "bacon"
+- tapOn: "12. "
+- inputText: "bacon"
+
+- tapOn: Enter Your Seed
+- tapOn: Done
+
+# Check that error popup shows up
+- assertVisible: That seed appears to be invalid. Please check the words entered, including the order they are in and try again.
+- tapOn: Back
+
+- extendedWaitUntil:
+    visible: Back button - Seed
+    timeout: 5000
+
+# back to seed menu
+- tapOn: Back button - Seed
+
+##############################################################################
+
+############################## 24 word error test ENV-2315 #####
+
+# Insert seed words (24 word)
+- tapOn: 24 Word Seed
+- tapOn: "1. "
+- inputText: "bacon"
+- tapOn: "2. "
+- inputText: "bacon"
+- tapOn: "3. "
+- inputText: "bacon"
+- tapOn: "4. "
+- inputText: "bacon"
+- tapOn: "5. "
+- inputText: "bacon"
+- tapOn: "6. "
+- inputText: "bacon"
+- tapOn: "7. "
+- inputText: "bacon"
+- tapOn: "8. "
+- inputText: "bacon"
+- tapOn: "9. "
+- inputText: "bacon"
+- tapOn: "10. "
+- inputText: "bacon"
+- tapOn: "11. "
+- inputText: "bacon"
+- tapOn: "12. "
+- inputText: "bacon"
+
+# Second page of 24 word seed
+- tapOn: "13. "
+- inputText: "bacon"
+- tapOn: "14. "
+- inputText: "bacon"
+- tapOn: "15. "
+- inputText: "bacon"
+- tapOn: "16. "
+- inputText: "bacon"
+- tapOn: "17. "
+- inputText: "bacon"
+- tapOn: "18. "
+- inputText: "bacon"
+- tapOn: "19. "
+- inputText: "bacon"
+- tapOn: "20. "
+- inputText: "bacon"
+- tapOn: "21. "
+- inputText: "bacon"
+- tapOn: "22. "
+- inputText: "bacon"
+- tapOn: "23. "
+- inputText: "bacon"
+- tapOn: "24. "
+- inputText: "hour"
+
+- tapOn: Enter Your Seed
+- tapOn: Done
+
+# Check that error popup shows up
+- assertVisible: That seed appears to be invalid. Please check the words entered, including the order they are in and try again.
+- tapOn: Back
+# back to seed menu
+- tapOn: Back button - Seed
+##################################### end of ENV-2315
 
 ###### 12 word valid seed test #####
 
