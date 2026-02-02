@@ -418,6 +418,7 @@ Future<void> pairWithDevice(BuildContext context, XidDocument xid) async {
       return;
     } else {
       if (context.mounted) {
+        resetOnboardingPrimeProviders();
         _showPairingProgressDialog(context);
       }
       try {

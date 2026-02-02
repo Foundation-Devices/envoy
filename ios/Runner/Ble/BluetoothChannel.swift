@@ -66,6 +66,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     private var deviceReady = false
     private var reconnectionTimer: Timer?
     private var reconnectionAttempts: Int = 0
+    private var isShuttingDown = false
     
     private let bleQueue = DispatchQueue(label: "com.envoy.ble", qos: .userInteractive)
 
@@ -184,11 +185,41 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         // Use the shared BLE queue for all BLE operations
         centralManager = CBCentralManager(
             delegate: self,
-            queue: bleQueue,  
+            queue: bleQueue,
             options: [
                 CBCentralManagerOptionRestoreIdentifierKey: restoreIdentifier
             ]
         )
+    }
+
+    /// Clean up Bluetooth resources before app termination.
+    /// This prevents CoreBluetooth callbacks from firing after Flutter engine is destroyed.
+    func cleanup() {
+        // Set flag first to prevent any further Flutter channel communication
+        isShuttingDown = true
+
+        // Stop any pending reconnection timers
+        stopReconnection()
+
+        // Cancel any ongoing transfer tasks
+        transferTask?.cancel()
+        transferTask = nil
+
+        // Clear all Flutter sinks to prevent callbacks to destroyed engine
+        eventSink = nil
+        connectionEventSink = nil
+        writeStreamSink = nil
+
+        // Disconnect from peripheral if connected
+        if let peripheral = connectedPeripheral, let central = centralManager {
+            central.cancelPeripheralConnection(peripheral)
+        }
+        connectedPeripheral = nil
+
+        // Remove delegate to prevent further callbacks
+        centralManager?.delegate = nil
+        centralManager = nil
+
     }
 
     private func reconnect(result: @escaping FlutterResult) {
@@ -514,7 +545,9 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             guard let accessory = event.accessory else { return }
             initWithAccessory(accessory: accessory)
         case .activated:
-            print("Accessory discovery session activated .")
+            print("Accessory discovery session activated.")
+            // Check for existing accessories and auto-connect
+           checkAndConnectToExistingAccessories()
         case .accessoryRemoved:
             handleAccessoryRemoved()
         case .pickerDidPresent:
@@ -566,6 +599,46 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         }
     }
 
+
+    private func checkAndConnectToExistingAccessories() {
+        let accessories = session.accessories
+
+        guard let existingAccessory = accessories.first else {
+            print("No existing accessories found on app open")
+            return
+        }
+
+        print("Found existing accessory on app open: \(existingAccessory.displayName)")
+
+        // Initialize with the existing accessory
+        primeAccessory = existingAccessory
+
+        // Initialize CoreBluetooth manager if needed
+        if centralManager == nil {
+            setupBluetoothManager()
+        }
+
+        // If accessory has Bluetooth identifier, connect to it
+        if let bluetoothId = existingAccessory.bluetoothIdentifier {
+            print("Auto-connecting to existing accessory with Bluetooth ID: \(bluetoothId)")
+
+            // Send connecting event to Flutter
+//            sendConnectionEvent(
+//                connected: false,
+//                peripheralId: bluetoothId.uuidString,
+//                peripheralName: existingAccessory.displayName,
+//                type: "connecting"
+//            )
+
+            // Connect if central manager is ready, otherwise it will connect when powered on
+            if let central = centralManager, central.state == .poweredOn {
+                print("connectToAccessoryPeripheral ID: \(bluetoothId)")
+                connectToAccessoryPeripheral(bluetoothId: bluetoothId)
+            }
+        } else {
+            print("Existing accessory has no Bluetooth ID yet")
+        }
+    }
 
     private func handleAccessoryRemoved() {
         guard let accessory = primeAccessory else { return }
@@ -1037,6 +1110,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     }
 
     private func sendBinaryData(_ data: Data) {
+        guard !isShuttingDown else { return }
         guard let binaryChannel = bleBinaryChannel else {
             print("Warning: No binary channel available for data transmission")
             return
@@ -1181,6 +1255,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         type: String? = nil,
         error: String? = nil
     ) {
+        guard !isShuttingDown else { return }
 
         let connectionData: [String: Any] = [
             "type": type,
@@ -1207,6 +1282,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     }
     
     private func sendWriteProgress(_ progress: Float, id: String, bytesProcessed: Int64 = 0, totalBytes: Int64 = 0) {
+        guard !isShuttingDown else { return }
         guard let sink = writeStreamSink else { return }
         
         let stateData: [String: Any] = [
@@ -1220,6 +1296,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     }
 
     private func sendBluetoothState(_ state: CBManagerState) {
+        guard !isShuttingDown else { return }
         guard let sink = eventSink else { return }
 
         let stateString: String
@@ -1321,7 +1398,7 @@ class ProgressStreamHandler: NSObject, FlutterStreamHandler {
     }
 
     func onCancel(withArguments arguments: Any?) -> FlutterError? {
-        bluetoothChannel?.connectionEventSink = nil
+        bluetoothChannel?.writeStreamSink = nil
         return nil
     }
 }

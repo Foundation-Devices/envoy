@@ -26,9 +26,12 @@ func getSdCardBookmark() -> URL {
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, UIDocumentPickerDelegate, FlutterStreamHandler {
-    
+
     // tiny hidden textfield used to prevent screenshots (original idea kept)
     let secureTextField = UITextField(frame: CGRect(x: 0, y: 0, width: 1, height: 1))
+
+    // Retain BluetoothChannel to prevent deallocation during app lifecycle
+    private var bluetoothChannel: BluetoothChannel?
     
 
     
@@ -47,9 +50,9 @@ func getSdCardBookmark() -> URL {
                                                      binaryMessenger: controller.binaryMessenger)
         
         setUpSecureScreen(window: window)
-        
-        let bluetoothChannel = BluetoothChannel(flutterController: controller)
-        
+
+        bluetoothChannel = BluetoothChannel(flutterController: controller)
+
         // --- DEBUG: Run this for keychain audit ---
         //  auditKeychainItems()
         // ----------------------------
@@ -135,7 +138,16 @@ func getSdCardBookmark() -> URL {
             
         // Bluetooth channel is already initialized in the property declaration
         
+
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+
+    override func applicationWillTerminate(_ application: UIApplication) {
+        // Clean up Bluetooth resources before app termination to prevent
+        // CoreBluetooth callbacks from firing after Flutter engine is destroyed
+        bluetoothChannel?.cleanup()
+        bluetoothChannel = nil
+        super.applicationWillTerminate(application)
     }
     
     

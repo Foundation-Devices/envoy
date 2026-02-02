@@ -8,6 +8,7 @@ import 'dart:async';
 import 'package:animations/animations.dart';
 import 'package:bluart/bluart.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
+import 'package:envoy/ble/handlers/scv_handler.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/button.dart';
@@ -51,7 +52,6 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   @override
   void initState() {
     super.initState();
-    resetOnboardingPrimeProviders();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       try {
         _connectBLE();
@@ -81,6 +81,11 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   }
 
   Future<void> _connectBLE() async {
+    // User scanned XID from outside onboarding scanner, and connected QL link
+    if (BluetoothManager().bleOnboardHandler.pairingDone) {
+      kPrint("Already connected to Prime, skipping connection step.");
+      return;
+    }
     try {
       if (mounted) {
         setState(() {
@@ -93,6 +98,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
 
       if (primeXid != null) {
         try {
+          resetOnboardingPrimeProviders();
           final pairResult = await BluetoothManager().pair(primeXid!);
           if (pairResult == false) {
             throw Exception("Pairing failed");
@@ -102,28 +108,12 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
           setState(() {
             canPop = true;
           });
-          // await bleStepNotifier.updateStep(
-          //     "Unable to pair", EnvoyStepState.ERROR);
           return;
         }
       }
-      // await bleStepNotifier.updateStep(
-      //     "Connecting to Prime", EnvoyStepState.LOADING);
       setState(() {
         device = BleDevice(id: id, name: "Passport Prime", connected: true);
       });
-      await Future.delayed(const Duration(milliseconds: 200));
-      // await bleStepNotifier.updateStep(
-      //     S().onboarding_connectionIntro_connectedToPrime,
-      //     EnvoyStepState.FINISHED);
-
-      await Future.delayed(const Duration(milliseconds: 1000));
-      //
-      // await ref.read(deviceSecurityProvider.notifier).updateStep(
-      //     S().onboarding_connectionIntro_checkingDeviceSecurity,
-      //     EnvoyStepState.LOADING);
-      //
-      // await BluetoothManager().sendSecurityChallengeRequest();
     } catch (e) {
       kPrint(e);
     }
@@ -239,8 +229,8 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
     );
   }
 
-  Widget mainWidget(
-      StepModel deviceCheck, StepModel firmWareCheck, BuildContext context) {
+  Widget mainWidget(SecurityStepModel deviceCheck, StepModel firmWareCheck,
+      BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
           vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium1),
@@ -286,39 +276,55 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
             );
           })),
           if (deviceCheck.state == EnvoyStepState.ERROR)
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  S().onboarding_connectionIntroError_content,
-                  style: EnvoyTypography.body.copyWith(
-                    color: EnvoyColors.copperLight500,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.medium1),
-                  child: EnvoyButton(
-                    onTap: () {
-                      context.go("/");
-                    },
-                    label: S().onboarding_connectionIntroError_exitSetup,
-                    type: ButtonType.secondary,
-                  ),
-                ),
-                EnvoyButton(
-                  onTap: () {
-                    launchUrl(Uri.parse(
-                        "https://community.foundation.xyz/c/passport-prime/12"));
-                  },
-                  label: S().common_button_contactSupport,
-                  type: ButtonType.primary,
-                ),
-              ],
-            ),
+            _buildErrorContent(deviceCheck, context),
         ],
       ),
+    );
+  }
+
+  Widget _buildErrorContent(
+      SecurityStepModel deviceCheck, BuildContext context) {
+    final isNetworkError = deviceCheck.errorType == ScvErrorType.networkError;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          isNetworkError
+              ? S().onboarding_connectionIntroErrorInternet_content
+              : S().onboarding_connectionIntroError_content,
+          style: EnvoyTypography.body.copyWith(
+            color: EnvoyColors.copperLight500,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
+          child: EnvoyButton(
+            onTap: () {
+              context.go("/");
+            },
+            label: S().onboarding_connectionIntroError_exitSetup,
+            type: ButtonType.secondary,
+          ),
+        ),
+        EnvoyButton(
+          onTap: () {
+            if (isNetworkError) {
+              // Retry the security check
+              BluetoothManager().scvAccountHandler.sendSecurityChallenge();
+            } else {
+              // Contact support for verification failure
+              launchUrl(Uri.parse(
+                  "https://community.foundation.xyz/c/passport-prime/12"));
+            }
+          },
+          label: isNetworkError
+              ? S().common_button_retry
+              : S().common_button_contactSupport,
+          type: ButtonType.primary,
+        ),
+      ],
     );
   }
 }
