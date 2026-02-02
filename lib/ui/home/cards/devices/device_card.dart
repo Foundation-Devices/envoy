@@ -356,7 +356,6 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                           Devices().renameDevice(
                               widget.device, textEntry.enteredText);
                           Navigator.pop(context);
-                          context.go(ROUTE_DEVICES);
                         },
                       ),
                     ],
