@@ -44,8 +44,6 @@ appId: com.foundationdevices.envoy
 - tapOn:
     id: envoy_icon_chevron_left
 
-- tapOn: 12rY gz41 4HBX dhhK 72Bk R9VH ZSU2 3dqq G7
-
 # delete current address
 - longPressOn: Backspace
 
@@ -62,9 +60,6 @@ appId: com.foundationdevices.envoy
 
 - tapOn:
     id: envoy_icon_chevron_left
-
-- tapOn: 3BY1 9nUK CAkr nzrg RezJ oekG v4AF zsTs 2z
-
 
 # delete current address
 - longPressOn: Backspace
@@ -83,9 +78,6 @@ appId: com.foundationdevices.envoy
 - tapOn:
     id: envoy_icon_chevron_left
 
-- tapOn: bc1q hrnu cvul 769y ld6q 09m8 skwk p6zr ecxh c00j cw
-
-
 # delete current address
 - longPressOn: Backspace
 
@@ -103,14 +95,16 @@ appId: com.foundationdevices.envoy
 - tapOn:
     id: envoy_icon_chevron_left
 
-- tapOn: bc1p gqnx zknh zyyp gslh cevt 96cn ry4j karv 5gqp 560a 95uv 6mzf 4x7s 0r67 mm
-
 # delete current address
 - longPressOn: Backspace
 
 # <Send to River all caps address> test
 
 - inputText: "BC1Q4ZE0W0A0MUVXS6NYYF6QE4JNF008KS8U0RH4KQ"
+
+- tapOn: Back
+
+- tapOn: Confirm
 
 - assertVisible: |-
     Check Transaction Details
