@@ -958,7 +958,9 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                     icon: EnvoyIcons.list,
                     onTap: () {
                       navigator.pop();
-                      // TODO
+                      HomePageState.of(context)?.toggleOptions();
+                      context.go(ROUTE_ACCOUNT_ADDRESSES,
+                          extra: widget.account.id);
                     },
                   ),
                   _MenuItem(

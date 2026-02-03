@@ -8,6 +8,7 @@ import 'package:animations/animations.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
 import 'package:envoy/ui/home/cards/accounts/address_card.dart';
+import 'package:envoy/ui/home/cards/accounts/address_explorer_card.dart';
 import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
@@ -62,6 +63,9 @@ const ROUTE_ACCOUNT_RECEIVE = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_RECEIVE';
 
 const _ACCOUNT_DESCRIPTOR = 'desc';
 const ROUTE_ACCOUNT_DESCRIPTOR = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_DESCRIPTOR';
+
+const _ACCOUNT_ADDRESSES = 'addresses';
+const ROUTE_ACCOUNT_ADDRESSES = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_ADDRESSES';
 
 const _ACCOUNT_SEND = 'send';
 const ROUTE_ACCOUNT_SEND = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_SEND';
@@ -277,6 +281,27 @@ final accountsRouter = StatefulShellBranch(
                       }
                       return wrapWithEnvoyPageAnimation(
                           child: DescriptorCard(account));
+                    } catch (e) {
+                      return wrapWithEnvoyPageAnimation(
+                          child: Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Center(child: Text("Account not found")),
+                      ));
+                    }
+                  },
+                ),
+                GoRoute(
+                  path: _ACCOUNT_ADDRESSES,
+                  pageBuilder: (context, state) {
+                    EnvoyAccount? account;
+                    try {
+                      account = NgAccountManager()
+                          .getAccountById(state.extra as String);
+                      if (account == null) {
+                        throw Exception("Account not found");
+                      }
+                      return wrapWithEnvoyPageAnimation(
+                          child: AddressExplorerCard(account));
                     } catch (e) {
                       return wrapWithEnvoyPageAnimation(
                           child: Container(
