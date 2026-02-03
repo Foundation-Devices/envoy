@@ -540,7 +540,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       return;
     }
     //TODO: support multi device
-    if (Devices().getPrimeDevices.first.onboardingComplete) {
+    if (!Devices().getPrimeDevices.first.onboardingComplete) {
       return;
     }
     kPrint(
