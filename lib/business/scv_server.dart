@@ -32,6 +32,15 @@ class ScvServer {
   static HttpTor http = HttpTor();
   static String serverAddress = "https://validate.foundation.xyz";
   static String primeSecurityCheckUrl = "https://security-check.foundation.xyz";
+  static String primeSecurityCheckOnion =
+      "http://rmaxv6sivzvw2agnnl3uuyukrkgqjqsnudlq75tbqj5m6hmej4ybp2ad.onion";
+
+  static String get primeSecurityCheckBaseUrl {
+    if (Settings().torEnabled()) {
+      return primeSecurityCheckOnion;
+    }
+    return primeSecurityCheckUrl;
+  }
 
   final LocalStorage _ls = LocalStorage();
   static const String SCV_CHALLENGE_PREFS = "scv_challenge";
@@ -135,7 +144,7 @@ class ScvServer {
 
   Future<ChallengeRequest?> getPrimeChallenge() async {
     try {
-      final response = await http.get('$primeSecurityCheckUrl/challenge');
+      final response = await http.get('$primeSecurityCheckBaseUrl/challenge');
 
       kPrint("response status code: ${response.statusCode}");
       if (response.statusCode != 200) {
@@ -163,7 +172,7 @@ class ScvServer {
       return ScvVerificationResult.success;
     }
 
-    final uri = '$primeSecurityCheckUrl/verify';
+    final uri = '$primeSecurityCheckBaseUrl/verify';
     final dataStr = data.map((d) => d.toString()).join(",");
 
     try {

@@ -13,7 +13,6 @@ import 'package:envoy/ble/handlers/timezone_handler.dart' show TimeZoneHandler;
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/prime_device.dart';
-import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
