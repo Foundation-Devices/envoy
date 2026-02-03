@@ -318,7 +318,7 @@ class PrimaryAmountWidget extends StatelessWidget {
           Semantics(
             container: true,
             identifier: semanticSuffix != null
-                ? 'primary_amount #$semanticSuffix'
+                ? 'primary_amount $semanticSuffix'
                 : 'primary_amount_value',
             child: RichText(
               textScaler: TextScaler.linear(textScaleFactor),
@@ -435,7 +435,7 @@ class SecondaryAmountWidget extends StatelessWidget {
           Semantics(
             container: true,
             identifier: semanticSuffix != null
-                ? 'secondary_amount #$semanticSuffix'
+                ? 'secondary_amount $semanticSuffix'
                 : 'secondary_amount_value',
             child: RichText(
               textScaler: TextScaler.linear(textScaleFactor),

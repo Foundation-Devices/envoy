@@ -16,11 +16,33 @@ appId: com.foundationdevices.envoy
 
 - tapOn: Send
 
-# change to sats
+# cycle to sats if not already there
+# cycle order: sats → fiat → btc → sats
+
+# if on btc, tap once to get to sats
+- runFlow:
+    when:
+      visible:
+        id: "amount_display btc"
+    commands:
+      - tapOn:
+          id: "amount_display btc"
+
+# if on fiat, tap twice to get to sats (fiat → btc → sats)
+- runFlow:
+    when:
+      visible:
+        id: "amount_display fiat"
+    commands:
+      - tapOn:
+          id: "amount_display fiat"
+      - tapOn:
+          id: "amount_display btc"
+
+# refresh send
 - tapOn:
-    id: envoy_icon_sats
-- tapOn:
-    id: envoy_icon_btc
+    id: hamburger_menu
+- tapOn: Send
 
 # enter amount
 - tapOn: "1"
@@ -112,11 +134,11 @@ appId: com.foundationdevices.envoy
 
 # Assert amounts are non-zero
 - assertVisible:
-    id: "primary_amount #Amount"
+    id: "primary_amount Amount"
     text: "[1-9][0-9,]*"
 - assertVisible:
-    id: "primary_amount #Fee"
+    id: "primary_amount Fee"
     text: "[1-9][0-9,]*"
 - assertVisible:
-    id: "primary_amount #Total"
+    id: "primary_amount Total"
     text: "[1-9][0-9,]*"

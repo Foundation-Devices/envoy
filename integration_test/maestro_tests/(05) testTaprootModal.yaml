@@ -12,7 +12,6 @@ appId: com.foundationdevices.envoy
     visible: "ACCOUNTS"
     timeout: 720000  # wait up to 12 min for it to appear
 
-
 - tapOn:
     id: hamburger_menu
 
@@ -22,10 +21,32 @@ appId: com.foundationdevices.envoy
 
 - tapOn: Advanced
 
+# turn off Taproot if it's on
+- runFlow:
+    when:
+      visible:
+        id: "Taproot Toggle-true"
+    commands:
+      - tapOn:
+          id: "Taproot Toggle-true"
+      - extendedWaitUntil:
+          visible:
+            id: "PopUp Primary Button"
+          timeout: 60000
+      - tapOn:
+          id: "PopUp Primary Button"
+
+# refresh screen
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
 # check that the Taproot switch is off
 - assertVisible:
     id: Taproot Toggle-false
-
 
 # go back home
 - tapOn:

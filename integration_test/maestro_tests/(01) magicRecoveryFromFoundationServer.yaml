@@ -5,18 +5,19 @@
 appId: com.foundationdevices.envoy
 ---
 - launchApp:
-    clearState: false
+      clearState: false
 
 # Go to Advanced
 - tapOn: Advanced
 
 # Turn off Magic Backup
 - tapOn: Magic Backup Toggle
-- tapOn: Continue
+- tapOn:
+      id: PopUp Secondary Button
 - tapOn: Back
 - tapOn: |-
-    Create a 
-    Mobile Wallet
+      Create a 
+      Mobile Wallet
 - tapOn: Recover
 
 
@@ -57,8 +58,8 @@ appId: com.foundationdevices.envoy
 - tapOn: Back
 
 - extendedWaitUntil:
-    visible: Back button - Seed
-    timeout: 5000
+      visible: Back button - Seed
+      timeout: 5000
 
 # back to seed menu
 - tapOn: Back button - Seed
@@ -161,21 +162,24 @@ appId: com.foundationdevices.envoy
 - tapOn: Done
 
 - extendedWaitUntil:
-    visible: "Magic Backup Detected"
-    timeout: 10000
-- tapOn: Ignore
+      visible: "Magic Backup Detected"
+      timeout: 10000
+
+# ignore button
+- tapOn:
+      id: PopUp Secondary Button
 
 - extendedWaitUntil:
-    visible: "Import Envoy Backup File"
-    timeout: 10000
+      visible: "Import Envoy Backup File"
+      timeout: 10000
 
 # Press on the icon to load backup file
 - longPressOn: |-
-    Import Backup Image
+      Import Backup Image
 
 - extendedWaitUntil:
-    visible: "Your Mobile Wallet Is Ready"
-    timeout: 15000
+      visible: "Your Mobile Wallet Is Ready"
+      timeout: 15000
 - tapOn: Continue
 
 # Make sure you are in Home

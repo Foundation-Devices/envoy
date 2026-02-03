@@ -47,6 +47,7 @@ appId: com.foundationdevices.envoy
     SETTINGS
     SETTINGS
 
+# leave it to true
 - assertVisible:
     id: Show Fiat Toggle-true
 
@@ -59,22 +60,50 @@ appId: com.foundationdevices.envoy
 - tapOn: GH TEST ACC (#1)
 - tapOn: Send
 
-# check if the numbers are in sats
+# cycle to sats if not already there
+# cycle order: sats → fiat → btc → sats
+
+# if on btc, tap once to get to sats
+- runFlow:
+    when:
+      visible:
+        id: "amount_display btc"
+    commands:
+      - tapOn:
+          id: "amount_display btc"
+
+# if on fiat, tap twice to get to sats (fiat → btc → sats)
+- runFlow:
+    when:
+      visible:
+        id: "amount_display fiat"
+    commands:
+      - tapOn:
+          id: "amount_display fiat"
+      - tapOn:
+          id: "amount_display btc"
+
+# refresh send
+- tapOn:
+    id: hamburger_menu
+- tapOn: Send
+
+# now assert it's sats
 - assertVisible:
-    id: envoy_icon_sats
+    id: "amount_display sats"
 
 # go back
 - tapOn:
     id: hamburger_menu
 - tapOn: Send
 
-# check if the numbers are in sats
+# check if the numbers are still in sats after returning
 - assertVisible:
-    id: envoy_icon_sats
+    id: amount_display sats
 
 # change to fiat
 - tapOn:
-    id: envoy_icon_sats
+    id: amount_display sats
 
 # go back
 - tapOn:
@@ -83,11 +112,11 @@ appId: com.foundationdevices.envoy
 
 # check if you are entering dollars
 - assertVisible:
-    text: $
+    id: amount_display fiat
 
 # change to btc
-- assertNotVisible:
-    id: envoy_icon_sats
+- tapOn:
+    id: amount_display fiat
 
 # go back
 - tapOn:
@@ -96,16 +125,21 @@ appId: com.foundationdevices.envoy
 
 #  check if the unit is BTC
 - assertVisible:
-    id: envoy_icon_btc
+    id: amount_display btc
+
+# change to sats so you can enter with test
+- tapOn:
+    id: amount_display btc
+
+# refresh send
+- tapOn:
+    id: hamburger_menu
+- tapOn: Send
 
 # With the unit in btc, paste a valid address, enter a valid amount, tap Confirm
 - tapOn: Enter address
 - inputText: "bc1qcjwyecualcytzgud5ruwrj642fng4tvp8nsgr2"
 - tapOn: Back
-
-# change to sats so you can enter with test
-- tapOn:
-    id: envoy_icon_btc
 
 # enter amount
 - tapOn: "5"
@@ -114,10 +148,9 @@ appId: com.foundationdevices.envoy
 
 # change to btc
 - tapOn:
-    id: envoy_icon_btc
+    id: amount_display sats
 - tapOn:
-    id: envoy_icon_sats
-
+    id: amount_display fiat
 
 # go to staging
 - tapOn: Confirm
@@ -132,5 +165,3 @@ appId: com.foundationdevices.envoy
 # check if the unit in the Staging is BTC
 - assertVisible:
     id: envoy_icon_btc
-    index: 1
-

@@ -72,9 +72,34 @@ appId: com.foundationdevices.envoy
     index: 1
 # check Send
 - tapOn: Send
-# change to sats
+
+# cycle to sats if not already there
+# cycle order: sats → fiat → btc → sats
+
+# if on btc, tap once to get to sats
+- runFlow:
+    when:
+      visible:
+        id: "amount_display btc"
+    commands:
+      - tapOn:
+          id: "amount_display btc"
+
+# if on fiat, tap twice to get to sats (fiat → btc → sats)
+- runFlow:
+    when:
+      visible:
+        id: "amount_display fiat"
+    commands:
+      - tapOn:
+          id: "amount_display fiat"
+      - tapOn:
+          id: "amount_display btc"
+
+# refresh send
 - tapOn:
-    id: envoy_icon_btc
+    id: hamburger_menu
+- tapOn: Send
 
 - tapOn: "5"
 - tapOn: "6"
@@ -82,7 +107,8 @@ appId: com.foundationdevices.envoy
 
 # now change to fiat
 - tapOn:
-    id: envoy_icon_sats
+    id: amount_display sats
+
 
 #  With the unit in fiat, paste a valid address, enter a valid amount, tap Confirm
 - tapOn: Enter address
