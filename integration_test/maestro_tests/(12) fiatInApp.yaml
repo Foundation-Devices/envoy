@@ -80,6 +80,7 @@ appId: com.foundationdevices.envoy
 - tapOn: "6"
 - tapOn: "7"
 
+# now change to fiat
 - tapOn:
     id: envoy_icon_sats
 

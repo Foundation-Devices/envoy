@@ -29,6 +29,7 @@ class AmountWidget extends StatelessWidget {
   final bool alignToEnd;
   final String locale;
   final bool millionaireMode;
+  final String? semanticSuffix;
 
   const AmountWidget({
     super.key,
@@ -44,6 +45,7 @@ class AmountWidget extends StatelessWidget {
     this.alignToEnd = true,
     required this.locale,
     this.millionaireMode = true,
+    this.semanticSuffix,
   });
 
   @override
@@ -86,7 +88,8 @@ class AmountWidget extends StatelessWidget {
                 envoyAccount: envoyAccount,
                 locale: locale,
                 textScaleFactor: textScaleFactor,
-                millionaireMode: millionaireMode),
+                millionaireMode: millionaireMode,
+                semanticSuffix: semanticSuffix),
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   badgeColor: badgeColor,
@@ -121,7 +124,8 @@ class AmountWidget extends StatelessWidget {
                 envoyAccount: envoyAccount,
                 locale: locale,
                 textScaleFactor: textScaleFactor,
-                millionaireMode: millionaireMode),
+                millionaireMode: millionaireMode,
+                semanticSuffix: semanticSuffix),
             if (secondaryUnit != null)
               Padding(
                 padding: const EdgeInsets.only(top: EnvoySpacing.xs),
@@ -160,7 +164,8 @@ class AmountWidget extends StatelessWidget {
                 envoyAccount: envoyAccount,
                 locale: locale,
                 textScaleFactor: textScaleFactor,
-                millionaireMode: millionaireMode),
+                millionaireMode: millionaireMode,
+                semanticSuffix: semanticSuffix),
             if (secondaryUnit != null)
               Padding(
                 padding: const EdgeInsets.only(left: EnvoySpacing.small),
@@ -196,7 +201,8 @@ class AmountWidget extends StatelessWidget {
             locale: locale,
             sendScreen: true,
             textScaleFactor: textScaleFactor,
-            millionaireMode: millionaireMode);
+            millionaireMode: millionaireMode,
+            semanticSuffix: semanticSuffix);
     }
   }
 }
@@ -218,6 +224,7 @@ class PrimaryAmountWidget extends StatelessWidget {
   final String locale;
   final double textScaleFactor;
   final bool millionaireMode;
+  final String? semanticSuffix;
 
   final EnvoyIcons iconBtc = EnvoyIcons.btc;
   final EnvoyIcons iconSat = EnvoyIcons.sats;
@@ -239,7 +246,8 @@ class PrimaryAmountWidget extends StatelessWidget {
       this.envoyAccount,
       this.sendScreen = false,
       this.textScaleFactor = 1,
-      required this.millionaireMode});
+      required this.millionaireMode,
+      this.semanticSuffix});
 
   @override
   Widget build(BuildContext context) {
@@ -309,7 +317,9 @@ class PrimaryAmountWidget extends StatelessWidget {
           ),
           Semantics(
             container: true,
-            identifier: 'primary_amount_value',
+            identifier: semanticSuffix != null
+                ? 'primary_amount #$semanticSuffix'
+                : 'primary_amount_value',
             child: RichText(
               textScaler: TextScaler.linear(textScaleFactor),
               text: TextSpan(
@@ -353,6 +363,7 @@ class SecondaryAmountWidget extends StatelessWidget {
   final EnvoyIcons iconBtc = EnvoyIcons.btc;
   final double textScaleFactor;
   final bool millionaireMode;
+  final String? semanticSuffix;
 
   const SecondaryAmountWidget(
       {super.key,
@@ -368,7 +379,8 @@ class SecondaryAmountWidget extends StatelessWidget {
       this.badgeColor,
       this.envoyAccount,
       this.textScaleFactor = 1,
-      required this.millionaireMode});
+      required this.millionaireMode,
+      this.semanticSuffix});
 
   @override
   Widget build(BuildContext context) {
@@ -422,7 +434,9 @@ class SecondaryAmountWidget extends StatelessWidget {
           ),
           Semantics(
             container: true,
-            identifier: 'secondary_amount_value',
+            identifier: semanticSuffix != null
+                ? 'secondary_amount #$semanticSuffix'
+                : 'secondary_amount_value',
             child: RichText(
               textScaler: TextScaler.linear(textScaleFactor),
               text: TextSpan(
