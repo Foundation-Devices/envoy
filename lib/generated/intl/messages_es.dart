@@ -2272,6 +2272,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_passpportSelectCamera_tapHere":
             MessageLookupByLibrary.simpleMessage("Pulsa aquí"),
+        "onboarding_primeIntroError_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Unable to connect to the internet. Please check your connection .",
+        ),
         "onboarding_primeIntro_content": MessageLookupByLibrary.simpleMessage(
           "Enhorabuena por dar el primer paso para asegurar toda tu vida digital.\n\nConfigurar tu Passport Prime sólo te llevará entre 5 y 10 minutos. ¡Coge tu dispositivo y empecemos!",
         ),

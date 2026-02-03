@@ -58,9 +58,9 @@ class S {
 
   // skipped getter for the 'FW_Version_No.' key
 
-  /// `6:15`
+  /// `Continue`
   String get _ {
-    return Intl.message('6:15', name: '_', desc: '', args: []);
+    return Intl.message('Continue', name: '_', desc: '', args: []);
   }
 
   /// `App Version`
@@ -7322,6 +7322,16 @@ class S {
     return Intl.message(
       'Tap here',
       name: 'onboarding_passpportSelectCamera_tapHere',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to connect to the internet. Please check your connection .`
+  String get onboarding_primeIntroError_content {
+    return Intl.message(
+      'Unable to connect to the internet. Please check your connection .',
+      name: 'onboarding_primeIntroError_content',
       desc: '',
       args: [],
     );

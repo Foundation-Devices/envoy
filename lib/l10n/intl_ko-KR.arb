@@ -1,7 +1,7 @@
 {
   ":": ":",
   "FW_Version_No.": "Firmware v2.0.3",
-  "_": "6:15",
+  "_": "Continue",
   "about_appVersion": "App Version",
   "about_openSourceLicences": "Open Source Licences",
   "about_privacyPolicy": "Privacy Policy",
@@ -742,6 +742,7 @@
   "onboarding_modalBluetoothUnableConnect_header": "Unable to Connect",
   "onboarding_passpportSelectCamera_sub235VersionAlert": "Are you setting up a Passport Core on firmware v2.3.5 or earlier?",
   "onboarding_passpportSelectCamera_tapHere": "Tap here",
+  "onboarding_primeIntroError_content": "Unable to connect to the internet. Please check your connection .",
   "onboarding_primeIntro_content": "Congratulations on taking the first step to secure your entire digital life.\n\nSetting up your Passport Prime will take only 5-10 minutes. Pick up your device and let’s get started!",
   "onboarding_primeIntro_header": "Set Up Your Passport Prime",
   "onboarding_sovereignUserMobileIntro_content1": "Also known as a “hot wallet.” Spending from this wallet requires only your phone for authorization.",

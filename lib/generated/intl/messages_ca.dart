@@ -69,7 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("6:15"),
+        "_": MessageLookupByLibrary.simpleMessage("Continue"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage(
           "Versió de l\'aplicació",
         ),
@@ -2259,6 +2259,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_passpportSelectCamera_tapHere":
             MessageLookupByLibrary.simpleMessage("Tap here"),
+        "onboarding_primeIntroError_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Unable to connect to the internet. Please check your connection .",
+        ),
         "onboarding_primeIntro_content": MessageLookupByLibrary.simpleMessage(
           "Congratulations on taking the first step to secure your entire digital life.\n\nSetting up your Passport Prime will take only 5-10 minutes. Pick up your device and let’s get started!",
         ),

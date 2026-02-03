@@ -742,6 +742,7 @@
   "onboarding_modalBluetoothUnableConnect_header": "Unable to Connect",
   "onboarding_passpportSelectCamera_sub235VersionAlert": "¿Quieres inicializar una Passport Core en la versión 2.3.5 o anterior?",
   "onboarding_passpportSelectCamera_tapHere": "Pulsa aquí",
+  "onboarding_primeIntroError_content": "Unable to connect to the internet. Please check your connection .",
   "onboarding_primeIntro_content": "Enhorabuena por dar el primer paso para asegurar toda tu vida digital.\n\nConfigurar tu Passport Prime sólo te llevará entre 5 y 10 minutos. ¡Coge tu dispositivo y empecemos!",
   "onboarding_primeIntro_header": "Configura tu Passport Prime",
   "onboarding_sovereignUserMobileIntro_content1": "También conocida como \"cartera caliente\". Para poder gastar de esta cartera, solo se requiere la autorización del teléfono.",
