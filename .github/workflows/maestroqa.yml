@@ -29,6 +29,9 @@ jobs:
 
       - name: Check connected Android device
         run: |
+          export ANDROID_HOME="$HOME/Library/Android/sdk"
+          export PATH="$ANDROID_HOME/platform-tools:$PATH"
+
           echo "Checking for connected Android devices..."
           adb devices
           DEVICE_COUNT=$(adb devices | grep -w "device" | wc -l)
