@@ -42,7 +42,10 @@ jobs:
           echo "Found $DEVICE_COUNT device(s)"
 
       - name: Build Android FFI
-        run: ./scripts/build_ffi_android.sh
+        run: |
+          export ANDROID_HOME="$HOME/Library/Android/sdk"
+          export ANDROID_NDK_ROOT="$ANDROID_HOME/ndk/27.0.12077973"
+          ./scripts/build_ffi_android.sh
 
       - name: Run Maestro Android Tests (builds and installs APK)
         run: just maestroqa
