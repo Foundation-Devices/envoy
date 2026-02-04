@@ -88,18 +88,15 @@ run_single_test() {
 
     echo -e "${CYAN}▶ Test:${NC} ${BOLD}$test_name${NC}"
 
-    # Stream output and format in real-time using process substitution
+    # Stream output and print only completed commands
     local EXIT_CODE=0
     while IFS= read -r line; do
-        if [[ "$line" == *">"* && "$line" != *"✓"* && "$line" != *"✗"* ]]; then
-            cmd=$(echo "$line" | sed 's/.*> //')
-            printf "\r\033[K  ${YELLOW}⏳${NC} %s" "$cmd"
-        elif [[ "$line" == *"✓"* ]]; then
+        if [[ "$line" == *"✓"* ]]; then
             cmd=$(echo "$line" | sed 's/.*✓ //')
-            printf "\r\033[K  ${GREEN}✓${NC} %s\n" "$cmd"
+            echo -e "  ${GREEN}✓${NC} $cmd"
         elif [[ "$line" == *"✗"* ]]; then
             cmd=$(echo "$line" | sed 's/.*✗ //')
-            printf "\r\033[K  ${RED}✗${NC} %s\n" "$cmd"
+            echo -e "  ${RED}✗${NC} $cmd"
         fi
     done < <(maestro --device "$DEVICE_ID" test "$test_file" 2>&1; echo "EXIT_CODE:$?")
 
@@ -108,7 +105,6 @@ run_single_test() {
         EXIT_CODE="${line#EXIT_CODE:}"
     fi
 
-    echo ""
     if [ "$EXIT_CODE" -eq 0 ]; then
         echo -e "${GREEN}✓ PASSED: $test_name${NC}"
         ((PASSED++))
@@ -117,6 +113,7 @@ run_single_test() {
         ((FAILED++))
         FAILED_TESTS+=("$test_name")
     fi
+    echo ""
 }
 
 # Check if a specific test was provided
