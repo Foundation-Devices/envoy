@@ -142,6 +142,19 @@ class ScvServer {
     }
   }
 
+  /// Checks if the Prime security check server is reachable.
+  /// Returns true if we can connect to the server, false otherwise.
+  Future<bool> canReachPrimeServer() async {
+    try {
+      final response = await http.get('$primeSecurityCheckBaseUrl/challenge');
+      kPrint("connectivity check status code: ${response.statusCode}");
+      return response.statusCode == 200;
+    } catch (e) {
+      kPrint("connectivity check failed: $e");
+      return false;
+    }
+  }
+
   Future<ChallengeRequest?> getPrimeChallenge() async {
     try {
       final response = await http.get('$primeSecurityCheckBaseUrl/challenge');
