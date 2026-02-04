@@ -29,6 +29,7 @@ esac
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_tests"
+VIDEO_OUTPUT_DIR="$PROJECT_ROOT/maestro_videos"
 
 DEVICE_ID=""
 TEST_ARG=""
@@ -174,6 +175,12 @@ echo -e "${GREEN}✓${NC} Platform: $PLATFORM"
 echo -e "${GREEN}✓${NC} Tests directory: $TESTS_DIR"
 
 # ------------------------------------------------------------
+# Video Output Directory
+# ------------------------------------------------------------
+mkdir -p "$VIDEO_OUTPUT_DIR"
+echo -e "${GREEN}✓${NC} Video output directory: $VIDEO_OUTPUT_DIR"
+
+# ------------------------------------------------------------
 # Device Detection
 # ------------------------------------------------------------
 if [ -z "$DEVICE_ID" ]; then
@@ -219,20 +226,26 @@ FAILED_TESTS=()
 run_single_test() {
     local test_file="$1"
     local test_name
-    test_name="$(basename "$test_file")"
+    test_name="$(basename "$test_file" .yaml)"
+    local timestamp
+    timestamp="$(date +%Y%m%d-%H%M%S)"
+    local video_file="$VIDEO_OUTPUT_DIR/${test_name}-${timestamp}.mp4"
 
     print_test_start "$test_name"
 
-    OUTPUT=$(maestro --device "$DEVICE_ID" test "$test_file" 2>&1)
+    OUTPUT=$(maestro record --device "$DEVICE_ID" "$test_file" --output "$video_file" 2>&1)
     EXIT_CODE=$?
 
     if [ $EXIT_CODE -eq 0 ]; then
         print_test_success "$test_name"
         ((PASSED++))
+        # Remove video for passed tests to save space
+        rm -f "$video_file"
     else
         print_test_failure "$test_name" "$OUTPUT"
         ((FAILED++))
         FAILED_TESTS+=("$test_name")
+        echo -e "${YELLOW}Video saved:${NC} $video_file"
     fi
 }
 
