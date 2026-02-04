@@ -246,6 +246,9 @@ if [ -n "$TEST_ARG" ]; then
 else
     echo ""
     echo -e "${YELLOW}Running all tests...${NC}"
+    echo -e "${CYAN}DEBUG: Test files found:${NC}"
+    ls -1 "$TESTS_DIR"/*.yaml 2>&1 || echo "No files found!"
+    echo ""
     for test_file in "$TESTS_DIR"/*.yaml; do
         [ -f "$test_file" ] && run_single_test "$test_file"
     done
@@ -267,11 +270,11 @@ fi
 # ------------------------------------------------------------
 # Cleanup
 # ------------------------------------------------------------
-#echo -e "${YELLOW}Uninstalling app...${NC}"
-#$ADB_CMD -s "$DEVICE_ID" uninstall com.foundationdevices.envoy >/dev/null 2>&1 || true
-#
-#if [ $FAILED -gt 0 ]; then
-#    exit 1
-#fi
-#
-#exit 0
+echo -e "${YELLOW}Uninstalling app...${NC}"
+$ADB_CMD -s "$DEVICE_ID" uninstall com.foundationdevices.envoy >/dev/null 2>&1 || true
+
+if [ $FAILED -gt 0 ]; then
+    exit 1
+fi
+
+exit 0
