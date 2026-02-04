@@ -221,34 +221,19 @@ run_single_test() {
     local test_name
     test_name="$(basename "$test_file")"
 
-    echo -e "${CYAN}▶ Test:${NC} ${BOLD}$test_name${NC}"
+    print_test_start "$test_name"
 
-    # Stream output and print only completed commands
-    local EXIT_CODE=0
-    while IFS= read -r line; do
-        if [[ "$line" == *"✓"* ]]; then
-            cmd=$(echo "$line" | sed 's/.*✓ //')
-            echo -e "  ${GREEN}✓${NC} $cmd"
-        elif [[ "$line" == *"✗"* ]]; then
-            cmd=$(echo "$line" | sed 's/.*✗ //')
-            echo -e "  ${RED}✗${NC} $cmd"
-        fi
-    done < <(maestro --device "$DEVICE_ID" test "$test_file" 2>&1; echo "EXIT_CODE:$?")
+    OUTPUT=$(maestro --device "$DEVICE_ID" test "$test_file" 2>&1)
+    EXIT_CODE=$?
 
-    # Extract exit code from last line
-    if [[ "$line" == "EXIT_CODE:"* ]]; then
-        EXIT_CODE="${line#EXIT_CODE:}"
-    fi
-
-    if [ "$EXIT_CODE" -eq 0 ]; then
-        echo -e "${GREEN}✓ PASSED: $test_name${NC}"
+    if [ $EXIT_CODE -eq 0 ]; then
+        print_test_success "$test_name"
         ((PASSED++))
     else
-        echo -e "${RED}✗ FAILED: $test_name${NC}"
+        print_test_failure "$test_name" "$OUTPUT"
         ((FAILED++))
         FAILED_TESTS+=("$test_name")
     fi
-    echo ""
 }
 
 if [ -n "$TEST_ARG" ]; then

@@ -17,8 +17,6 @@ TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_tests"
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-CYAN='\033[0;36m'
-BOLD='\033[1m'
 NC='\033[0m' # No Color
 
 echo -e "${GREEN}=== Envoy Maestro iOS Test Runner ===${NC}"
@@ -86,34 +84,20 @@ run_single_test() {
     local test_name
     test_name="$(basename "$test_file")"
 
-    echo -e "${CYAN}▶ Test:${NC} ${BOLD}$test_name${NC}"
+    echo -e "${YELLOW}Running: $test_name${NC}"
 
-    # Stream output and print only completed commands
-    local EXIT_CODE=0
-    while IFS= read -r line; do
-        if [[ "$line" == *"✓"* ]]; then
-            cmd=$(echo "$line" | sed 's/.*✓ //')
-            echo -e "  ${GREEN}✓${NC} $cmd"
-        elif [[ "$line" == *"✗"* ]]; then
-            cmd=$(echo "$line" | sed 's/.*✗ //')
-            echo -e "  ${RED}✗${NC} $cmd"
-        fi
-    done < <(maestro --device "$DEVICE_ID" test "$test_file" 2>&1; echo "EXIT_CODE:$?")
+    OUTPUT=$(maestro --device "$DEVICE_ID" test "$test_file" 2>&1)
+    EXIT_CODE=$?
 
-    # Extract exit code from last line
-    if [[ "$line" == "EXIT_CODE:"* ]]; then
-        EXIT_CODE="${line#EXIT_CODE:}"
-    fi
-
-    if [ "$EXIT_CODE" -eq 0 ]; then
+    if [ $EXIT_CODE -eq 0 ]; then
         echo -e "${GREEN}✓ PASSED: $test_name${NC}"
         ((PASSED++))
     else
         echo -e "${RED}✗ FAILED: $test_name${NC}"
+        echo "$OUTPUT" | tail -20
         ((FAILED++))
         FAILED_TESTS+=("$test_name")
     fi
-    echo ""
 }
 
 # Check if a specific test was provided
