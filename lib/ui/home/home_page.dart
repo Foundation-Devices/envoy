@@ -681,60 +681,6 @@ class HomePageState extends ConsumerState<HomePage>
                   child: AppBackground(
                     showRadialGradient: !_backgroundShown,
                   )),
-              // Variable background
-              SafeArea(
-                child: AnimatedSwitcher(
-                    duration: _animationsDuration,
-                    child: Container(
-                      child: _backgroundShown
-                          ? BackButtonListener(
-                              onBackButtonPressed: () async {
-                                final rootNav =
-                                    Navigator.of(context, rootNavigator: true);
-
-                                // If a dialog is on top, let Navigator close it.
-                                if (rootNav.canPop()) {
-                                  return false;
-                                }
-                                return handleBackgroundBackPressed();
-                              },
-                              child: background)
-                          : Container(),
-                    )),
-              ),
-              // Tab bar
-              _backgroundShown || (modalShown || optionsShown || fullScreen)
-                  ? SizedBox.shrink()
-                  : Container(
-                      alignment: Alignment.bottomCenter,
-                      child: IgnorePointer(
-                        ignoring: _backgroundShown || modalShown || fullScreen,
-                        child: EnvoyBottomNavigation(
-                          onIndexChanged: (selectedIndex) {
-                            // ENV-2064: Prevents clunky animation when switching tabs from nested routes.
-                            widget.mainNavigationShell.goBranch(
-                                widget.mainNavigationShell.currentIndex,
-                                initialLocation: true);
-
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              widget.mainNavigationShell.goBranch(selectedIndex,
-                                  initialLocation: true);
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-              Positioned(
-                  top: shieldTop - 20,
-                  left: 0,
-                  right: 0,
-                  child: IgnorePointer(
-                      ignoring: !optionsShown,
-                      child: AnimatedOpacity(
-                          opacity: optionsShown ? 1.0 : 0.0,
-                          duration: _animationsDuration,
-                          child: AnimatedSwitcher(
-                              duration: _animationsDuration, child: options)))),
               // Shield
               AnimatedPositioned(
                 duration: _animationsDuration,
@@ -753,6 +699,55 @@ class HomePageState extends ConsumerState<HomePage>
                         ))),
                     mainWidget,
                   ],
+                ),
+              ),
+              // Tab bar - positioned AFTER Shield so it renders on top
+              _backgroundShown || (modalShown || optionsShown || fullScreen)
+                  ? SizedBox.shrink()
+                  : Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: EnvoyBottomNavigation(
+                        onIndexChanged: (selectedIndex) {
+                          // ENV-2064: Prevents clunky animation when switching tabs from nested routes.
+                          widget.mainNavigationShell.goBranch(
+                              widget.mainNavigationShell.currentIndex,
+                              initialLocation: true);
+
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            widget.mainNavigationShell
+                                .goBranch(selectedIndex, initialLocation: true);
+                          });
+                        },
+                      ),
+                    ),
+              // Options menu - positioned AFTER Shield so it renders on top
+              Positioned(
+                  top: shieldTop - 20,
+                  left: 0,
+                  right: 0,
+                  child: IgnorePointer(
+                      ignoring: !optionsShown,
+                      child: AnimatedOpacity(
+                          opacity: optionsShown ? 1.0 : 0.0,
+                          duration: _animationsDuration,
+                          child: AnimatedSwitcher(
+                              duration: _animationsDuration, child: options)))),
+              // Variable background (settings menu) - positioned AFTER Shield so it renders on top
+              IgnorePointer(
+                ignoring: !_backgroundShown,
+                child: SafeArea(
+                  child: AnimatedSwitcher(
+                      duration: _animationsDuration,
+                      child: _backgroundShown
+                          ? BackButtonListener(
+                              key: const ValueKey('settings_menu'),
+                              onBackButtonPressed: () {
+                                return handleBackgroundBackPressed();
+                              },
+                              child: background)
+                          : Container(key: const ValueKey('empty'))),
                 ),
               ),
             ],

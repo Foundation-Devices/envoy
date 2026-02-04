@@ -45,11 +45,21 @@ class EnvoyDialog extends StatelessWidget {
                 ? Align(
                     alignment:
                         Alignment.centerRight.add(const Alignment(.1, 0)),
-                    child: IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+                    child: Semantics(
+                      identifier: 'Dialog Close Button',
+                      container: true,
+                      button: true,
+                      excludeSemantics: true,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(Icons.close),
+                        ),
+                      ),
                     ),
                   )
                 : const SizedBox(),

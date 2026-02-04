@@ -78,17 +78,21 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               title: Wrap(
                 children: [SettingText(S().settings_show_fiat)],
               ),
-              trailing: SettingToggle(() => s.displayFiat() != null, (enabled) {
-                setState(() {
-                  s.setDisplayFiat(enabled ? "USD" : null); // TODO: FIGMA
-                  if (!enabled) {
-                    ref.read(appUnitProvider.notifier).state =
-                        s.displayUnitSat()
-                            ? AmountDisplayUnit.sat
-                            : AmountDisplayUnit.btc;
-                  }
-                });
-              }),
+              trailing: SettingToggle(
+                () => s.displayFiat() != null,
+                (enabled) {
+                  setState(() {
+                    s.setDisplayFiat(enabled ? "USD" : null); // TODO: FIGMA
+                    if (!enabled) {
+                      ref.read(appUnitProvider.notifier).state =
+                          s.displayUnitSat()
+                              ? AmountDisplayUnit.sat
+                              : AmountDisplayUnit.btc;
+                    }
+                  });
+                },
+                semanticsLabel: 'Show Fiat Toggle',
+              ),
             ),
           ),
           SliverToBoxAdapter(
@@ -142,7 +146,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               dense: true,
               contentPadding: const EdgeInsets.all(0),
               title: SettingText(S().settings_amount),
-              trailing: SettingToggle(s.displayUnitSat, s.setDisplayUnitSat),
+              trailing: SettingToggle(
+                s.displayUnitSat,
+                s.setDisplayUnitSat,
+                semanticsLabel: 'Display Unit Sats Toggle',
+              ),
             ),
           ),
           // SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
@@ -230,11 +238,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   children: [SettingText(S().settings_advanced_testnet)],
                 ),
                 trailing: SettingToggle(
-                    s.showTestnetAccounts, s.setShowTestnetAccounts,
-                    onEnabled: () {
-                  showEnvoyDialog(
-                      context: context, dialog: const TestnetInfoModal());
-                }),
+                  s.showTestnetAccounts,
+                  s.setShowTestnetAccounts,
+                  semanticsLabel: 'Testnet Toggle',
+                  onEnabled: () {
+                    showEnvoyDialog(
+                        context: context, dialog: const TestnetInfoModal());
+                  },
+                ),
               ),
               ListTile(
                 dense: true,
@@ -245,6 +256,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 trailing: SettingToggle(
                   s.showSignetAccounts,
                   s.setShowSignetAccounts,
+                  semanticsLabel: 'Signet Toggle',
                   onEnabled: () {
                     showEnvoyDialog(
                         context: context, dialog: const SignetInfoModal());
@@ -258,6 +270,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 trailing: SettingToggle(
                   s.taprootEnabled,
                   s.setTaprootEnabled,
+                  semanticsLabel: 'Taproot Toggle',
                   onEnabled: () async {
                     if (context.mounted) {
                       showEnvoyPopUp(
@@ -324,6 +337,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       trailing: SettingToggle(
                         s.isAllowedBuyInEnvoy,
                         s.setAllowBuyInEnvoy,
+                        semanticsLabel: 'Enable Buy Ramp Toggle',
                       ),
                     )
                   : const SizedBox.shrink(),

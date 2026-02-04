@@ -151,135 +151,163 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
         }
         break;
     }
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.85,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(EnvoySpacing.medium2),
+    return Semantics(
+      identifier: 'Envoy PopUp',
+      container: true,
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.85,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(EnvoySpacing.medium2),
+          ),
+          color: EnvoyColors.textPrimaryInverse,
         ),
-        color: EnvoyColors.textPrimaryInverse,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(EnvoySpacing.medium2),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              if (widget.showCloseButton)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        Navigator.of(context).pop();
+        child: Padding(
+          padding: const EdgeInsets.all(EnvoySpacing.medium2),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                if (widget.showCloseButton)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: EnvoySpacing.xs),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: Semantics(
+                        identifier: 'PopUp Close Button',
+                        container: true,
+                        button: true,
+                        excludeSemantics: true,
+                        child: IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                if (widget.icon != null)
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+                    child: EnvoyIcon(
+                      widget.icon!,
+                      size: EnvoyIconSize.mediumLarge,
+                      color: _color,
+                    ),
+                  ),
+                if (widget.title != null)
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                    child: Text(
+                      widget.title!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: EnvoyTypography.heading,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                if (widget.content != null)
+                  Padding(
+                    padding: EdgeInsets.only(
+                        bottom: widget.onLearnMore == null &&
+                                widget.customWidget == null
+                            ? EnvoySpacing.medium3
+                            : EnvoySpacing.medium1),
+                    child: Text(
+                      widget.content!,
+                      style: EnvoyTypography.info,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                if (widget.customWidget != null)
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                    child: widget.customWidget!,
+                  ),
+                if (widget.onLearnMore != null)
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+                    child: GestureDetector(
+                      onTap: () {
+                        widget.onLearnMore!();
+                      },
+                      child: Text(
+                        widget.learnMoreText.isEmpty
+                            ? S().component_learnMore
+                            : widget.learnMoreText,
+                        style: EnvoyTypography.button
+                            .copyWith(color: EnvoyColors.accentPrimary),
+                      ),
+                    ),
+                  ),
+                if (widget.checkBoxText != null)
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                    child: DialogCheckBox(
+                      label: widget.checkBoxText!,
+                      isChecked: widget.checkedValue == null
+                          ? true
+                          : widget.checkedValue!,
+                      onChanged: (isChecked) {
+                        setState(() {
+                          widget.checkedValue = !widget.checkedValue!;
+                          if (widget.onCheckBoxChanged != null) {
+                            widget.onCheckBoxChanged!(isChecked!);
+                          }
+                        });
                       },
                     ),
                   ),
-                ),
-              if (widget.icon != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
-                  child: EnvoyIcon(
-                    widget.icon!,
-                    size: EnvoyIconSize.mediumLarge,
-                    color: _color,
+                if (widget.tertiaryButtonLabel != null)
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                    child: EnvoyButton(widget.tertiaryButtonLabel!,
+                        type: EnvoyButtonTypes.tertiary, onTap: () {
+                      if (widget.onTertiaryButtonTap != null) {
+                        widget.onTertiaryButtonTap!(context);
+                      }
+                    }),
                   ),
-                ),
-              if (widget.title != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                  child: Text(
-                    widget.title!,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: EnvoyTypography.heading,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              if (widget.content != null)
-                Padding(
-                  padding: EdgeInsets.only(
-                      bottom: widget.onLearnMore == null &&
-                              widget.customWidget == null
-                          ? EnvoySpacing.medium3
-                          : EnvoySpacing.medium1),
-                  child: Text(
-                    widget.content!,
-                    style: EnvoyTypography.info,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              if (widget.customWidget != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                  child: widget.customWidget!,
-                ),
-              if (widget.onLearnMore != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
-                  child: GestureDetector(
-                    onTap: () {
-                      widget.onLearnMore!();
-                    },
-                    child: Text(
-                      widget.learnMoreText.isEmpty
-                          ? S().component_learnMore
-                          : widget.learnMoreText,
-                      style: EnvoyTypography.button
-                          .copyWith(color: EnvoyColors.accentPrimary),
+                if (widget.secondaryButtonLabel != null)
+                  Padding(
+                    padding: EdgeInsets.only(
+                        bottom: widget.onPrimaryButtonTap == null
+                            ? 0
+                            : EnvoySpacing.medium1),
+                    child: Semantics(
+                      identifier: 'PopUp Secondary Button',
+                      container: true,
+                      button: true,
+                      excludeSemantics: true,
+                      child: EnvoyButton(widget.secondaryButtonLabel!,
+                          type: EnvoyButtonTypes.secondary, onTap: () {
+                        if (widget.onSecondaryButtonTap != null) {
+                          widget.onSecondaryButtonTap!(context);
+                        }
+                      }),
                     ),
                   ),
-                ),
-              if (widget.checkBoxText != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
-                  child: DialogCheckBox(
-                    label: widget.checkBoxText!,
-                    isChecked: widget.checkedValue == null
-                        ? true
-                        : widget.checkedValue!,
-                    onChanged: (isChecked) {
-                      setState(() {
-                        widget.checkedValue = !widget.checkedValue!;
-                        if (widget.onCheckBoxChanged != null) {
-                          widget.onCheckBoxChanged!(isChecked!);
-                        }
-                      });
-                    },
+                if (widget.onPrimaryButtonTap != null)
+                  Semantics(
+                    identifier: 'PopUp Primary Button',
+                    container: true,
+                    button: true,
+                    excludeSemantics: true,
+                    child: EnvoyButton(widget.primaryButtonLabel,
+                        type: EnvoyButtonTypes.primary, onTap: () {
+                      widget.onPrimaryButtonTap?.call(context);
+                    }, backgroundColor: widget.primaryButtonColor),
                   ),
-                ),
-              if (widget.tertiaryButtonLabel != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                  child: EnvoyButton(widget.tertiaryButtonLabel!,
-                      type: EnvoyButtonTypes.tertiary, onTap: () {
-                    if (widget.onTertiaryButtonTap != null) {
-                      widget.onTertiaryButtonTap!(context);
-                    }
-                  }),
-                ),
-              if (widget.secondaryButtonLabel != null)
-                Padding(
-                  padding: EdgeInsets.only(
-                      bottom: widget.onPrimaryButtonTap == null
-                          ? 0
-                          : EnvoySpacing.medium1),
-                  child: EnvoyButton(widget.secondaryButtonLabel!,
-                      type: EnvoyButtonTypes.secondary, onTap: () {
-                    if (widget.onSecondaryButtonTap != null) {
-                      widget.onSecondaryButtonTap!(context);
-                    }
-                  }),
-                ),
-              if (widget.onPrimaryButtonTap != null)
-                EnvoyButton(widget.primaryButtonLabel,
-                    type: EnvoyButtonTypes.primary, onTap: () {
-                  widget.onPrimaryButtonTap?.call(context);
-                }, backgroundColor: widget.primaryButtonColor),
-            ],
+              ],
+            ),
           ),
         ),
       ),

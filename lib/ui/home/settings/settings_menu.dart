@@ -228,21 +228,26 @@ class MenuOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-            horizontal: EnvoySpacing.large2, vertical: EnvoySpacing.medium1),
-        constraints: const BoxConstraints(minWidth: 142),
-        child: Text(
-          label.toUpperCase(),
-          textAlign: TextAlign.start,
-          style: EnvoyTypography.subheading
-              .copyWith(
-                color: EnvoyColors.textPrimaryInverse,
-              )
-              .setWeight(FontWeight.w500),
+    return Semantics(
+      label: label,
+      button: true,
+      enabled: true,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+              horizontal: EnvoySpacing.large2, vertical: EnvoySpacing.medium1),
+          constraints: const BoxConstraints(minWidth: 142),
+          child: Text(
+            label.toUpperCase(),
+            textAlign: TextAlign.start,
+            style: EnvoyTypography.subheading
+                .copyWith(
+                  color: EnvoyColors.textPrimaryInverse,
+                )
+                .setWeight(FontWeight.w500),
+          ),
         ),
       ),
     );

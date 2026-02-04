@@ -1,0 +1,133 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+- launchApp:
+    clearState: false
+
+# make sure you entered the app again before testing
+- extendedWaitUntil:
+    visible: "ACCOUNTS"
+    timeout: 720000  # wait up to 12 min for it to appear
+
+
+# 1) Go to settings
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+# check that fiat is ON and sats is ON
+- assertVisible:
+    id: Show Fiat Toggle-true
+- assertVisible:
+    id: Display Unit Sats Toggle-true
+
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# check home fiat
+- assertVisible:
+    text: $
+
+# check activity fiat
+- tapOn: Activity
+- assertVisible:
+    text: $
+
+# in Received
+- tapOn: Received
+- assertVisible:
+    text: $
+
+# in Mainet Account
+- tapOn: Back
+- tapOn: Accounts
+- tapOn: GH TEST ACC (#1)
+- assertVisible:
+    text: $
+# in transaction
+- tapOn:
+    id: envoy_icon_receive
+- assertVisible:
+    text: $
+- tapOn:
+    text: Back
+    index: 1
+# in Tags
+- tapOn: Activity
+- assertVisible:
+    text: $
+- tapOn: Untagged
+- assertVisible:
+    text: $
+# go back
+- tapOn:
+    text: Back
+    index: 1
+# check Send
+- tapOn: Send
+
+# cycle to sats if not already there
+# cycle order: sats → fiat → btc → sats
+
+# if on btc, tap once to get to sats
+- runFlow:
+    when:
+      visible:
+        id: "amount_display btc"
+    commands:
+      - tapOn:
+          id: "amount_display btc"
+
+# if on fiat, tap twice to get to sats (fiat → btc → sats)
+- runFlow:
+    when:
+      visible:
+        id: "amount_display fiat"
+    commands:
+      - tapOn:
+          id: "amount_display fiat"
+      - tapOn:
+          id: "amount_display btc"
+
+# refresh send
+- tapOn:
+    id: hamburger_menu
+- tapOn: Send
+
+- tapOn: "5"
+- tapOn: "6"
+- tapOn: "7"
+
+# now change to fiat
+- tapOn:
+    id: amount_display sats
+
+
+#  With the unit in fiat, paste a valid address, enter a valid amount, tap Confirm
+- tapOn: Enter address
+- inputText: "bc1qcjwyecualcytzgud5ruwrj642fng4tvp8nsgr2"
+- tapOn: Back
+
+- tapOn: Confirm
+
+# now wait for it to go to staging
+- extendedWaitUntil:
+    visible: |-
+      Check Transaction Details
+      Confirm the transaction details are correct before continuing.
+    timeout: 15000
+
+- assertVisible:
+    text: $
+
+- tapOn: View and Edit Details
+
+- assertVisible:
+    text: $

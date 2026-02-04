@@ -1,0 +1,154 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+- launchApp:
+    clearState: false
+
+# make sure you entered the app again before testing
+- extendedWaitUntil:
+    visible: "ACCOUNTS"
+    timeout: 720000  # wait up to 12 min for it to appear
+
+# disable All Networks
+- tapOn:
+    id: hamburger_menu
+
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+- tapOn: Advanced
+
+# turn off Testnet if it's on
+- runFlow:
+    when:
+      visible:
+        id: "Testnet Toggle-true"
+    commands:
+      - tapOn:
+          id: "Testnet Toggle-true"
+
+# turn off Signet if it's on
+- runFlow:
+    when:
+      visible:
+        id: "Signet Toggle-true"
+    commands:
+      - tapOn:
+          id: "Signet Toggle-true"
+
+# turn off Taproot if it's on
+- runFlow:
+    when:
+      visible:
+        id: "Taproot Toggle-true"
+    commands:
+      - tapOn:
+          id: "Taproot Toggle-true"
+      - extendedWaitUntil:
+          visible:
+            id: "PopUp Primary Button"
+          timeout: 60000
+      - tapOn:
+          id: "PopUp Primary Button"
+
+
+# clear prompt states
+- tapOn: Dev options
+- tapOn: Clear Prompt states
+
+- tapOn: Back
+
+- tapOn:
+    id: hamburger_menu
+
+- scrollUntilVisible:
+    element:
+      text: Tap any of the above cards to receive Bitcoin.
+
+- tapOn: Taproot modal test
+
+- tapOn:
+    id: hamburger_menu
+
+- assertVisible: Swipe to show and hide your balance.
+
+- tapOn: Dismiss
+
+- assertNotVisible: Swipe to show and hide your balance.
+
+# clear prompt states again
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Dev options
+- tapOn: Clear Prompt states
+- tapOn: Back
+- tapOn:
+    id: hamburger_menu
+
+# dismiss the "Tap any ..."
+- tapOn: Dismiss
+
+# make sure it is gone
+- assertNotVisible: Tap any of the above cards to receive Bitcoin.
+
+# make sure this prompt is visible
+- assertVisible: Swipe to show and hide your balance.
+
+- swipe:
+    from:
+      text: Taproot modal test
+    direction: LEFT
+
+- assertVisible: Hold to drag and reorder your accounts.
+
+# make the amount visible again
+- swipe:
+    from:
+      text: Taproot modal test
+    direction: LEFT
+
+# TODO: Unable to swipe account at all !!!
+
+#- longPressOn: Taproot modal test
+#- swipe:
+#    from:
+#      text: Taproot modal test
+#    direction: UP
+
+- tapOn: Dismiss
+
+# clear prompt states again
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Dev options
+- tapOn: Clear Prompt states
+- tapOn: Back
+- tapOn:
+    id: hamburger_menu
+
+- tapOn: Dismiss
+- tapOn: Dismiss
+
+
+# TODO: Unable to swipe account at all !!!
+
+#- longPressOn: Taproot modal test
+#- swipe:
+#    from:
+#      text: Taproot modal test
+#    direction: UP
+
+# so just dismiss
+- tapOn: Dismiss
+
+- assertNotVisible: Hold to drag and reorder your accounts.

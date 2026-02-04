@@ -1,0 +1,63 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+- launchApp:
+      clearState: false
+
+# make sure you entered the app again before testing
+- extendedWaitUntil:
+    visible: "ACCOUNTS"
+    timeout: 720000  # wait up to 12 min for it to appear
+
+- tapOn: Activity
+
+# Wait for elements to appear
+- extendedWaitUntil:
+    visible: "Sent"
+    timeout: 10000
+
+- evalScript: |
+    // Debug: check what the API returns
+    const sentElement = maestro.findElement({ text: "Sent", index: 0 });
+    const satsIcon = maestro.findElement({ id: "envoy_icon_sats", index: 0 });
+
+    // Debug output
+    output.sentFound = !!sentElement;
+    output.satsFound = !!satsIcon;
+    output.sentType = typeof sentElement;
+    output.satsType = typeof satsIcon;
+
+    if (!sentElement) {
+        throw new Error("Could not find 'Sent' text element");
+    }
+    if (!satsIcon) {
+        throw new Error("Could not find 'envoy_icon_sats' element");
+    }
+
+    // Check if bounds exists
+    output.sentHasBounds = !!sentElement.bounds;
+    output.satsHasBounds = !!satsIcon.bounds;
+
+    if (!sentElement.bounds) {
+        output.sentKeys = Object.keys(sentElement);
+        throw new Error("Sent element has no bounds. Keys: " + Object.keys(sentElement).join(", "));
+    }
+    if (!satsIcon.bounds) {
+        output.satsKeys = Object.keys(satsIcon);
+        throw new Error("Sats icon has no bounds. Keys: " + Object.keys(satsIcon).join(", "));
+    }
+
+    const tolerance = 15;
+    const yDiff = Math.abs(satsIcon.bounds.y - sentElement.bounds.y);
+
+    if (yDiff > tolerance) {
+        throw new Error(`Y positions don't match: Sent=${sentElement.bounds.y}, satsIcon=${satsIcon.bounds.y}, diff=${yDiff}`);
+    }
+
+    output.sentY = sentElement.bounds.y;
+    output.iconY = satsIcon.bounds.y;
+    output.diff = yDiff;
+    output.result = "PASS - elements are aligned";

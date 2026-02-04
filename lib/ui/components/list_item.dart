@@ -50,46 +50,66 @@ class EnvoyListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-        minLeadingWidth: 0,
-        horizontalTitleGap: EnvoySpacing.medium1,
-        title: Padding(
-          padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-          child: Text(
-            titleText,
-            style:
-                EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary),
+    return Semantics(
+      container: true,
+      explicitChildNodes: true,
+      child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+          minLeadingWidth: 0,
+          horizontalTitleGap: EnvoySpacing.medium1,
+          title: Semantics(
+            container: true,
+            identifier: 'list_tile_title',
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+              child: Text(
+                titleText,
+                style: EnvoyTypography.body
+                    .copyWith(color: EnvoyColors.textPrimary),
+              ),
+            ),
           ),
-        ),
-        subtitle: subtitleText == null
-            ? const Text("")
-            : Text(
-                subtitleText!,
-                style: EnvoyTypography.info
-                    .copyWith(color: EnvoyColors.textSecondary),
-              ),
-        leading: txIcon == null
-            ? null
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  EnvoyIcon(
-                    txIcon!,
-                    color: iconColor,
-                    size: EnvoyIconSize.small,
+          subtitle: subtitleText == null
+              ? const Text("")
+              : Semantics(
+                  container: true,
+                  identifier: 'list_tile_subtitle',
+                  child: Text(
+                    subtitleText!,
+                    style: EnvoyTypography.info
+                        .copyWith(color: EnvoyColors.textSecondary),
                   ),
-                ],
-              ),
-        trailing: unitIcon == null
-            ? const Text("")
-            : Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  unitIcon!,
-                ],
-              ));
+                ),
+          leading: txIcon == null
+              ? null
+              : Semantics(
+                  container: true,
+                  identifier: 'list_tile_icon',
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      EnvoyIcon(
+                        txIcon!,
+                        color: iconColor,
+                        size: EnvoyIconSize.small,
+                      ),
+                    ],
+                  ),
+                ),
+          trailing: unitIcon == null
+              ? const Text("")
+              : Semantics(
+                  container: true,
+                  identifier: 'list_tile_trailing',
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      unitIcon!,
+                    ],
+                  ),
+                )),
+    );
   }
 }
 
