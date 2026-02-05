@@ -422,7 +422,6 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
-
     testWidgets('<Activity text alignment>', (tester) async {
       final stopwatch = Stopwatch()..start();
 
@@ -476,7 +475,6 @@ Future<void> main() async {
         '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
       );
     });
-
     testWidgets('<Delete wallet warning pt.2>', (tester) async {
       final stopwatch = Stopwatch()..start(); // Start timer
 

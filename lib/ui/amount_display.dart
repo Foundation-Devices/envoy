@@ -94,7 +94,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
       }
     });
 
-    var unit = ref.read(sendUnitProvider);
+    var unit = ref.watch(sendUnitProvider);
 
     bool renderGhostZeros = unit == AmountDisplayUnit.fiat &&
         widget.displayedAmount.contains(fiatDecimalSeparator);
@@ -113,101 +113,113 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
         ) ==
         "";
 
-    return TextButton(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    right: unit == AmountDisplayUnit.fiat ? 10 : 6.0,
-                    left: unit == AmountDisplayUnit.fiat ? 6 : 0),
-                child: displayIcon(widget.account!, unit),
-              ),
-              Text(
-                  widget.displayedAmount.isEmpty ? "0" : widget.displayedAmount,
-                  style: EnvoyTypography.digitsLarge
-                      .copyWith(color: EnvoyColors.textPrimary)),
-              if (renderGhostZeros)
-                Text(ghostDigits,
-                    style: widget.inputMode
-                        ? Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(color: EnvoyColors.textInactive)
-                        : Theme.of(context).textTheme.headlineMedium),
-            ],
-          ),
-          isFormattedAmountEmpty
-              ? const SizedBox.shrink()
-              : Row(
-                  children: [
-                    unit != AmountDisplayUnit.fiat
-                        ? Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Text(
-                              ExchangeRate().getSymbol(),
+    String unitSuffix = switch (unit) {
+      AmountDisplayUnit.btc => "btc",
+      AmountDisplayUnit.sat => "sats",
+      AmountDisplayUnit.fiat => "fiat",
+    };
+
+    return Semantics(
+      identifier: "amount_display $unitSuffix",
+      child: TextButton(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                      right: unit == AmountDisplayUnit.fiat ? 10 : 6.0,
+                      left: unit == AmountDisplayUnit.fiat ? 6 : 0),
+                  child: displayIcon(widget.account!, unit),
+                ),
+                Text(
+                    widget.displayedAmount.isEmpty
+                        ? "0"
+                        : widget.displayedAmount,
+                    style: EnvoyTypography.digitsLarge
+                        .copyWith(color: EnvoyColors.textPrimary)),
+                if (renderGhostZeros)
+                  Text(ghostDigits,
+                      style: widget.inputMode
+                          ? Theme.of(context)
+                              .textTheme
+                              .headlineMedium
+                              ?.copyWith(color: EnvoyColors.textInactive)
+                          : Theme.of(context).textTheme.headlineMedium),
+              ],
+            ),
+            isFormattedAmountEmpty
+                ? const SizedBox.shrink()
+                : Row(
+                    children: [
+                      unit != AmountDisplayUnit.fiat
+                          ? Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Text(
+                                ExchangeRate().getSymbol(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleSmall!
+                                    .copyWith(
+                                        color: EnvoyColors.accentPrimary,
+                                        fontSize: 16),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                      RichText(
+                          textScaler: TextScaler.linear(textScaleFactor),
+                          text: TextSpan(
                               style: Theme.of(context)
                                   .textTheme
                                   .titleSmall!
                                   .copyWith(
                                       color: EnvoyColors.accentPrimary,
                                       fontSize: 16),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                    RichText(
-                        textScaler: TextScaler.linear(textScaleFactor),
-                        text: TextSpan(
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(
-                                    color: EnvoyColors.accentPrimary,
-                                    fontSize: 16),
-                            children: [
-                              if (unit == AmountDisplayUnit.fiat)
-                                WidgetSpan(
-                                  alignment: PlaceholderAlignment.middle,
-                                  child: SizedBox(
-                                      height: 18,
-                                      child: getUnitIcon(widget.account!)),
+                              children: [
+                                if (unit == AmountDisplayUnit.fiat)
+                                  WidgetSpan(
+                                    alignment: PlaceholderAlignment.middle,
+                                    child: SizedBox(
+                                        height: 18,
+                                        child: getUnitIcon(widget.account!)),
+                                  ),
+                                TextSpan(
+                                  text: unit != AmountDisplayUnit.fiat
+                                      ? ExchangeRate().getFormattedAmount(
+                                          widget.amountSats ?? 0,
+                                          displayFiat: widget.displayFiat,
+                                          network: widget.account?.network,
+                                          includeSymbol: false,
+                                          useFiatFormatting: true)
+                                      : (Settings().displayUnit ==
+                                              DisplayUnit.btc
+                                          ? getDisplayAmount(
+                                              widget.amountSats ?? 0,
+                                              AmountDisplayUnit.btc,
+                                              trailingZeros:
+                                                  widget.amountSats == 0
+                                                      ? false
+                                                      : true)
+                                          : getDisplayAmount(
+                                              widget.amountSats ?? 0,
+                                              AmountDisplayUnit.sat,
+                                            )),
                                 ),
-                              TextSpan(
-                                text: unit != AmountDisplayUnit.fiat
-                                    ? ExchangeRate().getFormattedAmount(
-                                        widget.amountSats ?? 0,
-                                        displayFiat: widget.displayFiat,
-                                        network: widget.account?.network,
-                                        includeSymbol: false,
-                                        useFiatFormatting: true)
-                                    : (Settings().displayUnit == DisplayUnit.btc
-                                        ? getDisplayAmount(
-                                            widget.amountSats ?? 0,
-                                            AmountDisplayUnit.btc,
-                                            trailingZeros:
-                                                widget.amountSats == 0
-                                                    ? false
-                                                    : true)
-                                        : getDisplayAmount(
-                                            widget.amountSats ?? 0,
-                                            AmountDisplayUnit.sat,
-                                          )),
-                              ),
-                            ])),
-                  ],
-                ),
-        ],
+                              ])),
+                    ],
+                  ),
+          ],
+        ),
+        onPressed: () {
+          nextUnit();
+        },
+        onLongPress: () async {
+          if (widget.onLongPress != null) {
+            widget.onLongPress!();
+          }
+        },
       ),
-      onPressed: () {
-        nextUnit();
-      },
-      onLongPress: () async {
-        if (widget.onLongPress != null) {
-          widget.onLongPress!();
-        }
-      },
     );
   }
 }

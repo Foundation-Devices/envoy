@@ -1,0 +1,168 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+
+# 1) Go to settings
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+# 2) Check that the fiat toggle exists
+
+- assertVisible:
+    id: Show Fiat Toggle-true
+
+# 3) Check that it can toggle just fine, leave it enabled (leave default fiat value)
+- tapOn:
+    id: Show Fiat Toggle-true
+# refresh toggle name
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+- assertVisible:
+    id: Show Fiat Toggle-false
+
+- tapOn:
+    id: Show Fiat Toggle-false
+
+# refresh toggle name
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+# leave it to true
+- assertVisible:
+    id: Show Fiat Toggle-true
+
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# tap first mainet acc with money
+- tapOn: GH TEST ACC (#1)
+- tapOn: Send
+
+# cycle to sats if not already there
+# cycle order: sats → fiat → btc → sats
+
+# if on btc, tap once to get to sats
+- runFlow:
+    when:
+      visible:
+        id: "amount_display btc"
+    commands:
+      - tapOn:
+          id: "amount_display btc"
+
+# if on fiat, tap twice to get to sats (fiat → btc → sats)
+- runFlow:
+    when:
+      visible:
+        id: "amount_display fiat"
+    commands:
+      - tapOn:
+          id: "amount_display fiat"
+      - tapOn:
+          id: "amount_display btc"
+
+# refresh send
+- tapOn:
+    id: hamburger_menu
+- tapOn: Send
+
+# now assert it's sats
+- assertVisible:
+    id: "amount_display sats"
+
+# go back
+- tapOn:
+    id: hamburger_menu
+- tapOn: Send
+
+# check if the numbers are still in sats after returning
+- assertVisible:
+    id: amount_display sats
+
+# change to fiat
+- tapOn:
+    id: amount_display sats
+
+# go back
+- tapOn:
+    id: hamburger_menu
+- tapOn: Send
+
+# check if you are entering dollars
+- assertVisible:
+    id: amount_display fiat
+
+# change to btc
+- tapOn:
+    id: amount_display fiat
+
+# go back
+- tapOn:
+    id: hamburger_menu
+- tapOn: Send
+
+#  check if the unit is BTC
+- assertVisible:
+    id: amount_display btc
+
+# change to sats so you can enter with test
+- tapOn:
+    id: amount_display btc
+
+# refresh send
+- tapOn:
+    id: hamburger_menu
+- tapOn: Send
+
+# With the unit in btc, paste a valid address, enter a valid amount, tap Confirm
+- tapOn: Enter address
+- inputText: "bc1qcjwyecualcytzgud5ruwrj642fng4tvp8nsgr2"
+- tapOn: Back
+
+# enter amount
+- tapOn: "5"
+- tapOn: "6"
+- tapOn: "7"
+
+# change to btc
+- tapOn:
+    id: amount_display sats
+- tapOn:
+    id: amount_display fiat
+
+# go to staging
+- tapOn: Confirm
+
+# now wait for it to go to staging
+- extendedWaitUntil:
+    visible: |-
+      Check Transaction Details
+      Confirm the transaction details are correct before continuing.
+    timeout: 15000
+
+# check if the unit in the Staging is BTC
+- assertVisible:
+    id: envoy_icon_btc
+
+# go back to home
+- tapOn:
+    id: envoy_icon_chevron_left
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu

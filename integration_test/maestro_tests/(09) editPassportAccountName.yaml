@@ -1,0 +1,65 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+
+# open acc
+- tapOn: GH TEST ACC (#1)
+
+- tapOn:
+    id: Right Action Button
+
+- tapOn: Edit Account Name
+
+- tapOn: 4 characters remaining
+
+# delete the current name
+- longPressOn: Backspace
+
+- inputText: "What ever"
+
+# Exit
+- tapOn:
+    id: Dialog Close Button
+
+# Check if the name is the same
+- assertVisible: GH TEST ACC (#1)
+
+- tapOn:
+    id: Right Action Button
+
+- tapOn: Edit Account Name
+
+# delete the current name
+- longPressOn: Backspace
+
+# 30 chars
+- inputText: "Twenty one characters plus ten"
+
+- tapOn: Save
+
+# it needs to cut text (chars 20/20)
+- assertVisible: Twenty one character
+
+# change the name back for the next test
+- tapOn:
+    id: Right Action Button
+
+- tapOn: Edit Account Name
+
+# delete the current name
+- longPressOn: Backspace
+
+- inputText: "GH TEST ACC (#1)"
+
+# save
+- tapOn: Save
+
+# Check if the name is the same
+- assertVisible: GH TEST ACC (#1)
+
+# go back to home
+- tapOn:
+    id: hamburger_menu

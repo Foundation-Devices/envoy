@@ -217,6 +217,17 @@ final accountsZeroBalanceProvider = Provider<bool>((ref) {
   return true;
 });
 
+// True if hot wallet account have 0 balance
+final hotWalletAccountsEmptyProvider = Provider<bool>((ref) {
+  final accounts = ref.watch(accountsProvider);
+  for (final account in accounts) {
+    if (account.isHot && account.balance != BigInt.zero) {
+      return false;
+    }
+  }
+  return true;
+});
+
 final showDefaultAccountProvider = StateProvider<bool>((ref) => true);
 
 /// Stores the current passphrase fingerprint (XFP) for Prime devices.

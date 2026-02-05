@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+
+- extendedWaitUntil:
+    notVisible: "Loading Account…"
+    timeout: 720000  # wait up to 12 min for it to disappear

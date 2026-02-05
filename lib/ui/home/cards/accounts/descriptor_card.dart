@@ -92,45 +92,47 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
     return Padding(
       padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(mainAxisSize: MainAxisSize.min, children: [
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: EnvoySpacing.medium2,
-                  right: EnvoySpacing.medium2,
-                ),
-                child: QrTab(
-                  title: widget.account.name,
-                  subtitle: S().manage_account_descriptor_subheading,
-                  account: widget.account,
-                  qr: EnvoyQR(
-                    data: descriptor,
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.medium2,
+                    ),
+                    child: QrTab(
+                      title: widget.account.name,
+                      subtitle: S().manage_account_descriptor_subheading,
+                      account: widget.account,
+                      qr: EnvoyQR(
+                        data: descriptor,
+                      ),
+                    ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: EnvoySpacing.medium1,
+                      left: EnvoySpacing.medium2,
+                      right: EnvoySpacing.medium2,
+                    ),
+                    child: EnvoyDropdown(
+                      options: options,
+                      initialIndex: selectedIndex,
+                      onOptionChanged: (selectedOption) {
+                        if (selectedOption != null) {
+                          setState(() {
+                            selectedIndex = int.parse(selectedOption.value);
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
-          ]),
-          Padding(
-            padding: const EdgeInsets.only(
-              top: EnvoySpacing.medium1,
-              left: EnvoySpacing.medium2,
-              right: EnvoySpacing.medium2,
-            ),
-            child: EnvoyDropdown(
-              options: options,
-              initialIndex: selectedIndex,
-              onOptionChanged: (selectedOption) {
-                if (selectedOption != null) {
-                  setState(() {
-                    selectedIndex = int.parse(selectedOption.value);
-                  });
-                }
-              },
-            ),
           ),
-          const SizedBox(),
           EnvoyBar(
             items: [
               EnvoyBarItem(

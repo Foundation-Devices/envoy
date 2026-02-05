@@ -1,0 +1,74 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+
+- tapOn: Devices
+
+- tapOn: |-
+    Passport
+    Founder's Edition
+
+- tapOn:
+    id: Right Action Button
+
+- tapOn: Edit Device Name
+
+# Input text without tapping Save
+
+- tapOn: 12 characters remaining
+
+# Delete the current name
+- longPressOn: Backspace
+
+- inputText: "New Passport name"
+
+- tapOn:
+    id: Dialog Close Button
+
+# Check if the name is still "Passport"
+- assertVisible: |-
+    Passport
+    Founder's Edition
+
+# Test for input name longer than the allowed maximum
+
+- tapOn:
+    id: Right Action Button
+
+- tapOn: Edit Device Name
+
+# Delete the current name "Passport"
+- longPressOn: Backspace
+
+- inputText: "Twenty one characters plus ten"
+
+- tapOn: Save
+
+# Check the new name
+- assertVisible: |-
+    Twenty one character
+    Founder's Edition
+
+# Reset the device name to its initial value
+
+- tapOn:
+    id: Right Action Button
+
+- tapOn: Edit Device Name
+
+# Delete the current name "Twenty one characters"
+- longPressOn: Backspace
+
+- inputText: "Passport"
+
+- tapOn: Save
+
+- assertVisible: |-
+    Passport
+    Founder's Edition
+
+# go back to Home
+- tapOn: Accounts
