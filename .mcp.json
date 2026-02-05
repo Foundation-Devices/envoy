@@ -1,10 +1,13 @@
 {
   "mcpServers": {
+    "kebab": {
+      "command": "dart",
+      "args": ["run", "packages/kebab_mcp/bin/kebab_mcp.dart", "--host", "127.0.0.1"],
+      "cwd": "."
+    },
     "maestro": {
       "command": "maestro",
-      "args": [
-        "mcp"
-      ]
+      "args": ["mcp"]
     }
   }
 }
