@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 name: kebab_mcp
 description: MCP server for controlling the Kebab QA rig via MQTT
 version: 0.1.0
