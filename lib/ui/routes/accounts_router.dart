@@ -8,6 +8,7 @@ import 'package:animations/animations.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
 import 'package:envoy/ui/home/cards/accounts/address_card.dart';
+import 'package:envoy/ui/home/cards/accounts/address_detail_card.dart';
 import 'package:envoy/ui/home/cards/accounts/address_explorer_card.dart';
 import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
@@ -66,6 +67,10 @@ const ROUTE_ACCOUNT_DESCRIPTOR = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_DESCRIPTOR';
 
 const _ACCOUNT_ADDRESSES = 'addresses';
 const ROUTE_ACCOUNT_ADDRESSES = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_ADDRESSES';
+
+const _ACCOUNT_ADDRESS_DETAIL = 'address_detail';
+const ROUTE_ACCOUNT_ADDRESS_DETAIL =
+    '$ROUTE_ACCOUNT_ADDRESSES/$_ACCOUNT_ADDRESS_DETAIL';
 
 const _ACCOUNT_SEND = 'send';
 const ROUTE_ACCOUNT_SEND = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_SEND';
@@ -310,6 +315,30 @@ final accountsRouter = StatefulShellBranch(
                       ));
                     }
                   },
+                  routes: [
+                    GoRoute(
+                      path: _ACCOUNT_ADDRESS_DETAIL,
+                      pageBuilder: (context, state) {
+                        try {
+                          final extra = state.extra as Map<String, dynamic>;
+                          final account = extra['account'] as EnvoyAccount;
+                          final addressInfo =
+                              extra['addressInfo'] as AddressInfo;
+                          return wrapWithEnvoyPageAnimation(
+                              child: AddressDetailCard(
+                            account: account,
+                            addressInfo: addressInfo,
+                          ));
+                        } catch (e) {
+                          return wrapWithEnvoyPageAnimation(
+                              child: Container(
+                            padding: const EdgeInsets.all(20),
+                            child: Center(child: Text("Address not found")),
+                          ));
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ],
               pageBuilder: (context, state) {

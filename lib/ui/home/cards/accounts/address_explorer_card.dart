@@ -1,12 +1,11 @@
-// SPDX-FileCopyrightText: 2022 Foundation Devices Inc.
+// SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/business/exchange_rate.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
+import 'package:envoy/ui/components/filter_chip.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
@@ -14,14 +13,22 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/theme/new_envoy_color.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
-import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/components/pop_up.dart';
+
+import '../../../components/envoy_loaders.dart';
 
 /// Represents address information with usage and balance data
 class AddressInfo {
@@ -30,6 +37,7 @@ class AddressInfo {
   final int balanceSats;
   final bool isUsed;
   final bool isCurrentReceiveAddress;
+  final bool isChange;
 
   AddressInfo({
     required this.index,
@@ -37,6 +45,7 @@ class AddressInfo {
     required this.balanceSats,
     required this.isUsed,
     required this.isCurrentReceiveAddress,
+    required this.isChange,
   });
 }
 
@@ -63,23 +72,27 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
-  // Filter state
-  Set<AddressFilter> _activeFilters = {};
+  // Filter state - all filters selected by default (show all)
+  Set<AddressFilter> _activeFilters = {
+    AddressFilter.used,
+    AddressFilter.unused,
+    AddressFilter.zeroBalance,
+  };
   AddressSort _sortOption = AddressSort.none;
 
   // Address type toggle: true = Receive (external), false = Change (internal)
   bool _isReceiveAddresses = true;
 
-  // Pagination
+  // Pagination and search
   static const int _loadCount = 50;
+  int _searchedAddressCount = _loadCount;
+  bool _isContinueSearching = false;
 
   @override
   void initState() {
     super.initState();
 
     Future.delayed(const Duration(milliseconds: 10)).then((value) {
-      ref.read(homePageTitleProvider.notifier).state =
-          S().exploreAdresses_activityOptions_exploreAddresses.toUpperCase();
       ref.read(homeShellOptionsProvider.notifier).state = null;
     });
 
@@ -92,9 +105,12 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
     super.dispose();
   }
 
-  Future<void> _loadAddresses() async {
+  Future<void> _loadAddresses({bool resetSearchCount = true}) async {
     setState(() {
       _isLoading = true;
+      if (resetSearchCount) {
+        _searchedAddressCount = _loadCount;
+      }
     });
 
     final handler = widget.account.handler;
@@ -124,7 +140,7 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
       final peekedAddresses = await handler.peekAddresses(
         addressType: addressType,
         fromIndex: 0,
-        toIndex: _loadCount,
+        toIndex: _searchedAddressCount,
         isChange: !_isReceiveAddresses,
       );
 
@@ -149,6 +165,7 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
       }
 
       // Build AddressInfo list
+      final isChange = !_isReceiveAddresses;
       final addresses = peekedAddresses.map((tuple) {
         final (index, address) = tuple;
         final balance = addressBalances[address] ?? 0;
@@ -160,6 +177,7 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
           balanceSats: balance,
           isUsed: isUsed,
           isCurrentReceiveAddress: address == currentAddress,
+          isChange: isChange,
         );
       }).toList();
 
@@ -174,6 +192,19 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
         _isLoading = false;
       });
     }
+  }
+
+  Future<void> _continueSearching() async {
+    setState(() {
+      _isContinueSearching = true;
+      _searchedAddressCount += _loadCount;
+    });
+
+    await _loadAddresses(resetSearchCount: false);
+
+    setState(() {
+      _isContinueSearching = false;
+    });
   }
 
   void _applyFilters() {
@@ -191,22 +222,23 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
     // Apply receive only filter (External addresses only - which is what we get from peekAddresses)
     // This is already the case since we only peek External keychain
 
-    // Apply active filters
-    if (_activeFilters.isNotEmpty) {
-      filtered = filtered.where((addr) {
-        if (_activeFilters.contains(AddressFilter.used) && !addr.isUsed) {
-          return false;
-        }
-        if (_activeFilters.contains(AddressFilter.unused) && addr.isUsed) {
-          return false;
-        }
-        if (_activeFilters.contains(AddressFilter.zeroBalance) &&
-            addr.balanceSats > 0) {
-          return false;
-        }
-        return true;
-      }).toList();
-    }
+    // Apply active filters (selected = show, unselected = hide)
+    filtered = filtered.where((addr) {
+      // If "used" is not selected, hide used addresses
+      if (!_activeFilters.contains(AddressFilter.used) && addr.isUsed) {
+        return false;
+      }
+      // If "unused" is not selected, hide unused addresses
+      if (!_activeFilters.contains(AddressFilter.unused) && !addr.isUsed) {
+        return false;
+      }
+      // If "zeroBalance" is not selected, hide zero balance addresses
+      if (!_activeFilters.contains(AddressFilter.zeroBalance) &&
+          addr.balanceSats == 0) {
+        return false;
+      }
+      return true;
+    }).toList();
 
     // Apply sorting
     switch (_sortOption) {
@@ -226,10 +258,24 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
     });
   }
 
+  Widget _buildEmptyState() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.large1),
+      child: Text(
+        "Address not found in the first $_searchedAddressCount addresses.",
+        style: EnvoyTypography.info.copyWith(
+          color: EnvoyColors.contentSecondary,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
   void _showFilterModal() {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useRootNavigator: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -253,8 +299,18 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
     if (addressInfo.isUsed && !addressInfo.isCurrentReceiveAddress) {
       _showUsedAddressWarning(addressInfo);
     } else {
-      _copyAddress(addressInfo.address);
+      _navigateToAddressDetail(addressInfo);
     }
+  }
+
+  void _navigateToAddressDetail(AddressInfo addressInfo) {
+    context.push(
+      ROUTE_ACCOUNT_ADDRESS_DETAIL,
+      extra: {
+        'account': widget.account,
+        'addressInfo': addressInfo,
+      },
+    );
   }
 
   Future<void> _showUsedAddressWarning(AddressInfo addressInfo) async {
@@ -262,41 +318,37 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
         .checkPromptDismissed(DismissiblePrompt.usedAddressWarning);
 
     if (dismissed) {
-      _copyAddress(addressInfo.address);
+      _navigateToAddressDetail(addressInfo);
       return;
     }
 
     if (!mounted) return;
 
-    showDialog(
-      context: context,
-      builder: (context) => _UsedAddressWarningDialog(
-        onBackToList: () => Navigator.pop(context),
-        onShowAddress: () {
-          Navigator.pop(context);
-          _copyAddress(addressInfo.address);
-        },
-        onDontShowAgain: (value) {
-          if (value) {
-            EnvoyStorage().addPromptState(DismissiblePrompt.usedAddressWarning);
-          }
-        },
-      ),
+    showEnvoyPopUp(
+      context,
+      S().exploreAddresses_listModal_content,
+      S().exploreAddresses_listModal_showAddress,
+      (context) {
+        Navigator.of(context).pop();
+        _navigateToAddressDetail(addressInfo);
+      },
+      icon: EnvoyIcons.alert,
+      title: S().component_warning,
+      typeOfMessage: PopUpState.warning,
+      secondaryButtonLabel: S().exploreAddresses_listModal_backToList,
+      onSecondaryButtonTap: (context) => Navigator.of(context).pop(),
+      checkBoxText: S().component_dontShowAgain,
+      checkedValue: false,
+      showCloseButton: false,
+      onCheckBoxChanged: (checked) {
+        if (checked) {
+          EnvoyStorage().addPromptState(DismissiblePrompt.usedAddressWarning);
+        }
+      },
+      onLearnMore: () {
+        // TODO: Open learn more link
+      },
     );
-  }
-
-  void _copyAddress(String address) {
-    Clipboard.setData(ClipboardData(text: address));
-    EnvoyToast(
-      backgroundColor: EnvoyColors.accentPrimary,
-      replaceExisting: true,
-      duration: const Duration(seconds: 2),
-      message: "Address copied to clipboard", // TODO: Add to l10n
-      icon: const EnvoyIcon(
-        EnvoyIcons.check,
-        color: EnvoyColors.textPrimaryInverse,
-      ),
-    ).show(context, rootNavigator: true);
   }
 
   @override
@@ -308,79 +360,24 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
         // Search bar
         Padding(
           padding: const EdgeInsets.all(EnvoySpacing.medium1),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: EnvoySpacing.medium1),
-                  child: EnvoyIcon(
-                    EnvoyIcons.search,
-                    color: EnvoyColors.textTertiary,
-                    size: EnvoyIconSize.small,
-                  ),
-                ),
-                Expanded(
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: "Enter address", // TODO: Add to l10n
-                      hintStyle: EnvoyTypography.body
-                          .copyWith(color: EnvoyColors.textTertiary),
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.small,
-                        vertical: EnvoySpacing.medium1,
-                      ),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _searchQuery = value;
-                      });
-                      _applyFilters();
-                    },
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    final currentAddress = account?.nextAddress
-                        .firstWhere(
-                          (record) => record.$2 == account.preferredAddressType,
-                          orElse: () => ('', account.preferredAddressType),
-                        )
-                        .$1;
-                    if (currentAddress != null && currentAddress.isNotEmpty) {
-                      _copyAddress(currentAddress);
-                    }
-                  },
-                  icon: const EnvoyIcon(
-                    EnvoyIcons.copy,
-                    color: EnvoyColors.textTertiary,
-                    size: EnvoyIconSize.small,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    // TODO: QR scanner
-                  },
-                  icon: EnvoyIcon(
-                    EnvoyIcons.qr_scan,
-                    color: EnvoyColors.textTertiary,
-                    size: EnvoyIconSize.small,
-                  ),
-                ),
-              ],
-            ),
+          child: _AddressSearchEntry(
+            controller: _searchController,
+            onChanged: (value) {
+              final queryChanged = _searchQuery != value;
+              setState(() {
+                _searchQuery = value;
+                // Reset search count when query changes
+                if (queryChanged && _searchedAddressCount > _loadCount) {
+                  _searchedAddressCount = _loadCount;
+                }
+              });
+              // Reload addresses if we had expanded the search before
+              if (queryChanged && _addresses.length > _loadCount) {
+                _loadAddresses();
+              } else {
+                _applyFilters();
+              }
+            },
           ),
         ),
 
@@ -390,30 +387,21 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
           child: Row(
             children: [
               // Receive/Change toggle
-              _AddressTypeToggle(
-                isReceive: _isReceiveAddresses,
-                onToggle: (isReceive) {
+              SlidingToggle(
+                value: _isReceiveAddresses ? "Receive" : "Change",
+                firstValue: "Receive",
+                secondValue: "Change",
+                firstLabel: S().receive_tx_list_receive,
+                secondLabel: S().receive_tx_list_change,
+                firstIcon: EnvoyIcons.receive,
+                secondIcon: EnvoyIcons.change,
+                backgroundColor: EnvoyColors.surface3,
+                onChange: (value) {
                   setState(() {
-                    _isReceiveAddresses = isReceive;
+                    _isReceiveAddresses = value == "Receive";
                   });
                   _loadAddresses();
                 },
-              ),
-              const SizedBox(width: EnvoySpacing.small),
-              GestureDetector(
-                onTap: _loadAddresses,
-                child: Container(
-                  padding: const EdgeInsets.all(EnvoySpacing.small),
-                  decoration: BoxDecoration(
-                    color: EnvoyColors.surface2,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const EnvoyIcon(
-                    EnvoyIcons.refresh,
-                    color: EnvoyColors.textSecondary,
-                    size: EnvoyIconSize.small,
-                  ),
-                ),
               ),
               const Spacer(),
               GestureDetector(
@@ -421,17 +409,17 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
                 child: Container(
                   padding: const EdgeInsets.all(EnvoySpacing.small),
                   decoration: BoxDecoration(
-                    color: _activeFilters.isNotEmpty ||
+                    color: _activeFilters.length < 3 ||
                             _sortOption != AddressSort.none
-                        ? EnvoyColors.accentPrimary.withValues(alpha: 0.1)
-                        : EnvoyColors.surface2,
-                    borderRadius: BorderRadius.circular(8),
+                        ? EnvoyColors.accentPrimary
+                        : EnvoyColors.surface3,
+                    borderRadius: BorderRadius.circular(EnvoySpacing.medium2),
                   ),
                   child: EnvoyIcon(
                     EnvoyIcons.filter,
-                    color: _activeFilters.isNotEmpty ||
+                    color: _activeFilters.length < 3 ||
                             _sortOption != AddressSort.none
-                        ? EnvoyColors.accentPrimary
+                        ? EnvoyColors.solidWhite
                         : EnvoyColors.textSecondary,
                     size: EnvoyIconSize.small,
                   ),
@@ -448,13 +436,7 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
           child: _isLoading
               ? const Center(child: CircularProgressIndicator())
               : _filteredAddresses.isEmpty
-                  ? Center(
-                      child: Text(
-                        "No addresses found", // TODO: Add to l10n
-                        style: EnvoyTypography.body
-                            .copyWith(color: EnvoyColors.textTertiary),
-                      ),
-                    )
+                  ? _buildEmptyState()
                   : ListView.builder(
                       padding: const EdgeInsets.symmetric(
                         horizontal: EnvoySpacing.medium1,
@@ -470,105 +452,206 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
                       },
                     ),
         ),
+        // Continue Searching button (shown when search has no results)
+        if (_searchQuery.isNotEmpty &&
+            _filteredAddresses.isEmpty &&
+            !_isLoading)
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: EnvoySpacing.medium1,
+              vertical: EnvoySpacing.large2,
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              child: EnvoyButton(
+                _isContinueSearching
+                    ? S().component_searching
+                    : "Continue Searching",
+                onTap: _isContinueSearching ? null : _continueSearching,
+                leading: _isContinueSearching
+                    ? EnvoyActivityIndicator(
+                        color: EnvoyColors.solidWhite,
+                        radius: EnvoySpacing.small,
+                      )
+                    : null,
+              ),
+            ),
+          ),
+        if (!(_searchQuery.isNotEmpty &&
+            _filteredAddresses.isEmpty &&
+            !_isLoading))
+          const SizedBox(height: EnvoySpacing.large1),
       ],
     );
   }
 }
 
-class _AddressTypeToggle extends StatelessWidget {
-  final bool isReceive;
-  final Function(bool) onToggle;
+class _AddressSearchEntry extends StatefulWidget {
+  final TextEditingController controller;
+  final Function(String) onChanged;
 
-  const _AddressTypeToggle({
-    required this.isReceive,
-    required this.onToggle,
+  const _AddressSearchEntry({
+    required this.controller,
+    required this.onChanged,
   });
 
   @override
+  State<_AddressSearchEntry> createState() => _AddressSearchEntryState();
+}
+
+class _AddressSearchEntryState extends State<_AddressSearchEntry> {
+  final double _verticalPadding = EnvoySpacing.medium1;
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: EnvoyColors.surface2,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Receive button
-          GestureDetector(
-            onTap: () => onToggle(true),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: EnvoySpacing.medium1,
-                vertical: EnvoySpacing.small,
-              ),
-              decoration: BoxDecoration(
-                color:
-                    isReceive ? EnvoyColors.accentPrimary : Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  EnvoyIcon(
-                    EnvoyIcons.receive,
-                    color: isReceive
-                        ? EnvoyColors.textPrimaryInverse
-                        : EnvoyColors.textSecondary,
+    return Material(
+      borderRadius: BorderRadius.circular(EnvoySpacing.medium3),
+      child: Container(
+        decoration: BoxDecoration(
+          color: EnvoyColors.surface3,
+          borderRadius: BorderRadius.circular(EnvoySpacing.medium3),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Search icon
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: _verticalPadding),
+                  child: const EnvoyIcon(
+                    EnvoyIcons.search,
                     size: EnvoyIconSize.extraSmall,
+                    color: EnvoyColors.textTertiary,
                   ),
-                  const SizedBox(width: EnvoySpacing.xs),
-                  Text(
-                    "Receive", // TODO: Add to l10n
-                    style: EnvoyTypography.label.copyWith(
-                      color: isReceive
-                          ? EnvoyColors.textPrimaryInverse
-                          : EnvoyColors.textSecondary,
-                      fontWeight: FontWeight.w500,
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.small),
+                  child: Container(
+                    width: 1,
+                    color: EnvoyColors.textTertiary.withValues(alpha: 0.3),
+                  ),
+                ),
+
+                // Text field
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: _verticalPadding, bottom: _verticalPadding),
+                    child: TextField(
+                      controller: widget.controller,
+                      style: EnvoyTypography.body,
+                      keyboardType: TextInputType.text,
+                      onChanged: (value) {
+                        widget.onChanged(value);
+                        setState(() {});
+                      },
+                      decoration: InputDecoration(
+                        hintText: S().send_keyboard_enterAddress,
+                        hintStyle: EnvoyTypography.body.copyWith(
+                          color: EnvoyColors.textTertiary,
+                        ),
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        isDense: true,
+                        contentPadding: EdgeInsets.zero,
+                      ),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          // Change button
-          GestureDetector(
-            onTap: () => onToggle(false),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: EnvoySpacing.medium1,
-                vertical: EnvoySpacing.small,
-              ),
-              decoration: BoxDecoration(
-                color:
-                    !isReceive ? EnvoyColors.accentPrimary : Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  EnvoyIcon(
-                    EnvoyIcons.send,
-                    color: !isReceive
-                        ? EnvoyColors.textPrimaryInverse
-                        : EnvoyColors.textSecondary,
-                    size: EnvoyIconSize.extraSmall,
+                ),
+
+                // Clear button
+                if (widget.controller.text.isNotEmpty)
+                  InkWell(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: _verticalPadding),
+                      child: const Icon(
+                        Icons.close,
+                        size: 16,
+                        color: EnvoyColors.textTertiary,
+                      ),
+                    ),
+                    onTap: () {
+                      setState(() {
+                        widget.controller.text = "";
+                      });
+                      widget.onChanged("");
+                    },
                   ),
-                  const SizedBox(width: EnvoySpacing.xs),
-                  Text(
-                    "Change", // TODO: Add to l10n
-                    style: EnvoyTypography.label.copyWith(
-                      color: !isReceive
-                          ? EnvoyColors.textPrimaryInverse
-                          : EnvoyColors.textSecondary,
-                      fontWeight: FontWeight.w500,
+
+                // Paste button
+                if (widget.controller.text.isEmpty)
+                  InkWell(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: _verticalPadding),
+                      child: const EnvoyIcon(
+                        EnvoyIcons.clipboard,
+                        size: EnvoyIconSize.extraSmall,
+                        color: EnvoyColors.accentPrimary,
+                      ),
+                    ),
+                    onTap: () async {
+                      ClipboardData? cdata =
+                          await Clipboard.getData(Clipboard.kTextPlain);
+                      String? text = cdata?.text;
+                      if (text != null) {
+                        setState(() {
+                          widget.controller.text = text;
+                        });
+                        widget.onChanged(text);
+                      }
+                    },
+                  ),
+
+                // Separator before QR
+                if (widget.controller.text.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.small),
+                    child: Container(
+                      width: 1,
+                      color: EnvoyColors.textTertiary.withValues(alpha: 0.3),
                     ),
                   ),
-                ],
-              ),
+
+                // QR scanner button
+                if (widget.controller.text.isEmpty)
+                  InkWell(
+                    borderRadius: BorderRadius.circular(EnvoySpacing.large3),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: _verticalPadding),
+                      child: const EnvoyIcon(
+                        EnvoyIcons.scan,
+                        color: EnvoyColors.accentPrimary,
+                        size: EnvoyIconSize.extraSmall,
+                      ),
+                    ),
+                    onTap: () {
+                      showScannerDialog(
+                        context: context,
+                        onBackPressed: (context) {
+                          Navigator.pop(context);
+                        },
+                        decoder: GenericQrDecoder(
+                          onScan: (code) {
+                            Navigator.of(context, rootNavigator: true).pop();
+                            setState(() {
+                              widget.controller.text = code;
+                            });
+                            widget.onChanged(code);
+                          },
+                        ),
+                      );
+                    },
+                  ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -594,32 +677,30 @@ class _AddressListItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: EnvoySpacing.medium1,
+          horizontal: EnvoySpacing.small,
           vertical: EnvoySpacing.small,
         ),
         margin: const EdgeInsets.only(bottom: 1),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.transparent,
           border: Border(
             bottom: BorderSide(
-              color: EnvoyColors.border1,
-              width: 0.5,
+              color: NewEnvoyColor.borderTertiary,
+              width: 1,
             ),
           ),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Index
-            SizedBox(
-              width: 24,
-              child: Text(
-                "${addressInfo.index}:",
-                style: EnvoyTypography.body.copyWith(
-                  color: isHighlighted
-                      ? EnvoyColors.accentPrimary
-                      : EnvoyColors.textSecondary,
-                  fontWeight: FontWeight.w500,
-                ),
+            Text(
+              "${addressInfo.index}:",
+              style: EnvoyTypography.body.copyWith(
+                color: isHighlighted
+                    ? NewEnvoyColor.contentNotice
+                    : EnvoyColors.textSecondary,
+                fontWeight: FontWeight.w500,
               ),
             ),
             const SizedBox(width: EnvoySpacing.small),
@@ -630,29 +711,17 @@ class _AddressListItem extends StatelessWidget {
                 _formatAddress(addressInfo.address),
                 style: EnvoyTypography.body.copyWith(
                   color: isHighlighted
-                      ? EnvoyColors.accentPrimary
+                      ? NewEnvoyColor.contentNotice
                       : EnvoyColors.textPrimary,
                 ),
               ),
             ),
 
             // Balance
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                EnvoyAmount(
-                  account: account,
-                  amountSats: addressInfo.balanceSats,
-                  amountWidgetStyle: AmountWidgetStyle.singleLine,
-                ),
-                if (Settings().selectedFiat != null)
-                  Text(
-                    _formatFiatAmount(addressInfo.balanceSats),
-                    style: EnvoyTypography.label.copyWith(
-                      color: EnvoyColors.textTertiary,
-                    ),
-                  ),
-              ],
+            EnvoyAmount(
+              account: account,
+              amountSats: addressInfo.balanceSats,
+              amountWidgetStyle: AmountWidgetStyle.normal,
             ),
           ],
         ),
@@ -663,11 +732,6 @@ class _AddressListItem extends StatelessWidget {
   String _formatAddress(String address) {
     if (address.length <= 20) return address;
     return "${address.substring(0, 8)} ... ${address.substring(address.length - 8)}";
-  }
-
-  String _formatFiatAmount(int sats) {
-    final fiatValue = ExchangeRate().getUsdValue(sats);
-    return "\$${fiatValue.toStringAsFixed(2)}";
   }
 }
 
@@ -702,12 +766,6 @@ class _FilterModalState extends State<_FilterModal> {
       if (_filters.contains(filter)) {
         _filters.remove(filter);
       } else {
-        // Used and Unused are mutually exclusive
-        if (filter == AddressFilter.used) {
-          _filters.remove(AddressFilter.unused);
-        } else if (filter == AddressFilter.unused) {
-          _filters.remove(AddressFilter.used);
-        }
         _filters.add(filter);
       }
     });
@@ -726,7 +784,6 @@ class _FilterModalState extends State<_FilterModal> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Handle
           Center(
             child: Container(
               width: 40,
@@ -739,22 +796,26 @@ class _FilterModalState extends State<_FilterModal> {
           ),
           const SizedBox(height: EnvoySpacing.medium2),
 
-          // Header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Filter", // TODO: Add to l10n
-                style: EnvoyTypography.subheading,
+                S().component_filter,
+                style: EnvoyTypography.subheading.setWeight(FontWeight.w500),
               ),
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    _filters.clear();
+                    // Reset to all filters selected (show all)
+                    _filters = {
+                      AddressFilter.used,
+                      AddressFilter.unused,
+                      AddressFilter.zeroBalance,
+                    };
                   });
                 },
                 child: Text(
-                  "Reset filter", // TODO: Add to l10n
+                  S().component_resetFilter,
                   style: EnvoyTypography.body.copyWith(
                     color: EnvoyColors.accentPrimary,
                   ),
@@ -769,22 +830,22 @@ class _FilterModalState extends State<_FilterModal> {
             spacing: EnvoySpacing.small,
             runSpacing: EnvoySpacing.small,
             children: [
-              _ModalFilterChip(
-                label: S().exploreAddresses_listFilter_used,
+              EnvoyFilterChip(
+                text: S().exploreAddresses_listFilter_used,
                 icon: EnvoyIcons.alert,
-                isSelected: _filters.contains(AddressFilter.used),
+                selected: _filters.contains(AddressFilter.used),
                 onTap: () => _toggleFilter(AddressFilter.used),
               ),
-              _ModalFilterChip(
-                label: S().exploreAddresses_listFilter_unused,
-                icon: EnvoyIcons.check,
-                isSelected: _filters.contains(AddressFilter.unused),
+              EnvoyFilterChip(
+                text: S().exploreAddresses_listFilter_unused,
+                icon: EnvoyIcons.checked_circle,
+                selected: _filters.contains(AddressFilter.unused),
                 onTap: () => _toggleFilter(AddressFilter.unused),
               ),
-              _ModalFilterChip(
-                label: S().exploreAddresses_listFilter_zeroBalance,
-                icon: EnvoyIcons.btc,
-                isSelected: _filters.contains(AddressFilter.zeroBalance),
+              EnvoyFilterChip(
+                text: S().exploreAddresses_listFilter_zeroBalance,
+                icon: EnvoyIcons.coins,
+                selected: _filters.contains(AddressFilter.zeroBalance),
                 onTap: () => _toggleFilter(AddressFilter.zeroBalance),
               ),
             ],
@@ -797,8 +858,8 @@ class _FilterModalState extends State<_FilterModal> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Sort by", // TODO: Add to l10n
-                style: EnvoyTypography.subheading,
+                S().component_sortBy,
+                style: EnvoyTypography.subheading.setWeight(FontWeight.w500),
               ),
               GestureDetector(
                 onTap: () {
@@ -807,7 +868,7 @@ class _FilterModalState extends State<_FilterModal> {
                   });
                 },
                 child: Text(
-                  "Reset sorting", // TODO: Add to l10n
+                  S().component_resetSorting,
                   style: EnvoyTypography.body.copyWith(
                     color: EnvoyColors.accentPrimary,
                   ),
@@ -818,18 +879,18 @@ class _FilterModalState extends State<_FilterModal> {
           const SizedBox(height: EnvoySpacing.medium1),
 
           // Sort options
-          _SortOption(
-            label: S().filter_sortBy_highest,
-            isSelected: _sort == AddressSort.highestValue,
+          CheckBoxFilterItem(
+            text: S().filter_sortBy_highest,
+            checked: _sort == AddressSort.highestValue,
             onTap: () {
               setState(() {
                 _sort = AddressSort.highestValue;
               });
             },
           ),
-          _SortOption(
-            label: S().filter_sortBy_lowest,
-            isSelected: _sort == AddressSort.lowestValue,
+          CheckBoxFilterItem(
+            text: S().filter_sortBy_lowest,
+            checked: _sort == AddressSort.lowestValue,
             onTap: () {
               setState(() {
                 _sort = AddressSort.lowestValue;
@@ -843,228 +904,12 @@ class _FilterModalState extends State<_FilterModal> {
           SizedBox(
             width: double.infinity,
             child: EnvoyButton(
-              "Apply", // TODO: Add to l10n
+              S().component_apply,
               onTap: () => widget.onApply(_filters, _sort),
             ),
           ),
+          const SizedBox(height: EnvoySpacing.medium3),
         ],
-      ),
-    );
-  }
-}
-
-class _ModalFilterChip extends StatelessWidget {
-  final String label;
-  final EnvoyIcons icon;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _ModalFilterChip({
-    required this.label,
-    required this.icon,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: EnvoySpacing.medium1,
-          vertical: EnvoySpacing.small,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected ? EnvoyColors.accentPrimary : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? EnvoyColors.accentPrimary : EnvoyColors.border1,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            EnvoyIcon(
-              icon,
-              color: isSelected
-                  ? EnvoyColors.textPrimaryInverse
-                  : EnvoyColors.textSecondary,
-              size: EnvoyIconSize.extraSmall,
-            ),
-            const SizedBox(width: EnvoySpacing.xs),
-            Text(
-              label,
-              style: EnvoyTypography.label.copyWith(
-                color: isSelected
-                    ? EnvoyColors.textPrimaryInverse
-                    : EnvoyColors.textPrimary,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SortOption extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _SortOption({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
-        child: Row(
-          children: [
-            Container(
-              width: 20,
-              height: 20,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected
-                      ? EnvoyColors.accentPrimary
-                      : EnvoyColors.textTertiary,
-                  width: 2,
-                ),
-              ),
-              child: isSelected
-                  ? Center(
-                      child: Container(
-                        width: 10,
-                        height: 10,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: EnvoyColors.accentPrimary,
-                        ),
-                      ),
-                    )
-                  : null,
-            ),
-            const SizedBox(width: EnvoySpacing.medium1),
-            Text(
-              label,
-              style: EnvoyTypography.body,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _UsedAddressWarningDialog extends StatefulWidget {
-  final VoidCallback onBackToList;
-  final VoidCallback onShowAddress;
-  final Function(bool) onDontShowAgain;
-
-  const _UsedAddressWarningDialog({
-    required this.onBackToList,
-    required this.onShowAddress,
-    required this.onDontShowAgain,
-  });
-
-  @override
-  State<_UsedAddressWarningDialog> createState() =>
-      _UsedAddressWarningDialogState();
-}
-
-class _UsedAddressWarningDialogState extends State<_UsedAddressWarningDialog> {
-  bool _dontShowAgain = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(EnvoySpacing.medium2),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const EnvoyIcon(
-              EnvoyIcons.alert,
-              color: EnvoyColors.accentSecondary,
-              size: EnvoyIconSize.big,
-            ),
-            const SizedBox(height: EnvoySpacing.medium1),
-            Text(
-              "Warning", // TODO: Add to l10n
-              style: EnvoyTypography.heading,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: EnvoySpacing.medium1),
-            Text(
-              "This address has been used at least once. When receiving Bitcoin it is a privacy best practice to use a new address.", // TODO: Add to l10n
-              style: EnvoyTypography.info.copyWith(
-                color: EnvoyColors.textSecondary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: EnvoySpacing.small),
-            GestureDetector(
-              onTap: () {
-                // TODO: Open learn more link
-              },
-              child: Text(
-                "Learn more", // TODO: Add to l10n
-                style: EnvoyTypography.body.copyWith(
-                  color: EnvoyColors.accentPrimary,
-                ),
-              ),
-            ),
-            const SizedBox(height: EnvoySpacing.medium1),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Checkbox(
-                  value: _dontShowAgain,
-                  onChanged: (value) {
-                    setState(() {
-                      _dontShowAgain = value ?? false;
-                    });
-                    widget.onDontShowAgain(_dontShowAgain);
-                  },
-                  activeColor: EnvoyColors.accentPrimary,
-                ),
-                Text(
-                  "Don't show again", // TODO: Add to l10n
-                  style: EnvoyTypography.body,
-                ),
-              ],
-            ),
-            const SizedBox(height: EnvoySpacing.medium1),
-            SizedBox(
-              width: double.infinity,
-              child: EnvoyButton(
-                "Back to List", // TODO: Add to l10n
-                type: EnvoyButtonTypes.secondary,
-                onTap: widget.onBackToList,
-              ),
-            ),
-            const SizedBox(height: EnvoySpacing.small),
-            SizedBox(
-              width: double.infinity,
-              child: EnvoyButton(
-                "Show Address", // TODO: Add to l10n
-                onTap: widget.onShowAddress,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

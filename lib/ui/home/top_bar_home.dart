@@ -69,6 +69,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     bool backDropEnabled = homePageDropState != HomePageBackgroundState.hidden;
 
     String homePageTitle = ref.watch(homePageTitleProvider);
+    int? currentAddressIndex = ref.watch(currentAddressDetailIndexProvider);
 
     ref.listen(
       homePageBackgroundProvider,
@@ -135,7 +136,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       }
     }
 
-    String title = _getTitle(path, homePageTitle);
+    String title = _getTitle(path, homePageTitle, currentAddressIndex);
 
     return AppBar(
       // Get rid of the shadow
@@ -296,7 +297,11 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     return false;
   }
 
-  String _getTitle(String path, String defaultTitle) {
+  String _getTitle(String path, String defaultTitle, int? addressIndex) {
+    // Check if we're viewing an address detail
+    if (addressIndex != null) {
+      return S().exploreAddresses_qr_header(addressIndex);
+    }
     if (defaultTitle.isNotEmpty) return defaultTitle;
     switch (path) {
       case ROUTE_DEVICES:
@@ -327,6 +332,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         return S().header_buyBitcoin;
       case ROUTE_ACCOUNT_TRANSFER:
         return S().bottomNav_transfer;
+      case ROUTE_ACCOUNT_ADDRESSES:
+        return S().exploreAdresses_activityOptions_exploreAddresses;
       default:
         return S().menu_heading;
     }
