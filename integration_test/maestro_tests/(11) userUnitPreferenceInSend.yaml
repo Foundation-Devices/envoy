@@ -4,13 +4,6 @@
 
 appId: com.foundationdevices.envoy
 ---
-- launchApp:
-    clearState: false
-
-# make sure you entered the app again before testing
-- extendedWaitUntil:
-    visible: "ACCOUNTS"
-    timeout: 720000  # wait up to 12 min for it to appear
 
 # 1) Go to settings
 - tapOn:
@@ -165,3 +158,11 @@ appId: com.foundationdevices.envoy
 # check if the unit in the Staging is BTC
 - assertVisible:
     id: envoy_icon_btc
+
+# go back to home
+- tapOn:
+    id: envoy_icon_chevron_left
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu

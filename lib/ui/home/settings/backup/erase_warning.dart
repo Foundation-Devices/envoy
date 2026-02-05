@@ -4,7 +4,6 @@
 
 import 'dart:io';
 
-import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
@@ -18,6 +17,7 @@ import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/routes.dart';
+import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -31,16 +31,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
 
-class EraseWalletsAndBackupsWarning extends StatefulWidget {
+class EraseWalletsAndBackupsWarning extends ConsumerStatefulWidget {
   const EraseWalletsAndBackupsWarning({super.key});
 
   @override
-  State<EraseWalletsAndBackupsWarning> createState() =>
+  ConsumerState<EraseWalletsAndBackupsWarning> createState() =>
       _EraseWalletsAndBackupsWarningState();
 }
 
 class _EraseWalletsAndBackupsWarningState
-    extends State<EraseWalletsAndBackupsWarning> {
+    extends ConsumerState<EraseWalletsAndBackupsWarning> {
   final PageController _pageController = PageController();
 
   double estimateExpandablePageViewHeight(BuildContext context) {
@@ -163,7 +163,7 @@ class _EraseWalletsAndBackupsWarningState
                       onTap: () {
                         int currentPage = _pageController.page?.toInt() ?? 0;
                         if (currentPage == 1) {
-                          if (NgAccountManager().hotWalletAccountsEmpty()) {
+                          if (ref.read(hotWalletAccountsEmptyProvider)) {
                             // Safe to delete
                             displaySeedBeforeNuke(context);
                           } else {
