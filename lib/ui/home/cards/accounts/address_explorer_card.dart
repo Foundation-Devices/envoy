@@ -262,9 +262,7 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.large1),
       child: Text(
-        S().exploreAddresses_searchError_notFound,
-        // TODO: fix localazy
-        // "Address not found in the first $_searchedAddressCount addresses.",
+        S().exploreAddresses_searchError_notFound(_searchedAddressCount),
         style: EnvoyTypography.info.copyWith(
           color: EnvoyColors.contentSecondary,
         ),

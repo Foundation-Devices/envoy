@@ -35,36 +35,39 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(number) => "ADDRESS #${number}";
 
-  static String m6(time_remaining) => "${time_remaining} remaining";
+  static String m6(searchSpace) =>
+      "Address not found in the first ${searchSpace} addresses.";
 
-  static String m7(current_keyOS_version) =>
+  static String m7(time_remaining) => "${time_remaining} remaining";
+
+  static String m8(current_keyOS_version) =>
       "Your Passport Prime is currently running ${current_keyOS_version}.\n\nUpdate now for the latest bug fixes and features.";
 
-  static String m8(est_upd_time) => "Estimated Update Time: ${est_upd_time}";
+  static String m9(est_upd_time) => "Estimated Update Time: ${est_upd_time}";
 
-  static String m9(new_keyOS_version) => "What’s New in ${new_keyOS_version}";
+  static String m10(new_keyOS_version) => "What’s New in ${new_keyOS_version}";
 
-  static String m10(new_keyOS_version) =>
+  static String m11(new_keyOS_version) =>
       "Passport Prime was successfully \nupdated to ${new_keyOS_version}";
 
-  static String m11(amount, total_amount) =>
+  static String m12(amount, total_amount) =>
       "Re-syncing your accounts.\nPlease do not close Envoy.\n\n${amount} of ${total_amount} synced";
 
-  static String m12(passport_color) => "Color: ${passport_color}";
+  static String m13(passport_color) => "Color: ${passport_color}";
 
-  static String m13(firmware_version) => "Firmware: ${firmware_version}";
+  static String m14(firmware_version) => "Firmware: ${firmware_version}";
 
-  static String m14(serial_number) => "Serial Number: ${serial_number}";
-
-  static String m15(AccountName) =>
-      "Navigate to ${AccountName} on Passport, choose ‘Account Tools’ then ‘Verify Address’ and scan the QR code below.";
+  static String m15(serial_number) => "Serial Number: ${serial_number}";
 
   static String m16(AccountName) =>
+      "Navigate to ${AccountName} on Passport, choose ‘Account Tools’ then ‘Verify Address’ and scan the QR code below.";
+
+  static String m17(AccountName) =>
       "Tap the Account ${AccountName} on Passport, choose ‘Verify Address’ and scan the QR code below.";
 
-  static String m17(accoutname) => "Rescanning failed for ${accoutname} ";
+  static String m18(accoutname) => "Rescanning failed for ${accoutname} ";
 
-  static String m18(accoutname) =>
+  static String m19(accoutname) =>
       "Rescanning was successful for ${accoutname} ";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -1397,10 +1400,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "exploreAddresses_searchError_continueSearching":
             MessageLookupByLibrary.simpleMessage("Continue Searching"),
-        "exploreAddresses_searchError_notFound":
-            MessageLookupByLibrary.simpleMessage(
-          "Address not found in the first {searchSpace) addresses.",
-        ),
+        "exploreAddresses_searchError_notFound": m6,
         "exploreAdresses_activityOptions_deleteAccount":
             MessageLookupByLibrary.simpleMessage("Delete Account"),
         "exploreAdresses_activityOptions_editAccountName":
@@ -1504,16 +1504,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Downloading Update",
         ),
-        "firmware_downloadingUpdate_timeRemaining": m6,
+        "firmware_downloadingUpdate_timeRemaining": m7,
         "firmware_downloadingUpdate_transferring":
             MessageLookupByLibrary.simpleMessage(
                 "Transferring to Passport Prime"),
-        "firmware_updateAvailable_content2": m7,
-        "firmware_updateAvailable_estimatedUpdateTime": m8,
+        "firmware_updateAvailable_content2": m8,
+        "firmware_updateAvailable_estimatedUpdateTime": m9,
         "firmware_updateAvailable_header": MessageLookupByLibrary.simpleMessage(
           "Update Available",
         ),
-        "firmware_updateAvailable_whatsNew": m9,
+        "firmware_updateAvailable_whatsNew": m10,
         "firmware_updateError_downloadFailed":
             MessageLookupByLibrary.simpleMessage(
           "Failed to Download",
@@ -1543,7 +1543,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Reconnecting…"),
         "firmware_updateModalConnectionLost_tryToReconnect":
             MessageLookupByLibrary.simpleMessage("Try to Reconnect"),
-        "firmware_updateSuccess_content1": m10,
+        "firmware_updateSuccess_content1": m11,
         "firmware_updateSuccess_content2": MessageLookupByLibrary.simpleMessage(
           "Continue the setup on Passport Prime.",
         ),
@@ -2254,7 +2254,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_magicUserMobileUploading_header":
             MessageLookupByLibrary.simpleMessage("Uploading Your Backup"),
-        "onboarding_migrating_xOfYSynced": m11,
+        "onboarding_migrating_xOfYSynced": m12,
         "onboarding_modalBluetoothUnableConnect_content":
             MessageLookupByLibrary.simpleMessage(
           "Ensure sure Bluetooth is enabled on Passport and your phone, and that both devices are nearby.",
@@ -2377,9 +2377,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Envoy ofereix una configuració segura de Passport, actualitzacions fàcils de programari i una experiència zen de cartera Bitcoin.",
         ),
-        "prime_info_color": m12,
-        "prime_info_firmware": m13,
-        "prime_info_serialNumber": m14,
+        "prime_info_color": m13,
+        "prime_info_firmware": m14,
+        "prime_info_serialNumber": m15,
         "privacySetting_nodeConnected": MessageLookupByLibrary.simpleMessage(
           "Node Connectat",
         ),
@@ -2525,8 +2525,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "receive_tx_list_transfer": MessageLookupByLibrary.simpleMessage(
           "Transfer",
         ),
-        "receive_verifyModalCore_content": m15,
-        "receive_verifyModalPrime_content": m16,
+        "receive_verifyModalCore_content": m16,
+        "receive_verifyModalPrime_content": m17,
         "recovery_scenario_Android_instruction1":
             MessageLookupByLibrary.simpleMessage(
           "Inicia sessió a Google i restaura les teves dades de la teva còpia de seguretat",
@@ -2673,12 +2673,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "rescanAccount_sizeModal_header": MessageLookupByLibrary.simpleMessage(
           "Rescan Account",
         ),
-        "rescanAccount_toast_rescanningFailed": m17,
+        "rescanAccount_toast_rescanningFailed": m18,
         "rescanAccount_toast_rescanningStarted":
             MessageLookupByLibrary.simpleMessage(
           "Rescanning started. Please do not close Envoy.",
         ),
-        "rescanAccount_toast_rescanningSuccessful": m18,
+        "rescanAccount_toast_rescanningSuccessful": m19,
         "scv_cameraModalUnexpectedQrFormat_content":
             MessageLookupByLibrary.simpleMessage(
           "Ensure you are scanning a security check QR code from Passport.",

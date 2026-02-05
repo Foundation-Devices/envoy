@@ -462,7 +462,7 @@
   "exploreAddresses_qr_header": "ADDRESS #{number}",
   "exploreAddresses_qr_warningReused": "This address has already been used. Avoid address reuse to preserve your privacy. ",
   "exploreAddresses_searchError_continueSearching": "Continue Searching",
-  "exploreAddresses_searchError_notFound": "Address not found in the first {searchSpace) addresses.",
+  "exploreAddresses_searchError_notFound": "Address not found in the first {searchSpace} addresses.",
   "exploreAdresses_activityOptions_deleteAccount": "Delete Account",
   "exploreAdresses_activityOptions_editAccountName": "Edit Account Name",
   "exploreAdresses_activityOptions_exploreAddresses": "Explore Addresses",

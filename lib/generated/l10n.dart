@@ -4542,13 +4542,13 @@ class S {
     );
   }
 
-  /// `Address not found in the first {searchSpace) addresses.`
-  String get exploreAddresses_searchError_notFound {
+  /// `Address not found in the first {searchSpace} addresses.`
+  String exploreAddresses_searchError_notFound(Object searchSpace) {
     return Intl.message(
-      'Address not found in the first {searchSpace) addresses.',
+      'Address not found in the first $searchSpace addresses.',
       name: 'exploreAddresses_searchError_notFound',
       desc: '',
-      args: [],
+      args: [searchSpace],
     );
   }
 
