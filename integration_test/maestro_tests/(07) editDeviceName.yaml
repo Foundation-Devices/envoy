@@ -4,13 +4,6 @@
 
 appId: com.foundationdevices.envoy
 ---
-- launchApp:
-    clearState: false
-
-# make sure you entered the app again before testing
-- extendedWaitUntil:
-    visible: "ACCOUNTS"
-    timeout: 720000  # wait up to 12 min for it to appear
 
 - tapOn: Devices
 
@@ -76,3 +69,6 @@ appId: com.foundationdevices.envoy
 - assertVisible: |-
     Passport
     Founder's Edition
+
+# go back to Home
+- tapOn: Accounts

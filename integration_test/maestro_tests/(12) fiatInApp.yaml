@@ -4,14 +4,6 @@
 
 appId: com.foundationdevices.envoy
 ---
-- launchApp:
-    clearState: false
-
-# make sure you entered the app again before testing
-- extendedWaitUntil:
-    visible: "ACCOUNTS"
-    timeout: 720000  # wait up to 12 min for it to appear
-
 
 # 1) Go to settings
 - tapOn:
@@ -40,8 +32,17 @@ appId: com.foundationdevices.envoy
 - assertVisible:
     text: $
 
-# in Received
-- tapOn: Received
+# in Received or Sent transaction
+- runFlow:
+    when:
+      visible: Received
+    commands:
+      - tapOn: Received
+- runFlow:
+    when:
+      notVisible: Received
+    commands:
+      - tapOn: Sent
 - assertVisible:
     text: $
 
@@ -131,3 +132,17 @@ appId: com.foundationdevices.envoy
 
 - assertVisible:
     text: $
+
+# close the snack bar
+- swipe:
+    from:
+      id: envoy_icon_utxo
+    direction: DOWN
+
+# go back to home
+- tapOn:
+    id: envoy_icon_chevron_left
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu

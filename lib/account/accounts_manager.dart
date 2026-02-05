@@ -293,6 +293,7 @@ class NgAccountManager extends ChangeNotifier {
     return false;
   }
 
+  @Deprecated('Use hotWalletAccountsEmptyProvider instead')
   bool hotWalletAccountsEmpty() {
     for (var account in accounts) {
       if (account.isHot && account.balance != BigInt.zero) {

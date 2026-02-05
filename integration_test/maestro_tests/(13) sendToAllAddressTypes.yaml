@@ -4,13 +4,6 @@
 
 appId: com.foundationdevices.envoy
 ---
-- launchApp:
-    clearState: false
-
-# make sure you entered the app again before testing
-- extendedWaitUntil:
-    visible: "ACCOUNTS"
-    timeout: 720000  # wait up to 12 min for it to appear
 
 - tapOn: GH TEST ACC (#1)
 
@@ -142,3 +135,11 @@ appId: com.foundationdevices.envoy
 - assertVisible:
     id: "primary_amount Total"
     text: "[1-9][0-9,]*"
+
+# go back to home
+- tapOn:
+    id: envoy_icon_chevron_left
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu

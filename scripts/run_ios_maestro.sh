@@ -74,6 +74,32 @@ if [[ "$1" == "--build" ]]; then
     shift
 fi
 
+# Test runner with video recording
+PASSED=0
+FAILED=0
+FAILED_TESTS=()
+
+run_single_test() {
+    local test_file="$1"
+    local test_name
+    test_name="$(basename "$test_file")"
+
+    echo -e "${YELLOW}Running: $test_name${NC}"
+
+    OUTPUT=$(maestro --device "$DEVICE_ID" test "$test_file" 2>&1)
+    EXIT_CODE=$?
+
+    if [ $EXIT_CODE -eq 0 ]; then
+        echo -e "${GREEN}✓ PASSED: $test_name${NC}"
+        ((PASSED++))
+    else
+        echo -e "${RED}✗ FAILED: $test_name${NC}"
+        echo "$OUTPUT" | tail -20
+        ((FAILED++))
+        FAILED_TESTS+=("$test_name")
+    fi
+}
+
 # Check if a specific test was provided
 if [ -n "$1" ]; then
     TEST_FILE="$TESTS_DIR/$1"
@@ -81,25 +107,33 @@ if [ -n "$1" ]; then
         echo -e "${RED}Error: Test file not found: $TEST_FILE${NC}"
         exit 1
     fi
-    echo -e "${YELLOW}Running test: $1 on device $DEVICE_ID${NC}"
-    maestro --device "$DEVICE_ID" test "$TEST_FILE"
+    run_single_test "$TEST_FILE"
 else
     # Run all tests in the folder
     echo -e "${YELLOW}Running all tests on device $DEVICE_ID${NC}"
     for test_file in "$TESTS_DIR"/*.yaml; do
         if [ -f "$test_file" ]; then
-            echo -e "${YELLOW}Running: $(basename "$test_file")${NC}"
-            maestro --device "$DEVICE_ID" test "$test_file"
+            run_single_test "$test_file"
         fi
     done
 fi
 
-EXIT_CODE=$?
+# Summary
+echo ""
+echo -e "${GREEN}=== Test Summary ===${NC}"
+echo -e "Total: $((PASSED + FAILED))"
+echo -e "${GREEN}Passed: $PASSED${NC}"
+echo -e "${RED}Failed: $FAILED${NC}"
 
-if [ $EXIT_CODE -eq 0 ]; then
-    echo -e "${GREEN}=== Tests completed successfully ===${NC}"
-else
-    echo -e "${RED}=== Tests failed ===${NC}"
+if [ ${#FAILED_TESTS[@]} -gt 0 ]; then
+    echo -e "${RED}Failed tests:${NC}"
+    for test in "${FAILED_TESTS[@]}"; do
+        echo -e "  ${RED}•${NC} $test"
+    done
 fi
 
-exit $EXIT_CODE
+if [ $FAILED -gt 0 ]; then
+    exit 1
+fi
+
+exit 0

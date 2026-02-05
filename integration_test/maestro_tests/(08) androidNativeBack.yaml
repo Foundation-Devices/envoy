@@ -4,13 +4,6 @@
 
 appId: com.foundationdevices.envoy
 ---
-- launchApp:
-    clearState: false
-
-# make sure you entered the app again before testing
-- extendedWaitUntil:
-    visible: "ACCOUNTS"
-    timeout: 720000  # wait up to 12 min for it to appear
 
 - tapOn:
     id: hamburger_menu
@@ -58,3 +51,7 @@ appId: com.foundationdevices.envoy
 
 # confirm you are back to Envoy
 - assertVisible: ENVOY
+
+# go back to home
+- tapOn:
+    id: hamburger_menu
