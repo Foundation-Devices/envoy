@@ -410,10 +410,8 @@ impl EnvoyAccountHandler {
             .collect::<Vec<(String, AddressType)>>()
     }
 
-    /// Get addresses at specific indices without revealing them.
-    /// Returns a list of (index, address) tuples for the given address type and index range.
-    /// This is useful for displaying address lists in an address explorer UI.
-    /// Set `is_change` to true to get change (internal) addresses, false for receive (external) addresses.
+    /// Get addresses for the given index range without revealing them.
+    /// Set `is_change` to true for change addresses, false for receive addresses.
     pub fn peek_addresses(
         &self,
         address_type: AddressType,
