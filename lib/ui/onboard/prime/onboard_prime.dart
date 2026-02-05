@@ -64,7 +64,6 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
 
   Future<void> _checkConnectivity() async {
     final canReach = await ScvServer().canReachPrimeServer();
-
     if (!mounted) return;
 
     if (canReach) {
@@ -81,12 +80,12 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   }
 
   void _scheduleRetry() {
+    setState(() {
+      _isFirstAttempt = false;
+    });
     _retryTimer?.cancel();
     _retryTimer = Timer(const Duration(seconds: 5), () {
       if (mounted && _connectivityState != ConnectivityState.connected) {
-        setState(() {
-          _isFirstAttempt = false;
-        });
         _checkConnectivity();
       }
     });
