@@ -4,6 +4,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
@@ -146,6 +147,10 @@ class ScvServer {
   /// Returns true if we can connect to the server, false otherwise.
   Future<bool> canReachPrimeServer() async {
     try {
+      //DNS lookup for faster network check
+      final uri = Uri.parse(ScvServer.primeSecurityCheckBaseUrl);
+      await InternetAddress.lookup(uri.host);
+
       final response = await http.get('$primeSecurityCheckBaseUrl/challenge');
       kPrint("connectivity check status code: ${response.statusCode}");
       return response.statusCode == 200;
