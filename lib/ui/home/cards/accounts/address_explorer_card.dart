@@ -262,7 +262,9 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.large1),
       child: Text(
-        "Address not found in the first $_searchedAddressCount addresses.",
+        S().exploreAddresses_searchError_notFound,
+        // TODO: fix localazy
+        // "Address not found in the first $_searchedAddressCount addresses.",
         style: EnvoyTypography.info.copyWith(
           color: EnvoyColors.contentSecondary,
         ),
@@ -466,7 +468,7 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
               child: EnvoyButton(
                 _isContinueSearching
                     ? S().component_searching
-                    : "Continue Searching",
+                    : S().exploreAddresses_searchError_continueSearching,
                 onTap: _isContinueSearching ? null : _continueSearching,
                 leading: _isContinueSearching
                     ? EnvoyActivityIndicator(

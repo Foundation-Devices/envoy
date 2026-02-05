@@ -1388,6 +1388,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Esta dirección ya ha sido utilizada. Evita reutilizar direcciones para preservar tu privacidad. ",
         ),
+        "exploreAddresses_searchError_continueSearching":
+            MessageLookupByLibrary.simpleMessage("Continue Searching"),
+        "exploreAddresses_searchError_notFound":
+            MessageLookupByLibrary.simpleMessage(
+          "Address not found in the first {searchSpace) addresses.",
+        ),
         "exploreAdresses_activityOptions_deleteAccount":
             MessageLookupByLibrary.simpleMessage("Eliminar Cuenta"),
         "exploreAdresses_activityOptions_editAccountName":
@@ -2272,6 +2278,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_passpportSelectCamera_tapHere":
             MessageLookupByLibrary.simpleMessage("Pulsa aquí"),
+        "onboarding_primeIntroError_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Unable to connect to the internet. Please check your connection .",
+        ),
         "onboarding_primeIntro_content": MessageLookupByLibrary.simpleMessage(
           "Enhorabuena por dar el primer paso para asegurar toda tu vida digital.\n\nConfigurar tu Passport Prime sólo te llevará entre 5 y 10 minutos. ¡Coge tu dispositivo y empecemos!",
         ),

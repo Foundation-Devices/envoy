@@ -69,7 +69,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("6:15"),
+        "_": MessageLookupByLibrary.simpleMessage(
+          "bc1q abcd rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m 0p",
+        ),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences": MessageLookupByLibrary.simpleMessage(
           "Open Source Licences",
@@ -1346,7 +1348,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "exploreAddresses_listModal_showAddress":
             MessageLookupByLibrary.simpleMessage("Show Address"),
         "exploreAddresses_list_header": MessageLookupByLibrary.simpleMessage(
-          "Explore addresses",
+          "Explore Addresses",
         ),
         "exploreAddresses_qr_derivationPath":
             MessageLookupByLibrary.simpleMessage(
@@ -1356,6 +1358,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "exploreAddresses_qr_warningReused":
             MessageLookupByLibrary.simpleMessage(
           "This address has already been used. Avoid address reuse to preserve your privacy. ",
+        ),
+        "exploreAddresses_searchError_continueSearching":
+            MessageLookupByLibrary.simpleMessage("Continue Searching"),
+        "exploreAddresses_searchError_notFound":
+            MessageLookupByLibrary.simpleMessage(
+          "Address not found in the first {searchSpace) addresses.",
         ),
         "exploreAdresses_activityOptions_deleteAccount":
             MessageLookupByLibrary.simpleMessage("Delete Account"),
@@ -2192,6 +2200,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_passpportSelectCamera_tapHere":
             MessageLookupByLibrary.simpleMessage("Tap here"),
+        "onboarding_primeIntroError_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Unable to connect to the internet. Please check your connection .",
+        ),
         "onboarding_primeIntro_content": MessageLookupByLibrary.simpleMessage(
           "Congratulations on taking the first step to secure your entire digital life.\n\nSetting up your Passport Prime will take only 5-10 minutes. Pick up your device and let’s get started!",
         ),
