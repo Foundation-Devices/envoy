@@ -31,6 +31,10 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Get kebab_mcp dependencies
+        run: dart pub get
+        working-directory: packages/kebab_mcp
+
       - name: Verify Dart formatting
         run: dart format --output=none --set-exit-if-changed .
 
