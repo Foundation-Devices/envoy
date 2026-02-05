@@ -199,14 +199,14 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                                           height: EnvoySpacing.medium1),
                                       EnvoyIcon(
                                         EnvoyIcons.alert,
-                                        size: EnvoyIconSize.big,
-                                        color: EnvoyColors.danger,
+                                        size: EnvoyIconSize.small,
+                                        color: EnvoyColors.warning,
                                       ),
                                       const SizedBox(height: EnvoySpacing.xs),
                                       Text(
                                         S().onboarding_primeIntroError_content,
                                         style: EnvoyTypography.info.copyWith(
-                                          color: EnvoyColors.danger,
+                                          color: EnvoyColors.warning,
                                           decoration: TextDecoration.none,
                                         ),
                                         textAlign: TextAlign.center,
