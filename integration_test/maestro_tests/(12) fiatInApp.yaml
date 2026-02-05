@@ -32,8 +32,17 @@ appId: com.foundationdevices.envoy
 - assertVisible:
     text: $
 
-# in Received
-- tapOn: Received
+# in Received or Sent transaction
+- runFlow:
+    when:
+      visible: Received
+    commands:
+      - tapOn: Received
+- runFlow:
+    when:
+      notVisible: Received
+    commands:
+      - tapOn: Sent
 - assertVisible:
     text: $
 
@@ -123,6 +132,12 @@ appId: com.foundationdevices.envoy
 
 - assertVisible:
     text: $
+
+# close the snack bar
+- swipe:
+    from:
+      id: envoy_icon_utxo
+    direction: DOWN
 
 # go back to home
 - tapOn:

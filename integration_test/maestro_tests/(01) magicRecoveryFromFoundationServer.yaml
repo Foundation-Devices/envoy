@@ -5,7 +5,7 @@
 appId: com.foundationdevices.envoy
 ---
 - launchApp:
-    clearState: false
+    clearState: false # TODO: change this to true if running over GH !!!
 
 # Go to Advanced
 - tapOn: Advanced
