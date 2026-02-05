@@ -12,6 +12,7 @@
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		4BAFFFE02D0994DD00DAA96C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78ABDD292C46ED4500677063 /* CoreBluetooth.framework */; };
 		6990A7ED2EE0F44700CF4CD2 /* BleWriteQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6990A7EC2EE0F44100CF4CD2 /* BleWriteQueue.swift */; };
+		6990A7EE2EE0F44800CF4CD2 /* BleDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6990A7EF2EE0F44200CF4CD2 /* BleDevice.swift */; };
 		69F1741D2EB4C0F00017F73A /* BluetoothChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F1741C2EB4C0E30017F73A /* BluetoothChannel.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		787400C02955C8010097D2C3 /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BC2955C8010097D2C3 /* libur_ffi.a */; };
@@ -30,6 +31,7 @@
 		4BAFFFDA2D098D6900DAA96C /* bluart.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = bluart.framework; path = "../../../../../../../../envoy-dev/ios/build/Release-iphoneos/bluart.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		660DE6B27B6E0D8EE51ED7D2 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		6990A7EC2EE0F44100CF4CD2 /* BleWriteQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BleWriteQueue.swift; sourceTree = "<group>"; };
+		6990A7EF2EE0F44200CF4CD2 /* BleDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BleDevice.swift; sourceTree = "<group>"; };
 		69F1741C2EB4C0E30017F73A /* BluetoothChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothChannel.swift; sourceTree = "<group>"; };
 		6DCCC9D477C9A77939A776EF /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 		69F1741B2EB4C0DB0017F73A /* Ble */ = {
 			isa = PBXGroup;
 			children = (
+				6990A7EF2EE0F44200CF4CD2 /* BleDevice.swift */,
 				6990A7EC2EE0F44100CF4CD2 /* BleWriteQueue.swift */,
 				69F1741C2EB4C0E30017F73A /* BluetoothChannel.swift */,
 			);
@@ -319,6 +322,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				6990A7EE2EE0F44800CF4CD2 /* BleDevice.swift in Sources */,
 				6990A7ED2EE0F44700CF4CD2 /* BleWriteQueue.swift in Sources */,
 				69F1741D2EB4C0F00017F73A /* BluetoothChannel.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
