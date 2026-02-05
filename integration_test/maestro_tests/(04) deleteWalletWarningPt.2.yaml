@@ -19,3 +19,7 @@ appId: com.foundationdevices.envoy
 - tapOn: Continue
 
 - assertVisible: Delete Accounts anyway
+
+# go home
+- tapOn:
+    id: PopUp Primary Button
