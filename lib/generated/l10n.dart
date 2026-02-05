@@ -58,9 +58,14 @@ class S {
 
   // skipped getter for the 'FW_Version_No.' key
 
-  /// `6:15`
+  /// `bc1q abcd rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m 0p`
   String get _ {
-    return Intl.message('6:15', name: '_', desc: '', args: []);
+    return Intl.message(
+      'bc1q abcd rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m 0p',
+      name: '_',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `App Version`
@@ -4487,10 +4492,10 @@ class S {
     );
   }
 
-  /// `Explore addresses`
+  /// `Explore Addresses`
   String get exploreAddresses_list_header {
     return Intl.message(
-      'Explore addresses',
+      'Explore Addresses',
       name: 'exploreAddresses_list_header',
       desc: '',
       args: [],
@@ -4524,6 +4529,26 @@ class S {
       name: 'exploreAddresses_qr_warningReused',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Continue Searching`
+  String get exploreAddresses_searchError_continueSearching {
+    return Intl.message(
+      'Continue Searching',
+      name: 'exploreAddresses_searchError_continueSearching',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Address not found in the first {searchSpace} addresses.`
+  String exploreAddresses_searchError_notFound(Object searchSpace) {
+    return Intl.message(
+      'Address not found in the first $searchSpace addresses.',
+      name: 'exploreAddresses_searchError_notFound',
+      desc: '',
+      args: [searchSpace],
     );
   }
 
@@ -7322,6 +7347,16 @@ class S {
     return Intl.message(
       'Tap here',
       name: 'onboarding_passpportSelectCamera_tapHere',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to connect to the internet. Please check your connection .`
+  String get onboarding_primeIntroError_content {
+    return Intl.message(
+      'Unable to connect to the internet. Please check your connection .',
+      name: 'onboarding_primeIntroError_content',
       desc: '',
       args: [],
     );

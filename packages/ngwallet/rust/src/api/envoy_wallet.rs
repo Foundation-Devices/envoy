@@ -410,6 +410,44 @@ impl EnvoyAccountHandler {
             .collect::<Vec<(String, AddressType)>>()
     }
 
+    /// Get addresses for the given index range without revealing them.
+    /// Set `is_change` to true for change addresses, false for receive addresses.
+    pub fn peek_addresses(
+        &self,
+        address_type: AddressType,
+        from_index: u32,
+        to_index: u32,
+        is_change: bool,
+    ) -> Vec<(u32, String)> {
+        let account = self.ng_account.lock().unwrap();
+        let wallets = account.wallets.read().unwrap();
+
+        // Find wallet matching address_type
+        let wallet = wallets.iter().find(|w| w.address_type == address_type);
+        let keychain = if is_change {
+            KeychainKind::Internal
+        } else {
+            KeychainKind::External
+        };
+
+        if let Some(ng_wallet) = wallet {
+            let bdk_wallet = ng_wallet.bdk_wallet.lock().unwrap();
+            (from_index..to_index)
+                .filter_map(|idx| {
+                    bdk_wallet
+                        .peek_address(keychain, idx)
+                        .address
+                        .to_string()
+                        .into()
+                })
+                .enumerate()
+                .map(|(i, addr)| (from_index + i as u32, addr))
+                .collect()
+        } else {
+            vec![]
+        }
+    }
+
     pub fn request_full_scan(
         &mut self,
         address_type: AddressType,

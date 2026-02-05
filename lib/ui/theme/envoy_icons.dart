@@ -106,6 +106,7 @@ enum EnvoyIcons {
   stopwatch,
   locked,
   unlocked,
+  coins,
 }
 
 class EnvoyIcon extends StatelessWidget {
