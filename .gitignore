@@ -75,3 +75,6 @@ test/failures
 # direnv
 .direnv
 
+# Kebab mcp
+packages/kebab_mcp/bin/kebab_mcp
+
