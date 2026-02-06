@@ -1,0 +1,308 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+
+# Go to setting and enable fiat, we will need this later
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+- runFlow:
+    when:
+      visible:
+        id: "Show Fiat Toggle-false"
+    commands:
+      # turn it on
+      - tapOn:
+          id: Show Fiat Toggle-false
+      # refresh the settings page
+      - tapOn:
+          id: hamburger_menu
+      - tapOn: |-
+          SETTINGS
+          SETTINGS
+      # check if the fiat is ON
+      - assertVisible:
+          id: "Show Fiat Toggle-true"
+
+# turn BTC / disable sats
+- runFlow:
+    when:
+      visible:
+        id: "Display Unit Sats Toggle-true"
+    commands:
+      # turn it off
+      - tapOn:
+          id: Display Unit Sats Toggle-true
+      # refresh the settings page
+      - tapOn:
+          id: hamburger_menu
+      - tapOn: |-
+          SETTINGS
+          SETTINGS
+      # check if the fiat is ON
+      - assertVisible:
+          id: "Display Unit Sats Toggle-false"
+
+- tapOn: Advanced
+
+# make sure Signet is ON
+- runFlow:
+    when:
+      visible:
+        id: "Signet Toggle-false"
+    commands:
+      # turn it ON
+      - tapOn:
+          id: Signet Toggle-false
+      - tapOn: Continue
+      # refresh the settings page
+      - tapOn:
+          id: hamburger_menu
+      - tapOn: |-
+          SETTINGS
+          SETTINGS
+      # check if the fiat is ON
+      - tapOn: Advanced
+      - assertVisible:
+          id: "Signet Toggle-true"
+
+# go back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# check BTC
+- assertVisible:
+    id: envoy_icon_btc
+
+# go to activity
+- tapOn: Activity
+
+# check BTC
+- assertVisible:
+    id: envoy_icon_btc
+
+- tapOn: Accounts
+
+- scrollUntilVisible:
+    element:
+      text: Signet
+
+# go to account and send
+- tapOn: Signet
+
+# check BTC
+- assertVisible:
+    id: envoy_icon_btc
+
+- tapOn: Send
+
+
+    # cycle to fiat if not already there
+  # cycle order: sats → fiat → btc → sats
+
+# if on sats, tap once to get to fiat
+- runFlow:
+    when:
+      visible:
+        id: "amount_display sats"
+    commands:
+      - tapOn:
+          id: "amount_display sats"
+
+# if on btc, tap twice to get to fiat (btc → sats, refresh, sats → fiat)
+- runFlow:
+    when:
+      visible:
+        id: "amount_display btc"
+    commands:
+      - tapOn:
+          id: "amount_display btc"
+      - tapOn:
+          id: hamburger_menu
+      - tapOn: Send
+      - tapOn:
+          id: "amount_display sats"
+
+# after getting to fiat, check the bottom amount for BTC
+- assertVisible:
+    id: envoy_icon_btc
+
+# switch to sats for easy input
+# fiat → btc, refresh, btc → sats
+- tapOn:
+    id: "amount_display fiat"
+- tapOn:
+    id: "amount_display btc"
+# refresh send
+- tapOn:
+    id: hamburger_menu
+- tapOn: Send
+
+#check if sats
+- assertVisible:
+    id: envoy_icon_sats
+
+- tapOn: "5"
+- tapOn: "6"
+- tapOn: "7"
+
+# switch back to BTC
+# sats → fiat, refresh, fiat → btc
+- tapOn:
+    id: "amount_display sats"
+- tapOn:
+    id: "amount_display fiat"
+
+# enter address and confirm to send
+- tapOn: Enter address
+- inputText: "tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql"
+- tapOn: Back
+
+- tapOn: Confirm
+
+# now wait for it to go to staging
+- extendedWaitUntil:
+    visible: |-
+      Your transaction is ready 
+      to be sent
+      Confirm the transaction details are correct before sending.
+    timeout: 300000  # wait up to 5 min
+
+# check for BTC
+- assertVisible:
+    id: envoy_icon_btc
+
+- tapOn: View and Edit Details
+
+# check for BTC
+- assertVisible:
+    id: envoy_icon_btc
+
+# go back to home
+- tapOn: Back
+- tapOn:
+    id: envoy_icon_chevron_left
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+############################### now sats too
+
+# turn sats ON
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn:
+    id: Display Unit Sats Toggle-false
+
+# back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# check for sats
+- assertVisible:
+    id: envoy_icon_sats
+
+# in activity
+- tapOn: Activity
+
+# check for sats
+- assertVisible:
+    id: envoy_icon_sats
+
+- tapOn: Accounts
+- tapOn: Signet
+
+# check sats in account
+- assertVisible:
+    id: envoy_icon_sats
+
+- tapOn: Send
+
+# Make sure the first proposed unit is BTC (last selected in send was BTC)
+- assertVisible:
+    id: envoy_icon_btc
+
+# if on btc, tap twice to get to fiat (btc → sats, refresh, sats → fiat)
+- runFlow:
+    when:
+      visible:
+        id: "amount_display btc"
+    commands:
+      - tapOn:
+          id: "amount_display btc"
+      - tapOn:
+          id: hamburger_menu
+      - tapOn: Send
+      - tapOn:
+          id: "amount_display sats"
+
+# check that the number below fiat is in sats
+- assertVisible:
+    id: envoy_icon_sats
+
+# switch to sats for easy input
+# fiat → btc, refresh, btc → sats
+- tapOn:
+    id: "amount_display fiat"
+- tapOn:
+    id: "amount_display btc"
+# refresh send
+- tapOn:
+    id: hamburger_menu
+- tapOn: Send
+
+#check if sats
+- assertVisible:
+    id: envoy_icon_sats
+
+- tapOn: "5"
+- tapOn: "6"
+- tapOn: "7"
+
+# enter address and confirm to send
+- tapOn: Enter address
+- inputText: "tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql"
+- tapOn: Back
+
+- tapOn: Confirm
+
+# now wait for it to go to staging
+- extendedWaitUntil:
+    visible: |-
+      Your transaction is ready 
+      to be sent
+      Confirm the transaction details are correct before sending.
+    timeout: 300000  # wait up to 5 min
+
+# check for sats
+- assertVisible:
+    id: envoy_icon_sats
+
+- tapOn: View and Edit Details
+
+# check for sats
+- assertVisible:
+    id: envoy_icon_sats
+
+# go back to home
+- tapOn: Back
+- tapOn:
+    id: envoy_icon_chevron_left
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
