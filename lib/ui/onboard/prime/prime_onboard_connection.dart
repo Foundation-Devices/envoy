@@ -11,7 +11,6 @@ import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/handlers/scv_handler.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
@@ -29,6 +28,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:envoy/ui/envoy_button.dart';
 
 //TODO: this needs to go, once multiple primes are supported
 const String primeSerialPref = "prime_serial";
@@ -173,6 +173,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
       },
       child: EnvoyPatternScaffold(
           gradientHeight: 1.8,
+          shieldHeightFactor: 0.58,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
@@ -303,8 +304,8 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
             onTap: () {
               context.go("/");
             },
-            label: S().onboarding_connectionIntroError_exitSetup,
-            type: ButtonType.secondary,
+            S().onboarding_connectionIntroError_exitSetup,
+            type: EnvoyButtonTypes.secondary,
           ),
         ),
         EnvoyButton(
@@ -318,10 +319,10 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
                   "https://community.foundation.xyz/c/passport-prime/12"));
             }
           },
-          label: isNetworkError
+          isNetworkError
               ? S().common_button_retry
               : S().common_button_contactSupport,
-          type: ButtonType.primary,
+          type: EnvoyButtonTypes.primary,
         ),
       ],
     );

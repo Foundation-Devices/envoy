@@ -34,6 +34,7 @@ class EnvoyPatternScaffold extends StatefulWidget {
   final PreferredSizeWidget? appBar;
   final bool animate;
   final double gradientHeight;
+  final double shieldHeightFactor;
 
   const EnvoyPatternScaffold(
       {super.key,
@@ -42,7 +43,8 @@ class EnvoyPatternScaffold extends StatefulWidget {
       this.shield,
       this.header,
       this.heroTag,
-      this.gradientHeight = 1.5});
+      this.gradientHeight = 1.5,
+      this.shieldHeightFactor = 0.52});
 
   @override
   State<EnvoyPatternScaffold> createState() => _EnvoyPatternScaffoldState();
@@ -82,7 +84,8 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold> {
       ),
       bottomNavigationBar: SizedBox(
         width: double.infinity,
-        height: (MediaQuery.of(context).size.height * 0.52).clamp(350, 580),
+        height: (MediaQuery.of(context).size.height * widget.shieldHeightFactor)
+            .clamp(350, 650),
         child: Container(
             padding: EdgeInsets.only(bottom: shieldBottom),
             decoration: const BoxDecoration(
