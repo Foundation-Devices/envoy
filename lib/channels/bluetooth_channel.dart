@@ -322,4 +322,19 @@ class BluetoothChannel {
   Future<bool?> requestEnableBle() async {
     return await bleMethodChannel.invokeMethod<bool>("enableBluetooth");
   }
+
+  // Android only
+  Future<bool> isDeviceBonded(String bleId) async {
+    if (!Platform.isAndroid) {
+      throw Exception("isDeviceBonded is only supported on Android");
+    }
+    try {
+      final result = await bleMethodChannel
+          .invokeMethod<bool>('isDeviceBonded', {'bleId': bleId});
+      return result ?? false;
+    } catch (e) {
+      kPrint('Error checking if device is bonded: $e');
+      return false;
+    }
+  }
 }
