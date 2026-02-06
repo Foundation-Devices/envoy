@@ -2,7 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
+
 import 'package:envoy/business/local_storage.dart';
+import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -13,12 +16,15 @@ import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+enum ConnectivityState { checking, connected, disconnected }
 
 class OnboardPrimeWelcome extends StatefulWidget {
   const OnboardPrimeWelcome({super.key});
@@ -31,6 +37,9 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   final s = Settings();
   int colorWay = 1;
   bool onboardingComplete = false;
+  ConnectivityState _connectivityState = ConnectivityState.checking;
+  Timer? _retryTimer;
+  bool _isFirstAttempt = true;
 
   @override
   void initState() {
@@ -43,6 +52,42 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
         onboardingComplete = int.tryParse(params["o"] ?? "0") == 1;
         colorWay = int.tryParse(param) ?? 1;
       });
+      _checkConnectivity();
+    });
+  }
+
+  @override
+  void dispose() {
+    _retryTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _checkConnectivity() async {
+    final canReach = await ScvServer().canReachPrimeServer();
+    if (!mounted) return;
+
+    if (canReach) {
+      _retryTimer?.cancel();
+      setState(() {
+        _connectivityState = ConnectivityState.connected;
+      });
+    } else {
+      setState(() {
+        _connectivityState = ConnectivityState.disconnected;
+      });
+      _scheduleRetry();
+    }
+  }
+
+  void _scheduleRetry() {
+    setState(() {
+      _isFirstAttempt = false;
+    });
+    _retryTimer?.cancel();
+    _retryTimer = Timer(const Duration(seconds: 5), () {
+      if (mounted && _connectivityState != ConnectivityState.connected) {
+        _checkConnectivity();
+      }
     });
   }
 
@@ -138,6 +183,26 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
+                                    if (_connectivityState ==
+                                            ConnectivityState.disconnected &&
+                                        !_isFirstAttempt) ...[
+                                      const SizedBox(
+                                          height: EnvoySpacing.medium1),
+                                      EnvoyIcon(
+                                        EnvoyIcons.alert,
+                                        size: EnvoyIconSize.small,
+                                        color: EnvoyColors.warning,
+                                      ),
+                                      const SizedBox(height: EnvoySpacing.xs),
+                                      Text(
+                                        S().onboarding_primeIntroError_content,
+                                        style: EnvoyTypography.info.copyWith(
+                                          color: EnvoyColors.warning,
+                                          decoration: TextDecoration.none,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
                                   ],
                                 ),
                               ),
@@ -159,14 +224,34 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     const SizedBox(height: EnvoySpacing.medium1),
-                    EnvoyButton(S().component_continue, onTap: () {
-                      final params =
-                          GoRouter.of(context).state.uri.queryParameters;
-                      context.goNamed(
-                        ONBOARD_PRIME_BLUETOOTH,
-                        queryParameters: params,
-                      );
-                    }),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Opacity(
+                          opacity:
+                              _connectivityState == ConnectivityState.checking
+                                  ? 0.5
+                                  : 1,
+                          child: EnvoyButton(
+                            S().component_continue,
+                            enabled: _connectivityState ==
+                                ConnectivityState.connected,
+                            onTap: () {
+                              final params = GoRouter.of(context)
+                                  .state
+                                  .uri
+                                  .queryParameters;
+                              context.goNamed(
+                                ONBOARD_PRIME_BLUETOOTH,
+                                queryParameters: params,
+                              );
+                            },
+                          ),
+                        ),
+                        if (_connectivityState == ConnectivityState.checking)
+                          const CupertinoActivityIndicator(),
+                      ],
+                    ),
                     const SizedBox(height: EnvoySpacing.small),
                   ],
                 ),

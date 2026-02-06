@@ -11,7 +11,7 @@ edition = "2021"
 crate-type = ["cdylib", "staticlib", "rlib"]
 
 [dependencies]
-backup-shard = { git = "https://github.com/Foundation-Devices/foundation-api", tag = "5.2.0" }
+backup-shard = { git = "https://github.com/Foundation-Devices/foundation-api", tag = "5.4.1" }
 flutter_rust_bridge = "=2.11.1"
 log = "0.4.26"
 minicbor-derive = "0.17.0"

@@ -60,6 +60,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     private var isPickerPresented = false
     private var reconnectionTimer: Timer?
     private var reconnectionAttempts: Int = 0
+    private var isShuttingDown = false
 
     private let bleQueue = DispatchQueue(label: "com.envoy.ble", qos: .userInteractive)
 
@@ -259,6 +260,38 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         )
     }
 
+    /// Clean up Bluetooth resources before app termination.
+    /// This prevents CoreBluetooth callbacks from firing after Flutter engine is destroyed.
+    func cleanup() {
+        // Set flag first to prevent any further Flutter channel communication
+        isShuttingDown = true
+
+        // Stop any pending reconnection timers
+        stopReconnection()
+
+        // Stop scanning if active
+        centralManager?.stopScan()
+
+        // Clean up all device connections
+        for (_, device) in devices {
+            device.cleanup()
+        }
+        devices.removeAll()
+
+        // Clear all Flutter sinks to prevent callbacks to destroyed engine
+        eventSink = nil
+        scanEventSink = nil
+        setupResult = nil
+
+        // Clear accessory reference
+        primeAccessory = nil
+
+        // Remove delegate to prevent further callbacks
+        centralManager?.delegate = nil
+        centralManager = nil
+    }
+
+
     // Legacy single-device reconnect (for backward compatibility)
     private func attemptReconnection() {
         let accessories = session.accessories
@@ -417,6 +450,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             initWithAccessory(accessory: accessory)
         case .activated:
             print("Accessory discovery session activated .")
+            checkAndConnectToExistingAccessories()
         case .accessoryRemoved:
             handleAccessoryRemoved()
         case .pickerDidPresent:
@@ -468,6 +502,44 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
            central.state == .poweredOn
         {
             connectToAccessoryPeripheral(bluetoothId: bluetoothId)
+        }
+    }
+
+
+    private func checkAndConnectToExistingAccessories() {
+        let accessories = session.accessories
+
+        guard let existingAccessory = accessories.first else {
+            print("No existing accessories found on app open")
+            return
+        }
+
+        print("Found existing accessory on app open: \(existingAccessory.displayName)")
+
+        // Initialize with the existing accessory
+        primeAccessory = existingAccessory
+
+        // Initialize CoreBluetooth manager if needed
+        if centralManager == nil {
+            setupBluetoothManager()
+        }
+
+        // If accessory has Bluetooth identifier, connect to it
+        if let bluetoothId = existingAccessory.bluetoothIdentifier {
+            print("Auto-connecting to existing accessory with Bluetooth ID: \(bluetoothId)")
+
+            // Ensure QLConnection exists so channels are registered
+            let _ = getOrCreateDevice(deviceId: bluetoothId.uuidString)
+
+            // Send scan event to Flutter so UI can reflect the device
+            sendScanEvent(type: "device_found", deviceId: bluetoothId.uuidString, deviceName: existingAccessory.displayName)
+
+            // Connect if central manager is ready, otherwise it will connect when powered on
+            if let central = centralManager, central.state == .poweredOn {
+                connectToAccessoryPeripheral(bluetoothId: bluetoothId)
+            }
+        } else {
+            print("Existing accessory has no Bluetooth ID yet")
         }
     }
 
@@ -683,6 +755,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     // MARK: - Scan Event Sending
 
     private func sendScanEvent(type: String, deviceId: String? = nil, deviceName: String? = nil) {
+        guard !isShuttingDown else { return }
         let eventData: [String: Any?] = [
             "type": type,
             "deviceId": deviceId,
@@ -694,6 +767,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     }
 
     private func sendBluetoothState(_ state: CBManagerState) {
+        guard !isShuttingDown else { return }
         guard let sink = eventSink else { return }
 
         let stateString: String

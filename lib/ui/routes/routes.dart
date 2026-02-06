@@ -7,6 +7,8 @@ import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
+
+import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
@@ -19,11 +21,13 @@ import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/home_router.dart';
 import 'package:envoy/ui/shield.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
+import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
-import 'package:envoy/ui/home/home_page.dart';
 
 const ROUTE_SPLASH = 'onboard';
 const WALLET_SUCCESS = "wallet_ready";
@@ -96,6 +100,14 @@ final GoRouter mainRouter = GoRouter(
       name: "/",
       redirect: (context, state) {
         final params = state.uri.queryParameters;
+        //resets any home shell navs
+        try {
+          ProviderScope.containerOf(context)
+              .read(homePageBackgroundProvider.notifier)
+              .state = HomePageBackgroundState.hidden;
+        } catch (e) {
+          kPrint("Could not reset home shell nav state: $e");
+        }
 
         if (params.containsKey("p")) {
           WakelockPlus.enable();

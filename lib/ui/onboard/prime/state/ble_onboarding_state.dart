@@ -20,6 +20,17 @@ final onboardingDeviceProvider = StateProvider<QLConnection?>((ref) {
   return null;
 });
 
+/// Extended step model that includes error type for security check
+class SecurityStepModel extends StepModel {
+  final ScvErrorType errorType;
+
+  SecurityStepModel({
+    required super.stepName,
+    required super.state,
+    this.errorType = ScvErrorType.none,
+  });
+}
+
 /// Stream Providers for various BLE onboarding states
 final fwUpdateStreamProvider = StreamProvider<FwUpdateState>((ref) {
   final device = ref.watch(onboardingDeviceProvider);
@@ -76,6 +87,14 @@ class StepNotifier extends StateNotifier<StepModel> {
 
 final bleConnectionProvider = Provider<StepModel>((ref) {
   final asyncState = ref.watch(blePairingStreamProvider);
+  final lastState = ref
+      .watch(onboardingDeviceProvider)
+      ?.qlHandler
+      .bleOnboardHandler
+      .lastBleState;
+  if (!asyncState.hasValue && lastState != null) {
+    return StepModel(stepName: lastState.message, state: lastState.step);
+  }
   return asyncState.when(
     data: (data) {
       return StepModel(stepName: data.message, state: data.step);
@@ -91,21 +110,32 @@ final bleConnectionProvider = Provider<StepModel>((ref) {
   );
 });
 
-final deviceSecurityProvider = Provider<StepModel>((ref) {
+final deviceSecurityProvider = Provider<SecurityStepModel>((ref) {
   final asyncState = ref.watch(scvStateProvider);
+  final lastState = ref
+      .watch(onboardingDeviceProvider)
+      ?.qlHandler
+      .scvAccountHandler
+      .lastScvState;
+  if (!asyncState.hasValue && lastState != null) {
+    return SecurityStepModel(
+        stepName: lastState.message, state: lastState.step);
+  }
   return asyncState.when(
     data: (data) {
-      return StepModel(stepName: data.message, state: data.step);
+      return SecurityStepModel(
+          stepName: data.message, state: data.step, errorType: data.errorType);
     },
     loading: () {
-      return StepModel(
+      return SecurityStepModel(
           stepName: S().onboarding_connectionIntro_checkingDeviceSecurity,
           state: EnvoyStepState.IDLE);
     },
     error: (err, stack) {
-      return StepModel(
+      return SecurityStepModel(
           stepName: S().onboarding_connectionIntroError_securityCheckFailed,
-          state: EnvoyStepState.ERROR);
+          state: EnvoyStepState.ERROR,
+          errorType: ScvErrorType.verificationFailed);
     },
   );
 });

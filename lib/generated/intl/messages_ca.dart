@@ -69,7 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("6:15"),
+        "_": MessageLookupByLibrary.simpleMessage("Continue"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage(
           "Versió de l\'aplicació",
         ),
@@ -811,6 +811,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "common_button_contactSupport": MessageLookupByLibrary.simpleMessage(
           "Contact Support",
         ),
+        "common_button_retry": MessageLookupByLibrary.simpleMessage("Retry"),
         "component_12WordSeed": MessageLookupByLibrary.simpleMessage(
           "12 Word Seed",
         ),
@@ -876,6 +877,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "component_tryAgain": MessageLookupByLibrary.simpleMessage(
           "Torna-ho a Provar",
         ),
+        "component_unpair": MessageLookupByLibrary.simpleMessage("Unpair"),
         "component_update":
             MessageLookupByLibrary.simpleMessage("Actualització"),
         "component_warning":
@@ -947,6 +949,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Accessory removed, please reconnect Prime.",
         ),
+        "device_deviceDetailsPrimeRemoved_completeAccessorySetup":
+            MessageLookupByLibrary.simpleMessage("Complete Accessory Set Up"),
+        "device_deviceDetailsPrimeRemoved_pairPassportAgain":
+            MessageLookupByLibrary.simpleMessage("Pair Passport Again"),
         "device_deviceDetailsPrimeRemoved_reconnectPassport":
             MessageLookupByLibrary.simpleMessage("Reconnect Passport"),
         "device_deviceDetailsPrime_connected":
@@ -1762,10 +1768,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "manage_deviceDetailsModalDisconnectExistingPassport_disconnect":
             MessageLookupByLibrary.simpleMessage("Disconnect"),
         "manage_deviceDetailsModalDisconnectExistingPassport_header":
-            MessageLookupByLibrary.simpleMessage("Disconnect Existing Prime"),
+            MessageLookupByLibrary.simpleMessage("Unpair Existing Prime"),
+        "manage_deviceDetailsReconnectQL_reconnect":
+            MessageLookupByLibrary.simpleMessage("Re-connect QuantumLink"),
+        "manage_deviceDetailsUnpaired_pairAgain":
+            MessageLookupByLibrary.simpleMessage("Pair Again"),
         "manage_device_deletePassportWarning":
             MessageLookupByLibrary.simpleMessage(
           "Estàs segur que vols desconnectar Passport?\nAixò eliminarà el dispositiu d\'Envoy juntament amb els comptes connectats.",
+        ),
+        "manage_device_details_QuantumLink":
+            MessageLookupByLibrary.simpleMessage(
+          "Quantum Link",
+        ),
+        "manage_device_details_active": MessageLookupByLibrary.simpleMessage(
+          "Active",
         ),
         "manage_device_details_devicePaired":
             MessageLookupByLibrary.simpleMessage(
@@ -1775,13 +1792,25 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Sèrie",
         ),
+        "manage_device_details_disconnected":
+            MessageLookupByLibrary.simpleMessage(
+          "Disconnected",
+        ),
         "manage_device_details_heading": MessageLookupByLibrary.simpleMessage(
           "DETALLS DEL DISPOSITIU",
+        ),
+        "manage_device_details_inactive": MessageLookupByLibrary.simpleMessage(
+          "Inactive",
         ),
         "manage_device_details_menu_disconnectDevice":
             MessageLookupByLibrary.simpleMessage("Disconnect"),
         "manage_device_details_menu_editDevice":
             MessageLookupByLibrary.simpleMessage("EDITAR NOM DEL DISPOSITIU"),
+        "manage_device_details_menu_unpairPassport":
+            MessageLookupByLibrary.simpleMessage("Unpair Passport"),
+        "manage_device_details_unpaired": MessageLookupByLibrary.simpleMessage(
+          "Unpaired",
+        ),
         "manage_device_rename_modal_heading":
             MessageLookupByLibrary.simpleMessage(
           "Canvia el nom del teu Passport",
@@ -2132,14 +2161,26 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Security Check Passed"),
         "onboarding_connectionChecking_forUpdates":
             MessageLookupByLibrary.simpleMessage("Checking for Updates"),
+        "onboarding_connectionIntroError2_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Envoy failed to connect to Foundation Servers. Please make sure you are connected to the internet.",
+        ),
+        "onboarding_connectionIntroErrorInternet_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Unable to communicate with the security server. Check your internet connection and try again.",
+        ),
+        "onboarding_connectionIntroErrorInternet_securityCheckPending":
+            MessageLookupByLibrary.simpleMessage("Security Check Pending"),
         "onboarding_connectionIntroError_content":
             MessageLookupByLibrary.simpleMessage(
-          "This device may not be genuine or may have been tampered with during shipping.",
+          "This device may not be genuine or may have been tampered with during shipping. Contact support for assistance.",
         ),
         "onboarding_connectionIntroError_exitSetup":
             MessageLookupByLibrary.simpleMessage("Exit Setup"),
         "onboarding_connectionIntroError_securityCheckFailed":
             MessageLookupByLibrary.simpleMessage("Security Check Failed"),
+        "onboarding_connectionIntroError_securityCheckPending":
+            MessageLookupByLibrary.simpleMessage("Security Check Pending"),
         "onboarding_connectionIntroWarning_content":
             MessageLookupByLibrary.simpleMessage(
           "Ensure Passport Prime is powered on and near your phone.",
@@ -2158,10 +2199,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_connectionModalAbort_content":
             MessageLookupByLibrary.simpleMessage(
-          "Are you sure to exit the onboarding?",
+          "Only continue with this if you explicitly wish to lose all progress and start the Passport onboarding process from the beginning.",
         ),
         "onboarding_connectionModalAbort_header":
-            MessageLookupByLibrary.simpleMessage("Abort Onboarding?"),
+            MessageLookupByLibrary.simpleMessage("Exit Onboarding?"),
         "onboarding_connectionNoUpdates_noUpdates":
             MessageLookupByLibrary.simpleMessage("No Updates Available"),
         "onboarding_connectionUpdatesAvailable_updatesAvailable":
@@ -2218,6 +2259,10 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_passpportSelectCamera_tapHere":
             MessageLookupByLibrary.simpleMessage("Tap here"),
+        "onboarding_primeIntroError_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Unable to connect to the internet. Please check your connection .",
+        ),
         "onboarding_primeIntro_content": MessageLookupByLibrary.simpleMessage(
           "Congratulations on taking the first step to secure your entire digital life.\n\nSetting up your Passport Prime will take only 5-10 minutes. Pick up your device and let’s get started!",
         ),

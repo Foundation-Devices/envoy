@@ -405,7 +405,6 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   Future<bool> pairWithPrime(XidDocument payload) async {
-    print("deviceDX ${payload} $_onboardingDevice");
     return await _onboardingDevice?.pair(payload) ?? false;
   }
 

@@ -9,7 +9,7 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
-import 'package:envoy/ui/home/setup_overlay.dart' show addPassportAccount;
+import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/routes.dart';
@@ -57,6 +57,7 @@ final triedAutomaticRecovery = StateProvider((ref) => false);
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   List<EscapeHatchTap> escapeHatchTaps = [];
+  bool escapeHatchAccessed = false;
 
   Future<void> registerEscapeTap(EscapeHatchTap tap) async {
     final scaffold = ScaffoldMessenger.of(context);
@@ -68,6 +69,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             .getRange(0, min(escapeHatchTaps.length, secretCombination.length))
             .toList())) {
       if (escapeHatchTaps.length == secretCombination.length) {
+        escapeHatchAccessed = true;
         escapeHatchTaps.clear();
         try {
           //old storage configuration
@@ -129,7 +131,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             registerEscapeTap(EscapeHatchTap.logo);
           },
           onLongPress: () {
-            if (kDebugMode || ref.read(devModeEnabledProvider)) {
+            if (escapeHatchAccessed) {
               Settings().skipPrimeSecurityCheck = true;
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text("Security check disabled"),
@@ -250,37 +252,40 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       onBackPressed: (context) {
         Navigator.pop(context);
       },
-      decoder: DeviceDecoder(pairPayloadDecoder: PairPayloadDecoder(
-        onScan: (binary) {
-          addPassportAccount(binary, context);
-        },
-      ), onScan: (String payload) {
-        final uri = Uri.parse(payload);
-        final params = uri.queryParameters;
-
-        if (params.containsKey("p")) {
-          context.pop();
-          context.goNamed(ONBOARD_PRIME, queryParameters: params);
-        } else if (params.containsKey("t")) {
-          context.pop();
-          context.goNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
-        } else {
-          context.pop();
-          EnvoyToast(
-            replaceExisting: true,
-            duration: const Duration(seconds: 6),
-            message: "Invalid QR code",
-            isDismissible: true,
-            onActionTap: () {
-              EnvoyToast.dismissPreviousToasts(context);
+      decoder: DeviceDecoder(
+          pairPayloadDecoder: PairPayloadDecoder(
+            onScan: (binary) {
+              addPassportAccount(binary, context);
             },
-            icon: const Icon(
-              Icons.info_outline,
-              color: EnvoyColors.accentPrimary,
-            ),
-          ).show(context);
-        }
-      }),
+          ),
+          onXidScan: (xid) => pairWithDevice(context, xid),
+          onScan: (String payload) {
+            final uri = Uri.parse(payload);
+            final params = uri.queryParameters;
+
+            if (params.containsKey("p")) {
+              context.pop();
+              context.goNamed(ONBOARD_PRIME, queryParameters: params);
+            } else if (params.containsKey("t")) {
+              context.pop();
+              context.goNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
+            } else {
+              context.pop();
+              EnvoyToast(
+                replaceExisting: true,
+                duration: const Duration(seconds: 6),
+                message: "Invalid QR code",
+                isDismissible: true,
+                onActionTap: () {
+                  EnvoyToast.dismissPreviousToasts(context);
+                },
+                icon: const Icon(
+                  Icons.info_outline,
+                  color: EnvoyColors.accentPrimary,
+                ),
+              ).show(context);
+            }
+          }),
       child: LegacyFirmwareAlert(),
     );
   }

@@ -6,10 +6,11 @@
 import 'dart:async';
 
 import 'package:animations/animations.dart';
+import 'package:envoy/ble/handlers/scv_handler.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/components/button.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
@@ -83,20 +84,6 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
       }
       String id = LocalStorage().prefs.getString(primeSerialPref) ?? "";
       kPrint("Connecting to Prime with ID: $id");
-      // await bleStepNotifier.updateStep(
-      //     "Connecting to Prime", EnvoyStepState.LOADING);
-      await Future.delayed(const Duration(milliseconds: 200));
-      // await bleStepNotifier.updateStep(
-      //     S().onboarding_connectionIntro_connectedToPrime,
-      //     EnvoyStepState.FINISHED);
-
-      await Future.delayed(const Duration(milliseconds: 1000));
-      //
-      // await ref.read(deviceSecurityProvider.notifier).updateStep(
-      //     S().onboarding_connectionIntro_checkingDeviceSecurity,
-      //     EnvoyStepState.LOADING);
-      //
-      // await BluetoothManager().sendSecurityChallengeRequest();
     } catch (e) {
       kPrint(e);
     }
@@ -156,6 +143,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
       },
       child: EnvoyPatternScaffold(
           gradientHeight: 1.8,
+          shieldHeightFactor: 0.58,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
@@ -211,8 +199,8 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
     );
   }
 
-  Widget mainWidget(
-      StepModel deviceCheck, StepModel firmWareCheck, BuildContext context) {
+  Widget mainWidget(SecurityStepModel deviceCheck, StepModel firmWareCheck,
+      BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
           vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium1),
@@ -258,39 +246,59 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
             );
           })),
           if (deviceCheck.state == EnvoyStepState.ERROR)
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  S().onboarding_connectionIntroError_content,
-                  style: EnvoyTypography.body.copyWith(
-                    color: EnvoyColors.copperLight500,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: EnvoySpacing.medium1),
-                  child: EnvoyButton(
-                    onTap: () {
-                      context.go("/");
-                    },
-                    label: S().onboarding_connectionIntroError_exitSetup,
-                    type: ButtonType.secondary,
-                  ),
-                ),
-                EnvoyButton(
-                  onTap: () {
-                    launchUrl(Uri.parse(
-                        "https://community.foundation.xyz/c/passport-prime/12"));
-                  },
-                  label: S().common_button_contactSupport,
-                  type: ButtonType.primary,
-                ),
-              ],
-            ),
+            _buildErrorContent(deviceCheck, context),
         ],
       ),
+    );
+  }
+
+  Widget _buildErrorContent(
+      SecurityStepModel deviceCheck, BuildContext context) {
+    final isNetworkError = deviceCheck.errorType == ScvErrorType.networkError;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          isNetworkError
+              ? S().onboarding_connectionIntroErrorInternet_content
+              : S().onboarding_connectionIntroError_content,
+          style: EnvoyTypography.body.copyWith(
+            color: EnvoyColors.copperLight500,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
+          child: EnvoyButton(
+            onTap: () {
+              context.go("/");
+            },
+            S().onboarding_connectionIntroError_exitSetup,
+            type: EnvoyButtonTypes.secondary,
+          ),
+        ),
+        EnvoyButton(
+          onTap: () {
+            if (isNetworkError) {
+              // Retry the security check
+              ref
+                  .read(onboardingDeviceProvider)
+                  ?.qlHandler
+                  .scvAccountHandler
+                  .sendSecurityChallenge();
+            } else {
+              // Contact support for verification failure
+              launchUrl(Uri.parse(
+                  "https://community.foundation.xyz/c/passport-prime/12"));
+            }
+          },
+          isNetworkError
+              ? S().common_button_retry
+              : S().common_button_contactSupport,
+          type: EnvoyButtonTypes.primary,
+        ),
+      ],
     );
   }
 }

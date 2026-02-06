@@ -33,6 +33,8 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
 
   api.PairingResponse? _pairingResponse;
   final Set<OnboardingState> _completedOnboardingStates = {};
+  BleConnectionState? _lastState;
+
   final StreamController<BleConnectionState> _blePairingState =
       StreamController<BleConnectionState>.broadcast();
 
@@ -42,10 +44,13 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
   Stream<BleConnectionState> get blePairingState =>
       _blePairingState.stream.asBroadcastStream();
 
+  BleConnectionState? get lastBleState => _lastState;
+
   Stream<OnboardingState> get onboardingState =>
       _onboardingState.stream.asBroadcastStream();
 
   Set<OnboardingState> get completedSteps => _completedOnboardingStates;
+  bool get pairingDone => _pairingResponse != null;
 
   @override
   bool canHandle(api.QuantumLinkMessage message) {
@@ -163,6 +168,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
 
   void updateBlePairState(String message, EnvoyStepState step) {
     final state = BleConnectionState(message: message, step: step);
+    _lastState = state;
     _blePairingState.add(state);
   }
 
@@ -180,6 +186,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
   }
 
   void reset() {
+    _pairingResponse = null;
     _completedOnboardingStates.clear();
     updateBlePairState("Connecting to device", EnvoyStepState.IDLE);
   }

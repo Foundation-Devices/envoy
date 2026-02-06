@@ -8,7 +8,6 @@ import 'dart:io';
 import 'package:envoy/ble/handlers/fw_update_handler.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
-import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/channels/ql_connection.dart';
@@ -317,22 +316,6 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 */
   Future<void> sendOnboardingState(api.OnboardingState state) async {
     writeMessage(api.QuantumLinkMessage.onboardingState(state));
-  }
-
-  Future<void> sendSecurityChallengeRequest() async {
-    kPrint("sending security challenge");
-    api.ChallengeRequest? challenge = await ScvServer().getPrimeChallenge();
-
-    if (challenge == null) {
-      // TODO: SCV what now?
-      kPrint("No challenge available");
-      return;
-    }
-
-    final request = api.SecurityCheck.challengeRequest(challenge);
-    kPrint("writing security challenge");
-    await writeMessage(api.QuantumLinkMessage.securityCheck(request));
-    kPrint("successfully wrote security challenge");
   }
 
   Future<void> sendSecurityChallengeVerificationResult(
