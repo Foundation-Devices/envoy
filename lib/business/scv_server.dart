@@ -13,6 +13,7 @@ import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:foundation_api/foundation_api.dart';
+import 'package:tor/tor.dart';
 
 // Generated
 part 'scv_server.g.dart';
@@ -147,10 +148,14 @@ class ScvServer {
   /// Returns true if we can connect to the server, false otherwise.
   Future<bool> canReachPrimeServer() async {
     try {
-      //DNS lookup for faster network check
       final uri = Uri.parse(ScvServer.primeSecurityCheckBaseUrl);
-      await InternetAddress.lookup(uri.host);
-
+      if (Settings().torEnabled()) {
+        await Tor.instance.isReady();
+      } else {
+        // DNS lookup for faster network check (clearnet only).
+        await InternetAddress.lookup(uri.host);
+        return true;
+      }
       final response = await http.get('$primeSecurityCheckBaseUrl/challenge');
       kPrint("connectivity check status code: ${response.statusCode}");
       return response.statusCode == 200;
