@@ -28,7 +28,8 @@ esac
 # ------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_tests"
+HOT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Hot_Wallet_Tests"
+PASSPORT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Passport_Wallet_Tests"
 
 DEVICE_ID=""
 TEST_ARG=""
@@ -171,7 +172,8 @@ echo -e "${GREEN}✓${NC} adb found: $ADB_CMD"
 
 echo -e "${GREEN}✓${NC} Maestro found: $(command -v maestro)"
 echo -e "${GREEN}✓${NC} Platform: $PLATFORM"
-echo -e "${GREEN}✓${NC} Tests directory: $TESTS_DIR"
+echo -e "${GREEN}✓${NC} Hot Wallet tests: $HOT_WALLET_TESTS_DIR"
+echo -e "${GREEN}✓${NC} Passport Wallet tests: $PASSPORT_WALLET_TESTS_DIR"
 
 # ------------------------------------------------------------
 # Device Detection
@@ -236,23 +238,37 @@ run_single_test() {
     fi
 }
 
-if [ -n "$TEST_ARG" ]; then
-    TEST_FILE="$TESTS_DIR/$TEST_ARG"
-    [ -f "$TEST_FILE" ] || {
-        echo -e "${RED}✗ Test not found: $TEST_FILE${NC}"
-        exit 1
-    }
-    run_single_test "$TEST_FILE"
-else
+run_test_group() {
+    local group_name="$1"
+    local tests_dir="$2"
+
     echo ""
-    echo -e "${YELLOW}Running all tests...${NC}"
-    echo -e "${CYAN}DEBUG: Test files found:${NC}"
-    ls -1 "$TESTS_DIR"/*.yaml 2>&1 || echo "No files found!"
-    echo ""
-    for test_file in "$TESTS_DIR"/*.yaml; do
-        [ -f "$test_file" ] && run_single_test "$test_file"
-    done
-fi
+    echo -e "${BLUE}╔════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${BLUE}║${NC}${BOLD}  Running group: $group_name${NC}"
+    echo -e "${BLUE}╚════════════════════════════════════════════════════════════╝${NC}"
+
+    if [ -n "$TEST_ARG" ]; then
+        TEST_FILE="$tests_dir/$TEST_ARG"
+        [ -f "$TEST_FILE" ] || {
+            echo -e "${RED}✗ Test not found: $TEST_FILE${NC}"
+            return
+        }
+        run_single_test "$TEST_FILE"
+    else
+        echo -e "${CYAN}Test files found:${NC}"
+        ls -1 "$tests_dir"/*.yaml 2>&1 || echo "No files found!"
+        echo ""
+        for test_file in "$tests_dir"/*.yaml; do
+            [ -f "$test_file" ] && run_single_test "$test_file"
+        done
+    fi
+}
+
+# --- Group 1: Hot Wallet Tests ---
+run_test_group "Hot Wallet Tests" "$HOT_WALLET_TESTS_DIR"
+
+# --- Group 2: Passport Wallet Tests ---
+run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
 
 # ------------------------------------------------------------
 # Summary

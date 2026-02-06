@@ -11,7 +11,8 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_tests"
+HOT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Hot_Wallet_Tests"
+PASSPORT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Passport_Wallet_Tests"
 
 # Colors for output
 RED='\033[0;31m'
@@ -100,23 +101,25 @@ run_single_test() {
     fi
 }
 
-# Check if a specific test was provided
-if [ -n "$1" ]; then
-    TEST_FILE="$TESTS_DIR/$1"
-    if [ ! -f "$TEST_FILE" ]; then
-        echo -e "${RED}Error: Test file not found: $TEST_FILE${NC}"
-        exit 1
-    fi
-    run_single_test "$TEST_FILE"
-else
-    # Run all tests in the folder
-    echo -e "${YELLOW}Running all tests on device $DEVICE_ID${NC}"
-    for test_file in "$TESTS_DIR"/*.yaml; do
+run_test_group() {
+    local group_name="$1"
+    local tests_dir="$2"
+
+    echo ""
+    echo -e "${GREEN}=== Running group: $group_name ===${NC}"
+
+    for test_file in "$tests_dir"/*.yaml; do
         if [ -f "$test_file" ]; then
             run_single_test "$test_file"
         fi
     done
-fi
+}
+
+# --- Group 1: Hot Wallet Tests ---
+run_test_group "Hot Wallet Tests" "$HOT_WALLET_TESTS_DIR"
+
+# --- Group 2: Passport Wallet Tests ---
+run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
 
 # Summary
 echo ""
