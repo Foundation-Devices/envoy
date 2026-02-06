@@ -179,12 +179,14 @@ class BluetoothChannel {
   /// On iOS this will show the accessory setup sheet.
   /// On Android this will initiate the android bonding dialog.
   Future<QLConnection> setupBle(String deviceId, int colorWay) async {
+    var resolvedDeviceId = deviceId;
     if (Platform.isIOS) {
-      final status = await _methodChannel
-          .invokeMethod("showAccessorySetup", {"c": colorWay});
-      if (status is bool && !status) {
-        return getDeviceChannel(deviceId);
+      final iosDeviceId = await _methodChannel
+          .invokeMethod<String?>("showAccessorySetup", {"c": colorWay});
+      if (iosDeviceId == null || iosDeviceId.isEmpty) {
+        throw BleSetupTimeoutException("Accessory setup cancelled");
       }
+      resolvedDeviceId = iosDeviceId;
     } else {
       // Android: Call native pair first to create QLConnection and register channels
       // This must happen before we create QLConnection on Dart side
@@ -195,23 +197,23 @@ class BluetoothChannel {
     }
 
     // Now create the device channel after native side has registered its channels
-    final deviceChannel = getDeviceChannel(deviceId);
+    final deviceChannel = getDeviceChannel(resolvedDeviceId);
 
     bool initiateBonding = false;
     final connect = await deviceChannel.connectionEvents.firstWhere(
       (event) {
-        debugPrint("[$deviceId] events $event");
+        debugPrint("[$resolvedDeviceId] events $event");
         try {
           if (event.connected &&
               !initiateBonding &&
               !event.bonded &&
               Platform.isAndroid) {
             initiateBonding = true;
-            kPrint("[$deviceId] Initiating bonding");
+            kPrint("[$resolvedDeviceId] Initiating bonding");
             deviceChannel.bond();
           }
         } catch (e) {
-          debugPrint("[$deviceId] Error during bonding initiation: $e");
+          debugPrint("[$resolvedDeviceId] Error during bonding initiation: $e");
         }
         // iOS doesn't have bonding state, just connected state
         if (Platform.isIOS) {
@@ -241,17 +243,18 @@ class BluetoothChannel {
     await _methodChannel.invokeMethod("reconnect", {"deviceId": deviceId});
   }
 
-  /// Show the iOS accessory sheet for BLE pairing
-  Future<bool> showAccessorySetup() async {
+  /// Show the iOS accessory sheet for BLE pairing and return the device UUID
+  Future<String?> showAccessorySetup({int? colorWay}) async {
     if (!Platform.isIOS) {
       throw Exception("showAccessorySetup is only supported on iOS");
     }
     try {
-      return await _methodChannel.invokeMethod<bool?>("showAccessorySetup") ??
-          false;
+      final args = colorWay == null ? null : {"c": colorWay};
+      return await _methodChannel.invokeMethod<String?>(
+          "showAccessorySetup", args);
     } catch (e) {
       debugPrint("Error showing accessory sheet: $e");
-      return false;
+      return null;
     }
   }
 

@@ -215,8 +215,8 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   // IOS uses AccessoryKit so no need to check for permissions
   static Future<bool> isBluetoothDenied() async {
     bool isDenied = false;
-    final apiLevel = await BluetoothChannel().getAPILevel();
     if (Platform.isAndroid) {
+      final apiLevel = await BluetoothChannel().getAPILevel();
       if (apiLevel <= 31) {
         isDenied = await Permission.bluetooth.isDenied ||
             await Permission.bluetoothConnect.isDenied ||

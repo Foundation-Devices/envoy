@@ -141,19 +141,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
     try {
       if (bleMacRegex.hasMatch(bleId ?? "")) {
-        if (Platform.isIOS) {
-          final setUpSuccess = await BluetoothChannel().showAccessorySetup();
-          if (setUpSuccess) {
-            if (mounted) {
-              setState(() {
-                bleConnectState = BleConnectState.connected;
-              });
-            }
-            if (context.mounted && mounted) {
-              return showQLScanner(context);
-            }
-          }
-        } else {
+        if (!Platform.isIOS) {
           await BluetoothManager().getPermissions();
         }
 
@@ -417,6 +405,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   Future<bool> pairWithPrime(XidDocument payload) async {
+    print("deviceDX ${payload} $_onboardingDevice");
     return await _onboardingDevice?.pair(payload) ?? false;
   }
 

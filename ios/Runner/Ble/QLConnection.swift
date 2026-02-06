@@ -2,9 +2,9 @@ import CoreBluetooth
 import Flutter
 import Foundation
 
-/// Protocol for BleDevice to communicate events back to BluetoothChannel
-protocol BleDeviceDelegate: AnyObject {
-    func onDeviceDisconnected(device: BleDevice)
+/// Protocol for QLConnection to communicate events back to BluetoothChannel
+protocol QLConnectionDelegate: AnyObject {
+    func onDeviceDisconnected(device: QLConnection)
     func getCentralManager() -> CBCentralManager?
 }
 
@@ -17,11 +17,11 @@ protocol BleDeviceDelegate: AnyObject {
 /// - Write channel: envoy/ble/write/{deviceId}
 /// - Connection stream: envoy/bluetooth/connection/stream/{deviceId}
 /// - Write progress stream: envoy/ble/write/progress/{deviceId}
-class BleDevice: NSObject {
+class QLConnection: NSObject {
 
     // MARK: - Constants
 
-    private static let TAG = "BleDevice"
+    private static let TAG = "QLConnection"
     private static let METHOD_CHANNEL_NAME = "envoy/bluetooth"
     private static let BLE_READ_CHANNEL_NAME = "envoy/ble/read"
     private static let BLE_WRITE_CHANNEL_NAME = "envoy/ble/write"
@@ -35,7 +35,7 @@ class BleDevice: NSObject {
     // MARK: - Properties
 
     let deviceId: String
-    private weak var delegate: BleDeviceDelegate?
+    private weak var delegate: QLConnectionDelegate?
     private let binaryMessenger: FlutterBinaryMessenger
     private let bleQueue = DispatchQueue(label: "com.envoy.ble.device", qos: .userInteractive)
 
@@ -84,7 +84,7 @@ class BleDevice: NSObject {
 
     // MARK: - Initialization
 
-    init(deviceId: String, binaryMessenger: FlutterBinaryMessenger, delegate: BleDeviceDelegate) {
+    init(deviceId: String, binaryMessenger: FlutterBinaryMessenger, delegate: QLConnectionDelegate) {
         self.deviceId = deviceId
         self.binaryMessenger = binaryMessenger
         self.delegate = delegate
@@ -119,7 +119,7 @@ class BleDevice: NSObject {
 
         super.init()
 
-        print("\(Self.TAG) [\(deviceId)] BleDevice init - registering channels...")
+        print("\(Self.TAG) [\(deviceId)] QLConnection init - registering channels...")
         print("\(Self.TAG) [\(deviceId)] Method channel: \(Self.METHOD_CHANNEL_NAME)/\(deviceId)")
         print("\(Self.TAG) [\(deviceId)] Connection stream: \(Self.BLE_CONNECTION_STREAM_NAME)/\(deviceId)")
 
@@ -127,10 +127,17 @@ class BleDevice: NSObject {
     }
 
     private func setupChannelHandlers() {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async { [weak self] in
+                self?.setupChannelHandlers()
+            }
+            return
+        }
+
         // Set up method channel handler
         methodChannel.setMethodCallHandler { [weak self] (call, result) in
             guard let self = self else {
-                result(FlutterError(code: "DEALLOCATED", message: "BleDevice deallocated", details: nil))
+                result(FlutterError(code: "DEALLOCATED", message: "QLConnection deallocated", details: nil))
                 return
             }
             self.handleMethodCall(call: call, result: result)
@@ -476,7 +483,7 @@ class BleDevice: NSObject {
     // MARK: - Cleanup
 
     func cleanup() {
-        print("\(Self.TAG) [\(deviceId)] Cleaning up BleDevice")
+        print("\(Self.TAG) [\(deviceId)] Cleaning up QLConnection")
 
         transferTask?.cancel()
         bleWriteQueue?.cancel()
@@ -485,9 +492,16 @@ class BleDevice: NSObject {
             delegate?.getCentralManager()?.cancelPeripheralConnection(peripheral)
         }
 
-        // Clear channel handlers
-        methodChannel.setMethodCallHandler(nil)
-        bleWriteChannel.setMessageHandler(nil)
+        // Clear channel handlers (must be on main thread for Flutter messenger)
+        let clearHandlers = {
+            self.methodChannel.setMethodCallHandler(nil)
+            self.bleWriteChannel.setMessageHandler(nil)
+        }
+        if Thread.isMainThread {
+            clearHandlers()
+        } else {
+            DispatchQueue.main.async(execute: clearHandlers)
+        }
 
         connectedPeripheral = nil
         writeCharacteristic = nil
@@ -497,15 +511,15 @@ class BleDevice: NSObject {
         writeProgressEventSink = nil
         deviceReady = false
 
-        print("\(Self.TAG) [\(deviceId)] BleDevice cleaned up")
+        print("\(Self.TAG) [\(deviceId)] QLConnection cleaned up")
     }
 
     // MARK: - Stream Handlers
 
     private class ConnectionStreamHandler: NSObject, FlutterStreamHandler {
-        weak var bleDevice: BleDevice?
+        weak var bleDevice: QLConnection?
 
-        init(bleDevice: BleDevice) {
+        init(bleDevice: QLConnection) {
             self.bleDevice = bleDevice
         }
 
@@ -535,9 +549,9 @@ class BleDevice: NSObject {
     }
 
     private class WriteProgressStreamHandler: NSObject, FlutterStreamHandler {
-        weak var bleDevice: BleDevice?
+        weak var bleDevice: QLConnection?
 
-        init(bleDevice: BleDevice) {
+        init(bleDevice: QLConnection) {
             self.bleDevice = bleDevice
         }
 
@@ -555,7 +569,7 @@ class BleDevice: NSObject {
 
 // MARK: - CBPeripheralDelegate
 
-extension BleDevice: CBPeripheralDelegate {
+extension QLConnection: CBPeripheralDelegate {
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         if let error = error {
@@ -660,15 +674,12 @@ extension BleDevice: CBPeripheralDelegate {
         print("\(Self.TAG) [\(deviceId)] Notification state updated for \(characteristic.uuid): \(characteristic.isNotifying)")
     }
 
-    func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
-        // Forward to write queue (only called for writeWithoutResponse)
-        print("\(Self.TAG) [\(deviceId)] Peripheral is ready to send write without response")
-    }
+  
 }
 
 // MARK: - Connection State Handlers (called by BluetoothChannel)
 
-extension BleDevice {
+extension QLConnection {
 
     /// Called when the device successfully connects
     func onDidConnect(peripheral: CBPeripheral) {

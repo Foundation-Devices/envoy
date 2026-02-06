@@ -10,9 +10,9 @@ import UIKit
 /// - AccessorySetupKit integration
 /// - Bluetooth state management
 /// - Device scanning and discovery
-/// - Managing BleDevice instances
+/// - Managing QLConnection instances
 ///
-/// Device-specific operations (handled by BleDevice):
+/// Device-specific operations (handled by QLConnection):
 /// - GATT connection and state
 /// - Characteristics and MTU
 /// - Data transfer (read/write)
@@ -22,7 +22,7 @@ import UIKit
 /// - Main channel: envoy/bluetooth (for shared operations)
 /// - Scan stream: envoy/bluetooth/scan/stream
 /// - Bluetooth state stream: envoy/bluetooth/stream
-class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler, BleDeviceDelegate
+class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler, QLConnectionDelegate
 {
     private static let TAG = "BluetoothChannel"
 
@@ -37,8 +37,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     var setupResult: FlutterResult? = nil
     let session = ASAccessorySession()
 
-    // Connected BleDevice instances, keyed by UUID string
-    private var devices: [String: BleDevice] = [:]
+    // Connected QLConnection instances, keyed by UUID string
+    private var devices: [String: QLConnection] = [:]
 
     // Accessory (for AccessorySetupKit integration)
     var primeAccessory: ASAccessory?
@@ -120,21 +120,6 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
                 self.getConnectedDevices(result: result)
             case "removeDevice":
                 self.removeDevice(call: call, result: result)
-
-            // Legacy single-device operations (for backward compatibility)
-            case "getConnectedPeripheralId":
-                result(self.getConnectedPeripheralId())
-            case "isConnected":
-                result(self.isConnected())
-            case "disconnect":
-                self.disconnectPeripheral()
-                result(true)
-            case "transmitFromFile":
-                self.transmitFromFile(call: call, result: result)
-            case "getCurrentDeviceStatus":
-                self.getCurrentDeviceStatus(result: result)
-            case "cancelTransfer":
-                self.cancelTransfer(result: result)
             default:
                 result(FlutterMethodNotImplemented)
             }
@@ -148,9 +133,9 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         setupAccessorySession()
     }
 
-    // MARK: - BleDeviceDelegate
+    // MARK: - QLConnectionDelegate
 
-    func onDeviceDisconnected(device: BleDevice) {
+    func onDeviceDisconnected(device: QLConnection) {
         print("\(Self.TAG) Device disconnected: \(device.deviceId)")
         // Keep the device in the map but note it's disconnected
         // The device can be reconnected using the reconnect method
@@ -162,19 +147,19 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
 
     // MARK: - Device Management
 
-    /// Get or create a BleDevice for the given device ID.
+    /// Get or create a QLConnection for the given device ID.
     /// This ensures the device's channels are registered before Dart tries to use them.
-    private func getOrCreateDevice(deviceId: String) -> BleDevice {
+    private func getOrCreateDevice(deviceId: String) -> QLConnection {
         if let existingDevice = devices[deviceId] {
             return existingDevice
         }
 
-        print("\(Self.TAG) Creating BleDevice for: \(deviceId)")
+        print("\(Self.TAG) Creating QLConnection for: \(deviceId)")
         guard let messenger = flutterController?.binaryMessenger else {
             fatalError("Flutter binary messenger not available")
         }
 
-        let device = BleDevice(
+        let device = QLConnection(
             deviceId: deviceId,
             binaryMessenger: messenger,
             delegate: self
@@ -183,7 +168,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         return device
     }
 
-    /// Prepare a device for connection by creating its BleDevice and registering channels.
+    /// Prepare a device for connection by creating its QLConnection and registering channels.
     /// This must be called BEFORE Dart creates its QLConnection to ensure the native
     /// EventChannel StreamHandler is registered before Dart tries to listen.
     private func prepareDevice(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -194,7 +179,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
-        // Create BleDevice so its channels are registered
+        // Create QLConnection so its channels are registered
         let _ = getOrCreateDevice(deviceId: deviceId)
         print("\(Self.TAG) Prepared device: \(deviceId)")
         result(true)
@@ -220,7 +205,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
-        // Get or create BleDevice (may already exist from prepareDevice)
+        // Get or create QLConnection (may already exist from prepareDevice)
         let bleDevice = getOrCreateDevice(deviceId: deviceId)
 
         // Get the remote peripheral
@@ -331,36 +316,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         print("\(Self.TAG) Reconnection attempts stopped")
     }
 
-    // Legacy single-device transmitFromFile (for backward compatibility)
-    // Delegates to the first connected device
-    private func transmitFromFile(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        // Find the first connected device
-        guard let connectedDevice = devices.values.first(where: { $0.isConnected() }) else {
-            result(FlutterError(code: "NO_DEVICE", message: "No connected device", details: nil))
-            return
-        }
-
-        // The BleDevice handles file transfer directly, so we need to call it
-        // For legacy support, we'll handle it here but this should be called via device-specific channel
-        print("\(Self.TAG) Legacy transmitFromFile forwarded to device: \(connectedDevice.deviceId)")
-
-        // Create a mock call to the device - this is a legacy path
-        // New code should use device-specific channels
-        result(FlutterError(code: "USE_DEVICE_CHANNEL", message: "Use device-specific channel for transmitFromFile", details: nil))
-    }
-
     private func setupAccessorySession() {
         session.activate(on: DispatchQueue.main, eventHandler: handleAccessoryEvent)
-    }
-
-    // Legacy single-device getConnectedPeripheralId (for backward compatibility)
-    func getConnectedPeripheralId() -> String? {
-        // Return the first connected device's ID
-        if let connectedDevice = devices.values.first(where: { $0.isConnected() }) {
-            print("\(Self.TAG) connectedPeripheral: \(connectedDevice.peripheralId)")
-            return connectedDevice.peripheralId
-        }
-        return nil
     }
 
     func getAccessories(result: @escaping FlutterResult) {
@@ -393,53 +350,19 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         result(accessoryList)
     }
 
-    // Legacy single-device cancelTransfer (for backward compatibility)
-    func cancelTransfer(result: @escaping FlutterResult) {
-        // This should be called via device-specific channel in new code
-        result(["cancelled": false, "message": "Use device-specific channel for cancelTransfer"])
-        print("\(Self.TAG) cancelTransfer called on shared channel - use device-specific channel")
-    }
-
-    // Legacy single-device getCurrentDeviceStatus (for backward compatibility)
-    func getCurrentDeviceStatus(result: @escaping FlutterResult) {
-        // Return the first connected device's status
-        if let connectedDevice = devices.values.first(where: { $0.isConnected() }) {
-            let statusData: [String: Any?] = [
-                "type": nil,
-                "connected": true,
-                "peripheralId": connectedDevice.peripheralId,
-                "peripheralName": connectedDevice.peripheralName ?? "Unknown Device",
-                "bonded": connectedDevice.isBonded,
-                "rssi": nil,
-                "error": nil
-            ]
-            result(statusData)
-        } else {
-            let statusData: [String: Any?] = [
-                "type": nil,
-                "connected": false,
-                "peripheralId": nil,
-                "peripheralName": primeAccessory?.displayName ?? "Unknown Device",
-                "bonded": primeAccessory != nil,
-                "rssi": nil,
-                "error": nil
-            ]
-            result(statusData)
-        }
-    }
 
     func showAccessorySetup(call: FlutterMethodCall, result: @escaping FlutterResult) {
         // Ensure we have a flutter controller to present on
         guard flutterController != nil else {
             print("Error: No FlutterViewController available for presenting accessory sheet")
-            result(false)
+            result(nil)
             return
         }
         
         // Check if app is in foreground
         guard UIApplication.shared.applicationState == .active else {
             print("Error: Application is not in foreground. Current state: \(UIApplication.shared.applicationState.rawValue)")
-            result(false)
+            result(nil)
             return
         }
         
@@ -475,7 +398,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             print("Failed to show picker: \(error.localizedDescription)")
             // Call the result callback with failure if picker fails to show
             if let result = setupResult {
-                result(false)
+                result(nil)
                 setupResult = nil
             }
         }
@@ -499,8 +422,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         case .pickerDidPresent:
             print("Accessory picker presented")
         case .pickerDidDismiss:
-            if(setupResult != nil){
-                setupResult!(false)
+            if let result = setupResult {
+                result(nil)
                 setupResult = nil
             }
         default:
@@ -524,17 +447,18 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             setupBluetoothManager()
         }
 
-        // Create BleDevice for this accessory if it has a Bluetooth ID
+        // Create QLConnection for this accessory if it has a Bluetooth ID
+        var deviceId: String? = nil
         if let bluetoothId = accessory.bluetoothIdentifier {
-            let deviceId = bluetoothId.uuidString
-            let _ = getOrCreateDevice(deviceId: deviceId)
+            deviceId = bluetoothId.uuidString
+            let _ = getOrCreateDevice(deviceId: deviceId!)
         }
 
         // Send scan event to Flutter
         sendScanEvent(type: "device_found", deviceId: peripheralId, deviceName: peripheralName)
 
-        if setupResult != nil {
-            setupResult!(true)
+        if let result = setupResult {
+            result(deviceId)
             setupResult = nil
         }
 
@@ -555,7 +479,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
 
         print("\(Self.TAG) Accessory removed: \(peripheralName)")
 
-        // Clean up the BleDevice for this accessory
+        // Clean up the QLConnection for this accessory
         if let bluetoothId = accessory.bluetoothIdentifier {
             let deviceId = bluetoothId.uuidString
             if let device = devices[deviceId] {
@@ -586,7 +510,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         let deviceId = peripheral.identifier.uuidString
         print("\(Self.TAG) Connecting to accessory peripheral: \(peripheral.name ?? "Unknown") (\(deviceId))")
 
-        // Get or create BleDevice and connect
+        // Get or create QLConnection and connect
         let bleDevice = getOrCreateDevice(deviceId: deviceId)
         bleDevice.connect(peripheral: peripheral)
     }
@@ -687,7 +611,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
                 print("\(Self.TAG)   - Name: \(peripheral.name ?? "Unknown")")
                 print("\(Self.TAG)   - State: \(peripheral.state.rawValue)")
 
-                // Create BleDevice for restored peripheral
+                // Create QLConnection for restored peripheral
                 let _ = getOrCreateDevice(deviceId: deviceId)
 
                 if peripheral.state == .connected {
@@ -710,7 +634,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         let deviceId = peripheral.identifier.uuidString
         sendScanEvent(type: "device_found", deviceId: deviceId, deviceName: peripheral.name)
 
-        // Create BleDevice and connect
+        // Create QLConnection and connect
         let bleDevice = getOrCreateDevice(deviceId: deviceId)
         bleDevice.connect(peripheral: peripheral)
     }
@@ -721,11 +645,11 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
 
         stopReconnection()
 
-        // Route to the appropriate BleDevice
+        // Route to the appropriate QLConnection
         if let bleDevice = devices[deviceId] {
             bleDevice.onDidConnect(peripheral: peripheral)
         } else {
-            print("\(Self.TAG) WARNING: No BleDevice found for connected peripheral: \(deviceId)")
+            print("\(Self.TAG) WARNING: No QLConnection found for connected peripheral: \(deviceId)")
         }
     }
 
@@ -735,7 +659,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         let deviceId = peripheral.identifier.uuidString
         print("\(Self.TAG) Failed to connect to peripheral: \(error?.localizedDescription ?? "Unknown error")")
 
-        // Route to the appropriate BleDevice
+        // Route to the appropriate QLConnection
         if let bleDevice = devices[deviceId] {
             bleDevice.onDidFailToConnect(peripheral: peripheral, error: error)
         }
@@ -747,52 +671,13 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         let deviceId = peripheral.identifier.uuidString
         print("\(Self.TAG) Disconnected from peripheral: \(error?.localizedDescription ?? "No error")")
 
-        // Route to the appropriate BleDevice
+        // Route to the appropriate QLConnection
         if let bleDevice = devices[deviceId] {
             bleDevice.onDidDisconnect(peripheral: peripheral, error: error)
         }
 
         print("\(Self.TAG) Starting automatic reconnection...")
         attemptReconnection()
-    }
-
-    func isConnected() -> Bool {
-        return devices.values.contains { $0.isConnected() }
-    }
-
-    // MARK: - Connection Management
-
-    func disconnectPeripheral() {
-        // Disconnect all devices
-        for (_, device) in devices {
-            if device.isConnected(), let peripheral = device.connectedPeripheral {
-                centralManager?.cancelPeripheralConnection(peripheral)
-            }
-        }
-
-        Task {
-            await removeAccessory()
-        }
-    }
-
-    // MARK: - Accessory Management
-
-    func removeAccessory() async {
-        guard let accessory = primeAccessory else { return }
-
-        // Cleanup all devices
-        for (_, device) in devices {
-            device.cleanup()
-        }
-        devices.removeAll()
-
-        do {
-            try await session.removeAccessory(accessory)
-            primeAccessory = nil
-            print("\(Self.TAG) Successfully removed accessory")
-        } catch {
-            print("\(Self.TAG) Failed to remove accessory: \(error.localizedDescription)")
-        }
     }
 
     // MARK: - Scan Event Sending
