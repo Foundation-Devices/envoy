@@ -120,6 +120,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       }
     } catch (e) {
       if (mounted) {
+        _setUnhappyState();
         if (e is GetBackupException) {
           if (e == GetBackupException.backupNotFound) {
             setState(() {
@@ -343,6 +344,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         }
       });
     } catch (e) {
+      _setUnhappyState();
       if (mounted) {
         if (e is GetBackupException) {
           if (e == GetBackupException.backupNotFound) {
