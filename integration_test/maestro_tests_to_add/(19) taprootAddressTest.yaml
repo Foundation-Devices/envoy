@@ -1,0 +1,101 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+# TODO: test is not working well, taproot switch is not responding in Settings/Advanced
+# go to advanced
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+# disable taproot if enabled
+- runFlow:
+    when:
+      visible:
+        id: "Taproot Toggle-true"
+    commands:
+      - tapOn:
+          id: Taproot Toggle-true
+      - tapOn:
+          id: PopUp Primary Button
+      - assertNotVisible: Receive to Segwit
+
+# back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+- tapOn: GH TEST ACC (#1)
+- tapOn: Receive
+
+- assertVisible:
+    text: "bc1q.*"
+
+# back to account
+- tapOn:
+    id: hamburger_menu
+
+# open menu
+- tapOn:
+    id: Right Action Button
+
+- tapOn: Show Descriptor
+
+# check for segwit
+- assertVisible: Segwit
+
+# back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# settings
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+# enable taproot
+- tapOn:
+    id: Taproot Toggle-false
+- tapOn:
+    id: PopUp Primary Button
+
+# back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+- tapOn: GH TEST ACC (#1)
+- tapOn: Receive
+
+# check the addres is "bc1p"
+- assertVisible:
+    text: "bc1p.*"
+
+# back to account
+- tapOn:
+    id: hamburger_menu
+
+# open menu
+- tapOn:
+    id: Right Action Button
+
+- tapOn: Show Descriptor
+
+- assertVisible: Taproot
+
+# go home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
