@@ -561,11 +561,15 @@ class SignetInfoModal extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: Padding(
               padding: const EdgeInsets.all(12),
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+              child: Semantics(
+                container: true,
+                identifier: "signet_modal_close",
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
               ),
             ),
           ),
@@ -580,25 +584,34 @@ class SignetInfoModal extends StatelessWidget {
                   height: 60,
                   width: 60,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 18.0),
-                  child: Text(
-                    S().settings_advanced_enabled_signet_modal_subheading,
-                    textAlign: TextAlign.center,
-                    style: textStyle,
+                Semantics(
+                  container: true,
+                  identifier: "signet_modal_subheading",
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 18.0),
+                    child: Text(
+                      S().settings_advanced_enabled_signet_modal_subheading,
+                      textAlign: TextAlign.center,
+                      style: textStyle,
+                    ),
                   ),
                 ),
                 const Padding(padding: EdgeInsets.all(4)),
-                Padding(
-                    padding: const EdgeInsets.only(top: 18.0),
-                    child: LinkText(
-                        text: S().settings_advanced_enabled_signet_modal_link,
-                        textStyle: textStyle,
-                        linkStyle: EnvoyTypography.button
-                            .copyWith(color: EnvoyColors.accentPrimary),
-                        onTap: () {
-                          launchUrlString("https://en.bitcoin.it/wiki/Signet");
-                        })),
+                Semantics(
+                  container: true,
+                  identifier: "signet_modal_link",
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 18.0),
+                      child: LinkText(
+                          text: S().settings_advanced_enabled_signet_modal_link,
+                          textStyle: textStyle,
+                          linkStyle: EnvoyTypography.button
+                              .copyWith(color: EnvoyColors.accentPrimary),
+                          onTap: () {
+                            launchUrlString(
+                                "https://en.bitcoin.it/wiki/Signet");
+                          })),
+                ),
                 const Padding(padding: EdgeInsets.all(4)),
               ],
             ),
@@ -607,14 +620,18 @@ class SignetInfoModal extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 28),
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: EnvoyButton(
-                    S().component_continue,
-                    type: EnvoyButtonTypes.primaryModal,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
+                Semantics(
+                  container: true,
+                  identifier: "signet_modal_continue",
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: EnvoyButton(
+                      S().component_continue,
+                      type: EnvoyButtonTypes.primaryModal,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ),
                 ),
               ],

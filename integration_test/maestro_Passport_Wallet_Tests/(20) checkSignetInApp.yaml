@@ -1,0 +1,108 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+# go to advanced menu
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+# if the Signet is ON turn it OFF
+- runFlow:
+    when:
+      visible:
+        id: "Signet Toggle-true"
+    commands:
+      - tapOn:
+          id: Signet Toggle-true
+      # reset screen
+      - tapOn:
+          id: hamburger_menu
+      - tapOn: |-
+          SETTINGS
+          SETTINGS
+      - tapOn: Advanced
+
+# if signet is OFF turn it ON to trigger Pop-up
+- runFlow:
+    when:
+      visible:
+        id: "Signet Toggle-false"
+    commands:
+      - tapOn:
+          id: Signet Toggle-false
+
+# Check that a pop up comes up
+- assertVisible: "Learn more about Signet "
+
+# exit Signet pop-up
+- tapOn:
+    id: signet_modal_close
+
+# reset screen
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+# Tap the toggle to disable Signet
+- tapOn:
+    id: Signet Toggle-true
+
+# reset screen
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+# Tap it again to enable it
+- tapOn:
+    id: Signet Toggle-false
+
+# TODO: Make sure that the hyperlink in the pop up works
+
+# In the pop up now tap Continue to make sure that the button works
+- tapOn:
+    id: signet_modal_continue
+
+# Go back to the Accounts view
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# Check that a Signet hot wallet account is displayed
+- scrollUntilVisible:
+    element:
+      id: account_card_Mobile Wallet_hot_signet
+
+# Go back to settings, tap Signet switch again to disable it
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+# disable Signet
+- tapOn:
+    id: Signet Toggle-true
+
+# back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# Go back to the accounts view and make sure that the account disappeared
+- scroll
+- scroll
+- assertNotVisible:
+    id: account_card_Mobile Wallet_hot_signet
