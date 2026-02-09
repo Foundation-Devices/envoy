@@ -108,7 +108,9 @@ class BleAccountHandler extends PassportMessageHandler {
 
   Future<void> sendExchangeRate() async {
     if (_sendingData) return;
-    if (!(qlConnection.getDevice()?.onboardingComplete ?? false)) {
+
+    if (qlConnection.getDevice()?.onboardingComplete != true) {
+      kPrint("Device not onboarded, skipping sending exchange rate history.");
       return;
     }
     try {
@@ -149,6 +151,10 @@ class BleAccountHandler extends PassportMessageHandler {
       final historyPoints = ExchangeRate().history.points;
       final currency = ExchangeRate().history.currency;
 
+      if (qlConnection.getDevice()?.onboardingComplete != true) {
+        kPrint("Device not onboarded, skipping sending exchange rate history.");
+        return;
+      }
       if (historyPoints.isEmpty) {
         kPrint("No exchange rate history to send.");
         return;

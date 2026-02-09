@@ -190,6 +190,7 @@ class QLConnection with EnvoyMessageWriter {
     }
   }
 
+  // send exchange rate history on ble connect.
   void onConnect() {
     if (getDevice()?.onboardingComplete == true) {
       qlHandler.bleAccountHandler.sendExchangeRateHistory();
