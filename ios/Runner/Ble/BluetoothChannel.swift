@@ -207,7 +207,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         }
 
         // Get or create QLConnection (may already exist from prepareDevice)
-        let bleDevice = getOrCreateDevice(deviceId: deviceId)
+        let qlConnection = getOrCreateDevice(deviceId: deviceId)
 
         // Get the remote peripheral
         let peripherals = central.retrievePeripherals(withIdentifiers: [uuid])
@@ -217,7 +217,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         }
 
         print("\(Self.TAG) Reconnecting to device: \(deviceId)")
-        bleDevice.connect(peripheral: peripheral)
+        qlConnection.connect(peripheral: peripheral)
         result(["reconnecting": true])
     }
 
@@ -583,8 +583,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         print("\(Self.TAG) Connecting to accessory peripheral: \(peripheral.name ?? "Unknown") (\(deviceId))")
 
         // Get or create QLConnection and connect
-        let bleDevice = getOrCreateDevice(deviceId: deviceId)
-        bleDevice.connect(peripheral: peripheral)
+        let qlConnection = getOrCreateDevice(deviceId: deviceId)
+        qlConnection.connect(peripheral: peripheral)
     }
 
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -660,13 +660,13 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
-        let bleDevice = getOrCreateDevice(deviceId: peripheralId)
+        let qlConnection = getOrCreateDevice(deviceId: peripheralId)
 
         if peripheral.state == .connected {
-            bleDevice.onDidConnect(peripheral: peripheral)
+            qlConnection.onDidConnect(peripheral: peripheral)
         } else {
             print("\(Self.TAG) Attempting to reconnect to restored peripheral...")
-            bleDevice.connect(peripheral: peripheral)
+            qlConnection.connect(peripheral: peripheral)
         }
         needsServiceRediscovery = false
         restoredPeripheralId = nil
@@ -707,8 +707,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         sendScanEvent(type: "device_found", deviceId: deviceId, deviceName: peripheral.name)
 
         // Create QLConnection and connect
-        let bleDevice = getOrCreateDevice(deviceId: deviceId)
-        bleDevice.connect(peripheral: peripheral)
+        let qlConnection = getOrCreateDevice(deviceId: deviceId)
+        qlConnection.connect(peripheral: peripheral)
     }
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
@@ -718,8 +718,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         stopReconnection()
 
         // Route to the appropriate QLConnection
-        if let bleDevice = devices[deviceId] {
-            bleDevice.onDidConnect(peripheral: peripheral)
+        if let qlConnection = devices[deviceId] {
+            qlConnection.onDidConnect(peripheral: peripheral)
         } else {
             print("\(Self.TAG) WARNING: No QLConnection found for connected peripheral: \(deviceId)")
         }
@@ -732,8 +732,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         print("\(Self.TAG) Failed to connect to peripheral: \(error?.localizedDescription ?? "Unknown error")")
 
         // Route to the appropriate QLConnection
-        if let bleDevice = devices[deviceId] {
-            bleDevice.onDidFailToConnect(peripheral: peripheral, error: error)
+        if let qlConnection = devices[deviceId] {
+            qlConnection.onDidFailToConnect(peripheral: peripheral, error: error)
         }
     }
 
@@ -744,8 +744,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         print("\(Self.TAG) Disconnected from peripheral: \(error?.localizedDescription ?? "No error")")
 
         // Route to the appropriate QLConnection
-        if let bleDevice = devices[deviceId] {
-            bleDevice.onDidDisconnect(peripheral: peripheral, error: error)
+        if let qlConnection = devices[deviceId] {
+            qlConnection.onDidDisconnect(peripheral: peripheral, error: error)
         }
 
         print("\(Self.TAG) Starting automatic reconnection...")

@@ -145,11 +145,11 @@ class QLConnection: NSObject {
         print("\(Self.TAG) [\(deviceId)] MethodChannel handler set")
 
         // Set up connection event stream handler
-        connectionEventChannel.setStreamHandler(ConnectionStreamHandler(bleDevice: self))
+        connectionEventChannel.setStreamHandler(ConnectionStreamHandler(qlConnection: self))
         print("\(Self.TAG) [\(deviceId)] ConnectionEventChannel StreamHandler set")
 
         // Set up write progress stream handler
-        writeProgressEventChannel.setStreamHandler(WriteProgressStreamHandler(bleDevice: self))
+        writeProgressEventChannel.setStreamHandler(WriteProgressStreamHandler(qlConnection: self))
 
         // Set up binary write channel handler
         bleWriteChannel.setMessageHandler { [weak self] (message, reply) in
@@ -517,25 +517,25 @@ class QLConnection: NSObject {
     // MARK: - Stream Handlers
 
     private class ConnectionStreamHandler: NSObject, FlutterStreamHandler {
-        weak var bleDevice: QLConnection?
+        weak var qlConnection: QLConnection?
 
-        init(bleDevice: QLConnection) {
-            self.bleDevice = bleDevice
+        init(qlConnection: QLConnection) {
+            self.qlConnection = qlConnection
         }
 
         func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-            bleDevice?.connectionEventSink = events
+            qlConnection?.connectionEventSink = events
 
             // Send any pending connection state
-            if let needsToResend = bleDevice?.needsToResendConnectionState {
+            if let needsToResend = qlConnection?.needsToResendConnectionState {
                 events(needsToResend)
-                bleDevice?.needsToResendConnectionState = nil
+                qlConnection?.needsToResendConnectionState = nil
             }
 
             // Send current status when listener attaches
-            if bleDevice?.connectedPeripheral != nil {
-                bleDevice?.sendConnectionEvent(
-                    type: bleDevice?.isConnected() == true ? "device_connected" : "device_disconnected"
+            if qlConnection?.connectedPeripheral != nil {
+                qlConnection?.sendConnectionEvent(
+                    type: qlConnection?.isConnected() == true ? "device_connected" : "device_disconnected"
                 )
             }
 
@@ -543,25 +543,25 @@ class QLConnection: NSObject {
         }
 
         func onCancel(withArguments arguments: Any?) -> FlutterError? {
-            bleDevice?.connectionEventSink = nil
+            qlConnection?.connectionEventSink = nil
             return nil
         }
     }
 
     private class WriteProgressStreamHandler: NSObject, FlutterStreamHandler {
-        weak var bleDevice: QLConnection?
+        weak var qlConnection: QLConnection?
 
-        init(bleDevice: QLConnection) {
-            self.bleDevice = bleDevice
+        init(qlConnection: QLConnection) {
+            self.qlConnection = qlConnection
         }
 
         func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-            bleDevice?.writeProgressEventSink = events
+            qlConnection?.writeProgressEventSink = events
             return nil
         }
 
         func onCancel(withArguments arguments: Any?) -> FlutterError? {
-            bleDevice?.writeProgressEventSink = nil
+            qlConnection?.writeProgressEventSink = nil
             return nil
         }
     }
