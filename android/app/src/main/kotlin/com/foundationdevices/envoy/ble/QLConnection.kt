@@ -30,10 +30,10 @@ import java.nio.ByteBuffer
 import java.util.UUID
 
 /**
- * Callback interface for BleDevice to communicate events back to BluetoothChannel
+ * Callback interface for QLConnection to communicate events back to BluetoothChannel
  */
-interface BleDeviceCallback {
-    fun onDeviceDisconnected(device: BleDevice)
+interface QLConnectionCallback {
+    fun onDeviceDisconnected(device: QLConnection)
 }
 
 /**
@@ -47,17 +47,17 @@ interface BleDeviceCallback {
  * - Connection stream: envoy/bluetooth/connection/stream/{deviceId}
  * - Write progress stream: envoy/ble/write/progress/{deviceId}
  */
-class BleDevice(
+class QLConnection(
     val deviceId: String,
     private val context: Context,
     private val bluetoothManager: BluetoothManager,
     private val binaryMessenger: BinaryMessenger,
-    private val callback: BleDeviceCallback,
+    private val callback: QLConnectionCallback,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.Main)
 ) : MethodChannel.MethodCallHandler {
 
     companion object {
-        private const val TAG = "BleDevice"
+        private const val TAG = "QLConnection"
         private const val METHOD_CHANNEL_NAME = "envoy/bluetooth"
         private const val BLE_READ_CHANNEL_NAME = "envoy/ble/read"
         private const val BLE_WRITE_CHANNEL_NAME = "envoy/ble/write"
@@ -139,7 +139,7 @@ class BleDevice(
         get() = connectedDevice?.bondState == BluetoothDevice.BOND_BONDED
 
     init {
-        Log.d(TAG, "[$deviceId] BleDevice init - registering channels...")
+        Log.d(TAG, "[$deviceId] QLConnection init - registering channels...")
         Log.d(TAG, "[$deviceId] Method channel: $METHOD_CHANNEL_NAME/$deviceId")
         Log.d(TAG, "[$deviceId] Connection stream: $BLE_CONNECTION_STREAM_NAME/$deviceId")
 
@@ -593,7 +593,7 @@ class BleDevice(
         connectionEventSink = null
         writeProgressEventSink = null
 
-        Log.d(TAG, "[$deviceId] BleDevice cleaned up")
+        Log.d(TAG, "[$deviceId] QLConnection cleaned up")
     }
 
     private inner class ConnectionStreamHandler : EventChannel.StreamHandler {
@@ -682,7 +682,7 @@ class BleDevice(
                     connectedDevice = null
                     writeCharacteristic = null
                     readCharacteristic = null
-                    callback.onDeviceDisconnected(this@BleDevice)
+                    callback.onDeviceDisconnected(this@QLConnection)
                 }
             }
         }

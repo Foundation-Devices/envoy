@@ -48,7 +48,7 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
  * - Managing known device MAC addresses
  * - Bonding state broadcast receiver
  *
- * Device-specific operations (handled by BleDevice):
+ * Device-specific operations (handled by QLConnection):
  * - GATT connection and state
  * - Characteristics and MTU
  * - Data transfer (read/write)
@@ -62,7 +62,7 @@ class BluetoothChannel(
     private val context: Context,
     private val activity: ComponentActivity,
     private val binaryMessenger: BinaryMessenger
-) : MethodChannel.MethodCallHandler, BleDeviceCallback {
+) : MethodChannel.MethodCallHandler, QLConnectionCallback {
 
     companion object {
         private const val TAG = "BluetoothChannel"
@@ -88,8 +88,8 @@ class BluetoothChannel(
     // Known device MAC addresses
     private var knownPrimeDevicesMAC: MutableSet<String> = mutableSetOf()
 
-    // Connected BleDevice instances, keyed by MAC address
-    private val devices: MutableMap<String, BleDevice> = mutableMapOf()
+    // Connected QLConnection instances, keyed by MAC address
+    private val devices: MutableMap<String, QLConnection> = mutableMapOf()
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private val scope = CoroutineScope(Dispatchers.Main)
@@ -132,9 +132,9 @@ class BluetoothChannel(
         }
     }
 
-    // ==================== BleDeviceCallback ====================
+    // ==================== QLConnectionCallback ====================
 
-    override fun onDeviceDisconnected(device: BleDevice) {
+    override fun onDeviceDisconnected(device: QLConnection) {
         Log.d(TAG, "Device disconnected: ${device.deviceId}")
         // Keep the device in the map but note it's disconnected
 
@@ -210,7 +210,7 @@ class BluetoothChannel(
         val deviceId = call.argument<String>("deviceId")
         if (!deviceId.isNullOrBlank()) {
             knownPrimeDevicesMAC.add(deviceId)
-            // Create BleDevice immediately so its channels are registered
+            // Create QLConnection immediately so its channels are registered
             // before Dart tries to listen to them
             getOrCreateDevice(deviceId)
         }
@@ -218,13 +218,13 @@ class BluetoothChannel(
     }
 
     /**
-     * Get or create a BleDevice for the given device ID.
+     * Get or create a QLConnection for the given device ID.
      * This ensures the device's channels are registered before Dart tries to use them.
      */
-    private fun getOrCreateDevice(deviceId: String): BleDevice {
+    private fun getOrCreateDevice(deviceId: String): QLConnection {
         return devices.getOrPut(deviceId) {
-            Log.d(TAG, "Creating BleDevice for: $deviceId")
-            BleDevice(
+            Log.d(TAG, "Creating QLConnection for: $deviceId")
+            QLConnection(
                 deviceId = deviceId,
                 context = context,
                 bluetoothManager = bluetoothManager,
@@ -236,7 +236,7 @@ class BluetoothChannel(
     }
 
     /**
-     * Prepare a device for connection by creating its BleDevice and registering channels.
+     * Prepare a device for connection by creating its QLConnection and registering channels.
      * This must be called BEFORE Dart creates its QLConnection to ensure the native
      * EventChannel StreamHandler is registered before Dart tries to listen.
      */
@@ -247,7 +247,7 @@ class BluetoothChannel(
             return
         }
         try {
-            // Create BleDevice so its channels are registered
+            // Create QLConnection so its channels are registered
             getOrCreateDevice(deviceId)
 
             result.success(true)
@@ -281,8 +281,8 @@ class BluetoothChannel(
                 return
             }
 
-            // Get or create BleDevice (may already exist from prepareDevice)
-            val bleDevice = getOrCreateDevice(deviceId)
+            // Get or create QLConnection (may already exist from prepareDevice)
+            val qlConnection = getOrCreateDevice(deviceId)
 
             // Get the remote device
             val remoteDevice = adapter.getRemoteDevice(deviceId)
@@ -292,7 +292,7 @@ class BluetoothChannel(
             }
 
             Log.d(TAG, "Reconnecting to device: $deviceId")
-            bleDevice.connect(remoteDevice)
+            qlConnection.connect(remoteDevice)
             result.success(true)
         } catch (e: Exception) {
             Log.e(TAG, "Error reconnecting to device: ${e.message}")
@@ -432,14 +432,14 @@ class BluetoothChannel(
 
         val deviceId = device.address
 
-        // Get or create BleDevice instance (channels will already be registered)
-        val bleDevice = getOrCreateDevice(deviceId)
+        // Get or create QLConnection instance (channels will already be registered)
+        val qlConnection = getOrCreateDevice(deviceId)
 
         // Add to known devices
         knownPrimeDevicesMAC.add(deviceId)
 
         // Connect
-        bleDevice.connect(device)
+        qlConnection.connect(device)
     }
 
     private fun setupBondingReceiver() {
@@ -503,7 +503,7 @@ class BluetoothChannel(
         }
 
 
-        // Route the bonding event to the appropriate BleDevice
+        // Route the bonding event to the appropriate QLConnection
         devices[deviceId]?.onBondingStateChanged(bondState)
     }
 
