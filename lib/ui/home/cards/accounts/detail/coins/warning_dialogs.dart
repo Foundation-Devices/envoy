@@ -120,8 +120,12 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
             width: 68,
           ),
           const SizedBox(height: EnvoySpacing.medium1),
-          Text(S().change_output_from_multiple_tags_modal_heading,
-              style: EnvoyTypography.heading),
+          Semantics(
+            container: true,
+            identifier: "coin_tag_warning_title",
+            child: Text(S().change_output_from_multiple_tags_modal_heading,
+                style: EnvoyTypography.heading),
+          ),
           const SizedBox(height: EnvoySpacing.medium1),
           Padding(
             padding:

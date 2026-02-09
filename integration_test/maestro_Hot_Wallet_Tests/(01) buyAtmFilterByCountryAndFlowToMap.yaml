@@ -4,118 +4,69 @@
 
 appId: com.foundationdevices.envoy
 ---
-# TODO: taproot is acting weird and app is not responding !!!!
-# go to advanced
-- tapOn:
-    id: hamburger_menu
+
+- launchApp:
+    clearState: true # TODO: change this to true if running over GH !!!
+
+# create MB
 - tapOn: |-
-    SETTINGS
-    SETTINGS
-- tapOn: Advanced
+    Create a 
+    Mobile Wallet
 
+- tapOn: Continue
 
-# enable taproot if disabled
-- runFlow:
-    when:
-      visible:
-        id: "Taproot Toggle-false"
+- extendedWaitUntil:
+    visible: "Android Backs Up Every 24h"
+    timeout: 300000 # wait 5 min
+- tapOn: Continue
+- tapOn: Continue
+- tapOn: Continue
+
+# Make sure you are in Home
+- assertVisible: ACCOUNTS
+
+- tapOn:
+    id: QR Shield Buy
+
+# select state
+- tapOn: United States
+
+- scrollUntilVisible:
+    element:
+      text: Spain
+    speed: 80
+    timeout: 130000
+
+- tapOn:
+    text: Spain
+
+- tapOn: Select State
+
+- repeat:
+    while:
+      notVisible: Granada
     commands:
-      - tapOn:
-          id: Taproot Toggle-false
-      - tapOn:
-          id: PopUp Primary Button
-      - tapOn:
-          id: PopUp Secondary Button
-      - assertNotVisible:
-          id: envoy_icon_info
-      - assertNotVisible: Taproot on Passport
+      - swipe:
+          start: "50%, 80%"
+          end: "50%, 60%"
+          duration: 300
 
-# disable taproot if enabled
-- runFlow:
-    when:
-      visible:
-        id: "Taproot Toggle-true"
-    commands:
-      - tapOn:
-          id: Taproot Toggle-true
-      - tapOn:
-          id: PopUp Primary Button
-      - assertNotVisible: Receive to Segwit
+- tapOn: Granada
 
-# back to home
-- tapOn:
-    id: hamburger_menu
-- tapOn:
-    id: hamburger_menu
+- tapOn: Continue
 
-# go to account
-- tapOn: GH TEST ACC (#1)
+- tapOn: ATMs
 
-# receive
-- tapOn: Receive
+- tapOn: Continue
 
-# check if address starts with this
-- assertVisible:
-    text: "tb1p.*"
+# wait until map opens
+- extendedWaitUntil:
+    visible:
+      id: "envoy_icon_plus"
+    timeout: 15000
+#open firts pin on the map
+- tapOn:
+    id: envoy_icon_location
 
-# back to home
-- tapOn:
-    id: hamburger_menu
-- tapOn:
-    id: hamburger_menu
-
-# go to advanced
-- tapOn:
-    id: hamburger_menu
-- tapOn: |-
-    SETTINGS
-    SETTINGS
-- tapOn: Advanced
-
-# disable taproot
-- tapOn:
-    id: Taproot Toggle-true
-- tapOn:
-    id: PopUp Primary Button
-
-# back to home
-- tapOn:
-    id: hamburger_menu
-- tapOn:
-    id: hamburger_menu
-
-# go to receive
-- tapOn: GH TEST ACC (#1)
-- tapOn: Receive
-
-# check if address starts with this
-- assertVisible:
-    text: "tb1q.*"
-
-# back to home
-- tapOn:
-    id: hamburger_menu
-- tapOn:
-    id: hamburger_menu
-
-# go to advanced
-- tapOn:
-    id: hamburger_menu
-- tapOn: |-
-    SETTINGS
-    SETTINGS
-- tapOn: Advanced
-
-- tapOn:
-    id: Taproot Toggle-false
-
-- tapOn:
-    id: PopUp Primary Button
-- tapOn:
-    id: PopUp Secondary Button
-
-# back to home
-- tapOn:
-    id: hamburger_menu
-- tapOn:
-    id: hamburger_menu
+# check that the atm address is in Spain Granada
+- assertVisible: Bulevard Billy Wilder, Pulianas

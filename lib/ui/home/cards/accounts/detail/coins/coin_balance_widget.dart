@@ -378,36 +378,42 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                   if (isRbfChangeOutput) {
                     coinTagSwitchState = CoinTagSwitchState.on;
                   }
-                  return CoinTagSwitch(
-                      triState: true,
-                      value: coinTagSwitchState,
-                      onChanged: (value) {
-                        final selectionState =
-                            ref.read(coinSelectionStateProvider.notifier);
-                        bool hasLockedItems = coinTag.numOfLockedCoins != 0;
-                        if (hasLockedItems && value == CoinTagSwitchState.on) {
-                          final ids = coinTag.utxo
-                              .where((element) => !element.doNotSpend)
-                              .map((e) => e.getId())
-                              .toList();
-                          selectionState.removeAll(ids);
-                        } else {
-                          if (value == CoinTagSwitchState.on ||
-                              value == CoinTagSwitchState.partial) {
-                            final ids = coinTag.utxo
-                                .where((element) => !element.doNotSpend)
-                                .map((e) => e.getId())
-                                .toList();
-                            selectionState.addAll(ids);
-                          } else {
+                  return Semantics(
+                    container: true,
+                    identifier:
+                        "coin_tag_switch_${coinTag.name}_${coinTagSwitchState.name}",
+                    child: CoinTagSwitch(
+                        triState: true,
+                        value: coinTagSwitchState,
+                        onChanged: (value) {
+                          final selectionState =
+                              ref.read(coinSelectionStateProvider.notifier);
+                          bool hasLockedItems = coinTag.numOfLockedCoins != 0;
+                          if (hasLockedItems &&
+                              value == CoinTagSwitchState.on) {
                             final ids = coinTag.utxo
                                 .where((element) => !element.doNotSpend)
                                 .map((e) => e.getId())
                                 .toList();
                             selectionState.removeAll(ids);
+                          } else {
+                            if (value == CoinTagSwitchState.on ||
+                                value == CoinTagSwitchState.partial) {
+                              final ids = coinTag.utxo
+                                  .where((element) => !element.doNotSpend)
+                                  .map((e) => e.getId())
+                                  .toList();
+                              selectionState.addAll(ids);
+                            } else {
+                              final ids = coinTag.utxo
+                                  .where((element) => !element.doNotSpend)
+                                  .map((e) => e.getId())
+                                  .toList();
+                              selectionState.removeAll(ids);
+                            }
                           }
-                        }
-                      });
+                        }),
+                  );
                 },
               ),
       ),

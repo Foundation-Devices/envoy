@@ -132,47 +132,52 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
                 if (countryRestricted || !allowBuyInEnvoy) {
                   return const SizedBox.shrink();
                 }
-                return GestureDetector(
-                  onTap: () async {
-                    if (countryRestricted || disabled) {
-                      return;
-                    }
-                    context.go(
-                      await EnvoyStorage().getCountry() != null
-                          ? ROUTE_BUY_BITCOIN
-                          : ROUTE_SELECT_REGION,
-                    );
-                  },
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: QrShield(
-                      arcSizeRatio: 15.0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.large3,
-                            vertical: EnvoySpacing.small),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            EnvoyIcon(
-                              EnvoyIcons.btc,
-                              color: disabled
-                                  ? EnvoyColors.textTertiary
-                                  : EnvoyColors.accentPrimary,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: EnvoySpacing.xs),
-                              child: Text(
-                                S().component_minishield_buy,
-                                style: EnvoyTypography.label.copyWith(
-                                  color: disabled
-                                      ? EnvoyColors.textTertiary
-                                      : EnvoyColors.accentPrimary,
+                return Align(
+                  alignment: Alignment.bottomCenter,
+                  child: GestureDetector(
+                    onTap: () async {
+                      if (countryRestricted || disabled) {
+                        return;
+                      }
+                      context.go(
+                        await EnvoyStorage().getCountry() != null
+                            ? ROUTE_BUY_BITCOIN
+                            : ROUTE_SELECT_REGION,
+                      );
+                    },
+                    child: Semantics(
+                      identifier: "QR Shield Buy",
+                      button: true,
+                      excludeSemantics: true,
+                      child: QrShield(
+                        arcSizeRatio: 15.0,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.large3,
+                              vertical: EnvoySpacing.small),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              EnvoyIcon(
+                                EnvoyIcons.btc,
+                                color: disabled
+                                    ? EnvoyColors.textTertiary
+                                    : EnvoyColors.accentPrimary,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: EnvoySpacing.xs),
+                                child: Text(
+                                  S().component_minishield_buy,
+                                  style: EnvoyTypography.label.copyWith(
+                                    color: disabled
+                                        ? EnvoyColors.textTertiary
+                                        : EnvoyColors.accentPrimary,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
