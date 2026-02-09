@@ -146,24 +146,31 @@ class QLConnection with EnvoyMessageWriter {
       }
     }).asBroadcastStream();
 
+    _qlHandlers = QLHandlers(this);
+
     // Listen to device status updates
     _deviceStatusSubscription = _deviceStatusStream.listen((
       DeviceStatus event,
     ) {
-      print("[$deviceId] Received device status update: connected=${event.connected}, bonded=${event.bonded}");
       _lastDeviceStatus = event;
       if (event.type == BluetoothConnectionEventType.deviceConnected) {
-        //wait for system to find characteristics
-        Future.delayed(const Duration(seconds: 2), () {
-          onConnect();
+        //wait for heartbeat to be received before marking connection as fully established,
+        Future.doWhile(() async {
+          await Future.delayed(const Duration(milliseconds: 100));
+          return qlHandler.heartbeatHandler.lastHeartbeat == null;
+        }).timeout(const Duration(seconds: 20)).then((_) {
+          onQLConnected();
+        }).catchError((e) {
+          kPrint("[$deviceId] onConnect error: $e");
         });
+      } else if (event.type ==
+          BluetoothConnectionEventType.deviceDisconnected) {
+        qlHandler.heartbeatHandler.lastHeartbeat = null;
       }
       kPrint(
         "[$deviceId] BLE Connection Event: connected=${event.connected}, bonded=${event.bonded}",
       );
     });
-
-    _qlHandlers = QLHandlers(this);
 
     dataStream.asBroadcastStream().listen((data) {
       _handleData(data);
@@ -206,7 +213,7 @@ class QLConnection with EnvoyMessageWriter {
   }
 
   // send exchange rate history on ble connect.
-  void onConnect() async {
+  void onQLConnected() async {
     if (getDevice()?.onboardingComplete == true && !_sendingExRate) {
       try {
         _sendingExRate = true;
