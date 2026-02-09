@@ -55,7 +55,8 @@ String getErrorContent(BtcPayVoucherErrorType errorType, DateTime? dateTime) {
       return S().btcpay_connection_modal_fail_subheading;
     case BtcPayVoucherErrorType.expired:
       return S().btcpay_connection_modal_expired_subheading(
-          DateFormat.yMd(currentLocale).format(dateTime ?? DateTime.now()));
+        DateFormat.yMd(currentLocale).format(dateTime ?? DateTime.now()),
+      );
     case BtcPayVoucherErrorType.onChain:
       return S().btcpay_connection_modal_onchainOnly_subheading;
     case BtcPayVoucherErrorType.wrongNetwork:

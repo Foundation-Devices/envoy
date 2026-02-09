@@ -34,7 +34,10 @@ class TransactionHandler extends PassportMessageHandler {
   }
 
   Future<void> sendPsbt(String accountId, Uint8List psbt) async {
-    await qlConnection.writeMessage(api.QuantumLinkMessage.signPsbt(
-        api.SignPsbt(psbt: psbt, accountId: accountId)));
+    await qlConnection.writeMessage(
+      api.QuantumLinkMessage.signPsbt(
+        api.SignPsbt(psbt: psbt, accountId: accountId),
+      ),
+    );
   }
 }

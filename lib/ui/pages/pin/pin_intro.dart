@@ -23,20 +23,24 @@ class PinIntroPage extends StatelessWidget {
       rightFunction: null,
       text: [
         OnboardingText(
-            header: S().envoy_pin_intro_heading,
-            text: S().envoy_pin_intro_subheading),
+          header: S().envoy_pin_intro_heading,
+          text: S().envoy_pin_intro_subheading,
+        ),
       ],
       buttons: [
         OnboardingButton(
-            label: S().component_continue,
-            onTap: () {
-              if (mustUpdateFirmware) {
-                context.pushNamed(PASSPORT_UPDATE,
-                    extra: FwPagePayload(onboarding: true));
-              } else {
-                context.pushNamed(PASSPORT_INTRO);
-              }
-            }),
+          label: S().component_continue,
+          onTap: () {
+            if (mustUpdateFirmware) {
+              context.pushNamed(
+                PASSPORT_UPDATE,
+                extra: FwPagePayload(onboarding: true),
+              );
+            } else {
+              context.pushNamed(PASSPORT_INTRO);
+            }
+          },
+        ),
       ],
     );
   }

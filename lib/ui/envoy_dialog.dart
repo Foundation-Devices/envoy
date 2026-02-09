@@ -14,15 +14,16 @@ class EnvoyDialog extends StatelessWidget {
   final TextStyle? titleTextStyle;
   final bool scrollable;
 
-  const EnvoyDialog(
-      {super.key,
-      this.title,
-      this.content,
-      this.paddingBottom = 12,
-      this.actions,
-      this.dismissible = true,
-      this.titleTextStyle,
-      this.scrollable = true});
+  const EnvoyDialog({
+    super.key,
+    this.title,
+    this.content,
+    this.paddingBottom = 12,
+    this.actions,
+    this.dismissible = true,
+    this.titleTextStyle,
+    this.scrollable = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +44,9 @@ class EnvoyDialog extends StatelessWidget {
           children: [
             dismissible
                 ? Align(
-                    alignment:
-                        Alignment.centerRight.add(const Alignment(.1, 0)),
+                    alignment: Alignment.centerRight.add(
+                      const Alignment(.1, 0),
+                    ),
                     child: IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () {
@@ -54,9 +56,11 @@ class EnvoyDialog extends StatelessWidget {
                   )
                 : const SizedBox(),
             title != null
-                ? Text(title ?? '',
+                ? Text(
+                    title ?? '',
                     textAlign: TextAlign.center,
-                    style: titleTextStyle ?? EnvoyTypography.heading)
+                    style: titleTextStyle ?? EnvoyTypography.heading,
+                  )
                 : const SizedBox(),
             Padding(padding: EdgeInsets.all(title != null ? 8 : 0)),
             content ?? Container(),

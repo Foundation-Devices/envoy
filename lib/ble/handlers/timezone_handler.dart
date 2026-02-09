@@ -37,10 +37,14 @@ class TimeZoneHandler extends PassportMessageHandler {
     final zone = await _platform.invokeMethod('get_time_zone');
 
     final timezoneResponse = api.TimezoneResponse(
-        offsetMinutes: dateTime.timeZoneOffset.inMinutes, zone: zone);
+      offsetMinutes: dateTime.timeZoneOffset.inMinutes,
+      zone: zone,
+    );
     await qlConnection.writeMessage(
-        api.QuantumLinkMessage.timezoneResponse(timezoneResponse));
+      api.QuantumLinkMessage.timezoneResponse(timezoneResponse),
+    );
     kPrint(
-        "Successfully sent timezone response with offsetMinutes: ${dateTime.timeZoneOffset.inMinutes}, zone: $zone");
+      "Successfully sent timezone response with offsetMinutes: ${dateTime.timeZoneOffset.inMinutes}, zone: $zone",
+    );
   }
 }

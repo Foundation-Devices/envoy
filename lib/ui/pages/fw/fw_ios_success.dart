@@ -30,8 +30,10 @@ class _FwIosSuccessPageState extends State<FwIosSuccessPage> {
   }
 
   void initRive() async {
-    file = await rive.File.asset('assets/envoy_loader.riv',
-        riveFactory: rive.Factory.rive);
+    file = await rive.File.asset(
+      'assets/envoy_loader.riv',
+      riveFactory: rive.Factory.rive,
+    );
     controller = rive.RiveWidgetController(
       file!,
       stateMachineSelector: rive.StateMachineSelector.byName('STM'),
@@ -74,21 +76,21 @@ class _FwIosSuccessPageState extends State<FwIosSuccessPage> {
         ),
       ],
       clipArt: _isInitialized && controller != null
-          ? rive.RiveWidget(
-              controller: controller!,
-              fit: rive.Fit.contain,
-            )
+          ? rive.RiveWidget(controller: controller!, fit: rive.Fit.contain)
           : const SizedBox(height: 200),
       navigationDots: 6,
       navigationDotsIndex: 4,
       buttons: [
         OnboardingButton(
-            label: S().component_continue,
-            onTap: () {
-              context.pushNamed(PASSPORT_UPDATE_PASSPORT,
-                  extra: widget.fwPagePayload);
-              return;
-            })
+          label: S().component_continue,
+          onTap: () {
+            context.pushNamed(
+              PASSPORT_UPDATE_PASSPORT,
+              extra: widget.fwPagePayload,
+            );
+            return;
+          },
+        ),
       ],
     );
   }

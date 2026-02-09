@@ -7,7 +7,6 @@ import 'dart:async';
 
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/handlers/scv_handler.dart';
-import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -21,7 +20,6 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
-import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
@@ -47,46 +45,6 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      try {
-        _connectBLE();
-      } catch (e) {
-        if (mounted && context.mounted) {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text("Permission Error"),
-                content: const Text(
-                    "Please enable Bluetooth and Location permissions to continue."),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text("OK"))
-                ],
-              );
-            },
-          );
-        }
-        kPrint("Error getting permissions: $e");
-      }
-    });
-  }
-
-  Future<void> _connectBLE() async {
-    try {
-      if (mounted) {
-        setState(() {
-          canPop = false;
-        });
-      }
-      String id = LocalStorage().prefs.getString(primeSerialPref) ?? "";
-      kPrint("Connecting to Prime with ID: $id");
-    } catch (e) {
-      kPrint(e);
-    }
   }
 
   Future<bool> showExitWarning(BuildContext context) {
@@ -142,68 +100,76 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
         }
       },
       child: EnvoyPatternScaffold(
-          gradientHeight: 1.8,
-          shieldHeightFactor: 0.58,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: const EnvoyIcon(
-                EnvoyIcons.chevron_left,
-                color: EnvoyColors.solidWhite,
-              ),
-              onPressed: () async {
-                if (context.canPop()) {
-                  final exit = await showExitWarning(context);
-                  if (exit && context.mounted) {
-                    context.go(ROUTE_ACCOUNTS_HOME);
-                  }
+        gradientHeight: 1.8,
+        shieldHeightFactor: 0.58,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const EnvoyIcon(
+              EnvoyIcons.chevron_left,
+              color: EnvoyColors.solidWhite,
+            ),
+            onPressed: () async {
+              if (context.canPop()) {
+                final exit = await showExitWarning(context);
+                if (exit && context.mounted) {
+                  context.go(ROUTE_ACCOUNTS_HOME);
                 }
-              },
-            ),
-            automaticallyImplyLeading: false,
+              }
+            },
           ),
-          header: Transform.translate(
-            offset: const Offset(0, 70),
-            child: TweenAnimationBuilder(
-              duration: const Duration(milliseconds: 600),
-              tween: Tween<double>(end: 1.0, begin: 0.0),
-              curve: Curves.decelerate,
-              builder: (context, value, child) {
-                return Opacity(opacity: value, child: child);
-              },
-              child: Hero(
-                tag: "hero_prime_devices",
-                child: Image.asset(
-                  "assets/images/prime_envoy_devices.png",
-                  alignment: Alignment.bottomCenter,
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  height: 320,
-                ),
+          automaticallyImplyLeading: false,
+        ),
+        header: Transform.translate(
+          offset: const Offset(0, 70),
+          child: TweenAnimationBuilder(
+            duration: const Duration(milliseconds: 600),
+            tween: Tween<double>(end: 1.0, begin: 0.0),
+            curve: Curves.decelerate,
+            builder: (context, value, child) {
+              return Opacity(opacity: value, child: child);
+            },
+            child: Hero(
+              tag: "hero_prime_devices",
+              child: Image.asset(
+                "assets/images/prime_envoy_devices.png",
+                alignment: Alignment.bottomCenter,
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: 320,
               ),
             ),
           ),
-          shield: PageTransitionSwitcher(
-              transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
-                return SharedAxisTransition(
-                    fillColor: Colors.transparent,
-                    animation: primaryAnimation,
-                    secondaryAnimation: secondaryAnimation,
-                    transitionType: SharedAxisTransitionType.vertical,
-                    child: child);
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
-                child: mainWidget(deviceCheck, firmWareCheck, context),
-              ))),
+        ),
+        shield: PageTransitionSwitcher(
+          transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
+            return SharedAxisTransition(
+              fillColor: Colors.transparent,
+              animation: primaryAnimation,
+              secondaryAnimation: secondaryAnimation,
+              transitionType: SharedAxisTransitionType.vertical,
+              child: child,
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
+            child: mainWidget(deviceCheck, firmWareCheck, context),
+          ),
+        ),
+      ),
     );
   }
 
-  Widget mainWidget(SecurityStepModel deviceCheck, StepModel firmWareCheck,
-      BuildContext context) {
+  Widget mainWidget(
+    SecurityStepModel deviceCheck,
+    StepModel firmWareCheck,
+    BuildContext context,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-          vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium1),
+        vertical: EnvoySpacing.medium1,
+        horizontal: EnvoySpacing.medium1,
+      ),
       child: Column(
         children: [
           Text(
@@ -211,40 +177,42 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
             textAlign: TextAlign.center,
             style: EnvoyTypography.heading,
           ),
-          Expanded(child: Consumer(builder: (context, ref, child) {
-            final bleStep = ref.watch(bleConnectionProvider);
-            return Container(
-              margin: const EdgeInsets.symmetric(
-                vertical: EnvoySpacing.medium1,
-                horizontal: EnvoySpacing.large1,
-              ),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                direction: Axis.horizontal,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                runSpacing: EnvoySpacing.medium1,
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          Expanded(
+            child: Consumer(
+              builder: (context, ref, child) {
+                final bleStep = ref.watch(bleConnectionProvider);
+                return Container(
+                  margin: const EdgeInsets.symmetric(
+                    vertical: EnvoySpacing.medium1,
+                    horizontal: EnvoySpacing.large1,
+                  ),
+                  child: Wrap(
+                    alignment: WrapAlignment.center,
+                    direction: Axis.horizontal,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    runSpacing: EnvoySpacing.medium1,
                     children: [
-                      EnvoyStepItem(step: bleStep),
-                      SizedBox(
-                        height: EnvoySpacing.medium1,
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          EnvoyStepItem(step: bleStep),
+                          SizedBox(height: EnvoySpacing.medium1),
+                          EnvoyStepItem(step: deviceCheck),
+                          SizedBox(height: EnvoySpacing.medium1),
+                          if (deviceCheck.state != EnvoyStepState.ERROR)
+                            EnvoyStepItem(
+                              step: firmWareCheck,
+                              highlight: updateAvailable,
+                            ),
+                        ],
                       ),
-                      EnvoyStepItem(step: deviceCheck),
-                      SizedBox(
-                        height: EnvoySpacing.medium1,
-                      ),
-                      if (deviceCheck.state != EnvoyStepState.ERROR)
-                        EnvoyStepItem(
-                            step: firmWareCheck, highlight: updateAvailable),
                     ],
                   ),
-                ],
-              ),
-            );
-          })),
+                );
+              },
+            ),
+          ),
           if (deviceCheck.state == EnvoyStepState.ERROR)
             _buildErrorContent(deviceCheck, context),
         ],
@@ -253,7 +221,9 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   }
 
   Widget _buildErrorContent(
-      SecurityStepModel deviceCheck, BuildContext context) {
+    SecurityStepModel deviceCheck,
+    BuildContext context,
+  ) {
     final isNetworkError = deviceCheck.errorType == ScvErrorType.networkError;
 
     return Column(
@@ -289,8 +259,11 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
                   .sendSecurityChallenge();
             } else {
               // Contact support for verification failure
-              launchUrl(Uri.parse(
-                  "https://community.foundation.xyz/c/passport-prime/12"));
+              launchUrl(
+                Uri.parse(
+                  "https://community.foundation.xyz/c/passport-prime/12",
+                ),
+              );
             }
           },
           isNetworkError

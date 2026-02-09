@@ -4,6 +4,4 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final primePayload = StateProvider<String?>(
-  (ref) => null,
-);
+final primePayload = StateProvider<String?>((ref) => null);

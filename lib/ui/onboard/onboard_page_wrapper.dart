@@ -18,28 +18,30 @@ class OnboardPageBackground extends StatelessWidget {
     double shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
     return Stack(
       children: [
-        const AppBackground(
-          showRadialGradient: true,
-        ),
+        const AppBackground(showRadialGradient: true),
         Padding(
           padding: EdgeInsets.only(
-              right: 5.0, left: 5.0, top: shieldTop, bottom: shieldBottom),
+            right: 5.0,
+            left: 5.0,
+            top: shieldTop,
+            bottom: shieldBottom,
+          ),
           child: Hero(
             tag: "shield",
             transitionOnUserGestures: true,
             child: Shield(
               child: Padding(
-                  padding: const EdgeInsets.only(
-                      right: EnvoySpacing.medium1,
-                      left: EnvoySpacing.medium1,
-                      top: EnvoySpacing.medium1,
-                      bottom: EnvoySpacing.medium2),
-                  child: SizedBox.expand(
-                    child: child,
-                  )),
+                padding: const EdgeInsets.only(
+                  right: EnvoySpacing.medium1,
+                  left: EnvoySpacing.medium1,
+                  top: EnvoySpacing.medium1,
+                  bottom: EnvoySpacing.medium2,
+                ),
+                child: SizedBox.expand(child: child),
+              ),
             ),
           ),
-        )
+        ),
       ],
     );
   }

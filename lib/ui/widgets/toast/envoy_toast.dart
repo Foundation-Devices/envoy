@@ -61,10 +61,8 @@ class EnvoyToast<T> extends StatefulWidget {
   });
 
   Future<T?> show(BuildContext context, {bool rootNavigator = false}) async {
-    envoyToastRoute = showToast<T>(
-      context: context,
-      toast: this,
-    ) as EnvoyToastRoute<T?>;
+    envoyToastRoute =
+        showToast<T>(context: context, toast: this) as EnvoyToastRoute<T?>;
 
     // do not show toast if it is already showing with the same message
     if (replaceExisting && _toast != null) {
@@ -73,17 +71,23 @@ class EnvoyToast<T> extends StatefulWidget {
       }
     }
     _toast = this;
-    T? result = await Navigator.of(context, rootNavigator: rootNavigator)
-        .push(envoyToastRoute as Route<T>);
+    T? result = await Navigator.of(
+      context,
+      rootNavigator: rootNavigator,
+    ).push(envoyToastRoute as Route<T>);
     _toast = null;
     return result;
   }
 
   // clear all previous toasts overlays
-  static void dismissPreviousToasts(BuildContext context,
-      {bool rootNavigator = false}) {
-    Navigator.of(context, rootNavigator: rootNavigator)
-        .popUntil((route) => route.settings.name != ENVY_TOAST_ROUTE);
+  static void dismissPreviousToasts(
+    BuildContext context, {
+    bool rootNavigator = false,
+  }) {
+    Navigator.of(
+      context,
+      rootNavigator: rootNavigator,
+    ).popUntil((route) => route.settings.name != ENVY_TOAST_ROUTE);
   }
 
   @override
@@ -96,31 +100,26 @@ class EnvoyToastState extends State<EnvoyToast> {
     return LayoutBuilder(
       builder: (context, constraints) {
         return Container(
-            constraints: BoxConstraints(minHeight: Platform.isIOS ? 65 : 55),
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: [
-                  .2,
-                  1,
-                  1
-                ],
-                    colors: [
-                  Color(0xFF000000),
-                  Color(0xff2f3334),
-                  Color(0xFF000000),
-                ])),
-            child: Material(
-              color: Colors.transparent,
-              child: SafeArea(
-                bottom: false,
-                top: true,
-                left: false,
-                right: false,
-                child: createGenericToast(context),
-              ),
-            ));
+          constraints: BoxConstraints(minHeight: Platform.isIOS ? 65 : 55),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [.2, 1, 1],
+              colors: [Color(0xFF000000), Color(0xff2f3334), Color(0xFF000000)],
+            ),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: SafeArea(
+              bottom: false,
+              top: true,
+              left: false,
+              right: false,
+              child: createGenericToast(context),
+            ),
+          ),
+        );
       },
     );
   }
@@ -129,8 +128,9 @@ class EnvoyToastState extends State<EnvoyToast> {
     return widget.builder != null
         ? widget.builder!(context)
         : Container(
-            constraints:
-                BoxConstraints(minWidth: MediaQuery.of(context).size.width),
+            constraints: BoxConstraints(
+              minWidth: MediaQuery.of(context).size.width,
+            ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -165,13 +165,16 @@ class EnvoyToastState extends State<EnvoyToast> {
                           onTap: widget.onActionTap,
                           child: Padding(
                             padding: const EdgeInsets.all(EnvoySpacing.xs),
-                            child: Text(widget.actionButtonText ?? "",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                        color: EnvoyColors.darkTeal,
-                                        fontSize: 11)),
+                            child: Text(
+                              widget.actionButtonText ?? "",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: EnvoyColors.darkTeal,
+                                    fontSize: 11,
+                                  ),
+                            ),
                           ),
                         ),
                       ),
@@ -185,14 +188,12 @@ class EnvoyToastState extends State<EnvoyToast> {
                     const SizedBox(
                       height: 28,
                       width: 1,
-                      child: VerticalDivider(
-                        thickness: 1,
-                        color: Colors.white,
-                      ),
+                      child: VerticalDivider(thickness: 1, color: Colors.white),
                     ),
                     IconButton(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium1),
+                        horizontal: EnvoySpacing.medium1,
+                      ),
                       onPressed: () {
                         final nav = widget.envoyToastRoute.navigator;
                         if (nav != null && nav.canPop()) {

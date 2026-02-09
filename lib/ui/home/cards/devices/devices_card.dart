@@ -21,9 +21,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 //ignore: must_be_immutable
 class DevicesCard extends ConsumerStatefulWidget {
-  const DevicesCard({
-    super.key,
-  });
+  const DevicesCard({super.key});
 
   @override
   ConsumerState createState() => DevicesCardState();
@@ -107,8 +105,9 @@ class _DevicesListState extends ConsumerState<DevicesList> {
               ],
             )
           : Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+              padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.medium2,
+              ),
               child: ScrollGradientMask(
                 start: 0.03,
                 topGradientValue: 0.075,
@@ -117,54 +116,62 @@ class _DevicesListState extends ConsumerState<DevicesList> {
                 child: CustomScrollView(
                   slivers: [
                     const SliverToBoxAdapter(
-                        child: SizedBox(
-                      height: EnvoySpacing.medium2,
-                    )),
-                    const SliverPadding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.xs / 2)),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          var device = Devices().devices[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: EnvoySpacing.medium1),
-                            child: DeviceListTile(
-                              device,
-                              onTap: () async {
-                                ref
-                                    .read(homePageOptionsVisibilityProvider
-                                        .notifier)
-                                    .state = false;
-                                Future.delayed(
-                                    const Duration(milliseconds: 200), () {
-                                  if (context.mounted) {
-                                    context.go(ROUTE_DEVICE_DETAIL,
-                                        extra: device);
-                                  }
-                                });
-                                // widget.navigator!.push(DeviceCard(
-                                //     device,
-                                //     widget.navigator,
-                                //     DeviceOptions(
-                                //       device,
-                                //       navigator: widget.navigator,
-                                //     )));
-                              },
-                            ),
-                          );
-                        },
-                        childCount: Devices().devices.length,
-                      ),
+                      child: SizedBox(height: EnvoySpacing.medium2),
                     ),
                     const SliverPadding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.medium2)),
+                      padding: EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.xs / 2,
+                      ),
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((
+                        BuildContext context,
+                        int index,
+                      ) {
+                        var device = Devices().devices[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: EnvoySpacing.medium1,
+                          ),
+                          child: DeviceListTile(
+                            device,
+                            onTap: () async {
+                              ref
+                                  .read(
+                                    homePageOptionsVisibilityProvider.notifier,
+                                  )
+                                  .state = false;
+                              Future.delayed(
+                                const Duration(milliseconds: 200),
+                                () {
+                                  if (context.mounted) {
+                                    context.go(
+                                      ROUTE_DEVICE_DETAIL,
+                                      extra: device,
+                                    );
+                                  }
+                                },
+                              );
+                              // widget.navigator!.push(DeviceCard(
+                              //     device,
+                              //     widget.navigator,
+                              //     DeviceOptions(
+                              //       device,
+                              //       navigator: widget.navigator,
+                              //     )));
+                            },
+                          ),
+                        );
+                      }, childCount: Devices().devices.length),
+                    ),
+                    const SliverPadding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: EnvoySpacing.medium2,
+                      ),
+                    ),
                     const SliverToBoxAdapter(
-                        child: SizedBox(
-                      height: EnvoySpacing.medium2,
-                    )),
+                      child: SizedBox(height: EnvoySpacing.medium2),
+                    ),
                   ],
                 ),
               ),
@@ -174,17 +181,16 @@ class _DevicesListState extends ConsumerState<DevicesList> {
 }
 
 class GhostDevice extends StatelessWidget {
-  GhostDevice({
-    super.key,
-  });
+  GhostDevice({super.key});
 
   final device = Device(
-      "Primary",
-      DeviceType.passportGen12,
-      "serial", // TODO: FIGMA
-      DateTime.now(),
-      "2.1.1",
-      Colors.grey);
+    "Primary",
+    DeviceType.passportGen12,
+    "serial", // TODO: FIGMA
+    DateTime.now(),
+    "2.1.1",
+    Colors.grey,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -198,11 +204,7 @@ class GhostDevice extends StatelessWidget {
               Color.fromRGBO(255, 255, 255, 0.75),
               BlendMode.hardLight,
             ),
-            child: DeviceListTile(
-              device,
-              onTap: () {},
-              ghostDevice: true,
-            ),
+            child: DeviceListTile(device, onTap: () {}, ghostDevice: true),
           ),
         ),
         Padding(
@@ -217,16 +219,20 @@ class GhostDevice extends StatelessWidget {
                 ),
                 const SizedBox(width: EnvoySpacing.small),
                 GestureDetector(
-                  child: Text(S().component_learnMore,
-                      style: EnvoyTypography.explainer
-                          .copyWith(color: EnvoyColors.accentPrimary)),
+                  child: Text(
+                    S().component_learnMore,
+                    style: EnvoyTypography.explainer.copyWith(
+                      color: EnvoyColors.accentPrimary,
+                    ),
+                  ),
                   onTap: () {
                     showDialog(
                       context: context,
                       builder: (context) {
                         return BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                            child: const DeviceEmptyVideo());
+                          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                          child: const DeviceEmptyVideo(),
+                        );
                       },
                     );
                   },
@@ -234,112 +240,121 @@ class GhostDevice extends StatelessWidget {
               ],
             ),
           ),
-        )
+        ),
       ],
     );
   }
 }
 
 class DeviceEmptyVideo extends StatelessWidget {
-  const DeviceEmptyVideo({
-    super.key,
-  });
+  const DeviceEmptyVideo({super.key});
 
   @override
   Widget build(BuildContext context) {
     var ctaTextStyle = const TextStyle(
-        color: Colors.white,
-        fontFamily: 'Montserrat',
-        fontStyle: FontStyle.normal,
-        fontWeight: FontWeight.w400,
-        fontSize: 14);
+      color: Colors.white,
+      fontFamily: 'Montserrat',
+      fontStyle: FontStyle.normal,
+      fontWeight: FontWeight.w400,
+      fontSize: 14,
+    );
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: [
-        Colors.black,
-        Color(0x00000000),
-      ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-      child: Column(children: [
-        SizedBox(
-          height: 100,
-          child: Stack(
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    S().bottomNav_learn.toUpperCase(),
-                    style: ctaTextStyle.copyWith(
-                        fontWeight: FontWeight.w500, fontSize: 18),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: IconButton(
-                      color: Colors.white,
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+        gradient: LinearGradient(
+          colors: [Colors.black, Color(0x00000000)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      child: Column(
+        children: [
+          SizedBox(
+            height: 100,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      S().bottomNav_learn.toUpperCase(),
+                      style: ctaTextStyle.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: IconButton(
+                        color: Colors.white,
+                        icon: const Icon(Icons.close),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(15),
-          child: Container(
-            decoration: const BoxDecoration(
-              boxShadow: [
-                BoxShadow(
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Container(
+              decoration: const BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
                     color: Colors.white,
                     blurRadius: 10,
                     offset: Offset(0, 0),
-                    spreadRadius: 1),
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+              child: const EmbeddedVideo(
+                path: "assets/videos/passport_ad.m4v",
+                aspectRatio: 16 / 9,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  child: Text(
+                    S().devices_empty_modal_video_cta2,
+                    style: ctaTextStyle,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                GestureDetector(
+                  child: Text(
+                    S().devices_empty_modal_video_cta1,
+                    style: ctaTextStyle.copyWith(
+                      color: EnvoyColors.accentPrimary,
+                    ),
+                  ),
+                  onTap: () {
+                    launchUrlString("https://foundation.xyz/passport/");
+                  },
+                ),
               ],
             ),
-            child: const EmbeddedVideo(
-              path: "assets/videos/passport_ad.m4v",
-              aspectRatio: 16 / 9,
-            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GestureDetector(
-                child: Text(S().devices_empty_modal_video_cta2,
-                    style: ctaTextStyle),
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              GestureDetector(
-                child: Text(
-                  S().devices_empty_modal_video_cta1,
-                  style:
-                      ctaTextStyle.copyWith(color: EnvoyColors.accentPrimary),
-                ),
-                onTap: () {
-                  launchUrlString("https://foundation.xyz/passport/");
-                },
-              ),
-            ],
-          ),
-        )
-      ]),
+        ],
+      ),
     );
   }
 }

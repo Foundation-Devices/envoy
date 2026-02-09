@@ -41,19 +41,22 @@ final fwDownloadStateProvider = Provider<StepModel>((ref) {
     },
     loading: () {
       return StepModel(
-          stepName: S().firmware_updatingDownload_downloading,
-          state: EnvoyStepState.IDLE);
+        stepName: S().firmware_updatingDownload_downloading,
+        state: EnvoyStepState.IDLE,
+      );
     },
     error: (err, stack) {
       return StepModel(
-          stepName: S().firmware_updateError_downloadFailed,
-          state: EnvoyStepState.ERROR);
+        stepName: S().firmware_updateError_downloadFailed,
+        state: EnvoyStepState.ERROR,
+      );
     },
   );
 });
 
-final fwTransferStateProvider =
-    StateNotifierProvider<StepNotifier, StepModel>((ref) {
+final fwTransferStateProvider = StateNotifierProvider<StepNotifier, StepModel>((
+  ref,
+) {
   final updateState = ref.watch(primeUpdateStateProvider);
   if (updateState == PrimeFwUpdateStep.transferring) {
     return StepNotifier(
@@ -62,8 +65,9 @@ final fwTransferStateProvider =
     );
   } else {
     return StepNotifier(
-        stepName: S().firmware_updatingDownload_transfer,
-        state: EnvoyStepState.IDLE);
+      stepName: S().firmware_updatingDownload_transfer,
+      state: EnvoyStepState.IDLE,
+    );
   }
 });
 
@@ -74,19 +78,22 @@ final primeFwSigVerifyStateProvider = Provider<StepModel>((ref) {
       device?.qlHandler.fwUpdateHandler.completedUpdateStates ?? {};
   if (update == PrimeFwUpdateStep.verifying) {
     return StepModel(
-        stepName: S().firmware_updatingPrime_verifying,
-        state: EnvoyStepState.LOADING);
+      stepName: S().firmware_updatingPrime_verifying,
+      state: EnvoyStepState.LOADING,
+    );
   } else if (completedUpdateStates.contains(PrimeFwUpdateStep.installing) ||
       completedUpdateStates.contains(PrimeFwUpdateStep.rebooting) ||
       completedUpdateStates.contains(PrimeFwUpdateStep.finished)) {
     return StepModel(
-        stepName: S().firmware_updatingPrime_verified,
-        state: EnvoyStepState.FINISHED);
+      stepName: S().firmware_updatingPrime_verified,
+      state: EnvoyStepState.FINISHED,
+    );
   } else {
     return StepModel(
-        //TODO: localization
-        stepName: "Verifying Signatures",
-        state: EnvoyStepState.IDLE);
+      //TODO: localization
+      stepName: "Verifying Signatures",
+      state: EnvoyStepState.IDLE,
+    );
   }
 });
 
@@ -97,18 +104,21 @@ final primeFwInstallStateProvider = Provider<StepModel>((ref) {
       device?.qlHandler.fwUpdateHandler.completedUpdateStates ?? {};
   if (update == PrimeFwUpdateStep.installing) {
     return StepModel(
-        stepName: S().firmware_updatingPrime_installingUpdate,
-        state: EnvoyStepState.LOADING);
+      stepName: S().firmware_updatingPrime_installingUpdate,
+      state: EnvoyStepState.LOADING,
+    );
   } else if (completedUpdateStates.contains(PrimeFwUpdateStep.installing) ||
       completedUpdateStates.contains(PrimeFwUpdateStep.rebooting) ||
       completedUpdateStates.contains(PrimeFwUpdateStep.finished)) {
     return StepModel(
-        stepName: S().firmware_updatingPrime_updateInstalled,
-        state: EnvoyStepState.FINISHED);
+      stepName: S().firmware_updatingPrime_updateInstalled,
+      state: EnvoyStepState.FINISHED,
+    );
   } else {
     return StepModel(
-        stepName: S().firmware_updatingPrime_installUpdate,
-        state: EnvoyStepState.IDLE);
+      stepName: S().firmware_updatingPrime_installUpdate,
+      state: EnvoyStepState.IDLE,
+    );
   }
 });
 
@@ -119,15 +129,18 @@ final primeFwRebootStateProvider = Provider<StepModel>((ref) {
       device?.qlHandler.fwUpdateHandler.completedUpdateStates ?? {};
   if (update == PrimeFwUpdateStep.rebooting) {
     return StepModel(
-        stepName: S().firmware_updatingPrime_primeRestarting,
-        state: EnvoyStepState.LOADING);
+      stepName: S().firmware_updatingPrime_primeRestarting,
+      state: EnvoyStepState.LOADING,
+    );
   } else if (completedUpdateStates.contains(PrimeFwUpdateStep.rebooting)) {
     return StepModel(
-        stepName: S().firmware_updatingPrime_primeRestarting,
-        state: EnvoyStepState.FINISHED);
+      stepName: S().firmware_updatingPrime_primeRestarting,
+      state: EnvoyStepState.FINISHED,
+    );
   } else {
     return StepModel(
-        stepName: S().firmware_updatingPrime_restartPrime,
-        state: EnvoyStepState.IDLE);
+      stepName: S().firmware_updatingPrime_restartPrime,
+      state: EnvoyStepState.IDLE,
+    );
   }
 });

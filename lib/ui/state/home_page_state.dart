@@ -40,11 +40,12 @@ enum DismissiblePrompt {
 
   ///warning for exiting manual coin selection
   txDiscardWarning,
-  addTxNoteWarning
+  addTxNoteWarning,
 }
 
-final homePageTabProvider =
-    StateProvider<HomePageTabState>((ref) => HomePageTabState.accounts);
+final homePageTabProvider = StateProvider<HomePageTabState>(
+  (ref) => HomePageTabState.accounts,
+);
 
 final homePageBackgroundProvider = StateProvider<HomePageBackgroundState>(
   (ref) => HomePageBackgroundState.hidden,
@@ -53,22 +54,28 @@ final homePageBackgroundProvider = StateProvider<HomePageBackgroundState>(
 final homePageOptionsVisibilityProvider = StateProvider<bool>((ref) => false);
 
 final homePageAccountsProvider = StateProvider<HomePageAccountsState>(
-    (ref) => HomePageAccountsState(HomePageAccountsNavigationState.list));
+  (ref) => HomePageAccountsState(HomePageAccountsNavigationState.list),
+);
 
-final homePageDevicesProvider =
-    StateProvider<HomePageDevicesState>((ref) => HomePageDevicesState.list);
+final homePageDevicesProvider = StateProvider<HomePageDevicesState>(
+  (ref) => HomePageDevicesState.list,
+);
 
 //returns prompt dismiss state as stream
-final promptStreamProvider =
-    StreamProvider.family((ref, DismissiblePrompt prompt) {
+final promptStreamProvider = StreamProvider.family((
+  ref,
+  DismissiblePrompt prompt,
+) {
   return EnvoyStorage().isPromptDismissed(prompt);
 });
 
 //returns prompt dismiss state
 //if the prompt is not dismissed, returns false otherwise returns true
 //this is better than using stream based provider because this wont require stream builder
-final arePromptsDismissedProvider =
-    Provider.family<bool, DismissiblePrompt>((ref, DismissiblePrompt prompt) {
+final arePromptsDismissedProvider = Provider.family<bool, DismissiblePrompt>((
+  ref,
+  DismissiblePrompt prompt,
+) {
   var value = ref.watch(promptStreamProvider(prompt));
   if (value.isLoading || value.value == null) {
     return false;

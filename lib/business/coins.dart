@@ -16,10 +16,7 @@ Map<String, dynamic> _utxoToJson(Utxo utxo) {
 //Wrapper class for Wallet.Utxo
 @JsonSerializable()
 class Coin {
-  @JsonKey(
-    toJson: _utxoToJson,
-    fromJson: Utxo.fromJson,
-  )
+  @JsonKey(toJson: _utxoToJson, fromJson: Utxo.fromJson)
   final Utxo utxo;
   bool locked = false;
   String account;
@@ -57,10 +54,7 @@ class InputCoinHistory {
   final String tagName;
   final String txId;
 
-  @JsonKey(
-    toJson: _coinToJson,
-    fromJson: Coin.fromJson,
-  )
+  @JsonKey(toJson: _coinToJson, fromJson: Coin.fromJson)
   final Coin coin;
 
   InputCoinHistory(this.accountId, this.tagName, this.txId, this.coin);

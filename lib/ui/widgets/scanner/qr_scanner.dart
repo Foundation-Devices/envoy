@@ -23,32 +23,29 @@ bool _isScanDialogOpen = false;
 //QrScanner is a descendant of showModalBottomSheet with  isScrollControlled set to true,
 //which doesnt support safeArea, so we need to manually add padding to the top of the scanner,
 // https://github.com/flutter/flutter/issues/103585
-Future showScannerDialog(
-    {required BuildContext context,
-    Widget? child,
-    required Function(BuildContext context) onBackPressed,
-    required ScannerDecoder decoder,
-    QrIntentInfoType infoType = QrIntentInfoType.qrCode}) {
+Future showScannerDialog({
+  required BuildContext context,
+  Widget? child,
+  required Function(BuildContext context) onBackPressed,
+  required ScannerDecoder decoder,
+  QrIntentInfoType infoType = QrIntentInfoType.qrCode,
+}) {
   return showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return QrScanner(
-          onBackPressed: onBackPressed,
-          decoder: decoder,
-          infoType: infoType,
-          child: child,
-        );
-      },
-      useRootNavigator: true);
+    context: context,
+    isScrollControlled: true,
+    builder: (context) {
+      return QrScanner(
+        onBackPressed: onBackPressed,
+        decoder: decoder,
+        infoType: infoType,
+        child: child,
+      );
+    },
+    useRootNavigator: true,
+  );
 }
 
-enum QrIntentInfoType {
-  qrCode,
-  core,
-  prime,
-  none,
-}
+enum QrIntentInfoType { qrCode, core, prime, none }
 
 class QrScanner extends StatefulWidget {
   final Function(BuildContext context) onBackPressed;
@@ -56,12 +53,13 @@ class QrScanner extends StatefulWidget {
   final Widget? child;
   final QrIntentInfoType infoType;
 
-  const QrScanner(
-      {super.key,
-      required this.onBackPressed,
-      required this.decoder,
-      this.child,
-      this.infoType = QrIntentInfoType.none});
+  const QrScanner({
+    super.key,
+    required this.onBackPressed,
+    required this.decoder,
+    this.child,
+    this.infoType = QrIntentInfoType.none,
+  });
 
   @override
   State<QrScanner> createState() => _QrScannerState();
@@ -104,9 +102,7 @@ class _QrScannerState extends State<QrScanner>
     super.build(context);
     return Stack(
       children: [
-        Container(
-          color: Colors.black,
-        ),
+        Container(color: Colors.black),
         if (_viewReady)
           Positioned.fill(
             child: AnimatedOpacity(
@@ -131,24 +127,23 @@ class _QrScannerState extends State<QrScanner>
           cornerPadding: 65,
         ),
         Center(
-            child: SizedBox(
-                height: 200,
-                width: 200,
-                child: TweenAnimationBuilder(
-                    duration: const Duration(milliseconds: 500),
-                    tween: Tween<double>(
-                      begin: 0.00,
-                      end: _progress,
-                    ),
-                    builder:
-                        (BuildContext context, double? value, Widget? child) {
-                      return CircularProgressIndicator(
-                        value: value,
-                        color: EnvoyColors.white80,
-                        strokeCap: StrokeCap.round,
-                        strokeWidth: 5,
-                      );
-                    }))),
+          child: SizedBox(
+            height: 200,
+            width: 200,
+            child: TweenAnimationBuilder(
+              duration: const Duration(milliseconds: 500),
+              tween: Tween<double>(begin: 0.00, end: _progress),
+              builder: (BuildContext context, double? value, Widget? child) {
+                return CircularProgressIndicator(
+                  value: value,
+                  color: EnvoyColors.white80,
+                  strokeCap: StrokeCap.round,
+                  strokeWidth: 5,
+                );
+              },
+            ),
+          ),
+        ),
         Consumer(
           builder: (context, ref, child) {
             ref.read(animatedQrScannerRiveProvider);
@@ -157,9 +152,7 @@ class _QrScannerState extends State<QrScanner>
         ),
         if (_viewReady)
           if (widget.child != null)
-            Positioned.fill(
-              child: widget.child!,
-            )
+            Positioned.fill(child: widget.child!)
           else
             const SizedBox(),
         Positioned(
@@ -173,8 +166,11 @@ class _QrScannerState extends State<QrScanner>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.close_rounded,
-                        size: 25, color: Colors.white54),
+                    icon: const Icon(
+                      Icons.close_rounded,
+                      size: 25,
+                      color: Colors.white54,
+                    ),
                     onPressed: () => widget.onBackPressed(context),
                   ),
                   IconButton(
@@ -199,18 +195,17 @@ class _QrScannerState extends State<QrScanner>
       }
     });
     final navigator = Navigator.of(context);
-    widget.decoder.onProgressUpdates(
-      (progress) {
-        if (mounted && progress > _progress) {
-          setState(() {
-            _progress = progress;
-          });
-        }
-      },
-    );
+    widget.decoder.onProgressUpdates((progress) {
+      if (mounted && progress > _progress) {
+        setState(() {
+          _progress = progress;
+        });
+      }
+    });
 
-    _qrStreamSubscription =
-        controller.scannedDataStream.listen((barcode) async {
+    _qrStreamSubscription = controller.scannedDataStream.listen((
+      barcode,
+    ) async {
       _userInteractionTimer.cancel();
       if (_isScanDialogOpen) {
         navigator.pop();
@@ -245,10 +240,7 @@ class _QrScannerState extends State<QrScanner>
                 _lastRawBytesDetected = [];
               });
             },
-            icon: const Icon(
-              Icons.info_outline,
-              color: EnvoyColors.white95,
-            ),
+            icon: const Icon(Icons.info_outline, color: EnvoyColors.white95),
           ).show(context);
         }
       } finally {
@@ -289,33 +281,28 @@ class ViewFinder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stroke = Padding(
-        padding: const EdgeInsets.all(65),
-        child: SvgPicture.asset("assets/viewfinder_stroke.svg"));
-    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          stroke,
-          RotatedBox(
-            quarterTurns: 1,
-            child: stroke,
-          )
-        ],
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RotatedBox(
-            quarterTurns: 3,
-            child: stroke,
-          ),
-          RotatedBox(
-            quarterTurns: 2,
-            child: stroke,
-          )
-        ],
-      ),
-    ]);
+      padding: const EdgeInsets.all(65),
+      child: SvgPicture.asset("assets/viewfinder_stroke.svg"),
+    );
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            stroke,
+            RotatedBox(quarterTurns: 1, child: stroke),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RotatedBox(quarterTurns: 3, child: stroke),
+            RotatedBox(quarterTurns: 2, child: stroke),
+          ],
+        ),
+      ],
+    );
   }
 }
 
@@ -356,18 +343,12 @@ class _AnimatedQrViewfinderState extends State<AnimatedQrViewfinder>
     _scaleAnimation = Tween<double>(
       begin: 0.98,
       end: 1.02,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _opacityAnimation = Tween<double>(
       begin: 0.8,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _controller.repeat(reverse: true);
   }
@@ -404,9 +385,7 @@ void showScanDialog(BuildContext context, QrIntentInfoType type) async {
       context: context,
       useRootNavigator: true,
       cardColor: Colors.transparent,
-      dialog: ScanInfoAnimDialog(
-        infoType: type,
-      ),
+      dialog: ScanInfoAnimDialog(infoType: type),
       dismissible: true,
     ).then((_) {
       _isScanDialogOpen = false;
@@ -467,27 +446,29 @@ class _ScanInfoAnimDialogState extends State<ScanInfoAnimDialog> {
       },
       behavior: HitTestBehavior.opaque,
       child: Center(
-        child: Consumer(builder: (context, ref, child) {
-          final riveFile = ref.watch(animatedQrScannerRiveProvider);
-          if (riveFile != null && _controller == null) {
-            _controller = rive.RiveWidgetController(
-              riveFile,
-              artboardSelector: rive.ArtboardNamed("MainArtboard"),
-              stateMachineSelector: rive.StateMachineSelector.byDefault(),
-            );
-            loadAnim(riveFile);
-          }
+        child: Consumer(
+          builder: (context, ref, child) {
+            final riveFile = ref.watch(animatedQrScannerRiveProvider);
+            if (riveFile != null && _controller == null) {
+              _controller = rive.RiveWidgetController(
+                riveFile,
+                artboardSelector: rive.ArtboardNamed("MainArtboard"),
+                stateMachineSelector: rive.StateMachineSelector.byDefault(),
+              );
+              loadAnim(riveFile);
+            }
 
-          return SizedBox(
-            height: 180,
-            child: riveFile != null && _controller != null
-                ? rive.RiveWidget(
-                    controller: _controller!,
-                    fit: rive.Fit.fitHeight,
-                  )
-                : const SizedBox(),
-          );
-        }),
+            return SizedBox(
+              height: 180,
+              child: riveFile != null && _controller != null
+                  ? rive.RiveWidget(
+                      controller: _controller!,
+                      fit: rive.Fit.fitHeight,
+                    )
+                  : const SizedBox(),
+            );
+          },
+        ),
       ),
     );
   }

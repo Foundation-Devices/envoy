@@ -35,13 +35,14 @@ class RBFSpendState {
   DraftTransaction draftTx;
   BitcoinTransaction originalTx;
 
-  RBFSpendState(
-      {required this.receiveAddress,
-      required this.receiveAmount,
-      required this.feeRate,
-      required this.originalTx,
-      required this.originalAmount,
-      required this.draftTx});
+  RBFSpendState({
+    required this.receiveAddress,
+    required this.receiveAmount,
+    required this.feeRate,
+    required this.originalTx,
+    required this.originalAmount,
+    required this.draftTx,
+  });
 
   RBFSpendState? copyWith({
     required int feeRate,
@@ -49,12 +50,13 @@ class RBFSpendState {
     BitcoinTransaction? originalTx,
   }) {
     return RBFSpendState(
-        receiveAddress: receiveAddress,
-        receiveAmount: receiveAmount,
-        feeRate: feeRate,
-        originalTx: originalTx ?? this.originalTx,
-        originalAmount: originalAmount,
-        draftTx: preparedTx);
+      receiveAddress: receiveAddress,
+      receiveAmount: receiveAmount,
+      feeRate: feeRate,
+      originalTx: originalTx ?? this.originalTx,
+      originalAmount: originalAmount,
+      draftTx: preparedTx,
+    );
   }
 
   BitcoinTransaction get getBumpedTransaction {
@@ -87,10 +89,7 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         duration: const Duration(seconds: 4),
         message: "Error: Transaction Confirmed",
         // TODO: Figma
-        icon: const Icon(
-          Icons.info_outline,
-          color: EnvoyColors.solidWhite,
-        ),
+        icon: const Icon(Icons.info_outline, color: EnvoyColors.solidWhite),
       ).show(context);
       return;
     }
@@ -115,11 +114,13 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         preparedTx: rbfSpendState.draftTx,
         feeRate: rbfSpendState.feeRate,
       );
-      navigator.push(MaterialPageRoute(
-        builder: (context) {
-          return const RBFSpendScreen();
-        },
-      ));
+      navigator.push(
+        MaterialPageRoute(
+          builder: (context) {
+            return const RBFSpendScreen();
+          },
+        ),
+      );
       return;
     } else {
       showNoBoostNoFundsDialog(context);
@@ -134,65 +135,62 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
         _showRBFDialog(context);
       },
       child: _buildButtonContainer(
-          active: ref.watch(rbfSpendStateProvider) != null || widget.loading,
-          child: widget.loading
-              ? const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(width: EnvoySpacing.xs),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium2,
-                          vertical: EnvoySpacing.xs),
-                      child: SizedBox.square(
-                        dimension: 12,
-                        child: CircularProgressIndicator(
-                          color: EnvoyColors.solidWhite,
-                          strokeWidth: 2,
-                        ),
+        active: ref.watch(rbfSpendStateProvider) != null || widget.loading,
+        child: widget.loading
+            ? const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(width: EnvoySpacing.xs),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.medium2,
+                      vertical: EnvoySpacing.xs,
+                    ),
+                    child: SizedBox.square(
+                      dimension: 12,
+                      child: CircularProgressIndicator(
+                        color: EnvoyColors.solidWhite,
+                        strokeWidth: 2,
                       ),
                     ),
-                    SizedBox(width: EnvoySpacing.xs),
-                  ],
-                )
-              : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const EnvoyIcon(
-                      EnvoyIcons.rbf_boost,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: EnvoySpacing.xs),
-                    Text(
-                      S().coindetails_overlay_confirmation_boost,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  ),
+                  SizedBox(width: EnvoySpacing.xs),
+                ],
+              )
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  const EnvoyIcon(EnvoyIcons.rbf_boost, color: Colors.white),
+                  const SizedBox(width: EnvoySpacing.xs),
+                  Text(
+                    S().coindetails_overlay_confirmation_boost,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.white,
                           fontSize: 14,
-                          fontWeight: FontWeight.w600),
-                    )
-                  ],
-                )),
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ],
+              ),
+      ),
     );
   }
 
-  Widget _buildButtonContainer({
-    required Widget child,
-    bool active = true,
-  }) {
+  Widget _buildButtonContainer({required Widget child, bool active = true}) {
     Color buttonColor = EnvoyColors.teal500.applyOpacity(active ? 1 : 0.5);
 
     return AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        height: 28,
-        padding: const EdgeInsets.symmetric(
-          horizontal: EnvoySpacing.medium1,
-        ),
-        decoration: BoxDecoration(
-            color: buttonColor,
-            borderRadius: BorderRadius.circular(EnvoySpacing.small)),
-        child: child);
+      duration: const Duration(milliseconds: 200),
+      height: 28,
+      padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+      decoration: BoxDecoration(
+        color: buttonColor,
+        borderRadius: BorderRadius.circular(EnvoySpacing.small),
+      ),
+      child: child,
+    );
   }
 
   void _showRBFDialog(BuildContext context) async {
@@ -203,8 +201,9 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
       showNoBoostNoFundsDialog(context);
       return;
     }
-    if (!(await EnvoyStorage()
-            .checkPromptDismissed(DismissiblePrompt.rbfWarning)) &&
+    if (!(await EnvoyStorage().checkPromptDismissed(
+          DismissiblePrompt.rbfWarning,
+        )) &&
         context.mounted) {
       showEnvoyDialog(
         context: context,
@@ -252,17 +251,17 @@ class _RBFWarningState extends State<RBFWarning> {
         ),
         Text(
           S().replaceByFee_coindetails_overlay_modal_heading,
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(fontWeight: FontWeight.w600, fontSize: 16),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+              ),
         ),
         const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
         Text(
           S().replaceByFee_coindetails_overlay_modal_subheading,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
           textAlign: TextAlign.center,
         ),
         const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
@@ -276,8 +275,11 @@ class _RBFWarningState extends State<RBFWarning> {
                 ),
           ),
           onTap: () {
-            launchUrl(Uri.parse(
-                "https://docs.foundation.xyz/envoy/envoy-menu/account/#boost-or-cancel-a-transaction"));
+            launchUrl(
+              Uri.parse(
+                "https://docs.foundation.xyz/envoy/envoy-menu/account/#boost-or-cancel-a-transaction",
+              ),
+            );
           },
         ),
         const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
@@ -314,15 +316,16 @@ class _RBFWarningState extends State<RBFWarning> {
         ),
         const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
         EnvoyButton(
-            label: S().component_continue,
-            onTap: () {
-              if (dismissed) {
-                EnvoyStorage().addPromptState(DismissiblePrompt.rbfWarning);
-              }
-              widget.onConfirm();
-            },
-            type: ButtonType.primary,
-            state: ButtonState.defaultState),
+          label: S().component_continue,
+          onTap: () {
+            if (dismissed) {
+              EnvoyStorage().addPromptState(DismissiblePrompt.rbfWarning);
+            }
+            widget.onConfirm();
+          },
+          type: ButtonType.primary,
+          state: ButtonState.defaultState,
+        ),
       ],
     );
   }
@@ -339,8 +342,11 @@ void showNoBoostNoFundsDialog(BuildContext context) {
       content: S().coindetails_overlay_noBoostNoFunds_subheading,
       learnMoreText: S().component_learnMore,
       onLearnMore: () {
-        launchUrl(Uri.parse(
-            "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
+        launchUrl(
+          Uri.parse(
+            "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions",
+          ),
+        );
       },
       primaryButtonLabel: S().component_continue,
       onPrimaryButtonTap: (context) {

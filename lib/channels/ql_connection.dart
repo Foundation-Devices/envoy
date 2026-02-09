@@ -103,8 +103,9 @@ class QLConnection with EnvoyMessageWriter {
       const BinaryCodec(),
     );
 
-    _connectionEventChannel =
-        EventChannel('envoy/bluetooth/connection/stream/$deviceId');
+    _connectionEventChannel = EventChannel(
+      'envoy/bluetooth/connection/stream/$deviceId',
+    );
 
     // Setup read channel message handler
     _bleReadChannel.setMessageHandler((ByteData? message) async {
@@ -116,8 +117,9 @@ class QLConnection with EnvoyMessageWriter {
     });
 
     // Setup device status stream
-    _deviceStatusStream =
-        _connectionEventChannel.receiveBroadcastStream().map((dynamic event) {
+    _deviceStatusStream = _connectionEventChannel.receiveBroadcastStream().map((
+      dynamic event,
+    ) {
       if (event is Map<dynamic, dynamic>) {
         return DeviceStatus.fromMap(event);
       } else {
@@ -126,19 +128,25 @@ class QLConnection with EnvoyMessageWriter {
     });
 
     // Setup write progress stream
-    _writeProgressStream =
-        _writeProgressChannel.receiveBroadcastStream().map((dynamic event) {
+    _writeProgressStream = _writeProgressChannel.receiveBroadcastStream().map((
+      dynamic event,
+    ) {
       if (event is Map<dynamic, dynamic>) {
         return WriteProgress.fromMap(event);
       } else {
         return WriteProgress(
-            progress: 0.0, id: "", totalBytes: 0, bytesProcessed: 0);
+          progress: 0.0,
+          id: "",
+          totalBytes: 0,
+          bytesProcessed: 0,
+        );
       }
     }).asBroadcastStream();
 
     // Listen to device status updates
-    _deviceStatusSubscription =
-        _deviceStatusStream.listen((DeviceStatus event) {
+    _deviceStatusSubscription = _deviceStatusStream.listen((
+      DeviceStatus event,
+    ) {
       _lastDeviceStatus = event;
       if (event.type == BluetoothConnectionEventType.deviceConnected) {
         //wait for system to find characteristics
@@ -147,7 +155,8 @@ class QLConnection with EnvoyMessageWriter {
         });
       }
       kPrint(
-          "[$deviceId] BLE Connection Event: connected=${event.connected}, bonded=${event.bonded}");
+        "[$deviceId] BLE Connection Event: connected=${event.connected}, bonded=${event.bonded}",
+      );
     });
 
     _qlHandlers = QLHandlers(this);
@@ -174,8 +183,9 @@ class QLConnection with EnvoyMessageWriter {
   /// Get the current device status
   Future<DeviceStatus> getCurrentDeviceStatus() async {
     try {
-      final result = await _methodChannel
-          .invokeMethod<Map<dynamic, dynamic>>('getCurrentDeviceStatus');
+      final result = await _methodChannel.invokeMethod<Map<dynamic, dynamic>>(
+        'getCurrentDeviceStatus',
+      );
 
       if (result != null) {
         return DeviceStatus.fromMap(result);
@@ -184,8 +194,9 @@ class QLConnection with EnvoyMessageWriter {
       }
     } catch (e, stack) {
       debugPrintStack(
-          label: "[$deviceId] Error getting current device status: $e",
-          stackTrace: stack);
+        label: "[$deviceId] Error getting current device status: $e",
+        stackTrace: stack,
+      );
       return DeviceStatus(connected: false);
     }
   }
@@ -230,8 +241,9 @@ class QLConnection with EnvoyMessageWriter {
       }
 
       // Send binary data through write channel
-      final result =
-          await _bleWriteChannel.send(ByteData.sublistView(combinedData));
+      final result = await _bleWriteChannel.send(
+        ByteData.sublistView(combinedData),
+      );
 
       if (result != null && result.lengthInBytes > 0) {
         final successByte = result.getUint8(0);
@@ -242,8 +254,9 @@ class QLConnection with EnvoyMessageWriter {
       return false;
     } catch (e, stack) {
       debugPrintStack(
-          label: "[$deviceId] Error writing binary data over BLE: $e",
-          stackTrace: stack);
+        label: "[$deviceId] Error writing binary data over BLE: $e",
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -289,7 +302,9 @@ class QLConnection with EnvoyMessageWriter {
       return true;
     } catch (e, stack) {
       debugPrintStack(
-          label: "[$deviceId] Error sending large data: $e", stackTrace: stack);
+        label: "[$deviceId] Error sending large data: $e",
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -301,8 +316,9 @@ class QLConnection with EnvoyMessageWriter {
       return result ?? false;
     } catch (e, stack) {
       debugPrintStack(
-          label: "[$deviceId] Error cancelling transfer: $e",
-          stackTrace: stack);
+        label: "[$deviceId] Error cancelling transfer: $e",
+        stackTrace: stack,
+      );
       return false;
     }
   }
@@ -310,8 +326,9 @@ class QLConnection with EnvoyMessageWriter {
   /// Get the connected peripheral ID (MAC address/ Device UUID on ios)
   Future<String?> getConnectedPeripheralId() async {
     try {
-      return await _methodChannel
-          .invokeMethod<String>('getConnectedPeripheralId');
+      return await _methodChannel.invokeMethod<String>(
+        'getConnectedPeripheralId',
+      );
     } catch (e) {
       debugPrint("[$deviceId] Error getting peripheral ID: $e");
       return null;
@@ -319,15 +336,18 @@ class QLConnection with EnvoyMessageWriter {
   }
 
   Future<api.PassportMessage?> _decode(
-      Uint8List bleData, api.QuantumLinkIdentity identity) async {
+    Uint8List bleData,
+    api.QuantumLinkIdentity identity,
+  ) async {
     _decoder ??= await api.getDecoder();
     _aridCache ??= await api.getAridCache();
 
     api.DecoderStatus decoderStatus = await api.decode(
-        data: bleData.toList(),
-        decoder: _decoder!,
-        quantumLinkIdentity: identity,
-        aridCache: _aridCache!);
+      data: bleData.toList(),
+      decoder: _decoder!,
+      quantumLinkIdentity: identity,
+      aridCache: _aridCache!,
+    );
     if (decoderStatus.payload != null) {
       return decoderStatus.payload;
     } else {
@@ -343,29 +363,34 @@ class QLConnection with EnvoyMessageWriter {
       await writeAll(data);
     } else {
       throw UnimplementedError(
-          "Bluetooth write not implemented for this platform");
+        "Bluetooth write not implemented for this platform",
+      );
     }
     return true;
   }
 
   @override
   Future<Stream<double>> writeMessageWithProgress(
-      api.QuantumLinkMessage message) async {
+    api.QuantumLinkMessage message,
+  ) async {
     final data = await encodeMessage(message: message);
     await writeAll(data);
     return Stream.empty();
   }
 
-  Future<List<Uint8List>> encodeMessage(
-      {required api.QuantumLinkMessage message}) async {
+  Future<List<Uint8List>> encodeMessage({
+    required api.QuantumLinkMessage message,
+  }) async {
     DateTime dateTime = DateTime.now();
     if (_recipientXid == null) {
       throw Exception(
-          "Recipient XID not set for encoding message for device $deviceId");
+        "Recipient XID not set for encoding message for device $deviceId",
+      );
     }
     if (_qlIdentity == null) {
       throw Exception(
-          "Sender XID not set for encoding message for device $deviceId");
+        "Sender XID not set for encoding message for device $deviceId",
+      );
     }
     try {
       dateTime = await NTP.now(timeout: const Duration(seconds: 1));
@@ -375,8 +400,10 @@ class QLConnection with EnvoyMessageWriter {
     final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
     kPrint("Encoding Message timestamp: $timestampSeconds");
 
-    api.EnvoyMessage envoyMessage =
-        api.EnvoyMessage(message: message, timestamp: timestampSeconds);
+    api.EnvoyMessage envoyMessage = api.EnvoyMessage(
+      message: message,
+      timestamp: timestampSeconds,
+    );
     kPrint("Encoded Message $timestampSeconds");
 
     kPrint("Encoding message: $envoyMessage");
@@ -399,22 +426,28 @@ class QLConnection with EnvoyMessageWriter {
     _qlIdentity ??= await api.generateQlIdentity();
     _recipientXid = payload;
     debugIdentities(
-        message: "Pairing to device...",
-        identity: _qlIdentity!,
-        recipient: _recipientXid!);
+      message: "Pairing to device...",
+      identity: _qlIdentity!,
+      recipient: _recipientXid!,
+    );
     //
     //reset onboarding state
     qlHandler.bleOnboardHandler.reset();
-    qlHandler.bleOnboardHandler
-        .updateBlePairState("Connecting to Prime", EnvoyStepState.LOADING);
+    qlHandler.bleOnboardHandler.updateBlePairState(
+      "Connecting to Prime",
+      EnvoyStepState.LOADING,
+    );
 
     kPrint("Pairing...");
     final xid = await api.serializeXid(quantumLinkIdentity: _qlIdentity!);
 
     final deviceName = await BluetoothChannel().getDeviceName();
 
-    final success = await writeMessage(api.QuantumLinkMessage.pairingRequest(
-        api.PairingRequest(xidDocument: xid, deviceName: deviceName)));
+    final success = await writeMessage(
+      api.QuantumLinkMessage.pairingRequest(
+        api.PairingRequest(xidDocument: xid, deviceName: deviceName),
+      ),
+    );
     kPrint("Pairing... success ?  $success");
     return true;
   }
@@ -431,36 +464,44 @@ class QLConnection with EnvoyMessageWriter {
     }
 
     debugIdentities(
-        message: "[$deviceId] reconnect",
-        identity: _qlIdentity!,
-        recipient: _recipientXid!);
+      message: "[$deviceId] reconnect",
+      identity: _qlIdentity!,
+      recipient: _recipientXid!,
+    );
     kPrint("[$deviceId] QL identity set up for reconnect");
   }
 
   Device? getDevice() {
     final device = Devices().getPrimeDevices.firstWhereOrNull(
-        (d) => d.bleId == deviceId || d.peripheralId == deviceId);
+          (d) => d.bleId == deviceId || d.peripheralId == deviceId,
+        );
     return device;
   }
 
-  static void debugIdentities(
-      {String message = "",
-      required api.QuantumLinkIdentity identity,
-      required api.XidDocument recipient}) async {
-    final serialXidSerial =
-        await api.serializeQlIdentity(quantumLinkIdentity: identity);
-    final recipientSerial =
-        await api.serializeXidDocument(xidDocument: recipient);
+  static void debugIdentities({
+    String message = "",
+    required api.QuantumLinkIdentity identity,
+    required api.XidDocument recipient,
+  }) async {
+    final serialXidSerial = await api.serializeQlIdentity(
+      quantumLinkIdentity: identity,
+    );
+    final recipientSerial = await api.serializeXidDocument(
+      xidDocument: recipient,
+    );
     kPrint(
-        "\n\n$message DebugIdentities serializeXidDocument: ${sha256.convert(recipientSerial).toString()}");
+      "\n\n$message DebugIdentities serializeXidDocument: ${sha256.convert(recipientSerial).toString()}",
+    );
     kPrint(
-        "$message DebugIdentities quantumLinkIdentity: ${sha256.convert(serialXidSerial).toString()}\n\n");
+      "$message DebugIdentities quantumLinkIdentity: ${sha256.convert(serialXidSerial).toString()}\n\n",
+    );
   }
 
-  Future<bool> encodeToFile(
-      {required Uint8List message,
-      required String filePath,
-      required int chunkSize}) async {
+  Future<bool> encodeToFile({
+    required Uint8List message,
+    required String filePath,
+    required int chunkSize,
+  }) async {
     DateTime dateTime = DateTime.now();
     try {
       dateTime = await NTP.now(timeout: const Duration(seconds: 1));
@@ -469,11 +510,13 @@ class QLConnection with EnvoyMessageWriter {
     }
     if (_recipientXid == null) {
       throw Exception(
-          "Recipient XID not set for encoding message for device $deviceId");
+        "Recipient XID not set for encoding message for device $deviceId",
+      );
     }
     if (_qlIdentity == null) {
       throw Exception(
-          "Sender XID not set for encoding message for device $deviceId");
+        "Sender XID not set for encoding message for device $deviceId",
+      );
     }
     final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
     kPrint("Encoding Message timestamp: $timestampSeconds");
@@ -483,27 +526,36 @@ class QLConnection with EnvoyMessageWriter {
     // kPrint("Encoded Message $timestampSeconds");
     kPrint("Encoding message: $message to file: $filePath");
     return await api.encodeToMagicBackupFile(
-        payload: message,
-        sender: _qlIdentity!,
-        recipient: _recipientXid!,
-        path: filePath,
-        chunkSize: BigInt.from(chunkSize),
-        timestamp: timestampSeconds);
+      payload: message,
+      sender: _qlIdentity!,
+      recipient: _recipientXid!,
+      path: filePath,
+      chunkSize: BigInt.from(chunkSize),
+      timestamp: timestampSeconds,
+    );
   }
 
-  static void debugIdentitiesQuantumLinkIdentity(
-      {String message = "", required api.QuantumLinkIdentity identity}) async {
-    final serialXidSerial =
-        await api.serializeQlIdentity(quantumLinkIdentity: identity);
+  static void debugIdentitiesQuantumLinkIdentity({
+    String message = "",
+    required api.QuantumLinkIdentity identity,
+  }) async {
+    final serialXidSerial = await api.serializeQlIdentity(
+      quantumLinkIdentity: identity,
+    );
     kPrint(
-        "$message debugIdentities QuantumLinkIdentity : ${sha256.convert(serialXidSerial).toString()}\n\n");
+      "$message debugIdentities QuantumLinkIdentity : ${sha256.convert(serialXidSerial).toString()}\n\n",
+    );
   }
 
-  static void debugIdentitiesXidDocument(
-      {String message = "", required api.XidDocument recipient}) async {
-    final recipientSerial =
-        await api.serializeXidDocument(xidDocument: recipient);
+  static void debugIdentitiesXidDocument({
+    String message = "",
+    required api.XidDocument recipient,
+  }) async {
+    final recipientSerial = await api.serializeXidDocument(
+      xidDocument: recipient,
+    );
     kPrint(
-        "\n\n$message debugIdentities XidDocument: ${sha256.convert(recipientSerial).toString()}");
+      "\n\n$message debugIdentities XidDocument: ${sha256.convert(recipientSerial).toString()}",
+    );
   }
 }

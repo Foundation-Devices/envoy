@@ -67,16 +67,16 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     return Container(
       // color: Colors.black,
       padding: const EdgeInsets.symmetric(
-          vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium3),
+        vertical: EnvoySpacing.small,
+        horizontal: EnvoySpacing.medium3,
+      ),
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
             child: ListTile(
               contentPadding: const EdgeInsets.all(0),
               dense: true,
-              title: Wrap(
-                children: [SettingText(S().settings_show_fiat)],
-              ),
+              title: Wrap(children: [SettingText(S().settings_show_fiat)]),
               trailing: SettingToggle(() => s.displayFiat() != null, (enabled) {
                 setState(() {
                   s.setDisplayFiat(enabled ? "USD" : null); // TODO: FIGMA
@@ -95,7 +95,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               duration: _animationsDuration,
               curve: EnvoyEasing.easeInOut,
               margin: EdgeInsets.only(
-                  top: s.selectedFiat != null ? marginBetweenItems : 0),
+                top: s.selectedFiat != null ? marginBetweenItems : 0,
+              ),
               height: s.selectedFiat == null ? 0 : 52,
               child: GestureDetector(
                 onTap: () {
@@ -110,11 +111,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     isDismissible: true,
                     useSafeArea: true,
                     builder: (context) {
-                      return FiatCurrencyChooser(onSelect: (String selection) {
-                        setState(() {
-                          s.setDisplayFiat(selection);
-                        });
-                      });
+                      return FiatCurrencyChooser(
+                        onSelect: (String selection) {
+                          setState(() {
+                            s.setDisplayFiat(selection);
+                          });
+                        },
+                      );
                     },
                   );
                 },
@@ -122,12 +125,16 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   padding: EdgeInsets.only(left: nestedMargin),
                   child: ListTile(
                     dense: true,
-                    contentPadding:
-                        const EdgeInsets.only(right: EnvoySpacing.medium1),
+                    contentPadding: const EdgeInsets.only(
+                      right: EnvoySpacing.medium1,
+                    ),
                     title: SettingText(S().settings_currency),
-                    trailing: Text(s.selectedFiat ?? "",
-                        style: EnvoyTypography.body
-                            .copyWith(color: EnvoyColors.accentPrimary)),
+                    trailing: Text(
+                      s.selectedFiat ?? "",
+                      style: EnvoyTypography.body.copyWith(
+                        color: EnvoyColors.accentPrimary,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -152,8 +159,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           //   ],
           // )),
           SliverPadding(
-              padding: EdgeInsets.all(
-                  kDebugMode || devModeEnabled ? marginBetweenItems : 0)),
+            padding: EdgeInsets.all(
+              kDebugMode || devModeEnabled ? marginBetweenItems : 0,
+            ),
+          ),
           SliverToBoxAdapter(
             child: kDebugMode || devModeEnabled || kProfileMode
                 ? GestureDetector(
@@ -172,15 +181,18 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              SettingText("Dev options", onTap: () {
-                                // TODO: FIGMA
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return const _DevOptions();
-                                  },
-                                );
-                              }),
+                              SettingText(
+                                "Dev options",
+                                onTap: () {
+                                  // TODO: FIGMA
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return const _DevOptions();
+                                    },
+                                  );
+                                },
+                              ),
                             ],
                           ),
                         ],
@@ -190,160 +202,174 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 : null,
           ),
           SliverToBoxAdapter(
-              child: ExpansionTile(
-            tilePadding: const EdgeInsets.all(0),
-            onExpansionChanged: (value) {
-              setState(() {
-                _advancedVisible = value;
-              });
-            },
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(S().settings_advanced,
+            child: ExpansionTile(
+              tilePadding: const EdgeInsets.all(0),
+              onExpansionChanged: (value) {
+                setState(() {
+                  _advancedVisible = value;
+                });
+              },
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    S().settings_advanced,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                    )),
-                AnimatedRotation(
-                  duration: _animationsDuration,
-                  turns: _advancedVisible ? 0.0 : 0.5,
-                  child: const Icon(
-                    Icons.keyboard_arrow_up_sharp,
-                    color: Colors.white,
+                    ),
                   ),
-                )
+                  AnimatedRotation(
+                    duration: _animationsDuration,
+                    turns: _advancedVisible ? 0.0 : 0.5,
+                    child: const Icon(
+                      Icons.keyboard_arrow_up_sharp,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              trailing: const SizedBox(),
+              controlAffinity: ListTileControlAffinity.platform,
+              childrenPadding: const EdgeInsets.only(left: 8),
+              children: <Widget>[
+                ListTile(
+                  dense: true,
+                  contentPadding: const EdgeInsets.all(0),
+                  title: Wrap(
+                    children: [SettingText(S().settings_advanced_testnet)],
+                  ),
+                  trailing: SettingToggle(
+                    s.showTestnetAccounts,
+                    s.setShowTestnetAccounts,
+                    onEnabled: () {
+                      showEnvoyDialog(
+                        context: context,
+                        dialog: const TestnetInfoModal(),
+                      );
+                    },
+                  ),
+                ),
+                ListTile(
+                  dense: true,
+                  contentPadding: const EdgeInsets.all(0),
+                  title: Wrap(
+                    children: [SettingText(S().settings_advanced_signet)],
+                  ),
+                  trailing: SettingToggle(
+                    s.showSignetAccounts,
+                    s.setShowSignetAccounts,
+                    onEnabled: () {
+                      showEnvoyDialog(
+                        context: context,
+                        dialog: const SignetInfoModal(),
+                      );
+                    },
+                  ),
+                ),
+                ListTile(
+                  dense: true,
+                  contentPadding: const EdgeInsets.all(0),
+                  title: SettingText(S().settings_advanced_receiveToTaproot),
+                  trailing: SettingToggle(
+                    s.taprootEnabled,
+                    s.setTaprootEnabled,
+                    onEnabled: () async {
+                      if (context.mounted) {
+                        showEnvoyPopUp(
+                          context,
+                          icon: EnvoyIcons.info,
+                          showCloseButton: false,
+                          title: S().settings_advancedModalReceiveTaproot_title,
+                          S().settings_advancedModalReceiveTaproot_content,
+                          S().component_confirm,
+                          (BuildContext context) {
+                            s.enableTaprootSetting = true;
+                            Navigator.pop(context);
+
+                            if (hasAccountWithoutTaprootXpub()) {
+                              showEnvoyPopUp(
+                                context,
+                                icon: EnvoyIcons.info,
+                                showCloseButton: true,
+                                title: S().taproot_passport_dialog_heading,
+                                S().taproot_passport_dialog_subheading,
+                                S().taproot_passport_dialog_reconnect,
+                                (BuildContext modalContext) {
+                                  Navigator.pop(modalContext);
+                                  scanForDevice(context, ref);
+                                },
+                                secondaryButtonLabel:
+                                    S().taproot_passport_dialog_later,
+                                onSecondaryButtonTap: (BuildContext context) {
+                                  Navigator.pop(context);
+                                },
+                              );
+                            }
+                          },
+                        );
+                      }
+                    },
+                    onDisabled: () async {
+                      if (context.mounted) {
+                        showEnvoyPopUp(
+                          context,
+                          icon: EnvoyIcons.info,
+                          showCloseButton: false,
+                          title: S().settings_advancedModalReceiveSegwit_title,
+                          S().settings_advancedModalReceiveSegwit_content,
+                          S().component_confirm,
+                          (BuildContext context) {
+                            s.enableTaprootSetting = false;
+                            Navigator.pop(context);
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
+                !buyDisabledByCountry
+                    ? ListTile(
+                        dense: true,
+                        contentPadding: const EdgeInsets.all(0),
+                        title: Wrap(
+                          children: [
+                            SettingText(S().settings_advanced_enableBuyRamp),
+                          ],
+                        ),
+                        trailing: SettingToggle(
+                          s.isAllowedBuyInEnvoy,
+                          s.setAllowBuyInEnvoy,
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+                ListTile(
+                  dense: true,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EnvoyLogsScreen(),
+                      ),
+                    );
+                  },
+                  contentPadding: const EdgeInsets.all(0),
+                  title: SettingText(
+                    S().settings_viewEnvoyLogs,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const EnvoyLogsScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
-            trailing: const SizedBox(),
-            controlAffinity: ListTileControlAffinity.platform,
-            childrenPadding: const EdgeInsets.only(left: 8),
-            children: <Widget>[
-              ListTile(
-                dense: true,
-                contentPadding: const EdgeInsets.all(0),
-                title: Wrap(
-                  children: [SettingText(S().settings_advanced_testnet)],
-                ),
-                trailing: SettingToggle(
-                    s.showTestnetAccounts, s.setShowTestnetAccounts,
-                    onEnabled: () {
-                  showEnvoyDialog(
-                      context: context, dialog: const TestnetInfoModal());
-                }),
-              ),
-              ListTile(
-                dense: true,
-                contentPadding: const EdgeInsets.all(0),
-                title: Wrap(
-                  children: [SettingText(S().settings_advanced_signet)],
-                ),
-                trailing: SettingToggle(
-                  s.showSignetAccounts,
-                  s.setShowSignetAccounts,
-                  onEnabled: () {
-                    showEnvoyDialog(
-                        context: context, dialog: const SignetInfoModal());
-                  },
-                ),
-              ),
-              ListTile(
-                dense: true,
-                contentPadding: const EdgeInsets.all(0),
-                title: SettingText(S().settings_advanced_receiveToTaproot),
-                trailing: SettingToggle(
-                  s.taprootEnabled,
-                  s.setTaprootEnabled,
-                  onEnabled: () async {
-                    if (context.mounted) {
-                      showEnvoyPopUp(
-                        context,
-                        icon: EnvoyIcons.info,
-                        showCloseButton: false,
-                        title: S().settings_advancedModalReceiveTaproot_title,
-                        S().settings_advancedModalReceiveTaproot_content,
-                        S().component_confirm,
-                        (BuildContext context) {
-                          s.enableTaprootSetting = true;
-                          Navigator.pop(context);
-
-                          if (hasAccountWithoutTaprootXpub()) {
-                            showEnvoyPopUp(
-                              context,
-                              icon: EnvoyIcons.info,
-                              showCloseButton: true,
-                              title: S().taproot_passport_dialog_heading,
-                              S().taproot_passport_dialog_subheading,
-                              S().taproot_passport_dialog_reconnect,
-                              (BuildContext modalContext) {
-                                Navigator.pop(modalContext);
-                                scanForDevice(context, ref);
-                              },
-                              secondaryButtonLabel:
-                                  S().taproot_passport_dialog_later,
-                              onSecondaryButtonTap: (BuildContext context) {
-                                Navigator.pop(context);
-                              },
-                            );
-                          }
-                        },
-                      );
-                    }
-                  },
-                  onDisabled: () async {
-                    if (context.mounted) {
-                      showEnvoyPopUp(
-                        context,
-                        icon: EnvoyIcons.info,
-                        showCloseButton: false,
-                        title: S().settings_advancedModalReceiveSegwit_title,
-                        S().settings_advancedModalReceiveSegwit_content,
-                        S().component_confirm,
-                        (BuildContext context) {
-                          s.enableTaprootSetting = false;
-                          Navigator.pop(context);
-                        },
-                      );
-                    }
-                  },
-                ),
-              ),
-              !buyDisabledByCountry
-                  ? ListTile(
-                      dense: true,
-                      contentPadding: const EdgeInsets.all(0),
-                      title: Wrap(
-                        children: [
-                          SettingText(S().settings_advanced_enableBuyRamp)
-                        ],
-                      ),
-                      trailing: SettingToggle(
-                        s.isAllowedBuyInEnvoy,
-                        s.setAllowBuyInEnvoy,
-                      ),
-                    )
-                  : const SizedBox.shrink(),
-              ListTile(
-                dense: true,
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const EnvoyLogsScreen(),
-                      ));
-                },
-                contentPadding: const EdgeInsets.all(0),
-                title: SettingText(S().settings_viewEnvoyLogs, onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const EnvoyLogsScreen(),
-                      ));
-                }),
-              ),
-            ],
-          )),
+          ),
           SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
         ],
       ),
@@ -379,65 +405,69 @@ class _DevOptions extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextButton(
-              onPressed: () {
-                EnvoyStorage().clearDismissedStatesStore();
-                Navigator.pop(context);
-              },
-              child: const Text("Clear Prompt states")),
+            onPressed: () {
+              EnvoyStorage().clearDismissedStatesStore();
+              Navigator.pop(context);
+            },
+            child: const Text("Clear Prompt states"),
+          ),
           TextButton(
-              onPressed: () {
-                EnvoyStorage().clearPendingStore();
-                Navigator.pop(context);
-              },
-              child: const Text("Clear Azteco states")),
+            onPressed: () {
+              EnvoyStorage().clearPendingStore();
+              Navigator.pop(context);
+            },
+            child: const Text("Clear Azteco states"),
+          ),
           TextButton(
-              onPressed: () {
-                EnvoyReport().clearAll();
-                Navigator.pop(context);
-              },
-              child: const Text("Clear Envoy Logs")),
+            onPressed: () {
+              EnvoyReport().clearAll();
+              Navigator.pop(context);
+            },
+            child: const Text("Clear Envoy Logs"),
+          ),
           TextButton(
-              onPressed: () {
-                EnvoyStorage().clear();
-                Navigator.pop(context);
-              },
-              child: const Text("Clear Envoy Preferences")),
+            onPressed: () {
+              EnvoyStorage().clear();
+              Navigator.pop(context);
+            },
+            child: const Text("Clear Envoy Preferences"),
+          ),
           StatefulBuilder(
             builder: (context, setState) {
               if (loading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               }
               return TextButton(
-                  onPressed: () async {
-                    final navigator = Navigator.of(context);
-                    try {
-                      setState(() {
-                        loading = true;
-                      });
-                      await EnvoySeed().delete();
-                      setState(() {
-                        loading = false;
-                      });
-                      navigator.pop();
-                    } catch (e) {
-                      setState(() {
-                        loading = false;
-                      });
-                      navigator.pop();
-                      kPrint(e);
-                    }
-                  },
-                  child: const Text("Wipe Envoy Wallet"));
+                onPressed: () async {
+                  final navigator = Navigator.of(context);
+                  try {
+                    setState(() {
+                      loading = true;
+                    });
+                    await EnvoySeed().delete();
+                    setState(() {
+                      loading = false;
+                    });
+                    navigator.pop();
+                  } catch (e) {
+                    setState(() {
+                      loading = false;
+                    });
+                    navigator.pop();
+                    kPrint(e);
+                  }
+                },
+                child: const Text("Wipe Envoy Wallet"),
+              );
             },
           ),
           TextButton(
-              onPressed: () {
-                Settings().skipPrimeSecurityCheck = true;
-                Navigator.pop(context);
-              },
-              child: const Text("Skip Prime security check")),
+            onPressed: () {
+              Settings().skipPrimeSecurityCheck = true;
+              Navigator.pop(context);
+            },
+            child: const Text("Skip Prime security check"),
+          ),
         ],
       ),
     );
@@ -449,9 +479,9 @@ class TestnetInfoModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontSize: 13,
-        );
+    var textStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(fontSize: 13);
 
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.75,
@@ -491,16 +521,20 @@ class TestnetInfoModal extends StatelessWidget {
                 ),
                 const Padding(padding: EdgeInsets.all(4)),
                 Padding(
-                    padding: const EdgeInsets.only(top: 18.0),
-                    child: LinkText(
-                        text: S().settings_advanced_enabled_testnet_modal_link,
-                        textStyle: textStyle,
-                        linkStyle: EnvoyTypography.button
-                            .copyWith(color: EnvoyColors.accentPrimary),
-                        onTap: () {
-                          launchUrlString(
-                              "https://www.youtube.com/watch?v=nRGFAHlYIeU");
-                        })),
+                  padding: const EdgeInsets.only(top: 18.0),
+                  child: LinkText(
+                    text: S().settings_advanced_enabled_testnet_modal_link,
+                    textStyle: textStyle,
+                    linkStyle: EnvoyTypography.button.copyWith(
+                      color: EnvoyColors.accentPrimary,
+                    ),
+                    onTap: () {
+                      launchUrlString(
+                        "https://www.youtube.com/watch?v=nRGFAHlYIeU",
+                      );
+                    },
+                  ),
+                ),
                 const Padding(padding: EdgeInsets.all(4)),
               ],
             ),
@@ -533,9 +567,9 @@ class SignetInfoModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontSize: 13,
-        );
+    var textStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(fontSize: 13);
 
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.75,
@@ -575,15 +609,18 @@ class SignetInfoModal extends StatelessWidget {
                 ),
                 const Padding(padding: EdgeInsets.all(4)),
                 Padding(
-                    padding: const EdgeInsets.only(top: 18.0),
-                    child: LinkText(
-                        text: S().settings_advanced_enabled_signet_modal_link,
-                        textStyle: textStyle,
-                        linkStyle: EnvoyTypography.button
-                            .copyWith(color: EnvoyColors.accentPrimary),
-                        onTap: () {
-                          launchUrlString("https://en.bitcoin.it/wiki/Signet");
-                        })),
+                  padding: const EdgeInsets.only(top: 18.0),
+                  child: LinkText(
+                    text: S().settings_advanced_enabled_signet_modal_link,
+                    textStyle: textStyle,
+                    linkStyle: EnvoyTypography.button.copyWith(
+                      color: EnvoyColors.accentPrimary,
+                    ),
+                    onTap: () {
+                      launchUrlString("https://en.bitcoin.it/wiki/Signet");
+                    },
+                  ),
+                ),
                 const Padding(padding: EdgeInsets.all(4)),
               ],
             ),

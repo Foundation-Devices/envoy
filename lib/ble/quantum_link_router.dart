@@ -29,7 +29,8 @@ abstract class PassportMessageHandler {
 /// Implementations will be on BluethManager, can be used for testing handlers
 mixin EnvoyMessageWriter {
   Future<Stream<double>> writeMessageWithProgress(
-      api.QuantumLinkMessage message);
+    api.QuantumLinkMessage message,
+  );
 
   Future<bool> writeMessage(api.QuantumLinkMessage message);
 }
@@ -49,7 +50,8 @@ class PassportMessageRouter {
     for (final handler in _qlHandlers) {
       if (handler.canHandle(qMessage)) {
         kPrint(
-            "Handler ${handler.runtimeType} CAN handle message ${(qMessage.runtimeType)}");
+          "Handler ${handler.runtimeType} CAN handle message ${(qMessage.runtimeType)}",
+        );
         try {
           //allows multiple handlers to handle same types
           unawaited(handler.handleMessage(qMessage));

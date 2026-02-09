@@ -25,15 +25,16 @@ class AmountDisplay extends ConsumerStatefulWidget {
 
   final Function(String)? onUnitToggled;
 
-  AmountDisplay(
-      {this.displayedAmount = "",
-      this.amountSats,
-      this.displayFiat,
-      this.onUnitToggled,
-      this.inputMode = false,
-      this.onLongPress,
-      required this.account,
-      super.key});
+  AmountDisplay({
+    this.displayedAmount = "",
+    this.amountSats,
+    this.displayFiat,
+    this.onUnitToggled,
+    this.inputMode = false,
+    this.onLongPress,
+    required this.account,
+    super.key,
+  });
 
   void setDisplayAmount(AmountDisplayUnit unit) {
     if (unit == AmountDisplayUnit.fiat) {
@@ -79,10 +80,9 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
   @override
   Widget build(context) {
-    TextScaler textScaler = MediaQuery.of(context).textScaler.clamp(
-          minScaleFactor: 0.8,
-          maxScaleFactor: 1.6,
-        );
+    TextScaler textScaler = MediaQuery.of(
+      context,
+    ).textScaler.clamp(minScaleFactor: 0.8, maxScaleFactor: 1.6);
     double baseFontScale = 1;
     double textScaleFactor = textScaler.scale(baseFontScale);
 
@@ -121,22 +121,26 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
             children: [
               Padding(
                 padding: EdgeInsets.only(
-                    right: unit == AmountDisplayUnit.fiat ? 10 : 6.0,
-                    left: unit == AmountDisplayUnit.fiat ? 6 : 0),
+                  right: unit == AmountDisplayUnit.fiat ? 10 : 6.0,
+                  left: unit == AmountDisplayUnit.fiat ? 6 : 0,
+                ),
                 child: displayIcon(widget.account!, unit),
               ),
               Text(
-                  widget.displayedAmount.isEmpty ? "0" : widget.displayedAmount,
-                  style: EnvoyTypography.digitsLarge
-                      .copyWith(color: EnvoyColors.textPrimary)),
+                widget.displayedAmount.isEmpty ? "0" : widget.displayedAmount,
+                style: EnvoyTypography.digitsLarge.copyWith(
+                  color: EnvoyColors.textPrimary,
+                ),
+              ),
               if (renderGhostZeros)
-                Text(ghostDigits,
-                    style: widget.inputMode
-                        ? Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(color: EnvoyColors.textInactive)
-                        : Theme.of(context).textTheme.headlineMedium),
+                Text(
+                  ghostDigits,
+                  style: widget.inputMode
+                      ? Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            color: EnvoyColors.textInactive,
+                          )
+                      : Theme.of(context).textTheme.headlineMedium,
+                ),
             ],
           ),
           isFormattedAmountEmpty
@@ -152,50 +156,53 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
                                   .textTheme
                                   .titleSmall!
                                   .copyWith(
-                                      color: EnvoyColors.accentPrimary,
-                                      fontSize: 16),
+                                    color: EnvoyColors.accentPrimary,
+                                    fontSize: 16,
+                                  ),
                             ),
                           )
                         : const SizedBox.shrink(),
                     RichText(
-                        textScaler: TextScaler.linear(textScaleFactor),
-                        text: TextSpan(
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(
-                                    color: EnvoyColors.accentPrimary,
-                                    fontSize: 16),
-                            children: [
-                              if (unit == AmountDisplayUnit.fiat)
-                                WidgetSpan(
-                                  alignment: PlaceholderAlignment.middle,
-                                  child: SizedBox(
-                                      height: 18,
-                                      child: getUnitIcon(widget.account!)),
-                                ),
-                              TextSpan(
-                                text: unit != AmountDisplayUnit.fiat
-                                    ? ExchangeRate().getFormattedAmount(
-                                        widget.amountSats ?? 0,
-                                        displayFiat: widget.displayFiat,
-                                        network: widget.account?.network,
-                                        includeSymbol: false,
-                                        useFiatFormatting: true)
-                                    : (Settings().displayUnit == DisplayUnit.btc
-                                        ? getDisplayAmount(
-                                            widget.amountSats ?? 0,
-                                            AmountDisplayUnit.btc,
-                                            trailingZeros:
-                                                widget.amountSats == 0
-                                                    ? false
-                                                    : true)
-                                        : getDisplayAmount(
-                                            widget.amountSats ?? 0,
-                                            AmountDisplayUnit.sat,
-                                          )),
+                      textScaler: TextScaler.linear(textScaleFactor),
+                      text: TextSpan(
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                              color: EnvoyColors.accentPrimary,
+                              fontSize: 16,
+                            ),
+                        children: [
+                          if (unit == AmountDisplayUnit.fiat)
+                            WidgetSpan(
+                              alignment: PlaceholderAlignment.middle,
+                              child: SizedBox(
+                                height: 18,
+                                child: getUnitIcon(widget.account!),
                               ),
-                            ])),
+                            ),
+                          TextSpan(
+                            text: unit != AmountDisplayUnit.fiat
+                                ? ExchangeRate().getFormattedAmount(
+                                    widget.amountSats ?? 0,
+                                    displayFiat: widget.displayFiat,
+                                    network: widget.account?.network,
+                                    includeSymbol: false,
+                                    useFiatFormatting: true,
+                                  )
+                                : (Settings().displayUnit == DisplayUnit.btc
+                                    ? getDisplayAmount(
+                                        widget.amountSats ?? 0,
+                                        AmountDisplayUnit.btc,
+                                        trailingZeros: widget.amountSats == 0
+                                            ? false
+                                            : true,
+                                      )
+                                    : getDisplayAmount(
+                                        widget.amountSats ?? 0,
+                                        AmountDisplayUnit.sat,
+                                      )),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
         ],

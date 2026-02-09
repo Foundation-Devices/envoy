@@ -43,8 +43,9 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
       setState(() {
         final addressTypeToSelect =
             Settings().taprootEnabled() ? AddressType.p2Tr : AddressType.p2Wpkh;
-        selectedIndex = descriptors
-            .indexWhere((descriptor) => descriptor.$1 == addressTypeToSelect);
+        selectedIndex = descriptors.indexWhere(
+          (descriptor) => descriptor.$1 == addressTypeToSelect,
+        );
 
         // In case our preferred type is not there
         if (selectedIndex == -1) {
@@ -95,89 +96,92 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
       // ENV-2081
       physics: NeverScrollableScrollPhysics(),
       child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.all(EnvoySpacing.medium2),
-                child: Column(
-                  children: [
-                    QrTab(
-                      title: widget.account.name,
-                      subtitle: S().manage_account_descriptor_subheading,
-                      account: widget.account,
-                      qr: EnvoyQR(
-                        data: descriptor,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: EnvoySpacing.medium1,
-                          left: EnvoySpacing.xs,
-                          right: EnvoySpacing.xs),
-                      child: EnvoyDropdown(
-                        options: options,
-                        initialIndex: selectedIndex,
-                        onOptionChanged: (selectedOption) {
-                          if (selectedOption != null) {
-                            setState(() {
-                              selectedIndex = int.parse(selectedOption.value);
-                            });
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            //TODO: add dropdown to switch between descriptors
-
-            Padding(
-              padding: const EdgeInsets.only(bottom: EnvoySpacing.large1),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.all(EnvoySpacing.medium2),
+              child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: EnvoySpacing.large3),
-                    child: IconButton(
-                        onPressed: () {
-                          Clipboard.setData(ClipboardData(text: descriptor));
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text(
-                                "Descriptor copied to clipboard!"), //TODO: FIGMA
-                          ));
-                        },
-                        icon: const EnvoyIcon(EnvoyIcons.copy)),
-                  ),
-                  EnvoyTextButton(
-                    onTap: () {
-                      context.pop();
-                    },
-                    label: S().component_ok,
-                    textStyle: EnvoyTypography.subheading.copyWith(
-                        fontWeight: FontWeight.w400,
-                        color: EnvoyColors.darkTeal),
+                  QrTab(
+                    title: widget.account.name,
+                    subtitle: S().manage_account_descriptor_subheading,
+                    account: widget.account,
+                    qr: EnvoyQR(data: descriptor),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: EnvoySpacing.large3),
-                    child: IconButton(
-                        onPressed: () {
-                          SharePlus.instance.share(ShareParams(
-                            text: descriptor,
-                          ));
-                        },
-                        icon: const EnvoyIcon(EnvoyIcons.share)),
+                    padding: const EdgeInsets.only(
+                      top: EnvoySpacing.medium1,
+                      left: EnvoySpacing.xs,
+                      right: EnvoySpacing.xs,
+                    ),
+                    child: EnvoyDropdown(
+                      options: options,
+                      initialIndex: selectedIndex,
+                      onOptionChanged: (selectedOption) {
+                        if (selectedOption != null) {
+                          setState(() {
+                            selectedIndex = int.parse(selectedOption.value);
+                          });
+                        }
+                      },
+                    ),
                   ),
                 ],
               ),
             ),
-          ]),
+          ),
+
+          //TODO: add dropdown to switch between descriptors
+          Padding(
+            padding: const EdgeInsets.only(bottom: EnvoySpacing.large1),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: EnvoySpacing.large3),
+                  child: IconButton(
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: descriptor));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Descriptor copied to clipboard!",
+                          ), //TODO: FIGMA
+                        ),
+                      );
+                    },
+                    icon: const EnvoyIcon(EnvoyIcons.copy),
+                  ),
+                ),
+                EnvoyTextButton(
+                  onTap: () {
+                    context.pop();
+                  },
+                  label: S().component_ok,
+                  textStyle: EnvoyTypography.subheading.copyWith(
+                    fontWeight: FontWeight.w400,
+                    color: EnvoyColors.darkTeal,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: EnvoySpacing.large3),
+                  child: IconButton(
+                    onPressed: () {
+                      SharePlus.instance.share(ShareParams(text: descriptor));
+                    },
+                    icon: const EnvoyIcon(EnvoyIcons.share),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

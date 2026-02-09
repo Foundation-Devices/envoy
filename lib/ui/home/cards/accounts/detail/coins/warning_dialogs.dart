@@ -23,12 +23,13 @@ class CoinLockWarning extends StatefulWidget {
   final DismissiblePrompt promptType;
   final GestureTapCallback onContinue;
 
-  const CoinLockWarning(
-      {super.key,
-      required this.onContinue,
-      required this.warningMessage,
-      required this.buttonTitle,
-      required this.promptType});
+  const CoinLockWarning({
+    super.key,
+    required this.onContinue,
+    required this.warningMessage,
+    required this.buttonTitle,
+    required this.promptType,
+  });
 
   @override
   State<CoinLockWarning> createState() => _CoinLockWarningState();
@@ -40,29 +41,30 @@ class _CoinLockWarningState extends State<CoinLockWarning> {
   @override
   Widget build(BuildContext context) {
     return EnvoyPopUp(
-        icon: EnvoyIcons.alert,
-        typeOfMessage: PopUpState.warning,
-        title: S().component_warning,
-        showCloseButton: true,
-        content: widget.warningMessage,
-        primaryButtonLabel: widget.buttonTitle,
-        onPrimaryButtonTap: (context) async {
-          if (dismissed) {
-            await EnvoyStorage().addPromptState(widget.promptType);
-          } else {
-            await EnvoyStorage().removePromptState(widget.promptType);
-          }
-          widget.onContinue();
-        },
-        secondaryButtonLabel: S().component_back,
-        onSecondaryButtonTap: (context) {
-          Navigator.pop(context);
-        },
-        checkBoxText: S().component_dontShowAgain,
-        checkedValue: false,
-        onCheckBoxChanged: (checkedValue) {
-          dismissed = checkedValue;
-        });
+      icon: EnvoyIcons.alert,
+      typeOfMessage: PopUpState.warning,
+      title: S().component_warning,
+      showCloseButton: true,
+      content: widget.warningMessage,
+      primaryButtonLabel: widget.buttonTitle,
+      onPrimaryButtonTap: (context) async {
+        if (dismissed) {
+          await EnvoyStorage().addPromptState(widget.promptType);
+        } else {
+          await EnvoyStorage().removePromptState(widget.promptType);
+        }
+        widget.onContinue();
+      },
+      secondaryButtonLabel: S().component_back,
+      onSecondaryButtonTap: (context) {
+        Navigator.pop(context);
+      },
+      checkBoxText: S().component_dontShowAgain,
+      checkedValue: false,
+      onCheckBoxChanged: (checkedValue) {
+        dismissed = checkedValue;
+      },
+    );
   }
 }
 
@@ -84,8 +86,9 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
-        dismissed = ref.read(arePromptsDismissedProvider(
-            DismissiblePrompt.createCoinTagWarning));
+        dismissed = ref.read(
+          arePromptsDismissedProvider(DismissiblePrompt.createCoinTagWarning),
+        );
       });
     });
   }
@@ -106,32 +109,34 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
               icon: const Icon(Icons.close),
               onPressed: () {
                 if (ref.read(selectedAccountProvider) != null) {
-                  coinSelectionOverlayKey.currentState
-                      ?.show(SpendOverlayContext.preselectCoins);
+                  coinSelectionOverlayKey.currentState?.show(
+                    SpendOverlayContext.preselectCoins,
+                  );
                 }
                 Navigator.of(context).pop();
               },
             ),
           ),
           const SizedBox(height: EnvoySpacing.small),
-          Image.asset(
-            "assets/exclamation_icon.png",
-            height: 68,
-            width: 68,
+          Image.asset("assets/exclamation_icon.png", height: 68, width: 68),
+          const SizedBox(height: EnvoySpacing.medium1),
+          Text(
+            S().change_output_from_multiple_tags_modal_heading,
+            style: EnvoyTypography.heading,
           ),
           const SizedBox(height: EnvoySpacing.medium1),
-          Text(S().change_output_from_multiple_tags_modal_heading,
-              style: EnvoyTypography.heading),
-          const SizedBox(height: EnvoySpacing.medium1),
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-            child: Text(S().create_first_tag_modal_1_2_subheading,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(fontWeight: FontWeight.w400, fontSize: 12),
-                textAlign: TextAlign.center),
+            padding: const EdgeInsets.symmetric(
+              horizontal: EnvoySpacing.medium1,
+            ),
+            child: Text(
+              S().create_first_tag_modal_1_2_subheading,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                  ),
+              textAlign: TextAlign.center,
+            ),
           ),
           const SizedBox(height: EnvoySpacing.medium1),
           GestureDetector(
@@ -171,8 +176,9 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
             label: S().component_back,
             onTap: () {
               if (ref.read(selectedAccountProvider) != null) {
-                coinSelectionOverlayKey.currentState
-                    ?.show(SpendOverlayContext.preselectCoins);
+                coinSelectionOverlayKey.currentState?.show(
+                  SpendOverlayContext.preselectCoins,
+                );
               }
               Navigator.pop(context);
             },
@@ -188,11 +194,13 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
             onTap: () {
               ///user has dismissed the prompt
               if (dismissed) {
-                EnvoyStorage()
-                    .addPromptState(DismissiblePrompt.createCoinTagWarning);
+                EnvoyStorage().addPromptState(
+                  DismissiblePrompt.createCoinTagWarning,
+                );
               } else {
-                EnvoyStorage()
-                    .removePromptState(DismissiblePrompt.createCoinTagWarning);
+                EnvoyStorage().removePromptState(
+                  DismissiblePrompt.createCoinTagWarning,
+                );
               }
               widget.onContinue();
             },

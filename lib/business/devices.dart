@@ -87,7 +87,8 @@ class Device {
   Future<api.QuantumLinkIdentity?> getQlIdentity() async {
     if (type != DeviceType.passportPrime) {
       throw UnimplementedError(
-          "This method is only supported for Passport Prime devices");
+        "This method is only supported for Passport Prime devices",
+      );
     }
     List<int>? senderXid = this.senderXid?.toList();
     if (senderXid == null) {
@@ -98,7 +99,9 @@ class Device {
     }
     final sender = await api.deserializeQlIdentity(data: senderXid.toList());
     QLConnection.debugIdentitiesQuantumLinkIdentity(
-        message: "Deserializing QL Identity ", identity: sender);
+      message: "Deserializing QL Identity ",
+      identity: sender,
+    );
     return sender;
   }
 
@@ -106,20 +109,24 @@ class Device {
   Future<api.XidDocument?> getXidDocument() async {
     if (type != DeviceType.passportPrime) {
       throw UnimplementedError(
-          "This method is only supported for Passport Prime devices");
+        "This method is only supported for Passport Prime devices",
+      );
     }
     if (xid == null) return null;
     final x = await api.deserializeXid(data: xid!.toList());
     QLConnection.debugIdentitiesXidDocument(
-        message: "Deserializing  XID ", recipient: x);
+      message: "Deserializing  XID ",
+      recipient: x,
+    );
     return x;
   }
 
-// //getter for connection associated with this device
+  // //getter for connection associated with this device
   QLConnection qlConnection() {
     if (type != DeviceType.passportPrime) {
       throw UnimplementedError(
-          "This method is only supported for Passport Prime devices");
+        "This method is only supported for Passport Prime devices",
+      );
     }
     final id = Platform.isAndroid ? bleId : peripheralId;
     return BluetoothChannel().getDeviceChannel(id);

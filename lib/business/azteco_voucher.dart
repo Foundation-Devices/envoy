@@ -11,7 +11,7 @@ import 'dart:async';
 enum AztecoVoucherRedeemResult {
   success,
   timeout,
-  voucherInvalid // Able to reach server but problem with voucher
+  voucherInvalid, // Able to reach server but problem with voucher
 }
 
 class AztecoVoucher {
@@ -31,7 +31,7 @@ class AztecoVoucher {
         queryParams['c1'],
         queryParams['c2'],
         queryParams['c3'],
-        queryParams['c4']
+        queryParams['c4'],
       ];
     } else if (queryParams.length == 1 && queryParams.containsKey('code')) {
       String queryData = queryParams['code']!;
@@ -84,7 +84,14 @@ class AztecoVoucher {
 }
 
 void addPendingTx(String address, EnvoyAccount account) {
-  EnvoyStorage().addPendingTx(address, account.id, DateTime.now(),
-      TransactionType.azteco, 0, 0, address,
-      note: S().azteco_note);
+  EnvoyStorage().addPendingTx(
+    address,
+    account.id,
+    DateTime.now(),
+    TransactionType.azteco,
+    0,
+    0,
+    address,
+    note: S().azteco_note,
+  );
 }

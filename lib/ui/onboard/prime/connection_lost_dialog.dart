@@ -34,8 +34,10 @@ void startBluetoothDisconnectionListener(BuildContext context, WidgetRef ref) {
   if (qlConnection == null) {
     return;
   }
-  ref.listen(deviceConnectionStatusStreamProvider(qlConnection.deviceId),
-      (previous, next) {
+  ref.listen(deviceConnectionStatusStreamProvider(qlConnection.deviceId), (
+    previous,
+    next,
+  ) {
     final lastState = ref.read(primeUpdateStateProvider);
     final isRebooting = lastState == PrimeFwUpdateStep.rebooting ||
         lastState == PrimeFwUpdateStep.installing;
@@ -74,9 +76,7 @@ class ConnectionLostDialog extends StatelessWidget {
       child: ExpandablePageView(
         controller: controller,
         physics: const NeverScrollableScrollPhysics(),
-        children: [
-          const ConnectionLostModal(),
-        ],
+        children: [const ConnectionLostModal()],
       ),
     );
   }
@@ -132,8 +132,10 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
       }
     } catch (e, d) {
       EnvoyReport().log(
-          "ConnectionLostDialog", "Reconnection attempt failed: $e",
-          stackTrace: d);
+        "ConnectionLostDialog",
+        "Reconnection attempt failed: $e",
+        stackTrace: d,
+      );
       if (mounted) {
         EnvoyToast(
           backgroundColor: Colors.lightBlue,
@@ -158,6 +160,9 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
 
   @override
   Widget build(BuildContext context) {
+    final onboardingDevice = ref.watch(onboardingDeviceProvider);
+    final device =
+        onboardingDevice?.getDevice() ?? Devices().getPrimeDevices.first;
     return Padding(
       padding: const EdgeInsets.all(EnvoySpacing.medium2),
       child: Column(
@@ -172,28 +177,31 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
           Text(
             S().firmware_updateModalConnectionLost_header,
             textAlign: TextAlign.center,
-            style: EnvoyTypography.heading
-                .copyWith(color: EnvoyColors.textPrimary),
+            style: EnvoyTypography.heading.copyWith(
+              color: EnvoyColors.textPrimary,
+            ),
           ),
           const SizedBox(height: EnvoySpacing.medium1),
           Text(
             S().onboarding_connectionIntroWarning_content,
             textAlign: TextAlign.center,
-            style:
-                EnvoyTypography.info.copyWith(color: EnvoyColors.textSecondary),
+            style: EnvoyTypography.info.copyWith(
+              color: EnvoyColors.textSecondary,
+            ),
           ),
           const SizedBox(height: EnvoySpacing.medium3),
           Column(
             children: [
               if (Devices().getPrimeDevices.isEmpty ||
-                  !Devices().getPrimeDevices.first.onboardingComplete)
+                  !device.onboardingComplete)
                 EnvoyButton(
                   S().firmware_updateModalConnectionLost_exit,
                   borderRadius: BorderRadius.circular(EnvoySpacing.small),
                   type: EnvoyButtonTypes.secondary,
                   onTap: () {
                     resetOnboardingPrimeProviders(
-                        ProviderScope.containerOf(context));
+                      ProviderScope.containerOf(context),
+                    );
                     Navigator.of(context).pop();
                     context.go("/");
                   },

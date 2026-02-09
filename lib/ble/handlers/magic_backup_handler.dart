@@ -47,7 +47,8 @@ class BleMagicBackupHandler extends PassportMessageHandler {
       final device = qlConnection.getDevice();
       if (device != null) {
         unawaited(
-            Devices().updatePrimeBackupStatus(enabled.field0.enabled, device));
+          Devices().updatePrimeBackupStatus(enabled.field0.enabled, device),
+        );
       }
     } else if (message
         case api.QuantumLinkMessage_PrimeMagicBackupStatusRequest
@@ -62,42 +63,55 @@ class BleMagicBackupHandler extends PassportMessageHandler {
         final payload = event.field0;
         kPrint("Magic Backup Start Event: $payload");
         _collectBackupChunks = await api.collectBackupChunks(
-            seedFingerprint: payload.seedFingerprint,
-            totalChunks: payload.totalChunks,
-            backupHash: payload.hash);
+          seedFingerprint: payload.seedFingerprint,
+          totalChunks: payload.totalChunks,
+          backupHash: payload.hash,
+        );
       case api.CreateMagicBackupEvent_Chunk():
         final payload = event.field0;
         if (_collectBackupChunks != null) {
           try {
             kPrint(
-                "Prime Magic Backup Chunk Received: ${payload.chunkIndex + 1} of ${payload.totalChunks} ");
+              "Prime Magic Backup Chunk Received: ${payload.chunkIndex + 1} of ${payload.totalChunks} ",
+            );
 
             final api.PrimeBackupFile? file = await api.pushBackupChunk(
-                chunk: payload, this_: _collectBackupChunks!);
+              chunk: payload,
+              this_: _collectBackupChunks!,
+            );
             if (file != null) {
               final result = await backup_lib.Backup.performPrimeBackup(
-                  serverUrl: Settings().envoyServerAddress,
-                  proxyPort: Tor.instance.port,
-                  seedHash: file.seedFingerprint.field0,
-                  payload: file.data);
+                serverUrl: Settings().envoyServerAddress,
+                proxyPort: Tor.instance.port,
+                seedHash: file.seedFingerprint.field0,
+                payload: file.data,
+              );
               kPrint(
-                  "Prime Magic Backup upload: ${result ? "✔︎success" : "✖︎ failure"}");
+                "Prime Magic Backup upload: ${result ? "✔︎success" : "✖︎ failure"}",
+              );
               if (result == true) {
                 await qlConnection.writeMessage(
-                    api.QuantumLinkMessage_CreateMagicBackupResult(
-                        api.CreateMagicBackupResult.success()));
+                  api.QuantumLinkMessage_CreateMagicBackupResult(
+                    api.CreateMagicBackupResult.success(),
+                  ),
+                );
               } else {
                 await qlConnection.writeMessage(
-                    api.QuantumLinkMessage_CreateMagicBackupResult(
-                        api.CreateMagicBackupResult.error(
-                            error: "Failed to upload backup")));
+                  api.QuantumLinkMessage_CreateMagicBackupResult(
+                    api.CreateMagicBackupResult.error(
+                      error: "Failed to upload backup",
+                    ),
+                  ),
+                );
               }
               _collectBackupChunks = null;
             }
           } catch (e, stack) {
             await qlConnection.writeMessage(
-                api.QuantumLinkMessage_RestoreMagicBackupResult(
-                    api.RestoreMagicBackupResult.error(error: e.toString())));
+              api.QuantumLinkMessage_RestoreMagicBackupResult(
+                api.RestoreMagicBackupResult.error(error: e.toString()),
+              ),
+            );
             kPrint("Error prime magic backup: $e", stackTrace: stack);
           }
         } else {
@@ -114,72 +128,96 @@ class BleMagicBackupHandler extends PassportMessageHandler {
         serverUrl: Settings().envoyServerAddress,
         proxyPort: Tor.instance.port,
         hash: fingerPrint.field0,
-      ).timeout(Duration(seconds: 30), onTimeout: () {
-        throw Exception("Timeout fetching magic backup from server.");
-      });
+      ).timeout(
+        Duration(seconds: 30),
+        onTimeout: () {
+          throw Exception("Timeout fetching magic backup from server.");
+        },
+      );
       if (payloadRes.isNotEmpty) {
         final tempFile = await BluetoothChannel.getBleCacheFile(
-            payloadRes.hashCode.toString());
+          payloadRes.hashCode.toString(),
+        );
         await qlConnection.encodeToFile(
-            message: payloadRes,
-            filePath: tempFile.path,
-            chunkSize: bleChunkSize.toInt());
+          message: payloadRes,
+          filePath: tempFile.path,
+          chunkSize: bleChunkSize.toInt(),
+        );
         await qlConnection.transmitFromFile(tempFile.path);
         kPrint("Restore magic backup file sent!");
       } else {
         qlConnection.writeMessage(
-            api.QuantumLinkMessage_RestoreMagicBackupEvent(
-                api.RestoreMagicBackupEvent.error(
-                    error: "Empty backup payload")));
+          api.QuantumLinkMessage_RestoreMagicBackupEvent(
+            api.RestoreMagicBackupEvent.error(error: "Empty backup payload"),
+          ),
+        );
       }
     } catch (e, stack) {
-      EnvoyReport().log("PrimeMagicBackup", "Error restoring magic backup: $e",
-          stackTrace: stack);
+      EnvoyReport().log(
+        "PrimeMagicBackup",
+        "Error restoring magic backup: $e",
+        stackTrace: stack,
+      );
       if (e is backup_lib.GetBackupException) {
         switch (e) {
           case backup_lib.GetBackupException.serverUnreachable:
             qlConnection.writeMessage(
-                api.QuantumLinkMessage_RestoreMagicBackupEvent(
-                    api.RestoreMagicBackupEvent.error(
-                        error: "serverUnreachable")));
+              api.QuantumLinkMessage_RestoreMagicBackupEvent(
+                api.RestoreMagicBackupEvent.error(error: "serverUnreachable"),
+              ),
+            );
           case backup_lib.GetBackupException.seedNotFound:
             qlConnection.writeMessage(
-                api.QuantumLinkMessage_RestoreMagicBackupEvent(
-                    api.RestoreMagicBackupEvent.error(error: "seedNotFound")));
+              api.QuantumLinkMessage_RestoreMagicBackupEvent(
+                api.RestoreMagicBackupEvent.error(error: "seedNotFound"),
+              ),
+            );
           case backup_lib.GetBackupException.backupNotFound:
             qlConnection.writeMessage(
-                api.QuantumLinkMessage_RestoreMagicBackupEvent(
-                    api.RestoreMagicBackupEvent.notFound()));
+              api.QuantumLinkMessage_RestoreMagicBackupEvent(
+                api.RestoreMagicBackupEvent.notFound(),
+              ),
+            );
           case backup_lib.GetBackupException.invalidServer:
             qlConnection.writeMessage(
-                api.QuantumLinkMessage_RestoreMagicBackupEvent(
-                    api.RestoreMagicBackupEvent.error(error: "invalidServer")));
+              api.QuantumLinkMessage_RestoreMagicBackupEvent(
+                api.RestoreMagicBackupEvent.error(error: "invalidServer"),
+              ),
+            );
           case backup_lib.GetBackupException.invalidBackupFile:
             qlConnection.writeMessage(
-                api.QuantumLinkMessage_RestoreMagicBackupEvent(
-                    api.RestoreMagicBackupEvent.error(
-                        error: "invalidBackupFile")));
+              api.QuantumLinkMessage_RestoreMagicBackupEvent(
+                api.RestoreMagicBackupEvent.error(error: "invalidBackupFile"),
+              ),
+            );
           case backup_lib.GetBackupException.invalidSeed:
             qlConnection.writeMessage(
-                api.QuantumLinkMessage_RestoreMagicBackupEvent(
-                    api.RestoreMagicBackupEvent.error(error: "invalidSeed")));
+              api.QuantumLinkMessage_RestoreMagicBackupEvent(
+                api.RestoreMagicBackupEvent.error(error: "invalidSeed"),
+              ),
+            );
         }
       } else {
         qlConnection.writeMessage(
-            api.QuantumLinkMessage_RestoreMagicBackupEvent(
-                api.RestoreMagicBackupEvent.error(error: "$e")));
+          api.QuantumLinkMessage_RestoreMagicBackupEvent(
+            api.RestoreMagicBackupEvent.error(error: "$e"),
+          ),
+        );
       }
     }
   }
 
   Future _handleMagicBackupEnabledRequest(
-      api.EnvoyMagicBackupEnabledRequest _) async {
+    api.EnvoyMagicBackupEnabledRequest _,
+  ) async {
     kPrint(
-        "Got magic backup enabled request! sending response enabled=${Settings().syncToCloud}");
+      "Got magic backup enabled request! sending response enabled=${Settings().syncToCloud}",
+    );
     await qlConnection.writeMessage(
-        api.QuantumLinkMessage.envoyMagicBackupEnabledResponse(
-            api.EnvoyMagicBackupEnabledResponse(
-                enabled: Settings().syncToCloud)));
+      api.QuantumLinkMessage.envoyMagicBackupEnabledResponse(
+        api.EnvoyMagicBackupEnabledResponse(enabled: Settings().syncToCloud),
+      ),
+    );
 
     final device = qlConnection.getDevice();
     if (device != null) {
@@ -188,7 +226,8 @@ class BleMagicBackupHandler extends PassportMessageHandler {
   }
 
   Future<void> _handleStatusRequest(
-      api.PrimeMagicBackupStatusRequest statusRequest) async {
+    api.PrimeMagicBackupStatusRequest statusRequest,
+  ) async {
     //TODO: implement
   }
 }

@@ -52,29 +52,35 @@ class BleAccountHandler extends PassportMessageHandler {
     kPrint("Got account update!");
     kPrint("Got payload! ${accountUpdate.accountId}");
     final payload = accountUpdate.update;
-    final config =
-        await EnvoyAccountHandler.getConfigFromRemote(remoteUpdate: payload);
+    final config = await EnvoyAccountHandler.getConfigFromRemote(
+      remoteUpdate: payload,
+    );
     kPrint(
-        "Got config ${config.id} ${config.descriptors.map((e) => e.external_)}");
-    final fingerprint =
-        NgAccountManager.getFingerprint(config.descriptors.first.internal);
+      "Got config ${config.id} ${config.descriptors.map((e) => e.external_)}",
+    );
+    final fingerprint = NgAccountManager.getFingerprint(
+      config.descriptors.first.internal,
+    );
     if (fingerprint == null) {
       throw Exception("Invalid fingerprint $fingerprint");
     }
     final dir = NgAccountManager.getAccountDirectory(
-        deviceSerial: config.deviceSerial ?? "prime",
-        network: config.network.toString(),
-        fingerprint: fingerprint,
-        number: config.index);
+      deviceSerial: config.deviceSerial ?? "prime",
+      network: config.network.toString(),
+      fingerprint: fingerprint,
+      number: config.index,
+    );
     kPrint("Account path! ${dir.path}");
 
     if (await dir.exists()) {
-      EnvoyReport().log("AccountManager",
-          "Failed to create account directory for ${config.name}:${config.deviceSerial}, already exists: ${dir.path}");
+      EnvoyReport().log(
+        "AccountManager",
+        "Failed to create account directory for ${config.name}:${config.deviceSerial}, already exists: ${dir.path}",
+      );
 
-      final acc = NgAccountManager()
-          .accounts
-          .firstWhereOrNull((a) => a.id == config.id);
+      final acc = NgAccountManager().accounts.firstWhereOrNull(
+            (a) => a.id == config.id,
+          );
       kPrint("Account already exists, updating handler $acc");
 
       if (acc != null) {
@@ -92,15 +98,20 @@ class BleAccountHandler extends PassportMessageHandler {
     }
 
     final accountHandler = await EnvoyAccountHandler.addAccountFromConfig(
-        dbPath: dir.path, config: config);
-    await NgAccountManager()
-        .addAccount(await accountHandler.state(), accountHandler);
+      dbPath: dir.path,
+      config: config,
+    );
+    await NgAccountManager().addAccount(
+      await accountHandler.state(),
+      accountHandler,
+    );
     kPrint("Account added!");
   }
 
   Future<void> sendAccountUpdate(api.AccountUpdate accountUpdate) async {
-    await qlConnection
-        .writeMessage(api.QuantumLinkMessage.accountUpdate(accountUpdate));
+    await qlConnection.writeMessage(
+      api.QuantumLinkMessage.accountUpdate(accountUpdate),
+    );
   }
 
   bool _sendingData = false;
@@ -133,7 +144,8 @@ class BleAccountHandler extends PassportMessageHandler {
       );
 
       qlConnection.writeMessage(
-          api.QuantumLinkMessage.exchangeRate(exchangeRateMessage));
+        api.QuantumLinkMessage.exchangeRate(exchangeRateMessage),
+      );
 
       _lastSentBtcPrice = currentExchange;
     } catch (e) {
@@ -174,10 +186,12 @@ class BleAccountHandler extends PassportMessageHandler {
       );
 
       await qlConnection.writeMessage(
-          api.QuantumLinkMessage.exchangeRateHistory(historyMessage));
+        api.QuantumLinkMessage.exchangeRateHistory(historyMessage),
+      );
 
       kPrint(
-          "Sent ${apiPoints.length} exchange rate points for currency $currency");
+        "Sent ${apiPoints.length} exchange rate points for currency $currency",
+      );
     } catch (e) {
       kPrint('Failed to send exchange rate history: $e');
     } finally {

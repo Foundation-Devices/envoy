@@ -21,11 +21,13 @@ class ParseResult {
 
 // Extract payment data from a random string
 class BitcoinParser {
-  static Future<ParseResult> parse(String data,
-      {double? fiatExchangeRate,
-      EnvoyAccount? account,
-      String? selectedFiat,
-      AmountDisplayUnit? currentUnit}) async {
+  static Future<ParseResult> parse(
+    String data, {
+    double? fiatExchangeRate,
+    EnvoyAccount? account,
+    String? selectedFiat,
+    AmountDisplayUnit? currentUnit,
+  }) async {
     bool isBip21 = true;
 
     String? address;
@@ -39,7 +41,9 @@ class BitcoinParser {
     String urnScheme = "bitcoin";
     if (account != null &&
         await EnvoyAccountHandler.validateAddress(
-            address: data, network: account.network)) {
+          address: data,
+          network: account.network,
+        )) {
       return ParseResult(
         address: data,
         amountSats: null,
@@ -58,7 +62,9 @@ class BitcoinParser {
 
       if (account != null &&
           !await EnvoyAccountHandler.validateAddress(
-              address: data, network: account.network)) {
+            address: data,
+            network: account.network,
+          )) {
         address = null;
       }
 
@@ -94,7 +100,11 @@ class BitcoinParser {
     bool isError = !isNumber(data);
     if (isError) {
       return ParseResult(
-          address: null, amountSats: null, displayFiat: 0, unit: null);
+        address: null,
+        amountSats: null,
+        displayFiat: 0,
+        unit: null,
+      );
     } else {
       var copiedStringParsed = double.parse(data);
       String numberAsString = copiedStringParsed.toString();
@@ -119,7 +129,11 @@ class BitcoinParser {
         } else {
           if (!isFiatSelected) {
             return ParseResult(
-                address: null, amountSats: null, displayFiat: 0, unit: unit);
+              address: null,
+              amountSats: null,
+              displayFiat: 0,
+              unit: unit,
+            );
           } else {
             unit = AmountDisplayUnit.fiat;
             amountInSats = getSatsFromFiat(data, fiatExchangeRate);
@@ -127,10 +141,11 @@ class BitcoinParser {
           }
         }
         return ParseResult(
-            address: null,
-            amountSats: amountInSats,
-            displayFiat: displayFiat,
-            unit: unit);
+          address: null,
+          amountSats: amountInSats,
+          displayFiat: displayFiat,
+          unit: unit,
+        );
       }
 
       if ((copiedStringParsed % 1) == 0) {
@@ -158,10 +173,11 @@ class BitcoinParser {
             break;
         }
         return ParseResult(
-            address: null,
-            amountSats: amountInSats,
-            displayFiat: displayFiat,
-            unit: unit);
+          address: null,
+          amountSats: amountInSats,
+          displayFiat: displayFiat,
+          unit: unit,
+        );
       }
 
       if (!isFiatSelected || decimalPlaces >= 3) {
@@ -170,10 +186,11 @@ class BitcoinParser {
         displayFiat = convertSatsToFiat(amountInSats, fiatExchangeRate);
 
         return ParseResult(
-            address: null,
-            amountSats: amountInSats,
-            displayFiat: displayFiat,
-            unit: unit);
+          address: null,
+          amountSats: amountInSats,
+          displayFiat: displayFiat,
+          unit: unit,
+        );
       }
 
       if (copiedStringParsed < 1 && copiedStringParsed >= 0.01) {
@@ -227,10 +244,11 @@ class BitcoinParser {
       }
     }
     return ParseResult(
-        address: address,
-        amountSats: amountInSats,
-        displayFiat: displayFiat,
-        unit: unit);
+      address: address,
+      amountSats: amountInSats,
+      displayFiat: displayFiat,
+      unit: unit,
+    );
   }
 
   static bool isNumber(String string) {
@@ -261,7 +279,9 @@ class BitcoinParser {
 
   // SATS to double FIAT
   static double convertSatsToFiat(
-      int amountSats, double? selectedCurrencyRate) {
+    int amountSats,
+    double? selectedCurrencyRate,
+  ) {
     if (selectedCurrencyRate == null) {
       return 0;
     }

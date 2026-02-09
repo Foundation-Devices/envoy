@@ -15,21 +15,28 @@ class ScvIntroPage extends StatelessWidget {
     return OnboardingPage(
       key: const Key("scv_intro"),
       rightFunction: null,
-      clipArt:
-          Center(child: Image.asset("assets/shield_inspect.png", width: 190)),
+      clipArt: Center(
+        child: Image.asset("assets/shield_inspect.png", width: 190),
+      ),
       text: [
         OnboardingText(
-            header: S().envoy_scv_intro_heading,
-            text: S().envoy_scv_intro_subheading)
+          header: S().envoy_scv_intro_heading,
+          text: S().envoy_scv_intro_subheading,
+        ),
       ],
       buttons: [
         OnboardingButton(
-            label: S().component_next,
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return ScvShowQrPage();
-              }));
-            }),
+          label: S().component_next,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return ScvShowQrPage();
+                },
+              ),
+            );
+          },
+        ),
       ],
     );
   }

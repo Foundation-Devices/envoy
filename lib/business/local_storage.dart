@@ -95,8 +95,9 @@ class LocalStorage {
   }
 
   Future<File> saveFile(String name, String content) async {
-    final file =
-        await File('${appSupportDir.path}/$name').create(recursive: true);
+    final file = await File(
+      '${appSupportDir.path}/$name',
+    ).create(recursive: true);
     return file.writeAsString(content);
   }
 
@@ -112,8 +113,9 @@ class LocalStorage {
   }
 
   Future<File> saveFileBytes(String name, List<int> content) async {
-    final file =
-        await File('${appSupportDir.path}/$name').create(recursive: true);
+    final file = await File(
+      '${appSupportDir.path}/$name',
+    ).create(recursive: true);
     return file.writeAsBytes(content);
   }
 
@@ -147,7 +149,9 @@ class LocalStorage {
 
     final folderName = path.replaceAll('.tar', '');
     await extractFileToDisk(
-        '${appSupportDir.path}/$path', '${appSupportDir.path}/$folderName');
+      '${appSupportDir.path}/$path',
+      '${appSupportDir.path}/$folderName',
+    );
   }
 
   //IOS keychain previous secure storage configuration to new configuration.

@@ -18,10 +18,7 @@ import 'package:ngwallet/ngwallet.dart';
 
 class AccountTutorialOverlay extends ConsumerStatefulWidget {
   final List<EnvoyAccount> accounts;
-  const AccountTutorialOverlay({
-    super.key,
-    required this.accounts,
-  });
+  const AccountTutorialOverlay({super.key, required this.accounts});
 
   @override
   ConsumerState<AccountTutorialOverlay> createState() =>
@@ -68,19 +65,23 @@ class _AccountTutorialOverlayState
                     child: TweenAnimationBuilder(
                       duration: const Duration(milliseconds: 300),
                       tween: ColorTween(
-                          begin: Colors.transparent, end: Colors.black),
+                        begin: Colors.transparent,
+                        end: Colors.black,
+                      ),
                       builder: (context, value, child) {
                         return Container(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
                           decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  colors: [
+                            gradient: LinearGradient(
+                              colors: [
                                 value ?? Colors.transparent,
                                 const Color(0x00000000),
                               ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter)),
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                          ),
                           child: child,
                         );
                       },
@@ -89,9 +90,12 @@ class _AccountTutorialOverlayState
                         tween: Tween<double>(begin: 0, end: 5),
                         builder: (context, value, child) {
                           return BackdropFilter(
-                              filter: ImageFilter.blur(
-                                  sigmaX: value, sigmaY: value),
-                              child: child);
+                            filter: ImageFilter.blur(
+                              sigmaX: value,
+                              sigmaY: value,
+                            ),
+                            child: child,
+                          );
                         },
                         child: Scaffold(
                           appBar: AppBar(
@@ -101,18 +105,21 @@ class _AccountTutorialOverlayState
                             centerTitle: true,
                             title: Text(
                               S().bottomNav_accounts.toUpperCase(),
-                              style: EnvoyTypography.subheading
-                                  .copyWith(color: Colors.white),
+                              style: EnvoyTypography.subheading.copyWith(
+                                color: Colors.white,
+                              ),
                             ),
                             actions: [
                               Padding(
                                 padding: const EdgeInsets.only(
-                                    right: EnvoySpacing.xs),
+                                  right: EnvoySpacing.xs,
+                                ),
                                 child: IconButton(
                                   icon: const Icon(Icons.close),
                                   onPressed: () {
                                     EnvoyStorage().addPromptState(
-                                        DismissiblePrompt.primeAccountTutorial);
+                                      DismissiblePrompt.primeAccountTutorial,
+                                    );
                                     Navigator.of(context).pop();
                                   },
                                 ),
@@ -121,10 +128,12 @@ class _AccountTutorialOverlayState
                           ),
                           body: Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: EnvoySpacing.medium1),
+                              horizontal: EnvoySpacing.medium1,
+                            ),
                             child: ListView.builder(
                               padding: const EdgeInsets.only(
-                                  top: EnvoySpacing.medium1),
+                                top: EnvoySpacing.medium1,
+                              ),
                               itemBuilder: (context, index) {
                                 final account = accounts[index];
 
@@ -138,8 +147,9 @@ class _AccountTutorialOverlayState
                                 }
 
                                 return Padding(
-                                  padding:
-                                      const EdgeInsets.all(EnvoySpacing.small),
+                                  padding: const EdgeInsets.all(
+                                    EnvoySpacing.small,
+                                  ),
                                   child: AnimatedOpacity(
                                     opacity: active ? 1 : 0.1,
                                     duration: Duration(milliseconds: 300),
@@ -242,7 +252,8 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
           color: EnvoyColors.textPrimary,
           elevation: 0,
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(EnvoySpacing.medium3)),
+            borderRadius: BorderRadius.circular(EnvoySpacing.medium3),
+          ),
           child: Center(
             child: Container(
               width: MediaQuery.of(context).size.width * 0.9,
@@ -250,10 +261,7 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
                 gradient: const LinearGradient(
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
-                  colors: [
-                    EnvoyColors.textSecondary,
-                    EnvoyColors.textPrimary,
-                  ],
+                  colors: [EnvoyColors.textSecondary, EnvoyColors.textPrimary],
                 ),
                 borderRadius: BorderRadius.circular(EnvoySpacing.medium3),
               ),
@@ -267,7 +275,10 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
                       duration: const Duration(milliseconds: 300),
                       transitionBuilder:
                           (Widget child, Animation<double> animation) {
-                        return FadeTransition(opacity: animation, child: child);
+                        return FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        );
                       },
                       child: Column(
                         key: ValueKey<int>(pageNumber),
@@ -287,7 +298,8 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
                                 widget.descriptions[pageNumber - 1],
                                 textAlign: TextAlign.center,
                                 style: EnvoyTypography.body.copyWith(
-                                    color: EnvoyColors.contentTertiary),
+                                  color: EnvoyColors.contentTertiary,
+                                ),
                               ),
                             ),
                           ),
@@ -301,8 +313,9 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
                                 behavior: HitTestBehavior.opaque,
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: EnvoySpacing.medium3,
-                                      vertical: EnvoySpacing.medium1),
+                                    horizontal: EnvoySpacing.medium3,
+                                    vertical: EnvoySpacing.medium1,
+                                  ),
                                   child: Row(
                                     children: [
                                       EnvoyIcon(
@@ -336,8 +349,9 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
                                 behavior: HitTestBehavior.opaque,
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: EnvoySpacing.medium3,
-                                      vertical: EnvoySpacing.medium1),
+                                    horizontal: EnvoySpacing.medium3,
+                                    vertical: EnvoySpacing.medium1,
+                                  ),
                                   child: Row(
                                     children: [
                                       Text(
@@ -354,7 +368,7 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
                                         color: pageNumber < totalPages
                                             ? EnvoyColors.accentPrimary
                                             : Colors.transparent,
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),

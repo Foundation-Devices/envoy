@@ -42,8 +42,10 @@ final isPrimeConnectedProvider = Provider.family<bool, Device?>((ref, device) {
   return status.connected == true;
 });
 
-final connectedDeviceProvider =
-    StreamProvider.family<DeviceStatus, String>((ref, deviceId) {
+final connectedDeviceProvider = StreamProvider.family<DeviceStatus, String>((
+  ref,
+  deviceId,
+) {
   final bleDevice = BluetoothChannel().getDeviceChannel(deviceId);
   return bleDevice.deviceStatusStream;
 });
@@ -169,7 +171,8 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     if (Platform.isAndroid) {
       // return;
       kPrint(
-          "Getting permissions... ${await BluetoothChannel().getAPILevel()}");
+        "Getting permissions... ${await BluetoothChannel().getAPILevel()}",
+      );
       // Envoy will be getting the BT addresses via QR
       // so we don't need location permission for scanning on Android 10 and below
       if (await BluetoothChannel().getAPILevel() <= 31) {
@@ -177,13 +180,13 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
           Permission.bluetooth,
           Permission.bluetoothScan,
           Permission.bluetoothConnect,
-          Permission.locationWhenInUse
+          Permission.locationWhenInUse,
         ].request();
       } else {
         await [
           Permission.bluetooth,
           Permission.bluetoothScan,
-          Permission.bluetoothConnect
+          Permission.bluetoothConnect,
         ].request();
       }
       kPrint("Scanning...");
@@ -233,8 +236,9 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   //checks connected devices.
   // if a device is connected and its not in the list of prime devices, disconnect from it
 
-  Future<List<Uint8List>> encodeMessage(
-      {required api.QuantumLinkMessage message}) async {
+  Future<List<Uint8List>> encodeMessage({
+    required api.QuantumLinkMessage message,
+  }) async {
     DateTime dateTime = DateTime.now();
     try {
       dateTime = await NTP.now(timeout: const Duration(seconds: 1));
@@ -244,8 +248,10 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
     kPrint("Encoding Message timestamp: $timestampSeconds");
 
-    api.EnvoyMessage envoyMessage =
-        api.EnvoyMessage(message: message, timestamp: timestampSeconds);
+    api.EnvoyMessage envoyMessage = api.EnvoyMessage(
+      message: message,
+      timestamp: timestampSeconds,
+    );
     kPrint("Encoded Message $timestampSeconds");
 
     kPrint("Encoding message: $envoyMessage");
@@ -256,10 +262,11 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     );
   }
 
-  Future<bool> encodeToFile(
-      {required Uint8List message,
-      required String filePath,
-      required int chunkSize}) async {
+  Future<bool> encodeToFile({
+    required Uint8List message,
+    required String filePath,
+    required int chunkSize,
+  }) async {
     DateTime dateTime = DateTime.now();
     try {
       dateTime = await NTP.now(timeout: const Duration(seconds: 1));
@@ -274,12 +281,13 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     // kPrint("Encoded Message $timestampSeconds");
     kPrint("Encoding message: $message to file: $filePath");
     return await api.encodeToMagicBackupFile(
-        payload: message,
-        sender: _qlIdentity!,
-        recipient: _recipientXid!,
-        path: filePath,
-        chunkSize: BigInt.from(chunkSize),
-        timestamp: timestampSeconds);
+      payload: message,
+      sender: _qlIdentity!,
+      recipient: _recipientXid!,
+      path: filePath,
+      chunkSize: BigInt.from(chunkSize),
+      timestamp: timestampSeconds,
+    );
   }
 
   @override
@@ -295,8 +303,11 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   }
 
   Future<void> sendPsbt(String accountId, Uint8List psbt) async {
-    await writeMessage(api.QuantumLinkMessage.signPsbt(
-        api.SignPsbt(psbt: psbt, accountId: accountId)));
+    await writeMessage(
+      api.QuantumLinkMessage.signPsbt(
+        api.SignPsbt(psbt: psbt, accountId: accountId),
+      ),
+    );
   }
 
   /*Future<api.PassportMessage?> decode(Uint8List bleData) async {
@@ -319,7 +330,8 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   }
 
   Future<void> sendSecurityChallengeVerificationResult(
-      api.VerificationResult result) async {
+    api.VerificationResult result,
+  ) async {
     final message = api.SecurityCheck.verificationResult(result);
     await writeMessage(api.QuantumLinkMessage.securityCheck(message));
   }
@@ -334,9 +346,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       for (final prime in primes) {
         kPrint("Restoring Prime device XID for $prime");
         if (prime.xid != null) {
-          _recipientXid = await api.deserializeXid(
-            data: prime.xid!,
-          );
+          _recipientXid = await api.deserializeXid(data: prime.xid!);
         } else {
           kPrint("No XID found for device ${prime.name}");
         }
@@ -347,7 +357,8 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   }
 
   Future<Stream<double>> _writeWithProgress(
-      api.QuantumLinkMessage message) async {
+    api.QuantumLinkMessage message,
+  ) async {
     final data = await encodeMessage(message: message);
     kPrint("Encoded message! Size: ${data.length}");
     if (Platform.isIOS || Platform.isAndroid) {
@@ -355,7 +366,8 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
       // await _bluetoothChannel.writeAll(data);
     } else {
       throw UnimplementedError(
-          "Bluetooth write not implemented for this platform");
+        "Bluetooth write not implemented for this platform",
+      );
     }
     return Stream.value(1.0);
   }
@@ -373,7 +385,8 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
 
   @override
   Future<Stream<double>> writeMessageWithProgress(
-      api.QuantumLinkMessage message) async {
+    api.QuantumLinkMessage message,
+  ) async {
     return _writeWithProgress(message);
   }
 

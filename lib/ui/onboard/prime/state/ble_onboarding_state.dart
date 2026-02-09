@@ -75,10 +75,10 @@ final fwTransferState = StreamProvider<FwUpdateState>((ref) {
 });
 
 class StepNotifier extends StateNotifier<StepModel> {
-  StepNotifier(
-      {String stepName = "Loading",
-      EnvoyStepState state = EnvoyStepState.HIDDEN})
-      : super(StepModel(stepName: stepName, state: state));
+  StepNotifier({
+    String stepName = "Loading",
+    EnvoyStepState state = EnvoyStepState.HIDDEN,
+  }) : super(StepModel(stepName: stepName, state: state));
 
   Future<void> updateStep(String stepName, EnvoyStepState state) async {
     this.state = StepModel(stepName: stepName, state: state);
@@ -101,11 +101,15 @@ final bleConnectionProvider = Provider<StepModel>((ref) {
     },
     loading: () {
       return StepModel(
-          stepName: "Connecting to device", state: EnvoyStepState.IDLE);
+        stepName: "Connecting to device",
+        state: EnvoyStepState.IDLE,
+      );
     },
     error: (err, stack) {
       return StepModel(
-          stepName: "Unable to connect to device", state: EnvoyStepState.ERROR);
+        stepName: "Unable to connect to device",
+        state: EnvoyStepState.ERROR,
+      );
     },
   );
 });
@@ -119,43 +123,51 @@ final deviceSecurityProvider = Provider<SecurityStepModel>((ref) {
       .lastScvState;
   if (!asyncState.hasValue && lastState != null) {
     return SecurityStepModel(
-        stepName: lastState.message, state: lastState.step);
+      stepName: lastState.message,
+      state: lastState.step,
+    );
   }
   return asyncState.when(
     data: (data) {
       return SecurityStepModel(
-          stepName: data.message, state: data.step, errorType: data.errorType);
+        stepName: data.message,
+        state: data.step,
+        errorType: data.errorType,
+      );
     },
     loading: () {
       return SecurityStepModel(
-          stepName: S().onboarding_connectionIntro_checkingDeviceSecurity,
-          state: EnvoyStepState.IDLE);
+        stepName: S().onboarding_connectionIntro_checkingDeviceSecurity,
+        state: EnvoyStepState.IDLE,
+      );
     },
     error: (err, stack) {
       return SecurityStepModel(
-          stepName: S().onboarding_connectionIntroError_securityCheckFailed,
-          state: EnvoyStepState.ERROR,
-          errorType: ScvErrorType.verificationFailed);
+        stepName: S().onboarding_connectionIntroError_securityCheckFailed,
+        state: EnvoyStepState.ERROR,
+        errorType: ScvErrorType.verificationFailed,
+      );
     },
   );
 });
 
 final firmWareUpdateProvider = Provider<StepModel>((ref) {
   final asyncState = ref.watch(fwUpdateStreamProvider);
-
   return asyncState.when(
     data: (data) {
       return StepModel(stepName: data.message, state: data.step);
     },
     loading: () {
       return StepModel(
-          stepName: S().onboarding_connectionIntro_checkForUpdates,
-          state: EnvoyStepState.IDLE);
+        stepName: S().onboarding_connectionIntro_checkForUpdates,
+        state: EnvoyStepState.IDLE,
+      );
     },
     error: (err, stack) {
       return StepModel(
-          stepName: S().onboarding_connectionIntro_checkForUpdates,
-          state: EnvoyStepState.ERROR);
+        stepName: S().onboarding_connectionIntro_checkForUpdates,
+        state: EnvoyStepState.ERROR,
+      );
     },
   );
 });
@@ -165,22 +177,26 @@ final creatingPinProvider = Provider<StepModel>((ref) {
   final device = ref.watch(onboardingDeviceProvider);
   if (device == null) {
     return StepModel(
-        stepName: S().finalize_catchAll_creatingPin,
-        state: EnvoyStepState.IDLE);
+      stepName: S().finalize_catchAll_creatingPin,
+      state: EnvoyStepState.IDLE,
+    );
   }
   final stateHistory = device.qlHandler.bleOnboardHandler.completedSteps;
   if (stateHistory.contains(OnboardingState.deviceSecured)) {
     return StepModel(
-        stepName: S().finalize_catchAll_pinCreated,
-        state: EnvoyStepState.FINISHED);
+      stepName: S().finalize_catchAll_pinCreated,
+      state: EnvoyStepState.FINISHED,
+    );
   } else if (stateHistory.contains(OnboardingState.securingDevice)) {
     return StepModel(
-        stepName: S().finalize_catchAll_creatingPin,
-        state: EnvoyStepState.LOADING);
+      stepName: S().finalize_catchAll_creatingPin,
+      state: EnvoyStepState.LOADING,
+    );
   } else {
     return StepModel(
-        stepName: S().finalize_catchAll_creatingPin,
-        state: EnvoyStepState.IDLE);
+      stepName: S().finalize_catchAll_creatingPin,
+      state: EnvoyStepState.IDLE,
+    );
   }
 });
 
@@ -189,22 +205,26 @@ final setUpMasterKeyProvider = Provider<StepModel>((ref) {
   final device = ref.watch(onboardingDeviceProvider);
   if (device == null) {
     return StepModel(
-        stepName: S().finalize_catchAll_setUpMasterKey,
-        state: EnvoyStepState.IDLE);
+      stepName: S().finalize_catchAll_setUpMasterKey,
+      state: EnvoyStepState.IDLE,
+    );
   }
   final stateHistory = device.qlHandler.bleOnboardHandler.completedSteps;
   if (stateHistory.contains(OnboardingState.walletCreated)) {
     return StepModel(
-        stepName: S().finalize_catchAll_masterKeySetUp,
-        state: EnvoyStepState.FINISHED);
+      stepName: S().finalize_catchAll_masterKeySetUp,
+      state: EnvoyStepState.FINISHED,
+    );
   } else if (stateHistory.contains(OnboardingState.walletCreationScreen)) {
     return StepModel(
-        stepName: S().finalize_catchAll_settingUpMasterKey,
-        state: EnvoyStepState.LOADING);
+      stepName: S().finalize_catchAll_settingUpMasterKey,
+      state: EnvoyStepState.LOADING,
+    );
   } else {
     return StepModel(
-        stepName: S().finalize_catchAll_setUpMasterKey,
-        state: EnvoyStepState.IDLE);
+      stepName: S().finalize_catchAll_setUpMasterKey,
+      state: EnvoyStepState.IDLE,
+    );
   }
 });
 
@@ -213,24 +233,28 @@ final backUpMasterKeyProvider = Provider<StepModel>((ref) {
   final device = ref.watch(onboardingDeviceProvider);
   if (device == null) {
     return StepModel(
-        stepName: S().finalize_catchAll_backUpMasterKey,
-        state: EnvoyStepState.IDLE);
+      stepName: S().finalize_catchAll_backUpMasterKey,
+      state: EnvoyStepState.IDLE,
+    );
   }
   final stateHistory = device.qlHandler.bleOnboardHandler.completedSteps;
   if (stateHistory.contains(OnboardingState.magicBackupCreated) ||
       stateHistory.contains(OnboardingState.connectingWallet)) {
     return StepModel(
-        stepName: S().finalize_catchAll_masterKeyBackedUp,
-        state: EnvoyStepState.FINISHED);
+      stepName: S().finalize_catchAll_masterKeyBackedUp,
+      state: EnvoyStepState.FINISHED,
+    );
   } else if (stateHistory.contains(OnboardingState.magicBackupScreen) ||
       stateHistory.contains(OnboardingState.creatingManualBackup)) {
     return StepModel(
-        stepName: S().finalize_catchAll_backingUpMasterKey,
-        state: EnvoyStepState.LOADING);
+      stepName: S().finalize_catchAll_backingUpMasterKey,
+      state: EnvoyStepState.LOADING,
+    );
   } else {
     return StepModel(
-        stepName: S().finalize_catchAll_backUpMasterKey,
-        state: EnvoyStepState.IDLE);
+      stepName: S().finalize_catchAll_backUpMasterKey,
+      state: EnvoyStepState.IDLE,
+    );
   }
 });
 
@@ -239,22 +263,26 @@ final connectAccountProvider = Provider<StepModel>((ref) {
   final device = ref.watch(onboardingDeviceProvider);
   if (device == null) {
     return StepModel(
-        stepName: S().finalize_catchAll_connectAccount,
-        state: EnvoyStepState.IDLE);
+      stepName: S().finalize_catchAll_connectAccount,
+      state: EnvoyStepState.IDLE,
+    );
   }
   final stateHistory = device.qlHandler.bleOnboardHandler.completedSteps;
   if (stateHistory.contains(OnboardingState.walletConected)) {
     return StepModel(
-        stepName: S().finalize_catchAll_connectingAccount,
-        state: EnvoyStepState.FINISHED);
+      stepName: S().finalize_catchAll_connectingAccount,
+      state: EnvoyStepState.FINISHED,
+    );
   } else if (stateHistory.contains(OnboardingState.connectingWallet)) {
     return StepModel(
-        stepName: S().finalize_catchAll_connectingAccount,
-        state: EnvoyStepState.LOADING);
+      stepName: S().finalize_catchAll_connectingAccount,
+      state: EnvoyStepState.LOADING,
+    );
   } else {
     return StepModel(
-        stepName: S().finalize_catchAll_connectAccount,
-        state: EnvoyStepState.IDLE);
+      stepName: S().finalize_catchAll_connectAccount,
+      state: EnvoyStepState.IDLE,
+    );
   }
 });
 

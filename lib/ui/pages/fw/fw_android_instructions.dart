@@ -39,20 +39,25 @@ class FwAndroidInstructionsPage extends StatelessWidget {
               ),
             ),
           ],
-        )
+        ),
       ],
       navigationDots: 6,
       navigationDotsIndex: 2,
       buttons: [
         OnboardingButton(
-            label: "Continue", // TODO: FIGMA
-            onTap: () {
-              final router = GoRouter.of(context);
-              UpdatesManager().getStoredFirmware(deviceId).then((File file) {
-                FwUploader(file).getDirectoryContentPermission();
-              }).then((value) {
-                router.pushNamed(PASSPORT_UPDATE_SD_CARD, extra: fwPagePayload);
-              }, onError: (ex) {
+          label: "Continue", // TODO: FIGMA
+          onTap: () {
+            final router = GoRouter.of(context);
+            UpdatesManager().getStoredFirmware(deviceId).then((File file) {
+              FwUploader(file).getDirectoryContentPermission();
+            }).then(
+              (value) {
+                router.pushNamed(
+                  PASSPORT_UPDATE_SD_CARD,
+                  extra: fwPagePayload,
+                );
+              },
+              onError: (ex) {
                 if (context.mounted) {
                   EnvoyToast(
                     backgroundColor: EnvoyColors.danger,
@@ -66,8 +71,10 @@ class FwAndroidInstructionsPage extends StatelessWidget {
                   ).show(context);
                 }
                 EnvoyReport().log("FwAndroid", ex.toString());
-              });
-            }),
+              },
+            );
+          },
+        ),
       ],
     );
   }

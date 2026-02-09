@@ -34,8 +34,13 @@ class _BtcPayRedeemModalSuccess extends State<BtcPayRedeemModalSuccess> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
-            child: Image.asset("assets/trophy_icon.png",
-                scale: 1.0, width: 128, height: 128, fit: BoxFit.contain),
+            child: Image.asset(
+              "assets/trophy_icon.png",
+              scale: 1.0,
+              width: 128,
+              height: 128,
+              fit: BoxFit.contain,
+            ),
           ),
           Text(
             S().azteco_redeem_modal_success_heading,

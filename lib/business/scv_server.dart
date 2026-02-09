@@ -107,8 +107,10 @@ class ScvServer {
       _storeChallenge(challenge);
       return challenge;
     } else {
-      EnvoyReport().log("scv",
-          "Failed to get challenge,status: ${response.statusCode},body: ${response.body}");
+      EnvoyReport().log(
+        "scv",
+        "Failed to get challenge,status: ${response.statusCode},body: ${response.body}",
+      );
       throw Exception('Failed to get challenge');
     }
   }
@@ -128,18 +130,22 @@ class ScvServer {
     };
 
     // TODO: parametrise the Passport batch?
-    final response = await http.post('$serverAddress/validate?batch=2',
-        body: jsonEncode(request),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=utf-8'
-        });
+    final response = await http.post(
+      '$serverAddress/validate?batch=2',
+      body: jsonEncode(request),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+    );
 
     if (response.statusCode == 200) {
       var json = jsonDecode(response.body);
       return json['isValidated'] == true;
     } else {
-      EnvoyReport().log("scv",
-          "Failed to validate challenge,status: ${response.statusCode},body: ${response.body}");
+      EnvoyReport().log(
+        "scv",
+        "Failed to validate challenge,status: ${response.statusCode},body: ${response.body}",
+      );
       return false;
     }
   }

@@ -66,9 +66,10 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
 
   TextStyle? get _labelStyle {
     return Theme.of(context).textTheme.bodySmall?.copyWith(
-        fontSize: 9.5,
-        fontWeight: FontWeight.w600,
-        fontStyle: FontStyle.normal);
+          fontSize: 9.5,
+          fontWeight: FontWeight.w600,
+          fontStyle: FontStyle.normal,
+        );
   }
 
   void selectFeeTab(num fee) {
@@ -82,8 +83,10 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
         index = 2;
       }
     }
-    _tabController.animateTo(index.toInt(),
-        duration: const Duration(milliseconds: 200));
+    _tabController.animateTo(
+      index.toInt(),
+      duration: const Duration(milliseconds: 200),
+    );
   }
 
   @override
@@ -94,66 +97,71 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     });
 
     ref.listen(
-        spendTransactionProvider.select(
-          (value) => value.transaction?.feeRate.toInt() ?? 1,
-        ), (previous, next) {
-      selectFeeTab(next);
-    });
+      spendTransactionProvider.select(
+        (value) => value.transaction?.feeRate.toInt() ?? 1,
+      ),
+      (previous, next) {
+        selectFeeTab(next);
+      },
+    );
 
-    TextScaler feeTextScaler = MediaQuery.textScalerOf(context)
-        .clamp(minScaleFactor: 1, maxScaleFactor: 1.1);
+    TextScaler feeTextScaler = MediaQuery.textScalerOf(
+      context,
+    ).clamp(minScaleFactor: 1, maxScaleFactor: 1.1);
 
     return Container(
-        constraints: const BoxConstraints(
-          maxWidth: 194,
-          minWidth: 194,
-          maxHeight: 24,
+      constraints: const BoxConstraints(
+        maxWidth: 194,
+        minWidth: 194,
+        maxHeight: 24,
+      ),
+      child: Consumer(
+        builder: (context, ref, child) {
+          return IgnorePointer(
+            ignoring: ref.watch(spendFeeProcessing),
+            child: child,
+          );
+        },
+        child: TabBar(
+          textScaler: feeTextScaler,
+          controller: _tabController,
+          indicatorColor: Colors.white,
+          onTap: onTabSelected,
+          labelPadding: const EdgeInsets.symmetric(horizontal: 0),
+          padding: const EdgeInsets.symmetric(horizontal: 0),
+          indicatorPadding: const EdgeInsets.symmetric(horizontal: 0),
+          labelColor: Colors.white,
+          indicatorWeight: 1,
+          tabAlignment: TabAlignment.fill,
+          splashBorderRadius: BorderRadius.circular(0),
+          indicatorSize: TabBarIndicatorSize.label,
+          labelStyle: _labelStyle,
+          tabs: [
+            Tab(
+              child: Text(
+                S().coincontrol_tx_detail_fee_standard,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Tab(
+              child: Text(
+                S().coincontrol_tx_detail_fee_faster,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Tab(
+              child: Text(
+                S().coincontrol_tx_detail_fee_custom,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
         ),
-        child: Consumer(
-          builder: (context, ref, child) {
-            return IgnorePointer(
-              ignoring: ref.watch(spendFeeProcessing),
-              child: child,
-            );
-          },
-          child: TabBar(
-              textScaler: feeTextScaler,
-              controller: _tabController,
-              indicatorColor: Colors.white,
-              onTap: onTabSelected,
-              labelPadding: const EdgeInsets.symmetric(horizontal: 0),
-              padding: const EdgeInsets.symmetric(horizontal: 0),
-              indicatorPadding: const EdgeInsets.symmetric(horizontal: 0),
-              labelColor: Colors.white,
-              indicatorWeight: 1,
-              tabAlignment: TabAlignment.fill,
-              splashBorderRadius: BorderRadius.circular(0),
-              indicatorSize: TabBarIndicatorSize.label,
-              labelStyle: _labelStyle,
-              tabs: [
-                Tab(
-                  child: Text(
-                    S().coincontrol_tx_detail_fee_standard,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Tab(
-                  child: Text(
-                    S().coincontrol_tx_detail_fee_faster,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Tab(
-                  child: Text(
-                    S().coincontrol_tx_detail_fee_custom,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ]),
-        ));
+      ),
+    );
   }
 
   void onTabSelected(int index) {
@@ -166,9 +174,11 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
         break;
       case 2:
         {
-          final currentFee = ref.read(spendTransactionProvider.select(
-            (value) => value.transaction?.feeRate.toInt() ?? 1,
-          ));
+          final currentFee = ref.read(
+            spendTransactionProvider.select(
+              (value) => value.transaction?.feeRate.toInt() ?? 1,
+            ),
+          );
           bool feeChanged = false;
           showModalBottomSheet(
             context: context,
@@ -178,39 +188,40 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
             barrierColor: Colors.transparent,
             builder: (context) {
               return Container(
-                  decoration: const BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        spreadRadius: 2,
-                        blurRadius: 24,
-                        offset: Offset(0, -4), // changes position of shadow
-                      ),
-                    ],
+                decoration: const BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      spreadRadius: 2,
+                      blurRadius: 24,
+                      offset: Offset(0, -4), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: Card(
+                  elevation: 0,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(EnvoySpacing.medium2),
+                      topRight: Radius.circular(EnvoySpacing.medium2),
+                    ),
                   ),
-                  child: Card(
-                    elevation: 0,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(EnvoySpacing.medium2),
-                        topRight: Radius.circular(EnvoySpacing.medium2),
-                      ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        return FeeSlider(
+                          fees: feeList,
+                          onFeeSelect: (index) {
+                            widget.onFeeSelect(index, context, true);
+                            feeChanged = true;
+                          },
+                        );
+                      },
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Consumer(
-                        builder: (context, ref, child) {
-                          return FeeSlider(
-                            fees: feeList,
-                            onFeeSelect: (index) {
-                              widget.onFeeSelect(index, context, true);
-                              feeChanged = true;
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ));
+                  ),
+                ),
+              );
             },
           ).then((value) {
             if (!feeChanged) {
@@ -237,12 +248,15 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
       int totalFeeSuggestion =
           feeChooserState.maxFeeRate - feeChooserState.minFeeRate;
       kPrint(
-          "totalFeeSuggestion $totalFeeSuggestion (${feeChooserState.minFeeRate} to ${feeChooserState.maxFeeRate})");
+        "totalFeeSuggestion $totalFeeSuggestion (${feeChooserState.minFeeRate} to ${feeChooserState.maxFeeRate})",
+      );
       if (totalFeeSuggestion <= 1) {
         feeList.add(feeChooserState.minFeeRate);
       } else {
-        feeList = List.generate(totalFeeSuggestion,
-            (index) => (feeChooserState.minFeeRate) + index).reversed.toList();
+        feeList = List.generate(
+          totalFeeSuggestion,
+          (index) => (feeChooserState.minFeeRate) + index,
+        ).reversed.toList();
       }
     });
   }
@@ -253,11 +267,12 @@ class FeeSlider extends ConsumerStatefulWidget {
   final int selectedItem;
   final List<num> fees;
 
-  const FeeSlider(
-      {super.key,
-      this.selectedItem = 1,
-      required this.onFeeSelect,
-      required this.fees});
+  const FeeSlider({
+    super.key,
+    this.selectedItem = 1,
+    required this.onFeeSelect,
+    required this.fees,
+  });
 
   @override
   ConsumerState createState() => _FeeSliderState();
@@ -274,8 +289,9 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
 
   bool _disableHaptic = false;
   bool _initializationFinished = false;
-  final FixedExtentScrollController _controller =
-      FixedExtentScrollController(initialItem: 2);
+  final FixedExtentScrollController _controller = FixedExtentScrollController(
+    initialItem: 2,
+  );
 
   @override
   void initState() {
@@ -300,9 +316,11 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
         jumpIndex = widget.fees.length - 1;
       }
       _controller
-          .animateToItem(jumpIndex,
-              duration: const Duration(milliseconds: 60),
-              curve: Curves.easeInOut)
+          .animateToItem(
+        jumpIndex,
+        duration: const Duration(milliseconds: 60),
+        curve: Curves.easeInOut,
+      )
           .then((value) {
         _disableHaptic = false;
         _initializationFinished = true;
@@ -311,17 +329,15 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   }
 
   TextStyle? get _unselectedTextStyle {
-    return Theme.of(context).textTheme.titleSmall?.copyWith(
-          fontSize: 12,
-          color: EnvoyColors.gray600,
-        );
+    return Theme.of(
+      context,
+    ).textTheme.titleSmall?.copyWith(fontSize: 12, color: EnvoyColors.gray600);
   }
 
   TextStyle? get _selectedTextStyle {
-    return Theme.of(context).textTheme.titleSmall?.copyWith(
-          fontSize: 12,
-          color: EnvoyColors.teal500,
-        );
+    return Theme.of(
+      context,
+    ).textTheme.titleSmall?.copyWith(fontSize: 12, color: EnvoyColors.teal500);
   }
 
   TextStyle? get _satPerVbStyle {
@@ -367,7 +383,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                   ),
                   margin: EdgeInsets.only(top: selectedItem == feeRate ? 4 : 0),
                   width: selectedItem == feeRate ? 3 : 2,
-                )
+                ),
               ],
             ),
           ),
@@ -386,103 +402,105 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
           initializeSelectedRate();
         });
         return Container(
-            constraints: const BoxConstraints(minHeight: 190, maxHeight: 210),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 100,
-                  width: MediaQuery.of(context).size.width,
-                  child: RotatedBox(
-                    quarterTurns: 1,
-                    child: Stack(
-                      children: <Widget>[
-                        Positioned.fill(
-                          child: ListWheelScrollView.useDelegate(
-                            controller: _controller,
-                            renderChildrenOutsideViewport: false,
-                            physics: const FixedExtentScrollPhysics(
-                                parent: ClampingScrollPhysics()),
-                            diameterRatio: 2.8,
-                            offAxisFraction: -.3,
-                            useMagnifier: false,
-                            perspective: 0.004,
-                            overAndUnderCenterOpacity: 1,
-                            itemExtent: 48,
-                            squeeze: widget.fees.length > 1000 ? 1.0 : 1.3,
-                            onSelectedItemChanged: _handleItemChanged,
-                            childDelegate: ListWheelChildBuilderDelegate(
-                              childCount: widget.fees.length,
-                              builder: (context, index) {
-                                return _buildIndicatorWidget(
-                                    widget.fees[index]);
-                              },
+          constraints: const BoxConstraints(minHeight: 190, maxHeight: 210),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 100,
+                width: MediaQuery.of(context).size.width,
+                child: RotatedBox(
+                  quarterTurns: 1,
+                  child: Stack(
+                    children: <Widget>[
+                      Positioned.fill(
+                        child: ListWheelScrollView.useDelegate(
+                          controller: _controller,
+                          renderChildrenOutsideViewport: false,
+                          physics: const FixedExtentScrollPhysics(
+                            parent: ClampingScrollPhysics(),
+                          ),
+                          diameterRatio: 2.8,
+                          offAxisFraction: -.3,
+                          useMagnifier: false,
+                          perspective: 0.004,
+                          overAndUnderCenterOpacity: 1,
+                          itemExtent: 48,
+                          squeeze: widget.fees.length > 1000 ? 1.0 : 1.3,
+                          onSelectedItemChanged: _handleItemChanged,
+                          childDelegate: ListWheelChildBuilderDelegate(
+                            childCount: widget.fees.length,
+                            builder: (context, index) {
+                              return _buildIndicatorWidget(widget.fees[index]);
+                            },
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: RotatedBox(
+                          quarterTurns: 3,
+                          child: Container(
+                            alignment: const Alignment(0.0, 1.3),
+                            margin: const EdgeInsets.only(top: 4),
+                            child: Text("sats/Vb", style: _satPerVbStyle),
+                          ),
+                        ),
+                      ),
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              gradient: RadialGradient(
+                                transform: const GradientRotation(1.6),
+                                radius: 3,
+                                focal: Alignment.center,
+                                colors: [
+                                  gradientOverlayColor.applyOpacity(0.0),
+                                  gradientOverlayColor.applyOpacity(0.0),
+                                  gradientOverlayColor.applyOpacity(0.0),
+                                  gradientOverlayColor.applyOpacity(0.6),
+                                  gradientOverlayColor.applyOpacity(0.7),
+                                  gradientOverlayColor.applyOpacity(0.8),
+                                  gradientOverlayColor.applyOpacity(0.8),
+                                  gradientOverlayColor.applyOpacity(0.9),
+                                  gradientOverlayColor.applyOpacity(0.9),
+                                  gradientOverlayColor.applyOpacity(1),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                        Center(
-                          child: RotatedBox(
-                            quarterTurns: 3,
-                            child: Container(
-                                alignment: const Alignment(0.0, 1.3),
-                                margin: const EdgeInsets.only(top: 4),
-                                child: Text(
-                                  "sats/Vb",
-                                  style: _satPerVbStyle,
-                                )),
-                          ),
-                        ),
-                        Positioned.fill(
-                          child: IgnorePointer(
-                            child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(
-                                  gradient: RadialGradient(
-                                    transform: const GradientRotation(1.6),
-                                    radius: 3,
-                                    focal: Alignment.center,
-                                    colors: [
-                                      gradientOverlayColor.applyOpacity(0.0),
-                                      gradientOverlayColor.applyOpacity(0.0),
-                                      gradientOverlayColor.applyOpacity(0.0),
-                                      gradientOverlayColor.applyOpacity(0.6),
-                                      gradientOverlayColor.applyOpacity(0.7),
-                                      gradientOverlayColor.applyOpacity(0.8),
-                                      gradientOverlayColor.applyOpacity(0.8),
-                                      gradientOverlayColor.applyOpacity(0.9),
-                                      gradientOverlayColor.applyOpacity(0.9),
-                                      gradientOverlayColor.applyOpacity(1),
-                                    ],
-                                  ),
-                                )),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                const Spacer(),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 34),
-                  child: EnvoyButton(
-                      label: S().coincontrol_tx_detail_custom_fee_cta,
-                      onTap: () {
-                        if (!processingFee) {
-                          widget
-                              .onFeeSelect(ref.read(_selectedFeeStateProvider));
-                        }
-                      },
-                      type: ButtonType.primary,
-                      state: processingFee
-                          ? ButtonState.loading
-                          : ButtonState.defaultState),
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 34,
                 ),
-                const Padding(padding: EdgeInsets.only(bottom: 8)),
-              ],
-            ));
+                child: EnvoyButton(
+                  label: S().coincontrol_tx_detail_custom_fee_cta,
+                  onTap: () {
+                    if (!processingFee) {
+                      widget.onFeeSelect(ref.read(_selectedFeeStateProvider));
+                    }
+                  },
+                  type: ButtonType.primary,
+                  state: processingFee
+                      ? ButtonState.loading
+                      : ButtonState.defaultState,
+                ),
+              ),
+              const Padding(padding: EdgeInsets.only(bottom: 8)),
+            ],
+          ),
+        );
       },
     );
   }

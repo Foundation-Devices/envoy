@@ -16,7 +16,7 @@ enum EnvoyIconSize {
   extraSmall,
   superSmall,
   mediumLarge,
-  medium
+  medium,
 }
 
 enum EnvoyIcons {
@@ -105,8 +105,12 @@ class EnvoyIcon extends StatelessWidget {
   final EnvoyIconSize size; // Use the enum type here
   final Color? color;
 
-  const EnvoyIcon(this.icon,
-      {super.key, this.color, this.size = EnvoyIconSize.normal});
+  const EnvoyIcon(
+    this.icon, {
+    super.key,
+    this.color,
+    this.size = EnvoyIconSize.normal,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -128,12 +132,14 @@ class NonMainnetIcon extends StatelessWidget {
   final Color? iconColor;
   final Network network;
 
-  const NonMainnetIcon(this.icon,
-      {super.key,
-      this.badgeColor,
-      this.size = EnvoyIconSize.normal,
-      this.iconColor,
-      required this.network});
+  const NonMainnetIcon(
+    this.icon, {
+    super.key,
+    this.badgeColor,
+    this.size = EnvoyIconSize.normal,
+    this.iconColor,
+    required this.network,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -152,29 +158,29 @@ class NonMainnetIcon extends StatelessWidget {
       }
     }();
 
-    return Stack(children: [
-      SvgPicture.asset(
-        badgeAssetName,
-        width: size.toDouble / 2,
-        height: size.toDouble / 2,
-        colorFilter: badgeColor != null
-            ? ColorFilter.mode(badgeColor!, BlendMode.srcIn)
-            : null,
-      ),
-      Padding(
-        padding: EdgeInsets.only(
-          left: size.toDouble / 5,
+    return Stack(
+      children: [
+        SvgPicture.asset(
+          badgeAssetName,
+          width: size.toDouble / 2,
+          height: size.toDouble / 2,
+          colorFilter: badgeColor != null
+              ? ColorFilter.mode(badgeColor!, BlendMode.srcIn)
+              : null,
         ),
-        child: SvgPicture.asset(
-          "assets/components/icons/${icon.name}.svg",
-          width: size.toDouble,
-          height: size.toDouble,
-          colorFilter: iconColor == null
-              ? null
-              : ColorFilter.mode(iconColor!, BlendMode.srcIn),
+        Padding(
+          padding: EdgeInsets.only(left: size.toDouble / 5),
+          child: SvgPicture.asset(
+            "assets/components/icons/${icon.name}.svg",
+            width: size.toDouble,
+            height: size.toDouble,
+            colorFilter: iconColor == null
+                ? null
+                : ColorFilter.mode(iconColor!, BlendMode.srcIn),
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }
 

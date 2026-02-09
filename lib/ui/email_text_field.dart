@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 
 class EmailTextField extends StatefulWidget {
-  const EmailTextField({
-    super.key,
-  });
+  const EmailTextField({super.key});
 
   @override
   EmailTextFieldState createState() => EmailTextFieldState();

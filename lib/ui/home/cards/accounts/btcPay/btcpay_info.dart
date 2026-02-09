@@ -28,97 +28,97 @@ class BtcPayInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(EnvoySpacing.medium2),
-      child: Column(children: [
-        Align(
-          alignment: Alignment.centerRight,
-          child: IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
-          child: Image.asset(
-            "assets/BTCPayLogo.png",
-            height: EnvoySpacing.xl,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-          child: Text(
-            S().azteco_redeem_modal_heading,
-            style: EnvoyTypography.heading,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        if (voucher.amountSats != null)
-          EnvoyAmount(
-            amountSats: voucher.amountSats!,
-            amountWidgetStyle: AmountWidgetStyle.normal,
-            account: account,
-            alignToEnd: false,
-          ),
-        if (voucher.amountSats ==
-            null) // TODO: what if amount is in strange currency
-          Text("${voucher.amount!} ${voucher.currency!}",
-              style: EnvoyTypography.body),
-        if (voucher.name != "")
           Padding(
-            padding: const EdgeInsets.only(
-                top: EnvoySpacing.small, bottom: EnvoySpacing.xs),
-            child: Column(
+            padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium3),
+            child: Image.asset(
+              "assets/BTCPayLogo.png",
+              height: EnvoySpacing.xl,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+            child: Text(
+              S().azteco_redeem_modal_heading,
+              style: EnvoyTypography.heading,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          if (voucher.amountSats != null)
+            EnvoyAmount(
+              amountSats: voucher.amountSats!,
+              amountWidgetStyle: AmountWidgetStyle.normal,
+              account: account,
+              alignToEnd: false,
+            ),
+          if (voucher.amountSats ==
+              null) // TODO: what if amount is in strange currency
+            Text(
+              "${voucher.amount!} ${voucher.currency!}",
+              style: EnvoyTypography.body,
+            ),
+          if (voucher.name != "")
+            Padding(
+              padding: const EdgeInsets.only(
+                top: EnvoySpacing.small,
+                bottom: EnvoySpacing.xs,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    S().btcpay_redeem_modal_name,
+                    style: EnvoyTypography.info,
+                  ),
+                  Text(voucher.name, style: EnvoyTypography.label),
+                ],
+              ),
+            ),
+          if (voucher.description != "")
+            Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  S().btcpay_redeem_modal_name,
+                  S().btcpay_redeem_modal_description,
                   style: EnvoyTypography.info,
                 ),
-                Text(
-                  voucher.name,
-                  style: EnvoyTypography.label,
-                ),
+                Text(voucher.description, style: EnvoyTypography.label),
               ],
             ),
+          Padding(
+            padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+            child: EnvoyButton(
+              label: S().component_back,
+              type: ButtonType.secondary,
+              state: ButtonState.defaultState,
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+            ),
           ),
-        if (voucher.description != "")
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                S().btcpay_redeem_modal_description,
-                style: EnvoyTypography.info,
-              ),
-              Text(
-                voucher.description,
-                style: EnvoyTypography.label,
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+            child: EnvoyButton(
+              label: S().component_redeem,
+              type: ButtonType.primary,
+              state: ButtonState.defaultState,
+              onTap: () {
+                controller.jumpToPage(2);
+              },
+            ),
           ),
-        Padding(
-          padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
-          child: EnvoyButton(
-            label: S().component_back,
-            type: ButtonType.secondary,
-            state: ButtonState.defaultState,
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-          child: EnvoyButton(
-            label: S().component_redeem,
-            type: ButtonType.primary,
-            state: ButtonState.defaultState,
-            onTap: () {
-              controller.jumpToPage(2);
-            },
-          ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }

@@ -21,9 +21,9 @@ class _ExportBackupModalState extends State<ExportBackupModal> {
 
   @override
   Widget build(BuildContext context) {
-    var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.w500,
-        );
+    var textStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500);
 
     return SingleChildScrollView(
       child: SizedBox(

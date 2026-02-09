@@ -7,10 +7,7 @@ import 'package:envoy/ui/onboard/manual/widgets/wordlist.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
-enum SeedLength {
-  mnemonic_12,
-  mnemonic_24,
-}
+enum SeedLength { mnemonic_12, mnemonic_24 }
 
 /// A grid of text fields for entering mnemonic seed phrases.
 class MnemonicEntryGrid extends StatefulWidget {
@@ -18,11 +15,12 @@ class MnemonicEntryGrid extends StatefulWidget {
   final List<String>? seedInput;
   final Function(List<String>) onSeedWordAdded;
 
-  const MnemonicEntryGrid(
-      {super.key,
-      required this.seedLength,
-      this.seedInput,
-      required this.onSeedWordAdded});
+  const MnemonicEntryGrid({
+    super.key,
+    required this.seedLength,
+    this.seedInput,
+    required this.onSeedWordAdded,
+  });
 
   @override
   State<MnemonicEntryGrid> createState() => MnemonicEntryGridState();
@@ -47,7 +45,9 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
   @override
   void initState() {
     _seedWords = List.generate(
-        widget.seedLength == SeedLength.mnemonic_12 ? 12 : 24, (index) => "");
+      widget.seedLength == SeedLength.mnemonic_12 ? 12 : 24,
+      (index) => "",
+    );
     _initFocusManager();
     for (int i = 0;
         i < (widget.seedLength == SeedLength.mnemonic_12 ? 12 : 24);
@@ -60,10 +60,13 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
         currentPage = _pageController.page!.round();
       });
     });
-    _animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
-    _animation =
-        CurveTween(curve: Curves.fastOutSlowIn).animate(_animationController!);
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+    _animation = CurveTween(
+      curve: Curves.fastOutSlowIn,
+    ).animate(_animationController!);
 
     super.initState();
   }
@@ -86,18 +89,18 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
         ),
         Container(
           margin: const EdgeInsets.only(top: 8),
-          child: DotsIndicator(
-            totalPages: 2,
-            pageController: _pageController,
-          ),
-        )
+          child: DotsIndicator(totalPages: 2, pageController: _pageController),
+        ),
       ],
     );
   }
 
   Future<void> showPage(int page) async {
-    _pageController.animateToPage(page,
-        duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
+    _pageController.animateToPage(
+      page,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeIn,
+    );
   }
 
   Widget _buildMnemonicView(int page, BuildContext context) {
@@ -113,43 +116,42 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
         slivers: [
           SliverFillViewport(
             padEnds: false,
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return Builder(
-                  builder: (context) {
-                    int pageIndexOffset = page == 1 ? 1 : 12;
-                    List<TextEditingController> seeds = page == 1
-                        ? _controllers.sublist(0, 12)
-                        : _controllers.sublist(12, 24);
-                    List<TextEditingController> section1 = seeds.sublist(0, 6);
-                    List<TextEditingController> section2 = seeds.sublist(6, 12);
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Flexible(
-                            child: _buildMnemonicColumn(
-                                section1, pageIndexOffset)),
-                        Flexible(
-                            child: _buildMnemonicColumn(
-                                section2, pageIndexOffset)),
-                      ],
-                    );
-                  },
-                );
-              },
-              childCount: 1,
-            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              return Builder(
+                builder: (context) {
+                  int pageIndexOffset = page == 1 ? 1 : 12;
+                  List<TextEditingController> seeds = page == 1
+                      ? _controllers.sublist(0, 12)
+                      : _controllers.sublist(12, 24);
+                  List<TextEditingController> section1 = seeds.sublist(0, 6);
+                  List<TextEditingController> section2 = seeds.sublist(6, 12);
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Flexible(
+                        child: _buildMnemonicColumn(section1, pageIndexOffset),
+                      ),
+                      Flexible(
+                        child: _buildMnemonicColumn(section2, pageIndexOffset),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }, childCount: 1),
           ),
-          SliverPadding(padding: EdgeInsets.all((pixRatio * bottom)))
+          SliverPadding(padding: EdgeInsets.all((pixRatio * bottom))),
         ],
       ),
     );
   }
 
   Widget _buildMnemonicColumn(
-      List<TextEditingController> section, int pageIndexOffset) {
+    List<TextEditingController> section,
+    int pageIndexOffset,
+  ) {
     double margin = MediaQuery.of(context).devicePixelRatio < 2.5 ? 6 : 14;
     return FocusTraversalGroup(
       policy: OrderedTraversalPolicy(),
@@ -165,32 +167,34 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
               width: 140,
               margin: EdgeInsets.symmetric(vertical: margin, horizontal: 8),
               child: MnemonicInput(
-                  controller: _controllers[index],
-                  onWordDetected: (focusNode, controller, word) {
-                    if (index != _focusNodes.length - 1) {
-                      focusNode.nextFocus();
-                    } else {
-                      focusNode.unfocus();
-                    }
-                    _seedWords[index] = word;
-                    if (_showNextPage) {
-                      _pageController
-                          .nextPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeIn)
-                          .then((value) {
-                        _currentFocusNode = _focusNodes[12];
-                        _currentFocusNode?.requestFocus();
-                      });
-                      _showNextPage = false;
-                    }
-                  },
-                  onWordAdded: (word) {
-                    _seedWords[index] = word;
-                    widget.onSeedWordAdded(_seedWords);
-                  },
-                  index: index,
-                  focusNode: _focusNodes[index]),
+                controller: _controllers[index],
+                onWordDetected: (focusNode, controller, word) {
+                  if (index != _focusNodes.length - 1) {
+                    focusNode.nextFocus();
+                  } else {
+                    focusNode.unfocus();
+                  }
+                  _seedWords[index] = word;
+                  if (_showNextPage) {
+                    _pageController
+                        .nextPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeIn,
+                    )
+                        .then((value) {
+                      _currentFocusNode = _focusNodes[12];
+                      _currentFocusNode?.requestFocus();
+                    });
+                    _showNextPage = false;
+                  }
+                },
+                onWordAdded: (word) {
+                  _seedWords[index] = word;
+                  widget.onSeedWordAdded(_seedWords);
+                },
+                index: index,
+                focusNode: _focusNodes[index],
+              ),
             ),
           );
         }).toList(),
@@ -218,37 +222,40 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
         }
       });
     });
-    _overlayEntry = OverlayEntry(builder: (context) {
-      double bottom = View.of(context).viewInsets.bottom;
-      double pixRatio = MediaQuery.of(context).devicePixelRatio;
-      return Positioned(
-        bottom: bottom / pixRatio,
-        right: 0,
-        child: Material(
-          color: Colors.transparent,
-          child: FadeTransition(
-            opacity: _animation!,
-            child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 250),
-              opacity: bottom == 0 ? 0 : 1,
-              child: Container(
-                color: Colors.white,
-                alignment: Alignment.center,
-                width: MediaQuery.of(context).size.width,
-                height: _suggestionOverlayHeight,
-                child: LayoutBuilder(
-                  builder: (context, viewportConstraints) {
-                    return ConstrainedBox(
-                      constraints: viewportConstraints.copyWith(
+    _overlayEntry = OverlayEntry(
+      builder: (context) {
+        double bottom = View.of(context).viewInsets.bottom;
+        double pixRatio = MediaQuery.of(context).devicePixelRatio;
+        return Positioned(
+          bottom: bottom / pixRatio,
+          right: 0,
+          child: Material(
+            color: Colors.transparent,
+            child: FadeTransition(
+              opacity: _animation!,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 250),
+                opacity: bottom == 0 ? 0 : 1,
+                child: Container(
+                  color: Colors.white,
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width,
+                  height: _suggestionOverlayHeight,
+                  child: LayoutBuilder(
+                    builder: (context, viewportConstraints) {
+                      return ConstrainedBox(
+                        constraints: viewportConstraints.copyWith(
                           minHeight: viewportConstraints.maxHeight,
-                          maxHeight: viewportConstraints.maxHeight),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Flex(
-                          direction: Axis.horizontal,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: suggestions
-                              .map((e) => InkWell(
+                          maxHeight: viewportConstraints.maxHeight,
+                        ),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Flex(
+                            direction: Axis.horizontal,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: suggestions
+                                .map(
+                                  (e) => InkWell(
                                     onTap: () {
                                       int index = suggestions.indexOf(e);
                                       controller.value = TextEditingValue(
@@ -257,7 +264,8 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
                                       if (_currentFocusNode?.hasFocus == true) {
                                         if (index != _focusNodes.length - 1) {
                                           if (_focusNodes.indexOf(
-                                                  _currentFocusNode!) ==
+                                                _currentFocusNode!,
+                                              ) ==
                                               _focusNodes.length - 1) {
                                             _currentFocusNode?.unfocus();
                                           } else {
@@ -270,9 +278,11 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
                                       if (_showNextPage) {
                                         _pageController
                                             .nextPage(
-                                                duration: const Duration(
-                                                    milliseconds: 300),
-                                                curve: Curves.easeIn)
+                                          duration: const Duration(
+                                            milliseconds: 300,
+                                          ),
+                                          curve: Curves.easeIn,
+                                        )
                                             .then((value) {
                                           _currentFocusNode = _focusNodes[12];
                                           _currentFocusNode?.requestFocus();
@@ -283,24 +293,25 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
                                     child: Container(
                                       alignment: Alignment.center,
                                       margin: const EdgeInsets.symmetric(
-                                          horizontal: 8),
-                                      child: Chip(
-                                        label: Text("$e"),
+                                        horizontal: 8,
                                       ),
+                                      child: Chip(label: Text("$e")),
                                     ),
-                                  ))
-                              .toList(),
+                                  ),
+                                )
+                                .toList(),
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
     //Update overlay entry with animation controller changes
     _animationController!.addListener(() {
       overlayState.setState(() {});
@@ -323,14 +334,18 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
           _currentFocusNode = _focusNodes[i];
           _showOverlay(context, i);
           if ((i >= 4 && i <= 6) || (i >= 10 && i <= 12)) {
-            _scrollControllerPage1.animateTo(200,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.ease);
+            _scrollControllerPage1.animateTo(
+              200,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.ease,
+            );
           }
           if ((i >= 16 && i <= 18) || (i >= 22 && i <= 24)) {
-            _scrollControllerPage2.animateTo(180,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.ease);
+            _scrollControllerPage2.animateTo(
+              180,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.ease,
+            );
           }
           if (i == 11 && widget.seedLength == SeedLength.mnemonic_24) {
             _showNextPage = true;
@@ -359,8 +374,11 @@ class DotsIndicator extends StatefulWidget {
   final PageController pageController;
   final int totalPages;
 
-  const DotsIndicator(
-      {super.key, required this.pageController, required this.totalPages});
+  const DotsIndicator({
+    super.key,
+    required this.pageController,
+    required this.totalPages,
+  });
 
   @override
   State<DotsIndicator> createState() => _DotsIndicatorState();
@@ -402,17 +420,19 @@ class _DotsIndicatorState extends State<DotsIndicator> {
       margin: const EdgeInsets.symmetric(horizontal: 2),
       height: 8,
       decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color:
-              isActive ? EnvoyColors.accentPrimary : EnvoyColors.textInactive),
+        shape: BoxShape.circle,
+        color: isActive ? EnvoyColors.accentPrimary : EnvoyColors.textInactive,
+      ),
     );
   }
 }
 
 class MnemonicInput extends StatefulWidget {
   final Function(
-          FocusNode focusNode, TextEditingController controller, String word)
-      onWordDetected;
+    FocusNode focusNode,
+    TextEditingController controller,
+    String word,
+  ) onWordDetected;
   final Function(String word) onWordAdded;
   final bool readOnly;
   final bool active;
@@ -420,15 +440,16 @@ class MnemonicInput extends StatefulWidget {
   final FocusNode focusNode;
   final int index;
 
-  const MnemonicInput(
-      {super.key,
-      required this.controller,
-      required this.onWordDetected,
-      required this.focusNode,
-      required this.index,
-      this.readOnly = false,
-      this.active = false,
-      required this.onWordAdded});
+  const MnemonicInput({
+    super.key,
+    required this.controller,
+    required this.onWordDetected,
+    required this.focusNode,
+    required this.index,
+    this.readOnly = false,
+    this.active = false,
+    required this.onWordAdded,
+  });
 
   @override
   State<MnemonicInput> createState() => _MnemonicInputState();
@@ -493,9 +514,10 @@ class _MnemonicInputState extends State<MnemonicInput> {
             padding: const EdgeInsets.symmetric(horizontal: 8),
             constraints: const BoxConstraints(maxHeight: 40),
             decoration: BoxDecoration(
-                color: Colors.grey[300],
-                border: Border.all(width: 1, color: borderColor),
-                borderRadius: BorderRadius.circular(8)),
+              color: Colors.grey[300],
+              border: Border.all(width: 1, color: borderColor),
+              borderRadius: BorderRadius.circular(8),
+            ),
             child: Row(
               children: [
                 Text("${widget.index + 1}. ", style: textTheme),
@@ -504,31 +526,37 @@ class _MnemonicInputState extends State<MnemonicInput> {
                     alignment: Alignment.center,
                     children: [
                       EditableText(
-                          controller: widget.controller,
-                          focusNode: widget.focusNode,
-                          enableIMEPersonalizedLearning: false,
-                          style: textTheme,
-                          textInputAction:
-                              (widget.index == 11 || widget.index == 23)
-                                  ? TextInputAction.done
-                                  : TextInputAction.next,
-                          onChanged: (value) {
-                            //Check words that start with the entered value
-                            //this will reduce unnecessary suggestions like "fat" for "fatigue"
-                            List<String> matches = seedEn
-                                .where((element) =>
-                                    element.startsWith(value.toLowerCase()))
-                                .toList();
-                            //If there is only one match and it is the same as the entered value, then the word is suggested
-                            if (matches.length == 1 &&
-                                matches[0] == value &&
-                                widget.focusNode.hasFocus) {
-                              widget.onWordDetected(
-                                  widget.focusNode, widget.controller, value);
-                            }
-                          },
-                          cursorColor: Theme.of(context).primaryColor,
-                          backgroundCursorColor: Colors.grey),
+                        controller: widget.controller,
+                        focusNode: widget.focusNode,
+                        enableIMEPersonalizedLearning: false,
+                        style: textTheme,
+                        textInputAction:
+                            (widget.index == 11 || widget.index == 23)
+                                ? TextInputAction.done
+                                : TextInputAction.next,
+                        onChanged: (value) {
+                          //Check words that start with the entered value
+                          //this will reduce unnecessary suggestions like "fat" for "fatigue"
+                          List<String> matches = seedEn
+                              .where(
+                                (element) =>
+                                    element.startsWith(value.toLowerCase()),
+                              )
+                              .toList();
+                          //If there is only one match and it is the same as the entered value, then the word is suggested
+                          if (matches.length == 1 &&
+                              matches[0] == value &&
+                              widget.focusNode.hasFocus) {
+                            widget.onWordDetected(
+                              widget.focusNode,
+                              widget.controller,
+                              value,
+                            );
+                          }
+                        },
+                        cursorColor: Theme.of(context).primaryColor,
+                        backgroundCursorColor: Colors.grey,
+                      ),
                       Container(
                         margin: const EdgeInsets.only(top: 14),
                         child: Divider(
@@ -537,7 +565,7 @@ class _MnemonicInputState extends State<MnemonicInput> {
                               ? Colors.transparent
                               : Colors.black54,
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),

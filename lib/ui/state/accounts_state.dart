@@ -31,17 +31,17 @@ final accountSync = Provider<WalletProgress>(((ref) {
 
 final _accountSyncStatusStream =
     StreamProvider.family<bool, (String, AddressType)>(((ref, params) {
-  return EnvoyStorage().getAccountScanStatusStream(
-    params.$1,
-    params.$2,
-  );
+  return EnvoyStorage().getAccountScanStatusStream(params.$1, params.$2);
 }));
-final isAccountRequiredScan =
-    Provider.family<bool, EnvoyAccount>((ref, account) {
+final isAccountRequiredScan = Provider.family<bool, EnvoyAccount>((
+  ref,
+  account,
+) {
   for (var descriptor in account.descriptors) {
     bool isScanned = ref
             .watch(
-                _accountSyncStatusStream((account.id, descriptor.addressType)))
+              _accountSyncStatusStream((account.id, descriptor.addressType)),
+            )
             .value ??
         false;
     if (!isScanned) {
@@ -51,18 +51,17 @@ final isAccountRequiredScan =
   return false;
 });
 
-final accountManagerNotifier = ChangeNotifierProvider(
-  (ref) {
-    final accountManager = NgAccountManager();
-    ref.onDispose(() {
-      accountManager.dispose();
-    });
-    return accountManager;
-  },
-);
+final accountManagerNotifier = ChangeNotifierProvider((ref) {
+  final accountManager = NgAccountManager();
+  ref.onDispose(() {
+    accountManager.dispose();
+  });
+  return accountManager;
+});
 
-final accountsListStreamProvider =
-    StreamProvider<List<EnvoyAccount>>((ref) async* {
+final accountsListStreamProvider = StreamProvider<List<EnvoyAccount>>((
+  ref,
+) async* {
   final manager = ref.watch(accountManagerNotifier);
   //send the initial state
   yield manager.accounts;
@@ -81,12 +80,10 @@ final accountsListStreamProvider =
   }
 });
 
-final _accountListProvider = Provider<List<EnvoyAccount>>(
-  (ref) {
-    final accountManager = ref.watch(accountsListStreamProvider);
-    return accountManager.value ?? [];
-  },
-);
+final _accountListProvider = Provider<List<EnvoyAccount>>((ref) {
+  final accountManager = ref.watch(accountsListStreamProvider);
+  return accountManager.value ?? [];
+});
 
 final accountsProvider = Provider<List<EnvoyAccount>>((ref) {
   var testnetEnabled = ref.watch(showTestnetAccountsProvider);
@@ -118,12 +115,14 @@ final accountsProvider = Provider<List<EnvoyAccount>>((ref) {
 });
 
 final mainnetAccountsProvider =
-    Provider.family<List<EnvoyAccount>, EnvoyAccount?>(
-        (ref, selectedEnvoyAccount) {
+    Provider.family<List<EnvoyAccount>, EnvoyAccount?>((
+  ref,
+  selectedEnvoyAccount,
+) {
   final accounts = ref.watch(accountsProvider);
   final order = ref.watch(accountOrderStream);
 
-// We filter everything but mainnet
+  // We filter everything but mainnet
   final filteredEnvoyAccounts =
       accounts.where((account) => account.network == Network.bitcoin).toList();
 
@@ -132,8 +131,10 @@ final mainnetAccountsProvider =
   return filteredEnvoyAccounts;
 });
 
-final accountStateProvider =
-    StateProvider.family<EnvoyAccount?, String?>((ref, id) {
+final accountStateProvider = StateProvider.family<EnvoyAccount?, String?>((
+  ref,
+  id,
+) {
   final accounts = ref.watch(accountsProvider);
   final account = accounts.singleWhereOrNull((element) => element.id == id);
   if (account == null) {
@@ -169,8 +170,9 @@ final qlConnectionsStreamProvider = StreamProvider<List<QLConnection>>((ref) {
 
 /// Stores the current passphrase fingerprint (XFP) for Prime devices.
 /// (null if no passphrase)
-final primePassphraseFingerprintProvider =
-    StateProvider<String?>((ref) => null);
+final primePassphraseFingerprintProvider = StateProvider<String?>(
+  (ref) => null,
+);
 
 /// Listens to ApplyPassphrase events from Prime and auto-switches view
 final passphraseEventHandlerProvider = Provider((ref) {
@@ -180,7 +182,9 @@ final passphraseEventHandlerProvider = Provider((ref) {
         .listen((event) {
       if (event == null) return;
       final fingerprint = event.fingerprint;
-      kPrint("ApplyPassphrase event received in UI: fingerprint=$fingerprint");
+      kPrint(
+        "ApplyPassphrase event received in UI: fingerprint=$fingerprint",
+      );
 
       // Update the fingerprint map
       ref.read(primePassphraseFingerprintProvider.notifier).state = fingerprint;
@@ -204,8 +208,9 @@ final passphraseEventHandlerProvider = Provider((ref) {
 
 final primePassphraseAccountsProvider = Provider<List<EnvoyAccount>>((ref) {
   final accounts = ref.watch(accountsProvider);
-  final appliedPassphraseFingerprint =
-      ref.watch(primePassphraseFingerprintProvider);
+  final appliedPassphraseFingerprint = ref.watch(
+    primePassphraseFingerprintProvider,
+  );
 
   return accounts.where((account) {
     return account.seedHasPassphrase &&

@@ -32,31 +32,38 @@ class FwIosInstructionsPage extends ConsumerWidget {
       mainWidget: Column(
         children: [
           Image.asset("assets/fw_ios_instructions.png"),
-          FadedDivider()
+          FadedDivider(),
         ],
       ),
       title: S().envoy_fw_ios_instructions_heading,
       subheading: S().envoy_fw_ios_instructions_subheading,
       buttons: [
-        EnvoyButton(S().component_continue,
-            borderRadius:
-                BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
-            onTap: () async {
-          final goRouter = GoRouter.of(context);
-          final firmwareFile =
-              await UpdatesManager().getStoredFirmware(deviceId);
-          final uploader = FwUploader(firmwareFile);
-          final folderPath = await uploader.promptUserForFolderAccess();
+        EnvoyButton(
+          S().component_continue,
+          borderRadius: BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+          onTap: () async {
+            final goRouter = GoRouter.of(context);
+            final firmwareFile = await UpdatesManager().getStoredFirmware(
+              deviceId,
+            );
+            final uploader = FwUploader(firmwareFile);
+            final folderPath = await uploader.promptUserForFolderAccess();
 
-          if (folderPath != null) {
-            await uploader.upload();
-            Devices().markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
-            goRouter.pushNamed(PASSPORT_UPDATE_IOS_SUCCESS,
-                extra: fwPagePayload);
-          } else {
-            goRouter.pushNamed(PASSPORT_UPDATE_SD_CARD, extra: fwPagePayload);
-          }
-        }),
+            if (folderPath != null) {
+              await uploader.upload();
+              Devices().markDeviceUpdated(
+                deviceId,
+                fwInfo.value!.storedVersion,
+              );
+              goRouter.pushNamed(
+                PASSPORT_UPDATE_IOS_SUCCESS,
+                extra: fwPagePayload,
+              );
+            } else {
+              goRouter.pushNamed(PASSPORT_UPDATE_SD_CARD, extra: fwPagePayload);
+            }
+          },
+        ),
       ],
     );
   }
@@ -79,12 +86,7 @@ class FadedDivider extends StatelessWidget {
             Colors.black,
             Colors.black.withValues(alpha: 0.0),
           ],
-          stops: [
-            0.0,
-            0.1822,
-            0.8179,
-            0.9757,
-          ],
+          stops: [0.0, 0.1822, 0.8179, 0.9757],
         ),
       ),
     );

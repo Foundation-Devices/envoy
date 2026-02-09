@@ -26,8 +26,9 @@ class HeartbeatHandler extends PassportMessageHandler {
 
   Future<void> _sendHeartbeatResponse() async {
     final heartbeat = api.Heartbeat();
-    await qlConnection
-        .writeMessage(api.QuantumLinkMessage.heartbeat(heartbeat));
+    await qlConnection.writeMessage(
+      api.QuantumLinkMessage.heartbeat(heartbeat),
+    );
     kPrint("Heartbeat response sent");
   }
 }

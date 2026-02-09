@@ -71,227 +71,240 @@ const ROUTE_ACCOUNT_SEND_REVIEW =
 const ACCOUNT_SEND_SCAN_PSBT = "spend_scan_psbt";
 
 /// simple wrapper to add page animation
-Page wrapWithEnvoyPageAnimation(
-    {required Widget child,
-    Duration reverseTransitionDuration = const Duration(milliseconds: 360)}) {
+Page wrapWithEnvoyPageAnimation({
+  required Widget child,
+  Duration reverseTransitionDuration = const Duration(milliseconds: 360),
+}) {
   return CustomTransitionPage(
     child: child,
     reverseTransitionDuration: reverseTransitionDuration,
     restorationId: child.toStringShort(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return SharedAxisTransition(
-          animation: animation,
-          fillColor: Colors.transparent,
-          secondaryAnimation: secondaryAnimation,
-          transitionType: SharedAxisTransitionType.vertical,
-          key: child.key,
-          child: child);
+        animation: animation,
+        fillColor: Colors.transparent,
+        secondaryAnimation: secondaryAnimation,
+        transitionType: SharedAxisTransitionType.vertical,
+        key: child.key,
+        child: child,
+      );
     },
   );
 }
 
 final accountsRouter = StatefulShellBranch(
-    restorationScopeId: 'accountsHomeRouterScope',
-    initialLocation: ROUTE_ACCOUNTS_HOME,
-    routes: [
-      GoRoute(
-          onExit: (context, state) {
-            final scope = ProviderScope.containerOf(context);
-            final shellMenuOpened = scope.read(homePageBackgroundProvider);
-            if (shellMenuOpened == HomePageBackgroundState.hidden) {
-              return true;
-            } else {
-              if (shellMenuOpened == HomePageBackgroundState.menu) {
-                scope.read(homePageBackgroundProvider.notifier).state =
-                    HomePageBackgroundState.hidden;
-              } else {
-                scope.read(homePageBackgroundProvider.notifier).state =
-                    HomePageBackgroundState.menu;
-              }
+  restorationScopeId: 'accountsHomeRouterScope',
+  initialLocation: ROUTE_ACCOUNTS_HOME,
+  routes: [
+    GoRoute(
+      onExit: (context, state) {
+        final scope = ProviderScope.containerOf(context);
+        final shellMenuOpened = scope.read(homePageBackgroundProvider);
+        if (shellMenuOpened == HomePageBackgroundState.hidden) {
+          return true;
+        } else {
+          if (shellMenuOpened == HomePageBackgroundState.menu) {
+            scope.read(homePageBackgroundProvider.notifier).state =
+                HomePageBackgroundState.hidden;
+          } else {
+            scope.read(homePageBackgroundProvider.notifier).state =
+                HomePageBackgroundState.menu;
+          }
+          return false;
+        }
+      },
+      path: ROUTE_ACCOUNTS_HOME,
+      pageBuilder: (context, state) {
+        return wrapWithEnvoyPageAnimation(
+          child: Consumer(
+            builder: (context, ref, child) {
+              final shellMenuOpened = ref.watch(homePageBackgroundProvider);
+              return PopScope(
+                canPop: shellMenuOpened == HomePageBackgroundState.hidden,
+                child: child!,
+              );
+            },
+            child: const AccountsCard(),
+          ),
+        );
+      },
+      routes: [
+        GoRoute(
+          onExit: (context, GoRouterState state) async {
+            ProviderContainer providerContainer = ProviderScope.containerOf(
+              context,
+            );
+            bool isInEdit = providerContainer.read(spendEditModeProvider) !=
+                SpendOverlayContext.hidden;
+            if (providerContainer.read(coinSelectionStateProvider).isNotEmpty ||
+                isInEdit) {
+              await Future.delayed(const Duration(milliseconds: 50));
+              providerContainer.read(hideBottomNavProvider.notifier).state =
+                  false;
+
+              ///TODO: show a dialog to confirm the user wants to exit the selection mode;
               return false;
             }
+            ProviderScope.containerOf(
+              context,
+            ).read(accountToggleStateProvider.notifier).state =
+                AccountToggleState.tx;
+            return true;
           },
-          path: ROUTE_ACCOUNTS_HOME,
-          pageBuilder: (context, state) {
-            return wrapWithEnvoyPageAnimation(
-                child: Consumer(
-              builder: (context, ref, child) {
-                final shellMenuOpened = ref.watch(homePageBackgroundProvider);
-                return PopScope(
-                  canPop: shellMenuOpened == HomePageBackgroundState.hidden,
-                  child: child!,
-                );
-              },
-              child: const AccountsCard(),
-            ));
-          },
+          path: _ACCOUNT_DETAIL,
           routes: [
             GoRoute(
-              onExit: (context, GoRouterState state) async {
-                ProviderContainer providerContainer =
-                    ProviderScope.containerOf(context);
-                bool isInEdit = providerContainer.read(spendEditModeProvider) !=
+              path: _ACCOUNT_SEND,
+              onExit: (context, GoRouterState state) {
+                //always clear the spend state when exiting the send screen
+                //coin reselection happens within the send screen,
+                //so no need to check for coin selection overlay
+                final scope = ProviderScope.containerOf(context);
+                scope.read(coinSelectionStateProvider.notifier).reset();
+                scope.read(accountToggleStateProvider.notifier).state =
+                    AccountToggleState.tx;
+                clearSpendState(ProviderScope.containerOf(context));
+                scope.read(spendEditModeProvider.notifier).state =
                     SpendOverlayContext.hidden;
-                if (providerContainer
-                        .read(coinSelectionStateProvider)
-                        .isNotEmpty ||
-                    isInEdit) {
-                  await Future.delayed(const Duration(milliseconds: 50));
-                  providerContainer.read(hideBottomNavProvider.notifier).state =
-                      false;
-
-                  ///TODO: show a dialog to confirm the user wants to exit the selection mode;
-                  return false;
-                }
-                ProviderScope.containerOf(context)
-                    .read(accountToggleStateProvider.notifier)
-                    .state = AccountToggleState.tx;
+                scope.read(hideBottomNavProvider.notifier).state = false;
                 return true;
               },
-              path: _ACCOUNT_DETAIL,
+              pageBuilder: (context, state) {
+                return wrapWithEnvoyPageAnimation(child: SendCard());
+              },
               routes: [
                 GoRoute(
-                    path: _ACCOUNT_SEND,
-                    onExit: (context, GoRouterState state) {
-                      //always clear the spend state when exiting the send screen
-                      //coin reselection happens within the send screen,
-                      //so no need to check for coin selection overlay
-                      final scope = ProviderScope.containerOf(context);
-                      scope.read(coinSelectionStateProvider.notifier).reset();
-                      scope.read(accountToggleStateProvider.notifier).state =
-                          AccountToggleState.tx;
-                      clearSpendState(ProviderScope.containerOf(context));
-                      scope.read(spendEditModeProvider.notifier).state =
-                          SpendOverlayContext.hidden;
-                      scope.read(hideBottomNavProvider.notifier).state = false;
-                      return true;
-                    },
-                    pageBuilder: (context, state) {
-                      return wrapWithEnvoyPageAnimation(child: SendCard());
-                    },
-                    routes: [
-                      GoRoute(
-                        name: "spend_confirm",
-                        path: _ACCOUNT_SEND_CONFIRM,
-                        routes: [
-                          GoRoute(
-                            name: "spend_review",
-                            routes: [
-                              GoRoute(
-                                name: ACCOUNT_SEND_SCAN_PSBT,
-                                path: "scan",
-                                pageBuilder: (context, state) {
-                                  return wrapWithEnvoyPageAnimation(
-                                      child: PsbtCard(
-                                          state.extra as DraftTransaction));
-                                },
-                              ),
-                            ],
-                            onExit: (context, GoRouterState state) {
-                              /// if we are exiting the send screen, we need to clear the spend state
-                              /// but only if we are not in edit mode
-                              if (ProviderScope.containerOf(context)
-                                      .read(spendEditModeProvider) !=
-                                  SpendOverlayContext.hidden) {
-                                clearSpendState(
-                                    ProviderScope.containerOf(context));
-                              }
-                              return true;
-                            },
-                            path: _ACCOUNT_SEND_REVIEW,
-                            pageBuilder: (context, state) {
-                              return wrapWithEnvoyPageAnimation(
-                                  child: TxReview());
-                            },
-                          ),
-                        ],
-                        pageBuilder: (context, state) {
-                          return wrapWithEnvoyPageAnimation(child: TxReview());
-                        },
-                      ),
-                    ]),
-                GoRoute(
-                  path: _ACCOUNT_RECEIVE,
+                  name: "spend_confirm",
+                  path: _ACCOUNT_SEND_CONFIRM,
+                  routes: [
+                    GoRoute(
+                      name: "spend_review",
+                      routes: [
+                        GoRoute(
+                          name: ACCOUNT_SEND_SCAN_PSBT,
+                          path: "scan",
+                          pageBuilder: (context, state) {
+                            return wrapWithEnvoyPageAnimation(
+                              child: PsbtCard(state.extra as DraftTransaction),
+                            );
+                          },
+                        ),
+                      ],
+                      onExit: (context, GoRouterState state) {
+                        /// if we are exiting the send screen, we need to clear the spend state
+                        /// but only if we are not in edit mode
+                        if (ProviderScope.containerOf(
+                              context,
+                            ).read(spendEditModeProvider) !=
+                            SpendOverlayContext.hidden) {
+                          clearSpendState(ProviderScope.containerOf(context));
+                        }
+                        return true;
+                      },
+                      path: _ACCOUNT_SEND_REVIEW,
+                      pageBuilder: (context, state) {
+                        return wrapWithEnvoyPageAnimation(child: TxReview());
+                      },
+                    ),
+                  ],
                   pageBuilder: (context, state) {
-                    EnvoyAccount? account;
-                    try {
-                      account = NgAccountManager()
-                          .getAccountById(state.extra as String);
-                      if (account == null) {
-                        throw Exception("Account not found");
-                      }
-                      return wrapWithEnvoyPageAnimation(
-                          child: AddressCard(account));
-                    } catch (e) {
-                      return wrapWithEnvoyPageAnimation(child: Container());
-                    }
-                  },
-                ),
-                GoRoute(
-                  path: _ACCOUNT_DESCRIPTOR,
-                  pageBuilder: (context, state) {
-                    EnvoyAccount? account;
-                    try {
-                      account = NgAccountManager()
-                          .getAccountById(state.extra as String);
-                      if (account == null) {
-                        throw Exception("Account not found");
-                      }
-                      return wrapWithEnvoyPageAnimation(
-                          child: DescriptorCard(account));
-                    } catch (e) {
-                      return wrapWithEnvoyPageAnimation(
-                          child: Container(
-                        padding: const EdgeInsets.all(20),
-                        child: Center(child: Text("Account not found")),
-                      ));
-                    }
+                    return wrapWithEnvoyPageAnimation(child: TxReview());
                   },
                 ),
               ],
+            ),
+            GoRoute(
+              path: _ACCOUNT_RECEIVE,
               pageBuilder: (context, state) {
-                return wrapWithEnvoyPageAnimation(child: AccountCard());
+                EnvoyAccount? account;
+                try {
+                  account = NgAccountManager().getAccountById(
+                    state.extra as String,
+                  );
+                  if (account == null) {
+                    throw Exception("Account not found");
+                  }
+                  return wrapWithEnvoyPageAnimation(
+                    child: AddressCard(account),
+                  );
+                } catch (e) {
+                  return wrapWithEnvoyPageAnimation(child: Container());
+                }
               },
             ),
             GoRoute(
-                path: _SELECT_REGION,
-                pageBuilder: (context, state) {
-                  return wrapWithEnvoyPageAnimation(
-                    child: const SelectRegion(),
+              path: _ACCOUNT_DESCRIPTOR,
+              pageBuilder: (context, state) {
+                EnvoyAccount? account;
+                try {
+                  account = NgAccountManager().getAccountById(
+                    state.extra as String,
                   );
-                },
-                routes: [
-                  GoRoute(
-                      path: _BUY_BITCOIN,
-                      onExit: (context, GoRouterState state) {
-                        ProviderScope.containerOf(context)
-                            .read(buyBTCPageProvider.notifier)
-                            .state = false;
-                        return true;
-                      },
-                      pageBuilder: (context, state) {
-                        return wrapWithEnvoyPageAnimation(
-                            child: const BuyBitcoinCard());
-                      },
-                      routes: [
-                        GoRoute(
-                          path: _PEER_TO_PEER,
-                          pageBuilder: (context, state) {
-                            return wrapWithEnvoyPageAnimation(
-                                child: const PeerToPeerCard());
-                          },
-                        ),
-                        GoRoute(
-                          path: _SELECT_ACCOUNT,
-                          name: ROUTE_SELECT_ACCOUNT,
-                          pageBuilder: (context, state) {
-                            return wrapWithEnvoyPageAnimation(
-                                child: const SelectAccount());
-                          },
-                        ),
-                      ]),
-                ])
-          ]),
-    ]);
+                  if (account == null) {
+                    throw Exception("Account not found");
+                  }
+                  return wrapWithEnvoyPageAnimation(
+                    child: DescriptorCard(account),
+                  );
+                } catch (e) {
+                  return wrapWithEnvoyPageAnimation(
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      child: Center(child: Text("Account not found")),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+          pageBuilder: (context, state) {
+            return wrapWithEnvoyPageAnimation(child: AccountCard());
+          },
+        ),
+        GoRoute(
+          path: _SELECT_REGION,
+          pageBuilder: (context, state) {
+            return wrapWithEnvoyPageAnimation(child: const SelectRegion());
+          },
+          routes: [
+            GoRoute(
+              path: _BUY_BITCOIN,
+              onExit: (context, GoRouterState state) {
+                ProviderScope.containerOf(
+                  context,
+                ).read(buyBTCPageProvider.notifier).state = false;
+                return true;
+              },
+              pageBuilder: (context, state) {
+                return wrapWithEnvoyPageAnimation(
+                  child: const BuyBitcoinCard(),
+                );
+              },
+              routes: [
+                GoRoute(
+                  path: _PEER_TO_PEER,
+                  pageBuilder: (context, state) {
+                    return wrapWithEnvoyPageAnimation(
+                      child: const PeerToPeerCard(),
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: _SELECT_ACCOUNT,
+                  name: ROUTE_SELECT_ACCOUNT,
+                  pageBuilder: (context, state) {
+                    return wrapWithEnvoyPageAnimation(
+                      child: const SelectAccount(),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    ),
+  ],
+);
 
 final accountFullScreenRoute = [];

@@ -69,14 +69,17 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
 
   void _handlePairingResponse(api.PairingResponse response) async {
     try {
-      updateBlePairState(S().onboarding_connectionIntro_connectedToPrime,
-          EnvoyStepState.FINISHED);
+      updateBlePairState(
+        S().onboarding_connectionIntro_connectedToPrime,
+        EnvoyStepState.FINISHED,
+      );
       _pairingResponse = response;
 
       if (response.onboardingComplete) {
         await addDevice(response);
         UpdatesManager().checkAndStoreLatestPrimeFirmware(
-            _pairingResponse?.passportFirmwareVersion.field0);
+          _pairingResponse?.passportFirmwareVersion.field0,
+        );
         await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
         await EnvoySeed().generateAndBackupWalletSilently();
         //no need to send security challenge if onboarding is already complete
@@ -84,7 +87,8 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
           qlConnection.qlHandler.bleAccountHandler.sendExchangeRateHistory();
         } catch (e) {
           kPrint(
-              "Could not send exchange rate history at onboarding completion: ${e.toString()}");
+            "Could not send exchange rate history at onboarding completion: ${e.toString()}",
+          );
         }
         return;
       }
@@ -107,14 +111,19 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
         throw Exception("Sender XID is null");
       }
       final recipientXid = await api.serializeXidDocument(
-          xidDocument: qlConnection.recipientXid!);
+        xidDocument: qlConnection.recipientXid!,
+      );
       final senderXid = await api.serializeQlIdentity(
-          quantumLinkIdentity: qlConnection.senderXid!);
+        quantumLinkIdentity: qlConnection.senderXid!,
+      );
       QLConnection.debugIdentitiesQuantumLinkIdentity(
-          identity: qlConnection.senderXid!, message: "SAVING");
+        identity: qlConnection.senderXid!,
+        message: "SAVING",
+      );
       QLConnection.debugIdentitiesXidDocument(
-          recipient: qlConnection.recipientXid!,
-          message: "SAVING recipientXid");
+        recipient: qlConnection.recipientXid!,
+        message: "SAVING recipientXid",
+      );
       final device = Device(
         "Prime",
         DeviceType.passportPrime,
@@ -133,8 +142,11 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
       await Devices().add(device);
     } catch (e, stack) {
       debugPrintStack(stackTrace: stack);
-      EnvoyReport().log("BleOnboardHandler", "Error adding device: $e",
-          stackTrace: stack);
+      EnvoyReport().log(
+        "BleOnboardHandler",
+        "Error adding device: $e",
+        stackTrace: stack,
+      );
     }
   }
 
@@ -142,7 +154,8 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
     if (!_completedOnboardingStates.contains(onboardingState)) {
       _completedOnboardingStates.add(onboardingState);
       kPrint(
-          "Onboarding States :\n ${_completedOnboardingStates.map((e) => e.name).join(" -> ")}\n");
+        "Onboarding States :\n ${_completedOnboardingStates.map((e) => e.name).join(" -> ")}\n",
+      );
     }
 
     if (onboardingState == api.OnboardingState.completed) {
@@ -150,7 +163,8 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
         if (_pairingResponse != null) {
           await addDevice(_pairingResponse!);
           UpdatesManager().checkAndStoreLatestPrimeFirmware(
-              _pairingResponse?.passportFirmwareVersion.field0);
+            _pairingResponse?.passportFirmwareVersion.field0,
+          );
           await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
         }
         await EnvoySeed().generateAndBackupWalletSilently();
@@ -172,13 +186,16 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
     _blePairingState.add(state);
   }
 
-  Future<api.PairingResponse> waitForPairResponse(
-      {Duration timeout = const Duration(seconds: 15)}) async {
+  Future<api.PairingResponse> waitForPairResponse({
+    Duration timeout = const Duration(seconds: 15),
+  }) async {
     final deadline = DateTime.now().add(timeout);
     while (_pairingResponse == null) {
       if (DateTime.now().isAfter(deadline)) {
         throw TimeoutException(
-            'Timed out waiting for pairing response', timeout);
+          'Timed out waiting for pairing response',
+          timeout,
+        );
       }
       await Future.delayed(const Duration(milliseconds: 500));
     }

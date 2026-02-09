@@ -67,68 +67,66 @@ class OnboardingPage extends StatelessWidget {
   Widget? _determineQr() {
     if (qrCode != null) {
       return FutureBuilder<String>(
-          future: qrCode,
-          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-            return SizedBox(
-              width: double.infinity,
-              child: snapshot.hasData
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          EnvoyQR(
-                            //TODO: adjust Qr for Boomers
-                            dimension: 230,
-                            data: snapshot.data!,
+        future: qrCode,
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          return SizedBox(
+            width: double.infinity,
+            child: snapshot.hasData
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        EnvoyQR(
+                          //TODO: adjust Qr for Boomers
+                          dimension: 230,
+                          data: snapshot.data!,
+                        ),
+                        SizedBox(
+                          width: 250,
+                          child: AddressWidget(
+                            address: snapshot.data!,
+                            short: false,
+                            align: TextAlign.center,
                           ),
-                          SizedBox(
-                            width: 250,
-                            child: AddressWidget(
-                              address: snapshot.data!,
-                              short: false,
-                              align: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Center(
-                      child: SizedBox(
-                        height: 260,
-                        child: _LoadingRiveWidget(),
-                      ),
+                        ),
+                      ],
                     ),
-            );
-          });
+                  )
+                : Center(
+                    child: SizedBox(height: 260, child: _LoadingRiveWidget()),
+                  ),
+          );
+        },
+      );
     }
 
     if (qrCodeUrBinary != null) {
-      return AnimatedQrImage(
-        Uint8List.fromList(qrCodeUrBinary!),
-      );
+      return AnimatedQrImage(Uint8List.fromList(qrCodeUrBinary!));
     }
 
     if (qrCodeUrCryptoRequest != null) {
       return Center(
         child: FutureBuilder<CryptoRequest>(
-            future: qrCodeUrCryptoRequest,
-            builder:
-                (BuildContext context, AsyncSnapshot<CryptoRequest> snapshot) {
-              if (snapshot.hasData) {
-                return AnimatedQrImage.fromUrCryptoRequest(snapshot.data!
-                  ..fragmentLength = 20); // NOTE: Adjusted for Jean-Pierre
-              } else {
-                return const SizedBox(
-                  height: 150,
-                  width: 150,
-                  child: CircularProgressIndicator(
-                    color: EnvoyColors.accentPrimary,
-                    backgroundColor: EnvoyColors.textTertiary,
-                    strokeWidth: 8,
-                  ),
-                );
-              }
-            }),
+          future: qrCodeUrCryptoRequest,
+          builder:
+              (BuildContext context, AsyncSnapshot<CryptoRequest> snapshot) {
+            if (snapshot.hasData) {
+              return AnimatedQrImage.fromUrCryptoRequest(
+                snapshot.data!..fragmentLength = 20,
+              ); // NOTE: Adjusted for Jean-Pierre
+            } else {
+              return const SizedBox(
+                height: 150,
+                width: 150,
+                child: CircularProgressIndicator(
+                  color: EnvoyColors.accentPrimary,
+                  backgroundColor: EnvoyColors.textTertiary,
+                  strokeWidth: 8,
+                ),
+              );
+            }
+          },
+        ),
       );
     }
 
@@ -138,98 +136,110 @@ class OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-        child: OnboardPageBackground(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Flexible(
-            child: Column(children: <Widget>[
-              Align(
-                alignment: Alignment.topCenter,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      leftFunction != null
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.all(EnvoySpacing.medium1),
-                              child: GestureDetector(
+      child: OnboardPageBackground(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Flexible(
+              child: Column(
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        leftFunction != null
+                            ? Padding(
+                                padding: const EdgeInsets.all(
+                                  EnvoySpacing.medium1,
+                                ),
+                                child: GestureDetector(
                                   onTap: () {
                                     leftFunction!(context);
                                   },
                                   child: const Icon(
-                                      Icons.arrow_back_ios_rounded,
-                                      size: 20)),
-                            )
-                          : const SizedBox.shrink(),
-                      rightFunction != null
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.all(EnvoySpacing.medium1),
-                              child: GestureDetector(
+                                    Icons.arrow_back_ios_rounded,
+                                    size: 20,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        rightFunction != null
+                            ? Padding(
+                                padding: const EdgeInsets.all(
+                                  EnvoySpacing.medium1,
+                                ),
+                                child: GestureDetector(
                                   onTap: () {
                                     rightFunction!(context);
                                   },
                                   child:
-                                      right ?? const Icon(Icons.close_rounded)),
-                            )
-                          : const SizedBox.shrink()
-                    ]),
-              ),
-              if (clipArt != null || _determineQr() != null)
-                Flexible(
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: clipArt != null ? clipArt! : _determineQr(),
+                                      right ?? const Icon(Icons.close_rounded),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                      ],
+                    ),
                   ),
-                ),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [...?text]),
-                ),
+                  if (clipArt != null || _determineQr() != null)
+                    Flexible(
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: clipArt != null ? clipArt! : _determineQr(),
+                      ),
+                    ),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [...?text],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ]),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
+            ),
+            Padding(
+              padding: EdgeInsets.only(
                 left: EnvoySpacing.xs,
                 right: EnvoySpacing.xs,
                 bottom: context.isSmallScreen
                     ? EnvoySpacing.medium1
-                    : EnvoySpacing.medium2),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                navigationDots != 0
-                    ? Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: DotsIndicator(
-                          decorator: const DotsDecorator(
+                    : EnvoySpacing.medium2,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  navigationDots != 0
+                      ? Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: DotsIndicator(
+                            decorator: const DotsDecorator(
                               size: Size.square(5.0),
                               activeSize: Size.square(5.0),
-                              spacing: EdgeInsets.symmetric(horizontal: 5)),
-                          dotsCount: navigationDots,
-                          position: navigationDotsIndex.toDouble(),
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-                Padding(
-                  padding: const EdgeInsets.all(EnvoySpacing.small),
-                  child: helperTextAbove ?? const SizedBox.shrink(),
-                ),
-                ...?buttons,
-                helperTextBelow ?? const SizedBox.shrink(),
-                const SizedBox(height: EnvoySpacing.small),
-              ],
+                              spacing: EdgeInsets.symmetric(horizontal: 5),
+                            ),
+                            dotsCount: navigationDots,
+                            position: navigationDotsIndex.toDouble(),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                  Padding(
+                    padding: const EdgeInsets.all(EnvoySpacing.small),
+                    child: helperTextAbove ?? const SizedBox.shrink(),
+                  ),
+                  ...?buttons,
+                  helperTextBelow ?? const SizedBox.shrink(),
+                  const SizedBox(height: EnvoySpacing.small),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ));
+    );
   }
 }
 
@@ -265,9 +275,10 @@ class CustomOnboardingPage extends StatelessWidget {
                 Positioned.fill(
                   child: Padding(
                     padding: const EdgeInsets.only(
-                        left: EnvoySpacing.medium1,
-                        right: EnvoySpacing.medium1,
-                        bottom: EnvoySpacing.medium2),
+                      left: EnvoySpacing.medium1,
+                      right: EnvoySpacing.medium1,
+                      bottom: EnvoySpacing.medium2,
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -284,7 +295,8 @@ class CustomOnboardingPage extends StatelessWidget {
                                   type: MaterialType.transparency,
                                   child: DefaultTextStyle.merge(
                                     style: const TextStyle(
-                                        decoration: TextDecoration.none),
+                                      decoration: TextDecoration.none,
+                                    ),
                                     child: Text(
                                       title,
                                       style: EnvoyTypography.heading,
@@ -296,7 +308,8 @@ class CustomOnboardingPage extends StatelessWidget {
                                 LinkText(
                                   text: subheading,
                                   textStyle: EnvoyTypography.body.copyWith(
-                                      color: EnvoyColors.textSecondary),
+                                    color: EnvoyColors.textSecondary,
+                                  ),
                                   textAlign: TextAlign.center,
                                   onTap: onLinkTextTap,
                                 ),
@@ -317,11 +330,14 @@ class CustomOnboardingPage extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(EnvoySpacing.small),
                       child: GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Icon(Icons.arrow_back_ios_rounded,
-                              size: EnvoySpacing.medium2)),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Icon(
+                          Icons.arrow_back_ios_rounded,
+                          size: EnvoySpacing.medium2,
+                        ),
+                      ),
                     ),
                   ),
               ],
@@ -350,8 +366,10 @@ class _LoadingRiveWidgetState extends State<_LoadingRiveWidget> {
   }
 
   void _initRive() async {
-    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
-        riveFactory: rive.Factory.rive);
+    _riveFile = await rive.File.asset(
+      "assets/envoy_loader.riv",
+      riveFactory: rive.Factory.rive,
+    );
     _controller = rive.RiveWidgetController(
       _riveFile!,
       stateMachineSelector: rive.StateMachineSelector.byName('STM'),
@@ -374,10 +392,7 @@ class _LoadingRiveWidgetState extends State<_LoadingRiveWidget> {
   @override
   Widget build(BuildContext context) {
     return _isInitialized && _controller != null
-        ? rive.RiveWidget(
-            controller: _controller!,
-            fit: rive.Fit.contain,
-          )
+        ? rive.RiveWidget(controller: _controller!, fit: rive.Fit.contain)
         : const SizedBox();
   }
 }
@@ -387,11 +402,12 @@ class OnboardingText extends StatelessWidget {
   final String? text;
   final double subtitleTopPadding;
 
-  const OnboardingText(
-      {this.header,
-      this.text,
-      super.key,
-      this.subtitleTopPadding = EnvoySpacing.medium3});
+  const OnboardingText({
+    this.header,
+    this.text,
+    super.key,
+    this.subtitleTopPadding = EnvoySpacing.medium3,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -404,16 +420,20 @@ class OnboardingText extends StatelessWidget {
             header != null
                 ? Padding(
                     padding: const EdgeInsets.only(top: EnvoySpacing.large1),
-                    child: Text(header!,
-                        textAlign: TextAlign.center,
-                        style: EnvoyTypography.heading))
+                    child: Text(
+                      header!,
+                      textAlign: TextAlign.center,
+                      style: EnvoyTypography.heading,
+                    ),
+                  )
                 : const SizedBox.shrink(),
             text != null
                 ? Padding(
                     padding: EdgeInsets.only(
-                        top: subtitleTopPadding,
-                        left: EnvoySpacing.small,
-                        right: EnvoySpacing.small),
+                      top: subtitleTopPadding,
+                      left: EnvoySpacing.small,
+                      right: EnvoySpacing.small,
+                    ),
                     child: Text(
                       text!,
                       textAlign: TextAlign.center,
@@ -424,7 +444,7 @@ class OnboardingText extends StatelessWidget {
                       ),
                     ),
                   )
-                : const SizedBox.shrink()
+                : const SizedBox.shrink(),
           ],
         ),
       ),
@@ -437,28 +457,30 @@ class ActionText extends StatelessWidget {
   final String text;
   final Function() action;
 
-  const ActionText(
-      {super.key,
-      required this.header,
-      required this.text,
-      required this.action});
+  const ActionText({
+    super.key,
+    required this.header,
+    required this.text,
+    required this.action,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-          onTap: action,
-          child: Column(
-            children: [
-              Text(header,
-                  textAlign: TextAlign.center, style: EnvoyTypography.heading),
-              Text(
-                text,
-                textAlign: TextAlign.center,
-              )
-            ],
-          )),
+        onTap: action,
+        child: Column(
+          children: [
+            Text(
+              header,
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.heading,
+            ),
+            Text(text, textAlign: TextAlign.center),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -473,13 +495,14 @@ class LinkText extends StatelessWidget {
   final TextStyle? textStyle;
   final TextStyle? linkStyle;
 
-  const LinkText(
-      {super.key,
-      required this.text,
-      this.onTap,
-      this.textStyle,
-      this.linkStyle,
-      this.textAlign = TextAlign.center});
+  const LinkText({
+    super.key,
+    required this.text,
+    this.onTap,
+    this.textStyle,
+    this.linkStyle,
+    this.textAlign = TextAlign.center,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -508,11 +531,14 @@ class LinkText extends StatelessWidget {
       if (!span.contains(closingBraces)) {
         spans.add(TextSpan(text: span));
       } else {
-        spans.add(TextSpan(
+        spans.add(
+          TextSpan(
             text: span.split(closingBraces)[0],
             style: linkStyleBuild,
             recognizer: TapGestureRecognizer()
-              ..onTap = onTap as GestureTapCallback?));
+              ..onTap = onTap as GestureTapCallback?,
+          ),
+        );
 
         spans.add(TextSpan(text: span.split(closingBraces)[1]));
       }
@@ -521,10 +547,7 @@ class LinkText extends StatelessWidget {
     return RichText(
       textScaler: MediaQuery.textScalerOf(context),
       textAlign: textAlign,
-      text: TextSpan(
-        style: textStyleBuild,
-        children: <TextSpan>[...spans],
-      ),
+      text: TextSpan(style: textStyleBuild, children: <TextSpan>[...spans]),
     );
   }
 }
@@ -538,14 +561,15 @@ class OnboardingButton extends StatelessWidget {
   final EnvoyButtonTypes type;
   final bool enabled;
 
-  const OnboardingButton(
-      {super.key,
-      required this.label,
-      this.type = EnvoyButtonTypes.primary,
-      this.textStyle,
-      this.fontWeight,
-      this.enabled = true,
-      required this.onTap});
+  const OnboardingButton({
+    super.key,
+    required this.label,
+    this.type = EnvoyButtonTypes.primary,
+    this.textStyle,
+    this.fontWeight,
+    this.enabled = true,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -122,8 +122,10 @@ class BluetoothChannel {
       final result = await _methodChannel.invokeMethod('getConnectedDevices');
       if (result is List) {
         return result
-            .map((item) =>
-                ConnectedDeviceInfo.fromMap(Map<dynamic, dynamic>.from(item)))
+            .map(
+              (item) =>
+                  ConnectedDeviceInfo.fromMap(Map<dynamic, dynamic>.from(item)),
+            )
             .toList();
       }
       return [];
@@ -136,8 +138,9 @@ class BluetoothChannel {
   /// Remove a device from the native side
   Future<bool> removeDevice(String deviceId) async {
     try {
-      final result = await _methodChannel
-          .invokeMethod<bool>('removeDevice', {'deviceId': deviceId});
+      final result = await _methodChannel.invokeMethod<bool>('removeDevice', {
+        'deviceId': deviceId,
+      });
       if (result == true) {
         removeDeviceChannel(deviceId);
       }
@@ -152,7 +155,9 @@ class BluetoothChannel {
   Future<bool> startScan({String? deviceId}) async {
     try {
       final result = await _methodChannel.invokeMethod<Map<dynamic, dynamic>>(
-          'startScan', deviceId != null ? {'deviceId': deviceId} : null);
+        'startScan',
+        deviceId != null ? {'deviceId': deviceId} : null,
+      );
       return result?['scanning'] == true;
     } catch (e) {
       debugPrint("Error starting scan: $e");
@@ -163,8 +168,9 @@ class BluetoothChannel {
   /// Stop scanning for BLE devices
   Future<bool> stopScan() async {
     try {
-      final result =
-          await _methodChannel.invokeMethod<Map<dynamic, dynamic>>('stopScan');
+      final result = await _methodChannel.invokeMethod<Map<dynamic, dynamic>>(
+        'stopScan',
+      );
       return result?['scanning'] == false;
     } catch (e) {
       debugPrint("Error stopping scan: $e");
@@ -181,8 +187,10 @@ class BluetoothChannel {
   Future<QLConnection> setupBle(String deviceId, int colorWay) async {
     var resolvedDeviceId = deviceId;
     if (Platform.isIOS) {
-      final iosDeviceId = await _methodChannel
-          .invokeMethod<String?>("showAccessorySetup", {"c": colorWay});
+      final iosDeviceId = await _methodChannel.invokeMethod<String?>(
+        "showAccessorySetup",
+        {"c": colorWay},
+      );
       if (iosDeviceId == null || iosDeviceId.isEmpty) {
         throw BleSetupTimeoutException("Accessory setup cancelled");
       }
@@ -191,39 +199,44 @@ class BluetoothChannel {
       // Android: Call native pair first to create QLConnection and register channels
       // This must happen before we create QLConnection on Dart side
       await _methodChannel.invokeMethod("pair", {"deviceId": deviceId}).timeout(
-          Duration(seconds: 10), onTimeout: () {
-        throw BleSetupTimeoutException("Pairing timed out");
-      });
+        Duration(seconds: 10),
+        onTimeout: () {
+          throw BleSetupTimeoutException("Pairing timed out");
+        },
+      );
     }
 
     // Now create the device channel after native side has registered its channels
     final deviceChannel = getDeviceChannel(resolvedDeviceId);
 
     bool initiateBonding = false;
-    final connect = await deviceChannel.connectionEvents.firstWhere(
-      (event) {
-        debugPrint("[$resolvedDeviceId] events $event");
-        try {
-          if (event.connected &&
-              !initiateBonding &&
-              !event.bonded &&
-              Platform.isAndroid) {
-            initiateBonding = true;
-            kPrint("[$resolvedDeviceId] Initiating bonding");
-            deviceChannel.bond();
-          }
-        } catch (e) {
-          debugPrint("[$resolvedDeviceId] Error during bonding initiation: $e");
+    final connect = await deviceChannel.connectionEvents.firstWhere((event) {
+      debugPrint("[$resolvedDeviceId] events $event");
+      try {
+        if (event.connected &&
+            !initiateBonding &&
+            !event.bonded &&
+            Platform.isAndroid) {
+          initiateBonding = true;
+          kPrint("[$resolvedDeviceId] Initiating bonding");
+          deviceChannel.bond();
         }
-        // iOS doesn't have bonding state, just connected state
-        if (Platform.isIOS) {
-          return event.connected;
-        }
-        return event.connected && event.bonded;
+      } catch (e) {
+        debugPrint(
+          "[$resolvedDeviceId] Error during bonding initiation: $e",
+        );
+      }
+      // iOS doesn't have bonding state, just connected state
+      if (Platform.isIOS) {
+        return event.connected;
+      }
+      return event.connected && event.bonded;
+    }).timeout(
+      Duration(seconds: 10),
+      onTimeout: () {
+        throw BleSetupTimeoutException("Pairing timed out");
       },
-    ).timeout(Duration(seconds: 10), onTimeout: () {
-      throw BleSetupTimeoutException("Pairing timed out");
-    });
+    );
     if (connect.connected) {
       return deviceChannel;
     } else {
@@ -251,7 +264,9 @@ class BluetoothChannel {
     try {
       final args = colorWay == null ? null : {"c": colorWay};
       return await _methodChannel.invokeMethod<String?>(
-          "showAccessorySetup", args);
+        "showAccessorySetup",
+        args,
+      );
     } catch (e) {
       debugPrint("Error showing accessory sheet: $e");
       return null;
@@ -270,8 +285,9 @@ class BluetoothChannel {
 
       if (result is List) {
         return result
-            .map((item) =>
-                AccessoryInfo.fromMap(Map<String, dynamic>.from(item)))
+            .map(
+              (item) => AccessoryInfo.fromMap(Map<String, dynamic>.from(item)),
+            )
             .toList();
       }
 

@@ -17,20 +17,26 @@ class PpRestoreSeedPage extends StatelessWidget {
       clipArt: Image.asset("assets/pp_restore_seed.png"),
       text: [
         OnboardingText(
-            header: S().envoy_pp_restore_seed_heading,
-            text: S().envoy_pp_restore_seed_subheading),
+          header: S().envoy_pp_restore_seed_heading,
+          text: S().envoy_pp_restore_seed_subheading,
+        ),
       ],
       rightFunction: null,
       navigationDots: 3,
       navigationDotsIndex: 0,
       buttons: [
         OnboardingButton(
-            label: S().component_continue,
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return const PpRestoreSeedBackupPage();
-              }));
-            }),
+          label: S().component_continue,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return const PpRestoreSeedBackupPage();
+                },
+              ),
+            );
+          },
+        ),
       ],
     );
   }

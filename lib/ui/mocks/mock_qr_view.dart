@@ -16,7 +16,7 @@ class MockQrView extends StatelessWidget {
       crossAxisCount: 2,
       children: [
         TextButton(onPressed: happyPath, child: const Text('HAPPY')),
-        TextButton(onPressed: unhappyPath, child: const Text('UNHAPPY'))
+        TextButton(onPressed: unhappyPath, child: const Text('UNHAPPY')),
       ],
     );
   }
