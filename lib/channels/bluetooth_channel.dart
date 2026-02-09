@@ -244,7 +244,7 @@ class BluetoothChannel {
     }
   }
 
-  /// Prepare a device for connection by creating native BleDevice and registering channels.
+  /// Prepare a device for connection by creating native QLConnection and registering channels.
   /// This must be called BEFORE creating the Dart QLConnection.
   Future<void> prepareDevice(String deviceId) async {
     await _methodChannel.invokeMethod("prepareDevice", {"deviceId": deviceId});

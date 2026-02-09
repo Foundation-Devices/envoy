@@ -178,13 +178,13 @@ class Devices extends ChangeNotifier {
         final deviceId =
             Platform.isAndroid ? device.bleId : device.peripheralId;
 
-        // 1. Create native BleDevice on platform level and sets-up
+        // 1. Create native QLConnection on platform level and sets up
         //event-channels and method channels
         await BluetoothChannel().prepareDevice(deviceId);
 
         await Future.delayed(const Duration(milliseconds: 1500));
 
-        // 2. Create Dart QLConnection - connects to platform BleDevice eventChannel/methodChannel
+        // 2. Create Dart QLConnection - connects to platform QLConnection eventChannel/methodChannel
         final qlConnection = BluetoothChannel().getDeviceChannel(deviceId);
 
         // 3. Set up XIDs before connection so messages can be decoded

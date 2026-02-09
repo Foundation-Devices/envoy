@@ -22,16 +22,16 @@ import 'package:permission_handler/permission_handler.dart';
 
 final bleChunkSize = BigInt.from(51200);
 
-final bleDeviceStreamProvider = StreamProvider<List<QLConnection>>((ref) {
+final qlConnectionStreamProvider = StreamProvider<List<QLConnection>>((ref) {
   return BluetoothChannel().deviceChannelsStream;
 });
 
 final deviceConnectionStatusStreamProvider =
     StreamProvider.family<DeviceStatus, String>((ref, deviceId) {
   //watching the device stream to trigger rebuilds when devices change
-  ref.watch(bleDeviceStreamProvider);
-  final bleDevice = BluetoothChannel().getDeviceChannel(deviceId);
-  return bleDevice.deviceStatusStream;
+  ref.watch(qlConnectionStreamProvider);
+  final qlConnection = BluetoothChannel().getDeviceChannel(deviceId);
+  return qlConnection.deviceStatusStream;
 });
 
 final isPrimeConnectedProvider = Provider.family<bool, Device?>((ref, device) {
@@ -46,8 +46,8 @@ final connectedDeviceProvider = StreamProvider.family<DeviceStatus, String>((
   ref,
   deviceId,
 ) {
-  final bleDevice = BluetoothChannel().getDeviceChannel(deviceId);
-  return bleDevice.deviceStatusStream;
+  final qlConnection = BluetoothChannel().getDeviceChannel(deviceId);
+  return qlConnection.deviceStatusStream;
 });
 
 final fwTransferProgress = StreamProvider<FwTransferProgress>((ref) {

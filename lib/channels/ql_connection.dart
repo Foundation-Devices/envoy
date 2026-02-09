@@ -80,6 +80,8 @@ class QLConnection with EnvoyMessageWriter {
   Stream<DeviceStatus> get deviceStatusStream =>
       _deviceStatusStream.replayLatest(_lastDeviceStatus);
 
+  bool _sendingExRate = false;
+
   Stream<DeviceStatus> get connectionEvents =>
       deviceStatusStream.where((status) => status.isConnectionEvent);
 
@@ -88,6 +90,7 @@ class QLConnection with EnvoyMessageWriter {
   }
 
   void _initChannels() {
+    print(" 🥶 [$deviceId] Initializing QLConnection channels");
     // Initialize device-specific channels with deviceId suffix
     _methodChannel = MethodChannel('envoy/bluetooth/$deviceId');
 
@@ -147,6 +150,7 @@ class QLConnection with EnvoyMessageWriter {
     _deviceStatusSubscription = _deviceStatusStream.listen((
       DeviceStatus event,
     ) {
+      print("[$deviceId] Received device status update: connected=${event.connected}, bonded=${event.bonded}");
       _lastDeviceStatus = event;
       if (event.type == BluetoothConnectionEventType.deviceConnected) {
         //wait for system to find characteristics
@@ -202,9 +206,16 @@ class QLConnection with EnvoyMessageWriter {
   }
 
   // send exchange rate history on ble connect.
-  void onConnect() {
-    if (getDevice()?.onboardingComplete == true) {
-      qlHandler.bleAccountHandler.sendExchangeRateHistory();
+  void onConnect() async {
+    if (getDevice()?.onboardingComplete == true && !_sendingExRate) {
+      try {
+        _sendingExRate = true;
+        qlHandler.bleAccountHandler.sendExchangeRateHistory();
+        await Future.delayed(const Duration(seconds: 1));
+        qlHandler.bleAccountHandler.sendExchangeRate();
+      } finally {
+        _sendingExRate = false;
+      }
     }
   }
 
