@@ -155,25 +155,24 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                     minHeight: 300,
                   ),
                   child: SingleChildScrollView(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.large1,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: EnvoySpacing.medium1),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: EnvoySpacing.medium1),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: EnvoySpacing.large1),
+                                    child: Text(
                                       S().onboarding_primeIntro_header,
                                       textAlign: TextAlign.center,
                                       style: EnvoyTypography.body.copyWith(
@@ -182,42 +181,42 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                                         decoration: TextDecoration.none,
                                       ),
                                     ),
-                                    const SizedBox(height: EnvoySpacing.small),
+                                  ),
+                                  const SizedBox(height: EnvoySpacing.small),
+                                  Text(
+                                    S().onboarding_primeIntro_content,
+                                    style: EnvoyTypography.info.copyWith(
+                                      color: EnvoyColors.inactiveDark,
+                                      decoration: TextDecoration.none,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  if (_connectivityState ==
+                                          ConnectivityState.disconnected &&
+                                      !_isFirstAttempt) ...[
+                                    const SizedBox(
+                                        height: EnvoySpacing.medium1),
+                                    EnvoyIcon(
+                                      EnvoyIcons.alert,
+                                      size: EnvoyIconSize.small,
+                                      color: EnvoyColors.warning,
+                                    ),
+                                    const SizedBox(height: EnvoySpacing.xs),
                                     Text(
-                                      S().onboarding_primeIntro_content,
+                                      S().onboarding_primeIntroError_content,
                                       style: EnvoyTypography.info.copyWith(
-                                        color: EnvoyColors.inactiveDark,
+                                        color: EnvoyColors.warning,
                                         decoration: TextDecoration.none,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
-                                    if (_connectivityState ==
-                                            ConnectivityState.disconnected &&
-                                        !_isFirstAttempt) ...[
-                                      const SizedBox(
-                                          height: EnvoySpacing.medium1),
-                                      EnvoyIcon(
-                                        EnvoyIcons.alert,
-                                        size: EnvoyIconSize.small,
-                                        color: EnvoyColors.warning,
-                                      ),
-                                      const SizedBox(height: EnvoySpacing.xs),
-                                      Text(
-                                        S().onboarding_primeIntroError_content,
-                                        style: EnvoyTypography.info.copyWith(
-                                          color: EnvoyColors.warning,
-                                          decoration: TextDecoration.none,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
                                   ],
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
