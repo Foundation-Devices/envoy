@@ -140,8 +140,6 @@ class QLConnection(
 
     init {
         Log.d(TAG, "[$deviceId] QLConnection init - registering channels...")
-        Log.d(TAG, "[$deviceId] Method channel: $METHOD_CHANNEL_NAME/$deviceId")
-        Log.d(TAG, "[$deviceId] Connection stream: $BLE_CONNECTION_STREAM_NAME/$deviceId")
 
         methodChannel.setMethodCallHandler(this)
         Log.d(TAG, "[$deviceId] MethodChannel handler set")
@@ -158,6 +156,9 @@ class QLConnection(
                     reply.reply(response)
                 }
             }
+        }
+        if(isConnected()){
+            sendConnectionEvent(BluetoothConnectionEventType.DEVICE_CONNECTED)
         }
     }
 
