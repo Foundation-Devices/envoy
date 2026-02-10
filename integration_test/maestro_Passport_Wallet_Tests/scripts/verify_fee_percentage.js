@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Calculate expected fee percentage from extracted amount and fee
 var amount = parseInt(output.amountSats);
 var fee = parseInt(output.feeSats);
