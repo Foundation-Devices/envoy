@@ -137,12 +137,12 @@ class Devices extends ChangeNotifier {
   }
 
   void add(Device device) {
-    for (var currentDevice in devices) {
-      // Don't add if device with same serial already present
-      if (currentDevice.serial == device.serial) {
-        if (currentDevice.name != device.name) {
-          renameDevice(currentDevice, device.name);
-        }
+    for (int i = 0; i < devices.length; i++) {
+      if (devices[i].serial == device.serial) {
+        device.pairedAccountIds = devices[i].pairedAccountIds;
+        devices[i] = device;
+        storeDevices();
+        notifyListeners();
         return;
       }
     }
