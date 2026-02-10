@@ -1,3 +1,4 @@
+import AccessorySetupKit
 import CoreBluetooth
 import Flutter
 import Foundation
@@ -36,6 +37,7 @@ class QLConnection: NSObject {
 
     let deviceId: String
     private weak var delegate: QLConnectionDelegate?
+    private let accessorySession: ASAccessorySession
     private let binaryMessenger: FlutterBinaryMessenger
     private let bleQueue = DispatchQueue(label: "com.envoy.ble.device", qos: .userInteractive)
 
@@ -77,17 +79,27 @@ class QLConnection: NSObject {
 
     /// Whether the device is bonded (has accessory)
     var isBonded: Bool {
-        // On iOS, we consider a device bonded if it's been paired via AccessorySetupKit
-        // This is managed by the parent BluetoothChannel
-        return true
+        guard let deviceUUID = UUID(uuidString: deviceId) else {
+            return false
+        }
+
+        return accessorySession.accessories.contains { accessory in
+            accessory.bluetoothIdentifier == deviceUUID
+        }
     }
 
     // MARK: - Initialization
 
-    init(deviceId: String, binaryMessenger: FlutterBinaryMessenger, delegate: QLConnectionDelegate) {
+    init(
+        deviceId: String,
+        binaryMessenger: FlutterBinaryMessenger,
+        delegate: QLConnectionDelegate,
+        accessorySession: ASAccessorySession
+    ) {
         self.deviceId = deviceId
         self.binaryMessenger = binaryMessenger
         self.delegate = delegate
+        self.accessorySession = accessorySession
 
         // Initialize device-specific channels
         self.methodChannel = FlutterMethodChannel(

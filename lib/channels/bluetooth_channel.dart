@@ -6,8 +6,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:envoy/channels/accessory.dart';
-import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/channels/ble_status.dart';
+import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -70,6 +70,8 @@ class BluetoothChannel {
       kPrint("Creating new QLConnection for device: $deviceId");
       _deviceChannels[deviceId] = QLConnection(deviceId);
       _notifyDeviceChannelsChanged();
+    } else {
+      kPrint("Reusing existing QLConnection for device: $deviceId");
     }
     return _deviceChannels[deviceId]!;
   }
@@ -185,8 +187,12 @@ class BluetoothChannel {
   /// On iOS this will show the accessory setup sheet.
   /// On Android this will initiate the android bonding dialog.
   Future<QLConnection> setupBle(String deviceId, int colorWay) async {
+    kPrint(
+      "setupBle start: requestedDeviceId=$deviceId colorWay=$colorWay platform=${Platform.operatingSystem}",
+    );
     var resolvedDeviceId = deviceId;
     if (Platform.isIOS) {
+      kPrint("setupBle iOS: invoking showAccessorySetup");
       final iosDeviceId = await _methodChannel.invokeMethod<String?>(
         "showAccessorySetup",
         {"c": colorWay},
@@ -195,9 +201,12 @@ class BluetoothChannel {
         throw BleSetupTimeoutException("Accessory setup cancelled");
       }
       resolvedDeviceId = iosDeviceId;
+      kPrint(
+          "setupBle iOS: showAccessorySetup returned deviceId=$resolvedDeviceId");
     } else {
       // Android: Call native pair first to create QLConnection and register channels
       // This must happen before we create QLConnection on Dart side
+      kPrint("setupBle android: invoking pair for deviceId=$deviceId");
       await _methodChannel.invokeMethod("pair", {"deviceId": deviceId}).timeout(
         Duration(seconds: 10),
         onTimeout: () {
@@ -207,9 +216,11 @@ class BluetoothChannel {
     }
 
     // Now create the device channel after native side has registered its channels
+    kPrint("setupBle: obtaining device channel for $resolvedDeviceId");
     final deviceChannel = getDeviceChannel(resolvedDeviceId);
 
     bool initiateBonding = false;
+    kPrint("setupBle: waiting for connected event on $resolvedDeviceId");
     final connect = await deviceChannel.connectionEvents.firstWhere((event) {
       debugPrint("[$resolvedDeviceId] events $event");
       try {
@@ -238,6 +249,8 @@ class BluetoothChannel {
       },
     );
     if (connect.connected) {
+      kPrint(
+          "setupBle success: deviceId=$resolvedDeviceId connected=${connect.connected}");
       return deviceChannel;
     } else {
       throw BleSetupTimeoutException("Pairing timed out");
@@ -247,12 +260,14 @@ class BluetoothChannel {
   /// Prepare a device for connection by creating native QLConnection and registering channels.
   /// This must be called BEFORE creating the Dart QLConnection.
   Future<void> prepareDevice(String deviceId) async {
+    kPrint("prepareDevice: $deviceId");
     await _methodChannel.invokeMethod("prepareDevice", {"deviceId": deviceId});
   }
 
   /// Reconnect to a previously paired device.
   /// prepareDevice() should be called first to register native channels.
   Future<void> reconnect(String deviceId) async {
+    kPrint("reconnect request to native: deviceId=$deviceId");
     await _methodChannel.invokeMethod("reconnect", {"deviceId": deviceId});
   }
 
@@ -317,6 +332,27 @@ class BluetoothChannel {
       channel.dispose();
     }
     _deviceChannels.clear();
+  }
+
+  Future<void> removeAccessory(String deviceId) async {
+    if (!Platform.isIOS) {
+      return;
+    }
+
+    try {
+      await _methodChannel.invokeMethod<bool>('removeDevice', {
+        'deviceId': deviceId,
+      }).timeout(
+        Duration(seconds: 5),
+        onTimeout: () {
+          throw Exception("Timeout removing accessory");
+        },
+      );
+    } catch (e, stack) {
+      kPrint('Error removing accessory: $e', stackTrace: stack);
+    } finally {
+      removeDeviceChannel(deviceId);
+    }
   }
 
   void resetDeviceChannels() {

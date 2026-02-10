@@ -108,13 +108,6 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
         throw Exception("No Previous connection...");
       }
       String deviceId = qlConnection.lastDeviceStatus.peripheralId ?? "";
-      //  if (Devices().getPrimeDevices.isEmpty) {
-      //    //TODO: localize
-      //    // throw Exception("No Prime devices available to reconnect");
-      //   deviceId =    Devices().getPrimeDevices.firs.
-      //  }
-      //  kPrint(
-      //      "Attempting to reconnect to device... ${BluetoothChannel().lastDeviceStatus.}");
       await BluetoothManager().reconnect(deviceId);
       await Future.delayed(const Duration(seconds: 2));
       if (qlConnection.lastDeviceStatus.connected && mounted) {

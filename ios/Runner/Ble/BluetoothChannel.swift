@@ -120,7 +120,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             case "getConnectedDevices":
                 self.getConnectedDevices(result: result)
             case "removeDevice":
-                self.removeDevice(call: call, result: result)
+                self.removeDeviceAndAccessory(call: call, result: result)
             default:
                 result(FlutterMethodNotImplemented)
             }
@@ -163,7 +163,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         let device = QLConnection(
             deviceId: deviceId,
             binaryMessenger: messenger,
-            delegate: self
+            delegate: self,
+            accessorySession: session
         )
         devices[deviceId] = device
         return device
@@ -231,8 +232,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         }
         result(connectedDevices)
     }
-
-    private func removeDevice(call: FlutterMethodCall, result: @escaping FlutterResult) {
+    
+    private func removeDeviceAndAccessory(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let arguments = call.arguments as? [String: Any],
               let deviceId = arguments["deviceId"] as? String,
               !deviceId.isEmpty else {
@@ -240,12 +241,47 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
+        var didRemoveLocalDevice = false
         if let device = devices.removeValue(forKey: deviceId) {
             device.cleanup()
+            didRemoveLocalDevice = true
             print("\(Self.TAG) Removed device: \(deviceId)")
+        }
+
+        guard let uuid = UUID(uuidString: deviceId) else {
+            // Not a UUID; only local cleanup is possible.
+            result(didRemoveLocalDevice)
+            return
+        }
+
+        guard let accessory = session.accessories.first(where: { $0.bluetoothIdentifier == uuid }) else {
+            if primeAccessory?.bluetoothIdentifier == uuid {
+                primeAccessory = nil
+            }
+            print("\(Self.TAG) No accessory found for device: \(deviceId)")
+            result(didRemoveLocalDevice)
+            return
+        }
+
+        session.removeAccessory(accessory) { [weak self] error in
+            if let error = error {
+                print("\(Self.TAG) Failed to remove accessory for \(deviceId): \(error.localizedDescription)")
+                result(
+                    FlutterError(
+                        code: "REMOVE_ACCESSORY_FAILED",
+                        message: "Failed to remove accessory",
+                        details: error.localizedDescription
+                    )
+                )
+                return
+            }
+
+            if self?.primeAccessory?.bluetoothIdentifier == uuid {
+                self?.primeAccessory = nil
+            }
+
+            print("\(Self.TAG) Removed accessory for device: \(deviceId)")
             result(true)
-        } else {
-            result(false)
         }
     }
 
