@@ -461,6 +461,8 @@
   "exploreAddresses_qr_derivationPath": "Ruta de Derivación",
   "exploreAddresses_qr_header": "DIRECCIÓN #{number}",
   "exploreAddresses_qr_warningReused": "Esta dirección ya ha sido utilizada. Evita reutilizar direcciones para preservar tu privacidad. ",
+  "exploreAddresses_searchError_continueSearching": "Continue Searching",
+  "exploreAddresses_searchError_notFound": "Address not found in the first {searchSpace} addresses.",
   "exploreAdresses_activityOptions_deleteAccount": "Eliminar Cuenta",
   "exploreAdresses_activityOptions_editAccountName": "Editar Nombre de Cuenta",
   "exploreAdresses_activityOptions_exploreAddresses": "Explorar Direcciones",

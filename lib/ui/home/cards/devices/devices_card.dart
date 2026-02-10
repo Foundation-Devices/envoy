@@ -129,7 +129,7 @@ class _DevicesListState extends ConsumerState<DevicesList> {
                           var device = Devices().devices[index];
                           return Padding(
                             padding: const EdgeInsets.only(
-                                bottom: EnvoySpacing.medium1),
+                                bottom: EnvoySpacing.medium2),
                             child: DeviceListTile(
                               device,
                               onTap: () async {

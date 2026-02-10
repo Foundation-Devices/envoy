@@ -258,6 +258,7 @@ class BluetoothChannel(
             "isConnected" -> result.success(isConnected())
             "cancelTransfer" -> cancelTransfer(result)
             "enableBluetooth" -> enableBluetooth(result)
+            "isDeviceBonded" -> isDeviceBonded(call, result)
             else -> result.notImplemented()
         }
     }
@@ -285,6 +286,23 @@ class BluetoothChannel(
         pendingEnableResult = result
         val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
         enableBtLauncher.launch(enableBtIntent)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun isDeviceBonded(call: MethodCall, result: MethodChannel.Result) {
+        if (!checkBluetoothPermissions()) {
+            result.error("PERMISSION_ERROR", "Bluetooth permissions not granted", null)
+            return
+        }
+
+        val bleId = call.argument<String>("bleId")
+        if (bleId.isNullOrEmpty()) {
+            result.success(false)
+            return
+        }
+
+        val isBonded = bluetoothAdapter?.bondedDevices?.any { it.address == bleId } ?: false
+        result.success(isBonded)
     }
 
     private fun cancelTransfer(result: MethodChannel.Result) {
