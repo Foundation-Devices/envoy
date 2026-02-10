@@ -90,7 +90,6 @@ class QLConnection with EnvoyMessageWriter {
   }
 
   void _initChannels() {
-    print(" 🥶 [$deviceId] Initializing QLConnection channels");
     // Initialize device-specific channels with deviceId suffix
     _methodChannel = MethodChannel('envoy/bluetooth/$deviceId');
 
