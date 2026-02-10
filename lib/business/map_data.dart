@@ -109,7 +109,7 @@ out geom;
 ''';
 
     try {
-      final response = await HttpTor().get(
+      final response = await HttpTor().getWithRetry(
         overpassUrl,
         body: 'data=$query',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
