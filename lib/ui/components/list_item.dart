@@ -308,7 +308,9 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
     final accountId = widget.notification.accountId;
     final account = NgAccountManager().getAccountById(accountId!);
 
-    ref.read(selectedAccountProvider.notifier).state = account;
+    Future(() {
+      ref.read(selectedAccountProvider.notifier).state = account;
+    });
 
     return TransactionsDetailsWidget(
       account: account!,
