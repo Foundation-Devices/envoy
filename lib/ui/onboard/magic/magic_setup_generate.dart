@@ -35,6 +35,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   rive.File? _riveFile;
   rive.RiveWidgetController? _controller;
   bool _isInitialized = false;
+  bool _showContent = false;
 
   final PageController _pageController = PageController();
   late int step;
@@ -105,7 +106,11 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
     setState(() => _isInitialized = true);
 
     // Delay to avoid flashing wrong frame
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 100));
+
+    setState(() {
+      _showContent = true;
+    });
 
     if (_isInitialized) {
       _initiateWalletCreate();
@@ -208,45 +213,50 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                             )
                           : const SizedBox(),
                     ),
-                    ExpandablePageView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      controller: _pageController,
-                      children: List.generate(
-                        stepsHeadings.length,
-                        (index) {
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Flexible(
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        stepsHeadings[index],
-                                        textAlign: TextAlign.center,
-                                        style: EnvoyTypography.heading,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: EnvoySpacing.medium3,
-                                        ),
-                                        child: Text(
-                                          stepSubHeadings[index],
+                    AnimatedOpacity(
+                      opacity: _showContent ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 500),
+                      child: ExpandablePageView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        controller: _pageController,
+                        children: List.generate(
+                          stepsHeadings.length,
+                          (index) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          stepsHeadings[index],
                                           textAlign: TextAlign.center,
-                                          style: EnvoyTypography.info.copyWith(
-                                            height: 1.2,
-                                            color: EnvoyColors.textSecondary,
+                                          style: EnvoyTypography.heading,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: EnvoySpacing.medium3,
+                                          ),
+                                          child: Text(
+                                            stepSubHeadings[index],
+                                            textAlign: TextAlign.center,
+                                            style:
+                                                EnvoyTypography.info.copyWith(
+                                              height: 1.2,
+                                              color: EnvoyColors.textSecondary,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
-                        },
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ],
