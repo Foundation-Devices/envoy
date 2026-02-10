@@ -469,21 +469,14 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
               style: const TextStyle(color: EnvoyColors.copperLight500)),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
-            final bool isPrime = widget.device.type == DeviceType.passportPrime;
             showEnvoyDialog(
                 context: context,
                 dialog: EnvoyPopUp(
                   icon: EnvoyIcons.alert,
                   typeOfMessage: PopUpState.warning,
                   showCloseButton: false,
-                  title: isPrime
-                      ? S()
-                          .manage_deviceDetailsModalDisconnectExistingPassport_header
-                      : S().component_areYouSure,
-                  content: isPrime
-                      ? S()
-                          .manage_deviceDetailsModalDisconnectExistingPassport_content
-                      : S().manage_device_deletePassportWarning,
+                  title: S().component_areYouSure,
+                  content: S().manage_device_deletePassportWarning,
                   primaryButtonLabel: S().componet_disconnect,
                   primaryButtonColor: EnvoyColors.warning,
                   onPrimaryButtonTap: (context) {
