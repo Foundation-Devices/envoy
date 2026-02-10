@@ -1,0 +1,94 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+
+# check Signet is on
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+- runFlow:
+    when:
+      visible:
+        id: "Signet Toggle-false"
+    commands:
+      - tapOn:
+          id: "Signet Toggle-false"
+      - tapOn:
+          id: signet_modal_continue
+
+
+# go back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+
+- scrollUntilVisible:
+    element:
+      id: "account_card_Mobile Wallet_hot_signet"
+    direction: DOWN
+
+- tapOn:
+    id: account_card_Mobile Wallet_hot_signet
+
+# send
+- tapOn: Send
+
+- tapOn: Enter address
+
+- inputText: "tb1qn63asnfy0p2g3u466kzfcv85x03hfg5qcjhsux"
+
+- tapOn: Back
+
+# enter amount
+- tapOn: "5"
+- tapOn: "6"
+- tapOn: "7"
+
+- tapOn: Confirm
+
+# wait the app to enter Staging
+- extendedWaitUntil:
+    visible: |-
+      Your transaction is ready 
+      to be sent
+      Confirm the transaction details are correct before sending.
+    timeout: 300000 # wait for 5 min
+
+- tapOn: Send Transaction
+
+- tapOn:
+    id: tx_note_input
+
+- inputText: "This Note"
+
+- tapOn: Save
+
+# 5 min wait
+- extendedWaitUntil:
+    visible: "Your transaction was successfully sent"
+    timeout: 300000
+
+- tapOn: Continue
+
+# open the tx
+- tapOn: |-
+    Sent
+    Awaiting confirmation
+
+- assertVisible: |-
+    Note
+    This Note
+
+# go back to home
+- tapOn: Back
+- tapOn:
+    id: hamburger_menu

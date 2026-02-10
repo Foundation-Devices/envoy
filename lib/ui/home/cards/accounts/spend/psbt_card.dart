@@ -108,14 +108,17 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
         EnvoyScaffold(
           topBarLeading: Padding(
             padding: const EdgeInsets.all(EnvoySpacing.xs),
-            child: IconButton(
-              icon: const Icon(
-                Icons.chevron_left,
-                color: Colors.black,
+            child: Semantics(
+              identifier: 'psbt_back_button',
+              child: IconButton(
+                icon: const Icon(
+                  Icons.chevron_left,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  GoRouter.of(context).pop();
+                },
               ),
-              onPressed: () {
-                GoRouter.of(context).pop();
-              },
             ),
           ),
           topBarTitle: StepIndicator(currentStep: 1),

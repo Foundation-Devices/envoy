@@ -133,7 +133,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                         displayFiatAmount: displayFiatSendAmount,
                         millionaireMode: false,
                         amountWidgetStyle: AmountWidgetStyle.normal,
-                        semanticSuffix: "Amount")),
+                        semanticSuffix:
+                            "Amount-${widget.transaction.amount.toInt().abs()}")),
                 _divider(),
                 infoState(
                     EnvoyIcons.wallet_coin,
@@ -159,7 +160,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                             displayFiatAmount: displayFiatFeeAmount,
                             millionaireMode: false,
                             amountWidgetStyle: AmountWidgetStyle.normal,
-                            semanticSuffix: "Fee"),
+                            semanticSuffix: "Fee-${transaction.fee.toInt()}"),
                         if (widget.onFeeTap != null)
                           GestureDetector(
                             onTap: () {
@@ -199,7 +200,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                     displayFiatAmount: displayFiatTotalAmount,
                     millionaireMode: false,
                     amountWidgetStyle: AmountWidgetStyle.normal,
-                    semanticSuffix: "Total")),
+                    semanticSuffix:
+                        "Total-${transaction.amount.toInt().abs() + transaction.fee.toInt()}")),
           ),
         ),
       ],
