@@ -98,6 +98,7 @@ enum EnvoyIcons {
   prime_front,
   locked,
   unlocked,
+  chain,
 }
 
 class EnvoyIcon extends StatelessWidget {

@@ -27,8 +27,8 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 
+import 'package:collection/collection.dart';
 import 'package:envoy/util/envoy_storage.dart';
-import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -75,28 +75,54 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (hasPassphraseAccounts)
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  top: EnvoySpacing.medium2,
-                ),
-                child: LabelSwitch(
-                  initialValue: showDefaultAccounts,
-                  onChanged: (bool newValue) {
-                    ref.read(showDefaultAccountProvider.notifier).state =
-                        newValue;
-                  },
-                  trueOption: LabelSwitchOption(
-                    label: S().accounts_switchDefault,
-                  ),
-                  falseOption: LabelSwitchOption(
-                    label: S().accounts_switchPassphrase,
-                    icon: EnvoyIcons.passphrase_shield,
-                  ),
-                ),
+            AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              alignment: Alignment.topCenter,
+              clipBehavior: Clip.none,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                switchInCurve: Curves.easeOut,
+                switchOutCurve: Curves.easeIn,
+                transitionBuilder: (child, animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0, -0.5),
+                        end: Offset.zero,
+                      ).animate(CurvedAnimation(
+                        parent: animation,
+                        curve: Curves.easeOut,
+                      )),
+                      child: child,
+                    ),
+                  );
+                },
+                child: hasPassphraseAccounts
+                    ? Padding(
+                        key: const ValueKey('passphrase-pill'),
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, top: EnvoySpacing.medium2),
+                        child: LabelSwitch(
+                          initialValue: showDefaultAccounts,
+                          onChanged: (bool newValue) {
+                            ref
+                                .read(showDefaultAccountProvider.notifier)
+                                .state = newValue;
+                          },
+                          trueOption: LabelSwitchOption(
+                            label: S().accounts_switchDefault,
+                          ),
+                          falseOption: LabelSwitchOption(
+                            label: S().accounts_switchPassphrase,
+                            icon: EnvoyIcons.passphrase_shield,
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink(key: ValueKey('empty')),
               ),
+            ),
             Flexible(
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
@@ -245,9 +271,12 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
       final filteredOrder =
           next.where((id) => currentIds.contains(id)).toList();
 
-      setState(() {
-        _accountsOrder = filteredOrder;
-      });
+      // Only update state if the order actually changed to avoid unnecessary rebuilds
+      if (!const ListEquality().equals(_accountsOrder, filteredOrder)) {
+        setState(() {
+          _accountsOrder = filteredOrder;
+        });
+      }
 
       // Persist the cleaned order if stale IDs were removed
       if (next.length != filteredOrder.length) {
@@ -257,29 +286,48 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
       }
     });
 
-    ref.listen(accountsProvider, (
-      List<EnvoyAccount>? previous,
-      List<EnvoyAccount> next,
-    ) {
+    ref.listen(accountsProvider,
+        (List<EnvoyAccount>? previous, List<EnvoyAccount> next) {
+      // Skip processing for passphrase accounts since they are displayed
+      // in PassphraseAccountsList, not here. Avoids unnecessary rebuilds.
+      if (previous != null && previous.length < next.length) {
+        final previousIds = previous.map((e) => e.id).toSet();
+        final newAccount = next.firstWhereOrNull(
+          (account) => !previousIds.contains(account.id),
+        );
+        if (newAccount != null &&
+            (primePassphraseAccounts.contains(newAccount) ||
+                newAccount.seedHasPassphrase)) {
+          return;
+        }
+      }
+
       final nextIds = next.map((e) => e.id).toSet();
 
-      setState(() {
-        _accountsOrder =
-            _accountsOrder.where((id) => nextIds.contains(id)).toList();
+      // Compute the new order
+      final newOrder =
+          _accountsOrder.where((id) => nextIds.contains(id)).toList();
 
-        //update order if and only if new accounts are added
-        for (var account in next) {
-          if (!_accountsOrder.contains(account.id)) {
-            _accountsOrder.add(account.id);
-          }
+      // Add new accounts that aren't in the order yet
+      for (var account in next) {
+        if (!newOrder.contains(account.id)) {
+          newOrder.add(account.id);
         }
-      });
+      }
 
-      Future.microtask(
-        () => NgAccountManager().updateAccountOrder(_accountsOrder),
-      );
+      // Only update state if the order actually changed to avoid unnecessary rebuilds
+      if (!const ListEquality().equals(_accountsOrder, newOrder)) {
+        setState(() {
+          _accountsOrder = newOrder;
+        });
 
-      if (previous!.length < next.length) {
+        Future.microtask(
+            () => NgAccountManager().updateAccountOrder(_accountsOrder));
+      }
+
+      if (previous != null &&
+          previous.length < next.length &&
+          next.length >= 5) {
         if (_scrollController.hasClients) {
           _scrollController.animateTo(
             listContentHeight, //when new acc, go to bottom to see the acc
@@ -289,7 +337,7 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
         }
       }
 
-      if (previous.length > next.length) {
+      if (previous != null && previous.length > next.length) {
         if (_scrollController.hasClients) {
           _scrollController.animateTo(
             0, //when delete acc go to top

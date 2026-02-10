@@ -219,7 +219,8 @@ class _OnboardEnvoyWelcomeScreenState
                                   ONBOARD_ENVOY_MAGIC_GENERATE_SETUP,
                                 );
                               } else {
-                                context.goNamed(ONBOARD_ENVOY_MANUAL_GENERATE);
+                                context
+                                    .pushNamed(ONBOARD_ENVOY_MANUAL_GENERATE);
                               }
                             },
                           ),

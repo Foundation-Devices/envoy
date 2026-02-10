@@ -116,7 +116,46 @@ class _DevicesListState extends ConsumerState<DevicesList> {
                 child: CustomScrollView(
                   slivers: [
                     const SliverToBoxAdapter(
-                      child: SizedBox(height: EnvoySpacing.medium2),
+                        child: SizedBox(
+                      height: EnvoySpacing.medium2,
+                    )),
+                    const SliverPadding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: EnvoySpacing.xs / 2)),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          var device = Devices().devices[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: EnvoySpacing.medium2),
+                            child: DeviceListTile(
+                              device,
+                              onTap: () async {
+                                ref
+                                    .read(homePageOptionsVisibilityProvider
+                                        .notifier)
+                                    .state = false;
+                                Future.delayed(
+                                    const Duration(milliseconds: 200), () {
+                                  if (context.mounted) {
+                                    context.go(ROUTE_DEVICE_DETAIL,
+                                        extra: device);
+                                  }
+                                });
+                                // widget.navigator!.push(DeviceCard(
+                                //     device,
+                                //     widget.navigator,
+                                //     DeviceOptions(
+                                //       device,
+                                //       navigator: widget.navigator,
+                                //     )));
+                              },
+                            ),
+                          );
+                        },
+                        childCount: Devices().devices.length,
+                      ),
                     ),
                     const SliverPadding(
                       padding: EdgeInsets.symmetric(

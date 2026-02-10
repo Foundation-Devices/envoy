@@ -172,7 +172,6 @@ class Devices extends ChangeNotifier {
     //wait for the bluetooth manager to initialize
     await Future.delayed(const Duration(seconds: 1));
     kPrint("Connecting to ${getPrimeDevices.length} primes");
-    BluetoothChannel().resetDeviceChannels();
     for (var device in getPrimeDevices) {
       if (device.bleId.isNotEmpty) {
         final deviceId =
@@ -207,18 +206,15 @@ class Devices extends ChangeNotifier {
     restore();
   }
 
-  Future add(Device device) async {
-    for (var currentDevice in devices) {
-      // Don't add if device with same serial already present
-      if (currentDevice.serial == device.serial) {
-        if (currentDevice.name != device.name) {
-          renameDevice(currentDevice, device.name);
-        }
-        return;
-      }
-    }
+  Future<void> add(Device device) async {
+    final existingIndex = devices.indexWhere((d) => d.serial == device.serial);
 
-    devices.add(device);
+    if (existingIndex != -1) {
+      device.pairedAccountIds = devices[existingIndex].pairedAccountIds;
+      devices[existingIndex] = device;
+    } else {
+      devices.add(device);
+    }
     await storeDevices();
     notifyListeners();
   }
