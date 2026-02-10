@@ -390,6 +390,7 @@ Future<void> pairWithDevice(BuildContext context, XidDocument xid) async {
     if (context.mounted) {
       resetOnboardingPrimeProviders(providerContainer);
     }
+    await BluetoothChannel().prepareDevice(connected.deviceId);
     final qlConnection = BluetoothChannel().getDeviceChannel(
       connected.deviceId,
     );

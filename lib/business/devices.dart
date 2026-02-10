@@ -282,7 +282,9 @@ class Devices extends ChangeNotifier {
       final qlConnection = device.qlConnection();
       await qlConnection.disconnect();
       qlConnection.dispose();
-      await BluetoothChannel().removeAccessory(qlConnection.deviceId);
+      if (Platform.isIOS) {
+        await BluetoothChannel().removeAccessory(qlConnection.deviceId);
+      }
     }
     // Delete connected accounts
     await NgAccountManager().deleteDeviceAccounts(device);

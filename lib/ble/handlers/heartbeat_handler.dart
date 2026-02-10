@@ -9,7 +9,6 @@ import 'package:foundation_api/foundation_api.dart' as api;
 /// Handler for heartbeat messages over Quantum Link.
 /// Responds to incoming heartbeat messages by sending a heartbeat back.
 class HeartbeatHandler extends PassportMessageHandler {
-
   DateTime? lastHeartbeat;
   HeartbeatHandler(super.connection);
 

@@ -154,7 +154,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         if (_onboardingDevice == null) {
           throw Exception("Got null device when trying to connect to Prime.");
         }
-        if(Platform.isAndroid){
+        if (Platform.isAndroid) {
           await Future.delayed(const Duration(seconds: 1));
         }
         final connectionStatus = _onboardingDevice!.lastDeviceStatus;

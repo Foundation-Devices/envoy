@@ -90,6 +90,7 @@ class QLConnection with EnvoyMessageWriter {
   }
 
   void _initChannels() {
+    kPrint('Initializing channels for device $deviceId');
     // Initialize device-specific channels with deviceId suffix
     _methodChannel = MethodChannel('envoy/bluetooth/$deviceId');
 
@@ -377,13 +378,18 @@ class QLConnection with EnvoyMessageWriter {
     final data = await encodeMessage(message: message);
     kPrint("Encoded message! Size: ${data.length}");
     if (Platform.isIOS || Platform.isAndroid) {
-      await writeAll(data);
+      final success = await writeAll(data);
+      if (!success) {
+        kPrint(
+          "[$deviceId] BLE write failed for message type: ${message.runtimeType}",
+        );
+      }
+      return success;
     } else {
       throw UnimplementedError(
         "Bluetooth write not implemented for this platform",
       );
     }
-    return true;
   }
 
   @override
@@ -466,7 +472,7 @@ class QLConnection with EnvoyMessageWriter {
       ),
     );
     kPrint("Pairing... success ?  $success");
-    return true;
+    return success;
   }
 
   /// Set up the QuantumLink identity for an existing connection.

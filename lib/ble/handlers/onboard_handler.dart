@@ -9,7 +9,6 @@ import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
-import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/routes/routes.dart';
@@ -116,14 +115,14 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
       final senderXid = await api.serializeQlIdentity(
         quantumLinkIdentity: qlConnection.senderXid!,
       );
-      QLConnection.debugIdentitiesQuantumLinkIdentity(
-        identity: qlConnection.senderXid!,
-        message: "SAVING",
-      );
-      QLConnection.debugIdentitiesXidDocument(
-        recipient: qlConnection.recipientXid!,
-        message: "SAVING recipientXid",
-      );
+      // QLConnection.debugIdentitiesQuantumLinkIdentity(
+      //   identity: qlConnection.senderXid!,
+      //   message: "SAVING",
+      // );
+      // QLConnection.debugIdentitiesXidDocument(
+      //   recipient: qlConnection.recipientXid!,
+      //   message: "SAVING recipientXid",
+      // );
       final device = Device(
         "Prime",
         DeviceType.passportPrime,
