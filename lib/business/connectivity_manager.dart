@@ -59,6 +59,11 @@ class ConnectivityManager {
   bool nguConnected = true;
   int failedTorConnectivityAttempts = 0;
 
+  // Three strikes before we report services as unreachable to the UI
+  int _consecutiveElectrumFailures = 0;
+  int _consecutiveNguFailures = 0;
+  static const int _maxFailuresBeforeUnreachable = 3;
+
   /// Flag to prevent concurrent restartTor() calls
   bool _isRestartingTor = false;
 
@@ -108,28 +113,42 @@ class ConnectivityManager {
 
   void electrumSuccess() {
     failedFoundationServerAttempts = 0;
+    _consecutiveElectrumFailures = 0;
     electrumConnected = true;
     events.add(ConnectivityManagerEvent.electrumReachable);
     checkTor();
   }
 
   void electrumFailure() {
-    electrumConnected = false;
-    events.add(ConnectivityManagerEvent.electrumUnreachable);
-    checkTor();
-    checkFoundationServer();
+    _consecutiveElectrumFailures++;
+    kPrint(
+        "Electrum failure strike $_consecutiveElectrumFailures/$_maxFailuresBeforeUnreachable");
+
+    if (_consecutiveElectrumFailures >= _maxFailuresBeforeUnreachable) {
+      electrumConnected = false;
+      events.add(ConnectivityManagerEvent.electrumUnreachable);
+      checkTor();
+      checkFoundationServer();
+    }
   }
 
   void nguSuccess() {
+    _consecutiveNguFailures = 0;
     nguConnected = true;
     events.add(ConnectivityManagerEvent.nguStatusChanged);
     checkTor();
   }
 
   void nguFailure() {
-    nguConnected = false;
-    events.add(ConnectivityManagerEvent.nguStatusChanged);
-    checkTor();
+    _consecutiveNguFailures++;
+    kPrint(
+        "NGU failure strike $_consecutiveNguFailures/$_maxFailuresBeforeUnreachable");
+
+    if (_consecutiveNguFailures >= _maxFailuresBeforeUnreachable) {
+      nguConnected = false;
+      events.add(ConnectivityManagerEvent.nguStatusChanged);
+      checkTor();
+    }
   }
 
   void checkTor() async {
