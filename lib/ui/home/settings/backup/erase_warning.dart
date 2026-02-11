@@ -165,26 +165,26 @@ class _EraseWalletsAndBackupsWarningState
                     },
                   ),
                   OnboardingButton(
-                      type: EnvoyButtonTypes.primaryModal,
-                      label: S().component_continue,
-                      onTap: () {
-                        int currentPage = _pageController.page?.toInt() ?? 0;
-                        if (currentPage == 1) {
-                          if (ref.read(hotWalletAccountsEmptyProvider)) {
-                            // Safe to delete
-                            displaySeedBeforeNuke(context);
-                          } else {
-                            showEnvoyDialog(
-                                context: context,
-                                dialog: const EraseWalletsBalanceWarning());
-                          }
+                    type: EnvoyButtonTypes.primaryModal,
+                    label: S().component_continue,
+                    onTap: () {
+                      int currentPage = _pageController.page?.toInt() ?? 0;
+                      if (currentPage == 1) {
+                        if (ref.read(hotWalletAccountsEmptyProvider)) {
+                          // Safe to delete
+                          displaySeedBeforeNuke(context);
                         } else {
-                          _pageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOutCubicEmphasized,
-                          );
+                          showEnvoyDialog(
+                              context: context,
+                              dialog: const EraseWalletsBalanceWarning());
                         }
-                      },
+                      } else {
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOutCubicEmphasized,
+                        );
+                      }
+                    },
                   ),
                   const SizedBox(height: EnvoySpacing.small),
                 ],

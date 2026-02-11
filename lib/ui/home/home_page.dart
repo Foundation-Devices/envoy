@@ -693,7 +693,8 @@ class HomePageState extends ConsumerState<HomePage>
                   children: [
                     Hero(
                       tag: "shield",
-                      child: Shield(child: Container(color: Colors.transparent)),
+                      child:
+                          Shield(child: Container(color: Colors.transparent)),
                     ),
                     mainWidget,
                   ],

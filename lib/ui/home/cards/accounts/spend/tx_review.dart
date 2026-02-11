@@ -437,43 +437,43 @@ class _TxReviewState extends ConsumerState<TxReview> {
       return completer.future;
     }
     await showEnvoyDialog(
-        useRootNavigator: true,
-        context: context,
-        builder: Builder(
-          builder: (context) => ChooseTagForStagingTx(
-            accountId: account.id,
-            onEditTransaction: () {
-              Navigator.pop(context);
-              //exit broadcast flow and move to review screen
-              completer.complete(false);
-              editTransaction(context, ref);
+      useRootNavigator: true,
+      context: context,
+      builder: Builder(
+        builder: (context) => ChooseTagForStagingTx(
+          accountId: account.id,
+          onEditTransaction: () {
+            Navigator.pop(context);
+            //exit broadcast flow and move to review screen
+            completer.complete(false);
+            editTransaction(context, ref);
 
-              Navigator.of(context, rootNavigator: true).push(PageRouteBuilder(
-                  pageBuilder: (context, animation, secondaryAnimation) {
-                    return ChooseCoinsWidget();
-                  },
-                  transitionDuration: const Duration(milliseconds: 100),
-                  transitionsBuilder:
-                      (context, animation, secondaryAnimation, child) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    );
-                  },
-                  opaque: false,
-                  fullscreenDialog: true));
-            },
-            hasMultipleTagsInput: true,
-            onTagUpdate: () async {
-              Navigator.pop(context);
-              ref
-                  .read(spendTransactionProvider.notifier)
-                  .setTag(ref.read(stagingTxChangeOutPutTagProvider));
-              completer.complete(true);
-            },
-          ),
+            Navigator.of(context, rootNavigator: true).push(PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) {
+                  return ChooseCoinsWidget();
+                },
+                transitionDuration: const Duration(milliseconds: 100),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  );
+                },
+                opaque: false,
+                fullscreenDialog: true));
+          },
+          hasMultipleTagsInput: true,
+          onTagUpdate: () async {
+            Navigator.pop(context);
+            ref
+                .read(spendTransactionProvider.notifier)
+                .setTag(ref.read(stagingTxChangeOutPutTagProvider));
+            completer.complete(true);
+          },
         ),
-        alignment: const Alignment(0.0, -.6),
+      ),
+      alignment: const Alignment(0.0, -.6),
     );
     if (!completer.isCompleted) {
       completer.complete(true);

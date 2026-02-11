@@ -279,8 +279,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Consumer(
-                                          builder: (context, ref, child) {
+                                      Consumer(builder: (context, ref, child) {
                                         return TransactionReviewCard(
                                           account: account,
                                           transaction:

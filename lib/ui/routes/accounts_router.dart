@@ -187,8 +187,7 @@ final accountsRouter = StatefulShellBranch(
               },
               pageBuilder: (context, state) {
                 return wrapWithEnvoyPageAnimation(
-                    child: SendCard(
-                        transferAddress: state.extra as String?));
+                    child: SendCard(transferAddress: state.extra as String?));
               },
               routes: [
                 GoRoute(
@@ -204,8 +203,7 @@ final accountsRouter = StatefulShellBranch(
                             pageBuilder: (context, state) {
                               return wrapWithEnvoyPageAnimation(
                                   child: PsbtCard(
-                                      state.extra as DraftTransaction,
-                                      false));
+                                      state.extra as DraftTransaction, false));
                             },
                             routes: [
                               GoRoute(
@@ -213,8 +211,8 @@ final accountsRouter = StatefulShellBranch(
                                 path: "qr_review",
                                 pageBuilder: (context, state) {
                                   return wrapWithEnvoyPageAnimation(
-                                      child: SendQrReview(state.extra
-                                          as DraftTransaction));
+                                      child: SendQrReview(
+                                          state.extra as DraftTransaction));
                                 },
                               )
                             ]),
@@ -225,15 +223,13 @@ final accountsRouter = StatefulShellBranch(
                         if (ProviderScope.containerOf(context)
                                 .read(spendEditModeProvider) !=
                             SpendOverlayContext.hidden) {
-                          clearSpendState(
-                              ProviderScope.containerOf(context));
+                          clearSpendState(ProviderScope.containerOf(context));
                         }
                         return true;
                       },
                       path: _ACCOUNT_SEND_REVIEW,
                       pageBuilder: (context, state) {
-                        return wrapWithEnvoyPageAnimation(
-                            child: TxReview());
+                        return wrapWithEnvoyPageAnimation(child: TxReview());
                       },
                     ),
                   ],
@@ -249,8 +245,8 @@ final accountsRouter = StatefulShellBranch(
               pageBuilder: (context, state) {
                 EnvoyAccount? account;
                 try {
-                  account = NgAccountManager()
-                      .getAccountById(state.extra as String);
+                  account =
+                      NgAccountManager().getAccountById(state.extra as String);
                   if (account == null) {
                     throw Exception("Account not found");
                   }
@@ -266,8 +262,8 @@ final accountsRouter = StatefulShellBranch(
               pageBuilder: (context, state) {
                 EnvoyAccount? account;
                 try {
-                  account = NgAccountManager()
-                      .getAccountById(state.extra as String);
+                  account =
+                      NgAccountManager().getAccountById(state.extra as String);
                   if (account == null) {
                     throw Exception("Account not found");
                   }
@@ -288,8 +284,7 @@ final accountsRouter = StatefulShellBranch(
                     try {
                       final extra = state.extra as Map<String, dynamic>;
                       final account = extra['account'] as EnvoyAccount;
-                      final addressInfo =
-                          extra['addressInfo'] as AddressInfo;
+                      final addressInfo = extra['addressInfo'] as AddressInfo;
                       return wrapWithEnvoyPageAnimation(
                           child: AddressDetailCard(
                         account: account,
