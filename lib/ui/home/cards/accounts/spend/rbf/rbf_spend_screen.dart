@@ -275,40 +275,59 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                     vertical: EnvoySpacing.small,
                                     horizontal: EnvoySpacing.medium1),
                                 child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 160),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Consumer(builder: (context, ref, child) {
-                                        return TransactionReviewCard(
-                                          account: account,
-                                          transaction:
-                                              rbfState.draftTx.transaction,
-                                          amountToSend:
-                                              rbfState.originalAmount.abs(),
-                                          onTxDetailTap: () {
-                                            _showTxDetailsPage(context);
-                                          },
-                                          canModifyPsbt:
-                                              transactionModel.canModify,
-                                          loading: transactionModel.loading,
-                                          address: rbfState.receiveAddress,
-                                          onFeeTap: showReviewCoin
-                                              ? () {
-                                                  _showFeeChooser(
-                                                    context,
-                                                    ref,
-                                                    rbfState
-                                                        .draftTx.transaction,
-                                                  );
-                                                }
-                                              : null,
-                                        );
-                                      }),
-                                    ],
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: EnvoySpacing.small),
+                                  child: Text(
+                                    subHeading,
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w400),
                                   ),
                                 ),
                               ),
+                              Flexible(
+                                child: SingleChildScrollView(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 160),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Consumer(
+                                            builder: (context, ref, child) {
+                                          return TransactionReviewCard(
+                                            account: account,
+                                            transaction:
+                                                rbfState.draftTx.transaction,
+                                            amountToSend:
+                                                rbfState.originalAmount.abs(),
+                                            onTxDetailTap: () {
+                                              _showTxDetailsPage(context);
+                                            },
+                                            canModifyPsbt:
+                                                transactionModel.canModify,
+                                            loading: transactionModel.loading,
+                                            address: rbfState.receiveAddress,
+                                            onFeeTap: showReviewCoin
+                                                ? () {
+                                                    _showFeeChooser(
+                                                      context,
+                                                      ref,
+                                                      rbfState
+                                                          .draftTx.transaction,
+                                                    );
+                                                  }
+                                                : null,
+                                          );
+                                        }),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
                             ],
                           ),
                         ),
