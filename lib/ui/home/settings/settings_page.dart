@@ -132,9 +132,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     contentPadding:
                         const EdgeInsets.only(right: EnvoySpacing.medium1),
                     title: SettingText(S().settings_currency),
-                    trailing: Text(s.selectedFiat ?? "",
-                        style: EnvoyTypography.body
-                            .copyWith(color: EnvoyColors.accentPrimary)),
+                    trailing: Semantics(
+                      container: true,
+                      button: true,
+                      child: Text(s.selectedFiat ?? "",
+                          style: EnvoyTypography.body
+                              .copyWith(color: EnvoyColors.accentPrimary)),
+                    ),
                   ),
                 ),
               ),

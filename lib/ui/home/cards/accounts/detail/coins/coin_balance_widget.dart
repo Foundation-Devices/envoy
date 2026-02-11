@@ -527,20 +527,25 @@ class CoinLockButtonState extends State<CoinLockButton> {
     final borderColor = widget.locked ? EnvoyColors.copper : EnvoyColors.grey85;
     final icon = widget.locked ? "locked" : "unlocked";
 
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: borderColor,
-          width: 1,
+    return Semantics(
+      container: true,
+      button: true,
+      label: 'coin_lock_icon-$icon',
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: borderColor,
+            width: 1,
+          ),
         ),
-      ),
-      child: SvgPicture.asset(
-        "assets/components/icons/$icon.svg",
-        width: 18.0,
-        height: 18.0,
-        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+        child: SvgPicture.asset(
+          "assets/components/icons/$icon.svg",
+          width: 18.0,
+          height: 18.0,
+          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+        ),
       ),
     );
   }

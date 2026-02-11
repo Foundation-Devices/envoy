@@ -186,16 +186,20 @@ class _FiatCurrencyChooserState extends ConsumerState<FiatCurrencyChooser> {
                                                 textAlign: TextAlign.right,
                                                 overflow:
                                                     TextOverflow.ellipsis),
-                                            Text(item.code,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium
-                                                    ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                overflow:
-                                                    TextOverflow.ellipsis),
+                                            Semantics(
+                                              container: true,
+                                              button: true,
+                                              child: Text(item.code,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis),
+                                            ),
                                           ],
                                         ),
                                       ),
