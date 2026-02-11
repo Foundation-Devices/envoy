@@ -42,8 +42,9 @@ final isPrimeConnectedProvider = Provider.family<bool, Device?>((ref, device) {
   return status.connected == true;
 });
 
-final _qlActiveStreamProvider = StreamProvider.family<bool, Device>((ref, device) {
-   return device.qlConnection().qlActiveStream;
+final _qlActiveStreamProvider =
+    StreamProvider.family<bool, Device>((ref, device) {
+  return device.qlConnection().qlActiveStream;
 });
 
 final primeQLActivityProvider = Provider.family<bool, Device?>((ref, device) {
