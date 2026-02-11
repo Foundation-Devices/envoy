@@ -141,11 +141,6 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
             ? NewEnvoyColor.contentDisabled
             : NewEnvoyColor.contentPrimary);
 
-    final listItemTrailingTheme = EnvoyTypography.body.copyWith(
-        color: deviceRemovedFromHostSystemSettings
-            ? NewEnvoyColor.contentDisabled
-            : NewEnvoyColor.contentSecondary);
-
     final isConnectedItemTheme = EnvoyTypography.body.copyWith(
         color: deviceRemovedFromHostSystemSettings
             ? NewEnvoyColor.contentDisabled
