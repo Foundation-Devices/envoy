@@ -58,14 +58,9 @@ class S {
 
   // skipped getter for the 'FW_Version_No.' key
 
-  /// `bc1q abcd rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m 0p`
+  /// `Install`
   String get _ {
-    return Intl.message(
-      'bc1q abcd rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m 0p',
-      name: '_',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Install', name: '_', desc: '', args: []);
   }
 
   /// `App Version`
@@ -6927,6 +6922,36 @@ class S {
     return Intl.message(
       'Advanced',
       name: 'onboarding_advanced_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome to Passport `
+  String get onboarding_appclip_header {
+    return Intl.message(
+      'Welcome to Passport ',
+      name: 'onboarding_appclip_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Install Envoy to set up your Passport Core.`
+  String get onboarding_appclip_subheaderCore {
+    return Intl.message(
+      'Install Envoy to set up your Passport Core.',
+      name: 'onboarding_appclip_subheaderCore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Install Envoy to set up your Passport Prime.`
+  String get onboarding_appclip_subheaderPrime {
+    return Intl.message(
+      'Install Envoy to set up your Passport Prime.',
+      name: 'onboarding_appclip_subheaderPrime',
       desc: '',
       args: [],
     );

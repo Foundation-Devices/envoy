@@ -72,9 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage(
-          "bc1q abcd rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m 0p",
-        ),
+        "_": MessageLookupByLibrary.simpleMessage("Install"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage(
           "Versão da Aplicação",
         ),
@@ -2130,6 +2128,17 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_advanced_title": MessageLookupByLibrary.simpleMessage(
           "Advanced",
+        ),
+        "onboarding_appclip_header": MessageLookupByLibrary.simpleMessage(
+          "Welcome to Passport ",
+        ),
+        "onboarding_appclip_subheaderCore":
+            MessageLookupByLibrary.simpleMessage(
+          "Install Envoy to set up your Passport Core.",
+        ),
+        "onboarding_appclip_subheaderPrime":
+            MessageLookupByLibrary.simpleMessage(
+          "Install Envoy to set up your Passport Prime.",
         ),
         "onboarding_bluetoothDisabled_content":
             MessageLookupByLibrary.simpleMessage(
