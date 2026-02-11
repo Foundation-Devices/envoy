@@ -39,6 +39,7 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
   Timer? _typingTimer;
   bool _isError = false;
   bool _torEnabled = false;
+  StreamSubscription<ConnectivityManagerEvent>? _connectivitySub;
 
   @override
   void initState() {
@@ -54,6 +55,17 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
     Future.delayed(Duration.zero).then((value) {
       _updateTorEnabledStatus();
     });
+
+    // Listen for connectivity recovery so we clear stale error state
+    _connectivitySub = ConnectivityManager().events.stream.listen((event) {
+      if (event == ConnectivityManagerEvent.electrumReachable &&
+          _isError &&
+          _controller.text.isNotEmpty &&
+          mounted) {
+        // Connection recovered via sync - re-validate the node
+        _onAddressChanged(_controller.text);
+      }
+    });
   }
 
   void _updateTorEnabledStatus() {
@@ -66,10 +78,8 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
 
   @override
   void dispose() {
-    if (_typingTimer != null) {
-      _typingTimer!.cancel();
-    }
-
+    _typingTimer?.cancel();
+    _connectivitySub?.cancel();
     super.dispose();
   }
 
