@@ -173,7 +173,8 @@ class Devices extends ChangeNotifier {
     await Future.delayed(const Duration(seconds: 1));
     kPrint("Connecting to ${getPrimeDevices.length} primes");
     for (var device in getPrimeDevices) {
-      if (device.bleId.isNotEmpty && !device.qlConnection().lastDeviceStatus.connected) {
+      if (device.bleId.isNotEmpty &&
+          !device.qlConnection().lastDeviceStatus.connected) {
         final deviceId =
             Platform.isAndroid ? device.bleId : device.peripheralId;
 
@@ -181,15 +182,16 @@ class Devices extends ChangeNotifier {
         //event-channels and method channels
         await BluetoothChannel().prepareDevice(deviceId);
 
-        await Future.delayed(const Duration(milliseconds: 1500));
+        // Short delay to ensure platform channels are ready before we attempt to reconnect
+        await Future.delayed(const Duration(milliseconds: 600));
 
         // 2. Create Dart QLConnection - connects to platform QLConnection eventChannel/methodChannel
         final qlConnection = BluetoothChannel().getDeviceChannel(deviceId);
 
-        // 3. Set up XIDs before connection so messages can be decoded
+        // 3. Restores XIDs before connection so messages can be decoded
         await qlConnection.reconnect(device);
 
-        // 4. Now initiate BLE connection - events will be received by Dart
+        // 4. initiate BLE connection - events will be received by Dart
         await BluetoothChannel().reconnect(deviceId);
       }
     }
