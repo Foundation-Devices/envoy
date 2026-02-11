@@ -24,10 +24,12 @@ class Glow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          gradient: RadialGradient(
-              radius: 0.5,
-              colors: [innerColor, middleColor, outerColor],
-              stops: stops)),
+        gradient: RadialGradient(
+          radius: 0.5,
+          colors: [innerColor, middleColor, outerColor],
+          stops: stops,
+        ),
+      ),
     );
   }
 }

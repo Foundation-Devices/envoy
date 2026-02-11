@@ -51,8 +51,9 @@ class Tag {
   }
 }
 
-final coinBlockStateStreamProvider =
-    StreamProvider((ref) => CoinRepository().getCoinBlockStateStream());
+final coinBlockStateStreamProvider = StreamProvider(
+  (ref) => CoinRepository().getCoinBlockStateStream(),
+);
 
 class CoinStateNotifier extends StateNotifier<Set<String>> {
   CoinStateNotifier(super.state);
@@ -108,15 +109,17 @@ final coinSelectionFromWallet =
 final rbfChangeOutputProvider = StateProvider<Output?>((ref) => null);
 
 final isCoinSelectedProvider = Provider.family<bool, String>(
-    (ref, coinId) => ref.watch(coinSelectionStateProvider).contains(coinId));
+  (ref, coinId) => ref.watch(coinSelectionStateProvider).contains(coinId),
+);
 
 //Provider for watching a single [Output] object
 /// @param coinId [Output.getId]
 final outputProvider = Provider.family<Output?, String>((ref, coinId) {
   final selectedAccount = ref.watch(selectedAccountProvider);
   final outputs = ref.watch(outputsProvider(selectedAccount?.id ?? ""));
-  final output =
-      outputs.firstWhereOrNull((element) => element.getId() == coinId);
+  final output = outputs.firstWhereOrNull(
+    (element) => element.getId() == coinId,
+  );
   return output;
 });
 
@@ -139,24 +142,26 @@ final tagProvider = Provider.family<Tag?, String>((ref, name) {
 final tagsProvider = Provider.family<List<Tag>, String>((ref, accountId) {
   final accounts = ref.watch(accountsProvider);
   final sortType = ref.watch(coinTagSortStateProvider);
-  final account =
-      accounts.firstWhereOrNull((element) => element.id == accountId);
+  final account = accounts.firstWhereOrNull(
+    (element) => element.id == accountId,
+  );
   final List<Tag> tags = [];
-  final untagged =
-      Tag(name: S().account_details_untagged_card, utxo: [], untagged: true);
+  final untagged = Tag(
+    name: S().account_details_untagged_card,
+    utxo: [],
+    untagged: true,
+  );
   for (String tag in account?.tags ?? []) {
     List<Output> utxo = [];
     account?.utxo
         .where(
-            (element) => element.tag == tag && element.tag?.isNotEmpty == true)
+      (element) => element.tag == tag && element.tag?.isNotEmpty == true,
+    )
         .forEach((element) {
       utxo.add(element);
     });
     if (tag.isNotEmpty) {
-      tags.add(Tag(
-        name: tag,
-        utxo: utxo,
-      ));
+      tags.add(Tag(name: tag, utxo: utxo));
     }
   }
   for (Output utxo in account?.utxo ?? []) {
@@ -196,15 +201,19 @@ final tagsProvider = Provider.family<List<Tag>, String>((ref, accountId) {
 
 final outputsProvider = Provider.family<List<Output>, String>((ref, accountId) {
   final accounts = ref.watch(accountsProvider);
-  final account =
-      accounts.firstWhereOrNull((element) => element.id == accountId);
+  final account = accounts.firstWhereOrNull(
+    (element) => element.id == accountId,
+  );
   return account?.utxo ?? [];
 });
-final filteredTagsProvider =
-    Provider.family<List<Tag>, String>((ref, accountId) {
+final filteredTagsProvider = Provider.family<List<Tag>, String>((
+  ref,
+  accountId,
+) {
   final accounts = ref.watch(accountsProvider);
-  final account =
-      accounts.firstWhereOrNull((element) => element.id == accountId);
+  final account = accounts.firstWhereOrNull(
+    (element) => element.id == accountId,
+  );
   final List<Tag> tags = [];
   final untagged = Tag(name: "untagged", utxo: [], untagged: true);
   for (String tag in account?.tags ?? []) {
@@ -212,10 +221,7 @@ final filteredTagsProvider =
     account?.utxo.where((element) => element.tag == tag).forEach((element) {
       utxo.add(element);
     });
-    tags.add(Tag(
-      name: tag,
-      utxo: utxo,
-    ));
+    tags.add(Tag(name: tag, utxo: utxo));
   }
   for (Output utxo in account?.utxo ?? []) {
     final exist = tags
@@ -236,8 +242,9 @@ final filteredTagsProvider =
 final coinsProvider = Provider.family<List<Output>, String>((ref, accountId) {
   //Watch for any account changes
   final accounts = ref.watch(accountsProvider);
-  final account =
-      accounts.firstWhereOrNull((element) => element.id == accountId);
+  final account = accounts.firstWhereOrNull(
+    (element) => element.id == accountId,
+  );
   //if account is null, return empty list
   if (account == null) {
     return [];

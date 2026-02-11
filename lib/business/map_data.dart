@@ -90,8 +90,17 @@ class MapData {
           final website = tags['website'];
           final address = _buildAddress(tags);
 
-          final venue = Venue(id, lat, lon, category, name, description,
-              openingHours, website, address);
+          final venue = Venue(
+            id,
+            lat,
+            lon,
+            category,
+            name,
+            description,
+            openingHours,
+            website,
+            address,
+          );
           venues.add(venue); // Add to the venue list
         }
       }
@@ -109,7 +118,7 @@ out geom;
 ''';
 
     try {
-      final response = await HttpTor().get(
+      final response = await HttpTor().getWithRetry(
         overpassUrl,
         body: 'data=$query',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -120,11 +129,16 @@ out geom;
         return jsonData;
       } else {
         throw Exception(
-            'Failed to fetch data. HTTP status: ${response.statusCode}');
+          'Failed to fetch data. HTTP status: ${response.statusCode}',
+        );
       }
     } catch (e, stack) {
-      EnvoyReport()
-          .log("MapData", e.toString(), stackTrace: stack, limitTrace: 15);
+      EnvoyReport().log(
+        "MapData",
+        e.toString(),
+        stackTrace: stack,
+        limitTrace: 15,
+      );
       return null;
     }
   }
@@ -172,8 +186,9 @@ out geom;
       // If there is no saved data or it's older than 7 days
       if (savedJsonData == null ||
           (savedTimestamp != null &&
-              DateTime.now()
-                  .isAfter(savedTimestamp.add(const Duration(days: 7))))) {
+              DateTime.now().isAfter(
+                savedTimestamp.add(const Duration(days: 7)),
+              ))) {
         final newData = await fetchATMData();
         if (newData != null) {
           await saveATMData(newData);
@@ -192,7 +207,10 @@ out geom;
   }
 
   List<Venue> getLocallyVenues(
-      double radius, double longitude, double latitude) {
+    double radius,
+    double longitude,
+    double latitude,
+  ) {
     List<Venue> locallyVenues = [];
 
     for (var venue in venues) {
@@ -207,7 +225,7 @@ out geom;
     return locallyVenues;
   }
 
-// Helper function to build an address string
+  // Helper function to build an address string
   String? _buildAddress(Map<String, dynamic> tags) {
     final String? street = tags["addr:street"];
     final String? houseNo = tags["addr:housenumber"];

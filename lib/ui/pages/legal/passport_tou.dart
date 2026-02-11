@@ -61,7 +61,8 @@ class _TouPageState extends State<TouPage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.medium1),
+                          horizontal: EnvoySpacing.medium1,
+                        ),
                         child: GestureDetector(
                           onTap: () {
                             if (Navigator.canPop(context)) {
@@ -70,13 +71,16 @@ class _TouPageState extends State<TouPage> {
                               context.go(ROUTE_ACCOUNTS_HOME);
                             }
                           },
-                          child: const Icon(Icons.arrow_back_ios_rounded,
-                              size: 20),
+                          child: const Icon(
+                            Icons.arrow_back_ios_rounded,
+                            size: 20,
+                          ),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.xs),
+                          horizontal: EnvoySpacing.xs,
+                        ),
                         child: IconButton(
                           icon: const Icon(Icons.close),
                           onPressed: () {
@@ -116,10 +120,13 @@ class _TouPageState extends State<TouPage> {
               child: OnboardingButton(
                 label: S().envoy_account_tos_cta,
                 onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return const ScvIntroPage();
-                  }));
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const ScvIntroPage();
+                      },
+                    ),
+                  );
                 },
               ),
             ),

@@ -21,8 +21,10 @@ import '../../../components/pop_up.dart';
 import '../../../theme/envoy_icons.dart';
 import '../../../widgets/blur_dialog.dart';
 
-final shouldUpdateProvider =
-    FutureProvider.family<bool, Device>((ref, device) async {
+final shouldUpdateProvider = FutureProvider.family<bool, Device>((
+  ref,
+  device,
+) async {
   final version = Devices().getDeviceFirmwareVersion(device.serial);
   if (version == null) {
     return false;

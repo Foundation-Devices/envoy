@@ -311,12 +311,15 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
       int totalFeeSuggestion =
           feeChooserState.maxFeeRate - feeChooserState.minFeeRate;
       kPrint(
-          "totalFeeSuggestion $totalFeeSuggestion (${feeChooserState.minFeeRate} to ${feeChooserState.maxFeeRate})");
+        "totalFeeSuggestion $totalFeeSuggestion (${feeChooserState.minFeeRate} to ${feeChooserState.maxFeeRate})",
+      );
       if (totalFeeSuggestion <= 1) {
         feeList.add(feeChooserState.minFeeRate);
       } else {
-        feeList = List.generate(totalFeeSuggestion,
-            (index) => (feeChooserState.minFeeRate) + index).reversed.toList();
+        feeList = List.generate(
+          totalFeeSuggestion,
+          (index) => (feeChooserState.minFeeRate) + index,
+        ).reversed.toList();
       }
     });
   }
@@ -400,8 +403,9 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
 
   bool _disableHaptic = false;
   bool _initializationFinished = false;
-  final FixedExtentScrollController _controller =
-      FixedExtentScrollController(initialItem: 2);
+  final FixedExtentScrollController _controller = FixedExtentScrollController(
+    initialItem: 2,
+  );
 
   late List<num> _effectiveFees;
 
@@ -467,10 +471,9 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   }
 
   TextStyle? get _unselectedTextStyle {
-    return Theme.of(context).textTheme.titleSmall?.copyWith(
-          fontSize: 12,
-          color: EnvoyColors.gray600,
-        );
+    return Theme.of(
+      context,
+    ).textTheme.titleSmall?.copyWith(fontSize: 12, color: EnvoyColors.gray600);
   }
 
   TextStyle? get _selectedTextStyle {
@@ -536,7 +539,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                   ),
                   margin: EdgeInsets.only(top: selectedItem == feeRate ? 4 : 0),
                   width: selectedItem == feeRate ? 3 : 2,
-                )
+                ),
               ],
             ),
           ),

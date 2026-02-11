@@ -24,8 +24,9 @@ class SingleImportPpScanPage extends OnboardingPage {
         rightFunction: null,
         text: [
           OnboardingText(
-              header: S().pair_new_device_scan_heading,
-              text: S().pair_new_device_scan_subheading)
+            header: S().pair_new_device_scan_heading,
+            text: S().pair_new_device_scan_subheading,
+          ),
         ],
         buttons: [
           OnboardingButton(

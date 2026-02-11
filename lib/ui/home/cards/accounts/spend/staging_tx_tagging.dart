@@ -20,12 +20,13 @@ class ChooseTagForStagingTx extends ConsumerStatefulWidget {
   final Function onEditTransaction;
   final bool hasMultipleTagsInput;
 
-  const ChooseTagForStagingTx(
-      {super.key,
-      required this.onTagUpdate,
-      required this.accountId,
-      required this.onEditTransaction,
-      this.hasMultipleTagsInput = false});
+  const ChooseTagForStagingTx({
+    super.key,
+    required this.onTagUpdate,
+    required this.accountId,
+    required this.onEditTransaction,
+    this.hasMultipleTagsInput = false,
+  });
 
   @override
   ConsumerState<ChooseTagForStagingTx> createState() =>
@@ -74,11 +75,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
             ),
           ),
           const SizedBox(height: EnvoySpacing.small),
-          Image.asset(
-            "assets/exclamation_icon.png",
-            height: 68,
-            width: 68,
-          ),
+          Image.asset("assets/exclamation_icon.png", height: 68, width: 68),
           const SizedBox(height: EnvoySpacing.medium1),
           Text(
             S().change_output_from_multiple_tags_modal_heading,
@@ -97,7 +94,7 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
               );
             },
             child: !showTagForm ? _tagSubtitle(context) : _tagWidget(context),
-          )
+          ),
         ],
       ),
     );
@@ -134,23 +131,19 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
         secondRowContent =
             secondRowContent.where((element) => element.isNotEmpty).toList();
 
-        List<Widget> firsRowWidget = firstRowContent.map(
-          (e) {
-            return tagItem(context, e, () {
-              _tagController.text = e;
-              setState(() {});
-            });
-          },
-        ).toList();
+        List<Widget> firsRowWidget = firstRowContent.map((e) {
+          return tagItem(context, e, () {
+            _tagController.text = e;
+            setState(() {});
+          });
+        }).toList();
 
-        List<Widget> secondRowWidget = secondRowContent.map(
-          (e) {
-            return tagItem(context, e, () {
-              _tagController.text = e;
-              setState(() {});
-            });
-          },
-        ).toList();
+        List<Widget> secondRowWidget = secondRowContent.map((e) {
+          return tagItem(context, e, () {
+            _tagController.text = e;
+            setState(() {});
+          });
+        }).toList();
 
         return Column(
           mainAxisSize: MainAxisSize.max,
@@ -159,75 +152,86 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
           children: [
             Container(
               decoration: BoxDecoration(
-                  color: EnvoyColors.surface4,
-                  borderRadius: BorderRadius.circular(8)),
+                color: EnvoyColors.surface4,
+                borderRadius: BorderRadius.circular(8),
+              ),
               child: TextFormField(
-                  maxLength: 30,
-                  style: const TextStyle(
-                      fontSize: 14,
-                      overflow: TextOverflow.fade,
-                      fontWeight: FontWeight.w500),
-                  onChanged: (value) {
-                    setState(() {
-                      value = value;
-                    });
-                  },
-                  controller: _tagController,
-                  textAlign: TextAlign.center,
-                  decoration: const InputDecoration(
-                    // Disable the borders
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    isDense: true,
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-                  )),
+                maxLength: 30,
+                style: const TextStyle(
+                  fontSize: 14,
+                  overflow: TextOverflow.fade,
+                  fontWeight: FontWeight.w500,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    value = value;
+                  });
+                },
+                controller: _tagController,
+                textAlign: TextAlign.center,
+                decoration: const InputDecoration(
+                  // Disable the borders
+                  border: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 16.0,
+                    horizontal: 16.0,
+                  ),
+                ),
+              ),
             ),
             const Padding(padding: EdgeInsets.all(8)),
             tags.isNotEmpty
                 ? const Text("Most Used")
                 : const Text("Suggestions"), // TODO: FIGMA
             Container(
-              margin:
-                  const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
+              margin: const EdgeInsets.symmetric(
+                vertical: EnvoySpacing.medium1,
+              ),
               constraints: const BoxConstraints(maxHeight: 64),
               child: Column(
                 children: [
                   Flexible(
-                      child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [...firsRowWidget],
-                  )),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [...firsRowWidget],
+                    ),
+                  ),
                   const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   Flexible(
-                      child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [...secondRowWidget],
-                  )),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [...secondRowWidget],
+                    ),
+                  ),
                 ],
               ),
             ),
-            EnvoyButton(S().component_continue,
-                enabled: _tagController.text.isNotEmpty,
-                textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: _tagController.text.isNotEmpty
-                          ? Colors.white
-                          : EnvoyColors.textTertiary,
-                    ),
-                type: _tagController.text.isNotEmpty
-                    ? EnvoyButtonTypes.primaryModal
-                    : EnvoyButtonTypes.tertiary, onTap: () async {
-              ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
-                  _tagController.text.isNotEmpty ? _tagController.text : null;
-              widget.onTagUpdate();
-            }),
+            EnvoyButton(
+              S().component_continue,
+              enabled: _tagController.text.isNotEmpty,
+              textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: _tagController.text.isNotEmpty
+                        ? Colors.white
+                        : EnvoyColors.textTertiary,
+                  ),
+              type: _tagController.text.isNotEmpty
+                  ? EnvoyButtonTypes.primaryModal
+                  : EnvoyButtonTypes.tertiary,
+              onTap: () async {
+                ref.read(stagingTxChangeOutPutTagProvider.notifier).state =
+                    _tagController.text.isNotEmpty ? _tagController.text : null;
+                widget.onTagUpdate();
+              },
+            ),
           ],
         );
       },
@@ -254,26 +258,33 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              EnvoyButton(S().replaceByFee_boost_reviewCoinSelection,
-                  enabled: true,
-                  type: EnvoyButtonTypes.tertiary, onTap: () async {
-                widget.onEditTransaction();
-              }),
+              EnvoyButton(
+                S().replaceByFee_boost_reviewCoinSelection,
+                enabled: true,
+                type: EnvoyButtonTypes.tertiary,
+                onTap: () async {
+                  widget.onEditTransaction();
+                },
+              ),
               const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-              EnvoyButton(S().component_continue,
-                  enabled: true,
-                  borderRadius: BorderRadius.circular(6),
-                  textStyle: EnvoyTypography.button.copyWith(
-                      color: EnvoyColors.solidWhite,
-                      fontWeight: FontWeight.w500),
-                  type: EnvoyButtonTypes.primaryModal, onTap: () async {
-                setState(() {
-                  showTagForm = !showTagForm;
-                });
-              }),
+              EnvoyButton(
+                S().component_continue,
+                enabled: true,
+                borderRadius: BorderRadius.circular(6),
+                textStyle: EnvoyTypography.button.copyWith(
+                  color: EnvoyColors.solidWhite,
+                  fontWeight: FontWeight.w500,
+                ),
+                type: EnvoyButtonTypes.primaryModal,
+                onTap: () async {
+                  setState(() {
+                    showTagForm = !showTagForm;
+                  });
+                },
+              ),
               const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
             ],
-          )
+          ),
         ],
       ),
     );

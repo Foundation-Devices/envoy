@@ -136,99 +136,103 @@ class _OnboardPassportWelcomeScreenState
         ),
       ),
       shield: Padding(
-          padding: const EdgeInsets.only(
-            right: EnvoySpacing.medium1,
-            left: EnvoySpacing.medium1,
-            top: EnvoySpacing.medium1,
-          ),
-          child: Column(
-            children: [
-              const SizedBox(height: EnvoySpacing.medium1),
-              Flexible(
-                child: Container(
-                  constraints: const BoxConstraints(
-                    minHeight: 300,
-                  ),
-                  child: SingleChildScrollView(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.large1,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: EnvoySpacing.medium1),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text(
-                                      S().passport_welcome_screen_heading,
-                                      textAlign: TextAlign.center,
-                                      style: EnvoyTypography.body.copyWith(
-                                        fontSize: 20,
-                                        color: EnvoyColors.gray1000,
-                                        decoration: TextDecoration.none,
-                                      ),
-                                    ),
-                                    const SizedBox(height: EnvoySpacing.small),
-                                    Text(
-                                      S().passport_welcome_screen_subheading,
-                                      style: EnvoyTypography.info.copyWith(
-                                        color: EnvoyColors.inactiveDark,
-                                        decoration: TextDecoration.none,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
+        padding: const EdgeInsets.only(
+          right: EnvoySpacing.medium1,
+          left: EnvoySpacing.medium1,
+          top: EnvoySpacing.medium1,
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: EnvoySpacing.medium1),
+            Flexible(
+              child: Container(
+                constraints: const BoxConstraints(minHeight: 300),
+                child: SingleChildScrollView(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.large1,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: EnvoySpacing.medium1,
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    S().passport_welcome_screen_heading,
+                                    textAlign: TextAlign.center,
+                                    style: EnvoyTypography.body.copyWith(
+                                      fontSize: 20,
+                                      color: EnvoyColors.gray1000,
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
+                                  const SizedBox(height: EnvoySpacing.small),
+                                  Text(
+                                    S().passport_welcome_screen_subheading,
+                                    style: EnvoyTypography.info.copyWith(
+                                      color: EnvoyColors.inactiveDark,
+                                      decoration: TextDecoration.none,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-              LinkText(
-                text: S().passport_welcome_screen_cta3,
-                textStyle: EnvoyTypography.button.copyWith(
-                  color: EnvoyColors.inactiveDark,
-                ),
-                linkStyle: EnvoyTypography.button
-                    .copyWith(color: EnvoyColors.accentPrimary),
-                onTap: () {
-                  launchUrl(Uri.parse("https://foundation.xyz/passport"));
-                },
+            ),
+            LinkText(
+              text: S().passport_welcome_screen_cta3,
+              textStyle: EnvoyTypography.button.copyWith(
+                color: EnvoyColors.inactiveDark,
               ),
-              const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton(
-                S().passport_welcome_screen_cta2,
-                type: EnvoyButtonTypes.secondary,
-                onTap: () {
-                  context.pushNamed(ONBOARD_PASSPORT_EXISTING);
-                },
+              linkStyle: EnvoyTypography.button.copyWith(
+                color: EnvoyColors.accentPrimary,
               ),
-              const SizedBox(height: EnvoySpacing.medium1),
-              EnvoyButton(
-                S().passport_welcome_screen_cta1,
-                onTap: () async {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return const TouPage();
-                  }));
-                },
-              ),
-              const SizedBox(height: EnvoySpacing.small),
-            ],
-          )),
+              onTap: () {
+                launchUrl(Uri.parse("https://foundation.xyz/passport"));
+              },
+            ),
+            const SizedBox(height: EnvoySpacing.medium1),
+            EnvoyButton(
+              S().passport_welcome_screen_cta2,
+              type: EnvoyButtonTypes.secondary,
+              onTap: () {
+                context.pushNamed(ONBOARD_PASSPORT_EXISTING);
+              },
+            ),
+            const SizedBox(height: EnvoySpacing.medium1),
+            EnvoyButton(
+              S().passport_welcome_screen_cta1,
+              onTap: () async {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const TouPage();
+                    },
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: EnvoySpacing.small),
+          ],
+        ),
+      ),
     );
   }
 }

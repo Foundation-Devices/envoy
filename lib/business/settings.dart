@@ -82,8 +82,9 @@ class Settings extends ChangeNotifier {
     "mocmguuik7rws4bclpcoz2ldfzesjolatrzggaxfl37hjpreap777yqd.onion:50001",
     "l7wsl4yghqvdgp4ullod67ydb54ttxs3nnvctblbofl7umw6j72e5did.onion:50001",
   ];
-  static String currentDefaultTorServer =
-      selectRandomServerFrom(defaultTorServers);
+  static String currentDefaultTorServer = selectRandomServerFrom(
+    defaultTorServers,
+  );
 
   static String selectRandomServerFrom(List<String> servers) {
     return servers[Random().nextInt(servers.length)];
@@ -356,8 +357,9 @@ class Settings extends ChangeNotifier {
     if (showSignetAccounts &&
         NgAccountManager().hotAccountsExist() &&
         !NgAccountManager().hotSignetAccountExist()) {
-      await EnvoySeed()
-          .deriveAndAddWalletsFromCurrentSeed(network: Network.signet);
+      await EnvoySeed().deriveAndAddWalletsFromCurrentSeed(
+        network: Network.signet,
+      );
     }
 
     notifyListeners();
@@ -435,7 +437,7 @@ class Settings extends ChangeNotifier {
           PublicServer.blockstream.address == currentNode;
       final isFoundationNodes = [
             ...getDefaultFulcrumServers(),
-            getDefaultFulcrumServers(ssl: true)
+            getDefaultFulcrumServers(ssl: true),
           ].contains(currentNode) ||
           currentNode == mainnetOnionElectrumServer;
 
@@ -463,15 +465,16 @@ class Settings extends ChangeNotifier {
   }
 
   static String getFiatFromLocale() {
-    String? currencyCode =
-        NumberFormat.simpleCurrency(locale: Intl.getCurrentLocale())
-            .currencyName;
+    String? currencyCode = NumberFormat.simpleCurrency(
+      locale: Intl.getCurrentLocale(),
+    ).currencyName;
     if (currencyCode == null) {
       return "USD";
     }
 
     if (ExchangeRate().supportedFiat.contains(
-        FiatCurrency(code: currencyCode, title: "", flag: "", symbol: ""))) {
+          FiatCurrency(code: currencyCode, title: "", flag: "", symbol: ""),
+        )) {
       return currencyCode;
     }
 
@@ -493,8 +496,9 @@ class Settings extends ChangeNotifier {
           selected != null &&
           !allowedDefaults.contains(selected);
       if (shouldFixDefault) {
-        json["selectedElectrumAddress"] =
-            selectRandomServerFrom(getDefaultFulcrumServers(ssl: true));
+        json["selectedElectrumAddress"] = selectRandomServerFrom(
+          getDefaultFulcrumServers(ssl: true),
+        );
         json["usingDefaultElectrumServer"] = true;
       }
 
@@ -519,7 +523,7 @@ class Settings extends ChangeNotifier {
     await ls.prefs.setString(SETTINGS_PREFS, json);
   }
 
-// Generated
+  // Generated
   factory Settings.fromJson(Map<String, dynamic> json) =>
       _$SettingsFromJson(json);
 

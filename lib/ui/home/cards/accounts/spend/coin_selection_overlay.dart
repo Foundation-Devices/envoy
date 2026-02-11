@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -19,7 +18,6 @@ import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
 import 'package:envoy/ui/routes/routes.dart';
-import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -62,33 +60,36 @@ class CoinSelectionOverlayState extends ConsumerState<CoinSelectionOverlay> {
   Widget build(BuildContext context) {
     ///shows/hide spend overlay for account detail page, overlay is only needed within account detail page..
     /// any other navigation should hide the overlay (except coin tag screens)
-    ref.listen(
-      routePathProvider,
-      (previous, nextPath) {
-        ///shows/hide spend overlay for account detail page, ovelay is only needed within account detail page..
-        /// any other navigation should hide the overlay (except coin tag screens)
-        if (nextPath == ROUTE_ACCOUNT_DETAIL) {
-          if (ref.read(showSpendRequirementOverlayProvider) ||
-              ref.read(coinSelectionStateProvider).isNotEmpty) {
-            final account = ref.read(selectedAccountProvider);
-            if (account != null) show(SpendOverlayContext.preselectCoins);
-          } else {
-            if (ref.read(spendEditModeProvider) != SpendOverlayContext.hidden) {
-              hideCoinSnack(ref);
-            }
+    ref.listen(routePathProvider, (previous, nextPath) {
+      ///shows/hide spend overlay for account detail page, ovelay is only needed within account detail page..
+      /// any other navigation should hide the overlay (except coin tag screens)
+      if (nextPath == ROUTE_ACCOUNT_DETAIL) {
+        if (ref.read(showSpendRequirementOverlayProvider) ||
+            ref.read(coinSelectionStateProvider).isNotEmpty) {
+          final account = ref.read(selectedAccountProvider);
+          if (account != null) show(SpendOverlayContext.preselectCoins);
+        } else {
+          if (ref.read(spendEditModeProvider) != SpendOverlayContext.hidden) {
+            hideCoinSnack(ref);
           }
         }
-      },
-    );
+      }
+    });
 
     ///show spend overlay for account detail page
     ref.listen(showSpendRequirementOverlayProvider, (previous, next) {
       if (next) {
         if (ref.read(spendEditModeProvider) ==
-            SpendOverlayContext.preselectCoins) {
+            SpendOverlayContext.rbfSelection) {
+        } else {
+          final requiredAmount = ref.watch(spendAmountProvider);
           final account = ref.read(selectedAccountProvider);
           if (account != null) {
-            show(SpendOverlayContext.preselectCoins);
+            show(
+              requiredAmount != 0
+                  ? SpendOverlayContext.editCoins
+                  : SpendOverlayContext.preselectCoins,
+            );
           }
         }
       } else {
@@ -109,11 +110,12 @@ class CoinSelectionOverlayState extends ConsumerState<CoinSelectionOverlay> {
     final account = ref.read(selectedAccountProvider);
     if (account == null || overlayEntry != null) return;
     overlayEntry = OverlayEntry(
-        builder: (context) {
-          return SpendRequirementOverlay(account: account);
-        },
-        maintainState: true,
-        opaque: false);
+      builder: (context) {
+        return SpendRequirementOverlay(account: account);
+      },
+      maintainState: true,
+      opaque: false,
+    );
     if (context.mounted) {
       Overlay.of(context, rootOverlay: true).insert(overlayEntry!);
     }
@@ -136,10 +138,10 @@ class SpendRequirementOverlayState
   final Alignment _endAlignment = const Alignment(0.0, 1.01);
 
   ///overlay is minimized
-  final Alignment _minimizedAlignment = const Alignment(0.0, 1.7);
+  final Alignment _minimizedAlignment = const Alignment(0.0, 1.3);
 
   ///hidden from the viewport
-  final Alignment _startAlignment = const Alignment(0.0, 2.99);
+  final Alignment _startAlignment = const Alignment(0.0, 1.99);
 
   late Alignment _dragAlignment = _startAlignment;
 
@@ -156,10 +158,8 @@ class SpendRequirementOverlayState
       vsync: this,
       reverseDuration: const Duration(milliseconds: 300),
     );
-    _appearAnimation = AlignmentTween(
-      begin: _dragAlignment,
-      end: _endAlignment,
-    ).animate(
+    _appearAnimation =
+        AlignmentTween(begin: _dragAlignment, end: _endAlignment).animate(
       CurvedAnimation(
         parent: _animationController!,
         curve: EnvoyEasing.easeInOut,
@@ -172,21 +172,23 @@ class SpendRequirementOverlayState
     });
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _animationController?.animateTo(1,
-          duration: const Duration(milliseconds: 250),
-          curve: EnvoyEasing.easeInOut);
+      _animationController?.animateTo(
+        1,
+        duration: const Duration(milliseconds: 250),
+        curve: EnvoyEasing.easeInOut,
+      );
     });
   }
 
   /// run physics simulation to animate overlay,
   /// parameter alignment will be used as end state of the animation
   TickerFuture _runSpringSimulation(
-      Offset pixelsPerSecond, Alignment alignment, Size size) {
+    Offset pixelsPerSecond,
+    Alignment alignment,
+    Size size,
+  ) {
     _appearAnimation = _animationController!.drive(
-      AlignmentTween(
-        begin: _dragAlignment,
-        end: alignment,
-      ),
+      AlignmentTween(begin: _dragAlignment, end: alignment),
     );
     final unitsPerSecondX = pixelsPerSecond.dx / size.width;
     final unitsPerSecondY = pixelsPerSecond.dy / size.height;
@@ -194,7 +196,10 @@ class SpendRequirementOverlayState
     final unitVelocity = unitsPerSecond.distance;
 
     SpringDescription spring = SpringDescription.withDampingRatio(
-        mass: 1, stiffness: 330, ratio: 0.700);
+      mass: 1,
+      stiffness: 330,
+      ratio: 0.700,
+    );
 
     final simulation = SpringSimulation(spring, 0, 1, -unitVelocity);
 
@@ -223,8 +228,9 @@ class SpendRequirementOverlayState
     final size = MediaQuery.of(context).size;
 
     if (_isInMinimizedState) {
-      _runSpringSimulation(const Offset(0, 0), _startAlignment, size)
-          .then((value) {
+      _runSpringSimulation(const Offset(0, 0), _startAlignment, size).then((
+        value,
+      ) {
         ref.read(hideBottomNavProvider.notifier).state = false;
         _removeOverlay();
       });
@@ -239,8 +245,9 @@ class SpendRequirementOverlayState
   @override
   Widget build(BuildContext context) {
     final selectedChangeOutput = ref.watch(rbfChangeOutputProvider);
-    int totalSelectedAmount =
-        ref.watch(getTotalSelectedAmount(widget.account.id));
+    int totalSelectedAmount = ref.watch(
+      getTotalSelectedAmount(widget.account.id),
+    );
     final size = MediaQuery.of(context).size;
 
     ref.listen(spendEditModeProvider, (previous, next) {
@@ -277,9 +284,6 @@ class SpendRequirementOverlayState
     //hide when dialog is shown, we dont want to remove overlay from the widget tree
     //if the user chose to stay in the coin selection screen and we need to show the overlay again
 
-    var scanInProgress =
-        SyncManager().isAccountFullScanInProgress(widget.account);
-
     return BackButtonListener(
       onBackButtonPressed: () async {
         if (inTagSelectionMode && !ref.read(coinDetailsActiveProvider)) {
@@ -307,10 +311,7 @@ class SpendRequirementOverlayState
           onPanUpdate: (details) {
             setState(() {
               Alignment update = _dragAlignment;
-              update += Alignment(
-                0,
-                details.delta.dy / (size.height / 2),
-              );
+              update += Alignment(0, details.delta.dy / (size.height / 2));
               if (update.y >= _endAlignment.y) {
                 _dragAlignment = update;
               }
@@ -323,7 +324,10 @@ class SpendRequirementOverlayState
             double currentY = _dragAlignment.y;
             if (currentY < 1.5) {
               _runSpringSimulation(
-                  details.velocity.pixelsPerSecond, _endAlignment, size);
+                details.velocity.pixelsPerSecond,
+                _endAlignment,
+                size,
+              );
             }
             final unitsPerSecondX =
                 details.velocity.pixelsPerSecond.dx / size.width;
@@ -334,14 +338,20 @@ class SpendRequirementOverlayState
 
             if (unitVelocity >= 1.8) {
               _runSpringSimulation(
-                  details.velocity.pixelsPerSecond, _endAlignment, size);
+                details.velocity.pixelsPerSecond,
+                _endAlignment,
+                size,
+              );
             }
             //threshold to show dismiss dialog
             if (currentY >= 1.2) {
               _isInMinimizedState = true;
               ref.read(coinSelectionOverlayMinimized.notifier).state = true;
               _runSpringSimulation(
-                  details.velocity.pixelsPerSecond, _minimizedAlignment, size);
+                details.velocity.pixelsPerSecond,
+                _minimizedAlignment,
+                size,
+              );
             }
           },
           onTap: () {
@@ -353,7 +363,10 @@ class SpendRequirementOverlayState
               _isInMinimizedState = true;
               ref.read(coinSelectionOverlayMinimized.notifier).state = true;
               _runSpringSimulation(
-                  const Offset(0, 0), _minimizedAlignment, size);
+                const Offset(0, 0),
+                _minimizedAlignment,
+                size,
+              );
             }
           },
           child: Align(
@@ -361,131 +374,147 @@ class SpendRequirementOverlayState
             child: Transform.scale(
               scale: 1.0,
               child: SizedBox(
-                  height: 370,
-                  width: MediaQuery.of(context).size.width,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.applyOpacity(0.2),
-                          spreadRadius: 0,
-                          blurRadius: 10,
-                          offset:
-                              const Offset(0, 0), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Card(
-                      elevation: 100,
-                      shadowColor: Colors.black,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(EnvoySpacing.medium1),
-                        ),
+                height: 245,
+                width: MediaQuery.of(context).size.width,
+                child: Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.applyOpacity(0.2),
+                        spreadRadius: 0,
+                        blurRadius: 10,
+                        offset: const Offset(
+                          0,
+                          0,
+                        ), // changes position of shadow
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          //Handle
-                          Container(
-                              width: 40,
-                              height: 4,
-                              margin: const EdgeInsets.only(
-                                top: EnvoySpacing.medium1,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(2),
-                              )),
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: EnvoySpacing.small,
-                                    vertical: EnvoySpacing.medium3,
-                                  ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: EnvoySpacing.xs)),
-                                      showRequiredAmount
-                                          ? Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal:
-                                                          EnvoySpacing.small),
-                                              child: Row(
-                                                children: [
-                                                  Text(S()
-                                                      .coincontrol_edit_transaction_requiredAmount),
-                                                  const Spacer(),
-                                                  EnvoyAmount(
-                                                      amountSats:
-                                                          requiredAmount,
-                                                      amountWidgetStyle:
-                                                          AmountWidgetStyle
-                                                              .sendScreen,
-                                                      account: widget.account)
-                                                ],
-                                              ),
-                                            )
-                                          : const SizedBox(),
-                                      const Padding(
-                                          padding:
-                                              EdgeInsets.all(EnvoySpacing.xs)),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: EnvoySpacing.small),
-                                        child: Builder(builder: (_) {
+                    ],
+                  ),
+                  child: Card(
+                    elevation: 100,
+                    shadowColor: Colors.black,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(EnvoySpacing.medium1),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        //Handle
+                        Container(
+                          width: 40,
+                          height: 4,
+                          margin: const EdgeInsets.only(
+                            top: EnvoySpacing.xs,
+                            bottom: EnvoySpacing.small,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: EnvoySpacing.small,
+                                  vertical: EnvoySpacing.small,
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: EnvoySpacing.xs,
+                                      ),
+                                    ),
+                                    showRequiredAmount
+                                        ? Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: EnvoySpacing.small,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  S().coincontrol_edit_transaction_requiredAmount,
+                                                ),
+                                                const Spacer(),
+                                                EnvoyAmount(
+                                                  amountSats: requiredAmount,
+                                                  amountWidgetStyle:
+                                                      AmountWidgetStyle
+                                                          .sendScreen,
+                                                  account: widget.account,
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : const SizedBox(),
+                                    const Padding(
+                                      padding: EdgeInsets.all(EnvoySpacing.xs),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: EnvoySpacing.small,
+                                      ),
+                                      child: Builder(
+                                        builder: (_) {
                                           List<Widget> sheetOptions = [];
                                           if (inTagSelectionMode) {
-                                            sheetOptions.add(GestureDetector(
-                                              onTap: () {
-                                                cancel(context);
-                                              },
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(4.0),
-                                                child: Container(
-                                                  height: 20,
-                                                  width: 20,
-                                                  margin: const EdgeInsets.only(
-                                                      right: EnvoySpacing.xs),
-                                                  decoration: BoxDecoration(
-                                                    color: EnvoyColors.surface2,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            EnvoySpacing
-                                                                .medium1),
+                                            sheetOptions.add(
+                                              GestureDetector(
+                                                onTap: () {
+                                                  cancel(context);
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                    4.0,
                                                   ),
-                                                  child: const Icon(Icons.close,
-                                                      size: 14),
+                                                  child: Container(
+                                                    height: 20,
+                                                    width: 20,
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                      right: EnvoySpacing.xs,
+                                                    ),
+                                                    decoration: BoxDecoration(
+                                                      color:
+                                                          EnvoyColors.surface2,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                        EnvoySpacing.medium1,
+                                                      ),
+                                                    ),
+                                                    child: const Icon(
+                                                      Icons.close,
+                                                      size: 14,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                            ));
+                                            );
                                           }
 
                                           sheetOptions.addAll([
                                             Text(
                                               S().coincontrol_edit_transaction_selectedAmount,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleSmall,
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.titleSmall,
                                             ),
                                             const Spacer(),
                                             EnvoyAmount(
-                                                amountSats: totalSelectedAmount,
-                                                amountWidgetStyle:
-                                                    AmountWidgetStyle
-                                                        .sendScreen,
-                                                account: widget.account)
+                                              amountSats: totalSelectedAmount,
+                                              amountWidgetStyle:
+                                                  AmountWidgetStyle.sendScreen,
+                                              account: widget.account,
+                                            ),
                                           ]);
                                           return Row(
                                             mainAxisSize: MainAxisSize.max,
@@ -493,84 +522,64 @@ class SpendRequirementOverlayState
                                                 CrossAxisAlignment.center,
                                             children: sheetOptions,
                                           );
-                                        }),
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              AnimatedOpacity(
+                                duration: const Duration(milliseconds: 200),
+                                opacity: _isInMinimizedState ? 0 : 1,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: EnvoySpacing.small,
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      EnvoyButton(
+                                        enabled: valid,
+                                        type: EnvoyButtonTypes.primaryModal,
+                                        inTagSelectionMode
+                                            ? S().tagged_tagDetails_sheet_cta1
+                                            : S().component_continue,
+                                        onTap: () =>
+                                            onPrimaryButtonTap(context),
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.all(
+                                          EnvoySpacing.xs,
+                                        ),
+                                      ),
+                                      inTagSelectionMode
+                                          ? coinSelectionButton(
+                                              valid: valid,
+                                              inTagSelectionMode:
+                                                  inTagSelectionMode,
+                                            )
+                                          : transactionEditButton(context),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(
+                                                context,
+                                              ).padding.bottom +
+                                              EnvoySpacing.medium3,
+                                        ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                AnimatedOpacity(
-                                  duration: const Duration(milliseconds: 200),
-                                  opacity: _isInMinimizedState ? 0 : 1,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: EnvoySpacing.medium1,
-                                    ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        inTagSelectionMode
-                                            ? coinSelectionButton(
-                                                valid: valid,
-                                                inTagSelectionMode:
-                                                    inTagSelectionMode)
-                                            : transactionEditButton(context),
-                                        const SizedBox(
-                                            height: EnvoySpacing.medium1),
-                                        EnvoyButton(
-                                            enabled: valid &&
-                                                !scanInProgress &&
-                                                ref.watch(
-                                                        accountsCountByNetworkProvider(
-                                                            widget.account
-                                                                .network)) >=
-                                                    2 &&
-                                                !(spendEditMode ==
-                                                    SpendOverlayContext
-                                                        .editCoins),
-                                            leading: EnvoyIcon(
-                                                EnvoyIcons.transfer,
-                                                color:
-                                                    EnvoyColors.textSecondary),
-                                            type: EnvoyButtonTypes.secondary,
-                                            S()
-                                                .tagged_tagDetails_sheet_transferSelected,
-                                            onTap: () => onPrimaryButtonTap(
-                                                context,
-                                                ROUTE_ACCOUNT_TRANSFER)),
-                                        const SizedBox(
-                                            height: EnvoySpacing.medium1),
-                                        EnvoyButton(
-                                          enabled: valid && !scanInProgress,
-                                          leading: EnvoyIcon(
-                                              EnvoyIcons.arrow_up_right,
-                                              color: EnvoyColors
-                                                  .textPrimaryInverse),
-                                          type: EnvoyButtonTypes.primaryModal,
-                                          inTagSelectionMode
-                                              ? S().tagged_tagDetails_sheet_cta1
-                                              : S().component_continue,
-                                          onTap: () => onPrimaryButtonTap(
-                                              context, ROUTE_ACCOUNT_SEND),
-                                        ),
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                bottom: MediaQuery.of(context)
-                                                        .padding
-                                                        .bottom +
-                                                    EnvoySpacing.medium3))
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  )),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -580,8 +589,10 @@ class SpendRequirementOverlayState
 
   bool dialogOpen = false;
 
-  Widget coinSelectionButton(
-      {required bool inTagSelectionMode, required bool valid}) {
+  Widget coinSelectionButton({
+    required bool inTagSelectionMode,
+    required bool valid,
+  }) {
     EnvoyAccount? selectedAccount = ref.read(selectedAccountProvider);
     Set<String> selection = ref.watch(coinSelectionStateProvider);
     String buttonText = S().component_cancel;
@@ -606,11 +617,9 @@ class SpendRequirementOverlayState
           ? S().tagged_tagDetails_sheet_cta2
           : S().tagged_tagDetails_sheet_retag_cta2;
     }
-
     return EnvoyButton(
       enabled: valid,
       type: EnvoyButtonTypes.secondary,
-      leading: EnvoyIcon(EnvoyIcons.tag, color: EnvoyColors.textSecondary),
       buttonText,
       onTap: () async {
         if (dialogOpen) return; // Prevent opening multiple dialogs
@@ -622,8 +631,9 @@ class SpendRequirementOverlayState
         if (selectedAccount == null) {
           return;
         }
-        bool dismissed = await EnvoyStorage()
-            .checkPromptDismissed(DismissiblePrompt.createCoinTagWarning);
+        bool dismissed = await EnvoyStorage().checkPromptDismissed(
+          DismissiblePrompt.createCoinTagWarning,
+        );
         setState(() {
           _hideOverlay = true;
         });
@@ -667,40 +677,45 @@ class SpendRequirementOverlayState
             },
             builder: Builder(
               builder: (context) {
-                return CreateCoinTagWarning(onContinue: () async {
-                  Navigator.pop(context); // Close warning dialog
-                  await showEnvoyDialog(
-                    context: context,
-                    useRootNavigator: true,
-                    onDispose: () {
-                      if (mounted) {
-                        setState(() {
-                          dialogOpen = false;
-                        });
-                      }
-                    },
-                    builder: Builder(
-                      builder: (context) => CreateCoinTag(
-                        accountId: selectedAccount.id,
-                        coins: selectedOutputs,
-                        onTagUpdate: (context) async {
-                          Haptics.lightImpact();
-                          ProviderScope.containerOf(context)
-                              .read(coinSelectionStateProvider.notifier)
-                              .reset();
-                          NavigatorState navigator =
-                              Navigator.of(context, rootNavigator: true);
-                          await Future.delayed(
-                              const Duration(milliseconds: 100));
-                          navigator.popUntil((route) {
-                            return route.settings is MaterialPage;
+                return CreateCoinTagWarning(
+                  onContinue: () async {
+                    Navigator.pop(context); // Close warning dialog
+                    await showEnvoyDialog(
+                      context: context,
+                      useRootNavigator: true,
+                      onDispose: () {
+                        if (mounted) {
+                          setState(() {
+                            dialogOpen = false;
                           });
-                        },
+                        }
+                      },
+                      builder: Builder(
+                        builder: (context) => CreateCoinTag(
+                          accountId: selectedAccount.id,
+                          coins: selectedOutputs,
+                          onTagUpdate: (context) async {
+                            Haptics.lightImpact();
+                            ProviderScope.containerOf(
+                              context,
+                            ).read(coinSelectionStateProvider.notifier).reset();
+                            NavigatorState navigator = Navigator.of(
+                              context,
+                              rootNavigator: true,
+                            );
+                            await Future.delayed(
+                              const Duration(milliseconds: 100),
+                            );
+                            navigator.popUntil((route) {
+                              return route.settings is MaterialPage;
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                    alignment: const Alignment(0.0, -.6),
-                  );
-                });
+                      alignment: const Alignment(0.0, -.6),
+                    );
+                  },
+                );
               },
             ),
             alignment: const Alignment(0.0, -.6),
@@ -711,7 +726,7 @@ class SpendRequirementOverlayState
     );
   }
 
-  Future<void> onPrimaryButtonTap(BuildContext context, String path) async {
+  Future<void> onPrimaryButtonTap(BuildContext context) async {
     final scope = ProviderScope.containerOf(context);
     final navigator = Navigator.of(context);
     final mode = ref.read(spendEditModeProvider);
@@ -720,8 +735,9 @@ class SpendRequirementOverlayState
     Set<String> coinSelection = ref.read(coinSelectionStateProvider);
     Set coinSelectionDiff1 = walletSelection.difference(coinSelection);
     Set coinSelectionDiff2 = coinSelection.difference(walletSelection);
-    Set coinSelectionDiff = coinSelectionDiff1
-        .union(coinSelectionDiff2); // all the diff (excluding all duplicates)
+    Set coinSelectionDiff = coinSelectionDiff1.union(
+      coinSelectionDiff2,
+    ); // all the diff (excluding all duplicates)
 
     if (mode == SpendOverlayContext.editCoins) {
       if (ref.read(coinDetailsActiveProvider)) {
@@ -734,8 +750,9 @@ class SpendRequirementOverlayState
       ///if the user changed the selection, validate the transaction
       if (coinSelectionDiff.isNotEmpty) {
         ///reset fees if coin selection changed
-        ref.read(spendFeeRateProvider.notifier).state =
-            Fees().slowRate(account!.network);
+        ref.read(spendFeeRateProvider.notifier).state = Fees().slowRate(
+          account!.network,
+        );
         ref.read(spendTransactionProvider.notifier).validate(scope);
       }
 
@@ -763,14 +780,7 @@ class SpendRequirementOverlayState
           SpendOverlayContext.hidden;
       ref.read(hideBottomNavProvider.notifier).state = false;
       _dismiss();
-
-      if (path == ROUTE_ACCOUNT_TRANSFER) {
-        if (context.mounted) {
-          mainRouter.go(ROUTE_ACCOUNT_TRANSFER, extra: account?.id);
-        }
-      } else {
-        mainRouter.go(ROUTE_ACCOUNT_SEND);
-      }
+      mainRouter.go(ROUTE_ACCOUNT_SEND);
       return;
     }
   }
@@ -784,7 +794,8 @@ class SpendRequirementOverlayState
         Set coinSelectionDiff1 = walletSelection.difference(coinSelection);
         Set coinSelectionDiff2 = coinSelection.difference(walletSelection);
         Set diff = coinSelectionDiff1.union(
-            coinSelectionDiff2); // all the diff (excluding all duplicates)
+          coinSelectionDiff2,
+        ); // all the diff (excluding all duplicates)
         bool selectionChanged = diff.isNotEmpty;
         return EnvoyButton(
           selectionChanged
@@ -828,8 +839,9 @@ class SpendRequirementOverlayState
     /// if the user is in utxo details screen we need to wait animations to finish
     /// before we can pop back to home screen
     ProviderContainer container = ProviderScope.containerOf(context);
-    if (await EnvoyStorage()
-        .checkPromptDismissed(DismissiblePrompt.txDiscardWarning)) {
+    if (await EnvoyStorage().checkPromptDismissed(
+      DismissiblePrompt.txDiscardWarning,
+    )) {
       ref.read(coinSelectionStateProvider.notifier).reset();
       ref.read(spendEditModeProvider.notifier).state =
           SpendOverlayContext.hidden;
@@ -841,13 +853,14 @@ class SpendRequirementOverlayState
     if (context.mounted) {
       _isDialogShown = true;
       bool discard = await showEnvoyDialog(
-          dismissible: false,
-          context: context,
-          useRootNavigator: true,
-          dialog: const SpendSelectionCancelWarning(),
-          onDispose: () {
-            _isDialogShown = false;
-          });
+        dismissible: false,
+        context: context,
+        useRootNavigator: true,
+        dialog: const SpendSelectionCancelWarning(),
+        onDispose: () {
+          _isDialogShown = false;
+        },
+      );
       await Future.delayed(const Duration(milliseconds: 130));
       setState(() {
         _hideOverlay = false;
@@ -897,8 +910,9 @@ class _SpendSelectionCancelWarningState
 
   @override
   Widget build(BuildContext context) {
-    bool isDismissed = ref
-        .watch(arePromptsDismissedProvider(DismissiblePrompt.txDiscardWarning));
+    bool isDismissed = ref.watch(
+      arePromptsDismissedProvider(DismissiblePrompt.txDiscardWarning),
+    );
     return EnvoyPopUp(
       icon: EnvoyIcons.alert,
       typeOfMessage: PopUpState.warning,
@@ -907,25 +921,23 @@ class _SpendSelectionCancelWarningState
       primaryButtonLabel: S().component_yes,
       onPrimaryButtonTap: (context) {
         hideCoinSnack(ref);
-        if (context.mounted) {
-          Navigator.of(context).pop(true);
-        }
+        Navigator.of(context).pop(true);
       },
       tertiaryButtonLabel: S().component_no,
       onTertiaryButtonTap: (context) {
-        if (context.mounted) {
-          Navigator.of(context).pop(false);
-        }
+        Navigator.of(context).pop(false);
       },
       checkBoxText: S().component_dontShowAgain,
       checkedValue: isDismissed,
       onCheckBoxChanged: (checkedValue) async {
-        if (checkedValue) {
-          await EnvoyStorage()
-              .addPromptState(DismissiblePrompt.txDiscardWarning);
+        if (!checkedValue) {
+          await EnvoyStorage().addPromptState(
+            DismissiblePrompt.txDiscardWarning,
+          );
         } else {
-          await EnvoyStorage()
-              .removePromptState(DismissiblePrompt.txDiscardWarning);
+          await EnvoyStorage().removePromptState(
+            DismissiblePrompt.txDiscardWarning,
+          );
         }
       },
     );

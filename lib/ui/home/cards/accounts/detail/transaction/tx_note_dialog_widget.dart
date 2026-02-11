@@ -20,14 +20,15 @@ class TxNoteDialog extends ConsumerStatefulWidget {
   final String noteSubTitle;
   final String noteHintText;
 
-  const TxNoteDialog(
-      {super.key,
-      required this.noteTitle,
-      this.value,
-      required this.onAdd,
-      required this.noteSubTitle,
-      required this.noteHintText,
-      required this.txId});
+  const TxNoteDialog({
+    super.key,
+    required this.noteTitle,
+    this.value,
+    required this.onAdd,
+    required this.noteSubTitle,
+    required this.noteHintText,
+    required this.txId,
+  });
 
   @override
   ConsumerState<TxNoteDialog> createState() => _TxNoteDialogState();
@@ -60,47 +61,50 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
         title: widget.noteTitle,
         dismissible: false,
         scrollable: true,
-        content: Column(mainAxisSize: MainAxisSize.min, children: [
-          Text(
-            widget.noteSubTitle,
-            style: Theme.of(context).textTheme.bodyLarge,
-            textAlign: TextAlign.center,
-            //maxLines: 2,
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: EnvoySpacing.medium1),
-            decoration: BoxDecoration(
-              color: EnvoyColors.gray200,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            constraints: const BoxConstraints(
-              maxHeight: 150,
-            ),
-            padding: const EdgeInsets.all(EnvoySpacing.xs),
-            child: TextFormField(
-              maxLines: null,
-              minLines: null,
-              maxLength: 255,
-              controller: _textEditingController,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              widget.noteSubTitle,
+              style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.center,
-              textInputAction: TextInputAction.done,
-              style:
-                  Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14),
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(EnvoySpacing.medium1),
-                hintText: widget.noteHintText,
-                labelStyle: EnvoyTypography.body
-                    .copyWith(color: EnvoyColors.textTertiary),
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                focusedErrorBorder: InputBorder.none,
+              //maxLines: 2,
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: EnvoySpacing.medium1),
+              decoration: BoxDecoration(
+                color: EnvoyColors.gray200,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              constraints: const BoxConstraints(maxHeight: 150),
+              padding: const EdgeInsets.all(EnvoySpacing.xs),
+              child: TextFormField(
+                maxLines: null,
+                minLines: null,
+                maxLength: 255,
+                controller: _textEditingController,
+                textAlign: TextAlign.center,
+                textInputAction: TextInputAction.done,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(fontSize: 14),
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(EnvoySpacing.medium1),
+                  hintText: widget.noteHintText,
+                  labelStyle: EnvoyTypography.body.copyWith(
+                    color: EnvoyColors.textTertiary,
+                  ),
+                  border: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  focusedErrorBorder: InputBorder.none,
+                ),
               ),
             ),
-          ),
-        ]),
+          ],
+        ),
         actions: [
           EnvoyButton(
             S().component_cancel,

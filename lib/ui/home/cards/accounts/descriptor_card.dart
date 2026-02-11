@@ -40,8 +40,9 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
       setState(() {
         final addressTypeToSelect =
             Settings().taprootEnabled() ? AddressType.p2Tr : AddressType.p2Wpkh;
-        selectedIndex = descriptors
-            .indexWhere((descriptor) => descriptor.$1 == addressTypeToSelect);
+        selectedIndex = descriptors.indexWhere(
+          (descriptor) => descriptor.$1 == addressTypeToSelect,
+        );
 
         // In case our preferred type is not there
         if (selectedIndex == -1) {

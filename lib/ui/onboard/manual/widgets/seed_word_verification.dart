@@ -19,8 +19,11 @@ class VerifySeedPuzzleWidget extends StatefulWidget {
   final List<String> seed;
   final Function(bool verified) onVerificationFinished;
 
-  const VerifySeedPuzzleWidget(
-      {super.key, required this.seed, required this.onVerificationFinished});
+  const VerifySeedPuzzleWidget({
+    super.key,
+    required this.seed,
+    required this.onVerificationFinished,
+  });
 
   @override
   State<VerifySeedPuzzleWidget> createState() => _VerifySeedPuzzleWidgetState();
@@ -46,29 +49,36 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
           child: Align(
             alignment: Alignment.centerLeft,
             child: GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(EnvoySpacing.medium1),
-                  child: Icon(Icons.arrow_back_ios_rounded,
-                      size: EnvoySpacing.medium2),
-                )),
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: const Padding(
+                padding: EdgeInsets.all(EnvoySpacing.medium1),
+                child: Icon(
+                  Icons.arrow_back_ios_rounded,
+                  size: EnvoySpacing.medium2,
+                ),
+              ),
+            ),
           ),
         ),
         const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.small)),
         SliverToBoxAdapter(
           child: Text(
-              S().manual_setup_generate_seed_verify_seed_quiz_1_4_heading,
-              style: EnvoyTypography.heading,
-              textAlign: TextAlign.center),
+            S().manual_setup_generate_seed_verify_seed_quiz_1_4_heading,
+            style: EnvoyTypography.heading,
+            textAlign: TextAlign.center,
+          ),
         ),
         const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
         SliverToBoxAdapter(
-          child: Text("${_pageIndex + 1} of 4",
-              style: EnvoyTypography.body
-                  .copyWith(color: EnvoyColors.textTertiary),
-              textAlign: TextAlign.center),
+          child: Text(
+            "${_pageIndex + 1} of 4",
+            style: EnvoyTypography.body.copyWith(
+              color: EnvoyColors.textTertiary,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ),
         const SliverPadding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
         SliverToBoxAdapter(
@@ -77,19 +87,16 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
             switchInCurve: Curves.easeIn,
             switchOutCurve: Curves.easeOut,
             transitionBuilder: (child, animation) {
-              return FadeTransition(
-                opacity: animation,
-                child: child,
-              );
+              return FadeTransition(opacity: animation, child: child);
             },
             child: Text(
-                "${S().manual_setup_generate_seed_verify_seed_quiz_question} ${_puzzleOptions[_pageIndex].seedIndex + 1}?",
-                key: ValueKey(
-                  "${_puzzleOptions[_pageIndex].seedIndex}",
-                ),
-                style: EnvoyTypography.body
-                    .copyWith(color: EnvoyColors.textSecondary),
-                textAlign: TextAlign.center),
+              "${S().manual_setup_generate_seed_verify_seed_quiz_question} ${_puzzleOptions[_pageIndex].seedIndex + 1}?",
+              key: ValueKey("${_puzzleOptions[_pageIndex].seedIndex}"),
+              style: EnvoyTypography.body.copyWith(
+                color: EnvoyColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
         SliverToBoxAdapter(
@@ -101,7 +108,8 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                 Expanded(
                   child: PageView(
                     physics: const BouncingScrollPhysics(
-                        parent: NeverScrollableScrollPhysics()),
+                      parent: NeverScrollableScrollPhysics(),
+                    ),
                     controller: _pageController,
                     pageSnapping: true,
                     padEnds: true,
@@ -124,14 +132,16 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                             }
 
                             await Future.delayed(
-                                const Duration(milliseconds: 600));
+                              const Duration(milliseconds: 600),
+                            );
                             setState(() {
                               _pageIndex++;
                             });
                             await _pageController.animateToPage(
-                                _puzzleOptions.indexOf(e) + 1,
-                                duration: const Duration(milliseconds: 320),
-                                curve: EnvoyEasing.defaultEasing);
+                              _puzzleOptions.indexOf(e) + 1,
+                              duration: const Duration(milliseconds: 320),
+                              curve: EnvoyEasing.defaultEasing,
+                            );
                           },
                           onWrongAnswer: () {
                             widget.onVerificationFinished(false);
@@ -153,8 +163,9 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
               const SizedBox(height: EnvoySpacing.medium1),
               !_finishedAnswers
                   ? Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: EnvoySpacing.large1),
+                      padding: const EdgeInsets.only(
+                        bottom: EnvoySpacing.large1,
+                      ),
                       child: Text(
                         S().manual_setup_generate_seed_verify_seed_again_quiz_infotext,
                         style: EnvoyTypography.button.copyWith(
@@ -165,15 +176,17 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
                     )
                   : Padding(
                       padding: const EdgeInsets.only(
-                          left: EnvoySpacing.xs,
-                          right: EnvoySpacing.xs,
-                          bottom: EnvoySpacing.medium2),
+                        left: EnvoySpacing.xs,
+                        right: EnvoySpacing.xs,
+                        bottom: EnvoySpacing.medium2,
+                      ),
                       child: OnboardingButton(
-                          label: S().component_continue,
-                          onTap: () {
-                            widget.onVerificationFinished(true);
-                          }),
-                    )
+                        label: S().component_continue,
+                        onTap: () {
+                          widget.onVerificationFinished(true);
+                        },
+                      ),
+                    ),
             ],
           ),
         ),
@@ -215,9 +228,10 @@ class _VerifySeedPuzzleWidgetState extends State<VerifySeedPuzzleWidget>
         options.add(word);
         options.shuffle();
         return Puzzle(
-            options: options,
-            answerString: word,
-            seedIndex: randomIndexList[index]);
+          options: options,
+          answerString: word,
+          seedIndex: randomIndexList[index],
+        );
       });
     });
   }
@@ -228,10 +242,11 @@ class Puzzle {
   final String answerString;
   final int seedIndex;
 
-  const Puzzle(
-      {required this.options,
-      required this.answerString,
-      required this.seedIndex});
+  const Puzzle({
+    required this.options,
+    required this.answerString,
+    required this.seedIndex,
+  });
 }
 
 class PuzzleWidget extends StatefulWidget {
@@ -239,11 +254,12 @@ class PuzzleWidget extends StatefulWidget {
   final Function() onCorrectAnswer;
   final Function() onWrongAnswer;
 
-  const PuzzleWidget(
-      {super.key,
-      required this.puzzle,
-      required this.onCorrectAnswer,
-      required this.onWrongAnswer});
+  const PuzzleWidget({
+    super.key,
+    required this.puzzle,
+    required this.onCorrectAnswer,
+    required this.onWrongAnswer,
+  });
 
   @override
   State<PuzzleWidget> createState() => _PuzzleWidgetState();
@@ -273,53 +289,63 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
         const SizedBox(height: EnvoySpacing.medium1),
         Flexible(
           child: GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 2,
-                crossAxisSpacing: 20.0,
-              ),
-              itemBuilder: (context, index) {
-                TextStyle textTheme = EnvoyTypography.button
-                    .copyWith(color: EnvoyColors.textPrimary);
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      chosenAnswer = options[index];
-                    });
-                    if (chosenAnswer == widget.puzzle.answerString) {
-                      widget.onCorrectAnswer();
-                      Haptics.lightImpact();
-                    } else {
-                      widget.onWrongAnswer();
-                    }
-                  },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(vertical: 0),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 6),
-                        alignment: Alignment.center,
-                        constraints:
-                            const BoxConstraints(maxWidth: 300, maxHeight: 40),
-                        decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(16)),
-                        child: Text(options[index],
-                            overflow: TextOverflow.fade,
-                            textScaler: MediaQuery.of(context)
-                                .textScaler
-                                .clamp(maxScaleFactor: 1.2, minScaleFactor: .8),
-                            style: textTheme,
-                            textAlign: TextAlign.center),
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 2,
+              crossAxisSpacing: 20.0,
+            ),
+            itemBuilder: (context, index) {
+              TextStyle textTheme = EnvoyTypography.button.copyWith(
+                color: EnvoyColors.textPrimary,
+              );
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    chosenAnswer = options[index];
+                  });
+                  if (chosenAnswer == widget.puzzle.answerString) {
+                    widget.onCorrectAnswer();
+                    Haptics.lightImpact();
+                  } else {
+                    widget.onWrongAnswer();
+                  }
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 0),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 6,
                       ),
-                    ],
-                  ),
-                );
-              },
-              itemCount: options.length),
+                      alignment: Alignment.center,
+                      constraints: const BoxConstraints(
+                        maxWidth: 300,
+                        maxHeight: 40,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Text(
+                        options[index],
+                        overflow: TextOverflow.fade,
+                        textScaler: MediaQuery.of(context).textScaler.clamp(
+                              maxScaleFactor: 1.2,
+                              minScaleFactor: .8,
+                            ),
+                        style: textTheme,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+            itemCount: options.length,
+          ),
         ),
       ],
     );
@@ -342,11 +368,10 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
               const Padding(padding: EdgeInsets.all(4)),
               Text(
                 S().manual_setup_generate_seed_verify_seed_quiz_success_correct,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: EnvoyColors.accentPrimary),
-              )
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: EnvoyColors.accentPrimary,
+                    ),
+              ),
             ],
           )
         : Row(
@@ -360,11 +385,10 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
               const SizedBox(height: EnvoySpacing.small),
               Text(
                 S().manual_setup_generate_seed_verify_seed_quiz_fail_invalid,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: EnvoyColors.accentSecondary),
-              )
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: EnvoyColors.accentSecondary,
+                    ),
+              ),
             ],
           );
   }
@@ -381,34 +405,43 @@ class _PuzzleWidgetState extends State<PuzzleWidget> {
       }
     }
 
-    final TextStyle textTheme =
-        EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary);
+    final TextStyle textTheme = EnvoyTypography.body.copyWith(
+      color: EnvoyColors.textPrimary,
+    );
     return Container(
       height: 52,
       margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      constraints:
-          const BoxConstraints(maxWidth: 200, minWidth: 160, maxHeight: 52),
+      constraints: const BoxConstraints(
+        maxWidth: 200,
+        minWidth: 160,
+        maxHeight: 52,
+      ),
       decoration: BoxDecoration(
-          color: Colors.grey[300],
-          border: Border.all(width: 1, color: borderColor),
-          borderRadius: BorderRadius.circular(16)),
+        color: Colors.grey[300],
+        border: Border.all(width: 1, color: borderColor),
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Row(
         children: [
-          Text(" ${widget.puzzle.seedIndex + 1}. ",
-              textScaler: MediaQuery.of(context)
-                  .textScaler
-                  .clamp(maxScaleFactor: 1.2, minScaleFactor: .8),
-              style: textTheme),
+          Text(
+            " ${widget.puzzle.seedIndex + 1}. ",
+            textScaler: MediaQuery.of(
+              context,
+            ).textScaler.clamp(maxScaleFactor: 1.2, minScaleFactor: .8),
+            style: textTheme,
+          ),
           Expanded(
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Text(chosenAnswer ?? "",
-                    textScaler: MediaQuery.of(context)
-                        .textScaler
-                        .clamp(maxScaleFactor: 1.2, minScaleFactor: .8),
-                    style: textTheme),
+                Text(
+                  chosenAnswer ?? "",
+                  textScaler: MediaQuery.of(
+                    context,
+                  ).textScaler.clamp(maxScaleFactor: 1.2, minScaleFactor: .8),
+                  style: textTheme,
+                ),
               ],
             ),
           ),

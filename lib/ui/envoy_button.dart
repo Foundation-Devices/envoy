@@ -91,35 +91,38 @@ class _EnvoyButtonState extends State<EnvoyButton> {
         child: Stack(
           children: [
             Container(
-                height: 40.0,
-                decoration: _getBoxDecoration(),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (widget.leading != null) ...[
-                      widget.leading!,
-                      SizedBox(width: EnvoySpacing.small),
-                    ],
-                    Text(
-                      widget.label,
-                      style: textStyle,
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (widget.trailing != null) ...[
-                      SizedBox(width: EnvoySpacing.small),
-                      widget.trailing!,
-                    ],
+              height: 40.0,
+              decoration: _getBoxDecoration(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (widget.leading != null) ...[
+                    widget.leading!,
+                    SizedBox(width: EnvoySpacing.small),
                   ],
-                )),
+                  Text(
+                    widget.label,
+                    style: textStyle,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (widget.trailing != null) ...[
+                    SizedBox(width: EnvoySpacing.small),
+                    widget.trailing!,
+                  ],
+                ],
+              ),
+            ),
             if (!widget.enabled)
               Positioned.fill(
                 child: Container(
-                    decoration: BoxDecoration(
-                        color: EnvoyColors.textPrimaryInverse.applyOpacity(0.5),
-                        borderRadius: widget.borderRadius ??
-                            const BorderRadius.all(Radius.circular(13.0)))),
+                  decoration: BoxDecoration(
+                    color: EnvoyColors.textPrimaryInverse.applyOpacity(0.5),
+                    borderRadius: widget.borderRadius ??
+                        const BorderRadius.all(Radius.circular(13.0)),
+                  ),
+                ),
               ),
           ],
         ),
@@ -132,33 +135,34 @@ class _EnvoyButtonState extends State<EnvoyButton> {
       case EnvoyButtonTypes.primary:
         {
           return BoxDecoration(
-              color: widget.backgroundColor ?? EnvoyColors.accentPrimary,
-              borderRadius: widget.borderRadius ??
-                  const BorderRadius.all(
-                      Radius.circular(EnvoySpacing.medium1)));
+            color: widget.backgroundColor ?? EnvoyColors.accentPrimary,
+            borderRadius: widget.borderRadius ??
+                const BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+          );
         }
       case EnvoyButtonTypes.secondary:
         {
           return BoxDecoration(
-              color: widget.backgroundColor ?? EnvoyColors.surface3,
-              borderRadius: widget.borderRadius ??
-                  const BorderRadius.all(
-                      Radius.circular(EnvoySpacing.medium1)));
+            color: widget.backgroundColor ?? EnvoyColors.surface3,
+            borderRadius: widget.borderRadius ??
+                const BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+          );
         }
 
       case EnvoyButtonTypes.tertiary:
         return BoxDecoration(
-            color: widget.backgroundColor,
-            borderRadius: widget.borderRadius ??
-                const BorderRadius.all(Radius.circular(EnvoySpacing.medium1)));
+          color: widget.backgroundColor,
+          borderRadius: widget.borderRadius ??
+              const BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+        );
 
       case EnvoyButtonTypes.primaryModal:
         {
           return BoxDecoration(
-              color: EnvoyColors.accentPrimary,
-              borderRadius: widget.borderRadius ??
-                  const BorderRadius.all(
-                      Radius.circular(EnvoySpacing.medium1)));
+            color: EnvoyColors.accentPrimary,
+            borderRadius: widget.borderRadius ??
+                const BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+          );
         }
     }
   }

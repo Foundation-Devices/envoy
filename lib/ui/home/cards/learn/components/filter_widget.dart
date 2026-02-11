@@ -31,22 +31,19 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
     final learnFilterState = ref.watch(learnFilterStateProvider);
     final learnSortState = ref.watch(learnSortStateProvider);
     final deviceFilterState = ref.watch(deviceFilterStateProvider);
-    final filterButtonTextStyle = Theme.of(context)
-        .textTheme
-        .bodyMedium
-        ?.copyWith(
-            color: Theme.of(context).primaryColor,
-            fontWeight: FontWeight.w600,
-            fontSize: 14);
+    final filterButtonTextStyle =
+        Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+            );
 
     _sortState ??= learnSortState;
     _filterState ??= learnFilterState;
     _deviceFilterState ??= deviceFilterState;
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: EnvoySpacing.medium1,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
       child: SafeArea(
         bottom: true,
         child: Column(
@@ -58,8 +55,9 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               children: [
                 Text(
                   S().component_filter,
-                  style: EnvoyTypography.subheading
-                      .copyWith(color: EnvoyColors.textPrimary),
+                  style: EnvoyTypography.subheading.copyWith(
+                    color: EnvoyColors.textPrimary,
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
@@ -77,7 +75,7 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
                     S().component_reset,
                     style: filterButtonTextStyle,
                   ),
-                )
+                ),
               ],
             ),
             const SizedBox(height: EnvoySpacing.medium1),
@@ -176,107 +174,121 @@ class LearnFilterWidgetState extends ConsumerState<LearnFilterWidget> {
               ],
             ),
             const SizedBox(height: EnvoySpacing.medium3),
-            Text(S().component_device,
-                style: EnvoyTypography.subheading
-                    .copyWith(color: EnvoyColors.textPrimary)),
+            Text(
+              S().component_device,
+              style: EnvoyTypography.subheading.copyWith(
+                color: EnvoyColors.textPrimary,
+              ),
+            ),
             const SizedBox(height: EnvoySpacing.medium1),
-            Wrap(runSpacing: EnvoySpacing.small, children: [
-              EnvoyFilterChip(
-                text: S().component_filter_button_all,
-                selected:
-                    _deviceFilterState?.contains(DeviceFilters.all) ?? false,
-                onTap: () {
-                  final Set<DeviceFilters> newState = {}
-                    ..addAll(_deviceFilterState!);
-                  if (_deviceFilterState!.contains(DeviceFilters.all)) {
-                    newState.remove(DeviceFilters.all);
-                    newState.remove(DeviceFilters.envoy);
-                    newState.remove(DeviceFilters.passport);
-                    newState.remove(DeviceFilters.passportPrime);
-                  } else {
-                    newState.add(DeviceFilters.all);
-                    newState.add(DeviceFilters.envoy);
-                    newState.add(DeviceFilters.passport);
-                    newState.add(DeviceFilters.passportPrime);
-                  }
-                  setState(() {
-                    _deviceFilterState = newState;
-                  });
-                },
-              ),
-              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-              EnvoyFilterChip(
-                selected: ((_deviceFilterState?.contains(DeviceFilters.envoy) ??
-                        false) &&
-                    !(_deviceFilterState?.contains(DeviceFilters.all) ?? true)),
-                text: S().learning_center_device_envoy,
-                onTap: () {
-                  final Set<DeviceFilters> newState = {}
-                    ..addAll(_deviceFilterState!);
-                  if (_deviceFilterState!.contains(DeviceFilters.all)) {
-                    newState.removeAll(_deviceFilterState!);
-                  }
-                  if (newState.contains(DeviceFilters.envoy)) {
-                    newState.remove(DeviceFilters.envoy);
-                  } else {
-                    newState.add(DeviceFilters.envoy);
-                  }
-                  setState(() {
-                    _deviceFilterState = newState;
-                  });
-                },
-              ),
-              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-              EnvoyFilterChip(
-                selected: ((_deviceFilterState
-                            ?.contains(DeviceFilters.passport) ??
-                        false) &&
-                    !(_deviceFilterState?.contains(DeviceFilters.all) ?? true)),
-                text: S().learning_center_device_passportCore,
-                onTap: () {
-                  final Set<DeviceFilters> newState = {}
-                    ..addAll(_deviceFilterState!);
-                  if (_deviceFilterState!.contains(DeviceFilters.all)) {
-                    newState.removeAll(_deviceFilterState!);
-                  }
-                  if (newState.contains(DeviceFilters.passport)) {
-                    newState.remove(DeviceFilters.passport);
-                  } else {
-                    newState.add(DeviceFilters.passport);
-                  }
-                  setState(() {
-                    _deviceFilterState = newState;
-                  });
-                },
-              ),
-              const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-              EnvoyFilterChip(
-                selected: ((_deviceFilterState
-                            ?.contains(DeviceFilters.passportPrime) ??
-                        false) &&
-                    !(_deviceFilterState?.contains(DeviceFilters.all) ?? true)),
-                text: S().learning_center_device_passportPrime,
-                onTap: () {
-                  final Set<DeviceFilters> newState = {}
-                    ..addAll(_deviceFilterState!);
-                  if (_deviceFilterState!.contains(DeviceFilters.all)) {
-                    newState.removeAll(_deviceFilterState!);
-                  }
-                  if (newState.contains(DeviceFilters.passportPrime)) {
-                    newState.remove(DeviceFilters.passportPrime);
-                  } else {
-                    newState.add(DeviceFilters.passportPrime);
-                  }
-                  setState(() {
-                    _deviceFilterState = newState;
-                  });
-                },
-              )
-            ]),
+            Wrap(
+              runSpacing: EnvoySpacing.small,
+              children: [
+                EnvoyFilterChip(
+                  text: S().component_filter_button_all,
+                  selected:
+                      _deviceFilterState?.contains(DeviceFilters.all) ?? false,
+                  onTap: () {
+                    final Set<DeviceFilters> newState = {}
+                      ..addAll(_deviceFilterState!);
+                    if (_deviceFilterState!.contains(DeviceFilters.all)) {
+                      newState.remove(DeviceFilters.all);
+                      newState.remove(DeviceFilters.envoy);
+                      newState.remove(DeviceFilters.passport);
+                      newState.remove(DeviceFilters.passportPrime);
+                    } else {
+                      newState.add(DeviceFilters.all);
+                      newState.add(DeviceFilters.envoy);
+                      newState.add(DeviceFilters.passport);
+                      newState.add(DeviceFilters.passportPrime);
+                    }
+                    setState(() {
+                      _deviceFilterState = newState;
+                    });
+                  },
+                ),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                EnvoyFilterChip(
+                  selected:
+                      ((_deviceFilterState?.contains(DeviceFilters.envoy) ??
+                              false) &&
+                          !(_deviceFilterState?.contains(DeviceFilters.all) ??
+                              true)),
+                  text: S().learning_center_device_envoy,
+                  onTap: () {
+                    final Set<DeviceFilters> newState = {}
+                      ..addAll(_deviceFilterState!);
+                    if (_deviceFilterState!.contains(DeviceFilters.all)) {
+                      newState.removeAll(_deviceFilterState!);
+                    }
+                    if (newState.contains(DeviceFilters.envoy)) {
+                      newState.remove(DeviceFilters.envoy);
+                    } else {
+                      newState.add(DeviceFilters.envoy);
+                    }
+                    setState(() {
+                      _deviceFilterState = newState;
+                    });
+                  },
+                ),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                EnvoyFilterChip(
+                  selected:
+                      ((_deviceFilterState?.contains(DeviceFilters.passport) ??
+                              false) &&
+                          !(_deviceFilterState?.contains(DeviceFilters.all) ??
+                              true)),
+                  text: S().learning_center_device_passportCore,
+                  onTap: () {
+                    final Set<DeviceFilters> newState = {}
+                      ..addAll(_deviceFilterState!);
+                    if (_deviceFilterState!.contains(DeviceFilters.all)) {
+                      newState.removeAll(_deviceFilterState!);
+                    }
+                    if (newState.contains(DeviceFilters.passport)) {
+                      newState.remove(DeviceFilters.passport);
+                    } else {
+                      newState.add(DeviceFilters.passport);
+                    }
+                    setState(() {
+                      _deviceFilterState = newState;
+                    });
+                  },
+                ),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
+                EnvoyFilterChip(
+                  selected: ((_deviceFilterState?.contains(
+                            DeviceFilters.passportPrime,
+                          ) ??
+                          false) &&
+                      !(_deviceFilterState?.contains(DeviceFilters.all) ??
+                          true)),
+                  text: S().learning_center_device_passportPrime,
+                  onTap: () {
+                    final Set<DeviceFilters> newState = {}
+                      ..addAll(_deviceFilterState!);
+                    if (_deviceFilterState!.contains(DeviceFilters.all)) {
+                      newState.removeAll(_deviceFilterState!);
+                    }
+                    if (newState.contains(DeviceFilters.passportPrime)) {
+                      newState.remove(DeviceFilters.passportPrime);
+                    } else {
+                      newState.add(DeviceFilters.passportPrime);
+                    }
+                    setState(() {
+                      _deviceFilterState = newState;
+                    });
+                  },
+                ),
+              ],
+            ),
             const SizedBox(height: EnvoySpacing.medium3),
-            Text(S().account_details_filter_tags_sortBy,
-                style: EnvoyTypography.subheading
-                    .copyWith(color: EnvoyColors.textPrimary)),
+            Text(
+              S().account_details_filter_tags_sortBy,
+              style: EnvoyTypography.subheading.copyWith(
+                color: EnvoyColors.textPrimary,
+              ),
+            ),
             CheckBoxFilterItem(
               text: S().filter_sortBy_newest,
               checked: _sortState == LearnSortTypes.newestFirst,

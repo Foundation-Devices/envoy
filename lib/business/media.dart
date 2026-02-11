@@ -21,8 +21,14 @@ class Media {
   final String thumbnailsFolder = "thumbnails";
   Future<void>? _thumbnailFetchInFlight;
 
-  Media(this.title, this.description, this.thumbnailUrl, this.publicationDate,
-      this.url, this.id);
+  Media(
+    this.title,
+    this.description,
+    this.thumbnailUrl,
+    this.publicationDate,
+    this.url,
+    this.id,
+  );
 
   String? get thumbnailHash {
     final thumbnail = thumbnailUrl;
@@ -76,8 +82,9 @@ class Media {
     if (bytes.isEmpty) return false;
 
     try {
-      final buffer =
-          await ui.ImmutableBuffer.fromUint8List(Uint8List.fromList(bytes));
+      final buffer = await ui.ImmutableBuffer.fromUint8List(
+        Uint8List.fromList(bytes),
+      );
       try {
         final descriptor = await ui.ImageDescriptor.encoded(buffer);
         descriptor.dispose();

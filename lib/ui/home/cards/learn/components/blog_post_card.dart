@@ -43,8 +43,9 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
       child: Column(
         children: [
           ClipRRect(
-            borderRadius:
-                const BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(EnvoySpacing.medium1),
+            ),
             child: GestureDetector(
               onTap: () {
                 widget.blog.read = true;
@@ -58,26 +59,25 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
               child: Column(
                 children: [
                   FutureBuilder(
-                      future: widget.blog.thumbnail,
-                      builder: (context, snapshot) {
-                        return !snapshot.hasData || snapshot.data == null
-                            ? Center(
-                                child: Container(
-                                  height: blogThumbnailHeight,
+                    future: widget.blog.thumbnail,
+                    builder: (context, snapshot) {
+                      return !snapshot.hasData || snapshot.data == null
+                          ? Center(
+                              child: Container(height: blogThumbnailHeight),
+                            )
+                          : SizedBox(
+                              height: blogThumbnailHeight,
+                              width: containerWidth,
+                              child: Opacity(
+                                opacity: isBlogRead ? 0.3 : 1.0,
+                                child: Image.memory(
+                                  Uint8List.fromList(snapshot.data!),
+                                  fit: BoxFit.fitWidth,
                                 ),
-                              )
-                            : SizedBox(
-                                height: blogThumbnailHeight,
-                                width: containerWidth,
-                                child: Opacity(
-                                  opacity: isBlogRead ? 0.3 : 1.0,
-                                  child: Image.memory(
-                                    Uint8List.fromList(snapshot.data!),
-                                    fit: BoxFit.fitWidth,
-                                  ),
-                                ),
-                              );
-                      }),
+                              ),
+                            );
+                    },
+                  ),
                   Container(
                     color: Colors.transparent,
                     child: Padding(
@@ -94,8 +94,9 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                               opacity: isBlogRead ? 0.3 : 1.0,
                               child: Text(
                                 widget.blog.title,
-                                style: EnvoyTypography.button
-                                    .copyWith(color: EnvoyColors.textPrimary),
+                                style: EnvoyTypography.button.copyWith(
+                                  color: EnvoyColors.textPrimary,
+                                ),
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -104,23 +105,25 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
                             Opacity(
                               opacity: isBlogRead ? 0.3 : 1.0,
                               child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      DateFormat('MMMM dd, yyyy', currentLocale)
-                                          .format(widget.blog.publicationDate),
-                                    ),
-                                    isBlogRead
-                                        ? Text(
-                                            S().learningcenter_status_read,
-                                            style: EnvoyTypography.info
-                                                .copyWith(
-                                                    color: EnvoyColors
-                                                        .textSecondary),
-                                          )
-                                        : const Text("")
-                                  ]),
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    DateFormat(
+                                      'MMMM dd, yyyy',
+                                      currentLocale,
+                                    ).format(widget.blog.publicationDate),
+                                  ),
+                                  isBlogRead
+                                      ? Text(
+                                          S().learningcenter_status_read,
+                                          style: EnvoyTypography.info.copyWith(
+                                            color: EnvoyColors.textSecondary,
+                                          ),
+                                        )
+                                      : const Text(""),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -138,10 +141,7 @@ class _BlogPostState extends ConsumerState<BlogPostWidget> {
 }
 
 class BlogPostCard extends StatefulWidget {
-  const BlogPostCard({
-    super.key,
-    required this.blog,
-  });
+  const BlogPostCard({super.key, required this.blog});
 
   final BlogPost blog;
 
@@ -220,9 +220,10 @@ class BlogPostCardState extends State<BlogPostCard> {
                       return const Padding(
                         padding: EdgeInsets.all(EnvoySpacing.medium1),
                         child: SizedBox(
-                            height: 60,
-                            width: 60,
-                            child: CircularProgressIndicator()),
+                          height: 60,
+                          width: 60,
+                          child: CircularProgressIndicator(),
+                        ),
                       );
                     }
                   },

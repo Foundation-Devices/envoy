@@ -41,11 +41,12 @@ class LegacyUnifiedAccounts {
   bool isUnified;
   String fingerprint;
 
-  LegacyUnifiedAccounts(
-      {required this.accounts,
-      required this.network,
-      this.isUnified = true,
-      required this.fingerprint});
+  LegacyUnifiedAccounts({
+    required this.accounts,
+    required this.network,
+    this.isUnified = true,
+    required this.fingerprint,
+  });
 }
 
 class MigrationManager {
@@ -108,9 +109,7 @@ class MigrationManager {
     _streamController.close();
   }
 
-  void addMigrationEvent(
-    MigrationProgress migrationProgress,
-  ) {
+  void addMigrationEvent(MigrationProgress migrationProgress) {
     _streamController.sink.add(migrationProgress);
   }
 
@@ -128,8 +127,11 @@ class MigrationManager {
         await Future.delayed(const Duration(milliseconds: 50));
         _onMigrationFinished?.call();
       } catch (e, stack) {
-        EnvoyReport().log("Migration", "Error migrating accounts: $e",
-            stackTrace: stack);
+        EnvoyReport().log(
+          "Migration",
+          "Error migrating accounts: $e",
+          stackTrace: stack,
+        );
         _onMigrationError?.call();
       }
     } else if (currentMigrationVersion == null) {
@@ -141,8 +143,11 @@ class MigrationManager {
         await sanityCheck();
         _onMigrationFinished?.call();
       } catch (e, stack) {
-        EnvoyReport()
-            .log("Migration", "Migration v2 error: $e", stackTrace: stack);
+        EnvoyReport().log(
+          "Migration",
+          "Migration v2 error: $e",
+          stackTrace: stack,
+        );
         _onMigrationError?.call();
       }
     } else {
@@ -158,9 +163,9 @@ class MigrationManager {
       await Directory(newWalletDirectory).delete(recursive: true);
     }
     if (_ls.prefs.containsKey(NgAccountManager.v1AccountsPrefKey)) {
-      List<dynamic> accountsJson =
-          jsonDecode(_ls.prefs.getString(NgAccountManager.v1AccountsPrefKey)!)
-              .toList();
+      List<dynamic> accountsJson = jsonDecode(
+        _ls.prefs.getString(NgAccountManager.v1AccountsPrefKey)!,
+      ).toList();
       final List<LegacyAccount> legacyAccounts = await loadLegacyAccounts();
 
       EnvoyReport().log(
@@ -169,7 +174,8 @@ class MigrationManager {
       );
       List<LegacyUnifiedAccounts> unifiedLegacyAccounts = unify(legacyAccounts);
       addMigrationEvent(
-          MigrationProgress(total: unifiedLegacyAccounts.length, completed: 0));
+        MigrationProgress(total: unifiedLegacyAccounts.length, completed: 0),
+      );
 
       final accounts = await createAccounts(unifiedLegacyAccounts);
       if (accounts.isEmpty) {
@@ -184,9 +190,12 @@ class MigrationManager {
               EnvoyReport().log("Migration", "Error migrating meta: $e");
             }
             await Future.delayed(const Duration(milliseconds: 100));
-            addMigrationEvent(MigrationProgress(
+            addMigrationEvent(
+              MigrationProgress(
                 total: accounts.length,
-                completed: accounts.indexOf(account) + 1));
+                completed: accounts.indexOf(account) + 1,
+              ),
+            );
           }
         } catch (e) {
           EnvoyReport().log("Migration", "Error migrating meta: $e");
@@ -196,13 +205,17 @@ class MigrationManager {
           account.dispose();
         }
         //restore will reload all accounts and start normal sync
-        final v1backupFile =
-            File("${LocalStorage().appDocumentsDir.path}/v1_accounts.json");
+        final v1backupFile = File(
+          "${LocalStorage().appDocumentsDir.path}/v1_accounts.json",
+        );
         await v1backupFile.create(recursive: true);
         await v1backupFile.writeAsString(jsonEncode(accountsJson));
       } catch (e, stack) {
-        EnvoyReport().log("Migration", "Error migrating accounts: $e",
-            stackTrace: stack);
+        EnvoyReport().log(
+          "Migration",
+          "Error migrating accounts: $e",
+          stackTrace: stack,
+        );
         rethrow;
       }
       //   //Load accounts to account manager
@@ -230,33 +243,47 @@ class MigrationManager {
           final list = await dir.list().toList();
           //if there is a corrupted account, skip it. a proper account will have at least 2 files.
           if (list.length < 2) {
-            EnvoyReport()
-                .log("Migration", "Corrupted account found: ${dir.path}");
+            EnvoyReport().log(
+              "Migration",
+              "Corrupted account found: ${dir.path}",
+            );
             continue;
           }
           try {
-            final accountHandler =
-                await EnvoyAccountHandler.openAccount(dbPath: dir.path);
+            final accountHandler = await EnvoyAccountHandler.openAccount(
+              dbPath: dir.path,
+            );
             final state = await accountHandler.state();
-            if (needsMerges
-                .containsKey((state.xfp, state.network, state.index))) {
-              needsMerges[(state.xfp, state.network, state.index)]!
-                  .add(accountHandler);
+            if (needsMerges.containsKey((
+              state.xfp,
+              state.network,
+              state.index,
+            ))) {
+              needsMerges[(state.xfp, state.network, state.index)]!.add(
+                accountHandler,
+              );
             } else {
               needsMerges[(state.xfp, state.network, state.index)] = [
-                accountHandler
+                accountHandler,
               ];
             }
             accounts.add(accountHandler);
-            await LocalStorage()
-                .prefs
-                .setAccountScanStatus(state.id, AddressType.p2Pkh, false);
-            await LocalStorage()
-                .prefs
-                .setAccountScanStatus(state.id, AddressType.p2Tr, false);
+            await LocalStorage().prefs.setAccountScanStatus(
+                  state.id,
+                  AddressType.p2Pkh,
+                  false,
+                );
+            await LocalStorage().prefs.setAccountScanStatus(
+                  state.id,
+                  AddressType.p2Tr,
+                  false,
+                );
           } catch (e, stack) {
-            EnvoyReport().log("Migration", "Error opening wallet: $e",
-                stackTrace: stack);
+            EnvoyReport().log(
+              "Migration",
+              "Error opening wallet: $e",
+              stackTrace: stack,
+            );
           }
         }
       }
@@ -265,15 +292,18 @@ class MigrationManager {
       String mergeStrategy = "";
       for (var (xfp, network, index) in needsMerges.keys) {
         List<EnvoyAccount>? states = await Future.wait(
-            needsMerges[(xfp, network, index)]!.map((e) => e.state()).toList());
+          needsMerges[(xfp, network, index)]!.map((e) => e.state()).toList(),
+        );
         mergeStrategy += "( $xfp $network $index ) -> ${needsMerges[(
           xfp,
           network,
           index
         )]!.length} | ${states.map((e) => " [${e.name} - ${e.deviceSerial}] ").join(",")} \n";
       }
-      EnvoyReport()
-          .log("Migration", "XFP merge : merge strategy\n$mergeStrategy");
+      EnvoyReport().log(
+        "Migration",
+        "XFP merge : merge strategy\n$mergeStrategy",
+      );
 
       for (var (xfp, network, index) in needsMerges.keys) {
         final accounts = needsMerges[(xfp, network, index)]!;
@@ -291,8 +321,9 @@ class MigrationManager {
             //if an existing account missing any descriptors, during 2.0  migration
             //based legacy account type, if this account finger print matches any other legacy account
             // and if they have more descriptors, then add the missing descriptors and to the parent account
-            final v1Accounts =
-                legacyAccounts.where((e) => e.extractFingerprint() == xfp);
+            final v1Accounts = legacyAccounts.where(
+              (e) => e.extractFingerprint() == xfp,
+            );
             if (v1Accounts.length == 2) {
               LegacyAccount accountOne = v1Accounts.first;
               LegacyAccount accountTwo = v1Accounts.last;
@@ -314,8 +345,10 @@ class MigrationManager {
                 }
               }
               if (missingAccount != null) {
-                EnvoyReport().log("Migration",
-                    "Missing descriptor found for ${firstAccountState.name} adding ${missingAccount.wallet.type}");
+                EnvoyReport().log(
+                  "Migration",
+                  "Missing descriptor found for ${firstAccountState.name} adding ${missingAccount.wallet.type}",
+                );
                 final ngDescriptor = NgDescriptor(
                   addressType: missingAccount.wallet.type == "taproot"
                       ? AddressType.p2Tr
@@ -326,15 +359,21 @@ class MigrationManager {
                 await firstAccount.addDescriptor(ngDescriptor: ngDescriptor);
 
                 final state = await firstAccount.state();
-                await LocalStorage()
-                    .prefs
-                    .setAccountScanStatus(state.id, AddressType.p2Pkh, false);
-                await LocalStorage()
-                    .prefs
-                    .setAccountScanStatus(state.id, AddressType.p2Tr, false);
+                await LocalStorage().prefs.setAccountScanStatus(
+                      state.id,
+                      AddressType.p2Pkh,
+                      false,
+                    );
+                await LocalStorage().prefs.setAccountScanStatus(
+                      state.id,
+                      AddressType.p2Tr,
+                      false,
+                    );
                 await Future.delayed(const Duration(milliseconds: 400));
-                EnvoyReport().log("Migration",
-                    "Descriptor added for ${firstAccountState.name} ${missingAccount.wallet.type}");
+                EnvoyReport().log(
+                  "Migration",
+                  "Descriptor added for ${firstAccountState.name} ${missingAccount.wallet.type}",
+                );
               }
             }
             await relocateAccount(firstAccount, firstAccountState);
@@ -355,14 +394,18 @@ class MigrationManager {
         }
         LegacyAccount account = legacyAccount.accounts.first;
         final dir = NgAccountManager.getAccountDirectory(
-            deviceSerial: legacyAccount.accounts.first.deviceSerial,
-            network: legacyAccount.accounts.first.wallet.network.toLowerCase(),
-            fingerprint: legacyAccount.fingerprint,
-            number: legacyAccount.accounts.first.number);
+          deviceSerial: legacyAccount.accounts.first.deviceSerial,
+          network: legacyAccount.accounts.first.wallet.network.toLowerCase(),
+          fingerprint: legacyAccount.fingerprint,
+          number: legacyAccount.accounts.first.number,
+        );
         if (!await dir.exists()) {
           if (legacyAccount.accounts.first.deviceSerial == "envoy") {
-            final existingEnvoyWallet = dirs.firstWhereOrNull((e) => e.path
-                .contains("envoy_${account.wallet.network.toLowerCase()}"));
+            final existingEnvoyWallet = dirs.firstWhereOrNull(
+              (e) => e.path.contains(
+                "envoy_${account.wallet.network.toLowerCase()}",
+              ),
+            );
             if (existingEnvoyWallet != null) {
               continue;
             }
@@ -375,14 +418,18 @@ class MigrationManager {
         }
       }
       addMigrationEvent(
-          MigrationProgress(total: dirs.length, completed: dirs.length));
+        MigrationProgress(total: dirs.length, completed: dirs.length),
+      );
       await Future.delayed(const Duration(milliseconds: 300));
 
       await cleanupMalformedDirectories();
       return;
     } catch (e, stack) {
-      EnvoyReport()
-          .log("Migration", "Error migrating accounts: $e", stackTrace: stack);
+      EnvoyReport().log(
+        "Migration",
+        "Error migrating accounts: $e",
+        stackTrace: stack,
+      );
     } finally {
       //make sure all accounts are disposed
       for (var account in accounts) {
@@ -400,8 +447,9 @@ class MigrationManager {
   Future<void> copyDirectory(Directory source, Directory destination) async {
     await for (var entity in source.list(recursive: false)) {
       if (entity is Directory) {
-        var newDirectory =
-            Directory(join(destination.absolute.path, basename(entity.path)));
+        var newDirectory = Directory(
+          join(destination.absolute.path, basename(entity.path)),
+        );
         await newDirectory.create();
         await copyDirectory(entity.absolute, newDirectory);
       } else if (entity is File) {
@@ -411,12 +459,15 @@ class MigrationManager {
   }
 
   Future<List<EnvoyAccountHandler>> createAccounts(
-      List<LegacyUnifiedAccounts> unifiedLegacyAccounts) async {
+    List<LegacyUnifiedAccounts> unifiedLegacyAccounts,
+  ) async {
     final List<EnvoyAccountHandler> handlers = [];
-    final accountOrder =
-        LocalStorage().prefs.getString(NgAccountManager.ACCOUNT_ORDER);
-    List<String> walletOrder =
-        List<String>.from(jsonDecode(accountOrder ?? "[]"));
+    final accountOrder = LocalStorage().prefs.getString(
+          NgAccountManager.ACCOUNT_ORDER,
+        );
+    List<String> walletOrder = List<String>.from(
+      jsonDecode(accountOrder ?? "[]"),
+    );
 
     bool taprootEnabled = Settings().taprootEnabled();
     bool showTestnet = Settings().showTestnetAccounts();
@@ -430,19 +481,22 @@ class MigrationManager {
       String? descriptor = legacyAccount.wallet.internalDescriptor ??
           legacyAccount.wallet.externalDescriptor;
       final fingerprint = NgAccountManager.getFingerprint(
-          legacyAccount.wallet.internalDescriptor ?? "");
+        legacyAccount.wallet.internalDescriptor ?? "",
+      );
 
       //probably hot wallet that does have descriptors
       if (fingerprint == null || descriptor == null) {
         throw Exception(
-            "Failed to get fingerprint for account ${legacyAccount.name} ${legacyAccount.wallet.externalDescriptor} ${legacyAccount.wallet.internalDescriptor}");
+          "Failed to get fingerprint for account ${legacyAccount.name} ${legacyAccount.wallet.externalDescriptor} ${legacyAccount.wallet.internalDescriptor}",
+        );
       }
 
       Directory newAccountDir = NgAccountManager.getAccountDirectory(
-          deviceSerial: legacyAccount.deviceSerial,
-          network: legacyAccount.wallet.network.toLowerCase(),
-          fingerprint: fingerprint,
-          number: legacyAccount.number);
+        deviceSerial: legacyAccount.deviceSerial,
+        network: legacyAccount.wallet.network.toLowerCase(),
+        fingerprint: fingerprint,
+        number: legacyAccount.number,
+      );
 
       if (!newAccountDir.existsSync()) {
         await newAccountDir.create(recursive: true);
@@ -495,26 +549,24 @@ class MigrationManager {
       final newId = Uuid().v4();
       addressType = descriptors.first.addressType;
       EnvoyReport().log(
-          "Migration",
-          "Migrating account ${descriptors.map((e) => e.addressType)} "
-              "$addressType ${legacyAccount.name} ${legacyAccount.wallet.network.toLowerCase()}");
+        "Migration",
+        "Migrating account ${descriptors.map((e) => e.addressType)} "
+            "$addressType ${legacyAccount.name} ${legacyAccount.wallet.network.toLowerCase()}",
+      );
 
       final envoyAccount = await EnvoyAccountHandler.migrate(
-          name: legacyAccount.name,
-          color: colorToHex(getAccountColor(legacyAccount)),
-          deviceSerial: legacyAccount.deviceSerial,
-          dateAdded: legacyAccount.dateAdded,
-          addressType: addressType,
-          descriptors: descriptors,
-          index: legacyAccount.number,
-          network: network,
-          id: newId,
-          dbPath: newAccountDir.path,
-          legacySledDbPath: oldWalletDirPaths
-              .map(
-                (e) => e.path,
-              )
-              .toList());
+        name: legacyAccount.name,
+        color: colorToHex(getAccountColor(legacyAccount)),
+        deviceSerial: legacyAccount.deviceSerial,
+        dateAdded: legacyAccount.dateAdded,
+        addressType: addressType,
+        descriptors: descriptors,
+        index: legacyAccount.number,
+        network: network,
+        id: newId,
+        dbPath: newAccountDir.path,
+        legacySledDbPath: oldWalletDirPaths.map((e) => e.path).toList(),
+      );
       handlers.add(envoyAccount);
       walletOrder.add(newId);
     }
@@ -544,10 +596,13 @@ class MigrationManager {
           );
           continue;
         }
-        unifiedWallets.add(LegacyUnifiedAccounts(
+        unifiedWallets.add(
+          LegacyUnifiedAccounts(
             accounts: accounts,
             network: accounts.first.wallet.network.toLowerCase(),
-            fingerprint: fingerprint));
+            fingerprint: fingerprint,
+          ),
+        );
       } else {
         EnvoyReport().log(
           "Migration",
@@ -576,11 +631,14 @@ class MigrationManager {
           );
           continue;
         }
-        unifiedWallets.add(LegacyUnifiedAccounts(
+        unifiedWallets.add(
+          LegacyUnifiedAccounts(
             accounts: unifiedSet.values.toList(),
             isUnified: false,
             fingerprint: fingerprint,
-            network: unifiedSet.values.first.wallet.network.toLowerCase()));
+            network: unifiedSet.values.first.wallet.network.toLowerCase(),
+          ),
+        );
       }
     }
     return unifiedWallets;
@@ -588,43 +646,53 @@ class MigrationManager {
 
   //migrate notes to new db.
   static Future migrateMeta(
-      EnvoyAccountHandler handler, List<LegacyAccount> legacyAccounts) async {
+    EnvoyAccountHandler handler,
+    List<LegacyAccount> legacyAccounts,
+  ) async {
     try {
       final state = await handler.state();
       for (var legacyAccount in legacyAccounts) {
         bool matchWithHotWallet = (state.isHot &&
-            state.network
-                .toString()
-                .toLowerCase()
-                .contains(legacyAccount.wallet.network.toLowerCase()));
+            state.network.toString().toLowerCase().contains(
+                  legacyAccount.wallet.network.toLowerCase(),
+                ));
         if (!matchWithHotWallet) {
           matchWithHotWallet = legacyAccount.extractFingerprint() == state.xfp;
         }
         kPrint(
-            "Migrating meta for ${legacyAccount.name} ${legacyAccount.wallet.network.toLowerCase()}");
+          "Migrating meta for ${legacyAccount.name} ${legacyAccount.wallet.network.toLowerCase()}",
+        );
         for (var descriptor in state.descriptors) {
           bool matchWithDescriptor =
               descriptor.internal == legacyAccount.wallet.internalDescriptor;
           if (matchWithDescriptor || matchWithHotWallet) {
             kPrint(
-                "Found descriptor ${legacyAccount.name} ${descriptor.addressType}");
+              "Found descriptor ${legacyAccount.name} ${descriptor.addressType}",
+            );
             List<String> blockedCoins =
                 await CoinRepository().getBlockedCoins();
-            Map<String, String> tagsMap =
-                await CoinRepository().getTagMap(accountId: legacyAccount.id);
+            Map<String, String> tagsMap = await CoinRepository().getTagMap(
+              accountId: legacyAccount.id,
+            );
             Map<String, String> notes = await EnvoyStorage().getAllNotes();
             Map<String, bool> doNotSpendMap = {};
             for (var blocked in blockedCoins) {
               doNotSpendMap[blocked] = true;
             }
             await handler.migrateMeta(
-                notes: notes, tags: tagsMap, doNotSpend: doNotSpendMap);
+              notes: notes,
+              tags: tagsMap,
+              doNotSpend: doNotSpendMap,
+            );
           }
         }
       }
     } catch (e, stack) {
-      EnvoyReport()
-          .log("Migration", "Error migrating meta: $e", stackTrace: stack);
+      EnvoyReport().log(
+        "Migration",
+        "Error migrating meta: $e",
+        stackTrace: stack,
+      );
     }
   }
 
@@ -637,8 +705,9 @@ class MigrationManager {
     for (var dir in dirs) {
       if (dir is Directory) {
         try {
-          final accountHandler =
-              await EnvoyAccountHandler.openAccount(dbPath: dir.path);
+          final accountHandler = await EnvoyAccountHandler.openAccount(
+            dbPath: dir.path,
+          );
           final state = await accountHandler.state();
           String message =
               "SanityCheck: ${state.name} | ${state.network} | ${state.xfp} -> \n";
@@ -653,8 +722,11 @@ class MigrationManager {
 
           accountHandler.dispose();
         } catch (e, stack) {
-          EnvoyReport()
-              .log("Migration", "Error opening wallet: $e", stackTrace: stack);
+          EnvoyReport().log(
+            "Migration",
+            "Error opening wallet: $e",
+            stackTrace: stack,
+          );
         }
       }
     }
@@ -669,10 +741,11 @@ class MigrationManager {
         logBuffer += "\n\nChecking SuperWallet : \"${firstAccount.name}\" \n";
 
         final accountDir = NgAccountManager.getAccountDirectory(
-            deviceSerial: firstAccount.deviceSerial,
-            network: unified.network,
-            fingerprint: unified.fingerprint,
-            number: firstAccount.number);
+          deviceSerial: firstAccount.deviceSerial,
+          network: unified.network,
+          fingerprint: unified.fingerprint,
+          number: firstAccount.number,
+        );
 
         logBuffer += "Account directory: ${accountDir.path}\n";
 
@@ -693,8 +766,9 @@ class MigrationManager {
 
           final fileNames = files.map((f) => f.path.toLowerCase()).toList();
           bool hasP2tr = fileNames.any((name) => name.endsWith('_p2tr.sqlite'));
-          bool hasP2wpkh =
-              fileNames.any((name) => name.endsWith('_p2wpkh.sqlite'));
+          bool hasP2wpkh = fileNames.any(
+            (name) => name.endsWith('_p2wpkh.sqlite'),
+          );
 
           String status = "";
           if (account.wallet.type == "taproot") {
@@ -721,16 +795,18 @@ class MigrationManager {
   }
 
   static Future<double?> getCurrentMigrationVersion() async {
-    final migrationVersion = (await EnvoyStorage()
-        .getNoBackUpPreference(MigrationManager.migrationPrefs));
+    final migrationVersion = (await EnvoyStorage().getNoBackUpPreference(
+      MigrationManager.migrationPrefs,
+    ));
 
     double? migrationVersionCode = (await EnvoyStorage()
         .getNoBackUpPreference<double>(MigrationManager.migrationCodePrefs));
 
     if (migrationVersion is String && migrationVersionCode == null) {
       try {
-        migrationVersionCode =
-            double.parse(migrationVersion.replaceAll("v", ""));
+        migrationVersionCode = double.parse(
+          migrationVersion.replaceAll("v", ""),
+        );
       } catch (e) {
         //ignore
       }
@@ -740,45 +816,56 @@ class MigrationManager {
 
   Future<List<LegacyAccount>> loadLegacyAccounts() async {
     List<LegacyAccount> legacyAccounts = [];
-    final v1backupFile =
-        File("${LocalStorage().appDocumentsDir.path}/v1_accounts.json");
+    final v1backupFile = File(
+      "${LocalStorage().appDocumentsDir.path}/v1_accounts.json",
+    );
     if (await v1backupFile.exists()) {
       try {
         List<dynamic> data = jsonDecode(await v1backupFile.readAsString());
-        legacyAccounts
-            .addAll(data.map((json) => LegacyAccount.fromJson(json)).toList());
+        legacyAccounts.addAll(
+          data.map((json) => LegacyAccount.fromJson(json)).toList(),
+        );
       } catch (e, stack) {
-        EnvoyReport().log("Migration", "Error loading legacy accounts: $e",
-            stackTrace: stack);
+        EnvoyReport().log(
+          "Migration",
+          "Error loading legacy accounts: $e",
+          stackTrace: stack,
+        );
       }
     } else if (_ls.prefs.containsKey(NgAccountManager.v1AccountsPrefKey)) {
-      List<dynamic> accountsJson =
-          jsonDecode(_ls.prefs.getString(NgAccountManager.v1AccountsPrefKey)!)
-              .toList();
+      List<dynamic> accountsJson = jsonDecode(
+        _ls.prefs.getString(NgAccountManager.v1AccountsPrefKey)!,
+      ).toList();
       legacyAccounts.addAll(
-          accountsJson.map((json) => LegacyAccount.fromJson(json)).toList());
+        accountsJson.map((json) => LegacyAccount.fromJson(json)).toList(),
+      );
     }
     return legacyAccounts;
   }
 
   //merges two accounts with same xfp,network,index
   Future mergeTwoAccounts(
-      EnvoyAccountHandler first, EnvoyAccountHandler last) async {
+    EnvoyAccountHandler first,
+    EnvoyAccountHandler last,
+  ) async {
     final state = await first.state();
     final network = state.network.toString();
     final directory = NgAccountManager.getAccountDirectory(
-        deviceSerial: state.deviceSerial ?? "envoy",
-        network: network,
-        number: state.index,
-        fingerprint: state.xfp.toLowerCase());
+      deviceSerial: state.deviceSerial ?? "envoy",
+      network: network,
+      number: state.index,
+      fingerprint: state.xfp.toLowerCase(),
+    );
     final accountOne = first;
     final accountTwo = last;
     try {
       final accountOneState = await accountOne.state();
       final accountTwoState = await accountTwo.state();
 
-      EnvoyReport().log("Migration",
-          "Accounts Needs merge ${accountOneState.name} ${accountTwoState.name}");
+      EnvoyReport().log(
+        "Migration",
+        "Accounts Needs merge ${accountOneState.name} ${accountTwoState.name}",
+      );
 
       final accountOnePath = _getCurrentWalletPath(first);
       final accountTwoPath = _getCurrentWalletPath(last);
@@ -796,21 +883,23 @@ class MigrationManager {
       descriptors.addAll(accountTwoState.descriptors);
       final taprootEnabled = Settings().taprootEnabled();
       kPrint(
-          "Descriptors: ${descriptors.map((e) => e.addressType).join(",")} ");
+        "Descriptors: ${descriptors.map((e) => e.addressType).join(",")} ",
+      );
 
       final envoyAccountHandler = await EnvoyAccountHandler.migrate(
-          name: accountOneState.name,
-          color: accountOneState.color,
-          deviceSerial: accountOneState.deviceSerial,
-          dateAdded: accountOneState.dateAdded,
-          addressType:
-              taprootEnabled == true ? AddressType.p2Tr : AddressType.p2Wpkh,
-          descriptors: descriptors,
-          index: accountOneState.index,
-          network: accountTwoState.network,
-          id: accountOneState.id,
-          dbPath: directory.path,
-          legacySledDbPath: []);
+        name: accountOneState.name,
+        color: accountOneState.color,
+        deviceSerial: accountOneState.deviceSerial,
+        dateAdded: accountOneState.dateAdded,
+        addressType:
+            taprootEnabled == true ? AddressType.p2Tr : AddressType.p2Wpkh,
+        descriptors: descriptors,
+        index: accountOneState.index,
+        network: accountTwoState.network,
+        id: accountOneState.id,
+        dbPath: directory.path,
+        legacySledDbPath: [],
+      );
       try {
         final backup1 = jsonDecode(await accountOne.getAccountBackup());
         final backup2 = jsonDecode(await accountTwo.getAccountBackup());
@@ -825,17 +914,24 @@ class MigrationManager {
 
         kPrint("MigrationV2.1 meta for ${accountOneState.name}");
         await envoyAccountHandler.migrateMeta(
-            notes: notes, tags: tags, doNotSpend: doNotSpend);
+          notes: notes,
+          tags: tags,
+          doNotSpend: doNotSpend,
+        );
       } catch (e) {
         EnvoyReport().log("MigrationV2.1", "Error migrating meta: $e");
       }
       final state = await envoyAccountHandler.state();
-      await LocalStorage()
-          .prefs
-          .setAccountScanStatus(state.id, AddressType.p2Pkh, false);
-      await LocalStorage()
-          .prefs
-          .setAccountScanStatus(state.id, AddressType.p2Tr, false);
+      await LocalStorage().prefs.setAccountScanStatus(
+            state.id,
+            AddressType.p2Pkh,
+            false,
+          );
+      await LocalStorage().prefs.setAccountScanStatus(
+            state.id,
+            AddressType.p2Tr,
+            false,
+          );
 
       accountTwo.dispose();
       envoyAccountHandler.dispose();
@@ -846,8 +942,10 @@ class MigrationManager {
       await accountTwoPath.delete(recursive: true);
 
       kPrint("Deleting old wallet paths successful");
-      EnvoyReport().log("Migration",
-          "Accounts merged ${accountOneState.name} ${accountTwoState.name}  ");
+      EnvoyReport().log(
+        "Migration",
+        "Accounts merged ${accountOneState.name} ${accountTwoState.name}  ",
+      );
       kPrint("Migrated ");
     } catch (e, stack) {
       if (!accountOne.isDisposed) accountOne.dispose();
@@ -858,39 +956,53 @@ class MigrationManager {
 
   //relocates an account to a xfp based directory
   Future relocateAccount(
-      EnvoyAccountHandler account, EnvoyAccount state) async {
+    EnvoyAccountHandler account,
+    EnvoyAccount state,
+  ) async {
     final network = state.network.toString();
     //get old wallet directory. this doesn't include xfp
     final currentPath = _getCurrentWalletPath(account);
     final dir = NgAccountManager.getAccountDirectory(
-        deviceSerial: state.deviceSerial ?? "envoy",
-        network: network,
-        number: state.index,
-        fingerprint: state.xfp.toLowerCase());
+      deviceSerial: state.deviceSerial ?? "envoy",
+      network: network,
+      number: state.index,
+      fingerprint: state.xfp.toLowerCase(),
+    );
     if (dir.path == currentPath.path) {
       return;
     }
     try {
       await dir.create(recursive: true);
-      EnvoyReport().log("Migration",
-          "Relocating account ${state.name} (${state.network}) ${account.getDirectoryPath()} to ${dir.path}");
+      EnvoyReport().log(
+        "Migration",
+        "Relocating account ${state.name} (${state.network}) ${account.getDirectoryPath()} to ${dir.path}",
+      );
       //close the account before moving
       account.dispose();
       await Future.delayed(const Duration(milliseconds: 600));
       await copyDirectory(currentPath, dir);
-      EnvoyReport().log("Migration",
-          "Relocated account ${state.name} ${dir.path}, and deleting old path ${currentPath.path}");
+      EnvoyReport().log(
+        "Migration",
+        "Relocated account ${state.name} ${dir.path}, and deleting old path ${currentPath.path}",
+      );
       await currentPath.delete(recursive: true);
-      await LocalStorage()
-          .prefs
-          .setAccountScanStatus(state.id, AddressType.p2Pkh, false);
-      await LocalStorage()
-          .prefs
-          .setAccountScanStatus(state.id, AddressType.p2Tr, false);
+      await LocalStorage().prefs.setAccountScanStatus(
+            state.id,
+            AddressType.p2Pkh,
+            false,
+          );
+      await LocalStorage().prefs.setAccountScanStatus(
+            state.id,
+            AddressType.p2Tr,
+            false,
+          );
       kPrint("Deleted old wallet path");
     } catch (e, stack) {
-      EnvoyReport()
-          .log("Migration", "Error relocating account: $e", stackTrace: stack);
+      EnvoyReport().log(
+        "Migration",
+        "Error relocating account: $e",
+        stackTrace: stack,
+      );
     }
   }
 
@@ -918,15 +1030,15 @@ class MigrationManager {
 
   Future<bool> isMigrationRequired() async {
     // check if user has legacy accounts
-    bool hasAccounts =
-        LocalStorage().prefs.containsKey(NgAccountManager.v1AccountsPrefKey);
+    bool hasAccounts = LocalStorage().prefs.containsKey(
+          NgAccountManager.v1AccountsPrefKey,
+        );
     if (hasAccounts) {
       try {
-        hasAccounts = jsonDecode(LocalStorage()
-                    .prefs
-                    .getString(NgAccountManager.v1AccountsPrefKey) ??
-                "[]")
-            .isNotEmpty;
+        hasAccounts = jsonDecode(
+          LocalStorage().prefs.getString(NgAccountManager.v1AccountsPrefKey) ??
+              "[]",
+        ).isNotEmpty;
       } catch (e) {
         hasAccounts = false;
       }
@@ -940,12 +1052,14 @@ class MigrationManager {
     kPrint("Current migration version from prefs: $currentMigrationVersion");
     // handle legacy string-based version, TOOD: remove in v2.5
     if (currentMigrationVersion == null) {
-      final legacyVersion = await EnvoyStorage()
-          .getNoBackUpPreference(MigrationManager.migrationPrefs);
+      final legacyVersion = await EnvoyStorage().getNoBackUpPreference(
+        MigrationManager.migrationPrefs,
+      );
       if (legacyVersion is String) {
         try {
-          currentMigrationVersion =
-              double.parse(legacyVersion.replaceAll("v", ""));
+          currentMigrationVersion = double.parse(
+            legacyVersion.replaceAll("v", ""),
+          );
         } catch (e) {
           currentMigrationVersion = 0.0; // Treat as unmigrated
         }
@@ -958,8 +1072,9 @@ class MigrationManager {
         (currentMigrationVersion < MigrationManager.migrationVersionCode);
 
     final newWalletDirectory = NgAccountManager.walletsDirectory;
-    final legacyWalletDirectory =
-        Directory(MigrationManager.legacyWalletDirectory);
+    final legacyWalletDirectory = Directory(
+      MigrationManager.legacyWalletDirectory,
+    );
     final walletDirectory = Directory(newWalletDirectory);
 
     int legacyWallets = 0;
@@ -988,11 +1103,12 @@ class MigrationManager {
     final a = await PackageInfo.fromPlatform();
 
     EnvoyReport().log(
-        "Migration",
-        "Current migration version: $currentMigrationVersion,"
-            " Required: ${MigrationManager.migrationVersionCode},"
-            " Requires migration: $requiresMigration\n"
-            " App version: ${a.version}  (${a.buildNumber})  ");
+      "Migration",
+      "Current migration version: $currentMigrationVersion,"
+          " Required: ${MigrationManager.migrationVersionCode},"
+          " Requires migration: $requiresMigration\n"
+          " App version: ${a.version}  (${a.buildNumber})  ",
+    );
 
     return requiresMigration;
   }
@@ -1007,27 +1123,28 @@ class MigrationManager {
 
   Future setMigrationComplete() async {
     await EnvoyStorage().setNoBackUpPreference(
-        MigrationManager.migrationCodePrefs,
-        MigrationManager.migrationVersionCode);
+      MigrationManager.migrationCodePrefs,
+      MigrationManager.migrationVersionCode,
+    );
     await EnvoyStorage().setNoBackUpPreference(
-        MigrationManager.migrationVersion,
-        MigrationManager.migrationVersionCode.toString());
+      MigrationManager.migrationVersion,
+      MigrationManager.migrationVersionCode.toString(),
+    );
   }
 
   Future resetMigrationPrefs() async {
     try {
       await EnvoyStorage().setNoBackUpPreference(
-          MigrationManager.migrationCodePrefs,
-          MigrationManager.migrationVersionCode);
+        MigrationManager.migrationCodePrefs,
+        MigrationManager.migrationVersionCode,
+      );
     } catch (_) {
       //ignore
     }
   }
 }
 
-Color getAccountColor(
-  LegacyAccount account,
-) {
+Color getAccountColor(LegacyAccount account) {
   // Postmix accounts are pure red
   if (account.number == 2147483646) {
     return Colors.red;

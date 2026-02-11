@@ -122,7 +122,9 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(
-              vertical: EnvoySpacing.medium2, horizontal: EnvoySpacing.medium2),
+            vertical: EnvoySpacing.medium2,
+            horizontal: EnvoySpacing.medium2,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -136,9 +138,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                         style: EnvoyTypography.subheading,
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(
-                        height: EnvoySpacing.medium2,
-                      ),
+                      const SizedBox(height: EnvoySpacing.medium2),
                       StackedAccountChooser(
                         key: accountChooserKey,
                         account: selectedAccount ?? filteredAccounts.first,
@@ -152,35 +152,33 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                           updateSelectedAccount(account);
                         },
                       ),
-                      const SizedBox(
-                        height: EnvoySpacing.small,
+                      const SizedBox(height: EnvoySpacing.small),
+                      Builder(
+                        builder: (context) {
+                          return GestureDetector(
+                            child: Text(
+                              S().buy_bitcoin_accountSelection_chooseAccount,
+                              style: EnvoyTypography.info.copyWith(
+                                color: EnvoyColors.accentPrimary,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            onTap: () {
+                              accountChooserKey.currentState
+                                  ?.openChooserOverlay(context);
+                            },
+                          );
+                        },
                       ),
-                      Builder(builder: (context) {
-                        return GestureDetector(
-                          child: Text(
-                            S().buy_bitcoin_accountSelection_chooseAccount,
-                            style: EnvoyTypography.info
-                                .copyWith(color: EnvoyColors.accentPrimary),
-                            textAlign: TextAlign.center,
-                          ),
-                          onTap: () {
-                            accountChooserKey.currentState
-                                ?.openChooserOverlay(context);
-                          },
-                        );
-                      }),
-                      const SizedBox(
-                        height: EnvoySpacing.medium2,
-                      ),
+                      const SizedBox(height: EnvoySpacing.medium2),
                       Text(
                         S().buy_bitcoin_accountSelection_subheading,
-                        style: EnvoyTypography.info
-                            .copyWith(color: EnvoyColors.textTertiary),
+                        style: EnvoyTypography.info.copyWith(
+                          color: EnvoyColors.textTertiary,
+                        ),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(
-                        height: EnvoySpacing.medium1,
-                      ),
+                      const SizedBox(height: EnvoySpacing.medium1),
                       getAddressWidget(address),
                     ],
                   ),
@@ -191,8 +189,9 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                 children: [
                   if (!selectedAccount!.isHot)
                     Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: EnvoySpacing.small),
+                      padding: const EdgeInsets.only(
+                        bottom: EnvoySpacing.small,
+                      ),
                       child: EnvoyButton(
                         label: S().buy_bitcoin_accountSelection_verify,
                         icon: EnvoyIcons.verifyAddress,
@@ -224,47 +223,56 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                       type: ButtonType.primary,
                       state: ButtonState.defaultState,
                       onTap: () async {
-                        bool dismissed = await EnvoyStorage()
-                            .checkPromptDismissed(
-                                DismissiblePrompt.leavingEnvoy);
+                        bool dismissed =
+                            await EnvoyStorage().checkPromptDismissed(
+                          DismissiblePrompt.leavingEnvoy,
+                        );
                         if (!dismissed && context.mounted) {
                           showEnvoyPopUp(
-                              context,
-                              title: S()
-                                  .buy_bitcoin_accountSelection_modal_heading,
-                              S().buy_bitcoin_accountSelection_modal_subheading,
-                              S().send_keyboard_address_confirm,
-                              (BuildContext context) async {
-                                setState(() {
-                                  isRampOpen = true;
-                                });
-                                Navigator.pop(context);
-
-                                if (context.mounted) {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .push(
-                                    MaterialPageRoute(builder: (context) {
-                                      return MediaQuery.removePadding(
-                                          context: context,
-                                          child: fullScreenShield(
-                                              PurchaseComplete(
-                                                  selectedAccount!, address!)));
-                                    }),
-                                  );
-                                }
-                              },
-                              icon: EnvoyIcons.info,
-                              checkBoxText: S().component_dontShowAgain,
-                              checkedValue: dismissed,
-                              onCheckBoxChanged: (checkedValue) {
-                                if (!checkedValue) {
-                                  EnvoyStorage().addPromptState(
-                                      DismissiblePrompt.leavingEnvoy);
-                                } else if (checkedValue) {
-                                  EnvoyStorage().removePromptState(
-                                      DismissiblePrompt.leavingEnvoy);
-                                }
+                            context,
+                            title:
+                                S().buy_bitcoin_accountSelection_modal_heading,
+                            S().buy_bitcoin_accountSelection_modal_subheading,
+                            S().send_keyboard_address_confirm,
+                            (BuildContext context) async {
+                              setState(() {
+                                isRampOpen = true;
                               });
+                              Navigator.pop(context);
+
+                              if (context.mounted) {
+                                Navigator.of(context, rootNavigator: true).push(
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return MediaQuery.removePadding(
+                                        context: context,
+                                        child: fullScreenShield(
+                                          PurchaseComplete(
+                                            selectedAccount!,
+                                            address!,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              }
+                            },
+                            icon: EnvoyIcons.info,
+                            checkBoxText: S().component_dontShowAgain,
+                            checkedValue: dismissed,
+                            onCheckBoxChanged: (checkedValue) {
+                              if (!checkedValue) {
+                                EnvoyStorage().addPromptState(
+                                  DismissiblePrompt.leavingEnvoy,
+                                );
+                              } else if (checkedValue) {
+                                EnvoyStorage().removePromptState(
+                                  DismissiblePrompt.leavingEnvoy,
+                                );
+                              }
+                            },
+                          );
                         } else {
                           if (context.mounted) {
                             setState(() {
@@ -272,12 +280,19 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                             });
 
                             Navigator.of(context, rootNavigator: true).push(
-                              MaterialPageRoute(builder: (context) {
-                                return MediaQuery.removePadding(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return MediaQuery.removePadding(
                                     context: context,
-                                    child: fullScreenShield(PurchaseComplete(
-                                        selectedAccount!, address!)));
-                              }),
+                                    child: fullScreenShield(
+                                      PurchaseComplete(
+                                        selectedAccount!,
+                                        address!,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                             );
                           }
                         }
@@ -285,7 +300,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -299,10 +314,7 @@ class _SelectAccountState extends ConsumerState<SelectAccount> {
             padding: const EdgeInsets.symmetric(
               horizontal: EnvoySpacing.medium2,
             ),
-            child: AddressWidget(
-              address: address,
-              align: TextAlign.center,
-            ),
+            child: AddressWidget(address: address, align: TextAlign.center),
           )
         : const EnvoyLoader();
   }
@@ -342,101 +354,111 @@ class ChooseAccountState extends State<ChooseAccount> {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(builder: (context) {
-      return GestureDetector(
-        onTapUp: (_) {
-          moveAccountToEnd(widget.selectedAccount);
-          if (context.mounted) {
-            Navigator.of(context).pop();
-          }
-        },
-        child: TweenAnimationBuilder(
-          duration: Duration(milliseconds: _exiting ? 100 : 300),
-          builder: (context, value, child) {
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                value ?? Colors.transparent,
-                const Color(0x00000000),
-              ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-              child: child,
-            );
+    return Builder(
+      builder: (context) {
+        return GestureDetector(
+          onTapUp: (_) {
+            moveAccountToEnd(widget.selectedAccount);
+            if (context.mounted) {
+              Navigator.of(context).pop();
+            }
           },
-          tween: _exiting
-              ? ColorTween(begin: Colors.black, end: Colors.transparent)
-              : ColorTween(begin: Colors.transparent, end: Colors.black),
           child: TweenAnimationBuilder(
             duration: Duration(milliseconds: _exiting ? 100 : 300),
-            tween: _exiting
-                ? Tween<double>(begin: 5, end: 0)
-                : Tween<double>(begin: 0, end: 5),
             builder: (context, value, child) {
-              return BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: value, sigmaY: value),
-                  child: child);
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      value ?? Colors.transparent,
+                      const Color(0x00000000),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: child,
+              );
             },
-            child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                centerTitle: true,
-                title: AnimatedOpacity(
-                  duration: Duration(milliseconds: _exiting ? 100 : 300),
-                  opacity: _exiting ? 0 : 1,
-                  child: Text(
-                    S().header_chooseAccount,
-                    style: EnvoyTypography.subheading
-                        .copyWith(color: Colors.white),
+            tween: _exiting
+                ? ColorTween(begin: Colors.black, end: Colors.transparent)
+                : ColorTween(begin: Colors.transparent, end: Colors.black),
+            child: TweenAnimationBuilder(
+              duration: Duration(milliseconds: _exiting ? 100 : 300),
+              tween: _exiting
+                  ? Tween<double>(begin: 5, end: 0)
+                  : Tween<double>(begin: 0, end: 5),
+              builder: (context, value, child) {
+                return BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: value, sigmaY: value),
+                  child: child,
+                );
+              },
+              child: Scaffold(
+                appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  centerTitle: true,
+                  title: AnimatedOpacity(
+                    duration: Duration(milliseconds: _exiting ? 100 : 300),
+                    opacity: _exiting ? 0 : 1,
+                    child: Text(
+                      S().header_chooseAccount,
+                      style: EnvoyTypography.subheading.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  leading: AnimatedOpacity(
+                    duration: Duration(milliseconds: _exiting ? 100 : 300),
+                    opacity: _exiting ? 0 : 1,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ),
                 ),
-                leading: AnimatedOpacity(
-                  duration: Duration(milliseconds: _exiting ? 100 : 300),
-                  opacity: _exiting ? 0 : 1,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
-              ),
-              body: Padding(
-                padding: const EdgeInsets.symmetric(
+                body: Padding(
+                  padding: const EdgeInsets.symmetric(
                     vertical: EnvoySpacing.medium1,
-                    horizontal: EnvoySpacing.medium1),
-                child: ShaderMask(
-                  shaderCallback: (Rect rect) {
-                    return const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        EnvoyColors.solidWhite,
-                        Colors.transparent,
-                        Colors.transparent,
-                        EnvoyColors.solidWhite,
-                      ],
-                      stops: [0.0, 0.05, 0.95, 1.0],
-                    ).createShader(rect);
-                  },
-                  blendMode: BlendMode.dstOut,
-                  child: ReorderableListView.builder(
-                    shrinkWrap: true,
-                    buildDefaultDragHandles: false,
-                    itemCount: accounts.length,
-                    onReorder: (oldIndex, newIndex) {},
-                    itemBuilder: (context, index) {
-                      return _buildAccountItem(context, accounts[index]);
+                    horizontal: EnvoySpacing.medium1,
+                  ),
+                  child: ShaderMask(
+                    shaderCallback: (Rect rect) {
+                      return const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          EnvoyColors.solidWhite,
+                          Colors.transparent,
+                          Colors.transparent,
+                          EnvoyColors.solidWhite,
+                        ],
+                        stops: [0.0, 0.05, 0.95, 1.0],
+                      ).createShader(rect);
                     },
+                    blendMode: BlendMode.dstOut,
+                    child: ReorderableListView.builder(
+                      shrinkWrap: true,
+                      buildDefaultDragHandles: false,
+                      itemCount: accounts.length,
+                      onReorder: (oldIndex, newIndex) {},
+                      itemBuilder: (context, index) {
+                        return _buildAccountItem(context, accounts[index]);
+                      },
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   int _getAccountIndexById(String? id) {
@@ -448,36 +470,37 @@ class ChooseAccountState extends State<ChooseAccount> {
     return 0;
   }
 
-  Widget _buildAccountItem(
-    BuildContext context,
-    EnvoyAccount account,
-  ) {
+  Widget _buildAccountItem(BuildContext context, EnvoyAccount account) {
     return Padding(
       key: ValueKey(account.id),
       padding: const EdgeInsets.symmetric(
-          vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium1),
+        vertical: EnvoySpacing.small,
+        horizontal: EnvoySpacing.medium1,
+      ),
       child: Hero(
         transitionOnUserGestures: true,
         tag: account.id,
-        child: Consumer(builder: (context, ref, child) {
-          return AccountListTile(
-            account,
-            onTap: () async {
-              final navigator = Navigator.of(context);
-              setState(() {
-                _exiting = true;
-              });
-              await Future.delayed(const Duration(milliseconds: 100));
+        child: Consumer(
+          builder: (context, ref, child) {
+            return AccountListTile(
+              account,
+              onTap: () async {
+                final navigator = Navigator.of(context);
+                setState(() {
+                  _exiting = true;
+                });
+                await Future.delayed(const Duration(milliseconds: 100));
 
-              _currentSelectedAccount = account;
-              widget.onSelectAccount(account);
-              // moveAccountToEnd(account);
-              await Future.delayed(const Duration(milliseconds: 100));
-              navigator.pop();
-            },
-            draggable: false,
-          );
-        }),
+                _currentSelectedAccount = account;
+                widget.onSelectAccount(account);
+                // moveAccountToEnd(account);
+                await Future.delayed(const Duration(milliseconds: 100));
+                navigator.pop();
+              },
+              draggable: false,
+            );
+          },
+        ),
       ),
     );
   }
@@ -531,23 +554,22 @@ class VerifyAddressDialog extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
               child: Text(
                 S().buy_bitcoin_accountSelection_verify_modal_heading(
-                    accountName),
+                  accountName,
+                ),
                 style: EnvoyTypography.info,
                 textAlign: TextAlign.center,
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-              child: AddressWidget(
-                address: address,
-                align: TextAlign.center,
-              ),
+              child: AddressWidget(address: address, align: TextAlign.center),
             ),
             Flexible(
-                child: Padding(
-              padding: const EdgeInsets.all(EnvoySpacing.small),
-              child: EnvoyQR(data: address),
-            )),
+              child: Padding(
+                padding: const EdgeInsets.all(EnvoySpacing.small),
+                child: EnvoyQR(data: address),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
               child: EnvoyButton(
@@ -558,7 +580,7 @@ class VerifyAddressDialog extends StatelessWidget {
                   Navigator.pop(context);
                 },
               ),
-            )
+            ),
           ],
         ),
       ),

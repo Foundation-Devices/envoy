@@ -20,19 +20,23 @@ class ScvResultOkPage extends StatelessWidget {
       rightFunction: null,
       text: [
         OnboardingText(
-            header: S().envoy_scv_result_ok_heading,
-            text: S().envoy_scv_result_ok_subheading)
+          header: S().envoy_scv_result_ok_heading,
+          text: S().envoy_scv_result_ok_subheading,
+        ),
       ],
       buttons: [
         OnboardingButton(
-            label: S().component_continue,
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return PinIntroPage(
-                  mustUpdateFirmware: mustUpdateFirmware,
-                );
-              }));
-            }),
+          label: S().component_continue,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return PinIntroPage(mustUpdateFirmware: mustUpdateFirmware);
+                },
+              ),
+            );
+          },
+        ),
       ],
     );
   }

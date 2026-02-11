@@ -27,8 +27,10 @@ class IndicatorShieldState extends State<IndicatorShield>
   @override
   initState() {
     super.initState();
-    _circuitEstablishingAnimationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    _circuitEstablishingAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
 
     _circuitEstablishingAnimation = _circuitEstablishingAnimationController
         .drive(Tween(begin: 1.0, end: 0.5));
@@ -101,15 +103,20 @@ class IndicatorShieldState extends State<IndicatorShield>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (context, ref, _) {
-      ref.watch(settingsProvider);
-      _updateShield();
-      return Opacity(
+    return Consumer(
+      builder: (context, ref, _) {
+        ref.watch(settingsProvider);
+        _updateShield();
+        return Opacity(
           opacity: ConnectivityManager().torCircuitEstablished
               ? 1.0
               : _circuitEstablishingAnimation.value,
           child: AnimatedSwitcher(
-              duration: const Duration(seconds: 1), child: _currentShield));
-    });
+            duration: const Duration(seconds: 1),
+            child: _currentShield,
+          ),
+        );
+      },
+    );
   }
 }

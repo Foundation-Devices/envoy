@@ -44,73 +44,94 @@ class PpSetupIntroPage extends StatelessWidget {
         automaticallyImplyLeading: false,
       ),
       shield: Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: EnvoySpacing.medium2, vertical: EnvoySpacing.medium1),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const SizedBox(height: EnvoySpacing.small),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.small),
-                        child: Column(
-                          children: [
-                            const SizedBox(height: EnvoySpacing.medium3),
-                            Text(
-                              S().envoy_pp_setup_intro_heading,
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.heading,
-                            ),
-                            const SizedBox(height: EnvoySpacing.small),
-                            Text(
-                              S().envoy_pp_setup_intro_subheading,
-                              style: EnvoyTypography.info
-                                  .copyWith(color: EnvoyColors.textTertiary),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: EnvoySpacing.medium2,
+          vertical: EnvoySpacing.medium1,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const SizedBox(height: EnvoySpacing.small),
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.small,
                       ),
-                    ],
-                  ),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: EnvoySpacing.medium3),
+                          Text(
+                            S().envoy_pp_setup_intro_heading,
+                            textAlign: TextAlign.center,
+                            style: EnvoyTypography.heading,
+                          ),
+                          const SizedBox(height: EnvoySpacing.small),
+                          Text(
+                            S().envoy_pp_setup_intro_subheading,
+                            style: EnvoyTypography.info.copyWith(
+                              color: EnvoyColors.textTertiary,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Column(
-                children: [
-                  const SizedBox(height: EnvoySpacing.xs),
-                  EnvoyButton(
-                      type: EnvoyButtonTypes.tertiary,
-                      S().envoy_pp_setup_intro_cta3, onTap: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return const PpRestoreBackupPage();
-                    }));
-                  }),
-                  const SizedBox(height: EnvoySpacing.small),
-                  EnvoyButton(
-                      type: EnvoyButtonTypes.secondary,
-                      S().envoy_pp_setup_intro_cta2, onTap: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return const PpRestoreSeedPage();
-                    }));
-                  }),
-                  const SizedBox(height: EnvoySpacing.small),
-                  EnvoyButton(S().envoy_pp_setup_intro_cta1, onTap: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return const PpNewSeedPage();
-                    }));
-                  }),
-                ],
-              )
-            ],
-          )),
+            ),
+            Column(
+              children: [
+                const SizedBox(height: EnvoySpacing.xs),
+                EnvoyButton(
+                  type: EnvoyButtonTypes.tertiary,
+                  S().envoy_pp_setup_intro_cta3,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const PpRestoreBackupPage();
+                        },
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: EnvoySpacing.small),
+                EnvoyButton(
+                  type: EnvoyButtonTypes.secondary,
+                  S().envoy_pp_setup_intro_cta2,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const PpRestoreSeedPage();
+                        },
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: EnvoySpacing.small),
+                EnvoyButton(
+                  S().envoy_pp_setup_intro_cta1,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const PpNewSeedPage();
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

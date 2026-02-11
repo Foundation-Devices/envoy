@@ -12,8 +12,11 @@ class AztecoRedeemModal extends StatefulWidget {
   final AztecoVoucher voucher;
   final PageController controller;
 
-  const AztecoRedeemModal(
-      {super.key, required this.voucher, required this.controller});
+  const AztecoRedeemModal({
+    super.key,
+    required this.voucher,
+    required this.controller,
+  });
 
   @override
   State<AztecoRedeemModal> createState() => _AztecoRedeemModalState();
@@ -24,10 +27,9 @@ class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
   Widget build(BuildContext context) {
     var headingTextStyle = EnvoyTypography.heading;
 
-    var voucherCodeTextStyle = Theme.of(context)
-        .textTheme
-        .bodyMedium
-        ?.copyWith(fontWeight: FontWeight.w900, fontSize: 12);
+    var voucherCodeTextStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w900, fontSize: 12);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -35,8 +37,10 @@ class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
         Align(
           alignment: Alignment.centerRight,
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 4 * 4, vertical: 4 * 4),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 4 * 4,
+              vertical: 4 * 4,
+            ),
             child: IconButton(
               icon: const Icon(Icons.close),
               onPressed: () {
@@ -84,8 +88,10 @@ class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
         ),
         Flexible(
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 8 * 4, vertical: 6 * 4),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8 * 4,
+              vertical: 6 * 4,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -103,8 +109,9 @@ class _AztecoRedeemModalState extends State<AztecoRedeemModal> {
                     type: EnvoyButtonTypes.primaryModal,
                     onTap: () {
                       widget.controller.nextPage(
-                          duration: const Duration(microseconds: 100),
-                          curve: Curves.linear);
+                        duration: const Duration(microseconds: 100),
+                        curve: Curves.linear,
+                      );
                     },
                   ),
                 ),

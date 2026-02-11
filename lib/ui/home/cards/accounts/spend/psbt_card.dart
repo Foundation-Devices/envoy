@@ -95,13 +95,15 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
           child: SizedBox.expand(
             child: Container(
               decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
                     envoy_colors.EnvoyColors.surface2,
-                    envoy_colors.EnvoyColors.surface1
-                  ])),
+                    envoy_colors.EnvoyColors.surface1,
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -126,106 +128,107 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
           ],
           removeAppBarPadding: true,
           child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: EnvoySpacing.medium1),
-                    Text(
-                      S().send_qr_code_card_heading,
-                      style: EnvoyTypography.heading,
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: EnvoySpacing.small),
-                    Text(
-                      S().send_qr_code_card_subheading,
-                      style: EnvoyTypography.body.copyWith(
-                          color: envoy_colors.EnvoyColors.textSecondary),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: EnvoySpacing.medium2),
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.medium1),
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                  width: 1,
-                                  color: envoy_colors.EnvoyColors.border2),
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(EnvoySpacing.medium1))),
-                          child: AspectRatio(
-                            aspectRatio: 1.0,
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.all(EnvoySpacing.medium1),
-                                child: AnimatedQrImage(
-                                  widget.transaction.psbt,
-                                  urType: "crypto-psbt",
-                                  binaryCborTag: true,
-                                ),
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: EnvoySpacing.medium1),
+                  Text(
+                    S().send_qr_code_card_heading,
+                    style: EnvoyTypography.heading,
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: EnvoySpacing.small),
+                  Text(
+                    S().send_qr_code_card_subheading,
+                    style: EnvoyTypography.body.copyWith(
+                        color: envoy_colors.EnvoyColors.textSecondary),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: EnvoySpacing.medium2),
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium1),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                                width: 1,
+                                color: envoy_colors.EnvoyColors.border2),
+                            borderRadius: const BorderRadius.all(
+                                Radius.circular(EnvoySpacing.medium1))),
+                        child: AspectRatio(
+                          aspectRatio: 1.0,
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.all(EnvoySpacing.medium1),
+                              child: AnimatedQrImage(
+                                widget.transaction.psbt,
+                                urType: "crypto-psbt",
+                                binaryCborTag: true,
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: EnvoySpacing.medium1,
+                    right: EnvoySpacing.medium1,
+                    bottom: EnvoySpacing.large2),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    EnvoyButton(
+                      S().send_QrScan_saveToFile,
+                      onTap: () {
+                        SharePlus.instance.share(ShareParams(
+                          text: base64Encode(widget.transaction.psbt),
+                        ));
+                      },
+                      type: EnvoyButtonTypes.tertiary,
+                      leading: EnvoyIcon(
+                        EnvoyIcons.sd_card,
+                        color: envoy_colors.EnvoyColors.accentPrimary,
+                        size: EnvoyIconSize.extraSmall,
+                      ),
+                    ),
+                    SizedBox(
+                      height: EnvoySpacing.small,
+                    ),
+                    EnvoyButton(
+                      isDisabled
+                          ? '${countdown.toString()}... ${S().send_qrScan_scanQrWithPassportFirst}'
+                          : S().send_qrScan_verifyOnPassport,
+                      leading: EnvoyIcon(
+                        isDisabled ? EnvoyIcons.clock : EnvoyIcons.eye,
+                        color: envoy_colors.EnvoyColors.solidWhite,
+                        size: EnvoyIconSize.extraSmall,
+                      ),
+                      enabled: !isDisabled,
+                      onTap: () {
+                        GoRouter.of(context).pushNamed(
+                            widget.rbfFlow
+                                ? PSBT_SCAN_QR
+                                : ACCOUNT_SEND_SCAN_QR,
+                            extra: widget.transaction);
+                      },
+                    ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: EnvoySpacing.medium1,
-                      right: EnvoySpacing.medium1,
-                      bottom: EnvoySpacing.large2),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      EnvoyButton(
-                        S().send_QrScan_saveToFile,
-                        onTap: () {
-                          SharePlus.instance.share(ShareParams(
-                            text: base64Encode(widget.transaction.psbt),
-                          ));
-                        },
-                        type: EnvoyButtonTypes.tertiary,
-                        leading: EnvoyIcon(
-                          EnvoyIcons.sd_card,
-                          color: envoy_colors.EnvoyColors.accentPrimary,
-                          size: EnvoyIconSize.extraSmall,
-                        ),
-                      ),
-                      SizedBox(
-                        height: EnvoySpacing.small,
-                      ),
-                      EnvoyButton(
-                        isDisabled
-                            ? '${countdown.toString()}... ${S().send_qrScan_scanQrWithPassportFirst}'
-                            : S().send_qrScan_verifyOnPassport,
-                        leading: EnvoyIcon(
-                          isDisabled ? EnvoyIcons.clock : EnvoyIcons.eye,
-                          color: envoy_colors.EnvoyColors.solidWhite,
-                          size: EnvoyIconSize.extraSmall,
-                        ),
-                        enabled: !isDisabled,
-                        onTap: () {
-                          GoRouter.of(context).pushNamed(
-                              widget.rbfFlow
-                                  ? PSBT_SCAN_QR
-                                  : ACCOUNT_SEND_SCAN_QR,
-                              extra: widget.transaction);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ]),
+              ),
+            ],
+          ),
         ),
       ],
     );

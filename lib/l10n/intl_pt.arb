@@ -1,7 +1,7 @@
 {
   ":": ":",
   "FW_Version_No.": "Firmware v2.0.3",
-  "_": "bc1q abcd rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m 0p",
+  "_": "Install",
   "about_appVersion": "Versão da Aplicação",
   "about_openSourceLicences": "Licenças de Código Aberto",
   "about_privacyPolicy": "Política de Privacidade",
@@ -702,6 +702,9 @@
   "onboarding_advanced_magicBackups": "Magic Backups",
   "onboarding_advanced_magicBackupsContent": "Automatic encrypted backups of your data for instant, stress-free recovery.",
   "onboarding_advanced_title": "Advanced",
+  "onboarding_appclip_header": "Welcome to Passport ",
+  "onboarding_appclip_subheaderCore": "Install Envoy to set up your Passport Core.",
+  "onboarding_appclip_subheaderPrime": "Install Envoy to set up your Passport Prime.",
   "onboarding_bluetoothDisabled_content": "Passport Prime requires Bluetooth for initial setup with QuantumLink. This allows for syncing of date and time, firmware updates, security checks, backups, and more.\n\nPlease enable Bluetooth permissions in Envoy settings.",
   "onboarding_bluetoothDisabled_enable": "Enable in Settings",
   "onboarding_bluetoothDisabled_header": "Enable Bluetooth for QuantumLink Connection",

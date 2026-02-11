@@ -72,13 +72,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
-  bluart:
-    dependency: "direct main"
-    description:
-      path: "packages/bluart"
-      relative: true
-    source: path
-    version: "0.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -1757,12 +1750,11 @@ packages:
   tor:
     dependency: "direct main"
     description:
-      path: "."
-      ref: b92e2bc5a404367298b6016f171df29d1aae66d0
-      resolved-ref: b92e2bc5a404367298b6016f171df29d1aae66d0
-      url: "https://github.com/Foundation-Devices/tor.git"
-    source: git
-    version: "0.1.0"
+      name: tor
+      sha256: "87555f874704e6a379a98c7bb99e081da177a9bc8700550793417c9d39832513"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
   typed_data:
     dependency: "direct main"
     description:

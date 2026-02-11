@@ -63,21 +63,25 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                         button: true,
                         enabled: true,
                         child: GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Icon(Icons.arrow_back_ios_rounded,
-                                size: EnvoySpacing.medium2)),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Icon(
+                            Icons.arrow_back_ios_rounded,
+                            size: EnvoySpacing.medium2,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                   Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        S().manual_setup_import_seed_12_words_heading,
-                        style: EnvoyTypography.heading,
-                        textAlign: TextAlign.center,
-                      )),
+                    alignment: Alignment.center,
+                    child: Text(
+                      S().manual_setup_import_seed_12_words_heading,
+                      style: EnvoyTypography.heading,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ],
               ),
               Expanded(
@@ -86,39 +90,43 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                   child: NestedScrollView(
                     headerSliverBuilder: (context, innerBoxIsScrolled) => [],
                     body: MnemonicEntryGrid(
-                        key: _mnemonicEntryGridKey,
-                        seedLength: widget.seedLength,
-                        onSeedWordAdded: (List<String> words) {
-                          currentWords = words;
-                          bool isValid = currentWords
-                              .map((e) => seedEn.contains(e))
-                              .reduce((value, element) => value && element);
-                          setState(() {
-                            finishSeedEntries = isValid;
-                          });
-                        }),
+                      key: _mnemonicEntryGridKey,
+                      seedLength: widget.seedLength,
+                      onSeedWordAdded: (List<String> words) {
+                        currentWords = words;
+                        bool isValid = currentWords
+                            .map((e) => seedEn.contains(e))
+                            .reduce((value, element) => value && element);
+                        setState(() {
+                          finishSeedEntries = isValid;
+                        });
+                      },
+                    ),
                   ),
                 ),
               ),
               Padding(
-                  padding: EdgeInsets.only(
-                      left: EnvoySpacing.xs,
-                      right: EnvoySpacing.xs,
-                      bottom: context.isSmallScreen
-                          ? EnvoySpacing.medium1
-                          : EnvoySpacing.medium2),
-                  child: IgnorePointer(
-                    ignoring: finishSeedEntries == false,
-                    child: Opacity(
-                      opacity: finishSeedEntries ? 1 : 0.5,
-                      child: OnboardingButton(
-                          label: S().component_done,
-                          onTap: () {
-                            String result = currentWords.join(' ');
-                            checkSeed(context, result);
-                          }),
+                padding: EdgeInsets.only(
+                  left: EnvoySpacing.xs,
+                  right: EnvoySpacing.xs,
+                  bottom: context.isSmallScreen
+                      ? EnvoySpacing.medium1
+                      : EnvoySpacing.medium2,
+                ),
+                child: IgnorePointer(
+                  ignoring: finishSeedEntries == false,
+                  child: Opacity(
+                    opacity: finishSeedEntries ? 1 : 0.5,
+                    child: OnboardingButton(
+                      label: S().component_done,
+                      onTap: () {
+                        String result = currentWords.join(' ');
+                        checkSeed(context, result);
+                      },
                     ),
-                  )),
+                  ),
+                ),
+              ),
               // SFT-1749: disable passphrases for beta
               // Column(
               //   children: [
@@ -184,8 +192,10 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
   }
 
   void showPassphraseWarningDialog(BuildContext context) {
-    showEnvoyDialog(dialog: _buildPassphraseWarning(context), context: context)
-        .then((value) {
+    showEnvoyDialog(
+      dialog: _buildPassphraseWarning(context),
+      context: context,
+    ).then((value) {
       setState(() {
         hasPassphrase = passPhrase.isNotEmpty;
       });
@@ -194,18 +204,21 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
 
   void showPassphraseDialog(BuildContext context) {
     showEnvoyDialog(
-            dialog: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.85,
-                height: 330,
-                child: SeedPassphraseEntry(onPassphraseEntered: (value) {
-                  setState(() {
-                    passPhrase = value;
-                  });
-                  //TODO: BIP39 passphrase
-                  Navigator.pop(context);
-                })),
-            context: context)
-        .then((value) {
+      dialog: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.85,
+        height: 330,
+        child: SeedPassphraseEntry(
+          onPassphraseEntered: (value) {
+            setState(() {
+              passPhrase = value;
+            });
+            //TODO: BIP39 passphrase
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      context: context,
+    ).then((value) {
       setState(() {
         hasPassphrase = passPhrase.isNotEmpty;
       });
@@ -232,8 +245,9 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
       child: SingleChildScrollView(
         child: Container(
           constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.85,
-              minHeight: 420),
+            maxWidth: MediaQuery.of(context).size.width * 0.85,
+            minHeight: 420,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -260,13 +274,17 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                         ),
                       ),
                     ),
-                    const EnvoyIcon(EnvoyIcons.alert,
-                        color: EnvoyColors.accentSecondary,
-                        size: EnvoyIconSize.big),
+                    const EnvoyIcon(
+                      EnvoyIcons.alert,
+                      color: EnvoyColors.accentSecondary,
+                      size: EnvoyIconSize.big,
+                    ),
                     const Padding(padding: EdgeInsets.all(4)),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 8),
+                        horizontal: 30,
+                        vertical: 8,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -275,20 +293,25 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                             style: EnvoyTypography.info,
                           ),
                           LinkText(
-                              text: S()
-                                  .manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2,
-                              textStyle: EnvoyTypography.info,
-                              linkStyle: const TextStyle(
-                                  decoration: TextDecoration.underline),
-                              onTap: () {
-                                launchUrl(Uri.parse(
-                                    "https://foundation.xyz/2021/10/passphrases-what-why-how"));
-                              }),
+                            text: S()
+                                .manual_setup_verify_seed_12_words_passphrase_warning_modal_heading_2,
+                            textStyle: EnvoyTypography.info,
+                            linkStyle: const TextStyle(
+                              decoration: TextDecoration.underline,
+                            ),
+                            onTap: () {
+                              launchUrl(
+                                Uri.parse(
+                                  "https://foundation.xyz/2021/10/passphrases-what-why-how",
+                                ),
+                              );
+                            },
+                          ),
                           const Padding(padding: EdgeInsets.all(8)),
                           Text(
                             S().manual_setup_verify_seed_12_words_passphrase_warning_modal_subheading,
                             textAlign: TextAlign.center,
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -296,8 +319,10 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 8,
+                ),
                 child: EnvoyButton(
                   S().component_continue,
                   type: EnvoyButtonTypes.primaryModal,

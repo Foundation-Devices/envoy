@@ -13,8 +13,9 @@ class EnvoyScheduler {
   static EnvoyScheduler get instance => _instance;
 
   // No less than 1 and no more than 8 but always leave 4 threads for UI and Tor
-  final parallel =
-      ParallelScheduler(min(max(Platform.numberOfProcessors - 4, 1), 8));
+  final parallel = ParallelScheduler(
+    min(max(Platform.numberOfProcessors - 4, 1), 8),
+  );
 
   factory EnvoyScheduler() {
     return _instance;
@@ -27,6 +28,7 @@ class EnvoyScheduler {
 
   EnvoyScheduler._internal() {
     kPrint(
-        "Instance of EnvoyScheduler created! Phone has ${Platform.numberOfProcessors} CPUs.");
+      "Instance of EnvoyScheduler created! Phone has ${Platform.numberOfProcessors} CPUs.",
+    );
   }
 }

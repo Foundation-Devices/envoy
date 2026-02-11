@@ -22,11 +22,12 @@ class CreateCoinTag extends ConsumerStatefulWidget {
   final List<Output> coins;
   final Function(BuildContext context) onTagUpdate;
 
-  const CreateCoinTag(
-      {super.key,
-      required this.onTagUpdate,
-      required this.accountId,
-      required this.coins});
+  const CreateCoinTag({
+    super.key,
+    required this.onTagUpdate,
+    required this.accountId,
+    required this.coins,
+  });
 
   @override
   ConsumerState<CreateCoinTag> createState() => _CreateCoinTagState();
@@ -61,24 +62,22 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
                 padding: const EdgeInsets.all(EnvoySpacing.small),
                 onPressed: () {
                   if (ref.read(selectedAccountProvider) != null) {
-                    coinSelectionOverlayKey.currentState
-                        ?.show(SpendOverlayContext.preselectCoins);
+                    coinSelectionOverlayKey.currentState?.show(
+                      SpendOverlayContext.preselectCoins,
+                    );
                   }
                   Navigator.of(context).pop();
                 },
               ),
             ),
             const SizedBox(height: EnvoySpacing.small),
-            Image.asset(
-              "assets/exclamation_icon.png",
-              height: 68,
-              width: 68,
-            ),
+            Image.asset("assets/exclamation_icon.png", height: 68, width: 68),
             const SizedBox(height: EnvoySpacing.medium1),
             Text(
               S().change_output_from_multiple_tags_modal_heading,
-              style: EnvoyTypography.heading
-                  .copyWith(color: EnvoyColors.textPrimary),
+              style: EnvoyTypography.heading.copyWith(
+                color: EnvoyColors.textPrimary,
+              ),
             ),
             const SizedBox(height: EnvoySpacing.medium1),
             _tagWidget(context),
@@ -118,23 +117,19 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
         secondRowContent =
             secondRowContent.where((element) => element.isNotEmpty).toList();
 
-        List<Widget> firsRowWidget = firstRowContent.map(
-          (e) {
-            return tagItem(context, e, () {
-              _tagController.text = e;
-              setState(() {});
-            });
-          },
-        ).toList();
+        List<Widget> firsRowWidget = firstRowContent.map((e) {
+          return tagItem(context, e, () {
+            _tagController.text = e;
+            setState(() {});
+          });
+        }).toList();
 
-        List<Widget> secondRowWidget = secondRowContent.map(
-          (e) {
-            return tagItem(context, e, () {
-              _tagController.text = e;
-              setState(() {});
-            });
-          },
-        ).toList();
+        List<Widget> secondRowWidget = secondRowContent.map((e) {
+          return tagItem(context, e, () {
+            _tagController.text = e;
+            setState(() {});
+          });
+        }).toList();
 
         return Column(
           mainAxisSize: MainAxisSize.max,
@@ -142,56 +137,67 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(
-              margin:
-                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+              margin: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.medium1,
+              ),
               decoration: BoxDecoration(
-                  color: EnvoyColors.surface4,
-                  borderRadius: BorderRadius.circular(EnvoySpacing.small)),
+                color: EnvoyColors.surface4,
+                borderRadius: BorderRadius.circular(EnvoySpacing.small),
+              ),
               child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
-                  //16
-                  child: TextFormField(
-                    style: const TextStyle(
-                      fontSize: 14,
-                      overflow: TextOverflow.fade,
-                      fontWeight: FontWeight.w500,
+                padding: const EdgeInsets.symmetric(
+                  vertical: EnvoySpacing.small,
+                ),
+                //16
+                child: TextFormField(
+                  style: const TextStyle(
+                    fontSize: 14,
+                    overflow: TextOverflow.fade,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlignVertical: TextAlignVertical.center,
+                  onChanged: (value) {
+                    setState(() {
+                      _tagController.text = value;
+                    });
+                  },
+                  controller: _tagController,
+                  textAlign: TextAlign.center,
+                  maxLength: 30,
+                  buildCounter: (
+                    BuildContext context, {
+                    required int currentLength,
+                    required bool isFocused,
+                    required int? maxLength,
+                  }) {
+                    return currentLength > 20
+                        ? Text(
+                            "${_tagController.text.length}/30",
+                            style: const TextStyle(
+                              color: DefaultSelectionStyle.defaultColor,
+                            ),
+                          )
+                        : const SizedBox();
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Enter new tag i.e. Exchange",
+                    // TODO: Figma
+                    hintStyle: EnvoyTypography.info.copyWith(
+                      color: EnvoyColors.textTertiary,
                     ),
-                    textAlignVertical: TextAlignVertical.center,
-                    onChanged: (value) {
-                      setState(() {
-                        _tagController.text = value;
-                      });
-                    },
-                    controller: _tagController,
-                    textAlign: TextAlign.center,
-                    maxLength: 30,
-                    buildCounter: (BuildContext context,
-                        {required int currentLength,
-                        required bool isFocused,
-                        required int? maxLength}) {
-                      return currentLength > 20
-                          ? Text("${_tagController.text.length}/30",
-                              style: const TextStyle(
-                                  color: DefaultSelectionStyle.defaultColor))
-                          : const SizedBox();
-                    },
-                    decoration: InputDecoration(
-                      hintText: "Enter new tag i.e. Exchange",
-                      // TODO: Figma
-                      hintStyle: EnvoyTypography.info
-                          .copyWith(color: EnvoyColors.textTertiary),
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium1,
-                          vertical: EnvoySpacing.xs),
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: EnvoySpacing.medium1,
+                      vertical: EnvoySpacing.xs,
                     ),
-                  )),
+                  ),
+                ),
+              ),
             ),
             const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
             tags.isNotEmpty
@@ -199,31 +205,35 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
                 : Text(S().create_first_tag_modal_2_2_suggest),
             Container(
               margin: const EdgeInsets.symmetric(
-                  vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.xs),
+                vertical: EnvoySpacing.medium1,
+                horizontal: EnvoySpacing.xs,
+              ),
               constraints: const BoxConstraints(maxHeight: 64),
               child: Column(
                 children: [
                   Flexible(
-                      child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [...firsRowWidget],
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [...firsRowWidget],
+                      ),
                     ),
-                  )),
+                  ),
                   const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                   Flexible(
-                      child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [...secondRowWidget],
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [...secondRowWidget],
+                      ),
                     ),
-                  )),
+                  ),
                 ],
               ),
             ),
@@ -283,23 +293,26 @@ Widget tagItem(BuildContext context, String item, Function() onTap) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 4),
     child: InkWell(
-        borderRadius: BorderRadius.circular(20),
-        onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: EnvoyColors.accentPrimary, width: 1),
+        ),
+        height: 34,
         child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: EnvoyColors.accentPrimary, width: 1),
+          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+          alignment: Alignment.center,
+          child: Text(
+            item.length > 9 ? '${item.substring(0, 7)}...' : item,
+            style: EnvoyTypography.info.copyWith(
+              color: EnvoyColors.accentPrimary,
             ),
-            height: 34,
-            child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
-                alignment: Alignment.center,
-                child: Text(
-                  item.length > 9 ? '${item.substring(0, 7)}...' : item,
-                  style: EnvoyTypography.info
-                      .copyWith(color: EnvoyColors.accentPrimary),
-                )))),
+          ),
+        ),
+      ),
+    ),
   );
 }
 

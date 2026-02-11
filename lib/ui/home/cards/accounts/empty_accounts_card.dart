@@ -31,30 +31,32 @@ class EmptyAccountsCard extends StatelessWidget {
                 BlendMode.saturation,
               ),
               child: AccountListTile(
-                  draggable: false,
-                  EnvoyAccount(
-                      name: S().accounts_screen_walletType_defaultName,
-                      deviceSerial: 'envoy',
-                      dateAdded: DateTime.now().toString(),
-                      index: 5,
-                      id: '',
-                      preferredAddressType: AddressType.p2Tr,
-                      network: Network.bitcoin,
-                      balance: BigInt.zero,
-                      isHot: true,
-                      transactions: [],
-                      nextAddress: [],
-                      utxo: [],
-                      descriptors: [],
-                      unlockedBalance: BigInt.zero,
-                      seedHasPassphrase: false,
-                      color: Color(0xFFBF755F).toHex(),
-                      dateSynced: null,
-                      tags: [],
-                      xfp: "ghost",
-                      externalPublicDescriptors: [],
-                      archived: false),
-                  onTap: () {}),
+                draggable: false,
+                EnvoyAccount(
+                  name: S().accounts_screen_walletType_defaultName,
+                  deviceSerial: 'envoy',
+                  dateAdded: DateTime.now().toString(),
+                  index: 5,
+                  id: '',
+                  preferredAddressType: AddressType.p2Tr,
+                  network: Network.bitcoin,
+                  balance: BigInt.zero,
+                  isHot: true,
+                  transactions: [],
+                  nextAddress: [],
+                  utxo: [],
+                  descriptors: [],
+                  unlockedBalance: BigInt.zero,
+                  seedHasPassphrase: false,
+                  color: Color(0xFFBF755F).toHex(),
+                  dateSynced: null,
+                  tags: [],
+                  xfp: "ghost",
+                  externalPublicDescriptors: [],
+                  archived: false,
+                ),
+                onTap: () {},
+              ),
             ),
           ),
         ),
@@ -72,8 +74,9 @@ class EmptyAccountsCard extends StatelessWidget {
                 GestureDetector(
                   child: Text(
                     S().accounts_empty_text_learn_more,
-                    style: EnvoyTypography.explainer
-                        .copyWith(color: EnvoyColors.accentPrimary),
+                    style: EnvoyTypography.explainer.copyWith(
+                      color: EnvoyColors.accentPrimary,
+                    ),
                   ),
                   onTap: () {
                     Navigator.of(context, rootNavigator: true).push(
@@ -88,7 +91,7 @@ class EmptyAccountsCard extends StatelessWidget {
               ],
             ),
           ),
-        )
+        ),
       ],
     );
   }

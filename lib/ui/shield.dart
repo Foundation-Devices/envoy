@@ -8,10 +8,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/background.dart';
 
 class Shield extends StatelessWidget {
-  const Shield({
-    super.key,
-    required this.child,
-  });
+  const Shield({super.key, required this.child});
 
   final Widget child;
 
@@ -23,7 +20,9 @@ class Shield extends StatelessWidget {
           child: ClipPath(
             clipper: ShieldClipper(),
             child: Container(
-                color: EnvoyColors.solidWhite, child: const SizedBox.expand()),
+              color: EnvoyColors.solidWhite,
+              child: const SizedBox.expand(),
+            ),
           ),
         ),
         Positioned.fill(
@@ -32,15 +31,15 @@ class Shield extends StatelessWidget {
             child: ClipPath(
               clipper: ShieldClipper(),
               child: Container(
-                  decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                        EnvoyColors.surface2,
-                        EnvoyColors.surface1
-                      ])),
-                  child: child),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [EnvoyColors.surface2, EnvoyColors.surface1],
+                  ),
+                ),
+                child: child,
+              ),
             ),
           ),
         ),
@@ -50,11 +49,7 @@ class Shield extends StatelessWidget {
 }
 
 class QrShield extends StatelessWidget {
-  const QrShield({
-    super.key,
-    required this.child,
-    this.arcSizeRatio = 4.8,
-  });
+  const QrShield({super.key, required this.child, this.arcSizeRatio = 4.8});
 
   final Widget child;
   final double arcSizeRatio;
@@ -68,12 +63,15 @@ class QrShield extends StatelessWidget {
       shadowColor: EnvoyColors.border1,
       elevation: 4,
       child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [EnvoyColors.surface1, EnvoyColors.surface2])),
-          child: child),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [EnvoyColors.surface1, EnvoyColors.surface2],
+          ),
+        ),
+        child: child,
+      ),
     );
   }
 }
@@ -82,7 +80,11 @@ class BoxShadowPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawShadow(
-        ShieldClipper.shieldPath(size), Colors.black45, 3.0, true);
+      ShieldClipper.shieldPath(size),
+      Colors.black45,
+      3.0,
+      true,
+    );
   }
 
   @override
@@ -96,15 +98,14 @@ Stack fullScreenShield(Widget child) {
   double topAppBarOffset = 10; //appBarHeight ;//+ 10; // check this size
   return Stack(
     children: [
-      const AppBackground(
-        showRadialGradient: true,
-      ),
+      const AppBackground(showRadialGradient: true),
       Positioned(
-          top: topAppBarOffset,
-          left: 5,
-          bottom: const BottomAppBar().height ?? 20 + 8,
-          right: 5,
-          child: Shield(child: child))
+        top: topAppBarOffset,
+        left: 5,
+        bottom: const BottomAppBar().height ?? 20 + 8,
+        right: 5,
+        child: Shield(child: child),
+      ),
     ],
   );
 }

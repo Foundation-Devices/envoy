@@ -16,7 +16,7 @@ enum EnvoyIconSize {
   extraSmall,
   superSmall,
   mediumLarge,
-  medium
+  medium,
 }
 
 enum EnvoyIcons {
@@ -114,8 +114,12 @@ class EnvoyIcon extends StatelessWidget {
   final EnvoyIconSize size; // Use the enum type here
   final Color? color;
 
-  const EnvoyIcon(this.icon,
-      {super.key, this.color, this.size = EnvoyIconSize.normal});
+  const EnvoyIcon(
+    this.icon, {
+    super.key,
+    this.color,
+    this.size = EnvoyIconSize.normal,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -141,12 +145,14 @@ class NonMainnetIcon extends StatelessWidget {
   final Color? iconColor;
   final Network network;
 
-  const NonMainnetIcon(this.icon,
-      {super.key,
-      this.badgeColor,
-      this.size = EnvoyIconSize.normal,
-      this.iconColor,
-      required this.network});
+  const NonMainnetIcon(
+    this.icon, {
+    super.key,
+    this.badgeColor,
+    this.size = EnvoyIconSize.normal,
+    this.iconColor,
+    required this.network,
+  });
 
   @override
   Widget build(BuildContext context) {

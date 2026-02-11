@@ -72,16 +72,18 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     final s = Settings();
 
     /// Leave total as it is (total will be visible after sending)
-    double displayFiatTotalAmount =
-        ExchangeRate().convertSatsToFiat(totalSpendAmount);
+    double displayFiatTotalAmount = ExchangeRate().convertSatsToFiat(
+      totalSpendAmount,
+    );
 
     double? displayFiatSendAmount;
     double? displayFiatFeeAmount;
 
     if (s.displayFiat() != null) {
       if (transactionModel.mode == SpendMode.sendMax) {
-        displayFiatFeeAmount =
-            ExchangeRate().convertSatsToFiat(transaction.fee.toInt());
+        displayFiatFeeAmount = ExchangeRate().convertSatsToFiat(
+          transaction.fee.toInt(),
+        );
         displayFiatSendAmount = displayFiatTotalAmount - displayFiatFeeAmount;
       } else {
         displayFiatFeeAmount =

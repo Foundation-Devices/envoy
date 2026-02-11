@@ -69,10 +69,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: EnvoySpacing.xl),
-                  Image.asset(
-                    "assets/images/check_info.png",
-                    height: 184,
-                  ),
+                  Image.asset("assets/images/check_info.png", height: 184),
                   const SizedBox(height: EnvoySpacing.medium3),
                   Text(
                     widget.isPrimeWallet
@@ -82,18 +79,22 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: EnvoySpacing.medium3),
-                  Text(S().wallet_setup_success_subheading,
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.body
-                          .copyWith(color: EnvoyColors.textTertiary)),
+                  Text(
+                    S().wallet_setup_success_subheading,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.body.copyWith(
+                      color: EnvoyColors.textTertiary,
+                    ),
+                  ),
                 ],
               ),
               if (!widget.isPrimeWallet)
                 Padding(
                   padding: const EdgeInsets.only(
-                      bottom: EnvoySpacing.medium2,
-                      left: EnvoySpacing.xs,
-                      right: EnvoySpacing.xs),
+                    bottom: EnvoySpacing.medium2,
+                    left: EnvoySpacing.xs,
+                    right: EnvoySpacing.xs,
+                  ),
                   child: OnboardingButton(
                     label: S().component_continue,
                     type: EnvoyButtonTypes.primary,
@@ -104,7 +105,7 @@ class _WalletSetupSuccessState extends ConsumerState<WalletSetupSuccess> {
                       }
                     },
                   ),
-                )
+                ),
             ],
           ),
         ),

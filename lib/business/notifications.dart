@@ -44,8 +44,15 @@ class EnvoyNotification {
   final EnvoyTransaction? transaction;
 
   EnvoyNotification(
-      this.title, this.date, this.type, this.body, this.id, this.transaction,
-      {this.amount, this.accountId});
+    this.title,
+    this.date,
+    this.type,
+    this.body,
+    this.id,
+    this.transaction, {
+    this.amount,
+    this.accountId,
+  });
 
   // Serialisation
   factory EnvoyNotification.fromJson(Map<String, dynamic> json) =>
@@ -55,7 +62,8 @@ class EnvoyNotification {
 }
 
 final notificationStreamProvider = StreamProvider<List<EnvoyNotification>>(
-    (ref) => Notifications().getNotificationsStream());
+  (ref) => Notifications().getNotificationsStream(),
+);
 
 // filter state provider for notifications
 final notificationTypeFilterProvider =
@@ -64,14 +72,17 @@ final notificationTypeFilterProvider =
 // order provider for notification sort. 0 for descending, 1 for ascending
 final notificationOrderProvider = StateProvider<int>((ref) => 0);
 
-final nonTxNotificationStreamProvider =
-    Provider<List<EnvoyNotification>>((ref) {
+final nonTxNotificationStreamProvider = Provider<List<EnvoyNotification>>((
+  ref,
+) {
   // Get all notifications from the notificationStreamProvider
   final notifications = ref.watch(notificationStreamProvider).valueOrNull ?? [];
 
   return notifications
-      .where((notification) =>
-          notification.type != EnvoyNotificationType.transaction)
+      .where(
+        (notification) =>
+            notification.type != EnvoyNotificationType.transaction,
+      )
       .toList();
 });
 
@@ -79,8 +90,10 @@ EnvoyNotification transactionToEnvoyNotification(EnvoyTransaction transaction) {
   return EnvoyNotification(
     "Transaction Notification",
     transaction.isConfirmed
-        ? DateTime.fromMillisecondsSinceEpoch(transaction.date!.toInt() * 1000,
-            isUtc: true)
+        ? DateTime.fromMillisecondsSinceEpoch(
+            transaction.date!.toInt() * 1000,
+            isUtc: true,
+          )
         : null,
     EnvoyNotificationType.transaction,
     "Transaction details",
@@ -92,16 +105,18 @@ EnvoyNotification transactionToEnvoyNotification(EnvoyTransaction transaction) {
 }
 
 List<EnvoyNotification> combineNotifications(
-    List<EnvoyNotification> envoyNotifications,
-    List<EnvoyTransaction> transactions) {
-  List<EnvoyNotification> transactionNotifications =
-      transactions.map((transaction) {
+  List<EnvoyNotification> envoyNotifications,
+  List<EnvoyTransaction> transactions,
+) {
+  List<EnvoyNotification> transactionNotifications = transactions.map((
+    transaction,
+  ) {
     return transactionToEnvoyNotification(transaction);
   }).toList();
 
   List<EnvoyNotification> combinedItems = [
     ...envoyNotifications,
-    ...transactionNotifications
+    ...transactionNotifications,
   ];
 
   combinedItems.sort((a, b) {
@@ -151,8 +166,11 @@ class Notifications {
     sync();
   }
 
-  void deleteNotification(String id,
-      {String? accountId, Duration delay = Duration.zero}) {
+  void deleteNotification(
+    String id, {
+    String? accountId,
+    Duration delay = Duration.zero,
+  }) {
     // Find the notification immediately and put it in notificationsThatWillBeSuppressed
     EnvoyNotification? notificationToSuppress = notifications.firstWhereOrNull(
       (notification) =>
@@ -164,10 +182,14 @@ class Notifications {
 
       // Schedule the deletion from notifications after the delay
       Future.delayed(delay, () {
-        notifications.removeWhere((notification) =>
-            notification.id == id && notification.accountId == accountId);
-        notificationsThatWillBeSuppressed.removeWhere((notification) =>
-            notification.id == id && notification.accountId == accountId);
+        notifications.removeWhere(
+          (notification) =>
+              notification.id == id && notification.accountId == accountId,
+        );
+        notificationsThatWillBeSuppressed.removeWhere(
+          (notification) =>
+              notification.id == id && notification.accountId == accountId,
+        );
         _storeNotifications();
         sync();
       });
@@ -176,9 +198,7 @@ class Notifications {
 
   void deleteSuppressedNotifications(String? accountId) {
     var suppressedNotificationsToDelete = notificationsThatWillBeSuppressed
-        .where(
-          (notification) => notification.accountId == accountId,
-        )
+        .where((notification) => notification.accountId == accountId)
         .toList();
 
     for (var notification in suppressedNotificationsToDelete) {
@@ -198,8 +218,10 @@ class Notifications {
       final version = Devices().getDeviceFirmwareVersion(device.serial);
 
       if (version != null) {
-        bool fwUpdateAvailable =
-            await UpdatesManager().shouldUpdate(version, device.type);
+        bool fwUpdateAvailable = await UpdatesManager().shouldUpdate(
+          version,
+          device.type,
+        );
         final newVersion = await UpdatesManager()
             .getStoredFirmwareVersionString(device.type.index);
         for (var notification in notifications) {
@@ -209,13 +231,16 @@ class Notifications {
         }
 
         if (fwUpdateAvailable) {
-          add(EnvoyNotification(
+          add(
+            EnvoyNotification(
               "Firmware", // TODO: FIGMA
               DateTime.now(),
               EnvoyNotificationType.firmware,
               newVersion!,
               device.type.toString().split('.').last,
-              null));
+              null,
+            ),
+          );
         }
       }
     }
@@ -232,13 +257,16 @@ class Notifications {
         }
       }
       if (!skip) {
-        add(EnvoyNotification(
+        add(
+          EnvoyNotification(
             "App Update", // TODO: FIGMA
             result.publishedAt,
             EnvoyNotificationType.envoyUpdate,
             latestEnvoyVersion,
             EnvoyNotificationType.envoyUpdate.name,
-            null));
+            null,
+          ),
+        );
         if (!isNewAppVersionAvailable.isClosed) {
           isNewAppVersionAvailable.add(latestEnvoyVersion);
         }
@@ -284,8 +312,9 @@ class Notifications {
       if (jsonString != null) {
         var jsonMap = jsonDecode(jsonString);
         for (var notification in jsonMap["notifications"]) {
-          EnvoyNotification notificationToRestore =
-              EnvoyNotification.fromJson(notification);
+          EnvoyNotification notificationToRestore = EnvoyNotification.fromJson(
+            notification,
+          );
 
           // Only add tx notifications that link to an account
           if (!_shouldBeRemoved(notificationToRestore)) {
@@ -321,9 +350,9 @@ class Notifications {
       return true;
     }
 
-    return !NgAccountManager()
-        .accounts
-        .any((account) => account.id == notification.accountId);
+    return !NgAccountManager().accounts.any(
+          (account) => account.id == notification.accountId,
+        );
   }
 
   void _startPeriodicSync() {
@@ -337,8 +366,9 @@ class Notifications {
       fetchLatestEnvoyVersionFromGit() async {
     HttpTor http = HttpTor();
     final response = await http.get(
-        'https://api.github.com/repos/Foundation-Devices/envoy/releases/latest',
-        headers: {'User-Agent': 'request'});
+      'https://api.github.com/repos/Foundation-Devices/envoy/releases/latest',
+      headers: {'User-Agent': 'request'},
+    );
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -348,12 +378,16 @@ class Notifications {
         return (version: version, publishedAt: publishedAt);
       } else {
         EnvoyReport().log(
-            "EnvoyGHVersionCheck", "Couldn't find tag_name in GitHub response");
+          "EnvoyGHVersionCheck",
+          "Couldn't find tag_name in GitHub response",
+        );
         throw Exception("Couldn't find tag_name in GitHub response");
       }
     } else {
-      EnvoyReport().log("EnvoyGHVersionCheck",
-          "Couldn't reach GitHub,${response.statusCode} ${response.body}");
+      EnvoyReport().log(
+        "EnvoyGHVersionCheck",
+        "Couldn't reach GitHub,${response.statusCode} ${response.body}",
+      );
       throw Exception("Couldn't reach GitHub");
     }
   }
@@ -371,8 +405,9 @@ class Notifications {
       return false;
     }
 
-    var latestGitHubVersion =
-        Version.parse(versionOnGitHub.replaceAll("v", ""));
+    var latestGitHubVersion = Version.parse(
+      versionOnGitHub.replaceAll("v", ""),
+    );
     return latestGitHubVersion > envoyVersionOnPhone;
   }
 

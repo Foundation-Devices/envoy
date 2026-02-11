@@ -92,11 +92,15 @@ class _AccountCardState extends ConsumerState<AccountCard>
     // Redraw when we fetch exchange rate
     ExchangeRate().addListener(_redraw);
     animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 200));
-    animation =
-        Tween(begin: const Alignment(0.0, 1.0), end: const Alignment(0.0, 0.65))
-            .animate(CurvedAnimation(
-                parent: animationController, curve: Curves.easeInOut));
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    animation = Tween(
+      begin: const Alignment(0.0, 1.0),
+      end: const Alignment(0.0, 0.65),
+    ).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeInOut),
+    );
 
     Future.delayed(const Duration()).then((value) {
       if (!ref.context.mounted) {
@@ -169,8 +173,9 @@ class _AccountCardState extends ConsumerState<AccountCard>
     account =
         ref.read(selectedAccountProvider) ?? NgAccountManager().accounts[0];
 
-    List<EnvoyTransaction> transactions =
-        ref.watch(filteredTransactionsProvider(account.id));
+    List<EnvoyTransaction> transactions = ref.watch(
+      filteredTransactionsProvider(account.id),
+    );
 
     bool txFiltersEnabled = ref.watch(isTransactionFiltersEnabled);
     bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);
@@ -414,10 +419,14 @@ class _AccountCardState extends ConsumerState<AccountCard>
     );
   }
 
-  Widget _getMainWidget(BuildContext context,
-      List<EnvoyTransaction> transactions, bool txFiltersEnabled) {
-    AccountToggleState accountToggleState =
-        ref.watch(accountToggleStateProvider);
+  Widget _getMainWidget(
+    BuildContext context,
+    List<EnvoyTransaction> transactions,
+    bool txFiltersEnabled,
+  ) {
+    AccountToggleState accountToggleState = ref.watch(
+      accountToggleStateProvider,
+    );
     return PageTransitionSwitcher(
       reverse: accountToggleState == AccountToggleState.tx,
       transitionBuilder: (
@@ -440,7 +449,9 @@ class _AccountCardState extends ConsumerState<AccountCard>
   }
 
   Widget _buildTransactionListWidget(
-      List<EnvoyTransaction> transactions, bool txFiltersEnabled) {
+    List<EnvoyTransaction> transactions,
+    bool txFiltersEnabled,
+  ) {
     if (transactions.isEmpty) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -453,8 +464,9 @@ class _AccountCardState extends ConsumerState<AccountCard>
                 txFiltersEnabled
                     ? S().account_emptyTxHistoryTextExplainer_FilteredView
                     : S().account_empty_tx_history_text_explainer,
-                style: EnvoyTypography.body
-                    .copyWith(color: EnvoyColors.textTertiary),
+                style: EnvoyTypography.body.copyWith(
+                  color: EnvoyColors.textTertiary,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -463,10 +475,11 @@ class _AccountCardState extends ConsumerState<AccountCard>
       );
     } else {
       return FadingEdgeScrollView.fromScrollView(
-          gradientFractionOnEnd: 0.1,
-          gradientFractionOnStart: 0.1,
-          scrollController: _scrollController,
-          child: StatefulBuilder(builder: (c, s) {
+        gradientFractionOnEnd: 0.1,
+        gradientFractionOnStart: 0.1,
+        scrollController: _scrollController,
+        child: StatefulBuilder(
+          builder: (c, s) {
             return ListView.builder(
               //Space for the white gradient shadow at the bottom
               padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
@@ -475,10 +488,14 @@ class _AccountCardState extends ConsumerState<AccountCard>
               itemCount: transactions.length,
               itemBuilder: (BuildContext context, int index) {
                 return TransactionListTile(
-                    transaction: transactions[index], account: account);
+                  transaction: transactions[index],
+                  account: account,
+                );
               },
             );
-          }));
+          },
+        ),
+      );
     }
   }
 }
@@ -508,19 +525,11 @@ class GhostListTile extends StatelessWidget {
       minLeadingWidth: minLeadingWidth,
       title: Padding(
         padding: EdgeInsets.only(top: 2, right: titleRightPadding),
-        child: LoaderGhost(
-          width: 10,
-          height: 15,
-          animate: animate,
-        ),
+        child: LoaderGhost(width: 10, height: 15, animate: animate),
       ),
       subtitle: Padding(
         padding: EdgeInsets.only(top: 3.0, right: subtitleRightPadding),
-        child: LoaderGhost(
-          width: 30,
-          height: 15,
-          animate: animate,
-        ),
+        child: LoaderGhost(width: 30, height: 15, animate: animate),
       ),
       leading: LoaderGhost(
         width: leadingHeight,
@@ -532,19 +541,11 @@ class GhostListTile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          LoaderGhost(
-            width: 50,
-            height: 15,
-            animate: animate,
-          ),
+          LoaderGhost(width: 50, height: 15, animate: animate),
           Padding(
             padding: const EdgeInsets.only(top: 3.0),
-            child: LoaderGhost(
-              width: 40,
-              height: 15,
-              animate: animate,
-            ),
-          )
+            child: LoaderGhost(width: 40, height: 15, animate: animate),
+          ),
         ],
       ),
     );
@@ -568,8 +569,9 @@ class TransactionListTile extends ConsumerWidget {
 
   final Color _detailsColor = EnvoyColors.textPrimaryInverse;
 
-  final TextStyle _detailsHeadingStyle = EnvoyTypography.subheading
-      .copyWith(color: EnvoyColors.textPrimaryInverse);
+  final TextStyle _detailsHeadingStyle = EnvoyTypography.subheading.copyWith(
+    color: EnvoyColors.textPrimaryInverse,
+  );
 
   final Settings s = Settings();
 
@@ -625,7 +627,8 @@ class TransactionListTile extends ConsumerWidget {
                       Consumer(
                         builder: (context, ref, child) {
                           bool hide = ref.watch(
-                              balanceHideStateStatusProvider(account.id));
+                            balanceHideStateStatusProvider(account.id),
+                          );
                           if (hide) {
                             return const LoaderGhost(
                               width: 100,
@@ -650,18 +653,19 @@ class TransactionListTile extends ConsumerWidget {
                                   )
                                 : Padding(
                                     padding: EdgeInsets.only(
-                                        top: s.displayFiat() == null ||
-                                                (kDebugMode &&
-                                                    account.network !=
-                                                        ngwallet
-                                                            .Network.bitcoin)
-                                            ? EnvoySpacing.small
-                                            : 0),
+                                      top: s.displayFiat() == null ||
+                                              (kDebugMode &&
+                                                  account.network !=
+                                                      ngwallet.Network.bitcoin)
+                                          ? EnvoySpacing.small
+                                          : 0,
+                                    ),
                                     child: EnvoyAmount(
-                                        account: account,
-                                        amountSats: transaction.amount,
-                                        amountWidgetStyle:
-                                            AmountWidgetStyle.normal),
+                                      account: account,
+                                      amountSats: transaction.amount,
+                                      amountWidgetStyle:
+                                          AmountWidgetStyle.normal,
+                                    ),
                                   ),
                           ],
                         ),
@@ -676,15 +680,19 @@ class TransactionListTile extends ConsumerWidget {
       },
       openBuilder: (context, action) {
         return TransactionsDetailsWidget(
-            account: account,
-            tx: transaction,
-            iconTitleWidget:
-                transactionIcon(context, transaction, iconColor: _detailsColor),
-            titleWidget: transactionTitle(
-              context,
-              transaction,
-              txTitleStyle: _detailsHeadingStyle,
-            ));
+          account: account,
+          tx: transaction,
+          iconTitleWidget: transactionIcon(
+            context,
+            transaction,
+            iconColor: _detailsColor,
+          ),
+          titleWidget: transactionTitle(
+            context,
+            transaction,
+            txTitleStyle: _detailsHeadingStyle,
+          ),
+        );
       },
     );
   }
@@ -699,12 +707,14 @@ class TransactionListTile extends ConsumerWidget {
   }
 }
 
-Widget transactionTitle(BuildContext context, EnvoyTransaction transaction,
-    {TextStyle? txTitleStyle}) {
-  final TextStyle? defaultStyle = Theme.of(context)
-      .textTheme
-      .bodyLarge
-      ?.copyWith(fontWeight: FontWeight.w500, fontSize: 14);
+Widget transactionTitle(
+  BuildContext context,
+  EnvoyTransaction transaction, {
+  TextStyle? txTitleStyle,
+}) {
+  final TextStyle? defaultStyle = Theme.of(
+    context,
+  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500, fontSize: 14);
 
   return FittedBox(
     fit: BoxFit.scaleDown,
@@ -712,8 +722,9 @@ Widget transactionTitle(BuildContext context, EnvoyTransaction transaction,
     child: Consumer(
       builder: (context, ref, child) {
         bool? isBoosted = ref.watch(isTxBoostedProvider(transaction.txId));
-        RBFState? cancelState =
-            ref.watch(cancelTxStateProvider(transaction.txId));
+        RBFState? cancelState = ref.watch(
+          cancelTxStateProvider(transaction.txId),
+        );
         return Text(
           getTransactionTitleText(transaction, cancelState, isBoosted),
           style: txTitleStyle ?? defaultStyle,
@@ -757,10 +768,14 @@ Widget transactionIcon(
 }
 
 Future<void> copyTxId(
-    BuildContext context, String txId, EnvoyTransaction? tx) async {
+  BuildContext context,
+  String txId,
+  EnvoyTransaction? tx,
+) async {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
-  bool dismissed =
-      await EnvoyStorage().checkPromptDismissed(DismissiblePrompt.copyTxId);
+  bool dismissed = await EnvoyStorage().checkPromptDismissed(
+    DismissiblePrompt.copyTxId,
+  );
   if (!dismissed && context.mounted) {
     showWarningOnTxIdCopy(context, txId);
   } else {
@@ -773,46 +788,45 @@ Future<void> copyTxId(
     } else {
       message = "Transaction ID copied to clipboard!"; //TODO: FIGMA
     }
-    scaffoldMessenger.showSnackBar(SnackBar(
-      content: Text(message),
-    ));
+    scaffoldMessenger.showSnackBar(SnackBar(content: Text(message)));
   }
 }
 
 void showWarningOnTxIdCopy(BuildContext context, String txId) {
   showEnvoyPopUp(
-      context,
-      S().coincontrol_coin_change_spendable_tate_modal_subheading,
-      S().component_continue,
-      (BuildContext context) {
-        Clipboard.setData(ClipboardData(text: txId)); // here
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    context,
+    S().coincontrol_coin_change_spendable_tate_modal_subheading,
+    S().component_continue,
+    (BuildContext context) {
+      Clipboard.setData(ClipboardData(text: txId)); // here
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
           content: Text("Transaction ID copied to clipboard!"), //TODO: FIGMA
-        ));
-        Navigator.pop(context);
-      },
-      icon: EnvoyIcons.info,
-      secondaryButtonLabel: S().component_cancel,
-      onSecondaryButtonTap: (BuildContext context) {
-        Navigator.pop(context);
-      },
-      checkBoxText: S().component_dontShowAgain,
-      checkedValue: false,
-      onCheckBoxChanged: (checkedValue) {
-        if (!checkedValue) {
-          EnvoyStorage().addPromptState(DismissiblePrompt.copyTxId);
-        } else if (checkedValue) {
-          EnvoyStorage().removePromptState(DismissiblePrompt.copyTxId);
-        }
-      });
+        ),
+      );
+      Navigator.pop(context);
+    },
+    icon: EnvoyIcons.info,
+    secondaryButtonLabel: S().component_cancel,
+    onSecondaryButtonTap: (BuildContext context) {
+      Navigator.pop(context);
+    },
+    checkBoxText: S().component_dontShowAgain,
+    checkedValue: false,
+    onCheckBoxChanged: (checkedValue) {
+      if (!checkedValue) {
+        EnvoyStorage().addPromptState(DismissiblePrompt.copyTxId);
+      } else if (checkedValue) {
+        EnvoyStorage().removePromptState(DismissiblePrompt.copyTxId);
+      }
+    },
+  );
 }
 
 class AccountOptions extends ConsumerStatefulWidget {
   final EnvoyAccount account;
 
-  AccountOptions(
-    this.account,
-  ) : super(key: UniqueKey());
+  AccountOptions(this.account) : super(key: UniqueKey());
 
   @override
   ConsumerState<AccountOptions> createState() => _AccountOptionsState();

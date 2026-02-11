@@ -80,8 +80,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
   }
 
   void _initRive() async {
-    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
-        riveFactory: rive.Factory.rive);
+    _riveFile = await rive.File.asset(
+      "assets/envoy_loader.riv",
+      riveFactory: rive.Factory.rive,
+    );
     _controller = rive.RiveWidgetController(
       _riveFile!,
       stateMachineSelector: rive.StateMachineSelector.byName('STM'),
@@ -120,6 +122,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       }
     } catch (e) {
       if (mounted) {
+        _setUnhappyState();
         if (e is GetBackupException) {
           if (e == GetBackupException.backupNotFound) {
             setState(() {
@@ -209,79 +212,84 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       },
       child: Material(
         color: Colors.transparent,
-        child: Builder(builder: (context) {
-          return OnboardPageBackground(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: isThereBottomButtons
-                  ? MainAxisAlignment.spaceBetween
-                  : MainAxisAlignment.start,
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        if (_magicRecoverWalletState !=
-                                MagicRecoveryWalletState.success &&
-                            _magicRecoverWalletState !=
-                                MagicRecoveryWalletState.recovering &&
-                            _magicRecoverWalletState !=
-                                MagicRecoveryWalletState.readingBackup)
-                          CupertinoNavigationBarBackButton(
-                            color: Colors.black,
-                            onPressed: () {
-                              _handleBackPress().then((proceed) {
-                                if (proceed && context.mounted) {
-                                  context.pop();
-                                }
-                              });
-                            },
-                          ),
-                      ],
-                    ),
-                    Container(
-                      constraints:
-                          BoxConstraints.tight(const Size.fromHeight(240)),
-                      child: Transform.scale(
-                        scale: 1.2,
-                        child: _isInitialized && _controller != null
-                            ? rive.RiveWidget(
-                                controller: _controller!,
-                                fit: rive.Fit.contain,
-                              )
-                            : const SizedBox(),
-                      ),
-                    ),
-                    Flexible(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: isThereBottomButtons
-                                      ? 0
-                                      : EnvoySpacing.large3),
-                              child: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 800),
-                                  child: getMainWidget()),
+        child: Builder(
+          builder: (context) {
+            return OnboardPageBackground(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: isThereBottomButtons
+                    ? MainAxisAlignment.spaceBetween
+                    : MainAxisAlignment.start,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          if (_magicRecoverWalletState !=
+                                  MagicRecoveryWalletState.success &&
+                              _magicRecoverWalletState !=
+                                  MagicRecoveryWalletState.recovering &&
+                              _magicRecoverWalletState !=
+                                  MagicRecoveryWalletState.readingBackup)
+                            CupertinoNavigationBarBackButton(
+                              color: Colors.black,
+                              onPressed: () {
+                                _handleBackPress().then((proceed) {
+                                  if (proceed && context.mounted) {
+                                    context.pop();
+                                  }
+                                });
+                              },
                             ),
-                          ],
+                        ],
+                      ),
+                      Container(
+                        constraints: BoxConstraints.tight(
+                          const Size.fromHeight(240),
+                        ),
+                        child: Transform.scale(
+                          scale: 1.2,
+                          child: _isInitialized && _controller != null
+                              ? rive.RiveWidget(
+                                  controller: _controller!,
+                                  fit: rive.Fit.contain,
+                                )
+                              : const SizedBox(),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                getBottomButtons() ?? const SizedBox(),
-              ],
-            ),
-          );
-        }),
+                      Flexible(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  top: isThereBottomButtons
+                                      ? 0
+                                      : EnvoySpacing.large3,
+                                ),
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 800),
+                                  child: getMainWidget(),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  getBottomButtons() ?? const SizedBox(),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -297,14 +305,18 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       if (seedList.length == 13 || seedList.length == 25) {
         seedList.removeLast();
         String passphrase0 = await showEnvoyDialog(
-            dialog: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.85,
-                height: 330,
-                child: SeedPassphraseEntry(onPassphraseEntered: (value) {
-                  passphrase = value;
-                  context.pop();
-                })),
-            context: context);
+          dialog: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.85,
+            height: 330,
+            child: SeedPassphraseEntry(
+              onPassphraseEntered: (value) {
+                passphrase = value;
+                context.pop();
+              },
+            ),
+          ),
+          context: context,
+        );
         setState(() {
           passphrase = passphrase0;
         });
@@ -312,8 +324,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
       bool isValidSeed = await EnvoyBip39.validateSeed(seedWords: seed);
       _seed = seed;
 
-      bool success =
-          await EnvoySeed().restoreData(seed: seed, passphrase: passphrase);
+      bool success = await EnvoySeed().restoreData(
+        seed: seed,
+        passphrase: passphrase,
+      );
 
       //Enable magic backup by default for seed recovery
       Settings().setSyncToCloud(true);
@@ -321,9 +335,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         if (success) {
           Settings().updateAccountsViewSettings();
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const WalletSetupSuccess())).then((_) {
+            context,
+            MaterialPageRoute(builder: (context) => const WalletSetupSuccess()),
+          ).then((_) {
             //Try automatic recovery if the user press back button
             if (mounted && !ref.read(triedAutomaticRecovery)) {
               _tryAutomaticRecovery();
@@ -343,6 +357,7 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         }
       });
     } catch (e) {
+      _setUnhappyState();
       if (mounted) {
         if (e is GetBackupException) {
           if (e == GetBackupException.backupNotFound) {
@@ -410,20 +425,22 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           return Column(
             children: [
               Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: OnboardingButton(
-                    label: S().component_continue,
-                    onTap: () async {
-                      await Future.delayed(const Duration(milliseconds: 200));
-                      if (context.mounted) {
-                        context.go("/");
-                      }
-                    },
-                  )),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: OnboardingButton(
+                  label: S().component_continue,
+                  onTap: () async {
+                    await Future.delayed(const Duration(milliseconds: 200));
+                    if (context.mounted) {
+                      context.go("/");
+                    }
+                  },
+                ),
+              ),
               SizedBox(
-                  height: context.isSmallScreen
-                      ? EnvoySpacing.medium1
-                      : EnvoySpacing.medium2),
+                height: context.isSmallScreen
+                    ? EnvoySpacing.medium1
+                    : EnvoySpacing.medium2,
+              ),
             ],
           );
         },
@@ -452,9 +469,13 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               label: S().manual_setup_import_backup_CTA2,
               type: EnvoyButtonTypes.secondary,
               onTap: () async {
-                _openExternalBackUpFile(context, onFailure: () {
-                  showRestoreFailedDialog(context);
-                }, seed: _seed);
+                _openExternalBackUpFile(
+                  context,
+                  onFailure: () {
+                    showRestoreFailedDialog(context);
+                  },
+                  seed: _seed,
+                );
               },
             ),
             OnboardingButton(
@@ -469,9 +490,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               },
             ),
             SizedBox(
-                height: context.isSmallScreen
-                    ? EnvoySpacing.medium1
-                    : EnvoySpacing.medium3),
+              height: context.isSmallScreen
+                  ? EnvoySpacing.medium1
+                  : EnvoySpacing.medium3,
+            ),
           ],
         ),
       );
@@ -498,16 +520,17 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                       MagicRecoveryWalletState.seedNotFound;
                 });
                 showScannerDialog(
-                    context: context,
-                    onBackPressed: (context) {
-                      Navigator.pop(context);
+                  context: context,
+                  onBackPressed: (context) {
+                    Navigator.pop(context);
+                  },
+                  decoder: SeedQrDecoder(
+                    onSeedValidated: (String seed) {
+                      context.pop();
+                      _onSeedDetected(seed, context);
                     },
-                    decoder: SeedQrDecoder(
-                      onSeedValidated: (String seed) {
-                        context.pop();
-                        _onSeedDetected(seed, context);
-                      },
-                    ));
+                  ),
+                );
               },
             ),
             Consumer(
@@ -527,9 +550,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               },
             ),
             SizedBox(
-                height: context.isSmallScreen
-                    ? EnvoySpacing.medium1
-                    : EnvoySpacing.medium2),
+              height: context.isSmallScreen
+                  ? EnvoySpacing.medium1
+                  : EnvoySpacing.medium2,
+            ),
           ],
         ),
       );
@@ -565,15 +589,18 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                     });
                     _setIndeterminateState();
                     if (context.mounted) {
-                      _openExternalBackUpFile(context, seed: _seed,
-                          onFailure: () {
-                        showRestoreFailedDialog(context);
-                        setState(() {
-                          _magicRecoverWalletState =
-                              MagicRecoveryWalletState.validSeedNoBackup;
-                        });
-                        _setUnhappyState();
-                      });
+                      _openExternalBackUpFile(
+                        context,
+                        seed: _seed,
+                        onFailure: () {
+                          showRestoreFailedDialog(context);
+                          setState(() {
+                            _magicRecoverWalletState =
+                                MagicRecoveryWalletState.validSeedNoBackup;
+                          });
+                          _setUnhappyState();
+                        },
+                      );
                     }
                   },
                 );
@@ -591,9 +618,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
               },
             ),
             SizedBox(
-                height: context.isSmallScreen
-                    ? EnvoySpacing.medium1
-                    : EnvoySpacing.medium3),
+              height: context.isSmallScreen
+                  ? EnvoySpacing.medium1
+                  : EnvoySpacing.medium3,
+            ),
           ],
         ),
       );
@@ -628,26 +656,26 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Text(
-              S().onboarding_magicUserMobileSuccess_header,
-              style: EnvoyTypography.heading,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Text(
+            S().onboarding_magicUserMobileSuccess_header,
+            style: EnvoyTypography.heading,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 36),
+            child: Text(
+              S().wallet_setup_success_subheading,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontSize: 12),
+              textAlign: TextAlign.center,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 36),
-              child: Text(
-                S().wallet_setup_success_subheading,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(fontSize: 12),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ]),
+          ),
+        ],
+      ),
     );
   }
 
@@ -670,8 +698,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           child: Text(
             S().magic_setup_recovery_fail_backup_subheading,
             textAlign: TextAlign.center,
-            style:
-                EnvoyTypography.info.copyWith(color: EnvoyColors.textTertiary),
+            style: EnvoyTypography.info.copyWith(
+              color: EnvoyColors.textTertiary,
+            ),
           ),
         ),
       ],
@@ -697,8 +726,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           child: Text(
             S().magic_setup_recovery_fail_backup_subheading,
             textAlign: TextAlign.center,
-            style:
-                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 13),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(fontSize: 13),
           ),
         ),
       ],
@@ -724,8 +754,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           child: Text(
             S().magic_setup_recovery_fail_connectivity_subheading,
             textAlign: TextAlign.center,
-            style:
-                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 13),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(fontSize: 13),
           ),
         ),
       ],
@@ -753,8 +784,9 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
                 ? S().magic_setup_recovery_fail_Android_subheading
                 : S().magic_setup_recovery_fail_ios_subheading,
             textAlign: TextAlign.center,
-            style:
-                Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 13),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(fontSize: 13),
           ),
         ),
       ],
@@ -787,9 +819,13 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
         }
       }
       if (success) {
-        await navigator.push(MaterialPageRoute(builder: (context) {
-          return const WalletSetupSuccess();
-        }));
+        await navigator.push(
+          MaterialPageRoute(
+            builder: (context) {
+              return const WalletSetupSuccess();
+            },
+          ),
+        );
       } else {
         onFailure();
       }
@@ -817,8 +853,10 @@ class _MagicRecoverWalletState extends ConsumerState<MagicRecoverWallet> {
           if (seed != null) {
             await EnvoySeed().deriveAndAddWallets(seed);
           } else {
-            EnvoyReport().log("MagicRecoverWallet",
-                "Seed is null in continue warning dialog");
+            EnvoyReport().log(
+              "MagicRecoverWallet",
+              "Seed is null in continue warning dialog",
+            );
           }
 
           await Future.delayed(const Duration(milliseconds: 120));

@@ -64,95 +64,99 @@ class _AddressCardState extends ConsumerState<AddressCard> {
 
     return Padding(
       padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
-      child:
-          Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Padding(
-          padding: const EdgeInsets.only(
-            left: EnvoySpacing.medium2,
-            right: EnvoySpacing.medium2,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(
-                child: QrTab(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              left: EnvoySpacing.medium2,
+              right: EnvoySpacing.medium2,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: QrTab(
                     title: widget.account.name,
                     subtitle: S().manage_account_address_card_subheading,
                     account: widget.account,
-                    qr: EnvoyQR(
-                      data: address,
-                    )),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: context.isSmallScreen
-                        ? EnvoySpacing.xs
-                        : EnvoySpacing.medium2,
-                  ),
-                  child: AddressWidget(
-                    address: address,
-                    returnAddressHalves: true,
-                    align: TextAlign.center,
-                    showWarningOnCopy: false,
+                    qr: EnvoyQR(data: address),
                   ),
                 ),
-                const SizedBox(height: EnvoySpacing.medium3),
               ],
             ),
           ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(
-            left: EnvoySpacing.medium2,
-            right: EnvoySpacing.medium2,
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: context.isSmallScreen
+                          ? EnvoySpacing.xs
+                          : EnvoySpacing.medium2,
+                    ),
+                    child: AddressWidget(
+                      address: address,
+                      returnAddressHalves: true,
+                      align: TextAlign.center,
+                      showWarningOnCopy: false,
+                    ),
+                  ),
+                  const SizedBox(height: EnvoySpacing.medium3),
+                ],
+              ),
+            ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.only(
+          Container(
+            margin: const EdgeInsets.only(
+              left: EnvoySpacing.medium2,
+              right: EnvoySpacing.medium2,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(
                 left: EnvoySpacing.large2,
                 right: EnvoySpacing.large2,
-                bottom: EnvoySpacing.large1),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                IconButton(
+                bottom: EnvoySpacing.large1,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
                     onPressed: () {
                       _copyAddressToClipboard(context, address);
                     },
                     icon: const EnvoyIcon(
                       EnvoyIcons.copy,
                       color: EnvoyColors.accentPrimary,
-                    )),
-                EnvoyTextButton(
-                  onTap: () {
-                    GoRouter.of(context).pop();
-                  },
-                  label: S().component_ok,
-                ),
-                IconButton(
+                    ),
+                  ),
+                  EnvoyTextButton(
+                    onTap: () {
+                      GoRouter.of(context).pop();
+                    },
+                    label: S().component_ok,
+                  ),
+                  IconButton(
                     onPressed: () {
-                      SharePlus.instance.share(ShareParams(
-                        text: "bitcoin:$address",
-                      ));
+                      SharePlus.instance.share(
+                        ShareParams(text: "bitcoin:$address"),
+                      );
                     },
                     icon: const EnvoyIcon(
                       EnvoyIcons.externalLink,
                       color: EnvoyColors.accentPrimary,
-                    )),
-              ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 
@@ -164,10 +168,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
         replaceExisting: true,
         duration: Duration(seconds: 1),
         message: "Address copied to clipboard",
-        icon: EnvoyIcon(
-          EnvoyIcons.info,
-          color: EnvoyColors.accentPrimary,
-        ),
+        icon: EnvoyIcon(EnvoyIcons.info, color: EnvoyColors.accentPrimary),
       ).show(context, rootNavigator: true);
     }
   }

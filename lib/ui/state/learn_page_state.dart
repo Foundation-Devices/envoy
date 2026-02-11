@@ -8,8 +8,10 @@ import 'package:envoy/business/video.dart';
 import 'package:envoy/business/blog_post.dart';
 import 'package:envoy/ui/home/cards/learn/filter_state.dart';
 
-final learnVideosProvider =
-    Provider.family<List<Video>, String?>((ref, String? searchText) {
+final learnVideosProvider = Provider.family<List<Video>, String?>((
+  ref,
+  String? searchText,
+) {
   final learnFilterState = ref.watch(learnFilterStateProvider);
   final learnSortState = ref.watch(learnSortStateProvider);
   final deviceFilterState = ref.watch(deviceFilterStateProvider);
@@ -85,15 +87,19 @@ final learnVideosProvider =
     return allVideos;
   } else {
     var videos = allVideos
-        .where((element) =>
-            element.title.toLowerCase().contains(searchText.toLowerCase()))
+        .where(
+          (element) =>
+              element.title.toLowerCase().contains(searchText.toLowerCase()),
+        )
         .toList();
     return videos;
   }
 });
 
-final learnBlogsProvider =
-    Provider.family<List<BlogPost>, String?>((ref, String? searchText) {
+final learnBlogsProvider = Provider.family<List<BlogPost>, String?>((
+  ref,
+  String? searchText,
+) {
   final learnFilterState = ref.watch(learnFilterStateProvider);
   final learnSortState = ref.watch(learnSortStateProvider);
   final deviceFilterState = ref.watch(deviceFilterStateProvider);
@@ -144,8 +150,10 @@ final learnBlogsProvider =
     return allBlogs;
   } else {
     var blogs = allBlogs
-        .where((element) =>
-            element.title.toLowerCase().contains(searchText.toLowerCase()))
+        .where(
+          (element) =>
+              element.title.toLowerCase().contains(searchText.toLowerCase()),
+        )
         .toList();
     return blogs;
   }

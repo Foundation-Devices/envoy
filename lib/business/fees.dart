@@ -34,7 +34,9 @@ final txEstimatedConfirmationTimeProvider =
   final network = txNetwork.item2;
 
   final feeRate = tx.fee / tx.vsize;
-  final medianFeeRates = ref.watch(mempoolBlocksMedianFeeRateProvider(network));
+  final medianFeeRates = ref.watch(
+    mempoolBlocksMedianFeeRateProvider(network),
+  );
 
   int minutesToConfirmation = 10;
   for (final blockFeeRate in medianFeeRates) {
@@ -64,7 +66,7 @@ class Fees {
     return {
       Network.bitcoin: FeeRates(),
       Network.testnet: FeeRates(),
-      Network.signet: FeeRates()
+      Network.signet: FeeRates(),
     };
   }
 
@@ -87,7 +89,10 @@ class Fees {
   }
 
   @JsonKey(
-      defaultValue: _defaultFees, toJson: _feesToJson, fromJson: _feesFromJson)
+    defaultValue: _defaultFees,
+    toJson: _feesToJson,
+    fromJson: _feesFromJson,
+  )
   Map<Network, FeeRates> fees = _defaultFees();
 
   static const String FEE_RATE_PREFS = "fees";
@@ -115,7 +120,7 @@ class Fees {
         Network.testnet4:
             "$testnet4MempoolFoundationInstance/api/v1/fees/recommended",
         Network.signet:
-            "$signetMempoolFoundationInstance/api/v1/fees/recommended"
+            "$signetMempoolFoundationInstance/api/v1/fees/recommended",
       };
 
   static Map<Network, String> get _mempoolBlocksFeesEndpoints => {
@@ -124,7 +129,7 @@ class Fees {
         Network.testnet:
             "$testnet4MempoolFoundationInstance/api/v1/fees/mempool-blocks",
         Network.signet:
-            "$signetMempoolFoundationInstance/api/v1/fees/mempool-blocks"
+            "$signetMempoolFoundationInstance/api/v1/fees/mempool-blocks",
       };
 
   factory Fees() {
@@ -190,11 +195,9 @@ class Fees {
       } else {
         throw Exception("Couldn't get mempool.space fees");
       }
-    }).onError(
-      (error, stackTrace) {
-        EnvoyReport().log("Fees", "Cannot get Fees ${error.toString()}");
-      },
-    );
+    }).onError((error, stackTrace) {
+      EnvoyReport().log("Fees", "Cannot get Fees ${error.toString()}");
+    });
   }
 
   void _getMempoolBlocksFees(Network network) {
@@ -202,19 +205,20 @@ class Fees {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         for (final block in json) {
-          fees[network]!
-              .mempoolBlocksMedianFeeRate
-              .add(block["medianFee"].toDouble());
+          fees[network]!.mempoolBlocksMedianFeeRate.add(
+                block["medianFee"].toDouble(),
+              );
         }
         _storeRates();
       } else {
         throw Exception("Couldn't get mempool.space blocks fees");
       }
-    }).onError(
-      (error, stackTrace) {
-        EnvoyReport().log("Fees", "Cannot get BlocksFees ${error.toString()}");
-      },
-    );
+    }).onError((error, stackTrace) {
+      EnvoyReport().log(
+        "Fees",
+        "Cannot get BlocksFees ${error.toString()}",
+      );
+    });
   }
 
   // Generated

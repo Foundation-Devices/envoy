@@ -50,27 +50,29 @@ class _MigrationAppState extends State<MigrationApp> {
 
   @override
   Widget build(BuildContext context) {
-    final envoyTextTheme =
-        GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
+    final envoyTextTheme = GoogleFonts.montserratTextTheme(
+      Theme.of(context).textTheme,
+    );
 
     return ProviderScope(
       child: MaterialApp(
-          themeMode: ThemeMode.dark,
-          debugShowCheckedModeBanner: false,
-          localizationsDelegates: const [
-            S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: S.delegate.supportedLocales,
-          theme: ThemeData(
-            textTheme: envoyTextTheme,
-            primaryColor: EnvoyColors.accentPrimary,
-            brightness: Brightness.light,
-            scaffoldBackgroundColor: Colors.transparent,
-          ),
-          home: Builder(builder: (c) => const MigrationAppPage())),
+        themeMode: ThemeMode.dark,
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
+        theme: ThemeData(
+          textTheme: envoyTextTheme,
+          primaryColor: EnvoyColors.accentPrimary,
+          brightness: Brightness.light,
+          scaffoldBackgroundColor: Colors.transparent,
+        ),
+        home: Builder(builder: (c) => const MigrationAppPage()),
+      ),
     );
   }
 }
@@ -94,8 +96,11 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
         await NgAccountManager().restore();
         await Future.delayed(const Duration(milliseconds: 300));
       } catch (e, stack) {
-        EnvoyReport().log("Migration", "Failed to restore accounts: $e",
-            stackTrace: stack);
+        EnvoyReport().log(
+          "Migration",
+          "Failed to restore accounts: $e",
+          stackTrace: stack,
+        );
       }
       await MigrationManager().setMigrationComplete();
       if (LocalStorage().prefs.getBool("useLocalAuth") == true) {
@@ -104,8 +109,10 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
         runApp(const EnvoyApp());
       }
     }).onMigrationError(() async {
-      EnvoyReport()
-          .log("Migration", "Error migrating accounts retrying... $retries");
+      EnvoyReport().log(
+        "Migration",
+        "Error migrating accounts retrying... $retries",
+      );
       await Future.delayed(const Duration(seconds: 1));
       MigrationManager().migrate();
       retries++;
@@ -119,50 +126,49 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
   Widget build(BuildContext context) {
     MigrationProgress? progress = ref.watch(migrationStateProvider);
     return Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(
-          children: [
-            Positioned.fill(
-                child: AppBackground(
-              showRadialGradient: false,
-            )),
-            Positioned(
-              top: MediaQuery.of(context).size.height * 0.18,
-              left: 0,
-              right: 0,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onLongPress: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const EnvoyLogsScreen()));
-                    },
-                    child: Container(
-                      height: 200,
-                      width: 200,
-                      decoration: const BoxDecoration(
-                        color: Colors.transparent,
-                        image: DecorationImage(
-                            image: ExactAssetImage('assets/logo_envoy.png'),
-                            fit: BoxFit.cover,
-                            filterQuality: FilterQuality.high),
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          Positioned.fill(child: AppBackground(showRadialGradient: false)),
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.18,
+            left: 0,
+            right: 0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onLongPress: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const EnvoyLogsScreen(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    height: 200,
+                    width: 200,
+                    decoration: const BoxDecoration(
+                      color: Colors.transparent,
+                      image: DecorationImage(
+                        image: ExactAssetImage('assets/logo_envoy.png'),
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.high,
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            if (progress != null)
-              Positioned.fill(
-                  child: Align(
+          ),
+          if (progress != null)
+            Positioned.fill(
+              child: Align(
                 alignment: Alignment(0.0, -.1),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(
-                      height: 24,
-                    ),
+                    SizedBox(height: 24),
                     SizedBox(
                       width: 300,
                       child: LinearProgressIndicator(
@@ -173,21 +179,24 @@ class _MigrationAppPageState extends ConsumerState<MigrationAppPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    SizedBox(
-                      height: 8,
-                    ),
+                    SizedBox(height: 8),
                     if (!progress.indeterminate())
                       Text(
                         S().onboarding_migrating_xOfYSynced(
-                            progress.completed, progress.total),
+                          progress.completed,
+                          progress.total,
+                        ),
                         textAlign: TextAlign.center,
-                        style:
-                            EnvoyTypography.body.copyWith(color: Colors.white),
+                        style: EnvoyTypography.body.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                   ],
                 ),
-              ))
-          ],
-        ));
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }

@@ -67,17 +67,18 @@ class _AboutPageState extends ConsumerState<AboutPage> {
             children: [
               AboutText(S().about_appVersion),
               FutureBuilder<PackageInfo>(
-                  future: PackageInfo.fromPlatform(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return AboutText(
-                        "${snapshot.data!.version} (${snapshot.data!.buildNumber})",
-                        dark: true,
-                      );
-                    } else {
-                      return const SizedBox.shrink();
-                    }
-                  }),
+                future: PackageInfo.fromPlatform(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return AboutText(
+                      "${snapshot.data!.version} (${snapshot.data!.buildNumber})",
+                      dark: true,
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
+              ),
             ],
           ),
           const Divider(),
@@ -91,20 +92,21 @@ class _AboutPageState extends ConsumerState<AboutPage> {
                   ref.read(homePageBackgroundProvider.notifier).state =
                       HomePageBackgroundState.licence;
                   showLicensePage(
-                      context: context,
-                      applicationName: "Envoy", // TODO: FIGMA
-                      useRootNavigator: true,
-                      applicationLegalese:
-                          "This program is free software: you can redistribute it and/or modify " // TODO: FIGMA
-                          "it under the terms of the GNU General Public License as published by "
-                          "the Free Software Foundation, either version 3 of the License, or "
-                          "(at your option) any later version. "
-                          "This program is distributed in the hope that it will be useful,"
-                          "but WITHOUT ANY WARRANTY; without even the implied warranty of "
-                          "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the "
-                          "GNU General Public License for more details.");
+                    context: context,
+                    applicationName: "Envoy", // TODO: FIGMA
+                    useRootNavigator: true,
+                    applicationLegalese:
+                        "This program is free software: you can redistribute it and/or modify " // TODO: FIGMA
+                        "it under the terms of the GNU General Public License as published by "
+                        "the Free Software Foundation, either version 3 of the License, or "
+                        "(at your option) any later version. "
+                        "This program is distributed in the hope that it will be useful,"
+                        "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+                        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the "
+                        "GNU General Public License for more details.",
+                  );
                 },
-              )
+              ),
             ],
           ),
           const Divider(),
@@ -118,7 +120,7 @@ class _AboutPageState extends ConsumerState<AboutPage> {
                 onTap: () {
                   launchUrlString("https://foundation.xyz/terms/");
                 },
-              )
+              ),
             ],
           ),
           const Divider(),
@@ -132,7 +134,7 @@ class _AboutPageState extends ConsumerState<AboutPage> {
                 onTap: () {
                   launchUrlString("https://foundation.xyz/privacy/");
                 },
-              )
+              ),
             ],
           ),
         ],
@@ -145,22 +147,20 @@ class AboutText extends StatelessWidget {
   final String label;
   final bool dark;
 
-  const AboutText(
-    this.label, {
-    this.dark = false,
-    super.key,
-  });
+  const AboutText(this.label, {this.dark = false, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Text(label,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: dark ? Colors.white38 : Colors.white,
-          fontSize: 15.0,
-          fontWeight: FontWeight.w500,
-        ));
+    return Text(
+      label,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(
+        color: dark ? Colors.white38 : Colors.white,
+        fontSize: 15.0,
+        fontWeight: FontWeight.w500,
+      ),
+    );
   }
 }
 
@@ -182,17 +182,17 @@ class AboutButton extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
-          constraints: const BoxConstraints(
-            minWidth: 100,
-          ),
-          decoration: const BoxDecoration(
-              color: EnvoyColors.accentPrimary,
-              borderRadius:
-                  BorderRadius.all(Radius.circular(EnvoySpacing.small))),
-          child: Center(
-              child: Padding(
+        constraints: const BoxConstraints(minWidth: 100),
+        decoration: const BoxDecoration(
+          color: EnvoyColors.accentPrimary,
+          borderRadius: BorderRadius.all(Radius.circular(EnvoySpacing.small)),
+        ),
+        child: Center(
+          child: Padding(
             padding: const EdgeInsets.symmetric(
-                vertical: EnvoySpacing.small, horizontal: EnvoySpacing.medium1),
+              vertical: EnvoySpacing.small,
+              horizontal: EnvoySpacing.medium1,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -217,7 +217,9 @@ class AboutButton extends StatelessWidget {
                 ),
               ],
             ),
-          ))),
+          ),
+        ),
+      ),
     );
   }
 }

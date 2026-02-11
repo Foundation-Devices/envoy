@@ -82,9 +82,10 @@ final onboardRoutes = GoRoute(
       name: ONBOARD_PASSPORT_EXISTING,
       routes: [
         GoRoute(
-            path: "scan",
-            builder: (context, state) => const SingleImportPpScanPage(),
-            name: ONBOARD_PASSPORT_EXISTING_SCAN)
+          path: "scan",
+          builder: (context, state) => const SingleImportPpScanPage(),
+          name: ONBOARD_PASSPORT_EXISTING_SCAN,
+        ),
       ],
       builder: (context, state) => const SingleImportPpIntroPage(),
     ),
@@ -129,9 +130,7 @@ final onboardRoutes = GoRoute(
               path: "seed",
               name: ONBOARD_ENVOY_MANUAL_IMPORT_SEED,
               builder: (context, state) {
-                return RecoverFromSeedLoader(
-                  seed: state.extra as String,
-                );
+                return RecoverFromSeedLoader(seed: state.extra as String);
               },
             ),
           ],
@@ -168,8 +167,10 @@ final onboardRoutes = GoRoute(
               name: ONBOARD_ENVOY_MAGIC_RECOVER_INFO,
               builder: (context, state) {
                 return MagicRecoveryInfo(
-                    skipSuccessScreen:
-                        state.uri.queryParameters.containsKey("skip"));
+                  skipSuccessScreen: state.uri.queryParameters.containsKey(
+                    "skip",
+                  ),
+                );
               },
             ),
             GoRoute(
@@ -178,7 +179,7 @@ final onboardRoutes = GoRoute(
               builder: (context, state) {
                 return const WalletSetupSuccess();
               },
-            )
+            ),
           ],
         ),
       ],

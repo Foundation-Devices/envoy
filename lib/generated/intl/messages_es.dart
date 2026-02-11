@@ -2138,6 +2138,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "onboarding_advanced_title": MessageLookupByLibrary.simpleMessage(
           "Avanzado",
         ),
+        "onboarding_appclip_header": MessageLookupByLibrary.simpleMessage(
+          "Welcome to Passport ",
+        ),
+        "onboarding_appclip_subheaderCore":
+            MessageLookupByLibrary.simpleMessage(
+          "Install Envoy to set up your Passport Core.",
+        ),
+        "onboarding_appclip_subheaderPrime":
+            MessageLookupByLibrary.simpleMessage(
+          "Install Envoy to set up your Passport Prime.",
+        ),
         "onboarding_bluetoothDisabled_content":
             MessageLookupByLibrary.simpleMessage(
           "Passport Prime necesita utilizar Bluetooth para la configuración inicial con QuantumLink. Esto permite sincronizar la fecha y la hora, las actualizaciones de firmware, las comprobaciones de seguridad, las copias de seguridad y más.\n\nPor favor, habilita los permisos de Bluetooth en la configuración del Envoy.",

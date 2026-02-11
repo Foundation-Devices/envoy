@@ -25,15 +25,16 @@ class AmountDisplay extends ConsumerStatefulWidget {
 
   final Function(String)? onUnitToggled;
 
-  AmountDisplay(
-      {this.displayedAmount = "",
-      this.amountSats,
-      this.displayFiat,
-      this.onUnitToggled,
-      this.inputMode = false,
-      this.onLongPress,
-      required this.account,
-      super.key});
+  AmountDisplay({
+    this.displayedAmount = "",
+    this.amountSats,
+    this.displayFiat,
+    this.onUnitToggled,
+    this.inputMode = false,
+    this.onLongPress,
+    required this.account,
+    super.key,
+  });
 
   void setDisplayAmount(AmountDisplayUnit unit) {
     if (unit == AmountDisplayUnit.fiat) {
@@ -79,10 +80,9 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
   @override
   Widget build(context) {
-    TextScaler textScaler = MediaQuery.of(context).textScaler.clamp(
-          minScaleFactor: 0.8,
-          maxScaleFactor: 1.6,
-        );
+    TextScaler textScaler = MediaQuery.of(
+      context,
+    ).textScaler.clamp(minScaleFactor: 0.8, maxScaleFactor: 1.6);
     double baseFontScale = 1;
     double textScaleFactor = textScaler.scale(baseFontScale);
 
