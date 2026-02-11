@@ -6,7 +6,7 @@ appId: com.foundationdevices.envoy
 ---
 
 - launchApp:
-    clearState: true # TODO: change this to true if running over GH !!!
+    clearState: true
 
 # create MB
 - tapOn: |-
@@ -34,7 +34,7 @@ appId: com.foundationdevices.envoy
 - scrollUntilVisible:
     element:
       text: Spain
-    speed: 80
+    speed: 40
     timeout: 130000
 
 - tapOn:

@@ -199,19 +199,15 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                     ),
                   ),
                 if (widget.title != null)
-                  Semantics(
-                    container: true,
-                    label: 'popup_title_${widget.title!}',
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                      child: Text(
-                        widget.title!,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: EnvoyTypography.heading,
-                        textAlign: TextAlign.center,
-                      ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                    child: Text(
+                      widget.title!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: EnvoyTypography.heading,
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 if (widget.content != null)

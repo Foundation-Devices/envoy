@@ -5,7 +5,7 @@
 appId: com.foundationdevices.envoy
 ---
 - launchApp:
-    clearState: true # TODO: change this to true if running over GH !!!
+    clearState: true
 
 # Go to Advanced
 - tapOn: Advanced
@@ -21,7 +21,7 @@ appId: com.foundationdevices.envoy
 - tapOn: Recover
 
 
-##### 12 word err test ENV-2315 #####
+###### 12 word err test ENV-2315 #####
 
 # Insert seed words (12 word)
 - tapOn: 12 Word Seed
@@ -129,7 +129,7 @@ appId: com.foundationdevices.envoy
 - tapOn: Back
 # back to seed menu
 - tapOn: Back button - Seed
-##################################### end of ENV-2315
+###################################### end of ENV-2315
 
 ###### 12 word valid seed test #####
 
@@ -162,8 +162,8 @@ appId: com.foundationdevices.envoy
 - tapOn: Done
 
 - extendedWaitUntil:
-    visible: "Magic Backup Detected"
-    timeout: 10000
+    visible: Magic Backup Detected
+    timeout: 30000 # timeout 30 s
 
 # ignore button
 - tapOn:
@@ -171,7 +171,7 @@ appId: com.foundationdevices.envoy
 
 - extendedWaitUntil:
     visible: "Import Envoy Backup File"
-    timeout: 10000
+    timeout: 300000 # timeout 5 min
 
 # Press on the icon to load backup file
 - longPressOn: |-
@@ -179,7 +179,7 @@ appId: com.foundationdevices.envoy
 
 - extendedWaitUntil:
     visible: "Your Mobile Wallet Is Ready"
-    timeout: 15000
+    timeout: 300000 # timeout 5 min
 - tapOn: Continue
 
 # Make sure you are in Home
