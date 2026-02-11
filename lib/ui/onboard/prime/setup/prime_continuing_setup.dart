@@ -21,6 +21,7 @@ import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart' as rive;
@@ -63,6 +64,7 @@ class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
       kPrint('Error loading Rive file: $e');
     }
   }
+
   //
   // void _updateRiveState({bool happy = false, bool unhappy = false}) {
   //   if (_controller?.stateMachine == null) return;
@@ -151,12 +153,22 @@ class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
                   width: 220,
                   height: 220,
                   child: _isInitialized && _controller != null
-                      ? Transform.scale(
-                          scale: 1.6,
-                          child: rive.RiveWidget(
-                            controller: _controller!,
-                            fit: rive.Fit.contain,
-                          ),
+                      ? Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Transform.scale(
+                              scale: 1.6,
+                              child: rive.RiveWidget(
+                                controller: _controller!,
+                                fit: rive.Fit.contain,
+                              ),
+                            ),
+                            SvgPicture.asset(
+                              'assets/components/icons/prime_front_faded.svg',
+                              width: 96,
+                              height: 96,
+                            ),
+                          ],
                         )
                       : const SizedBox(),
                 ),
