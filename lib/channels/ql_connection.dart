@@ -32,6 +32,12 @@ import 'package:foundation_api/foundation_api.dart' as api;
 /// - Write progress stream: envoy/ble/write/progress/{deviceId}
 ///
 class QLConnection with EnvoyMessageWriter {
+  // Threshold for considering the QL connection active based on last heartbeat, in seconds
+  // prime sends heartbeat every 6 seconds,to avoid flapping connection status
+  // we consider connection active if we received heartbeat in the last 8 seconds.
+  static const int _heartbeatActiveThreshold = 8;
+  static const Duration _heartbeatCheckInterval = Duration(seconds: 1);
+
   //Mac address on android, Device UUID on iOS
   final String deviceId;
 
@@ -56,10 +62,15 @@ class QLConnection with EnvoyMessageWriter {
   DeviceStatus get lastDeviceStatus => _lastDeviceStatus;
 
   final _readController = StreamController<Uint8List>.broadcast();
+  final _qlActiveController = StreamController<bool>.broadcast();
 
   Stream<Uint8List> get dataStream => _readController.stream;
+  Stream<bool> get qlActiveStream => _qlActiveController.stream.replayLatest(
+        _lastQLActive,
+      );
 
   StreamSubscription? _deviceStatusSubscription;
+  Timer? _qlActivityMonitorTimer;
 
   late final Stream<DeviceStatus> _deviceStatusStream;
   late final Stream<WriteProgress> _writeProgressStream;
@@ -81,6 +92,7 @@ class QLConnection with EnvoyMessageWriter {
       _deviceStatusStream.replayLatest(_lastDeviceStatus);
 
   bool _sendingExRate = false;
+  bool _lastQLActive = false;
 
   Stream<DeviceStatus> get connectionEvents =>
       deviceStatusStream.where((status) => status.isConnectionEvent);
@@ -147,6 +159,7 @@ class QLConnection with EnvoyMessageWriter {
     }).asBroadcastStream();
 
     _qlHandlers = QLHandlers(this);
+    _startQLActivityMonitoring();
 
     // Listen to device status updates
     _deviceStatusSubscription = _deviceStatusStream.listen((
@@ -166,6 +179,7 @@ class QLConnection with EnvoyMessageWriter {
       } else if (event.type ==
           BluetoothConnectionEventType.deviceDisconnected) {
         qlHandler.heartbeatHandler.lastHeartbeat = null;
+        _emitQLActiveIfChanged();
       }
       kPrint(
         "[$deviceId] BLE Connection Event: connected=${event.connected}, bonded=${event.bonded}",
@@ -235,6 +249,36 @@ class QLConnection with EnvoyMessageWriter {
       debugPrint("[$deviceId] Error checking connection: $e");
       return false;
     }
+  }
+
+  bool isQLActive() {
+    final lastHeartbeat = qlHandler.heartbeatHandler.lastHeartbeat;
+    if (lastHeartbeat == null) {
+      return false;
+    }
+    return DateTime.now().difference(lastHeartbeat).inSeconds <=
+        _heartbeatActiveThreshold;
+  }
+
+  /// Called by HeartbeatHandler when a heartbeat is received.
+  void onHeartbeatReceived() {
+    _emitQLActiveIfChanged();
+  }
+
+  void _startQLActivityMonitoring() {
+    _emitQLActiveIfChanged();
+    _qlActivityMonitorTimer = Timer.periodic(_heartbeatCheckInterval, (_) {
+      _emitQLActiveIfChanged();
+    });
+  }
+
+  void _emitQLActiveIfChanged() {
+    final isActive = isQLActive();
+    if (_lastQLActive == isActive) {
+      return;
+    }
+    _lastQLActive = isActive;
+    _qlActiveController.add(isActive);
   }
 
   /// Write all data chunks to this BLE device.
@@ -440,7 +484,9 @@ class QLConnection with EnvoyMessageWriter {
   /// Dispose of stream subscriptions and cleanup
   void dispose() {
     _deviceStatusSubscription?.cancel();
+    _qlActivityMonitorTimer?.cancel();
     _readController.close();
+    _qlActiveController.close();
     _bleReadChannel.setMessageHandler(null);
     kPrint("[$deviceId] QLConnection disposed");
   }

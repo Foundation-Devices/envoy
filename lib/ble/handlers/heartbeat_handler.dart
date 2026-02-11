@@ -22,6 +22,7 @@ class HeartbeatHandler extends PassportMessageHandler {
     if (message case api.QuantumLinkMessage_Heartbeat _) {
       kPrint("Received heartbeat, sending heartbeat response");
       lastHeartbeat = DateTime.now();
+      qlConnection.onHeartbeatReceived();
       await _sendHeartbeatResponse();
     }
   }
