@@ -480,7 +480,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
         const SizedBox(height: 10),
         GestureDetector(
           child: Text(
-            S().manage_device_details_menu_disconnectDevice,
+            S().manage_device_details_menu_unpairPassport,
             style: const TextStyle(color: EnvoyColors.copperLight500),
           ),
           onTap: () {
@@ -493,7 +493,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                 showCloseButton: false,
                 title: S().component_areYouSure,
                 content: S().manage_device_deletePassportWarning,
-                primaryButtonLabel: S().componet_disconnect,
+                primaryButtonLabel: S().component_unpair,
                 primaryButtonColor: EnvoyColors.warning,
                 onPrimaryButtonTap: (context) {
                   Devices().deleteDevice(widget.device);
