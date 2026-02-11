@@ -68,7 +68,6 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
     } else if (Platform.isAndroid) {
       try {
         // final bonded =
-        //     await BluetoothChannel().isDeviceBonded(widget.device.bleId);
         setState(() {
           isDeviceBonded = false;
         });
@@ -125,8 +124,10 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
           fontSize: 14,
           color: NewEnvoyColor.neutral900,
         );
-    final isConnected = ref.watch(isPrimeConnectedProvider(widget.device));
+    final bleConnected = ref.watch(isPrimeConnectedProvider(widget.device));
+    final qlActive = ref.watch(primeQLActivityProvider(widget.device));
 
+    final isConnected = bleConnected && qlActive;
     //android status is not required
     final deviceRemovedFromHostSystemSettings =
         widget.device.type == DeviceType.passportPrime
@@ -307,7 +308,6 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                             S().manage_device_details_QuantumLink,
                             style: listItemTitleTheme,
                           ),
-                          //TODO: implement connection status based on device QL heartbeat
                           trailing: Text(
                             isConnected
                                 ? S().manage_device_details_active
