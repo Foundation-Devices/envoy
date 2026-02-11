@@ -32,74 +32,74 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
         elevation: 0,
         backgroundColor: Colors.black,
         title: const Text("Logs"),
-        leading: const CupertinoNavigationBarBackButton(
-          color: Colors.white,
-        ),
+        leading: const CupertinoNavigationBarBackButton(color: Colors.white),
         actions: [
           IconButton(
-              tooltip: "Copy logs",
-              onPressed: () async {
-                try {
-                  String logs = await EnvoyReport().getLogAsString(24);
-                  await Clipboard.setData(ClipboardData(text: logs));
-                  if (context.mounted) {
-                    EnvoyToast(
-                      backgroundColor: Colors.lightBlue,
-                      replaceExisting: true,
-                      duration: const Duration(milliseconds: 2000),
-                      message: "Logs copied to clipboard",
-                      // TODO: FIGMA
-                      icon: const Icon(
-                        Icons.copy,
-                        color: EnvoyColors.teal,
-                      ),
-                    ).show(context);
-                  }
-                } catch (e) {
-                  kPrint(e);
+            tooltip: "Copy logs",
+            onPressed: () async {
+              try {
+                String logs = await EnvoyReport().getLogAsString(24);
+                await Clipboard.setData(ClipboardData(text: logs));
+                if (context.mounted) {
+                  EnvoyToast(
+                    backgroundColor: Colors.lightBlue,
+                    replaceExisting: true,
+                    duration: const Duration(milliseconds: 2000),
+                    message: "Logs copied to clipboard",
+                    // TODO: FIGMA
+                    icon: const Icon(Icons.copy, color: EnvoyColors.teal),
+                  ).show(context);
                 }
-              },
-              icon: const Icon(Icons.copy)),
+              } catch (e) {
+                kPrint(e);
+              }
+            },
+            icon: const Icon(Icons.copy),
+          ),
           IconButton(
-              tooltip: "Share logs",
-              onPressed: () async {
-                final navigator = Navigator.of(context);
-                try {
-                  showEnvoyDialog(
-                      context: context,
-                      builder: Builder(
-                        builder: (context) {
-                          return const SizedBox(
-                            height: 130,
-                            width: 220,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CircularProgressIndicator(),
-                                SizedBox(height: 12),
-                                Text("Preparing logs for sharing..."),
-                              ],
-                            ),
-                          );
-                        },
-                      ));
-                  //small delay to prevent navigator gets leaked
-                  await Future.delayed(const Duration(milliseconds: 200));
-                  String path = await EnvoyReport().share();
-                  SharePlus.instance.share(ShareParams(
+            tooltip: "Share logs",
+            onPressed: () async {
+              final navigator = Navigator.of(context);
+              try {
+                showEnvoyDialog(
+                  context: context,
+                  builder: Builder(
+                    builder: (context) {
+                      return const SizedBox(
+                        height: 130,
+                        width: 220,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(height: 12),
+                            Text("Preparing logs for sharing..."),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                );
+                //small delay to prevent navigator gets leaked
+                await Future.delayed(const Duration(milliseconds: 200));
+                String path = await EnvoyReport().share();
+                SharePlus.instance.share(
+                  ShareParams(
                     files: [XFile(path)],
                     subject: "text/plain",
                     text: "Envoy Log Report",
-                  ));
-                } catch (e) {
-                  EnvoyReport().log("EnvoyReport", e.toString());
-                } finally {
-                  navigator.pop();
-                }
-              },
-              icon: const Icon(Icons.ios_share)),
+                  ),
+                );
+              } catch (e) {
+                EnvoyReport().log("EnvoyReport", e.toString());
+              } finally {
+                navigator.pop();
+              }
+            },
+            icon: const Icon(Icons.ios_share),
+          ),
         ],
         centerTitle: true,
       ),
@@ -117,7 +117,8 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                 final logs = (snapshot.data ?? []).toList();
                 if (logs.isEmpty) {
                   return const Center(
-                      child: Text("No logs found")); // TODO: FIGMA
+                    child: Text("No logs found"),
+                  ); // TODO: FIGMA
                 }
                 return CustomScrollView(
                   slivers: [
@@ -158,37 +159,48 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                               children: [
                                 TableRow(
                                   children: [
-                                    Text("Time :",
-                                        style: labelStyle,
-                                        textAlign: TextAlign.right),
+                                    Text(
+                                      "Time :",
+                                      style: labelStyle,
+                                      textAlign: TextAlign.right,
+                                    ),
                                     Padding(
                                       padding: const EdgeInsets.only(
-                                          left: EnvoySpacing.small),
-                                      child:
-                                          Text(time.trim(), style: valueStyle),
+                                        left: EnvoySpacing.small,
+                                      ),
+                                      child: Text(
+                                        time.trim(),
+                                        style: valueStyle,
+                                      ),
                                     ),
                                   ],
                                 ),
                                 TableRow(
                                   children: [
-                                    Text("Category   :",
-                                        style: labelStyle,
-                                        textAlign: TextAlign.right),
+                                    Text(
+                                      "Category   :",
+                                      style: labelStyle,
+                                      textAlign: TextAlign.right,
+                                    ),
                                     Padding(
                                       padding: const EdgeInsets.only(
-                                          left: EnvoySpacing.small),
+                                        left: EnvoySpacing.small,
+                                      ),
                                       child: Text(category, style: valueStyle),
                                     ),
                                   ],
                                 ),
                                 TableRow(
                                   children: [
-                                    Text("Message :",
-                                        style: labelStyle,
-                                        textAlign: TextAlign.right),
+                                    Text(
+                                      "Message :",
+                                      style: labelStyle,
+                                      textAlign: TextAlign.right,
+                                    ),
                                     Padding(
                                       padding: EdgeInsets.only(
-                                          left: EnvoySpacing.small),
+                                        left: EnvoySpacing.small,
+                                      ),
                                       child: Text(message, style: valueStyle),
                                     ),
                                   ],
@@ -196,26 +208,34 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                                 if (occurrences != "1" && occurrences != "None")
                                   TableRow(
                                     children: [
-                                      Text("Occurrences  :",
-                                          style: labelStyle,
-                                          textAlign: TextAlign.right),
+                                      Text(
+                                        "Occurrences  :",
+                                        style: labelStyle,
+                                        textAlign: TextAlign.right,
+                                      ),
                                       Padding(
                                         padding: const EdgeInsets.only(
-                                            left: EnvoySpacing.small),
-                                        child: Text(occurrences,
-                                            style: valueStyle),
+                                          left: EnvoySpacing.small,
+                                        ),
+                                        child: Text(
+                                          occurrences,
+                                          style: valueStyle,
+                                        ),
                                       ),
                                     ],
                                   ),
                                 if (lib != "None")
                                   TableRow(
                                     children: [
-                                      Text("Library  :",
-                                          style: labelStyle,
-                                          textAlign: TextAlign.right),
+                                      Text(
+                                        "Library  :",
+                                        style: labelStyle,
+                                        textAlign: TextAlign.right,
+                                      ),
                                       Padding(
                                         padding: const EdgeInsets.only(
-                                            left: EnvoySpacing.small),
+                                          left: EnvoySpacing.small,
+                                        ),
                                         child: Text(lib, style: valueStyle),
                                       ),
                                     ],
@@ -223,28 +243,38 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                                 if (exception != "None")
                                   TableRow(
                                     children: [
-                                      Text("Exception :",
-                                          style: labelStyle,
-                                          textAlign: TextAlign.right),
+                                      Text(
+                                        "Exception :",
+                                        style: labelStyle,
+                                        textAlign: TextAlign.right,
+                                      ),
                                       Padding(
                                         padding: const EdgeInsets.only(
-                                            left: EnvoySpacing.small),
-                                        child: SelectableText(exception,
-                                            style: valueStyle),
+                                          left: EnvoySpacing.small,
+                                        ),
+                                        child: SelectableText(
+                                          exception,
+                                          style: valueStyle,
+                                        ),
                                       ),
                                     ],
                                   ),
                                 if (stackTrace != "None")
                                   TableRow(
                                     children: [
-                                      Text("StackTrace :",
-                                          style: labelStyle,
-                                          textAlign: TextAlign.right),
+                                      Text(
+                                        "StackTrace :",
+                                        style: labelStyle,
+                                        textAlign: TextAlign.right,
+                                      ),
                                       Padding(
                                         padding: const EdgeInsets.only(
-                                            left: EnvoySpacing.small),
-                                        child: SelectableText(stackTrace,
-                                            style: valueStyle),
+                                          left: EnvoySpacing.small,
+                                        ),
+                                        child: SelectableText(
+                                          stackTrace,
+                                          style: valueStyle,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -269,7 +299,7 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                         );
                       },
                       itemCount: logs.length,
-                    )
+                    ),
                   ],
                 );
               },

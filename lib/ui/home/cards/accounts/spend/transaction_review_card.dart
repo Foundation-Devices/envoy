@@ -68,12 +68,15 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     const double cardRadius = EnvoySpacing.medium2;
 
     TextStyle? titleStyle = Theme.of(context).textTheme.titleSmall?.copyWith(
-        color: EnvoyColors.textPrimaryInverse, fontWeight: FontWeight.w700);
+          color: EnvoyColors.textPrimaryInverse,
+          fontWeight: FontWeight.w700,
+        );
 
     TextStyle? trailingStyle = Theme.of(context).textTheme.titleSmall?.copyWith(
-        color: EnvoyColors.textPrimaryInverse,
-        fontWeight: FontWeight.w400,
-        fontSize: 13);
+          color: EnvoyColors.textPrimaryInverse,
+          fontWeight: FontWeight.w400,
+          fontSize: 13,
+        );
 
     final uneconomicSpends = ref.watch(uneconomicSpendsProvider);
 
@@ -94,16 +97,18 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     final s = Settings();
 
     /// Leave total as it is (total will be visible after sending)
-    double displayFiatTotalAmount =
-        ExchangeRate().convertSatsToFiat(totalSpendAmount);
+    double displayFiatTotalAmount = ExchangeRate().convertSatsToFiat(
+      totalSpendAmount,
+    );
 
     double? displayFiatSendAmount;
     double? displayFiatFeeAmount;
 
     if (s.displayFiat() != null) {
       if (transactionModel.mode == SpendMode.sendMax) {
-        displayFiatFeeAmount =
-            ExchangeRate().convertSatsToFiat(transaction.fee.toInt());
+        displayFiatFeeAmount = ExchangeRate().convertSatsToFiat(
+          transaction.fee.toInt(),
+        );
         displayFiatSendAmount = displayFiatTotalAmount - displayFiatFeeAmount;
       } else {
         displayFiatFeeAmount =
@@ -134,38 +139,43 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(cardRadius - 1)),
         color: accountAccent,
-        border:
-            Border.all(color: Colors.black, width: 2, style: BorderStyle.solid),
+        border: Border.all(
+          color: Colors.black,
+          width: 2,
+          style: BorderStyle.solid,
+        ),
       ),
       child: Container(
         decoration: BoxDecoration(
-            borderRadius:
-                const BorderRadius.all(Radius.circular(cardRadius - 3)),
-            gradient: LinearGradient(
-              begin: const Alignment(0.00, 1.00),
-              end: const Alignment(0, -1),
-              stops: const [0, .65, 1],
-              colors: [
-                Colors.black.applyOpacity(0.65),
-                Colors.black.applyOpacity(0.13),
-                Colors.black.applyOpacity(0)
-              ],
-            ),
-            border: Border.all(
-                width: 2, color: accountAccent, style: BorderStyle.solid)),
+          borderRadius: const BorderRadius.all(Radius.circular(cardRadius - 3)),
+          gradient: LinearGradient(
+            begin: const Alignment(0.00, 1.00),
+            end: const Alignment(0, -1),
+            stops: const [0, .65, 1],
+            colors: [
+              Colors.black.applyOpacity(0.65),
+              Colors.black.applyOpacity(0.13),
+              Colors.black.applyOpacity(0),
+            ],
+          ),
+          border: Border.all(
+            width: 2,
+            color: accountAccent,
+            style: BorderStyle.solid,
+          ),
+        ),
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(cardRadius - 4)),
           child: CustomPaint(
             isComplex: true,
             willChange: false,
-            painter: StripePainter(
-              EnvoyColors.gray1000.applyOpacity(0.4),
-            ),
+            painter: StripePainter(EnvoyColors.gray1000.applyOpacity(0.4)),
             child: Padding(
               padding: const EdgeInsets.only(
-                  left: EnvoySpacing.small,
-                  right: EnvoySpacing.small,
-                  top: EnvoySpacing.small),
+                left: EnvoySpacing.small,
+                right: EnvoySpacing.small,
+                top: EnvoySpacing.small,
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
@@ -173,9 +183,10 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(
-                        top: EnvoySpacing.xs,
-                        bottom: EnvoySpacing.xs,
-                        left: EnvoySpacing.small),
+                      top: EnvoySpacing.xs,
+                      bottom: EnvoySpacing.xs,
+                      left: EnvoySpacing.small,
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -192,10 +203,13 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                               if (uneconomicSpends)
                                 const Padding(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: EnvoySpacing.xs),
-                                  child: EnvoyIcon(EnvoyIcons.alert,
-                                      size: EnvoyIconSize.small,
-                                      color: EnvoyColors.solidWhite),
+                                    horizontal: EnvoySpacing.xs,
+                                  ),
+                                  child: EnvoyIcon(
+                                    EnvoyIcons.alert,
+                                    size: EnvoyIconSize.small,
+                                    color: EnvoyColors.solidWhite,
+                                  ),
                                 ),
                               Text(
                                 S().coincontrol_tx_detail_amount_details,
@@ -204,26 +218,29 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                               const Icon(
                                 Icons.chevron_right_outlined,
                                 color: EnvoyColors.textPrimaryInverse,
-                              )
+                              ),
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
                   _whiteContainer(
-                      child: EnvoyAmount(
-                          account: account,
-                          unit: formatUnit,
-                          amountSats: amount,
-                          displayFiatAmount: displayFiatSendAmount,
-                          millionaireMode: false,
-                          amountWidgetStyle: AmountWidgetStyle.singleLine)),
+                    child: EnvoyAmount(
+                      account: account,
+                      unit: formatUnit,
+                      amountSats: amount,
+                      displayFiatAmount: displayFiatSendAmount,
+                      millionaireMode: false,
+                      amountWidgetStyle: AmountWidgetStyle.singleLine,
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(
-                        top: EnvoySpacing.xs,
-                        bottom: EnvoySpacing.xs,
-                        left: EnvoySpacing.small),
+                      top: EnvoySpacing.xs,
+                      bottom: EnvoySpacing.xs,
+                      left: EnvoySpacing.small,
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -236,52 +253,56 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                     ),
                   ),
                   TweenAnimationBuilder(
-                      curve: EnvoyEasing.easeInOut,
-                      tween: Tween<double>(begin: 0, end: 1),
-                      duration: const Duration(milliseconds: 200),
-                      builder: (context, value, child) {
-                        return AnimatedContainer(
-                            duration: const Duration(milliseconds: 120),
-                            child: _whiteContainer(
-                                child: AddressWidget(
-                              align: TextAlign.start,
-                              address: address,
-                              short: true,
-                              sideChunks:
-                                  2 + (value * (address.length / 4)).round(),
-                            )));
-                      }),
+                    curve: EnvoyEasing.easeInOut,
+                    tween: Tween<double>(begin: 0, end: 1),
+                    duration: const Duration(milliseconds: 200),
+                    builder: (context, value, child) {
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 120),
+                        child: _whiteContainer(
+                          child: AddressWidget(
+                            align: TextAlign.start,
+                            address: address,
+                            short: true,
+                            sideChunks:
+                                2 + (value * (address.length / 4)).round(),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(
-                        top: EnvoySpacing.xs,
-                        bottom: EnvoySpacing.xs,
-                        left: EnvoySpacing.small),
+                      top: EnvoySpacing.xs,
+                      bottom: EnvoySpacing.xs,
+                      left: EnvoySpacing.small,
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Row(
                           children: [
-                            Text(
-                              widget.feeTitle,
-                              style: titleStyle,
-                            ),
+                            Text(widget.feeTitle, style: titleStyle),
                             widget.feeTitleIconButton != null
                                 ? GestureDetector(
                                     onTap: () {
                                       showNewTransactionDialog(
-                                          context,
-                                          account,
-                                          transaction.fee.toInt(),
-                                          originalTx!.fee.toInt());
+                                        context,
+                                        account,
+                                        transaction.fee.toInt(),
+                                        originalTx!.fee.toInt(),
+                                      );
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.only(
-                                          left: EnvoySpacing.xs),
+                                        left: EnvoySpacing.xs,
+                                      ),
                                       child: EnvoyIcon(
-                                          widget.feeTitleIconButton!,
-                                          color: EnvoyColors.textPrimaryInverse,
-                                          size: EnvoyIconSize.small),
+                                        widget.feeTitleIconButton!,
+                                        color: EnvoyColors.textPrimaryInverse,
+                                        size: EnvoyIconSize.small,
+                                      ),
                                     ),
                                   )
                                 : const SizedBox.shrink(),
@@ -311,22 +332,25 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                               ),
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
                   _whiteContainer(
-                      child: EnvoyAmount(
-                          unit: formatUnit,
-                          account: account,
-                          amountSats: transaction.fee.toInt(),
-                          displayFiatAmount: displayFiatFeeAmount,
-                          millionaireMode: false,
-                          amountWidgetStyle: AmountWidgetStyle.singleLine)),
+                    child: EnvoyAmount(
+                      unit: formatUnit,
+                      account: account,
+                      amountSats: transaction.fee.toInt(),
+                      displayFiatAmount: displayFiatFeeAmount,
+                      millionaireMode: false,
+                      amountWidgetStyle: AmountWidgetStyle.singleLine,
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.xs,
-                        horizontal: EnvoySpacing.small),
+                      vertical: EnvoySpacing.xs,
+                      horizontal: EnvoySpacing.small,
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -345,30 +369,35 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                                 size: 14,
                                 color: EnvoyColors.textPrimaryInverse,
                               ),
-                              Consumer(builder: (context, ref, child) {
-                                final spendTimeEstimationProvider =
-                                    ref.watch(spendEstimatedBlockTimeProvider);
-                                return Text(
-                                  " $spendTimeEstimationProvider min",
-                                  //TODO: figma
-                                  style: trailingStyle,
-                                );
-                              }),
+                              Consumer(
+                                builder: (context, ref, child) {
+                                  final spendTimeEstimationProvider = ref.watch(
+                                    spendEstimatedBlockTimeProvider,
+                                  );
+                                  return Text(
+                                    " $spendTimeEstimationProvider min",
+                                    //TODO: figma
+                                    style: trailingStyle,
+                                  );
+                                },
+                              ),
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
                   _whiteContainer(
-                      child: EnvoyAmount(
-                          account: account,
-                          unit: formatUnit,
-                          amountSats: transaction.amount.toInt().abs() +
-                              transaction.fee.toInt(),
-                          displayFiatAmount: displayFiatTotalAmount,
-                          millionaireMode: false,
-                          amountWidgetStyle: AmountWidgetStyle.singleLine)),
+                    child: EnvoyAmount(
+                      account: account,
+                      unit: formatUnit,
+                      amountSats: transaction.amount.toInt().abs() +
+                          transaction.fee.toInt(),
+                      displayFiatAmount: displayFiatTotalAmount,
+                      millionaireMode: false,
+                      amountWidgetStyle: AmountWidgetStyle.singleLine,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -379,115 +408,117 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
   }
 
   Widget _whiteContainer({required Widget child}) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
-        child: Container(
-          constraints: const BoxConstraints(
-            minHeight: 32,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 32),
+            alignment: Alignment.centerLeft,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(EnvoySpacing.medium1),
+              ),
+              color: EnvoyColors.textPrimaryInverse,
+            ),
+            padding: const EdgeInsets.symmetric(
+              vertical: 6,
+              horizontal: EnvoySpacing.small,
+            ),
+            child: child,
           ),
-          alignment: Alignment.centerLeft,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-              borderRadius:
-                  BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
-              color: EnvoyColors.textPrimaryInverse),
-          padding: const EdgeInsets.symmetric(
-              vertical: 6, horizontal: EnvoySpacing.small),
-          child: child,
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   void showNewTransactionDialog(
-      BuildContext context, EnvoyAccount account, int newFee, int oldFee) {
+    BuildContext context,
+    EnvoyAccount account,
+    int newFee,
+    int oldFee,
+  ) {
     showEnvoyDialog(
-        context: context,
-        dialog: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.85,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(EnvoySpacing.medium2),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
-                    child: EnvoyIcon(
-                      EnvoyIcons.info,
-                      size: EnvoyIconSize.big,
-                      color: EnvoyColors.accentPrimary,
-                    ),
+      context: context,
+      dialog: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.85,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(EnvoySpacing.medium2),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(bottom: EnvoySpacing.medium3),
+                  child: EnvoyIcon(
+                    EnvoyIcons.info,
+                    size: EnvoyIconSize.big,
+                    color: EnvoyColors.accentPrimary,
                   ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                    child: Text(
-                      S().replaceByFee_newFee_modal_heading,
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.heading,
-                    ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                  child: Text(
+                    S().replaceByFee_newFee_modal_heading,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.heading,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: EnvoySpacing.small,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
+                  child: Text(
+                    S().replaceByFee_newFee_modal_subheading,
+                    style: EnvoyTypography.info.copyWith(
+                      color: EnvoyColors.textSecondary,
                     ),
-                    child: Text(
-                      S().replaceByFee_newFee_modal_subheading,
-                      style: EnvoyTypography.info
-                          .copyWith(color: EnvoyColors.textSecondary),
-                      textAlign: TextAlign.center,
-                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: EnvoySpacing.small,
-                    ),
-                    child: EnvoyAmount(
-                      account: account,
-                      amountSats: newFee,
-                      amountWidgetStyle: AmountWidgetStyle.normal,
-                      millionaireMode: false,
-                      alignToEnd: false,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: EnvoySpacing.small,
-                    ),
-                    child: Text(
-                      S().replaceByFee_newFee_modal_subheading_replacing,
-                      style: EnvoyTypography.info
-                          .copyWith(color: EnvoyColors.textSecondary),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  EnvoyAmount(
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
+                  child: EnvoyAmount(
                     account: account,
-                    amountSats: oldFee,
+                    amountSats: newFee,
                     amountWidgetStyle: AmountWidgetStyle.normal,
                     millionaireMode: false,
                     alignToEnd: false,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: EnvoySpacing.medium3,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
+                  child: Text(
+                    S().replaceByFee_newFee_modal_subheading_replacing,
+                    style: EnvoyTypography.info.copyWith(
+                      color: EnvoyColors.textSecondary,
                     ),
-                    child: EnvoyButton(
-                      label: S().component_continue,
-                      onTap: () {
-                        Navigator.of(context, rootNavigator: true).pop();
-                      },
-                      type: ButtonType.primary,
-                      state: ButtonState.defaultState,
-                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ],
-              ),
+                ),
+                EnvoyAmount(
+                  account: account,
+                  amountSats: oldFee,
+                  amountWidgetStyle: AmountWidgetStyle.normal,
+                  millionaireMode: false,
+                  alignToEnd: false,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+                  child: EnvoyButton(
+                    label: S().component_continue,
+                    onTap: () {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    },
+                    type: ButtonType.primary,
+                    state: ButtonState.defaultState,
+                  ),
+                ),
+              ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

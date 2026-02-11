@@ -25,8 +25,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:local_auth/error_codes.dart' as auth_error;
 import 'package:local_auth/local_auth.dart';
 
-final GlobalKey<NavigatorState> authRouterKey =
-    GlobalKey<NavigatorState>(debugLabel: "authNavigator");
+final GlobalKey<NavigatorState> authRouterKey = GlobalKey<NavigatorState>(
+  debugLabel: "authNavigator",
+);
 
 final GoRouter authRouter = GoRouter(
   navigatorKey: authRouterKey,
@@ -34,15 +35,16 @@ final GoRouter authRouter = GoRouter(
   debugLogDiagnostics: true,
   routes: <RouteBase>[
     GoRoute(
-        path: "/",
-        name: "/",
-        builder: (context, state) {
-          // Extract deep link URI from route state if present
-          final Uri? deepLinkUri = state.uri.queryParameters.isNotEmpty
-              ? state.uri
-              : (state.extra is Uri ? state.extra as Uri : null);
-          return AuthenticatePage(deepLinkUri: deepLinkUri);
-        }),
+      path: "/",
+      name: "/",
+      builder: (context, state) {
+        // Extract deep link URI from route state if present
+        final Uri? deepLinkUri = state.uri.queryParameters.isNotEmpty
+            ? state.uri
+            : (state.extra is Uri ? state.extra as Uri : null);
+        return AuthenticatePage(deepLinkUri: deepLinkUri);
+      },
+    ),
   ],
 );
 
@@ -51,8 +53,9 @@ class AuthenticateApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final envoyTextTheme =
-        GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
+    final envoyTextTheme = GoogleFonts.montserratTextTheme(
+      Theme.of(context).textTheme,
+    );
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
@@ -110,43 +113,43 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
             );
           },
           child: const DecoratedBox(
-              decoration: BoxDecoration(
-            color: Colors.black12,
-          )),
+            decoration: BoxDecoration(color: Colors.black12),
+          ),
         ),
       );
     }
     return Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(
-          children: [
-            const Positioned.fill(
-                child: AppBackground(
-              showRadialGradient: false,
-            )),
-            Positioned(
-              top: MediaQuery.of(context).size.height * 0.18,
-              left: 0,
-              right: 0,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    height: 200,
-                    width: 200,
-                    decoration: const BoxDecoration(
-                      color: Colors.transparent,
-                      image: DecorationImage(
-                          image: ExactAssetImage('assets/logo_envoy.png'),
-                          fit: BoxFit.cover,
-                          filterQuality: FilterQuality.high),
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          const Positioned.fill(
+            child: AppBackground(showRadialGradient: false),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.18,
+            left: 0,
+            right: 0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 200,
+                  width: 200,
+                  decoration: const BoxDecoration(
+                    color: Colors.transparent,
+                    image: DecorationImage(
+                      image: ExactAssetImage('assets/logo_envoy.png'),
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.high,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> initiateAuth() async {
@@ -274,34 +277,34 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
     }
   }
 
-  void showAuthLockedOutDialog(
-      {required String title,
-      required String subtitle,
-      required String ctaButtonTitle,
-      GestureTapCallback? ctaTapCallback,
-      required EnvoyIcons icon}) {
+  void showAuthLockedOutDialog({
+    required String title,
+    required String subtitle,
+    required String ctaButtonTitle,
+    GestureTapCallback? ctaTapCallback,
+    required EnvoyIcons icon,
+  }) {
     showEnvoyDialog(
-        dismissible: false,
-        context: context,
-        cardColor: EnvoyColors.textPrimaryInverse,
-        dialog: Builder(
-          builder: (context) {
-            return Theme(
-              data: ThemeData.light(),
-              child: Container(
-                height: 310,
-                width: MediaQuery.of(context).size.width * .8,
-                padding: const EdgeInsets.all(EnvoySpacing.medium2)
-                    .add(const EdgeInsets.only(top: -6)),
-                constraints: const BoxConstraints(
-                  minHeight: 270,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        child: Column(
+      dismissible: false,
+      context: context,
+      cardColor: EnvoyColors.textPrimaryInverse,
+      dialog: Builder(
+        builder: (context) {
+          return Theme(
+            data: ThemeData.light(),
+            child: Container(
+              height: 310,
+              width: MediaQuery.of(context).size.width * .8,
+              padding: const EdgeInsets.all(
+                EnvoySpacing.medium2,
+              ).add(const EdgeInsets.only(top: -6)),
+              constraints: const BoxConstraints(minHeight: 270),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -314,34 +317,42 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
                         const SizedBox(height: EnvoySpacing.medium2),
                         ListTile(
                           contentPadding: const EdgeInsets.all(0),
-                          title: Text(title,
-                              style: EnvoyTypography.heading,
-                              textAlign: TextAlign.center),
+                          title: Text(
+                            title,
+                            style: EnvoyTypography.heading,
+                            textAlign: TextAlign.center,
+                          ),
                           subtitle: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Text(subtitle,
-                                style: EnvoyTypography.info
-                                    .copyWith(color: EnvoyColors.textPrimary),
-                                textAlign: TextAlign.center),
+                            child: Text(
+                              subtitle,
+                              style: EnvoyTypography.info.copyWith(
+                                color: EnvoyColors.textPrimary,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ),
                       ],
-                    )),
-                    ctaTapCallback != null
-                        ? EnvoyButton(
-                            ctaButtonTitle,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(8)),
-                            type: EnvoyButtonTypes.primaryModal,
-                            onTap: ctaTapCallback,
-                          )
-                        : const SizedBox.shrink(),
-                  ],
-                ),
+                    ),
+                  ),
+                  ctaTapCallback != null
+                      ? EnvoyButton(
+                          ctaButtonTitle,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(8),
+                          ),
+                          type: EnvoyButtonTypes.primaryModal,
+                          onTap: ctaTapCallback,
+                        )
+                      : const SizedBox.shrink(),
+                ],
               ),
-            );
-          },
-        ));
+            ),
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -354,18 +365,22 @@ class _AuthenticatePageState extends State<AuthenticatePage> {
         DeviceOrientation.portraitUp,
       ]);
       //sets theme for authentication page
-      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        systemNavigationBarColor: Colors.transparent,
-        systemNavigationBarContrastEnforced: false,
-        systemStatusBarContrastEnforced: false,
-        statusBarColor: Colors.transparent,
-        systemNavigationBarIconBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-      ));
+      SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(
+          systemNavigationBarColor: Colors.transparent,
+          systemNavigationBarContrastEnforced: false,
+          systemStatusBarContrastEnforced: false,
+          statusBarColor: Colors.transparent,
+          systemNavigationBarIconBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+        ),
+      );
 
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
-          overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+      SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.edgeToEdge,
+        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+      );
 
       bool? useAuth = LocalStorage().prefs.getBool("useLocalAuth");
       if (useAuth == true) {

@@ -22,18 +22,13 @@ Future<bool> getSatsForSignetAccount(int sats, Account account) async {
 Future<bool> getSatsFromSignetFaucet(int sats, String address) async {
   String url = 'https://faucet.mutinynet.com/api/onchain';
   HttpTor http = HttpTor();
-  Map<String, dynamic> data = {
-    "sats": sats,
-    "address": address,
-  };
+  Map<String, dynamic> data = {"sats": sats, "address": address};
   var requestBody = json.encode(data);
 
   try {
     var response = await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
       body: requestBody,
     );
     if (response.statusCode == 200) {

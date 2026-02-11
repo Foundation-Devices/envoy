@@ -30,26 +30,25 @@ enum BuyBitcoinCardState { buyInEnvoy, peerToPeer, vouchers, atms, none }
 
 void showBuyBitcoinOptions(WidgetRef ref) {
   ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
-      optionsWidget: const CountryOptions(),
-      rightAction: Consumer(
-        builder: (context, ref, child) {
-          bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
-          return GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              HomePageState.of(context)?.toggleOptions();
-            },
-            child: Container(
-              height: 55,
-              width: 55,
-              color: Colors.transparent,
-              child: Icon(
-                menuVisible ? Icons.close : Icons.more_horiz_outlined,
-              ),
-            ),
-          );
-        },
-      ));
+    optionsWidget: const CountryOptions(),
+    rightAction: Consumer(
+      builder: (context, ref, child) {
+        bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            HomePageState.of(context)?.toggleOptions();
+          },
+          child: Container(
+            height: 55,
+            width: 55,
+            color: Colors.transparent,
+            child: Icon(menuVisible ? Icons.close : Icons.more_horiz_outlined),
+          ),
+        );
+      },
+    ),
+  );
   ref.read(buyBTCPageProvider.notifier).state = true;
 }
 
@@ -72,11 +71,15 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
   void initState() {
     super.initState();
     animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 200));
-    animation =
-        Tween(begin: const Alignment(0.0, 1.0), end: const Alignment(0.0, 0.65))
-            .animate(CurvedAnimation(
-                parent: animationController, curve: Curves.easeInOut));
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    animation = Tween(
+      begin: const Alignment(0.0, 1.0),
+      end: const Alignment(0.0, 0.65),
+    ).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeInOut),
+    );
 
     Future.delayed(const Duration()).then((value) {
       ref.read(homePageTitleProvider.notifier).state = "";
@@ -101,8 +104,10 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
   Future<void> _checkSelectedRegion() async {
     var region = await EnvoyStorage().getCountry();
     if (region != null) {
-      bool newRegionCanBuy =
-          await AllowedRegions.isRegionAllowed(region.code, region.division);
+      bool newRegionCanBuy = await AllowedRegions.isRegionAllowed(
+        region.code,
+        region.division,
+      );
       if (!newRegionCanBuy) {
         setState(() {
           currentState = BuyBitcoinCardState.none;
@@ -157,13 +162,17 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
       },
       child: DecoratedBox(
         decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [EnvoyColors.surface2, EnvoyColors.surface1])),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [EnvoyColors.surface2, EnvoyColors.surface1],
+          ),
+        ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
-              vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium2),
+            vertical: EnvoySpacing.medium1,
+            horizontal: EnvoySpacing.medium2,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -178,9 +187,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                         style: EnvoyTypography.subheading,
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(
-                        height: EnvoySpacing.medium2,
-                      ),
+                      const SizedBox(height: EnvoySpacing.medium2),
                       IconTab(
                         label: S().buy_bitcoin_buyOptions_card_inEnvoy_heading,
                         isLocked: true,
@@ -203,9 +210,7 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                         },
                         //poweredByIcons: const [EnvoyIcons.stripe_text],
                       ),
-                      const SizedBox(
-                        height: EnvoySpacing.medium2,
-                      ),
+                      const SizedBox(height: EnvoySpacing.medium2),
                       IconToolbar(
                         options: [
                           IconToolbarOption(
@@ -239,7 +244,8 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.medium2),
+                          vertical: EnvoySpacing.medium2,
+                        ),
                         child: Text(
                           additionalInfo(currentState),
                           style: EnvoyTypography.info,
@@ -253,8 +259,9 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                           },
                           child: Text(
                             S().component_learnMore,
-                            style: EnvoyTypography.button
-                                .copyWith(color: EnvoyColors.accentPrimary),
+                            style: EnvoyTypography.button.copyWith(
+                              color: EnvoyColors.accentPrimary,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -278,24 +285,23 @@ class _BuyBitcoinCardState extends ConsumerState<BuyBitcoinCard>
                         false;
                     switch (currentState) {
                       case BuyBitcoinCardState.buyInEnvoy:
-                        context.go(
-                          ROUTE_SELECT_ACCOUNT,
-                        );
+                        context.go(ROUTE_SELECT_ACCOUNT);
                       case BuyBitcoinCardState.peerToPeer:
                         ref.read(homeShellOptionsProvider.notifier).state =
                             null;
-                        context.go(
-                          ROUTE_PEER_TO_PEER,
-                        );
+                        context.go(ROUTE_PEER_TO_PEER);
                       case BuyBitcoinCardState.vouchers:
                         launchUrl(Uri.parse("https://azte.co/"));
                       case BuyBitcoinCardState.atms:
                         Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute(builder: (context) {
-                            return MediaQuery.removePadding(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return MediaQuery.removePadding(
                                 context: context,
-                                child: fullScreenShield(const MarkersPage()));
-                          }),
+                                child: fullScreenShield(const MarkersPage()),
+                              );
+                            },
+                          ),
                         );
                       case BuyBitcoinCardState.none:
                     }
@@ -348,7 +354,7 @@ void showAdditionalInfoDialog(BuyBitcoinCardState state, BuildContext context) {
         EnvoyIcons.hodlHodl,
         EnvoyIcons.bisq,
         EnvoyIcons.robosats,
-        EnvoyIcons.peach
+        EnvoyIcons.peach,
       ];
     case BuyBitcoinCardState.vouchers:
       icon = EnvoyIcons.shield;
@@ -381,21 +387,22 @@ void showAdditionalInfoDialog(BuyBitcoinCardState state, BuildContext context) {
   }
 
   showEnvoyDialog(
-      context: context,
-      useRootNavigator: true,
-      dialog: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.9,
-        child: BuyOptionDialog(
-          icon: icon,
-          title: title,
-          description: description,
-          addressRequired: addressRequired,
-          bankingInfoRequired: bankingInfoRequired,
-          emailRequired: emailRequired,
-          identificationRequired: identificationRequired,
-          poweredByIcons: poweredByIcons,
-        ),
-      ));
+    context: context,
+    useRootNavigator: true,
+    dialog: SizedBox(
+      width: MediaQuery.of(context).size.width * 0.9,
+      child: BuyOptionDialog(
+        icon: icon,
+        title: title,
+        description: description,
+        addressRequired: addressRequired,
+        bankingInfoRequired: bankingInfoRequired,
+        emailRequired: emailRequired,
+        identificationRequired: identificationRequired,
+        poweredByIcons: poweredByIcons,
+      ),
+    ),
+  );
 }
 
 class BuyOptionDialog extends StatelessWidget {
@@ -440,10 +447,7 @@ class BuyOptionDialog extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium2),
-            child: EnvoyIcon(
-              icon,
-              size: EnvoyIconSize.big,
-            ),
+            child: EnvoyIcon(icon, size: EnvoyIconSize.big),
           ),
           Text(
             title,
@@ -461,8 +465,9 @@ class BuyOptionDialog extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+              padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.medium2,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -474,9 +479,7 @@ class BuyOptionDialog extends StatelessWidget {
                         info: S().buy_bitcoin_buyOptions_modal_email,
                         state: emailRequired,
                       ),
-                      const SizedBox(
-                        height: EnvoySpacing.medium1,
-                      ),
+                      const SizedBox(height: EnvoySpacing.medium1),
                       InfoRequired(
                         info: S().buy_bitcoin_buyOptions_modal_address,
                         state: addressRequired,
@@ -491,15 +494,13 @@ class BuyOptionDialog extends StatelessWidget {
                         info: S().buy_bitcoin_buyOptions_modal_identification,
                         state: identificationRequired,
                       ),
-                      const SizedBox(
-                        height: EnvoySpacing.medium1,
-                      ),
+                      const SizedBox(height: EnvoySpacing.medium1),
                       InfoRequired(
                         info: S().buy_bitcoin_buyOptions_modal_bankingInfo,
                         state: bankingInfoRequired,
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -512,16 +513,16 @@ class BuyOptionDialog extends StatelessWidget {
                 children: [
                   Text(
                     S().buy_bitcoin_buyOptions_modal_poweredBy,
-                    style: EnvoyTypography.info
-                        .copyWith(color: EnvoyColors.textTertiary),
+                    style: EnvoyTypography.info.copyWith(
+                      color: EnvoyColors.textTertiary,
+                    ),
                   ),
-                  ...poweredByIcons!.map((icon) => Padding(
-                        padding: const EdgeInsets.only(left: EnvoySpacing.xs),
-                        child: EnvoyIcon(
-                          icon,
-                          size: EnvoyIconSize.extraSmall,
-                        ),
-                      )),
+                  ...poweredByIcons!.map(
+                    (icon) => Padding(
+                      padding: const EdgeInsets.only(left: EnvoySpacing.xs),
+                      child: EnvoyIcon(icon, size: EnvoyIconSize.extraSmall),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -534,11 +535,7 @@ class BuyOptionDialog extends StatelessWidget {
 enum InfoState { required, notRequired, unknown }
 
 class InfoRequired extends StatelessWidget {
-  const InfoRequired({
-    super.key,
-    required this.info,
-    required this.state,
-  });
+  const InfoRequired({super.key, required this.info, required this.state});
 
   final String info;
   final InfoState state;
@@ -557,24 +554,22 @@ class InfoRequired extends StatelessWidget {
       case InfoState.notRequired:
         iconData = EnvoyIcons.close_circle;
         iconColor = EnvoyColors.accentPrimary;
-        textStyle =
-            EnvoyTypography.body.copyWith(color: EnvoyColors.accentPrimary);
+        textStyle = EnvoyTypography.body.copyWith(
+          color: EnvoyColors.accentPrimary,
+        );
         break;
       case InfoState.unknown:
         iconData = EnvoyIcons.unknown_circle;
         iconColor = EnvoyColors.textTertiary;
-        textStyle =
-            EnvoyTypography.body.copyWith(color: EnvoyColors.textTertiary);
+        textStyle = EnvoyTypography.body.copyWith(
+          color: EnvoyColors.textTertiary,
+        );
         break;
     }
 
     return Row(
       children: [
-        EnvoyIcon(
-          iconData,
-          color: iconColor,
-          size: EnvoyIconSize.extraSmall,
-        ),
+        EnvoyIcon(iconData, color: iconColor, size: EnvoyIconSize.extraSmall),
         const SizedBox(width: EnvoySpacing.xs),
         Text(info, style: textStyle),
       ],
@@ -596,9 +591,7 @@ class _CountryOptionsState extends ConsumerState<CountryOptions> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Divider(),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         GestureDetector(
           child: Text(
             S().buy_bitcoin_details_menu_editRegion,
@@ -607,9 +600,7 @@ class _CountryOptionsState extends ConsumerState<CountryOptions> {
           onTap: () {
             HomePageState.of(context)?.toggleOptions();
             ref.read(navigatingToEditRegionProvider.notifier).state = true;
-            context.go(
-              ROUTE_SELECT_REGION,
-            );
+            context.go(ROUTE_SELECT_REGION);
           },
         ),
       ],

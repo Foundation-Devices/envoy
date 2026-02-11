@@ -37,7 +37,7 @@ class ScvUpdateState {
 
 /// Handler for SCV messages over Quantum Link.
 class ScvHandler extends PassportMessageHandler {
-  ScvHandler(super.writer);
+  ScvHandler(super.connection);
 
   ScvUpdateState? _lastState;
   final StreamController<ScvUpdateState> _scvUpdateController =
@@ -55,10 +55,11 @@ class ScvHandler extends PassportMessageHandler {
   }
 
   @override
-  Future<void> handleMessage(
-      api.QuantumLinkMessage message, String bleId) async {
+  Future<void> handleMessage(api.QuantumLinkMessage message) async {
     if (message
-        case api.QuantumLinkMessage_SecurityCheck(field0: final check)) {
+        case api.QuantumLinkMessage_SecurityCheck(
+          field0: final check,
+        )) {
       if (check is api.SecurityCheck_ChallengeResponse) {
         final proofResult = check.field0;
         if (proofResult is api.ChallengeResponseResult_Success) {
@@ -67,10 +68,13 @@ class ScvHandler extends PassportMessageHandler {
 
           switch (verificationResult) {
             case ScvVerificationResult.success:
-              updateScvState(S().onboarding_connectionChecking_SecurityPassed,
-                  EnvoyStepState.FINISHED);
+              updateScvState(
+                S().onboarding_connectionChecking_SecurityPassed,
+                EnvoyStepState.FINISHED,
+              );
               await sendSecurityChallengeVerificationResult(
-                  api.VerificationResult.success());
+                api.VerificationResult.success(),
+              );
               break;
 
             case ScvVerificationResult.networkError:
@@ -81,11 +85,13 @@ class ScvHandler extends PassportMessageHandler {
             case ScvVerificationResult.verificationFailed:
               // Actual verification failure - send Failure to Prime
               await sendSecurityChallengeVerificationResult(
-                  api.VerificationResult.failure());
+                api.VerificationResult.failure(),
+              );
               updateScvState(
-                  S().onboarding_connectionIntroError_securityCheckFailed,
-                  EnvoyStepState.ERROR,
-                  errorType: ScvErrorType.verificationFailed);
+                S().onboarding_connectionIntroError_securityCheckFailed,
+                EnvoyStepState.ERROR,
+                errorType: ScvErrorType.verificationFailed,
+              );
               return;
           }
         } else if (proofResult is api.ChallengeResponseResult_Error) {
@@ -93,9 +99,12 @@ class ScvHandler extends PassportMessageHandler {
           //TODO: fix SCV .
           kPrint("challege proof failed $proofError");
           await sendSecurityChallengeVerificationResult(
-              api.VerificationResult.success());
-          updateScvState(S().onboarding_connectionChecking_SecurityPassed,
-              EnvoyStepState.FINISHED);
+            api.VerificationResult.success(),
+          );
+          updateScvState(
+            S().onboarding_connectionChecking_SecurityPassed,
+            EnvoyStepState.FINISHED,
+          );
           // await ref.read(deviceSecurityProvider.notifier).updateStep(
           //     S().onboarding_connectionChecking_SecurityPassed,
           //     EnvoyStepState.FINISHED);
@@ -113,32 +122,47 @@ class ScvHandler extends PassportMessageHandler {
 
   Future<void> sendNetworkError() async {
     // Network error - send Error to Prime and show pending state
-    await sendSecurityChallengeVerificationResult(api.VerificationResult.error(
-        error: "Network error: Unable to reach Foundation servers"));
+    await sendSecurityChallengeVerificationResult(
+      api.VerificationResult.error(
+        error: "Network error: Unable to reach Foundation servers",
+      ),
+    );
     updateScvState(
-        S().onboarding_connectionIntroErrorInternet_securityCheckPending,
-        EnvoyStepState.ERROR,
-        errorType: ScvErrorType.networkError);
+      S().onboarding_connectionIntroErrorInternet_securityCheckPending,
+      EnvoyStepState.ERROR,
+      errorType: ScvErrorType.networkError,
+    );
   }
 
-  void updateScvState(String message, EnvoyStepState step,
-      {ScvErrorType errorType = ScvErrorType.none}) {
-    final state =
-        ScvUpdateState(message: message, step: step, errorType: errorType);
+  void updateScvState(
+    String message,
+    EnvoyStepState step, {
+    ScvErrorType errorType = ScvErrorType.none,
+  }) {
+    final state = ScvUpdateState(
+      message: message,
+      step: step,
+      errorType: errorType,
+    );
     _scvUpdateController.add(state);
     _lastState = state;
   }
 
   Future<void> sendSecurityChallengeVerificationResult(
-      api.VerificationResult result) async {
+    api.VerificationResult result,
+  ) async {
     final message = api.SecurityCheck.verificationResult(result);
-    await writer.writeMessage(api.QuantumLinkMessage.securityCheck(message));
+    await qlConnection.writeMessage(
+      api.QuantumLinkMessage.securityCheck(message),
+    );
   }
 
   void sendSecurityChallenge() async {
     kPrint("sending security challenge");
-    updateScvState(S().onboarding_connectionIntro_checkingDeviceSecurity,
-        EnvoyStepState.LOADING);
+    updateScvState(
+      S().onboarding_connectionIntro_checkingDeviceSecurity,
+      EnvoyStepState.LOADING,
+    );
     api.ChallengeRequest? challenge = await ScvServer().getPrimeChallenge();
     if (challenge == null) {
       sendNetworkError();
@@ -147,12 +171,16 @@ class ScvHandler extends PassportMessageHandler {
 
     final request = api.SecurityCheck.challengeRequest(challenge);
     kPrint("writing security challenge");
-    await writer.writeMessage(api.QuantumLinkMessage.securityCheck(request));
+    await qlConnection.writeMessage(
+      api.QuantumLinkMessage.securityCheck(request),
+    );
     kPrint("successfully wrote security challenge");
   }
 
   void reset() {
     updateScvState(
-        S().firmware_updatingDownload_downloading, EnvoyStepState.IDLE);
+      S().firmware_updatingDownload_downloading,
+      EnvoyStepState.IDLE,
+    );
   }
 }

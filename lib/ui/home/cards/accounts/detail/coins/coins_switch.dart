@@ -11,21 +11,18 @@ class CoinTagSwitch extends StatefulWidget {
   final CoinTagSwitchState value;
   final Function(CoinTagSwitchState) onChanged;
   final bool triState;
-  const CoinTagSwitch(
-      {super.key,
-      required this.value,
-      this.triState = false,
-      required this.onChanged});
+  const CoinTagSwitch({
+    super.key,
+    required this.value,
+    this.triState = false,
+    required this.onChanged,
+  });
 
   @override
   State<CoinTagSwitch> createState() => _CoinTagSwitchState();
 }
 
-enum CoinTagSwitchState {
-  on,
-  partial,
-  off,
-}
+enum CoinTagSwitchState { on, partial, off }
 
 class _CoinTagSwitchState extends State<CoinTagSwitch> {
   @override
@@ -54,12 +51,13 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
     }
 
     BoxDecoration boxDecoration = BoxDecoration(
-        borderRadius: BorderRadius.circular(50),
-        gradient: LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [gradientStart, gradientStart, gradientEnd],
-        ));
+      borderRadius: BorderRadius.circular(50),
+      gradient: LinearGradient(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        colors: [gradientStart, gradientStart, gradientEnd],
+      ),
+    );
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -77,41 +75,40 @@ class _CoinTagSwitchState extends State<CoinTagSwitch> {
             width: 48,
             decoration: boxDecoration,
             child: AnimatedAlign(
-                alignment: knobAlign,
-                curve: (widget.value == CoinTagSwitchState.off ||
-                        widget.value == CoinTagSwitchState.partial)
-                    ? Curves.decelerate
-                    : Curves.easeIn,
-                duration: const Duration(milliseconds: 200),
-                child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Material(
-                    elevation: 1,
-                    shape: const CircleBorder(),
-                    child: widget.triState
-                        ? SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: Center(
-                              child: SvgPicture.asset(
-                                "assets/icons/ic_filter_funnel.svg",
-                                width: 10,
-                                height: 10,
-                                fit: BoxFit.fitHeight,
-                                colorFilter: ColorFilter.mode(
-                                    widget.value == CoinTagSwitchState.partial
-                                        ? EnvoyColors.darkTeal
-                                        : EnvoyColors.transparent,
-                                    BlendMode.srcIn),
+              alignment: knobAlign,
+              curve: (widget.value == CoinTagSwitchState.off ||
+                      widget.value == CoinTagSwitchState.partial)
+                  ? Curves.decelerate
+                  : Curves.easeIn,
+              duration: const Duration(milliseconds: 200),
+              child: Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: Material(
+                  elevation: 1,
+                  shape: const CircleBorder(),
+                  child: widget.triState
+                      ? SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: Center(
+                            child: SvgPicture.asset(
+                              "assets/icons/ic_filter_funnel.svg",
+                              width: 10,
+                              height: 10,
+                              fit: BoxFit.fitHeight,
+                              colorFilter: ColorFilter.mode(
+                                widget.value == CoinTagSwitchState.partial
+                                    ? EnvoyColors.darkTeal
+                                    : EnvoyColors.transparent,
+                                BlendMode.srcIn,
                               ),
                             ),
-                          )
-                        : const SizedBox(
-                            width: 18,
-                            height: 18,
                           ),
-                  ),
-                )),
+                        )
+                      : const SizedBox(width: 18, height: 18),
+                ),
+              ),
+            ),
           ),
         ),
       ),

@@ -35,43 +35,55 @@ class FwMicrosdPage extends ConsumerWidget {
       title: S().envoy_fw_microsd_heading,
       subheading: S().envoy_fw_microsd_subheading,
       buttons: [
-        EnvoyButton(S().component_continue,
-            enabled: fwInfo.hasValue,
-            borderRadius:
-                BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
-            onTap: () async {
-          try {
-            File firmwareFile =
-                await UpdatesManager().getStoredFirmware(deviceId);
-            await FwUploader(firmwareFile).upload();
+        EnvoyButton(
+          S().component_continue,
+          enabled: fwInfo.hasValue,
+          borderRadius: BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+          onTap: () async {
+            try {
+              File firmwareFile = await UpdatesManager().getStoredFirmware(
+                deviceId,
+              );
+              await FwUploader(firmwareFile).upload();
 
-            if (Platform.isIOS && context.mounted) {
-              context.pushNamed(PASSPORT_UPDATE_IOS_SUCCESS,
-                  extra: fwPagePayload);
-            }
+              if (Platform.isIOS && context.mounted) {
+                context.pushNamed(
+                  PASSPORT_UPDATE_IOS_SUCCESS,
+                  extra: fwPagePayload,
+                );
+              }
 
-            if (Platform.isAndroid) {
-              await Future.delayed(const Duration(milliseconds: 500));
-              if (context.mounted) {
-                context.pushNamed(PASSPORT_UPDATE_ANDROID,
-                    extra: fwPagePayload);
+              if (Platform.isAndroid) {
+                await Future.delayed(const Duration(milliseconds: 500));
+                if (context.mounted) {
+                  context.pushNamed(
+                    PASSPORT_UPDATE_ANDROID,
+                    extra: fwPagePayload,
+                  );
+                }
+              }
+            } catch (e) {
+              kPrint("SD: error $e");
+              EnvoyReport().log(
+                "uploading",
+                "Couldn't upload file to SD card: ${e.toString()}",
+              );
+              if (Platform.isIOS &&
+                  context.mounted) // TODO: this needs to be smarter
+                // ignore: curly_braces_in_flow_control_structures
+                context.pushNamed(
+                  PASSPORT_UPDATE_IOS_INSTRUCTION,
+                  extra: fwPagePayload,
+                );
+              if (Platform.isAndroid && context.mounted) {
+                context.pushNamed(
+                  PASSPORT_UPDATE_ANDROID_INSTRUCTION,
+                  extra: fwPagePayload,
+                );
               }
             }
-          } catch (e) {
-            kPrint("SD: error $e");
-            EnvoyReport().log("uploading",
-                "Couldn't upload file to SD card: ${e.toString()}");
-            if (Platform.isIOS &&
-                context.mounted) // TODO: this needs to be smarter
-              // ignore: curly_braces_in_flow_control_structures
-              context.pushNamed(PASSPORT_UPDATE_IOS_INSTRUCTION,
-                  extra: fwPagePayload);
-            if (Platform.isAndroid && context.mounted) {
-              context.pushNamed(PASSPORT_UPDATE_ANDROID_INSTRUCTION,
-                  extra: fwPagePayload);
-            }
-          }
-        }),
+          },
+        ),
       ],
     );
   }

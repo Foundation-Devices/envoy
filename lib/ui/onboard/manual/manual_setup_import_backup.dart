@@ -46,8 +46,10 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
   }
 
   void _initRive() async {
-    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
-        riveFactory: rive.Factory.rive);
+    _riveFile = await rive.File.asset(
+      "assets/envoy_loader.riv",
+      riveFactory: rive.Factory.rive,
+    );
     _controller = rive.RiveWidgetController(
       _riveFile!,
       stateMachineSelector: rive.StateMachineSelector.byName('STM'),
@@ -86,13 +88,14 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                   : const SizedBox(),
             ),
           ),
-          const SizedBox(
-            height: EnvoySpacing.xl * 2,
-          ),
+          const SizedBox(height: EnvoySpacing.xl * 2),
           DefaultTextStyle(
             style: EnvoyTypography.heading,
-            child: Text(S().magic_setup_recovery_retry_header,
-                textAlign: TextAlign.center, style: EnvoyTypography.heading),
+            child: Text(
+              S().magic_setup_recovery_retry_header,
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.heading,
+            ),
           ),
         ],
       ),
@@ -120,70 +123,78 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
         }
       },
       child: OnboardPageBackground(
-          child: Material(
-        color: Colors.transparent,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const SizedBox(height: EnvoySpacing.small),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.large3),
-              child: GestureDetector(
-                onLongPress: () {
-                  if (isTest) {
-                    setState(() {
-                      _isRecoveryInProgress = true;
-                    });
-                    openBeefQABackupFile(context).then((value) {
+        child: Material(
+          color: Colors.transparent,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const SizedBox(height: EnvoySpacing.small),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: EnvoySpacing.large3,
+                ),
+                child: GestureDetector(
+                  onLongPress: () {
+                    if (isTest) {
                       setState(() {
-                        _isRecoveryInProgress = false;
+                        _isRecoveryInProgress = true;
                       });
-                    });
-                  }
-                },
-                child: Image.asset(
-                  "assets/fw_download.png",
-                  width: 150,
-                  height: 150,
+                      openBeefQABackupFile(context).then((value) {
+                        setState(() {
+                          _isRecoveryInProgress = false;
+                        });
+                      });
+                    }
+                  },
+                  child: Image.asset(
+                    "assets/fw_download.png",
+                    width: 150,
+                    height: 150,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: EnvoySpacing.medium1),
-            Flexible(
-              child: SingleChildScrollView(
+              const SizedBox(height: EnvoySpacing.medium1),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.small,
+                        ),
+                        child: Text(
+                          S().manual_setup_import_backup_CTA2,
+                          textAlign: TextAlign.center,
+                          style: EnvoyTypography.heading,
+                        ),
+                      ),
+                      const SizedBox(height: EnvoySpacing.medium3),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.large1,
+                        ),
+                        child: Text(
+                          S().manual_setup_import_backup_subheading,
+                          textAlign: TextAlign.center,
+                          style: EnvoyTypography.info.copyWith(
+                            color: EnvoyColors.textTertiary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: EnvoySpacing.medium1),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: EnvoySpacing.xs,
+                  right: EnvoySpacing.xs,
+                  bottom: EnvoySpacing.medium2,
+                ),
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.small),
-                      child: Text(S().manual_setup_import_backup_CTA2,
-                          textAlign: TextAlign.center,
-                          style: EnvoyTypography.heading),
-                    ),
-                    const SizedBox(height: EnvoySpacing.medium3),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.large1),
-                      child: Text(S().manual_setup_import_backup_subheading,
-                          textAlign: TextAlign.center,
-                          style: EnvoyTypography.info
-                              .copyWith(color: EnvoyColors.textTertiary)),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: EnvoySpacing.medium1),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: EnvoySpacing.xs,
-                right: EnvoySpacing.xs,
-                bottom: EnvoySpacing.medium2,
-              ),
-              child: Column(
-                children: [
-                  OnboardingButton(
+                    OnboardingButton(
                       type: EnvoyButtonTypes.secondary,
                       label: S().manual_setup_import_backup_CTA2,
                       onTap: () {
@@ -191,22 +202,28 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                           _isRecoveryInProgress = true;
                         });
                         openExternalBackUpFile(context);
-                      }),
-                  OnboardingButton(
+                      },
+                    ),
+                    OnboardingButton(
                       type: EnvoyButtonTypes.primary,
                       label: S().manual_setup_import_backup_CTA1,
                       onTap: () {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return const ManualSetupCreateAndStoreBackup();
-                        }));
-                      }),
-                ],
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const ManualSetupCreateAndStoreBackup();
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      )),
+      ),
     );
   }
 
@@ -215,9 +232,13 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
       final navigator = Navigator.of(context);
       bool success = await openBackupFile(context);
       if (success) {
-        await navigator.push(MaterialPageRoute(builder: (context) {
-          return const WalletSetupSuccess();
-        }));
+        await navigator.push(
+          MaterialPageRoute(
+            builder: (context) {
+              return const WalletSetupSuccess();
+            },
+          ),
+        );
       } else {
         setState(() {
           _isRecoveryInProgress = false;
@@ -255,9 +276,10 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
     try {
       try {
         final backUpPayload = await Backup.getBackup(
-            seedWords: seed,
-            serverUrl: Settings().envoyServerAddress,
-            proxyPort: Tor.instance.port);
+          seedWords: seed,
+          serverUrl: Settings().envoyServerAddress,
+          proxyPort: Tor.instance.port,
+        );
         data = EnvoySeed.extractDataFromPayload(backUpPayload);
       } catch (_) {
         data = null;
@@ -265,21 +287,22 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
       setState(() {
         if (data != null) {
           showEnvoyPopUp(
-              context,
-              title: S().manual_setup_magicBackupDetected_heading,
-              S().manual_setup_magicBackupDetected_subheading,
-              S().manual_setup_magicBackupDetected_restore,
-              (BuildContext context) async {
-                await tryMagicRecover(seedList, seed, data, context);
-              },
-              icon: EnvoyIcons.info,
-              secondaryButtonLabel: S().manual_setup_magicBackupDetected_ignore,
-              onSecondaryButtonTap: (BuildContext context) {
-                recoverManually(seedList, context);
-                Navigator.pop(context);
-              },
-              showCloseButton: false,
-              dismissible: false);
+            context,
+            title: S().manual_setup_magicBackupDetected_heading,
+            S().manual_setup_magicBackupDetected_subheading,
+            S().manual_setup_magicBackupDetected_restore,
+            (BuildContext context) async {
+              await tryMagicRecover(seedList, seed, data, context);
+            },
+            icon: EnvoyIcons.info,
+            secondaryButtonLabel: S().manual_setup_magicBackupDetected_ignore,
+            onSecondaryButtonTap: (BuildContext context) {
+              recoverManually(seedList, context);
+              Navigator.pop(context);
+            },
+            showCloseButton: false,
+            dismissible: false,
+          );
         } else {
           if (mounted) {
             recoverManually(seedList, context);
@@ -302,46 +325,61 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
-        child: Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(top: EnvoySpacing.xl),
-          child: SizedBox(
-            height: 180,
-            width: 180,
-            child: CircularProgressIndicator(
-              color: EnvoyColors.tealLight,
-              backgroundColor: EnvoyColors.surface4,
-              strokeWidth: 15,
-              strokeCap: StrokeCap.round,
+      child: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(top: EnvoySpacing.xl),
+            child: SizedBox(
+              height: 180,
+              width: 180,
+              child: CircularProgressIndicator(
+                color: EnvoyColors.tealLight,
+                backgroundColor: EnvoyColors.surface4,
+                strokeWidth: 15,
+                strokeCap: StrokeCap.round,
+              ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
-          child: DefaultTextStyle(
-            style: EnvoyTypography.heading,
-            child: Text(S().manual_setup_importingSeedLoadingInfo,
-                style: EnvoyTypography.heading),
+          Padding(
+            padding: const EdgeInsets.only(top: EnvoySpacing.medium3),
+            child: DefaultTextStyle(
+              style: EnvoyTypography.heading,
+              child: Text(
+                S().manual_setup_importingSeedLoadingInfo,
+                style: EnvoyTypography.heading,
+              ),
+            ),
           ),
-        )
-      ],
-    ));
+        ],
+      ),
+    );
   }
 }
 
-Future<void> tryMagicRecover(List<String> seedList, String seed,
-    Map<String, String>? data, BuildContext context) async {
+Future<void> tryMagicRecover(
+  List<String> seedList,
+  String seed,
+  Map<String, String>? data,
+  BuildContext context,
+) async {
   final navigator = Navigator.of(context);
-  bool success = await EnvoySeed()
-      .processRecoveryData(seed, data, null, isMagicBackup: true);
+  bool success = await EnvoySeed().processRecoveryData(
+    seed,
+    data,
+    null,
+    isMagicBackup: true,
+  );
 
   if (success) {
     Settings().setSyncToCloud(true);
     EnvoySeed().copySeedToNonSecure();
-    navigator.push(MaterialPageRoute(builder: (context) {
-      return const WalletSetupSuccess();
-    }));
+    navigator.push(
+      MaterialPageRoute(
+        builder: (context) {
+          return const WalletSetupSuccess();
+        },
+      ),
+    );
   } else {
     if (context.mounted) {
       recoverManually(seedList, context);
@@ -351,19 +389,19 @@ Future<void> tryMagicRecover(List<String> seedList, String seed,
 }
 
 Future<void> recoverManually(
-    List<String> seedList, BuildContext context) async {
+  List<String> seedList,
+  BuildContext context,
+) async {
   bool success = await EnvoySeed().create(seedList);
 
   if (success && context.mounted) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const ManualSetupImportBackup()));
+      context,
+      MaterialPageRoute(builder: (context) => const ManualSetupImportBackup()),
+    );
   } else {
     if (context.mounted) {
-      showInvalidSeedDialog(
-        context: context,
-      );
+      showInvalidSeedDialog(context: context);
     }
   }
 }

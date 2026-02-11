@@ -82,8 +82,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   }
 
   void _initRive() async {
-    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
-        riveFactory: rive.Factory.rive);
+    _riveFile = await rive.File.asset(
+      "assets/envoy_loader.riv",
+      riveFactory: rive.Factory.rive,
+    );
     _controller = rive.RiveWidgetController(
       _riveFile!,
       stateMachineSelector: rive.StateMachineSelector.byName('STM'),
@@ -144,95 +146,104 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     ProviderContainer scope = ProviderScope.containerOf(context);
 
     return CoinSelectionOverlay(
-      child: Builder(builder: (context) {
-        return PopScope(
-          canPop: canPop,
-          onPopInvokedWithResult: (didPop, _) {
-            //clear coins selection when exiting RBF screen
-            ref.read(coinSelectionFromWallet.notifier).reset();
-            ref.read(coinSelectionStateProvider.notifier).reset();
-            clearSpendState(scope);
-          },
-          child: background(
-            child: MediaQuery.removePadding(
-              removeTop: true,
-              removeBottom: true,
-              context: context,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-                child: PageTransitionSwitcher(
-                  transitionBuilder:
-                      (child, primaryAnimation, secondaryAnimation) {
-                    return SharedAxisTransition(
-                      animation: primaryAnimation,
-                      secondaryAnimation: secondaryAnimation,
-                      fillColor: Colors.transparent,
-                      transitionType: SharedAxisTransitionType.vertical,
-                      child: child,
-                    );
-                  },
-                  child: showProgress
-                      ? _buildBroadcastProgress()
-                      : EnvoyScaffold(
-                          backgroundColor: Colors.transparent,
-                          hasScrollBody: true,
-                          extendBody: true,
-                          extendBodyBehindAppBar: true,
-                          removeAppBarPadding: true,
-                          bottom: ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(8),
-                              topRight: Radius.circular(7),
-                            ),
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                              child: Container(
-                                color: Colors.white12,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: EnvoySpacing.xs)
-                                      .add(const EdgeInsets.only(
-                                          bottom: EnvoySpacing.large1)),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      if (showReviewCoin)
-                                        EnvoyButton(
-                                          label: S()
-                                              .replaceByFee_boost_reviewCoinSelection,
-                                          state: ButtonState.defaultState,
-                                          onTap: () => _editCoins(context),
-                                          type: ButtonType.secondary,
-                                        ),
-                                      const Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: EnvoySpacing.small)),
-                                      Opacity(
-                                        opacity: _rebuildingTx ? 0.3 : 1,
-                                        child: EnvoyButton(
-                                          label: getButtonText(context),
-                                          state: ButtonState.defaultState,
-                                          onTap: !_rebuildingTx
-                                              ? () => _boostTx(context)
-                                              : null,
-                                          type: ButtonType.primary,
-                                        ),
+      child: Builder(
+        builder: (context) {
+          return PopScope(
+            canPop: canPop,
+            onPopInvokedWithResult: (didPop, _) {
+              //clear coins selection when exiting RBF screen
+              ref.read(coinSelectionFromWallet.notifier).reset();
+              ref.read(coinSelectionStateProvider.notifier).reset();
+              clearSpendState(scope);
+            },
+            child: background(
+              child: MediaQuery.removePadding(
+                removeTop: true,
+                removeBottom: true,
+                context: context,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 14,
+                  ),
+                  child: PageTransitionSwitcher(
+                    transitionBuilder:
+                        (child, primaryAnimation, secondaryAnimation) {
+                      return SharedAxisTransition(
+                        animation: primaryAnimation,
+                        secondaryAnimation: secondaryAnimation,
+                        fillColor: Colors.transparent,
+                        transitionType: SharedAxisTransitionType.vertical,
+                        child: child,
+                      );
+                    },
+                    child: showProgress
+                        ? _buildBroadcastProgress()
+                        : EnvoyScaffold(
+                            backgroundColor: Colors.transparent,
+                            hasScrollBody: true,
+                            extendBody: true,
+                            extendBodyBehindAppBar: true,
+                            removeAppBarPadding: true,
+                            bottom: ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(8),
+                                topRight: Radius.circular(7),
+                              ),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                                child: Container(
+                                  color: Colors.white12,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: EnvoySpacing.xs,
+                                    ).add(
+                                      const EdgeInsets.only(
+                                        bottom: EnvoySpacing.large1,
                                       ),
-                                    ],
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        if (showReviewCoin)
+                                          EnvoyButton(
+                                            label: S()
+                                                .replaceByFee_boost_reviewCoinSelection,
+                                            state: ButtonState.defaultState,
+                                            onTap: () => _editCoins(context),
+                                            type: ButtonType.secondary,
+                                          ),
+                                        const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: EnvoySpacing.small,
+                                          ),
+                                        ),
+                                        Opacity(
+                                          opacity: _rebuildingTx ? 0.3 : 1,
+                                          child: EnvoyButton(
+                                            label: getButtonText(context),
+                                            state: ButtonState.defaultState,
+                                            onTap: !_rebuildingTx
+                                                ? () => _boostTx(context)
+                                                : null,
+                                            type: ButtonType.primary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Padding(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: EnvoySpacing.small),
+                                    vertical: EnvoySpacing.small,
+                                  ),
                                   child: AppBar(
                                     backgroundColor: Colors.transparent,
                                     automaticallyImplyLeading: false,
@@ -259,84 +270,101 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                                             textAlign: TextAlign.center,
                                             style: EnvoyTypography.subheading
                                                 .copyWith(
-                                                    color: EnvoyColors
-                                                        .textPrimary),
+                                              color: EnvoyColors.textPrimary,
+                                            ),
                                           ),
                                         ),
                                         const SizedBox(
                                           width: EnvoySpacing.medium2,
-                                        )
+                                        ),
                                       ],
                                     ),
-                                  )),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: EnvoySpacing.small,
-                                    horizontal: EnvoySpacing.medium1),
-                                child: Padding(
+                                  ),
+                                ),
+                                Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: EnvoySpacing.small),
-                                  child: Text(
-                                    subHeading,
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w400),
+                                    vertical: EnvoySpacing.small,
+                                    horizontal: EnvoySpacing.medium1,
                                   ),
-                                ),
-                              ),
-                              Flexible(
-                                child: SingleChildScrollView(
                                   child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 160),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Consumer(
-                                            builder: (context, ref, child) {
-                                          return TransactionReviewCard(
-                                            transaction:
-                                                rbfState.draftTx.transaction,
-                                            amountToSend:
-                                                rbfState.originalAmount.abs(),
-                                            onTxDetailTap: () {
-                                              _showTxDetailsPage(context);
-                                            },
-                                            canModifyPsbt: true,
-                                            hideTxDetailsDialog: true,
-                                            loading: transactionModel.loading,
-                                            feeTitleIconButton: EnvoyIcons.info,
-                                            feeTitle: S()
-                                                .coincontrol_tx_detail_newFee,
-                                            address: rbfState.receiveAddress,
-                                            feeChooserWidget: FeeChooser(
-                                              onFeeSelect: (int fee,
-                                                  BuildContext context,
-                                                  bool customFee) {
-                                                _setFee(
-                                                    fee, context, customFee);
-                                              },
-                                            ),
-                                          );
-                                        }),
-                                      ],
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: EnvoySpacing.small,
+                                    ),
+                                    child: Text(
+                                      subHeading,
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w400,
+                                          ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                Flexible(
+                                  child: SingleChildScrollView(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        bottom: 160,
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Consumer(
+                                            builder: (context, ref, child) {
+                                              return TransactionReviewCard(
+                                                transaction: rbfState
+                                                    .draftTx.transaction,
+                                                amountToSend: rbfState
+                                                    .originalAmount
+                                                    .abs(),
+                                                onTxDetailTap: () {
+                                                  _showTxDetailsPage(context);
+                                                },
+                                                canModifyPsbt: true,
+                                                hideTxDetailsDialog: true,
+                                                loading:
+                                                    transactionModel.loading,
+                                                feeTitleIconButton:
+                                                    EnvoyIcons.info,
+                                                feeTitle: S()
+                                                    .coincontrol_tx_detail_newFee,
+                                                address:
+                                                    rbfState.receiveAddress,
+                                                feeChooserWidget: FeeChooser(
+                                                  onFeeSelect: (
+                                                    int fee,
+                                                    BuildContext context,
+                                                    bool customFee,
+                                                  ) {
+                                                    _setFee(
+                                                      fee,
+                                                      context,
+                                                      customFee,
+                                                    );
+                                                  },
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
+                  ),
                 ),
               ),
+              context: context,
             ),
-            context: context,
-          ),
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 
@@ -405,8 +433,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
             SliverFillRemaining(
               hasScrollBody: false,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 18, vertical: 44),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 44,
+                ),
                 child: _ctaButtons(context),
               ),
             ),
@@ -497,8 +527,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       }
       if (_inputsChanged) {
         showEnvoyDialog(
-            context: context,
-            dialog: Builder(builder: (context) {
+          context: context,
+          dialog: Builder(
+            builder: (context) {
               return EnvoyPopUp(
                 icon: EnvoyIcons.alert,
                 typeOfMessage: PopUpState.warning,
@@ -507,8 +538,11 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                 content:
                     S().replaceByFee_warning_extraUTXO_overlay_modal_subheading,
                 onLearnMore: () {
-                  launchUrl(Uri.parse(
-                      "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
+                  launchUrl(
+                    Uri.parse(
+                      "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions",
+                    ),
+                  );
                 },
                 primaryButtonLabel: S().component_continue,
                 onPrimaryButtonTap: (context) {
@@ -523,7 +557,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                   Navigator.pop(context);
                 },
               );
-            }));
+            },
+          ),
+        );
       }
     }
   }
@@ -548,21 +584,28 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
   void _handleQRExchange(RBFSpendState rbfState, BuildContext context) async {
     bool received = false;
-    final cryptoPsbt = await GoRouter.of(context)
-        .pushNamed(PSBT_QR_EXCHANGE_STANDALONE, extra: rbfState.draftTx);
+    final cryptoPsbt = await GoRouter.of(
+      context,
+    ).pushNamed(PSBT_QR_EXCHANGE_STANDALONE, extra: rbfState.draftTx);
     if (cryptoPsbt is CryptoPsbt && received == false) {
       final preparedTx = await EnvoyAccountHandler.decodePsbt(
-          draftTransaction: rbfState.draftTx, psbt: cryptoPsbt.decoded);
+        draftTransaction: rbfState.draftTx,
+        psbt: cryptoPsbt.decoded,
+      );
       await Future.delayed(const Duration(milliseconds: 50));
       ref.read(rbfSpendStateProvider.notifier).state = rbfState.copyWith(
-          feeRate: preparedTx.transaction.feeRate.toInt(),
-          preparedTx: preparedTx);
+        feeRate: preparedTx.transaction.feeRate.toInt(),
+        preparedTx: preparedTx,
+      );
       received = true;
     }
   }
 
-  Future broadcastTx(EnvoyAccount account, DraftTransaction draft,
-      BuildContext context) async {
+  Future broadcastTx(
+    EnvoyAccount account,
+    DraftTransaction draft,
+    BuildContext context,
+  ) async {
     final rbfState = ref.read(rbfSpendStateProvider);
     final stagingTxNote = ref.read(stagingTxNoteProvider);
     final changeOutputTag = ref.read(stagingTxChangeOutPutTagProvider);
@@ -587,10 +630,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           duration: const Duration(seconds: 4),
           message: "Error: Transaction Confirmed",
           // TODO: Figma
-          icon: const Icon(
-            Icons.info_outline,
-            color: EnvoyColors.solidWhite,
-          ),
+          icon: const Icon(Icons.info_outline, color: EnvoyColors.solidWhite),
         ).show(context);
         return;
       }
@@ -601,13 +641,12 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
       //update draft transaction with latest note and change output tag
       final draftTransaction = DraftTransaction(
-          transaction: draft.transaction.copyWith(
-            note: stagingTxNote,
-          ),
-          psbt: draft.psbt,
-          inputTags: draft.inputTags,
-          isFinalized: draft.isFinalized,
-          changeOutPutTag: changeOutputTag);
+        transaction: draft.transaction.copyWith(note: stagingTxNote),
+        psbt: draft.psbt,
+        inputTags: draft.inputTags,
+        isFinalized: draft.isFinalized,
+        changeOutPutTag: changeOutputTag,
+      );
 
       /// get the raw transaction from the database
       await EnvoyAccountHandler.broadcast(
@@ -633,7 +672,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       );
       ref.read(rbfBroadCastedTxProvider.notifier).state = [
         ...ref.read(rbfBroadCastedTxProvider),
-        originalTx.txId
+        originalTx.txId,
       ];
       await Future.delayed(const Duration(milliseconds: 200));
       final _ = ref.refresh(rbfTxStateProvider(bumpedTx.txId));
@@ -689,17 +728,19 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       final originalTx = rbfState.originalTx;
 
       final transaction = await account.handler?.composeRbfPsbt(
-          selectedOutputs: selectedOutputs,
-          feeRate: BigInt.from(fee),
-          bitcoinTransaction: originalTx);
+        selectedOutputs: selectedOutputs,
+        feeRate: BigInt.from(fee),
+        bitcoinTransaction: originalTx,
+      );
 
       if (transaction == null) {
         return;
       }
 
       ref.read(rbfSpendStateProvider.notifier).state = rbfState.copyWith(
-          feeRate: transaction.transaction.feeRate.toInt(),
-          preparedTx: transaction);
+        feeRate: transaction.transaction.feeRate.toInt(),
+        preparedTx: transaction,
+      );
 
       if (customFee && context.mounted) {
         /// hide the fee slider
@@ -715,10 +756,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           replaceExisting: true,
           duration: const Duration(seconds: 4),
           message: message,
-          icon: const Icon(
-            Icons.info_outline,
-            color: EnvoyColors.solidWhite,
-          ),
+          icon: const Icon(Icons.info_outline, color: EnvoyColors.solidWhite),
         ).show(context);
       }
       if (existingFeeRate != null) {
@@ -743,16 +781,14 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
-          const AppBackground(
-            showRadialGradient: true,
-          ),
+          const AppBackground(showRadialGradient: true),
           Positioned(
             top: topAppBarOffset,
             left: 5,
             bottom: const BottomAppBar().height ?? 20 + 8,
             right: 5,
             child: Shield(child: child),
-          )
+          ),
         ],
       ),
     );
@@ -777,17 +813,19 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     }
     try {
       final transaction = await account.handler?.composeRbfPsbt(
-          selectedOutputs: selectedOutputs,
-          feeRate: BigInt.from(rbfState.feeRate),
-          note: note,
-          tag: changeOutputTag,
-          bitcoinTransaction: rbfState.originalTx);
+        selectedOutputs: selectedOutputs,
+        feeRate: BigInt.from(rbfState.feeRate),
+        note: note,
+        tag: changeOutputTag,
+        bitcoinTransaction: rbfState.originalTx,
+      );
       if (transaction == null) {
         return;
       }
       ref.read(rbfSpendStateProvider.notifier).state = rbfState.copyWith(
-          feeRate: transaction.transaction.feeRate.toInt(),
-          preparedTx: transaction);
+        feeRate: transaction.transaction.feeRate.toInt(),
+        preparedTx: transaction,
+      );
     } catch (e) {
       EnvoyReport().log("RBF:Unable to update Note/Tag", " $e");
     }
@@ -837,9 +875,12 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     if (ref.read(selectedAccountProvider) != null) {
       CoinSelectionOverlay.of(context)?.show(SpendOverlayContext.rbfSelection);
     }
-    dynamic newSelection = await router.push(CupertinoPageRoute(
+    dynamic newSelection = await router.push(
+      CupertinoPageRoute(
         builder: (context) => const ChooseCoinsWidget(),
-        fullscreenDialog: true));
+        fullscreenDialog: true,
+      ),
+    );
 
     ref.read(rbfChangeOutputProvider.notifier).state = null;
     ref.read(coinSelectionStateProvider.notifier).reset();
@@ -862,7 +903,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         try {
           BitcoinTransaction originalTx = rbfState.originalTx;
           TransactionFeeResult result = await handler.getMaxBumpFeeRates(
-              selectedOutputs: selectedOutputs, bitcoinTransaction: originalTx);
+            selectedOutputs: selectedOutputs,
+            bitcoinTransaction: originalTx,
+          );
 
           setState(() {
             _rebuildingTx = false;
@@ -952,7 +995,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     if (rbfState == null) {
       return;
     }
-    Navigator.of(context, rootNavigator: true).push(PageRouteBuilder(
+    Navigator.of(context, rootNavigator: true).push(
+      PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) {
           return StagingTxDetails(
             isRBFSpend: true,
@@ -968,13 +1012,12 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         },
         transitionDuration: const Duration(milliseconds: 100),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
+          return FadeTransition(opacity: animation, child: child);
         },
         opaque: false,
-        fullscreenDialog: true));
+        fullscreenDialog: true,
+      ),
+    );
   }
 
   @override

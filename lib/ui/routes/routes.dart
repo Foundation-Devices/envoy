@@ -42,8 +42,9 @@ const TOU_EXTERNAL = 'tou_external';
 /// for example:
 /// GoRoute( path: "account/details/new",parentNavigatorKey: mainNavigatorKey)
 /// here even if the route is nested it will use root navigator to show the widget
-final GlobalKey<NavigatorState> mainNavigatorKey =
-    GlobalKey<NavigatorState>(debugLabel: "rootNavigator");
+final GlobalKey<NavigatorState> mainNavigatorKey = GlobalKey<NavigatorState>(
+  debugLabel: "rootNavigator",
+);
 
 /// The main router for the app.
 /// all the routes defined here will take the whole screen
@@ -102,9 +103,10 @@ final GoRouter mainRouter = GoRouter(
         final params = state.uri.queryParameters;
         //resets any home shell navs
         try {
-          ProviderScope.containerOf(context)
-              .read(homePageBackgroundProvider.notifier)
-              .state = HomePageBackgroundState.hidden;
+          ProviderScope.containerOf(
+            context,
+          ).read(homePageBackgroundProvider.notifier).state =
+              HomePageBackgroundState.hidden;
         } catch (e) {
           kPrint("Could not reset home shell nav state: $e");
         }
@@ -134,9 +136,7 @@ final GoRouter mainRouter = GoRouter(
     GoRoute(
       path: "/tou_external",
       name: TOU_EXTERNAL,
-      builder: (context, state) => const TouPage(
-        fromExternal: true,
-      ),
+      builder: (context, state) => const TouPage(fromExternal: true),
     ),
     GoRoute(
       path: "/passport_intro",
@@ -156,19 +156,18 @@ final GoRouter mainRouter = GoRouter(
       },
     ),
     GoRoute(
-        path: "/seed_intro",
-        name: SEED_INTRO,
-        builder: (context, state) {
-          var type = SeedIntroScreenType.verify;
-          for (var element in SeedIntroScreenType.values) {
-            if (element.toString() == state.extra) {
-              type = element;
-            }
+      path: "/seed_intro",
+      name: SEED_INTRO,
+      builder: (context, state) {
+        var type = SeedIntroScreenType.verify;
+        for (var element in SeedIntroScreenType.values) {
+          if (element.toString() == state.extra) {
+            type = element;
           }
-          return SeedIntroScreen(
-            mode: type,
-          );
-        }),
+        }
+        return SeedIntroScreen(mode: type);
+      },
+    ),
     GoRoute(
       path: "/psbt_qr_exchange",
       name: PSBT_QR_EXCHANGE_STANDALONE,
@@ -176,9 +175,8 @@ final GoRouter mainRouter = GoRouter(
         return Stack(
           children: [
             const Positioned.fill(
-                child: AppBackground(
-              showRadialGradient: true,
-            )),
+              child: AppBackground(showRadialGradient: true),
+            ),
             Positioned(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
@@ -186,11 +184,14 @@ final GoRouter mainRouter = GoRouter(
                 backgroundColor: Colors.transparent,
                 body: SafeArea(
                   child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 8),
-                      child: Shield(
-                        child: PsbtCard(state.extra as DraftTransaction),
-                      )),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 5,
+                      vertical: 8,
+                    ),
+                    child: Shield(
+                      child: PsbtCard(state.extra as DraftTransaction),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -227,5 +228,5 @@ final modalModeRoutes = [
 final hideAppBarRoutes = [
   // ROUTE_ACCOUNT_SEND,
   ROUTE_ACCOUNT_SEND_CONFIRM,
-  ROUTE_ACCOUNT_SEND_REVIEW
+  ROUTE_ACCOUNT_SEND_REVIEW,
 ];

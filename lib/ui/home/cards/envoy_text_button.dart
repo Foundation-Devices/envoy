@@ -6,13 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 
 class EnvoyTextButton extends StatelessWidget {
-  const EnvoyTextButton(
-      {super.key,
-      required this.label,
-      this.onTap,
-      this.error = false,
-      this.textStyle,
-      this.isDisabled = false});
+  const EnvoyTextButton({
+    super.key,
+    required this.label,
+    this.onTap,
+    this.error = false,
+    this.textStyle,
+    this.isDisabled = false,
+  });
 
   final String label;
   final Function()? onTap;
@@ -24,11 +25,14 @@ class EnvoyTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: isDisabled ? null : onTap,
-      child: Text(label,
-          style: textStyle ??
-              TextStyle(
-                  color: error ? EnvoyColors.darkCopper : EnvoyColors.darkTeal,
-                  fontWeight: FontWeight.w600)),
+      child: Text(
+        label,
+        style: textStyle ??
+            TextStyle(
+              color: error ? EnvoyColors.darkCopper : EnvoyColors.darkTeal,
+              fontWeight: FontWeight.w600,
+            ),
+      ),
     );
   }
 }

@@ -28,8 +28,9 @@ enum PublicServer {
   const PublicServer(this.label, this.address);
 
   static PublicServer? fromAddress(String address) {
-    return PublicServer.values
-        .firstWhereOrNull((server) => server.address == address);
+    return PublicServer.values.firstWhereOrNull(
+      (server) => server.address == address,
+    );
   }
 }
 
@@ -137,8 +138,10 @@ class ConnectivityManager {
 
       await restartTor();
 
-      EnvoyReport().log("tor",
-          "Unreachable via Tor -> NGU: ${nguConnected ? 'ok' : 'fail'}, Electrum: ${electrumConnected ? 'ok' : 'fail'}");
+      EnvoyReport().log(
+        "tor",
+        "Unreachable via Tor -> NGU: ${nguConnected ? 'ok' : 'fail'}, Electrum: ${electrumConnected ? 'ok' : 'fail'}",
+      );
       events.add(ConnectivityManagerEvent.torConnectedDoesntWork);
     }
   }

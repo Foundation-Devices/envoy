@@ -8,16 +8,16 @@ enum LearnFilters { all, videos, faqs, blogs }
 
 enum DeviceFilters { all, envoy, passport, passportPrime }
 
-enum LearnSortTypes {
-  newestFirst,
-  oldestFirst,
-}
+enum LearnSortTypes { newestFirst, oldestFirst }
 
 final deviceFilterStateProvider = StateProvider<Set<DeviceFilters>>(
-    (ref) => {}..addAll(DeviceFilters.values));
+  (ref) => {}..addAll(DeviceFilters.values),
+);
 
-final learnFilterStateProvider =
-    StateProvider<Set<LearnFilters>>((ref) => {}..addAll(LearnFilters.values));
+final learnFilterStateProvider = StateProvider<Set<LearnFilters>>(
+  (ref) => {}..addAll(LearnFilters.values),
+);
 
-final learnSortStateProvider =
-    StateProvider<LearnSortTypes>((ref) => LearnSortTypes.newestFirst);
+final learnSortStateProvider = StateProvider<LearnSortTypes>(
+  (ref) => LearnSortTypes.newestFirst,
+);

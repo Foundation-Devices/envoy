@@ -28,15 +28,16 @@ class AddressEntry extends ConsumerStatefulWidget {
   final TextEditingController? controller;
   final Function(ParseResult)? onPaste;
 
-  const AddressEntry(
-      {super.key,
-      this.initalAddress,
-      this.onAddressChanged,
-      this.onAmountChanged,
-      this.canEdit = true,
-      this.controller,
-      this.onPaste,
-      required this.account});
+  const AddressEntry({
+    super.key,
+    this.initalAddress,
+    this.onAddressChanged,
+    this.onAmountChanged,
+    this.canEdit = true,
+    this.controller,
+    this.onPaste,
+    required this.account,
+  });
 
   @override
   ConsumerState<AddressEntry> createState() => _AddressEntryState();
@@ -69,133 +70,149 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Container(
           decoration: BoxDecoration(
-              color: EnvoyColors.surface3,
-              borderRadius: BorderRadius.circular(15)),
+            color: EnvoyColors.surface3,
+            borderRadius: BorderRadius.circular(15),
+          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-                horizontal: EnvoySpacing.small, vertical: EnvoySpacing.medium1),
+              horizontal: EnvoySpacing.small,
+              vertical: EnvoySpacing.medium1,
+            ),
             child: TextFormField(
-                enabled: widget.canEdit,
-                controller: widget.controller,
-                style: const TextStyle(
-                    fontSize: 14,
-                    overflow: TextOverflow.fade,
-                    fontWeight: FontWeight.w500),
-                onChanged: (value) async {
-                  widget.onAddressChanged?.call(value);
-                },
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  // Disable the borders
-                  border: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  errorBorder: InputBorder.none,
-                  disabledBorder: InputBorder.none,
-                  prefixIcon: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Text(S().send_keyboard_to)),
-                  isDense: true,
-                  prefixIconConstraints: const BoxConstraints(
-                    minWidth: 18,
-                    minHeight: 12,
-                  ),
-                  suffixIconConstraints: const BoxConstraints(
-                    minWidth: 24,
-                    minHeight: 24,
-                  ),
-                  contentPadding: const EdgeInsets.only(bottom: 2),
-                  suffixIcon: !widget.canEdit
-                      ? null
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            InkWell(
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 4, horizontal: 4),
-                                child: Icon(
-                                  Icons.paste,
-                                  size: 21,
-                                  color: EnvoyColors.accentPrimary,
-                                ),
+              enabled: widget.canEdit,
+              controller: widget.controller,
+              style: const TextStyle(
+                fontSize: 14,
+                overflow: TextOverflow.fade,
+                fontWeight: FontWeight.w500,
+              ),
+              onChanged: (value) async {
+                widget.onAddressChanged?.call(value);
+              },
+              textAlignVertical: TextAlignVertical.center,
+              decoration: InputDecoration(
+                // Disable the borders
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                prefixIcon: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Text(S().send_keyboard_to),
+                ),
+                isDense: true,
+                prefixIconConstraints: const BoxConstraints(
+                  minWidth: 18,
+                  minHeight: 12,
+                ),
+                suffixIconConstraints: const BoxConstraints(
+                  minWidth: 24,
+                  minHeight: 24,
+                ),
+                contentPadding: const EdgeInsets.only(bottom: 2),
+                suffixIcon: !widget.canEdit
+                    ? null
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          InkWell(
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 4,
+                                horizontal: 4,
                               ),
-                              onTap: () async {
-                                if (widget.onPaste != null) {
-                                  ClipboardData? cdata =
-                                      await Clipboard.getData(
-                                          Clipboard.kTextPlain);
-                                  String? textCopied = cdata?.text;
-                                  var decodedInfo = await BitcoinParser.parse(
-                                      textCopied!,
-                                      fiatExchangeRate:
-                                          ExchangeRate().selectedCurrencyRate,
-                                      account: widget.account,
-                                      selectedFiat: Settings().selectedFiat,
-                                      currentUnit: unit);
-                                  widget.onPaste!(decodedInfo);
-                                  if (decodedInfo.address != null) {
-                                    validate(decodedInfo.address!);
-                                  }
-                                } else {
-                                  ClipboardData? cdata =
-                                      await Clipboard.getData(
-                                          Clipboard.kTextPlain);
-                                  String? text = cdata?.text;
-                                  if (text != null) {
-                                    widget.controller?.text = text;
-                                    validate(text);
-                                  }
-                                }
-                              },
+                              child: Icon(
+                                Icons.paste,
+                                size: 21,
+                                color: EnvoyColors.accentPrimary,
+                              ),
                             ),
-                            InkWell(
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 4, horizontal: 4),
-                                child: EnvoyIcon(
-                                  EnvoyIcons.scan,
-                                  color: EnvoyColors.accentPrimary,
-                                ),
+                            onTap: () async {
+                              if (widget.onPaste != null) {
+                                ClipboardData? cdata = await Clipboard.getData(
+                                  Clipboard.kTextPlain,
+                                );
+                                String? textCopied = cdata?.text;
+                                var decodedInfo = await BitcoinParser.parse(
+                                  textCopied!,
+                                  fiatExchangeRate:
+                                      ExchangeRate().selectedCurrencyRate,
+                                  account: widget.account,
+                                  selectedFiat: Settings().selectedFiat,
+                                  currentUnit: unit,
+                                );
+                                widget.onPaste!(decodedInfo);
+                                if (decodedInfo.address != null) {
+                                  validate(decodedInfo.address!);
+                                }
+                              } else {
+                                ClipboardData? cdata = await Clipboard.getData(
+                                  Clipboard.kTextPlain,
+                                );
+                                String? text = cdata?.text;
+                                if (text != null) {
+                                  widget.controller?.text = text;
+                                  validate(text);
+                                }
+                              }
+                            },
+                          ),
+                          InkWell(
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 4,
+                                horizontal: 4,
                               ),
-                              onTap: () {
-                                // Maybe catch the result of pop instead of using callbacks?:
+                              child: EnvoyIcon(
+                                EnvoyIcons.scan,
+                                color: EnvoyColors.accentPrimary,
+                              ),
+                            ),
+                            onTap: () {
+                              // Maybe catch the result of pop instead of using callbacks?:
 
-                                // final result = await Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(builder: (context) => const SelectionScreen()),
-                                // );
-                                showScannerDialog(
-                                    context: context,
-                                    onBackPressed: (context) {
-                                      Navigator.pop(context);
-                                    },
-                                    decoder: PaymentQrDecoder(
-                                        onAddressValidated:
-                                            (address, amount, message) {
-                                          Navigator.of(context,
-                                                  rootNavigator: true)
-                                              .pop();
-                                          widget.controller?.text = address;
-                                          ref
-                                              .read(stagingTxNoteProvider
-                                                  .notifier)
-                                              .state = message;
-                                          if (widget.onAddressChanged != null) {
-                                            widget.onAddressChanged
-                                                ?.call(address);
-                                          }
-                                          if (widget.onAmountChanged != null) {
-                                            widget.onAmountChanged!(amount);
-                                          }
-                                        },
-                                        account: widget.account));
-                              },
-                            )
-                          ],
-                        ),
-                )),
+                              // final result = await Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(builder: (context) => const SelectionScreen()),
+                              // );
+                              showScannerDialog(
+                                context: context,
+                                onBackPressed: (context) {
+                                  Navigator.pop(context);
+                                },
+                                decoder: PaymentQrDecoder(
+                                  onAddressValidated:
+                                      (address, amount, message) {
+                                    Navigator.of(
+                                      context,
+                                      rootNavigator: true,
+                                    ).pop();
+                                    widget.controller?.text = address;
+                                    ref
+                                        .read(
+                                          stagingTxNoteProvider.notifier,
+                                        )
+                                        .state = message;
+                                    if (widget.onAddressChanged != null) {
+                                      widget.onAddressChanged?.call(
+                                        address,
+                                      );
+                                    }
+                                    if (widget.onAmountChanged != null) {
+                                      widget.onAmountChanged!(amount);
+                                    }
+                                  },
+                                  account: widget.account,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+              ),
+            ),
           ),
         ),
       ),
@@ -204,7 +221,9 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
 
   Future<void> validate(String value) async {
     final check = await EnvoyAccountHandler.validateAddress(
-        address: value, network: widget.account.network);
+      address: value,
+      network: widget.account.network,
+    );
     setState(() => addressValid = check);
     widget.onAddressChanged?.call(value);
   }

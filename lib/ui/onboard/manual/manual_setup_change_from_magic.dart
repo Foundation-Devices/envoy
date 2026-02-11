@@ -44,10 +44,8 @@ class _MagicBackupDeactivatedState
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
-        child: Material(
-      color: Colors.transparent,
-      child: mainWidget(context),
-    ));
+      child: Material(color: Colors.transparent, child: mainWidget(context)),
+    );
   }
 
   Widget mainWidget(BuildContext context) {
@@ -73,18 +71,23 @@ class _MagicBackupDeactivatedState
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium1),
+                  horizontal: EnvoySpacing.medium1,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(height: EnvoySpacing.xl),
-                    Image.asset("assets/images/onboarding_info.png",
-                        height: 184),
+                    Image.asset(
+                      "assets/images/onboarding_info.png",
+                      height: 184,
+                    ),
                     const SizedBox(height: EnvoySpacing.medium3),
-                    Text(S().manual_setup_change_from_magic_header,
-                        textAlign: TextAlign.center,
-                        style: EnvoyTypography.heading),
+                    Text(
+                      S().manual_setup_change_from_magic_header,
+                      textAlign: TextAlign.center,
+                      style: EnvoyTypography.heading,
+                    ),
                     const SizedBox(height: EnvoySpacing.medium3),
                     Text(
                       Platform.isAndroid
@@ -101,17 +104,21 @@ class _MagicBackupDeactivatedState
           ),
           Padding(
             padding: const EdgeInsets.only(
-                left: EnvoySpacing.small,
-                right: EnvoySpacing.small,
-                bottom: EnvoySpacing.medium2),
-            child: EnvoyButton(S().component_confirm,
-                type: EnvoyButtonTypes.primary,
-                borderRadius:
-                    BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
-                onTap: () async {
-              context.go("/");
-            }),
-          )
+              left: EnvoySpacing.small,
+              right: EnvoySpacing.small,
+              bottom: EnvoySpacing.medium2,
+            ),
+            child: EnvoyButton(
+              S().component_confirm,
+              type: EnvoyButtonTypes.primary,
+              borderRadius: BorderRadius.all(
+                Radius.circular(EnvoySpacing.medium1),
+              ),
+              onTap: () async {
+                context.go("/");
+              },
+            ),
+          ),
         ],
       );
     }

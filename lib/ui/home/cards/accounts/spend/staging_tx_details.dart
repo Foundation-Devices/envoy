@@ -44,13 +44,14 @@ class StagingTxDetails extends ConsumerStatefulWidget {
   ///for rbf staging transaction details
   final BitcoinTransaction? previousTransaction;
 
-  const StagingTxDetails(
-      {super.key,
-      required this.draftTransaction,
-      this.previousTransaction,
-      this.onTagUpdate,
-      this.onTxNoteUpdated,
-      this.isRBFSpend = false});
+  const StagingTxDetails({
+    super.key,
+    required this.draftTransaction,
+    this.previousTransaction,
+    this.onTagUpdate,
+    this.onTxNoteUpdated,
+    this.isRBFSpend = false,
+  });
 
   @override
   ConsumerState createState() => _SpendTxDetailsState();
@@ -100,8 +101,9 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
     // final String? userChosenTag = ref.watch(stagingTxChangeOutPutTagProvider);
 
     double? displayFiatSendAmount = ref.watch(displayFiatSendAmountProvider);
-    double? displayFiatTotalChangeAmount =
-        ExchangeRate().convertSatsToFiat(totalChangeAmount);
+    double? displayFiatTotalChangeAmount = ExchangeRate().convertSatsToFiat(
+      totalChangeAmount,
+    );
     double? displayFiatTotalInputAmount =
         displayFiatSendAmount! + displayFiatTotalChangeAmount;
 
@@ -127,13 +129,10 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
           child: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black,
-                    Colors.black,
-                    Colors.transparent,
-                  ]),
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.black, Colors.black, Colors.transparent],
+              ),
             ),
           ),
         ),
@@ -162,16 +161,13 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                  )
+                  ),
                 ],
                 flexibleSpace: SafeArea(
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      const SizedBox(
-                        height: 100,
-                        child: IndicatorShield(),
-                      ),
+                      const SizedBox(height: 100, child: IndicatorShield()),
                       Text(
                         S().coincontrol_tx_detail_expand_heading.toUpperCase(),
                         style:
@@ -189,168 +185,184 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                 key: _key,
                 children: [
                   EnvoyInfoCard(
-                      backgroundColor: accountAccentColor,
-                      topWidget: EnvoyAmount(
+                    backgroundColor: accountAccentColor,
+                    topWidget: EnvoyAmount(
+                      unit: formatUnit,
+                      account: account,
+                      displayFiatAmount: displayFiatSendAmount,
+                      amountSats: totalReceiveAmount.abs(),
+                      millionaireMode: false,
+                      amountWidgetStyle: AmountWidgetStyle.singleLine,
+                    ),
+                    bottomWidgets: [
+                      EnvoyInfoCardListItem(
+                        spacingPriority: FlexPriority.trailing,
+                        title:
+                            "${S().coincontrol_tx_detail_expand_spentFrom} ${inputs.toSet().length} ${inputs.toSet().length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
+                        icon: const EnvoyIcon(
+                          EnvoyIcons.utxo,
+                          color: EnvoyColors.textPrimary,
+                          size: EnvoyIconSize.small,
+                        ),
+                        trailing: EnvoyAmount(
                           unit: formatUnit,
                           account: account,
-                          displayFiatAmount: displayFiatSendAmount,
-                          amountSats: totalReceiveAmount.abs(),
+                          amountSats: totalInputAmount,
+                          displayFiatAmount: displayFiatTotalInputAmount,
                           millionaireMode: false,
-                          amountWidgetStyle: AmountWidgetStyle.singleLine),
-                      bottomWidgets: [
-                        EnvoyInfoCardListItem(
-                          spacingPriority: FlexPriority.trailing,
-                          title:
-                              "${S().coincontrol_tx_detail_expand_spentFrom} ${inputs.toSet().length} ${inputs.toSet().length == 1 ? S().coincontrol_tx_detail_expand_coin : S().coincontrol_tx_detail_expand_coins}",
-                          icon: const EnvoyIcon(EnvoyIcons.utxo,
-                              color: EnvoyColors.textPrimary,
-                              size: EnvoyIconSize.small),
-                          trailing: EnvoyAmount(
-                              unit: formatUnit,
-                              account: account,
-                              amountSats: totalInputAmount,
-                              displayFiatAmount: displayFiatTotalInputAmount,
-                              millionaireMode: false,
-                              amountWidgetStyle: AmountWidgetStyle.normal),
+                          amountWidgetStyle: AmountWidgetStyle.normal,
                         ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: EnvoySpacing.small),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: EnvoySpacing.medium2),
-                              child: Wrap(
-                                spacing: EnvoySpacing.small,
-                                runSpacing: EnvoySpacing.small,
-                                children: inputTags
-                                    .map((e) => e ?? "")
-                                    .map((e) => (e.isEmpty)
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: EnvoySpacing.small,
+                        ),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.medium2,
+                            ),
+                            child: Wrap(
+                              spacing: EnvoySpacing.small,
+                              runSpacing: EnvoySpacing.small,
+                              children: inputTags
+                                  .map((e) => e ?? "")
+                                  .map(
+                                    (e) => (e.isEmpty)
                                         ? S().account_details_untagged_card
-                                        : e)
-                                    .toSet()
-                                    .map((e) {
-                                  return _coinTag(e);
-                                }).toList(),
-                              ),
+                                        : e,
+                                  )
+                                  .toSet()
+                                  .map((e) {
+                                return _coinTag(e);
+                              }).toList(),
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: EnvoySpacing.medium2,
+                      ),
+                      const SizedBox(height: EnvoySpacing.medium2),
+                      EnvoyInfoCardListItem(
+                        spacingPriority: FlexPriority.trailing,
+                        title: S().coincontrol_tx_detail_expand_changeReceived,
+                        icon: const EnvoyIcon(
+                          EnvoyIcons.transfer,
+                          color: EnvoyColors.textPrimary,
+                          size: EnvoyIconSize.extraSmall,
                         ),
-                        EnvoyInfoCardListItem(
-                            spacingPriority: FlexPriority.trailing,
-                            title:
-                                S().coincontrol_tx_detail_expand_changeReceived,
-                            icon: const EnvoyIcon(EnvoyIcons.transfer,
-                                color: EnvoyColors.textPrimary,
-                                size: EnvoyIconSize.extraSmall),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                loading
-                                    ? const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: EnvoySpacing.xs),
-                                        child: SizedBox.square(
-                                          dimension: 12,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 1,
-                                          ),
-                                        ),
-                                      )
-                                    : Container(
-                                        alignment: Alignment.centerRight,
-                                        child: totalChangeAmount == 0
-                                            ? Text(
-                                                S().coincontrol_tx_detail_no_change,
-                                                style: EnvoyTypography.body
-                                                    .copyWith(
-                                                        color: EnvoyColors
-                                                            .textTertiary),
-                                              )
-                                            : EnvoyAmount(
-                                                unit: formatUnit,
-                                                account: account,
-                                                amountSats: totalChangeAmount,
-                                                millionaireMode: false,
-                                                amountWidgetStyle:
-                                                    AmountWidgetStyle.normal),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            loading
+                                ? const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: EnvoySpacing.xs,
+                                    ),
+                                    child: SizedBox.square(
+                                      dimension: 12,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 1,
                                       ),
-                              ],
-                            )),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: EnvoySpacing.small),
-                          child: Container(
-                            height: 24,
-                            margin: const EdgeInsets.only(
-                                left: EnvoySpacing.medium2),
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: [
-                                if (totalChangeAmount != 0)
-                                  GestureDetector(
-                                      onTap: () {
-                                        showEnvoyDialog(
-                                            context: context,
-                                            builder: Builder(
-                                              builder: (_) =>
-                                                  ChooseTagForStagingTx(
-                                                accountId: account.id,
-                                                onEditTransaction: () =>
-                                                    _onEditTransaction(context),
-                                                onTagUpdate: () {
-                                                  widget.onTagUpdate?.call();
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
+                                    ),
+                                  )
+                                : Container(
+                                    alignment: Alignment.centerRight,
+                                    child: totalChangeAmount == 0
+                                        ? Text(
+                                            S().coincontrol_tx_detail_no_change,
+                                            style:
+                                                EnvoyTypography.body.copyWith(
+                                              color: EnvoyColors.textTertiary,
                                             ),
-                                            alignment:
-                                                const Alignment(0.0, -.6));
-                                      },
-                                      child: _coinTag(changeOutputTag)),
-                              ],
-                            ),
+                                          )
+                                        : EnvoyAmount(
+                                            unit: formatUnit,
+                                            account: account,
+                                            amountSats: totalChangeAmount,
+                                            millionaireMode: false,
+                                            amountWidgetStyle:
+                                                AmountWidgetStyle.normal,
+                                          ),
+                                  ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: EnvoySpacing.small,
+                        ),
+                        child: Container(
+                          height: 24,
+                          margin: const EdgeInsets.only(
+                            left: EnvoySpacing.medium2,
+                          ),
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              if (totalChangeAmount != 0)
+                                GestureDetector(
+                                  onTap: () {
+                                    showEnvoyDialog(
+                                      context: context,
+                                      builder: Builder(
+                                        builder: (_) => ChooseTagForStagingTx(
+                                          accountId: account.id,
+                                          onEditTransaction: () =>
+                                              _onEditTransaction(context),
+                                          onTagUpdate: () {
+                                            widget.onTagUpdate?.call();
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ),
+                                      alignment: const Alignment(0.0, -.6),
+                                    );
+                                  },
+                                  child: _coinTag(changeOutputTag),
+                                ),
+                            ],
                           ),
                         ),
-                        SizedBox(
-                          height:
-                              totalChangeAmount != 0 ? EnvoySpacing.medium2 : 0,
+                      ),
+                      SizedBox(
+                        height:
+                            totalChangeAmount != 0 ? EnvoySpacing.medium2 : 0,
+                      ),
+                      EnvoyInfoCardListItem(
+                        title: S().coincontrol_tx_history_tx_detail_note,
+                        icon: const EnvoyIcon(
+                          EnvoyIcons.note,
+                          color: EnvoyColors.textPrimary,
+                          size: EnvoyIconSize.small,
                         ),
-                        EnvoyInfoCardListItem(
-                          title: S().coincontrol_tx_history_tx_detail_note,
-                          icon: const EnvoyIcon(EnvoyIcons.note,
-                              color: EnvoyColors.textPrimary,
-                              size: EnvoyIconSize.small),
-                          trailing: GestureDetector(
-                              child: NoteDisplay(note: note),
-                              onTap: () {
-                                showEnvoyDialog(
-                                  context: context,
-                                  dialog: TxNoteDialog(
-                                    onAdd: (noteText) {
-                                      ref
-                                          .read(stagingTxNoteProvider.notifier)
-                                          .state = noteText;
-                                      widget.onTxNoteUpdated?.call();
-                                      Navigator.pop(context);
-                                    },
-                                    txId: "UpcomingTx",
-                                    noteHintText: "i.e. Bought P2P Bitcoin",
-                                    noteSubTitle:
-                                        S().coincontrol_tx_add_note_subheading,
-                                    noteTitle: S().add_note_modal_heading,
-                                    value: note,
-                                  ),
-                                  alignment: const Alignment(0.0, -0.5),
-                                );
-                              }),
+                        trailing: GestureDetector(
+                          child: NoteDisplay(note: note),
+                          onTap: () {
+                            showEnvoyDialog(
+                              context: context,
+                              dialog: TxNoteDialog(
+                                onAdd: (noteText) {
+                                  ref
+                                      .read(stagingTxNoteProvider.notifier)
+                                      .state = noteText;
+                                  widget.onTxNoteUpdated?.call();
+                                  Navigator.pop(context);
+                                },
+                                txId: "UpcomingTx",
+                                noteHintText: "i.e. Bought P2P Bitcoin",
+                                noteSubTitle:
+                                    S().coincontrol_tx_add_note_subheading,
+                                noteTitle: S().add_note_modal_heading,
+                                value: note,
+                              ),
+                              alignment: const Alignment(0.0, -0.5),
+                            );
+                          },
                         ),
-                      ]),
+                      ),
+                    ],
+                  ),
                   if (uneconomicSpends) ...[
                     const EnvoyIcon(
                       EnvoyIcons.alert,
@@ -360,22 +372,29 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                     const SizedBox(height: EnvoySpacing.xs),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.large1),
+                        horizontal: EnvoySpacing.large1,
+                      ),
                       child: Text(
                         S().coincontrol_tx_detail_high_fee_info_overlay_subheading,
                         textAlign: TextAlign.center,
-                        style: EnvoyTypography.info
-                            .copyWith(color: EnvoyColors.solidWhite),
+                        style: EnvoyTypography.info.copyWith(
+                          color: EnvoyColors.solidWhite,
+                        ),
                       ),
                     ),
                     const SizedBox(height: EnvoySpacing.xs),
                     EnvoyButton(
-                        S().coincontrol_tx_detail_high_fee_info_overlay_learnMore,
-                        type: EnvoyButtonTypes.tertiary, onTap: () {
-                      launchUrl(Uri.parse(
-                          "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions"));
-                    }),
-                  ]
+                      S().coincontrol_tx_detail_high_fee_info_overlay_learnMore,
+                      type: EnvoyButtonTypes.tertiary,
+                      onTap: () {
+                        launchUrl(
+                          Uri.parse(
+                            "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions",
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -394,13 +413,13 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const EnvoyIcon(EnvoyIcons.tag,
-            color: EnvoyColors.accentPrimary, size: EnvoyIconSize.superSmall),
+        const EnvoyIcon(
+          EnvoyIcons.tag,
+          color: EnvoyColors.accentPrimary,
+          size: EnvoyIconSize.superSmall,
+        ),
         const Padding(padding: EdgeInsets.only(left: EnvoySpacing.xs)),
-        Text(
-          title,
-          style: titleStyle,
-        )
+        Text(title, style: titleStyle),
       ],
     );
   }
@@ -418,9 +437,11 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
     /// has inputs then use them to populate the coin selection state
     if (ref.read(draftTransactionProvider) != null) {
       List<String> inputs = ref
-          .read(draftTransactionProvider.select(
-            (value) => value?.transaction.inputs ?? [],
-          ))
+          .read(
+            draftTransactionProvider.select(
+              (value) => value?.transaction.inputs ?? [],
+            ),
+          )
           .map((e) => "${e.txId}:${e.vout}")
           .toList();
 

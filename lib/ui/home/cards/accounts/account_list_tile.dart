@@ -98,155 +98,177 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(cardRadius - 1)),
             border: Border.all(
-                color: Colors.black, width: 2, style: BorderStyle.solid),
+              color: Colors.black,
+              width: 2,
+              style: BorderStyle.solid,
+            ),
             gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  fromHex(account.color),
-                  Colors.black,
-                ]),
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [fromHex(account.color), Colors.black],
+            ),
           ),
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(cardRadius - 3)),
-                border: Border.all(
-                    color: fromHex(account.color),
-                    width: 2,
-                    style: BorderStyle.solid)),
+              borderRadius: BorderRadius.all(Radius.circular(cardRadius - 3)),
+              border: Border.all(
+                color: fromHex(account.color),
+                width: 2,
+                style: BorderStyle.solid,
+              ),
+            ),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(cardRadius - 4)),
               child: GestureDetector(
                 onTap: () {
                   EnvoyStorage().addPromptState(
-                      DismissiblePrompt.userInteractedWithAccDetail);
+                    DismissiblePrompt.userInteractedWithAccDetail,
+                  );
                   widget.onTap();
                 },
-                child: Stack(children: [
-                  Positioned.fill(
-                    child: CustomPaint(
-                      isComplex: true,
-                      willChange: false,
-                      painter: StripePainter(
-                        EnvoyColors.gray1000.applyOpacity(0.4),
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: CustomPaint(
+                        isComplex: true,
+                        willChange: false,
+                        painter: StripePainter(
+                          EnvoyColors.gray1000.applyOpacity(0.4),
+                        ),
                       ),
                     ),
-                  ),
-                  Positioned.fill(
+                    Positioned.fill(
                       child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.medium1 - EnvoySpacing.xs,
-                            vertical: EnvoySpacing.small - 3,
-                          ),
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Flexible(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      DefaultTextStyle(
-                                        style: EnvoyTypography.subheading
-                                            .copyWith(
-                                                color: EnvoyColors.solidWhite),
-                                        child: Text(
-                                          account.name,
-                                          style: EnvoyTypography.subheading
-                                              .copyWith(
-                                                  color:
-                                                      EnvoyColors.solidWhite),
-                                        ),
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal:
+                                    EnvoySpacing.medium1 - EnvoySpacing.xs,
+                                vertical: EnvoySpacing.small - 3,
+                              ),
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Flexible(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          DefaultTextStyle(
+                                            style: EnvoyTypography.subheading
+                                                .copyWith(
+                                              color: EnvoyColors.solidWhite,
+                                            ),
+                                            child: Text(
+                                              account.name,
+                                              style: EnvoyTypography.subheading
+                                                  .copyWith(
+                                                color: EnvoyColors.solidWhite,
+                                              ),
+                                            ),
+                                          ),
+                                          DefaultTextStyle(
+                                            style:
+                                                EnvoyTypography.info.copyWith(
+                                              color: EnvoyColors.solidWhite,
+                                            ),
+                                            child: Text(
+                                              Devices().getDeviceName(
+                                                account.deviceSerial ?? "",
+                                              ),
+                                              style:
+                                                  EnvoyTypography.info.copyWith(
+                                                color: EnvoyColors.solidWhite,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      DefaultTextStyle(
-                                        style: EnvoyTypography.info.copyWith(
-                                            color: EnvoyColors.solidWhite),
-                                        child: Text(
-                                          Devices().getDeviceName(
-                                              account.deviceSerial ?? ""),
-                                          style: EnvoyTypography.info.copyWith(
-                                              color: EnvoyColors.solidWhite),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                    AccountBadge(account: account),
+                                  ],
                                 ),
-                                AccountBadge(account: account),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
+                          Container(
+                            height: 30,
+                            margin: const EdgeInsets.all(EnvoySpacing.xs),
+                            child: Consumer(
+                              builder: (context, ref, child) {
+                                final hide = ref.watch(
+                                  balanceHideStateStatusProvider(account!.id),
+                                );
+                                if (hide || isScanning) {
+                                  return Container(
+                                    decoration: ShapeDecoration(
+                                      color: const Color(0xFFF8F8F8),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          EnvoySpacing.medium1,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: EnvoySpacing.xs,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          LoaderGhost(
+                                            width: 200,
+                                            height: 24,
+                                            animate: isScanning,
+                                          ),
+                                          LoaderGhost(
+                                            width: 50,
+                                            height: 24,
+                                            animate: isScanning,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return Container(
+                                  decoration: ShapeDecoration(
+                                    color: const Color(0xFFF8F8F8),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        cardRadius - (EnvoySpacing.small),
+                                      ),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0,
+                                    ),
+                                    child: EnvoyAmount(
+                                      account: widget.account,
+                                      amountSats: balance.toInt(),
+                                      amountWidgetStyle:
+                                          AmountWidgetStyle.singleLine,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                      Container(
-                        height: 30,
-                        margin: const EdgeInsets.all(EnvoySpacing.xs),
-                        child: Consumer(
-                          builder: (context, ref, child) {
-                            final hide = ref.watch(
-                                balanceHideStateStatusProvider(account!.id));
-                            if (hide || isScanning) {
-                              return Container(
-                                decoration: ShapeDecoration(
-                                  color: const Color(0xFFF8F8F8),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        EnvoySpacing.medium1),
-                                  ),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: EnvoySpacing.xs),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      LoaderGhost(
-                                        width: 200,
-                                        height: 24,
-                                        animate: isScanning,
-                                      ),
-                                      LoaderGhost(
-                                        width: 50,
-                                        height: 24,
-                                        animate: isScanning,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }
-                            return Container(
-                              decoration: ShapeDecoration(
-                                color: const Color(0xFFF8F8F8),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      cardRadius - (EnvoySpacing.small)),
-                                ),
-                              ),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: EnvoyAmount(
-                                    account: widget.account,
-                                    amountSats: balance.toInt(),
-                                    amountWidgetStyle:
-                                        AmountWidgetStyle.singleLine),
-                              ),
-                            );
-                          },
-                        ),
-                      )
-                    ],
-                  ))
-                ]),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -257,10 +279,7 @@ class _AccountListTileState extends ConsumerState<AccountListTile> {
 }
 
 class AccountBadge extends StatelessWidget {
-  const AccountBadge({
-    super.key,
-    required this.account,
-  });
+  const AccountBadge({super.key, required this.account});
 
   final EnvoyAccount account;
   final double containerHeight = 100;
@@ -273,49 +292,52 @@ class AccountBadge extends StatelessWidget {
 
     bool isNotCircular = isTestnet || isSignet;
     return Container(
-        width: (isNotCircular) ? null : containerHeight / 2,
-        height: containerHeight / 2.0,
-        decoration: BoxDecoration(
-            color: Colors.black.applyOpacity(0.6),
-            borderRadius: isNotCircular
-                ? BorderRadius.circular(containerHeight / 2)
-                : null,
-            shape: isNotCircular ? BoxShape.rectangle : BoxShape.circle,
-            border: Border.all(
-                color: fromHex(account.color),
-                width: 3,
-                style: BorderStyle.solid)),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (isTestnet || isSignet)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.xs),
-                        child: Text(
-                            isTestnet
-                                ? S().account_type_sublabel_testnet
-                                : "Signet",
-                            style: EnvoyTypography.info
-                                .copyWith(color: Colors.white)),
+      width: (isNotCircular) ? null : containerHeight / 2,
+      height: containerHeight / 2.0,
+      decoration: BoxDecoration(
+        color: Colors.black.applyOpacity(0.6),
+        borderRadius:
+            isNotCircular ? BorderRadius.circular(containerHeight / 2) : null,
+        shape: isNotCircular ? BoxShape.rectangle : BoxShape.circle,
+        border: Border.all(
+          color: fromHex(account.color),
+          width: 3,
+          style: BorderStyle.solid,
+        ),
+      ),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (isTestnet || isSignet)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.xs,
                       ),
-                  ],
-                ),
-                BadgeIcon(
-                  account: account,
-                ),
-              ],
-            ),
+                      child: Text(
+                        isTestnet
+                            ? S().account_type_sublabel_testnet
+                            : "Signet",
+                        style: EnvoyTypography.info.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              BadgeIcon(account: account),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
 
@@ -337,10 +359,7 @@ class BadgeIcon extends StatelessWidget {
     if (!account.isHot) {
       Device? device = Devices().getDeviceBySerial(account.deviceSerial ?? "");
       if (device != null && device.type == DeviceType.passportPrime) {
-        return EnvoyIcon(
-          EnvoyIcons.prime_front,
-          color: EnvoyColors.solidWhite,
-        );
+        return EnvoyIcon(EnvoyIcons.prime_front, color: EnvoyColors.solidWhite);
       }
 
       return SvgPicture.asset(

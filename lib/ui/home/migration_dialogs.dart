@@ -46,47 +46,55 @@ void notifyAboutNetworkMigrationDialog(BuildContext context) {
           if (context.mounted) Navigator.pop(context);
         } else {
           controller.nextPage(
-              duration: const Duration(milliseconds: 230),
-              curve: EnvoyEasing.defaultEasing);
+            duration: const Duration(milliseconds: 230),
+            curve: EnvoyEasing.defaultEasing,
+          );
         }
       }
 
       if (showT4Dialog) {
-        pages.add(buildContent(
-          S().accounts_upgradeBdkTestnetModal_header,
-          S().accounts_upgradeBdkTestnetModal_content,
-          () => nextPageOrClose(MigrationManager.migratedToTestnet4),
-        ));
+        pages.add(
+          buildContent(
+            S().accounts_upgradeBdkTestnetModal_header,
+            S().accounts_upgradeBdkTestnetModal_content,
+            () => nextPageOrClose(MigrationManager.migratedToTestnet4),
+          ),
+        );
       }
       if (showSignetDialog) {
-        pages.add(buildContent(
-          S().accounts_upgradeBdkSignetModal_header,
-          S().accounts_upgradeBdkSignetModal_content,
-          () => nextPageOrClose(MigrationManager.migratedToSignetGlobal),
-        ));
+        pages.add(
+          buildContent(
+            S().accounts_upgradeBdkSignetModal_header,
+            S().accounts_upgradeBdkSignetModal_content,
+            () => nextPageOrClose(MigrationManager.migratedToSignetGlobal),
+          ),
+        );
       }
       if (accountUnified) {
-        pages.add(buildContent(
-          S().onboardin_unifiedAccountsModal_tilte,
-          S().onboardin_unifiedAccountsModal_content,
-          () => nextPageOrClose(MigrationManager.migratedToUnifiedAccounts),
-        ));
+        pages.add(
+          buildContent(
+            S().onboardin_unifiedAccountsModal_tilte,
+            S().onboardin_unifiedAccountsModal_content,
+            () => nextPageOrClose(MigrationManager.migratedToUnifiedAccounts),
+          ),
+        );
       }
 
       showEnvoyDialog(
-          context: context,
-          useRootNavigator: true,
-          linearGradient: true,
-          blurColor: Colors.black,
-          dialog: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.80,
-            child: ExpandablePageView(
-              physics: NeverScrollableScrollPhysics(),
-              controller: controller,
-              children: [...pages],
-            ),
+        context: context,
+        useRootNavigator: true,
+        linearGradient: true,
+        blurColor: Colors.black,
+        dialog: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.80,
+          child: ExpandablePageView(
+            physics: NeverScrollableScrollPhysics(),
+            controller: controller,
+            children: [...pages],
           ),
-          dismissible: false);
+        ),
+        dismissible: false,
+      );
     }
   }
 

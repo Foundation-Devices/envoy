@@ -69,8 +69,9 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
     }
 
     try {
-      int greater =
-          availableResolutions.firstWhere((e) => e > _desiredResolution);
+      int greater = availableResolutions.firstWhere(
+        (e) => e > _desiredResolution,
+      );
       return resolutionLinkMap[greater]!;
     } catch (_) {
       return resolutionLinkMap[availableResolutions.last]!;
@@ -103,11 +104,13 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
           if (progress.downloaded.toInt() > _playThreshold ||
               progress.downloaded >= progress.total) {
             if (_controller == null) {
-              _controller = VlcPlayerController.file(streamFile,
-                  autoInitialize: true,
-                  autoPlay: true,
-                  hwAcc: HwAcc.full,
-                  options: VlcPlayerOptions());
+              _controller = VlcPlayerController.file(
+                streamFile,
+                autoInitialize: true,
+                autoPlay: true,
+                hwAcc: HwAcc.full,
+                options: VlcPlayerOptions(),
+              );
 
               _vlcPlayer = VlcPlayer(
                 controller: _controller!,
@@ -165,8 +168,9 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   }
 
   void periodicallyUpdatePosition() {
-    _updatePositionTimer =
-        Timer.periodic(const Duration(seconds: 1), (_) async {
+    _updatePositionTimer = Timer.periodic(const Duration(seconds: 1), (
+      _,
+    ) async {
       _controller!.getPosition().then((value) {
         setState(() {
           _playerProgress = value.inSeconds.toDouble();
@@ -212,109 +216,119 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
         await Future.delayed(const Duration(milliseconds: 300));
       },
       child: Material(
-          color: Colors.black,
-          child: Stack(children: [
+        color: Colors.black,
+        child: Stack(
+          children: [
             FutureBuilder(
               future: _initializeVideoPlayerFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  return Stack(children: [
-                    Center(
-                      child: _vlcPlayer,
-                    ),
-                    Center(
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 50),
-                        reverseDuration: const Duration(milliseconds: 200),
-                        child: !_isPlaying
-                            ? const Icon(
-                                Icons.play_arrow,
-                                color: Colors.white,
-                                size: 100.0,
-                                semanticLabel: 'Play',
-                              )
-                            : const SizedBox.shrink(),
+                  return Stack(
+                    children: [
+                      Center(child: _vlcPlayer),
+                      Center(
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 50),
+                          reverseDuration: const Duration(milliseconds: 200),
+                          child: !_isPlaying
+                              ? const Icon(
+                                  Icons.play_arrow,
+                                  color: Colors.white,
+                                  size: 100.0,
+                                  semanticLabel: 'Play',
+                                )
+                              : const SizedBox.shrink(),
+                        ),
                       ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: 0,
-                      bottom: 0,
-                      child: GestureDetector(
-                        onTap: () {
-                          showTimeline();
-                        },
-                      ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: 100,
-                      bottom: 100,
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _isPlaying
-                                ? _controller!.pause()
-                                : _controller!.play();
-                            _isPlaying = !_isPlaying;
-                          });
-                          showTimeline();
-                        },
-                      ),
-                    ),
-                    if (_visibleTimeline)
                       Positioned(
-                        bottom: 20,
-                        left: 20,
-                        right: 20,
-                        child: Stack(alignment: Alignment.center, children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 25.0),
-                            child: LinearProgressIndicator(
-                                color: EnvoyColors.grey85,
-                                backgroundColor: Colors.white,
-                                value: _downloadProgress),
-                          ),
-                          Slider(
-                            activeColor: EnvoyColors.darkTeal,
-                            inactiveColor: Colors.transparent,
-                            min: 0,
-                            value: _playerProgress,
-                            max: widget.video.duration.toDouble(),
-                            onChanged: (value) {
-                              setState(() {
-                                _playerProgress = value;
-                              });
-                            },
-                            onChangeEnd: (double newValue) {
-                              if (_updatePositionTimer != null) {
-                                _updatePositionTimer!.cancel();
-                              }
-
-                              _controller!
-                                  .setMediaFromFile(streamFile,
-                                      hwAcc: HwAcc.full)
-                                  .then((_) {
-                                Future.delayed(
-                                        const Duration(milliseconds: 250))
-                                    .then((_) {
-                                  _controller!
-                                      .setPosition(newValue /
-                                          widget.video.duration.toDouble() /
-                                          _downloadProgress)
-                                      .then((_) {
-                                    periodicallyUpdatePosition();
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                        child: GestureDetector(
+                          onTap: () {
+                            showTimeline();
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        top: 100,
+                        bottom: 100,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isPlaying
+                                  ? _controller!.pause()
+                                  : _controller!.play();
+                              _isPlaying = !_isPlaying;
+                            });
+                            showTimeline();
+                          },
+                        ),
+                      ),
+                      if (_visibleTimeline)
+                        Positioned(
+                          bottom: 20,
+                          left: 20,
+                          right: 20,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 25.0,
+                                ),
+                                child: LinearProgressIndicator(
+                                  color: EnvoyColors.grey85,
+                                  backgroundColor: Colors.white,
+                                  value: _downloadProgress,
+                                ),
+                              ),
+                              Slider(
+                                activeColor: EnvoyColors.darkTeal,
+                                inactiveColor: Colors.transparent,
+                                min: 0,
+                                value: _playerProgress,
+                                max: widget.video.duration.toDouble(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _playerProgress = value;
                                   });
-                                });
-                              });
-                            },
+                                },
+                                onChangeEnd: (double newValue) {
+                                  if (_updatePositionTimer != null) {
+                                    _updatePositionTimer!.cancel();
+                                  }
+
+                                  _controller!
+                                      .setMediaFromFile(
+                                    streamFile,
+                                    hwAcc: HwAcc.full,
+                                  )
+                                      .then((_) {
+                                    Future.delayed(
+                                      const Duration(milliseconds: 250),
+                                    ).then((_) {
+                                      _controller!
+                                          .setPosition(
+                                        newValue /
+                                            widget.video.duration.toDouble() /
+                                            _downloadProgress,
+                                      )
+                                          .then((_) {
+                                        periodicallyUpdatePosition();
+                                      });
+                                    });
+                                  });
+                                },
+                              ),
+                            ],
                           ),
-                        ]),
-                      )
-                  ]);
+                        ),
+                    ],
+                  );
                 } else {
                   // If the VideoPlayerController is still initializing, show a
                   // loading spinner.
@@ -323,10 +337,11 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CircularProgressIndicator(
-                            color: EnvoyColors.darkTeal,
-                            value: _downloaded > 0
-                                ? (_downloaded / _playThreshold)
-                                : null),
+                          color: EnvoyColors.darkTeal,
+                          value: _downloaded > 0
+                              ? (_downloaded / _playThreshold)
+                              : null,
+                        ),
                         if (ConnectivityManager().torEnabled)
                           Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -339,9 +354,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                                             .torCircuitEstablished
                                     ? S().video_connectingToTorNetwork
                                     : S().video_loadingTorText,
-                                style: const TextStyle(
-                                  color: Colors.white70,
-                                ),
+                                style: const TextStyle(color: Colors.white70),
                               ),
                             ),
                           ),
@@ -353,43 +366,41 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
             ),
             if (_visibleTimeline || _playerProgress == 0)
               Positioned(
-                  top: 20,
-                  left: 20,
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.white70,
-                    ),
-                    onPressed: () async {
-                      _controller?.stop();
+                top: 20,
+                left: 20,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white70),
+                  onPressed: () async {
+                    _controller?.stop();
 
-                      setState(() {
-                        _curtains = true;
-                        _downloaded = 0;
-                        _showTorExplainer = false;
-                      });
+                    setState(() {
+                      _curtains = true;
+                      _downloaded = 0;
+                      _showTorExplainer = false;
+                    });
 
-                      setPortraitMode();
+                    setPortraitMode();
 
-                      await Future.delayed(const Duration(milliseconds: 300));
-                      if (context.mounted) {
-                        Navigator.of(context).pop();
-                      }
-                    },
-                  )),
+                    await Future.delayed(const Duration(milliseconds: 300));
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                ),
+              ),
             // Black curtains
             Positioned.fill(
               child: IgnorePointer(
                 child: AnimatedOpacity(
                   duration: const Duration(milliseconds: 200),
                   opacity: _curtains ? 1.0 : 0.0,
-                  child: Container(
-                    color: Colors.black,
-                  ),
+                  child: Container(color: Colors.black),
                 ),
               ),
-            )
-          ])),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

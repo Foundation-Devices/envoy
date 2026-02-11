@@ -2,13 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -56,8 +57,10 @@ class _PrimeReconnectState extends ConsumerState<PrimeReconnect> {
   void _loadRiveAnimation() async {
     _listenForPairingState();
     try {
-      _riveFile = await rive.File.asset('assets/envoy_loader.riv',
-          riveFactory: rive.Factory.rive);
+      _riveFile = await rive.File.asset(
+        'assets/envoy_loader.riv',
+        riveFactory: rive.Factory.rive,
+      );
       _controller = rive.RiveWidgetController(
         _riveFile!,
         stateMachineSelector: rive.StateMachineSelector.byName('STM'),
@@ -73,8 +76,14 @@ class _PrimeReconnectState extends ConsumerState<PrimeReconnect> {
 
   void _listenForPairingState() async {
     try {
-      final devices = Devices();
-      final targetBleId = BluetoothManager().bleId;
+      QLConnection? currentOnboardingDevice = ref.read(
+        onboardingDeviceProvider,
+      );
+      if (currentOnboardingDevice == null) {
+        throw Exception("No onboarding device found");
+      }
+      Devices devices = Devices();
+      final targetBleId = currentOnboardingDevice.deviceId;
       bool foundDevice = false;
 
       _deviceListener = () {
@@ -90,9 +99,12 @@ class _PrimeReconnectState extends ConsumerState<PrimeReconnect> {
       await Future.doWhile(() async {
         await Future.delayed(Duration(milliseconds: 200));
         return !foundDevice && _controller?.active != true;
-      }).timeout(_pairingTimeout, onTimeout: () {
-        throw Exception("Pairing response timeout - device not found");
-      });
+      }).timeout(
+        _pairingTimeout,
+        onTimeout: () {
+          throw Exception("Pairing response timeout - device not found");
+        },
+      );
 
       await Future.delayed(Duration(milliseconds: 1500));
 
@@ -135,71 +147,80 @@ class _PrimeReconnectState extends ConsumerState<PrimeReconnect> {
         context.goNamed(ROUTE_ACCOUNTS_HOME);
       },
       child: OnboardPageBackground(
-          child: EnvoyScaffold(
-        removeAppBarPadding: true,
-        topBarActions: const [],
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-              horizontal: EnvoySpacing.small, vertical: EnvoySpacing.xs),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 24,
-            children: [
-              SizedBox(
-                height: 260,
-                child: _isInitialized && _controller != null
-                    ? rive.RiveWidget(
-                        controller: _controller!,
-                        fit: rive.Fit.contain,
-                      )
-                    : const SizedBox(),
-              ),
-              Expanded(
+        child: EnvoyScaffold(
+          removeAppBarPadding: true,
+          topBarActions: const [],
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: EnvoySpacing.small,
+              vertical: EnvoySpacing.xs,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 24,
+              children: [
+                SizedBox(
+                  height: 260,
+                  child: _isInitialized && _controller != null
+                      ? rive.RiveWidget(
+                          controller: _controller!,
+                          fit: rive.Fit.contain,
+                        )
+                      : const SizedBox(),
+                ),
+                Expanded(
                   child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: EnvoySpacing.xs,
-                    horizontal: EnvoySpacing.medium1),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.xs,
+                      horizontal: EnvoySpacing.medium1,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          _success
-                              ? S().devices_reconnectedSuccess_header
-                              : S().devices_reconnecting_header,
-                          style: EnvoyTypography.heading,
-                          textAlign: TextAlign.center,
+                        Column(
+                          children: [
+                            Text(
+                              _success
+                                  ? S().devices_reconnectedSuccess_header
+                                  : S().devices_reconnecting_header,
+                              style: EnvoyTypography.heading,
+                              textAlign: TextAlign.center,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(EnvoySpacing.medium1),
+                            ),
+                            Text(
+                              _success
+                                  ? S().devices_reconnectedSuccess_content
+                                  : S().devices_reconnecting_content,
+                              style: EnvoyTypography.body,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                         ),
-                        Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
-                        Text(
-                          _success
-                              ? S().devices_reconnectedSuccess_content
-                              : S().devices_reconnecting_content,
-                          style: EnvoyTypography.body,
-                          textAlign: TextAlign.center,
+                        SizedBox(
+                          width: double.infinity,
+                          child: _success
+                              ? OnboardingButton(
+                                  type: EnvoyButtonTypes.primaryModal,
+                                  label: S().component_continue,
+                                  onTap: () {
+                                    context.go(ROUTE_DEVICES);
+                                  },
+                                )
+                              : const SizedBox(),
                         ),
                       ],
                     ),
-                    SizedBox(
-                        width: double.infinity,
-                        child: _success
-                            ? OnboardingButton(
-                                type: EnvoyButtonTypes.primaryModal,
-                                label: S().component_continue,
-                                onTap: () {
-                                  context.go(ROUTE_DEVICES);
-                                })
-                            : const SizedBox()),
-                  ],
+                  ),
                 ),
-              )),
-            ],
+              ],
+            ),
           ),
         ),
-      )),
+      ),
     );
   }
 }

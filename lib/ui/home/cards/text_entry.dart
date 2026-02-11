@@ -12,12 +12,13 @@ class TextEntry extends StatelessWidget {
   final int? maxLength;
   final TextAlign textAlign;
 
-  TextEntry(
-      {super.key,
-      String placeholder = "",
-      this.focusNode,
-      this.maxLength,
-      this.textAlign = TextAlign.start}) {
+  TextEntry({
+    super.key,
+    String placeholder = "",
+    this.focusNode,
+    this.maxLength,
+    this.textAlign = TextAlign.start,
+  }) {
     _controller.text = placeholder;
   }
 
@@ -27,25 +28,28 @@ class TextEntry extends StatelessWidget {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Container(
         decoration: BoxDecoration(
-            color: Colors.black12, borderRadius: BorderRadius.circular(15)),
+          color: Colors.black12,
+          borderRadius: BorderRadius.circular(15),
+        ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: TextFormField(
-              focusNode: focusNode,
-              controller: _controller,
-              maxLength: maxLength,
-              textAlign: textAlign,
-              validator: (value) {
-                return null;
-              },
-              decoration: const InputDecoration(
-                // Disable the borders
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-              )),
+            focusNode: focusNode,
+            controller: _controller,
+            maxLength: maxLength,
+            textAlign: textAlign,
+            validator: (value) {
+              return null;
+            },
+            decoration: const InputDecoration(
+              // Disable the borders
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+            ),
+          ),
         ),
       ),
     );

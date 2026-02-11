@@ -60,7 +60,9 @@ Future<void> main() async {
   } else {
     //fresh install,already passed migration check
     EnvoyStorage().setNoBackUpPreference(
-        MigrationManager.migrationPrefs, MigrationManager.migrationVersion);
+      MigrationManager.migrationPrefs,
+      MigrationManager.migrationVersion,
+    );
     runApp(const EnvoyApp());
   }
 
@@ -97,14 +99,6 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   await EnvoyScheduler.init();
   await Settings.restore();
   await ExchangeRate.init();
-
-  if (!integrationTestsRunning) {
-    try {
-      BluetoothManager().setupExchangeRateListener();
-    } catch (e, stack) {
-      kPrint("Error setting up exchange rate listener: $e", stackTrace: stack);
-    }
-  }
 
   EnvoyReport().init();
   await Tor.init(enabled: Settings().torEnabled());
@@ -169,20 +163,24 @@ class _EnvoyAppState extends State<EnvoyApp> {
       DeviceOrientation.portraitUp,
     ]);
 
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
         systemStatusBarContrastEnforced: false,
         systemNavigationBarContrastEnforced: false,
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarDividerColor: Colors.transparent,
         systemNavigationBarIconBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.dark));
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
     const envoyAccentColor = EnvoyColors.accentPrimary;
     const envoyBaseColor = Colors.transparent;
-    final envoyTextTheme =
-        GoogleFonts.montserratTextTheme(Theme.of(context).textTheme);
+    final envoyTextTheme = GoogleFonts.montserratTextTheme(
+      Theme.of(context).textTheme,
+    );
 
     // timeago requires this for any language that's not english or spanish
     timeago.setLocaleMessages('ca', timeago.CaMessages());
@@ -200,20 +198,26 @@ class _EnvoyAppState extends State<EnvoyApp> {
         title: 'Envoy',
         themeMode: ThemeMode.light,
         theme: ThemeData(
-            textTheme: envoyTextTheme,
-            pageTransitionsTheme: const PageTransitionsTheme(builders: {
+          textTheme: envoyTextTheme,
+          pageTransitionsTheme: const PageTransitionsTheme(
+            builders: {
               TargetPlatform.android: EnvoyOpenUpwardsPageTransitionsBuilder(),
               TargetPlatform.iOS: EnvoyOpenUpwardsPageTransitionsBuilder(),
               TargetPlatform.linux: EnvoyOpenUpwardsPageTransitionsBuilder(),
               TargetPlatform.macOS: EnvoyOpenUpwardsPageTransitionsBuilder(),
               TargetPlatform.windows: EnvoyOpenUpwardsPageTransitionsBuilder(),
-            }),
-            primaryColor: envoyAccentColor,
-            brightness: Brightness.light,
-            appBarTheme: const AppBarTheme(
-                backgroundColor: Colors.black, elevation: 0, centerTitle: true),
-            scaffoldBackgroundColor: envoyBaseColor,
-            useMaterial3: false),
+            },
+          ),
+          primaryColor: envoyAccentColor,
+          brightness: Brightness.light,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.black,
+            elevation: 0,
+            centerTitle: true,
+          ),
+          scaffoldBackgroundColor: envoyBaseColor,
+          useMaterial3: false,
+        ),
         routerConfig: mainRouter,
         scrollBehavior: GlobalScrollBehavior(),
       ),
@@ -229,7 +233,10 @@ class GlobalScrollBehavior extends ScrollBehavior {
 
   @override
   Widget buildOverscrollIndicator(
-      BuildContext context, Widget child, ScrollableDetails details) {
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) {
     return GlowingOverscrollIndicator(
       axisDirection: AxisDirection.right,
       color: EnvoyColors.textPrimaryInverse,

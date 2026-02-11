@@ -47,37 +47,20 @@ import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:rive/rive.dart' as rive;
 
-//TODO: multi device support, pass device id
-final primeConnectedStateProvider = Provider<StepModel>((ref) {
-  final connectionStatus = ref.watch(deviceConnectionStatusStreamProvider);
-  return connectionStatus.maybeMap(
-    data: (data) {
-      final isConnected = data.value.connected;
-      if (isConnected) {
-        return StepModel(
-            stepName: S().onboarding_connectionIntro_connectedToPrime,
-            state: EnvoyStepState.FINISHED);
-      } else {
-        return StepModel(
-            stepName: "Reconnecting to Passport", // TODO: localazy
-            state: EnvoyStepState.LOADING);
-      }
-    },
-    orElse: () => StepModel(
-        stepName: "Reconnecting to Passport", // TODO: localazy
-        state: EnvoyStepState.LOADING),
-  );
-});
-
 final transferTransactionStateProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
   return StepNotifier(
-      stepName: "Transferring Transaction", state: EnvoyStepState.IDLE);
+    stepName: "Transferring Transaction",
+    state: EnvoyStepState.IDLE,
+  );
 });
 
 final signTransactionStateProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
-  return StepNotifier(stepName: "Wait for Signing", state: EnvoyStepState.IDLE);
+  return StepNotifier(
+    stepName: "Wait for Signing",
+    state: EnvoyStepState.IDLE,
+  );
 });
 
 //ignore: must_be_immutable
@@ -101,8 +84,10 @@ class _TxReviewState extends ConsumerState<TxReview> {
 
   void _loadRiveAnimation() async {
     try {
-      _riveFile = await rive.File.asset('assets/envoy_loader.riv',
-          riveFactory: rive.Factory.rive);
+      _riveFile = await rive.File.asset(
+        'assets/envoy_loader.riv',
+        riveFactory: rive.Factory.rive,
+      );
       _controller = rive.RiveWidgetController(
         _riveFile!,
         stateMachineSelector: rive.StateMachineSelector.byName('STM'),
@@ -135,21 +120,20 @@ class _TxReviewState extends ConsumerState<TxReview> {
         removeTop: true,
         context: context,
         child: Scaffold(
-            appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                leading: IconButton(
-                  icon: const Icon(
-                    Icons.close,
-                    color: EnvoyColors.textPrimary,
-                  ),
-                  onPressed: () {
-                    GoRouter.of(context).pop();
-                  },
-                )),
-            body: const Center(
-              child: Text("Unable to build transaction"), //TODO: figma
-            )),
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.close, color: EnvoyColors.textPrimary),
+              onPressed: () {
+                GoRouter.of(context).pop();
+              },
+            ),
+          ),
+          body: const Center(
+            child: Text("Unable to build transaction"), //TODO: figma
+          ),
+        ),
       );
     }
 
@@ -186,22 +170,29 @@ class _TxReviewState extends ConsumerState<TxReview> {
         );
   }
 
-  Future<void> _handleQRExchange(EnvoyAccount account, BuildContext rootContext,
-      ProviderContainer providerScope) async {
+  Future<void> _handleQRExchange(
+    EnvoyAccount account,
+    BuildContext rootContext,
+    ProviderContainer providerScope,
+  ) async {
     TransactionModel transactionModel = ref.read(spendTransactionProvider);
     Uint8List? psbt = transactionModel.draftTransaction?.psbt;
 
-    final Device? device =
-        Devices().getDeviceBySerial(account.deviceSerial ?? "");
+    final Device? device = Devices().getDeviceBySerial(
+      account.deviceSerial ?? "",
+    );
     final bool isPrime = device?.type == DeviceType.passportPrime;
-    if (isPrime && psbt != null) {
+    if (isPrime && psbt != null && device != null) {
       kPrint("Sending to prime $psbt");
       ref.read(transferTransactionStateProvider.notifier).updateStep(
             "Transferring Transaction", //TODO: localazy
             EnvoyStepState.LOADING,
           );
 
-      await BluetoothManager().sendPsbt(account.id, psbt);
+      await device.qlConnection().qlHandler.txHandler.sendPsbt(
+            account.id,
+            psbt,
+          );
       ref.read(transferTransactionStateProvider.notifier).updateStep(
             "Transaction transferred", //TODO: localazy
             EnvoyStepState.FINISHED,
@@ -211,12 +202,14 @@ class _TxReviewState extends ConsumerState<TxReview> {
             EnvoyStepState.LOADING,
           );
     } else {
-      TransactionModeNotifier transactionModeNotifier =
-          ref.read(spendTransactionProvider.notifier);
+      TransactionModeNotifier transactionModeNotifier = ref.read(
+        spendTransactionProvider.notifier,
+      );
       bool received = false;
       final cryptoPsbt = await GoRouter.of(rootContext).pushNamed(
-          ACCOUNT_SEND_SCAN_PSBT,
-          extra: transactionModel.draftTransaction);
+        ACCOUNT_SEND_SCAN_PSBT,
+        extra: transactionModel.draftTransaction,
+      );
       if (cryptoPsbt is CryptoPsbt && received == false) {
         transactionModeNotifier.decodePSBT(providerScope, cryptoPsbt);
         received = true;
@@ -242,15 +235,20 @@ class _TxReviewState extends ConsumerState<TxReview> {
         .map((e) => e.isEmpty ? "Untagged" : e)
         .toSet();
 
-    final hasChange = transaction.outputs
-            .firstWhereOrNull((e) => e.keychain == KeyChain.internal) !=
+    final hasChange = transaction.outputs.firstWhereOrNull(
+          (e) => e.keychain == KeyChain.internal,
+        ) !=
         null;
     //then show the tag selection dialog
     //spending from multiple tags and no tag is selected for change
     if (userChosenTag == null && inputTags.length > 1 && hasChange) {
       if (context.mounted) {
         final continueBroadcast = await _showTagDialog(
-            context, account, rootContext, transactionModel);
+          context,
+          account,
+          rootContext,
+          transactionModel,
+        );
         if (!continueBroadcast) {
           return;
         }
@@ -258,8 +256,9 @@ class _TxReviewState extends ConsumerState<TxReview> {
     }
     if (context.mounted) {
       //for non hot wallets,note dialog already before finalizing the tx
-      final doNotShow = await EnvoyStorage()
-          .checkPromptDismissed(DismissiblePrompt.addTxNoteWarning);
+      final doNotShow = await EnvoyStorage().checkPromptDismissed(
+        DismissiblePrompt.addTxNoteWarning,
+      );
       if (!doNotShow && context.mounted) {
         await _showNotesDialog(context, account);
       }
@@ -341,16 +340,20 @@ class _TxReviewState extends ConsumerState<TxReview> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(title,
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.heading),
+                          Text(
+                            title,
+                            textAlign: TextAlign.center,
+                            style: EnvoyTypography.heading,
+                          ),
                           const Padding(padding: EdgeInsets.all(18)),
-                          Text(subTitle,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(fontWeight: FontWeight.w500)),
+                          Text(
+                            subTitle,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(fontWeight: FontWeight.w500),
+                          ),
                         ],
                       ),
                     );
@@ -358,12 +361,15 @@ class _TxReviewState extends ConsumerState<TxReview> {
                 ),
               ),
               SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 18, vertical: 44),
-                    child: _ctaButtons(context),
-                  ))
+                hasScrollBody: false,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 44,
+                  ),
+                  child: _ctaButtons(context),
+                ),
+              ),
             ],
           ),
         ),
@@ -417,8 +423,12 @@ class _TxReviewState extends ConsumerState<TxReview> {
     );
   }
 
-  Future<bool> _showTagDialog(BuildContext context, EnvoyAccount account,
-      BuildContext rootContext, TransactionModel transactionModel) async {
+  Future<bool> _showTagDialog(
+    BuildContext context,
+    EnvoyAccount account,
+    BuildContext rootContext,
+    TransactionModel transactionModel,
+  ) async {
     final completer = Completer<bool>();
     if (!account.isHot && transactionModel.isFinalized) {
       //tags already added before finalizing the tx
@@ -427,28 +437,29 @@ class _TxReviewState extends ConsumerState<TxReview> {
       return completer.future;
     }
     await showEnvoyDialog(
-        useRootNavigator: true,
-        context: context,
-        builder: Builder(
-          builder: (context) => ChooseTagForStagingTx(
-            accountId: account.id,
-            onEditTransaction: () {
-              Navigator.pop(context);
-              //exit broadcast flow and move to review screen
-              completer.complete(false);
-              editTransaction(context, ref);
-            },
-            hasMultipleTagsInput: true,
-            onTagUpdate: () async {
-              Navigator.pop(context);
-              ref
-                  .read(spendTransactionProvider.notifier)
-                  .setTag(ref.read(stagingTxChangeOutPutTagProvider));
-              completer.complete(true);
-            },
-          ),
+      useRootNavigator: true,
+      context: context,
+      builder: Builder(
+        builder: (context) => ChooseTagForStagingTx(
+          accountId: account.id,
+          onEditTransaction: () {
+            Navigator.pop(context);
+            //exit broadcast flow and move to review screen
+            completer.complete(false);
+            editTransaction(context, ref);
+          },
+          hasMultipleTagsInput: true,
+          onTagUpdate: () async {
+            Navigator.pop(context);
+            ref
+                .read(spendTransactionProvider.notifier)
+                .setTag(ref.read(stagingTxChangeOutPutTagProvider));
+            completer.complete(true);
+          },
         ),
-        alignment: const Alignment(0.0, -.6));
+      ),
+      alignment: const Alignment(0.0, -.6),
+    );
     if (!completer.isCompleted) {
       completer.complete(true);
     }
@@ -467,20 +478,20 @@ class _TxReviewState extends ConsumerState<TxReview> {
     final notesParam = transactionModel.transactionParams?.note ?? "";
     if (notesParam.isEmpty && notes.isEmpty) {
       await showEnvoyDialog(
-          context: context,
-          useRootNavigator: true,
-          dialog: TxReviewNoteDialog(
-            onAdd: (note) async {
-              await ref.read(spendTransactionProvider.notifier).setNote(note);
-              if (!completer.isCompleted) {
-                completer.complete();
-              }
-            },
-            noteSubTitle:
-                S().stalls_before_sending_tx_add_note_modal_subheading,
-            noteTitle: S().add_note_modal_heading,
-            value: transactionModel.note,
-          ));
+        context: context,
+        useRootNavigator: true,
+        dialog: TxReviewNoteDialog(
+          onAdd: (note) async {
+            await ref.read(spendTransactionProvider.notifier).setNote(note);
+            if (!completer.isCompleted) {
+              completer.complete();
+            }
+          },
+          noteSubTitle: S().stalls_before_sending_tx_add_note_modal_subheading,
+          noteTitle: S().add_note_modal_heading,
+          value: transactionModel.note,
+        ),
+      );
     }
     if (!completer.isCompleted) completer.complete();
 
@@ -555,37 +566,35 @@ class TransactionReviewScreen extends ConsumerStatefulWidget {
 class _TransactionReviewScreenState
     extends ConsumerState<TransactionReviewScreen> {
   StepModel _primeConnectionState = StepModel(
-      stepName: S().onboarding_connectionIntro_connectedToPrime,
-      state: EnvoyStepState.IDLE);
+    stepName: S().onboarding_connectionIntro_connectedToPrime,
+    state: EnvoyStepState.IDLE,
+  );
   StreamSubscription<QuantumLinkMessage_BroadcastTransaction>?
       _primeTransactionsSubscription;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
-        _initTxStream();
-        final isConnected =
-            ref.read(connectedDeviceProvider).value?.connected ?? false;
-        final EnvoyAccount? account = ref.read(selectedAccountProvider);
-        final Device? device =
-            Devices().getDeviceBySerial(account?.deviceSerial ?? "");
-        if (!isConnected &&
-            device != null &&
-            device.type == DeviceType.passportPrime) {
-          final deviceId =
-              Platform.isAndroid ? device.bleId : device.peripheralId;
-          BluetoothManager().reconnect(deviceId);
-        }
-      },
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initTxStream();
+    });
   }
 
   void _initTxStream() {
     try {
-      _primeTransactionsSubscription = BluetoothManager()
-          .transactionStream
+      EnvoyAccount? account = ref.watch(selectedAccountProvider);
+      final Device? device = Devices().getDeviceBySerial(
+        account?.deviceSerial ?? "",
+      );
+      if (device == null) {
+        kPrint("No device found for account, cannot init tx stream");
+        return;
+      }
+      _primeTransactionsSubscription = device
+          .qlConnection()
+          .qlHandler
+          .txHandler
+          .txBroadcast
           .listen((QuantumLinkMessage_BroadcastTransaction message) async {
         if (!mounted) {
           return;
@@ -636,10 +645,12 @@ class _TransactionReviewScreenState
     bool userChangedCoins = ref.watch(userSelectedCoinsThisSessionProvider);
 
     final coinSelectionChanged = ref.watch(coinSelectionChangedProvider);
-    final userSelectedCoinsThisSession =
-        ref.watch(userSelectedCoinsThisSessionProvider);
-    final transactionInputsChanged =
-        ref.watch(transactionInputsChangedProvider);
+    final userSelectedCoinsThisSession = ref.watch(
+      userSelectedCoinsThisSessionProvider,
+    );
+    final transactionInputsChanged = ref.watch(
+      transactionInputsChangedProvider,
+    );
     final userHasChangedFees = ref.watch(userHasChangedFeesProvider);
 
     final showFeeChangeNotice = userSelectedCoinsThisSession &&
@@ -653,19 +664,24 @@ class _TransactionReviewScreenState
       );
     }
 
-    final Device? device =
-        Devices().getDeviceBySerial(account.deviceSerial ?? "");
+    final Device? device = Devices().getDeviceBySerial(
+      account.deviceSerial ?? "",
+    );
     bool isPrime = device?.type == DeviceType.passportPrime;
-    final bool isConnected =
-        ref.watch(connectedDeviceProvider).value?.connected ?? false;
+    if (device == null) {
+      isPrime = false;
+    }
+    final bool isConnected = ref.read(isPrimeConnectedProvider(device));
     if (isConnected) {
       _primeConnectionState = StepModel(
-          stepName: S().onboarding_connectionIntro_connectedToPrime,
-          state: EnvoyStepState.FINISHED);
+        stepName: S().onboarding_connectionIntro_connectedToPrime,
+        state: EnvoyStepState.FINISHED,
+      );
     } else {
       _primeConnectionState = StepModel(
-          stepName: "Reconnecting to Prime", // TODO: localazy
-          state: EnvoyStepState.LOADING);
+        stepName: "Reconnecting to Prime", // TODO: localazy
+        state: EnvoyStepState.LOADING,
+      );
     }
 
     String header = (account.isHot || transactionModel.isFinalized)
@@ -747,7 +763,8 @@ class _TransactionReviewScreenState
                       S().replaceByFee_boost_reviewCoinSelection,
                       type: EnvoyButtonTypes.secondary,
                       borderRadius: const BorderRadius.all(
-                          Radius.circular(EnvoySpacing.small)),
+                        Radius.circular(EnvoySpacing.small),
+                      ),
                       onTap: () {
                         ref.read(userHasChangedFeesProvider.notifier).state =
                             false;
@@ -758,7 +775,8 @@ class _TransactionReviewScreenState
                   EnvoyButton(
                     enabled: enableButton,
                     borderRadius: const BorderRadius.all(
-                        Radius.circular(EnvoySpacing.small)),
+                      Radius.circular(EnvoySpacing.small),
+                    ),
                     leading: isPrime
                         ? EnvoyIcon(
                             transactionModel.isFinalized
@@ -784,22 +802,26 @@ class _TransactionReviewScreenState
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(
-                  vertical: EnvoySpacing.small,
-                  horizontal: EnvoySpacing.medium1),
+                vertical: EnvoySpacing.small,
+                horizontal: EnvoySpacing.medium1,
+              ),
               child: ListTile(
-                title: Text(header,
-                    textAlign: TextAlign.center,
-                    style: EnvoyTypography.heading),
+                title: Text(
+                  header,
+                  textAlign: TextAlign.center,
+                  style: EnvoyTypography.heading,
+                ),
                 subtitle: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: EnvoySpacing.small,
+                  ),
                   child: Text(
                     subHeading,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontSize: 13, fontWeight: FontWeight.w400),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                        ),
                   ),
                 ),
               ),
@@ -813,14 +835,18 @@ class _TransactionReviewScreenState
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Consumer(builder: (context, ref, child) {
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Consumer(
+                            builder: (context, ref, child) {
                               return TransactionReviewCard(
                                 transaction: transaction,
                                 onTxDetailTap: () {
                                   _showTxDetailsPage(
-                                      context, ref, preparedTransaction);
+                                    context,
+                                    ref,
+                                    preparedTransaction,
+                                  );
                                 },
                                 canModifyPsbt: transactionModel.canModify,
                                 loading: transactionModel.loading,
@@ -831,42 +857,53 @@ class _TransactionReviewScreenState
                                     setFee(fee, context, customFee);
                                     ref
                                         .read(
-                                            userHasChangedFeesProvider.notifier)
+                                          userHasChangedFeesProvider.notifier,
+                                        )
                                         .state = true;
                                   },
                                 ),
                               );
-                            }),
-                            if (feePercentage >= 25)
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: EnvoySpacing.medium1),
-                                child: feeOverSpendWarning(feePercentage),
+                            },
+                          ),
+                          if (feePercentage >= 25)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: EnvoySpacing.medium1,
                               ),
-                            if (isPrime)
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: EnvoySpacing.medium1),
-                                child: transactionPrimeStatus(context),
+                              child: feeOverSpendWarning(feePercentage),
+                            ),
+                          if (isPrime)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: EnvoySpacing.medium1,
                               ),
-                            if (isTest)
-                              const SizedBox(height: EnvoySpacing.medium1)
-                          ]),
+                              child: transactionPrimeStatus(context),
+                            ),
+                          if (isTest)
+                            const SizedBox(height: EnvoySpacing.medium1),
+                        ],
+                      ),
 
                       if (error != null)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Padding(
-                              padding:
-                                  EdgeInsets.only(right: EnvoySpacing.small),
-                              child: EnvoyIcon(EnvoyIcons.alert,
-                                  size: EnvoyIconSize.extraSmall,
-                                  color: EnvoyColors.copper500),
+                              padding: EdgeInsets.only(
+                                right: EnvoySpacing.small,
+                              ),
+                              child: EnvoyIcon(
+                                EnvoyIcons.alert,
+                                size: EnvoyIconSize.extraSmall,
+                                color: EnvoyColors.copper500,
+                              ),
                             ),
-                            Text(error,
-                                style: EnvoyTypography.button
-                                    .copyWith(color: EnvoyColors.copper500)),
+                            Text(
+                              error,
+                              style: EnvoyTypography.button.copyWith(
+                                color: EnvoyColors.copper500,
+                              ),
+                            ),
                           ],
                         ),
 
@@ -875,25 +912,28 @@ class _TransactionReviewScreenState
                           showFeeChangeNotice)
                         ListTile(
                           subtitle: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: EnvoySpacing.small),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.all(EnvoySpacing.small),
-                                child: Text(
-                                  showFeeChangeNotice
-                                      ? S()
-                                          .coincontrol_tx_detail_feeChange_information
-                                      : S().send_reviewScreen_sendMaxWarning,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w400),
-                                  textAlign: TextAlign.center,
-                                ),
-                              )),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: EnvoySpacing.small,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(EnvoySpacing.small),
+                              child: Text(
+                                showFeeChangeNotice
+                                    ? S()
+                                        .coincontrol_tx_detail_feeChange_information
+                                    : S().send_reviewScreen_sendMaxWarning,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
                         ),
                     ],
                   ),
@@ -927,21 +967,11 @@ class _TransactionReviewScreenState
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        EnvoyStepItem(
-          step: _primeConnectionState,
-        ),
-        SizedBox(
-          height: EnvoySpacing.medium1,
-        ),
-        EnvoyStepItem(
-          step: ref.watch(transferTransactionStateProvider),
-        ),
-        SizedBox(
-          height: EnvoySpacing.medium1,
-        ),
-        EnvoyStepItem(
-          step: ref.watch(signTransactionStateProvider),
-        ),
+        EnvoyStepItem(step: _primeConnectionState),
+        SizedBox(height: EnvoySpacing.medium1),
+        EnvoyStepItem(step: ref.watch(transferTransactionStateProvider)),
+        SizedBox(height: EnvoySpacing.medium1),
+        EnvoyStepItem(step: ref.watch(signTransactionStateProvider)),
       ],
     );
   }
@@ -952,12 +982,16 @@ class _TransactionReviewScreenState
       children: [
         const Padding(
           padding: EdgeInsets.only(right: EnvoySpacing.small),
-          child: EnvoyIcon(EnvoyIcons.alert,
-              size: EnvoyIconSize.extraSmall, color: EnvoyColors.copper500),
+          child: EnvoyIcon(
+            EnvoyIcons.alert,
+            size: EnvoyIconSize.extraSmall,
+            color: EnvoyColors.copper500,
+          ),
         ),
-        Text(S().coincontrol_tx_detail_fee_alert(feePercentage),
-            style:
-                EnvoyTypography.button.copyWith(color: EnvoyColors.copper500)),
+        Text(
+          S().coincontrol_tx_detail_fee_alert(feePercentage),
+          style: EnvoyTypography.button.copyWith(color: EnvoyColors.copper500),
+        ),
       ],
     );
   }
@@ -978,13 +1012,18 @@ class _TransactionReviewScreenState
     }
   }
 
-  void _showTxDetailsPage(BuildContext context, WidgetRef ref,
-      DraftTransaction? preparedTransaction) {
-    Navigator.of(context, rootNavigator: true).push(PageRouteBuilder(
+  void _showTxDetailsPage(
+    BuildContext context,
+    WidgetRef ref,
+    DraftTransaction? preparedTransaction,
+  ) {
+    Navigator.of(context, rootNavigator: true).push(
+      PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) {
           if (preparedTransaction == null) {
             return const Center(
-                child: Text("Unable to fetch Staged transaction"));
+              child: Text("Unable to fetch Staged transaction"),
+            );
           }
           return StagingTxDetails(
             draftTransaction: preparedTransaction,
@@ -1002,13 +1041,12 @@ class _TransactionReviewScreenState
         },
         transitionDuration: const Duration(milliseconds: 100),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
+          return FadeTransition(opacity: animation, child: child);
         },
         opaque: false,
-        fullscreenDialog: true));
+        fullscreenDialog: true,
+      ),
+    );
   }
 }
 
@@ -1039,9 +1077,11 @@ void editTransaction(BuildContext context, WidgetRef ref) async {
   /// The user has is in edit mode and if the psbt
   /// has inputs then use them to populate the coin selection state
   List<String> inputs = ref
-      .read(spendTransactionProvider.select(
-        (value) => value.transaction?.inputs ?? [],
-      ))
+      .read(
+        spendTransactionProvider.select(
+          (value) => value.transaction?.inputs ?? [],
+        ),
+      )
       .map((e) => "${e.txId}:${e.vout}")
       .toList();
 
@@ -1159,9 +1199,10 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Container(
             padding: const EdgeInsets.only(
-                left: EnvoySpacing.medium1,
-                right: EnvoySpacing.medium1,
-                top: EnvoySpacing.medium1),
+              left: EnvoySpacing.medium1,
+              right: EnvoySpacing.medium1,
+              top: EnvoySpacing.medium1,
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -1171,10 +1212,9 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Text(
                     widget.noteSubTitle,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge
-                        ?.copyWith(fontSize: 12),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyLarge?.copyWith(fontSize: 12),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -1182,19 +1222,18 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                   margin: const EdgeInsets.only(top: EnvoySpacing.xs),
                   child: Container(
                     decoration: BoxDecoration(
-                        color: EnvoyColors.surface4,
-                        borderRadius:
-                            BorderRadius.circular(EnvoySpacing.small)),
+                      color: EnvoyColors.surface4,
+                      borderRadius: BorderRadius.circular(EnvoySpacing.small),
+                    ),
                     child: TextFormField(
                       maxLines: 1,
                       maxLength: 34,
                       controller: _textEditingController,
                       textAlign: TextAlign.center,
                       textInputAction: TextInputAction.done,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(fontSize: 14),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(fontSize: 14),
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.all(EnvoySpacing.small),
                         border: InputBorder.none,
@@ -1258,14 +1297,18 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                 ),
               ),
               const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
-              EnvoyButton(S().stalls_before_sending_tx_add_note_modal_cta2,
-                  onTap: () {
-                Navigator.of(context).pop(false);
-                if (dismissed) {
-                  EnvoyStorage()
-                      .addPromptState(DismissiblePrompt.addTxNoteWarning);
-                }
-              }, type: EnvoyButtonTypes.tertiary),
+              EnvoyButton(
+                S().stalls_before_sending_tx_add_note_modal_cta2,
+                onTap: () {
+                  Navigator.of(context).pop(false);
+                  if (dismissed) {
+                    EnvoyStorage().addPromptState(
+                      DismissiblePrompt.addTxNoteWarning,
+                    );
+                  }
+                },
+                type: EnvoyButtonTypes.tertiary,
+              ),
               const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
               EnvoyButton(
                 S().component_save,
@@ -1273,12 +1316,13 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                   Navigator.of(context).pop(_textEditingController.text);
                   widget.onAdd(_textEditingController.text);
                   if (dismissed) {
-                    EnvoyStorage()
-                        .addPromptState(DismissiblePrompt.addTxNoteWarning);
+                    EnvoyStorage().addPromptState(
+                      DismissiblePrompt.addTxNoteWarning,
+                    );
                   }
                 },
                 type: EnvoyButtonTypes.primaryModal,
-              )
+              ),
             ],
           ),
         ),

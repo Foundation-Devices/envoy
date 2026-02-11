@@ -49,10 +49,13 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
         ),
       EnvoyStepState.ERROR => const Icon(
           CupertinoIcons.exclamationmark_triangle,
-          color: EnvoyColors.copper500),
-      EnvoyStepState.IDLE => const Icon(CupertinoIcons.arrow_right,
-          color: EnvoyColors.contentTertiary),
-      _ => Container()
+          color: EnvoyColors.copper500,
+        ),
+      EnvoyStepState.IDLE => const Icon(
+          CupertinoIcons.arrow_right,
+          color: EnvoyColors.contentTertiary,
+        ),
+      _ => Container(),
     };
     return AnimatedOpacity(
       opacity: step.state == EnvoyStepState.LOADING ? 1 : .6,
@@ -71,9 +74,7 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.start,
               textWidthBasis: TextWidthBasis.longestLine,
-              style: EnvoyTypography.info.copyWith(
-                color: _color(step),
-              ),
+              style: EnvoyTypography.info.copyWith(color: _color(step)),
             ),
           ),
         ],

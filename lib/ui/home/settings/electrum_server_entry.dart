@@ -135,11 +135,12 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
             isError: _isError,
             onQrScan: () {
               showScannerDialog(
-                  context: context,
-                  onBackPressed: (context) {
-                    Navigator.pop(context);
-                  },
-                  decoder: GenericQrDecoder(onScan: (result) {
+                context: context,
+                onBackPressed: (context) {
+                  Navigator.pop(context);
+                },
+                decoder: GenericQrDecoder(
+                  onScan: (result) {
                     if (context.mounted) {
                       Navigator.of(context, rootNavigator: true).pop();
                     }
@@ -147,7 +148,9 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
                     _controller.text = parsedUrl;
                     _onAddressChanged(parsedUrl);
                     return parsedUrl;
-                  }));
+                  },
+                ),
+              );
             },
             infoContent: (isPrivateAddress(_controller.text) &&
                     ConnectivityManager().torEnabled)

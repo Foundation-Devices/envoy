@@ -29,39 +29,45 @@ class ScvScanQrPage extends StatelessWidget {
           padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
           child: SingleChildScrollView(
             child: OnboardingText(
-                header: S().pair_new_device_scan_heading,
-                text: S().pair_new_device_scan_subheading),
+              header: S().pair_new_device_scan_heading,
+              text: S().pair_new_device_scan_subheading,
+            ),
           ),
-        )
+        ),
       ],
       leftFunction: (context) {
         // ENV-216: remove ScvShowQrPage off navigation stack so it doesn't animate in background
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) {
-          return ScvShowQrPage();
-        }));
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) {
+              return ScvShowQrPage();
+            },
+          ),
+        );
       },
       buttons: [
         OnboardingButton(
-            label: S().component_continue,
-            onTap: () {
-              showScannerDialog(
-                  context: context,
-                  onBackPressed: (context) {
-                    Navigator.pop(context);
-                  },
-                  decoder: ScvDecoder(
-                    onScan: (CryptoResponse cryptoResponse) {
-                      Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context) {
-                        return ScvLoadingPage(
-                          cryptoResponse,
-                          challenge,
-                        );
-                      }));
-                    },
-                  ));
-            }),
+          label: S().component_continue,
+          onTap: () {
+            showScannerDialog(
+              context: context,
+              onBackPressed: (context) {
+                Navigator.pop(context);
+              },
+              decoder: ScvDecoder(
+                onScan: (CryptoResponse cryptoResponse) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return ScvLoadingPage(cryptoResponse, challenge);
+                      },
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        ),
       ],
     );
   }

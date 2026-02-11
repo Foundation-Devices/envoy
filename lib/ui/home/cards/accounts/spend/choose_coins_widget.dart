@@ -40,10 +40,7 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
       },
       child: Stack(
         children: [
-          const Positioned.fill(
-              child: AppBackground(
-            showRadialGradient: true,
-          )),
+          const Positioned.fill(child: AppBackground(showRadialGradient: true)),
           Positioned(
             height: shieldTotalHeight,
             width: MediaQuery.of(context).size.width,
@@ -76,20 +73,25 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
                             left: 20,
                             right: 20,
                           ),
-                          child: AccountListTile(account, onTap: () {
-                            Navigator.pop(context);
-                          }),
+                          child: AccountListTile(
+                            account,
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                          ),
                         ),
                         const SizedBox(height: EnvoySpacing.small),
                         Expanded(
-                            child: Padding(
-                                padding: const EdgeInsets.only(
-
-                                    ///proper padding to align with top sections, based on UI design
-                                    left: 20,
-                                    right: 20,
-                                    top: EnvoySpacing.small),
-                                child: CoinsList(account: account))),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              ///proper padding to align with top sections, based on UI design
+                              left: 20,
+                              right: 20,
+                              top: EnvoySpacing.small,
+                            ),
+                            child: CoinsList(account: account),
+                          ),
+                        ),
                         const SizedBox(height: 100),
                       ],
                     ),

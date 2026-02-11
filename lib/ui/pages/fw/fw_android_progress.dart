@@ -49,39 +49,40 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
   @override
   Widget build(BuildContext context) {
     final fwInfo = ref.watch(firmwareStreamProvider(deviceId));
-    ref.listen<bool?>(
-      sdFwUploadProgressProvider,
-      (previous, next) async {
-        if (next is bool) {
-          if (next) {
-            await Future.delayed(const Duration(seconds: 5));
-            _instructionPageController.animateToPage(1,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut);
-          } else {
-            _instructionPageController.animateToPage(2,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut);
-          }
-          setState(() {
-            done = next;
-            if (done!) {
-              Devices()
-                  .markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
-              refreshFirmwareUpdateDot();
-            }
-          });
+    ref.listen<bool?>(sdFwUploadProgressProvider, (previous, next) async {
+      if (next is bool) {
+        if (next) {
+          await Future.delayed(const Duration(seconds: 5));
+          _instructionPageController.animateToPage(
+            1,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
+        } else {
+          _instructionPageController.animateToPage(
+            2,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
         }
-      },
-    );
+        setState(() {
+          done = next;
+          if (done!) {
+            Devices().markDeviceUpdated(deviceId, fwInfo.value!.storedVersion);
+            refreshFirmwareUpdateDot();
+          }
+        });
+      }
+    });
 
     return OnboardPageBackground(
       child: Scaffold(
         body: Padding(
           padding: const EdgeInsets.only(
-              left: EnvoySpacing.medium1,
-              right: EnvoySpacing.medium1,
-              bottom: EnvoySpacing.medium2),
+            left: EnvoySpacing.medium1,
+            right: EnvoySpacing.medium1,
+            bottom: EnvoySpacing.medium2,
+          ),
           child: Column(
             key: const Key("fw_progress"),
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -92,11 +93,11 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
                   Transform.translate(
                     offset: const Offset(0, -EnvoySpacing.medium2),
                     child: ExpandablePageView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        controller: _instructionPageController,
-                        children: [
-                          SingleChildScrollView(
-                              child: Column(
+                      physics: const NeverScrollableScrollPhysics(),
+                      controller: _instructionPageController,
+                      children: [
+                        SingleChildScrollView(
+                          child: Column(
                             children: [
                               Text(
                                 S().envoy_fw_progress_heading,
@@ -106,14 +107,16 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
                               const SizedBox(height: EnvoySpacing.medium3),
                               Text(
                                 S().envoy_fw_progress_subheading,
-                                style: EnvoyTypography.body
-                                    .copyWith(color: EnvoyColors.textSecondary),
+                                style: EnvoyTypography.body.copyWith(
+                                  color: EnvoyColors.textSecondary,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
-                          )),
-                          SingleChildScrollView(
-                              child: Column(
+                          ),
+                        ),
+                        SingleChildScrollView(
+                          child: Column(
                             children: [
                               Text(
                                 S().envoy_fw_success_heading,
@@ -123,60 +126,70 @@ class _FwAndroidProgressPageState extends ConsumerState<FwAndroidProgressPage> {
                               const SizedBox(height: EnvoySpacing.medium3),
                               Text(
                                 S().envoy_fw_success_subheading,
-                                style: EnvoyTypography.body
-                                    .copyWith(color: EnvoyColors.textSecondary),
+                                style: EnvoyTypography.body.copyWith(
+                                  color: EnvoyColors.textSecondary,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
-                          )),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        S().envoy_fw_fail_heading,
-                                        style: EnvoyTypography.heading,
-                                        textAlign: TextAlign.center,
+                          ),
+                        ),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      S().envoy_fw_fail_heading,
+                                      style: EnvoyTypography.heading,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(
+                                      height: EnvoySpacing.medium3,
+                                    ),
+                                    LinkText(
+                                      text: S().envoy_fw_fail_subheading,
+                                      linkStyle:
+                                          EnvoyTypography.button.copyWith(
+                                        color: EnvoyColors.accentPrimary,
                                       ),
-                                      const SizedBox(
-                                          height: EnvoySpacing.medium3),
-                                      LinkText(
-                                          text: S().envoy_fw_fail_subheading,
-                                          linkStyle: EnvoyTypography.button
-                                              .copyWith(
-                                                  color: EnvoyColors
-                                                      .accentPrimary),
-                                          onTap: () {
-                                            launchUrlString(
-                                                "https://github.com/Foundation-Devices/passport2/releases/tag/${fwInfo.value!.storedVersion}");
-                                          }),
-                                    ],
-                                  ),
+                                      onTap: () {
+                                        launchUrlString(
+                                          "https://github.com/Foundation-Devices/passport2/releases/tag/${fwInfo.value!.storedVersion}",
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ]),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
               if (done != null)
                 EnvoyButton(
-                    done! ? S().component_continue : S().component_tryAgain,
-                    borderRadius:
-                        BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
-                    onTap: () {
-                  if (done!) {
-                    context.pushNamed(PASSPORT_UPDATE_PASSPORT,
-                        extra: widget.payload);
-                    return;
-                  } else {
-                    context.pushNamed(PASSPORT_UPDATE, extra: widget.payload);
-                  }
-                })
+                  done! ? S().component_continue : S().component_tryAgain,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(EnvoySpacing.medium1),
+                  ),
+                  onTap: () {
+                    if (done!) {
+                      context.pushNamed(
+                        PASSPORT_UPDATE_PASSPORT,
+                        extra: widget.payload,
+                      );
+                      return;
+                    } else {
+                      context.pushNamed(PASSPORT_UPDATE, extra: widget.payload);
+                    }
+                  },
+                ),
             ],
           ),
         ),

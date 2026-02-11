@@ -67,10 +67,10 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
       }
     } else if (Platform.isAndroid) {
       try {
-        final bonded =
-            await BluetoothChannel().isDeviceBonded(widget.device.bleId);
+        // final bonded =
+        //     await BluetoothChannel().isDeviceBonded(widget.device.bleId);
         setState(() {
-          isDeviceBonded = bonded;
+          isDeviceBonded = false;
         });
       } catch (e) {
         // Handle error if needed
@@ -88,22 +88,25 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
       ref.read(homePageTitleProvider.notifier).state =
           S().manage_device_details_heading.toUpperCase();
       ref.read(homeShellOptionsProvider.notifier).state = HomeShellOptions(
-          optionsWidget: DeviceOptions(widget.device),
-          rightAction: Consumer(
-            builder: (context, ref, child) {
-              bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
-              return SizedBox(
-                height: 55,
-                width: 55,
-                child: IconButton(
-                    onPressed: () {
-                      HomePageState.of(context)?.toggleOptions();
-                    },
-                    icon: Icon(
-                        menuVisible ? Icons.close : Icons.more_horiz_outlined)),
-              );
-            },
-          ));
+        optionsWidget: DeviceOptions(widget.device),
+        rightAction: Consumer(
+          builder: (context, ref, child) {
+            bool menuVisible = ref.watch(homePageOptionsVisibilityProvider);
+            return SizedBox(
+              height: 55,
+              width: 55,
+              child: IconButton(
+                onPressed: () {
+                  HomePageState.of(context)?.toggleOptions();
+                },
+                icon: Icon(
+                  menuVisible ? Icons.close : Icons.more_horiz_outlined,
+                ),
+              ),
+            );
+          },
+        ),
+      );
     });
 
     Devices().addListener(_redraw);
@@ -118,16 +121,20 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
   @override
   Widget build(BuildContext context) {
     final Locale activeLocale = Localizations.localeOf(context);
-    final isConnected =
-        ref.watch(isPrimeConnectedProvider(widget.device.bleId));
+    final listItemTheme = Theme.of(context).textTheme.labelMedium?.copyWith(
+          fontSize: 14,
+          color: NewEnvoyColor.neutral900,
+        );
+    final isConnected = ref.watch(isPrimeConnectedProvider(widget.device));
+
+    //android status is not required
     final deviceRemovedFromHostSystemSettings =
         widget.device.type == DeviceType.passportPrime
             ? Platform.isIOS
                 ? accessoryInfo == null
-                : Platform.isAndroid
-                    ? !(isDeviceBonded ?? true)
-                    : false
+                : false
             : false;
+
     final listItemTitleTheme = EnvoyTypography.body.copyWith(
         color: deviceRemovedFromHostSystemSettings
             ? NewEnvoyColor.contentDisabled
@@ -159,23 +166,28 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
           children: [
             Padding(
               padding: const EdgeInsets.only(
-                  left: EnvoySpacing.medium2,
-                  top: EnvoySpacing.medium2,
-                  right: EnvoySpacing.medium2),
-              child: DeviceListTile(widget.device, onTap: () {
-                ref.read(homePageOptionsVisibilityProvider.notifier).state =
-                    false;
-                Future.delayed(const Duration(milliseconds: 200), () {
-                  if (context.mounted) {
-                    GoRouter.of(context).pop();
-                  }
-                });
-              }),
+                left: EnvoySpacing.medium2,
+                top: EnvoySpacing.medium2,
+                right: EnvoySpacing.medium2,
+              ),
+              child: DeviceListTile(
+                widget.device,
+                onTap: () {
+                  ref.read(homePageOptionsVisibilityProvider.notifier).state =
+                      false;
+                  Future.delayed(const Duration(milliseconds: 200), () {
+                    if (context.mounted) {
+                      GoRouter.of(context).pop();
+                    }
+                  });
+                },
+              ),
             ),
             Padding(
                 padding: const EdgeInsets.symmetric(
-                    vertical: EnvoySpacing.medium2,
-                    horizontal: EnvoySpacing.medium2),
+                  vertical: EnvoySpacing.medium2,
+                  horizontal: EnvoySpacing.medium2,
+                ),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: EnvoySpacing.small,
@@ -201,15 +213,48 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                         ),
                         title: Text(
                           S().manage_device_details_deviceSerial,
-                          style: EnvoyTypography.body
-                              .copyWith(color: NewEnvoyColor.contentPrimary),
+                          style: listItemTheme,
                         ),
                         trailing: Text(
                           widget.device.serial,
-                          style: EnvoyTypography.body
-                              .copyWith(color: NewEnvoyColor.contentSecondary),
+                          style: listItemTheme,
                         ),
                       ),
+                      Divider(color: NewEnvoyColor.neutral200, height: 1),
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.xs,
+                        ),
+                        title: Text(
+                          S().manage_device_details_devicePaired,
+                          style: listItemTheme,
+                        ),
+                        trailing: Text(
+                          timeago.format(
+                            widget.device.datePaired,
+                            locale: activeLocale.languageCode,
+                          ),
+                          style: listItemTheme,
+                        ),
+                      ),
+                      if (widget.device.type == DeviceType.passportPrime)
+                        Divider(color: NewEnvoyColor.neutral200, height: 1),
+                      if (widget.device.type == DeviceType.passportPrime)
+                        ListTile(
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: EnvoySpacing.xs,
+                          ),
+                          title: Text(
+                            S().manage_device_details_deviceSerial,
+                            style: EnvoyTypography.body
+                                .copyWith(color: NewEnvoyColor.contentPrimary),
+                          ),
+                          trailing: Text(
+                            widget.device.serial,
+                            style: EnvoyTypography.body.copyWith(
+                                color: NewEnvoyColor.contentSecondary),
+                          ),
+                        ),
                       Divider(
                         color: NewEnvoyColor.neutral200,
                         height: 1,
@@ -262,6 +307,7 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                             S().manage_device_details_QuantumLink,
                             style: listItemTitleTheme,
                           ),
+                          //TODO: implement connection status based on device QL heartbeat
                           trailing: Text(
                             isConnected
                                 ? S().manage_device_details_active
@@ -316,8 +362,9 @@ class _PrimeOptionsWidgetState extends ConsumerState<PrimeOptionsWidget> {
       try {
         final accessories = await BluetoothChannel().getAccessories();
 
-        final accessory = accessories.firstWhereOrNull((accessory) =>
-            accessory.peripheralId == widget.device.peripheralId);
+        final accessory = accessories.firstWhereOrNull(
+          (accessory) => accessory.peripheralId == widget.device.peripheralId,
+        );
         setState(() {
           accessoryInfo = accessory;
         });
@@ -326,10 +373,8 @@ class _PrimeOptionsWidgetState extends ConsumerState<PrimeOptionsWidget> {
       }
     } else if (Platform.isAndroid) {
       try {
-        final bonded =
-            await BluetoothChannel().isDeviceBonded(widget.device.bleId);
         setState(() {
-          isDeviceBonded = bonded;
+          isDeviceBonded = true;
         });
       } catch (e) {
         // Handle error if needed
@@ -414,9 +459,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Divider(),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         GestureDetector(
           child: Text(
             S().manage_device_details_menu_editDevice,
@@ -426,11 +469,13 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             bool isKeyboardShown = false;
             showEnvoyDialog(
-                context: context,
-                dialog: Builder(builder: (BuildContext context) {
+              context: context,
+              dialog: Builder(
+                builder: (BuildContext context) {
                   if (!isKeyboardShown) {
-                    Future.delayed(const Duration(milliseconds: 200))
-                        .then((value) {
+                    Future.delayed(const Duration(milliseconds: 200)).then((
+                      value,
+                    ) {
                       if (context.mounted) {
                         FocusScope.of(context).requestFocus(focusNode);
                       }
@@ -451,50 +496,55 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                         type: EnvoyButtonTypes.primaryModal,
                         onTap: () {
                           Devices().renameDevice(
-                              widget.device, textEntry.enteredText);
+                            widget.device,
+                            textEntry.enteredText,
+                          );
                           Navigator.pop(context);
                           context.go(ROUTE_DEVICES);
                         },
                       ),
                     ],
                   );
-                }));
+                },
+              ),
+            );
           },
         ),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         GestureDetector(
-          child: Text(S().manage_device_details_menu_disconnectDevice,
-              style: const TextStyle(color: EnvoyColors.copperLight500)),
+          child: Text(
+            S().manage_device_details_menu_disconnectDevice,
+            style: const TextStyle(color: EnvoyColors.copperLight500),
+          ),
           onTap: () {
             ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
             showEnvoyDialog(
-                context: context,
-                dialog: EnvoyPopUp(
-                  icon: EnvoyIcons.alert,
-                  typeOfMessage: PopUpState.warning,
-                  showCloseButton: false,
-                  title: S().component_areYouSure,
-                  content: S().manage_device_deletePassportWarning,
-                  primaryButtonLabel: S().componet_disconnect,
-                  primaryButtonColor: EnvoyColors.warning,
-                  onPrimaryButtonTap: (context) {
-                    Devices().deleteDevice(widget.device);
+              context: context,
+              dialog: EnvoyPopUp(
+                icon: EnvoyIcons.alert,
+                typeOfMessage: PopUpState.warning,
+                showCloseButton: false,
+                title: S().component_areYouSure,
+                content: S().manage_device_deletePassportWarning,
+                primaryButtonLabel: S().componet_disconnect,
+                primaryButtonColor: EnvoyColors.warning,
+                onPrimaryButtonTap: (context) {
+                  Devices().deleteDevice(widget.device);
 
-                    // Pop the dialog
-                    if (Navigator.canPop(context)) {
-                      Navigator.pop(context);
-                    }
-
-                    // Go back to devices list
-                    context.go(ROUTE_DEVICES);
-                  },
-                  secondaryButtonLabel: S().component_cancel,
-                  onSecondaryButtonTap: (context) {
+                  // Pop the dialog
+                  if (Navigator.canPop(context)) {
                     Navigator.pop(context);
-                  },
-                ));
+                  }
+
+                  // Go back to devices list
+                  context.go(ROUTE_DEVICES);
+                },
+                secondaryButtonLabel: S().component_cancel,
+                onSecondaryButtonTap: (context) {
+                  Navigator.pop(context);
+                },
+              ),
+            );
           },
         ),
       ],

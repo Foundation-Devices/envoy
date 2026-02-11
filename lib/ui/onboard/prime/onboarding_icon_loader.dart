@@ -30,8 +30,10 @@ class _IconLoaderState extends State<IconLoader> {
   }
 
   void _initRive() async {
-    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
-        riveFactory: rive.Factory.rive);
+    _riveFile = await rive.File.asset(
+      "assets/envoy_loader.riv",
+      riveFactory: rive.Factory.rive,
+    );
     _controller = rive.RiveWidgetController(
       _riveFile!,
       stateMachineSelector: rive.StateMachineSelector.byName('STM'),
@@ -116,7 +118,7 @@ class _IconLoaderState extends State<IconLoader> {
         Align(
           alignment: Alignment.center,
           child: widget.child ?? const SizedBox.shrink(),
-        )
+        ),
       ],
     );
   }

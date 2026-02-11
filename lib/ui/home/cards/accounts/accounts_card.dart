@@ -35,9 +35,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 
 class AccountsCard extends ConsumerStatefulWidget {
-  const AccountsCard({
-    super.key,
-  });
+  const AccountsCard({super.key});
 
   @override
   ConsumerState<AccountsCard> createState() => _AccountsCardState();
@@ -63,8 +61,10 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
         ref.watch(primePassphraseAccountsProvider).isNotEmpty;
 
     // Auto-switch to default accounts when passphrase accounts become empty
-    ref.listen(primePassphraseAccountsProvider,
-        (List<EnvoyAccount>? previous, List<EnvoyAccount> next) {
+    ref.listen(primePassphraseAccountsProvider, (
+      List<EnvoyAccount>? previous,
+      List<EnvoyAccount> next,
+    ) {
       if (next.isEmpty && !ref.read(showDefaultAccountProvider)) {
         ref.read(showDefaultAccountProvider.notifier).state = true;
       }
@@ -146,69 +146,71 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: FutureBuilder(
-              future: AllowedRegions.checkBuyDisabled(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return const SizedBox.shrink();
-                }
-                bool countryRestricted =
-                    snapshot.data != null && snapshot.data!;
-                //if there are no mainnet accounts or the future is still loading, disable the button
-                bool disabled = mainNetAccounts.isEmpty || _buyDisabled == null;
+            future: AllowedRegions.checkBuyDisabled(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const SizedBox.shrink();
+              }
+              bool countryRestricted = snapshot.data != null && snapshot.data!;
+              //if there are no mainnet accounts or the future is still loading, disable the button
+              bool disabled = mainNetAccounts.isEmpty || _buyDisabled == null;
 
-                _buyDisabled = snapshot.data;
+              _buyDisabled = snapshot.data;
 
-                if (countryRestricted || !allowBuyInEnvoy) {
-                  return const SizedBox.shrink();
-                }
-                return GestureDetector(
-                  onTap: () async {
-                    if (countryRestricted || disabled) {
-                      return;
-                    }
-                    context.go(
-                      await EnvoyStorage().getCountry() != null
-                          ? ROUTE_BUY_BITCOIN
-                          : ROUTE_SELECT_REGION,
-                    );
-                  },
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: QrShield(
-                      arcSizeRatio: 15.0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.large3,
-                            vertical: EnvoySpacing.small),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            EnvoyIcon(
-                              EnvoyIcons.btc,
-                              color: disabled
-                                  ? EnvoyColors.textTertiary
-                                  : EnvoyColors.accentPrimary,
+              if (countryRestricted || !allowBuyInEnvoy) {
+                return const SizedBox.shrink();
+              }
+              return GestureDetector(
+                onTap: () async {
+                  if (countryRestricted || disabled) {
+                    return;
+                  }
+                  context.go(
+                    await EnvoyStorage().getCountry() != null
+                        ? ROUTE_BUY_BITCOIN
+                        : ROUTE_SELECT_REGION,
+                  );
+                },
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: QrShield(
+                    arcSizeRatio: 15.0,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.large3,
+                        vertical: EnvoySpacing.small,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          EnvoyIcon(
+                            EnvoyIcons.btc,
+                            color: disabled
+                                ? EnvoyColors.textTertiary
+                                : EnvoyColors.accentPrimary,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: EnvoySpacing.xs,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: EnvoySpacing.xs),
-                              child: Text(
-                                S().component_minishield_buy,
-                                style: EnvoyTypography.label.copyWith(
-                                  color: disabled
-                                      ? EnvoyColors.textTertiary
-                                      : EnvoyColors.accentPrimary,
-                                ),
+                            child: Text(
+                              S().component_minishield_buy,
+                              style: EnvoyTypography.label.copyWith(
+                                color: disabled
+                                    ? EnvoyColors.textTertiary
+                                    : EnvoyColors.accentPrimary,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                );
-              }),
-        )
+                ),
+              );
+            },
+          ),
+        ),
       ],
     );
   }
@@ -242,8 +244,9 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
 
   @override
   Widget build(BuildContext context) {
-    List<EnvoyAccount> primePassphraseAccounts =
-        ref.watch(primePassphraseAccountsProvider);
+    List<EnvoyAccount> primePassphraseAccounts = ref.watch(
+      primePassphraseAccountsProvider,
+    );
     List<EnvoyAccount> accounts = ref.watch(accountsProvider);
 
     // Filter to only default accounts (exclude passphrase accounts)
@@ -256,8 +259,10 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
     final listContentHeight = accounts.length * _accountHeight;
 
     // Keep _accountsOrder in sync with accountOrderStream
-    ref.listen(accountOrderStream,
-        (List<String>? previous, List<String>? next) {
+    ref.listen(accountOrderStream, (
+      List<String>? previous,
+      List<String>? next,
+    ) {
       if (next == null) return;
 
       final currentIds = accounts.map((e) => e.id).toSet();
@@ -406,7 +411,8 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
             _accountsOrder = toReorder;
 
             Future.microtask(
-                () => NgAccountManager().updateAccountOrder(toReorder));
+              () => NgAccountManager().updateAccountOrder(toReorder),
+            );
           });
           await EnvoyStorage().addPromptState(DismissiblePrompt.dragAndDrop);
         },
@@ -423,7 +429,9 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
   }
 
   List<Widget> _buildListItems(
-      List<EnvoyAccount> accounts, List<String> accountsOrder) {
+    List<EnvoyAccount> accounts,
+    List<String> accountsOrder,
+  ) {
     final List<Widget> items = [];
 
     final orderToUse = accountsOrder.isEmpty
@@ -462,8 +470,9 @@ class PassphraseAccountsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<EnvoyAccount> accounts =
-        ref.watch(primePassphraseAccountsProvider);
+    final List<EnvoyAccount> accounts = ref.watch(
+      primePassphraseAccountsProvider,
+    );
 
     if (accounts.isEmpty) {
       return Padding(
@@ -513,44 +522,53 @@ class AccountPrompts extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var isHideAmountDismissed =
-        ref.watch(arePromptsDismissedProvider(DismissiblePrompt.hideAmount));
+    var isHideAmountDismissed = ref.watch(
+      arePromptsDismissedProvider(DismissiblePrompt.hideAmount),
+    );
 
-    var isDragAndDropDismissed =
-        ref.watch(arePromptsDismissedProvider(DismissiblePrompt.dragAndDrop));
+    var isDragAndDropDismissed = ref.watch(
+      arePromptsDismissedProvider(DismissiblePrompt.dragAndDrop),
+    );
 
-    var userInteractedWithAccDetail = ref.watch(arePromptsDismissedProvider(
-        DismissiblePrompt.userInteractedWithAccDetail));
+    var userInteractedWithAccDetail = ref.watch(
+      arePromptsDismissedProvider(
+        DismissiblePrompt.userInteractedWithAccDetail,
+      ),
+    );
     var accounts = ref.watch(accountsProvider);
     var accountsHaveZeroBalance = ref.watch(accountsZeroBalanceProvider);
 
     //Show if the user never visited account detail screen
     if (!userInteractedWithAccDetail) {
       return Center(
-          child: Wrap(alignment: WrapAlignment.center, spacing: 5, children: [
-        Text(
-          accounts.length == 1
-              ? S().hot_wallet_accounts_creation_done_text_explainer
-              : S()
-                  .hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt,
-          style: EnvoyTypography.explainer,
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 5,
+          children: [
+            Text(
+              accounts.length == 1
+                  ? S().hot_wallet_accounts_creation_done_text_explainer
+                  : S()
+                      .hot_wallet_accounts_creation_done_text_explainer_more_than_1_accnt,
+              style: EnvoyTypography.explainer,
+            ),
+            GestureDetector(
+              child: Text(
+                S().component_dismiss,
+                style: EnvoyTypography.explainer.copyWith(
+                  color: EnvoyColors.accentPrimary,
+                ),
+              ),
+              onTap: () {
+                EnvoyStorage().addPromptState(
+                  DismissiblePrompt.userInteractedWithAccDetail,
+                );
+              },
+            ),
+            Container(height: 40, color: Colors.transparent),
+          ],
         ),
-        GestureDetector(
-          child: Text(
-            S().component_dismiss,
-            style: EnvoyTypography.explainer
-                .copyWith(color: EnvoyColors.accentPrimary),
-          ),
-          onTap: () {
-            EnvoyStorage()
-                .addPromptState(DismissiblePrompt.userInteractedWithAccDetail);
-          },
-        ),
-        Container(
-          height: 40,
-          color: Colors.transparent,
-        )
-      ]));
+      );
     } else {
       if (!isHideAmountDismissed && !accountsHaveZeroBalance) {
         return Center(
@@ -563,17 +581,17 @@ class AccountPrompts extends ConsumerWidget {
                 style: EnvoyTypography.explainer,
               ),
               GestureDetector(
-                child: Text(S().component_dismiss,
-                    style: EnvoyTypography.explainer
-                        .copyWith(color: EnvoyColors.accentPrimary)),
+                child: Text(
+                  S().component_dismiss,
+                  style: EnvoyTypography.explainer.copyWith(
+                    color: EnvoyColors.accentPrimary,
+                  ),
+                ),
                 onTap: () {
                   EnvoyStorage().addPromptState(DismissiblePrompt.hideAmount);
                 },
               ),
-              Container(
-                height: 40,
-                color: Colors.transparent,
-              )
+              Container(height: 40, color: Colors.transparent),
             ],
           ),
         );
@@ -596,113 +614,120 @@ class AccountPrompts extends ConsumerWidget {
               GestureDetector(
                 child: Text(
                   S().component_dismiss,
-                  style: EnvoyTypography.explainer
-                      .copyWith(color: EnvoyColors.accentPrimary),
+                  style: EnvoyTypography.explainer.copyWith(
+                    color: EnvoyColors.accentPrimary,
+                  ),
                 ),
                 onTap: () {
                   if (userInteractedWithAccDetail) {
-                    EnvoyStorage()
-                        .addPromptState(DismissiblePrompt.dragAndDrop);
+                    EnvoyStorage().addPromptState(
+                      DismissiblePrompt.dragAndDrop,
+                    );
                   } else {
                     EnvoyStorage().addPromptState(
-                        DismissiblePrompt.userInteractedWithAccDetail);
+                      DismissiblePrompt.userInteractedWithAccDetail,
+                    );
                   }
                 },
               ),
-              Container(
-                height: 40,
-                color: Colors.transparent,
-              )
+              Container(height: 40, color: Colors.transparent),
             ],
           ),
         );
       }
     }
 
-    return Container(
-      height: 40,
-      color: Colors.transparent,
-    );
+    return Container(height: 40, color: Colors.transparent);
   }
 }
 
 void showSecurityDialog(BuildContext context) {
   EnvoyStorage().addPromptState(DismissiblePrompt.secureWallet);
   showEnvoyDialog(
-      context: context,
-      dismissible: false,
-      dialog: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.8,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
+    context: context,
+    dismissible: false,
+    dialog: SizedBox(
+      width: MediaQuery.of(context).size.width * 0.8,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
               ),
-              const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "assets/exclamation_icon.png",
-                    height: 60,
-                    width: 60,
+            ),
+            const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/exclamation_icon.png",
+                  height: 60,
+                  width: 60,
+                ),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
+                Container(
+                  constraints: const BoxConstraints(maxWidth: 200),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: EnvoySpacing.small,
+                    horizontal: 12,
                   ),
-                  const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
-                  Container(
-                    constraints: const BoxConstraints(maxWidth: 200),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.small, horizontal: 12),
-                    child: Text(S().wallet_security_modal__heading,
-                        textAlign: TextAlign.center,
-                        style: EnvoyTypography.heading),
+                  child: Text(
+                    S().wallet_security_modal__heading,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.heading,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.small, horizontal: 12),
-                    child: Text(
-                      S().wallet_security_modal_subheading,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      textAlign: TextAlign.center,
-                    ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: EnvoySpacing.small,
+                    horizontal: 12,
                   ),
-                ],
-              ),
-              OnboardingButton(
-                  type: EnvoyButtonTypes.tertiary,
-                  label: S().component_back,
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  }),
-              OnboardingButton(
-                  type: EnvoyButtonTypes.primaryModal,
-                  label: S().component_learnMore,
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                            child: const Material(child: DeviceEmptyVideo()));
-                      },
+                  child: Text(
+                    S().wallet_security_modal_subheading,
+                    style: Theme.of(context).textTheme.bodySmall,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+            OnboardingButton(
+              type: EnvoyButtonTypes.tertiary,
+              label: S().component_back,
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            OnboardingButton(
+              type: EnvoyButtonTypes.primaryModal,
+              label: S().component_learnMore,
+              onTap: () {
+                Navigator.of(context).pop();
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                      child: const Material(child: DeviceEmptyVideo()),
                     );
-                  }),
-              const Padding(padding: EdgeInsets.all(12)),
-            ],
-          ),
+                  },
+                );
+              },
+            ),
+            const Padding(padding: EdgeInsets.all(12)),
+          ],
         ),
-      ));
+      ),
+    ),
+  );
 }

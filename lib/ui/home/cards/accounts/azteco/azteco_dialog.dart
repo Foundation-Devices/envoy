@@ -25,8 +25,9 @@ class AztecoDialog extends StatelessWidget {
       width: MediaQuery.of(context).size.width * 0.75,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius:
-            BorderRadius.circular(20.0), // change the value as per your need
+        borderRadius: BorderRadius.circular(
+          20.0,
+        ), // change the value as per your need
       ),
       child: ExpandablePageView(
         controller: controller,

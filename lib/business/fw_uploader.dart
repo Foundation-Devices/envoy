@@ -12,7 +12,8 @@ import 'package:path/path.dart';
 
 const sdCardEventChannel = EventChannel('sd_card_events');
 final sdFwUploadStreamProvider = StreamProvider.autoDispose(
-    (ref) => sdCardEventChannel.receiveBroadcastStream().asBroadcastStream());
+  (ref) => sdCardEventChannel.receiveBroadcastStream().asBroadcastStream(),
+);
 //
 final sdFwUploadProgressProvider = StateProvider.autoDispose<bool?>((ref) {
   dynamic streamData = ref.watch(sdFwUploadStreamProvider).value;

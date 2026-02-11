@@ -62,7 +62,10 @@ class _EraseWalletsAndBackupsWarningState
   }
 
   double estimateTextHeight(
-      String text, TextStyle style, BuildContext context) {
+    String text,
+    TextStyle style,
+    BuildContext context,
+  ) {
     final TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       textDirection: TextDirection.ltr,
@@ -80,7 +83,9 @@ class _EraseWalletsAndBackupsWarningState
       width: MediaQuery.of(context).size.width * 0.8,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: EnvoySpacing.medium2, vertical: EnvoySpacing.medium2),
+          horizontal: EnvoySpacing.medium2,
+          vertical: EnvoySpacing.medium2,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -96,9 +101,11 @@ class _EraseWalletsAndBackupsWarningState
             ),
             Column(
               children: [
-                const EnvoyIcon(EnvoyIcons.alert,
-                    color: EnvoyColors.accentSecondary,
-                    size: EnvoyIconSize.big),
+                const EnvoyIcon(
+                  EnvoyIcons.alert,
+                  color: EnvoyColors.accentSecondary,
+                  size: EnvoyIconSize.big,
+                ),
                 const SizedBox(height: EnvoySpacing.medium1),
                 Text(
                   S().component_warning.toUpperCase(),
@@ -114,7 +121,8 @@ class _EraseWalletsAndBackupsWarningState
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.small),
+                      horizontal: EnvoySpacing.small,
+                    ),
                     child: SingleChildScrollView(
                       child: ExpandablePageView(
                         controller: _pageController,
@@ -139,45 +147,47 @@ class _EraseWalletsAndBackupsWarningState
                   ),
                 ),
                 const SizedBox(height: EnvoySpacing.medium2),
-                DotsIndicator(
-                  totalPages: 2,
-                  pageController: _pageController,
-                ),
-                const SizedBox(height: EnvoySpacing.small)
+                DotsIndicator(totalPages: 2, pageController: _pageController),
+                const SizedBox(height: EnvoySpacing.small),
               ],
             ),
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.small),
+              padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.small,
+              ),
               child: Column(
                 children: [
                   OnboardingButton(
-                      type: EnvoyButtonTypes.tertiary,
-                      label: S().component_cancel,
-                      onTap: () {
-                        Navigator.pop(context);
-                      }),
+                    type: EnvoyButtonTypes.tertiary,
+                    label: S().component_cancel,
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
                   OnboardingButton(
-                      type: EnvoyButtonTypes.primaryModal,
-                      label: S().component_continue,
-                      onTap: () {
-                        int currentPage = _pageController.page?.toInt() ?? 0;
-                        if (currentPage == 1) {
-                          if (NgAccountManager().hotWalletAccountsEmpty()) {
-                            // Safe to delete
-                            displaySeedBeforeNuke(context);
-                          } else {
-                            showEnvoyDialog(
-                                context: context,
-                                dialog: const EraseWalletsBalanceWarning());
-                          }
+                    type: EnvoyButtonTypes.primaryModal,
+                    label: S().component_continue,
+                    onTap: () {
+                      int currentPage = _pageController.page?.toInt() ?? 0;
+                      if (currentPage == 1) {
+                        if (NgAccountManager().hotWalletAccountsEmpty()) {
+                          // Safe to delete
+                          displaySeedBeforeNuke(context);
                         } else {
-                          _pageController.nextPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOutCubicEmphasized);
+                          showEnvoyDialog(
+                            context: context,
+                            dialog: const EraseWalletsBalanceWarning(),
+                          );
                         }
-                      }),
-                  const SizedBox(height: EnvoySpacing.small)
+                      } else {
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOutCubicEmphasized,
+                        );
+                      }
+                    },
+                  ),
+                  const SizedBox(height: EnvoySpacing.small),
                 ],
               ),
             ),
@@ -255,7 +265,9 @@ class _EraseWalletsConfirmationState
       constraints: const BoxConstraints(maxHeight: 360, maxWidth: 320),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: EnvoySpacing.medium2, vertical: EnvoySpacing.medium2),
+          horizontal: EnvoySpacing.medium2,
+          vertical: EnvoySpacing.medium2,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -280,8 +292,9 @@ class _EraseWalletsConfirmationState
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.small,
-                      vertical: EnvoySpacing.medium2),
+                    horizontal: EnvoySpacing.small,
+                    vertical: EnvoySpacing.medium2,
+                  ),
                   child: Text(
                     S().delete_wallet_for_good_modal_subheading,
                     textAlign: TextAlign.center,
@@ -291,22 +304,27 @@ class _EraseWalletsConfirmationState
               ),
             ),
             OnboardingButton(
-                type: EnvoyButtonTypes.tertiary,
-                label: S().delete_wallet_for_good_modal_cta2,
-                textStyle: EnvoyTypography.subheading
-                    .copyWith(color: EnvoyColors.danger),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const EraseProgress()));
-                }),
+              type: EnvoyButtonTypes.tertiary,
+              label: S().delete_wallet_for_good_modal_cta2,
+              textStyle: EnvoyTypography.subheading.copyWith(
+                color: EnvoyColors.danger,
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const EraseProgress(),
+                  ),
+                );
+              },
+            ),
             OnboardingButton(
-                type: EnvoyButtonTypes.primaryModal,
-                label: S().component_cancel,
-                onTap: () {
-                  context.go("/");
-                }),
+              type: EnvoyButtonTypes.primaryModal,
+              label: S().component_cancel,
+              onTap: () {
+                context.go("/");
+              },
+            ),
           ],
         ),
       ),
@@ -341,8 +359,10 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
   }
 
   void _initRive() async {
-    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
-        riveFactory: rive.Factory.rive);
+    _riveFile = await rive.File.asset(
+      "assets/envoy_loader.riv",
+      riveFactory: rive.Factory.rive,
+    );
     _controller = rive.RiveWidgetController(
       _riveFile!,
       stateMachineSelector: rive.StateMachineSelector.byName('STM'),
@@ -364,10 +384,11 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
     super.dispose();
   }
 
-  void _setAnimationState(
-      {required bool indeterminate,
-      required bool happy,
-      required bool unhappy}) {
+  void _setAnimationState({
+    required bool indeterminate,
+    required bool happy,
+    required bool unhappy,
+  }) {
     if (_controller?.stateMachine == null) return;
     final stateMachine = _controller!.stateMachine;
     //TODO: fix rive with databindings.
@@ -384,98 +405,109 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-        canPop: !_deleteInProgress,
-        onPopInvokedWithResult: (didPop, result) {
-          if (didPop) {
-            context.go("/");
-          }
-        },
-        child: OnboardPageBackground(
-          child: Material(
-            color: Colors.transparent,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      height: 260,
-                      child: _isInitialized && _controller != null
-                          ? rive.RiveWidget(
-                              controller: _controller!,
-                              fit: rive.Fit.contain,
-                            )
-                          : const SizedBox(),
-                    ),
-
-                    //const Padding(padding: EdgeInsets.all(28)),
-                    Builder(
-                      builder: (context) {
-                        String title =
-                            S().delete_wallet_for_good_loading_heading;
-                        if (!_deleteInProgress) {
-                          title = _isDeleted
-                              ? S().delete_wallet_for_good_success_heading
-                              : S().delete_wallet_for_good_error_title;
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.medium1),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            spacing: EnvoySpacing.large3,
-                            children: [
-                              Text(
-                                title,
-                                textAlign: TextAlign.center,
-                                style: EnvoyTypography.heading,
-                              ),
-                              if (!_isDeleted && !_deleteInProgress)
-                                Text(
-                                  S().delete_wallet_for_good_error_content,
-                                  textAlign: TextAlign.center,
-                                  style: EnvoyTypography.info.copyWith(
-                                      color: EnvoyColors.textSecondary),
-                                )
-
-                              //const Padding(padding: EdgeInsets.all(18)),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                if (!_isDeleted && !_deleteInProgress)
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        bottom: EnvoySpacing.medium2,
-                        right: EnvoySpacing.medium2,
-                        left: EnvoySpacing.medium2),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: EnvoySpacing.medium1,
-                      children: [
-                        EnvoyButton(S().component_cancel,
-                            type: EnvoyButtonTypes.secondary, onTap: () {
-                          Navigator.of(context).pop();
-                        }),
-                        EnvoyButton(S().component_retry, onTap: () {
-                          _onInit();
-                        }),
-                      ],
-                    ),
+      canPop: !_deleteInProgress,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          context.go("/");
+        }
+      },
+      child: OnboardPageBackground(
+        child: Material(
+          color: Colors.transparent,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: 260,
+                    child: _isInitialized && _controller != null
+                        ? rive.RiveWidget(
+                            controller: _controller!,
+                            fit: rive.Fit.contain,
+                          )
+                        : const SizedBox(),
                   ),
-                if (_isDeleted && !_deleteInProgress)
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        bottom: EnvoySpacing.medium2,
-                        right: EnvoySpacing.medium2,
-                        left: EnvoySpacing.medium2),
-                    child: EnvoyButton(S().component_continue,
-                        type: EnvoyButtonTypes.primary, onTap: () {
+
+                  //const Padding(padding: EdgeInsets.all(28)),
+                  Builder(
+                    builder: (context) {
+                      String title = S().delete_wallet_for_good_loading_heading;
+                      if (!_deleteInProgress) {
+                        title = _isDeleted
+                            ? S().delete_wallet_for_good_success_heading
+                            : S().delete_wallet_for_good_error_title;
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.medium1,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: EnvoySpacing.large3,
+                          children: [
+                            Text(
+                              title,
+                              textAlign: TextAlign.center,
+                              style: EnvoyTypography.heading,
+                            ),
+                            if (!_isDeleted && !_deleteInProgress)
+                              Text(
+                                S().delete_wallet_for_good_error_content,
+                                textAlign: TextAlign.center,
+                                style: EnvoyTypography.info.copyWith(
+                                  color: EnvoyColors.textSecondary,
+                                ),
+                              ),
+
+                            //const Padding(padding: EdgeInsets.all(18)),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              if (!_isDeleted && !_deleteInProgress)
+                Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: EnvoySpacing.medium2,
+                    right: EnvoySpacing.medium2,
+                    left: EnvoySpacing.medium2,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: EnvoySpacing.medium1,
+                    children: [
+                      EnvoyButton(
+                        S().component_cancel,
+                        type: EnvoyButtonTypes.secondary,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      EnvoyButton(
+                        S().component_retry,
+                        onTap: () {
+                          _onInit();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              if (_isDeleted && !_deleteInProgress)
+                Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: EnvoySpacing.medium2,
+                    right: EnvoySpacing.medium2,
+                    left: EnvoySpacing.medium2,
+                  ),
+                  child: EnvoyButton(
+                    S().component_continue,
+                    type: EnvoyButtonTypes.primary,
+                    onTap: () {
                       if (Platform.isAndroid) {
                         context.pushNamed(WALLET_BACKUP_WARNING, extra: true);
                       } else {
@@ -488,12 +520,14 @@ class _EraseProgressState extends ConsumerState<EraseProgress> {
                             HomePageTabState.accounts;
                         ref.read(homePageTitleProvider.notifier).state = "";
                       }
-                    }),
+                    },
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   Future<void> _onInit() async {
@@ -554,95 +588,101 @@ class _AndroidBackupWarningState extends State<AndroidBackupWarning> {
         child: EnvoyScaffold(
           hasScrollBody: false,
           child: Material(
-              color: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium2),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: EnvoySpacing.xl),
-                        SizedBox(
+            color: Colors.transparent,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.medium2,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: EnvoySpacing.xl),
+                      SizedBox(
+                        height: 184,
+                        child: Image.asset(
+                          "assets/images/onboarding_info.png",
                           height: 184,
-                          child: Image.asset(
-                            "assets/images/onboarding_info.png",
-                            height: 184,
+                        ),
+                      ),
+                      const SizedBox(height: EnvoySpacing.medium3),
+                      Text(
+                        S().android_backup_info_heading,
+                        textAlign: TextAlign.center,
+                        style: EnvoyTypography.heading,
+                      ),
+                      const SizedBox(height: EnvoySpacing.medium3),
+                      LinkText(
+                        text: S()
+                            .delete_wallet_for_good_instant_android_subheading,
+                        linkStyle: EnvoyTypography.body.copyWith(
+                          color: EnvoyColors.textSecondary,
+                        ),
+                        textStyle: EnvoyTypography.body.copyWith(
+                          color: EnvoyColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: EnvoySpacing.medium2,
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: EnvoySpacing.medium1,
+                          ),
+                          child: Consumer(
+                            builder: (context, ref, child) {
+                              return EnvoyButton(
+                                S().component_skip,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(EnvoySpacing.medium1),
+                                ),
+                                type: EnvoyButtonTypes.secondary,
+                                onTap: () async {
+                                  if (widget.skipSuccess) {
+                                    context.go("/");
+                                  } else {
+                                    context.goNamed(WALLET_SUCCESS);
+                                  }
+                                  ref
+                                      .read(homePageBackgroundProvider.notifier)
+                                      .state = HomePageBackgroundState.hidden;
+                                  ref.read(homePageTabProvider.notifier).state =
+                                      HomePageTabState.accounts;
+                                  ref
+                                      .read(homePageTitleProvider.notifier)
+                                      .state = "";
+                                  await Future.delayed(
+                                    const Duration(milliseconds: 100),
+                                  );
+                                },
+                              );
+                            },
                           ),
                         ),
-                        const SizedBox(height: EnvoySpacing.medium3),
-                        Text(
-                          S().android_backup_info_heading,
-                          textAlign: TextAlign.center,
-                          style: EnvoyTypography.heading,
-                        ),
-                        const SizedBox(height: EnvoySpacing.medium3),
-                        LinkText(
-                          text: S()
-                              .delete_wallet_for_good_instant_android_subheading,
-                          linkStyle: EnvoyTypography.body
-                              .copyWith(color: EnvoyColors.textSecondary),
-                          textStyle: EnvoyTypography.body
-                              .copyWith(color: EnvoyColors.textSecondary),
+                        EnvoyButton(
+                          S().component_goToSettings,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(EnvoySpacing.medium1),
+                          ),
+                          onTap: () {
+                            openAndroidSettings();
+                          },
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: EnvoySpacing.medium2,
-                      ),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: EnvoySpacing.medium1),
-                            child: Consumer(
-                              builder: (context, ref, child) {
-                                return EnvoyButton(
-                                  S().component_skip,
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(EnvoySpacing.medium1)),
-                                  type: EnvoyButtonTypes.secondary,
-                                  onTap: () async {
-                                    if (widget.skipSuccess) {
-                                      context.go("/");
-                                    } else {
-                                      context.goNamed(WALLET_SUCCESS);
-                                    }
-                                    ref
-                                        .read(
-                                            homePageBackgroundProvider.notifier)
-                                        .state = HomePageBackgroundState.hidden;
-                                    ref
-                                        .read(homePageTabProvider.notifier)
-                                        .state = HomePageTabState.accounts;
-                                    ref
-                                        .read(homePageTitleProvider.notifier)
-                                        .state = "";
-                                    await Future.delayed(
-                                        const Duration(milliseconds: 100));
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-                          EnvoyButton(
-                            S().component_goToSettings,
-                            borderRadius: BorderRadius.all(
-                                Radius.circular(EnvoySpacing.medium1)),
-                            onTap: () {
-                              openAndroidSettings();
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              )),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

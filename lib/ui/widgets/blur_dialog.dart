@@ -51,48 +51,49 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
     //blur background overlay
     overlays.add(
       OverlayEntry(
-          builder: (BuildContext context) {
-            return createOverlayBlur();
-          },
-          maintainState: false,
-          opaque: false),
+        builder: (BuildContext context) {
+          return createOverlayBlur();
+        },
+        maintainState: false,
+        opaque: false,
+      ),
     );
 
     overlays.add(
       OverlayEntry(
-          builder: (BuildContext context) {
-            final Widget annotatedChild = Semantics(
-              focused: false,
-              container: true,
-              explicitChildNodes: true,
-              child: AlignTransition(
-                alignment: _animation!,
-                child: Material(
-                  color: Colors.transparent,
-                  child: SafeArea(
-                    minimum: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
-                    ),
-                    child: FadeTransition(
-                      opacity: _fade!,
-                      child: Card(
-                          color: cardColor,
-                          elevation: _elevation?.value,
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(borderRadius)),
-                          child: Builder(
-                            builder: builder.build,
-                          )),
+        builder: (BuildContext context) {
+          final Widget annotatedChild = Semantics(
+            focused: false,
+            container: true,
+            explicitChildNodes: true,
+            child: AlignTransition(
+              alignment: _animation!,
+              child: Material(
+                color: Colors.transparent,
+                child: SafeArea(
+                  minimum: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                  ),
+                  child: FadeTransition(
+                    opacity: _fade!,
+                    child: Card(
+                      color: cardColor,
+                      elevation: _elevation?.value,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(borderRadius),
+                      ),
+                      child: Builder(builder: builder.build),
                     ),
                   ),
                 ),
               ),
-            );
-            return annotatedChild;
-          },
-          maintainState: false,
-          opaque: false),
+            ),
+          );
+          return annotatedChild;
+        },
+        maintainState: false,
+        opaque: false,
+      ),
     );
 
     return overlays;
@@ -116,17 +117,18 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
             child: Container(
               constraints: const BoxConstraints.expand(),
               decoration: BoxDecoration(
-                  gradient: linearGradient
-                      ? LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            blurColor,
-                            Colors.transparent
-                          ], // Adjust colors as needed
-                        )
-                      : null,
-                  color: !linearGradient ? _filterColorAnimation!.value : null),
+                gradient: linearGradient
+                    ? LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          blurColor,
+                          Colors.transparent,
+                        ], // Adjust colors as needed
+                      )
+                    : null,
+                color: !linearGradient ? _filterColorAnimation!.value : null,
+              ),
             ),
           );
         },
@@ -143,9 +145,10 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
     _filterBlurAnimation = createBlurFilterAnimation();
     _filterColorAnimation = createColorFilterAnimation();
 
-    _animation =
-        AlignmentTween(begin: const Alignment(0.0, 1.0), end: alignment)
-            .animate(
+    _animation = AlignmentTween(
+      begin: const Alignment(0.0, 1.0),
+      end: alignment,
+    ).animate(
       CurvedAnimation(
         parent: _controller,
         curve: Curves.ease,
@@ -156,22 +159,14 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
     _fade = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(
-          0.4,
-          1.0,
-          curve: Curves.easeInOutCirc,
-        ),
+        curve: const Interval(0.4, 1.0, curve: Curves.easeInOutCirc),
       ),
     );
 
     _elevation = Tween(begin: 0.0, end: 12.0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(
-          0.0,
-          1.0,
-          curve: Curves.easeInOutCirc,
-        ),
+        curve: const Interval(0.0, 1.0, curve: Curves.easeInOutCirc),
       ),
     );
     super.install();
@@ -181,11 +176,7 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
     return Tween(begin: 0.0, end: blur).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(
-          0.0,
-          0.35,
-          curve: Curves.easeInOutCirc,
-        ),
+        curve: const Interval(0.0, 0.35, curve: Curves.easeInOutCirc),
       ),
     );
   }
@@ -205,15 +196,12 @@ class BlurDialogRoute<T> extends OverlayRoute<T> {
 
   Animation<Color?>? createColorFilterAnimation() {
     return ColorTween(
-            begin: Colors.transparent, end: blurColor.applyOpacity(0.26))
-        .animate(
+      begin: Colors.transparent,
+      end: blurColor.applyOpacity(0.26),
+    ).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(
-          0.0,
-          0.35,
-          curve: Curves.easeInOutCirc,
-        ),
+        curve: const Interval(0.0, 0.35, curve: Curves.easeInOutCirc),
       ),
     );
   }
@@ -271,16 +259,19 @@ Future<T?> showEnvoyDialog<T>({
   Function? onDispose,
 }) async {
   var route = BlurDialogRoute<T>(
-      blur: blur,
-      builder: builder ?? Builder(builder: (context) => dialog ?? Container()),
-      blurColor: blurColor,
-      cardColor: cardColor,
-      alignment: alignment,
-      dismissible: dismissible,
-      settings: routeSettings,
-      borderRadius: borderRadius,
-      linearGradient: linearGradient,
-      onDispose: onDispose);
-  return await Navigator.of(context, rootNavigator: useRootNavigator)
-      .push(route);
+    blur: blur,
+    builder: builder ?? Builder(builder: (context) => dialog ?? Container()),
+    blurColor: blurColor,
+    cardColor: cardColor,
+    alignment: alignment,
+    dismissible: dismissible,
+    settings: routeSettings,
+    borderRadius: borderRadius,
+    linearGradient: linearGradient,
+    onDispose: onDispose,
+  );
+  return await Navigator.of(
+    context,
+    rootNavigator: useRootNavigator,
+  ).push(route);
 }

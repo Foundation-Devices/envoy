@@ -61,21 +61,22 @@ class TransactionModel {
 
   static TransactionModel copy(TransactionModel model) {
     return TransactionModel(
-        error: model.error,
-        draftTransaction: model.draftTransaction,
-        transactionParams: model.transactionParams,
-        valid: model.valid,
-        loading: model.loading,
-        canProceed: model.canProceed,
-        belowDustLimit: model.belowDustLimit,
-        broadcastProgress: model.broadcastProgress,
-        transaction: model.transaction,
-        changeOutPutTag: model.changeOutPutTag,
-        inputTags: model.inputTags,
-        mode: model.mode,
-        note: model.note,
-        hotWallet: model.hotWallet,
-        uneconomicSpends: model.uneconomicSpends);
+      error: model.error,
+      draftTransaction: model.draftTransaction,
+      transactionParams: model.transactionParams,
+      valid: model.valid,
+      loading: model.loading,
+      canProceed: model.canProceed,
+      belowDustLimit: model.belowDustLimit,
+      broadcastProgress: model.broadcastProgress,
+      transaction: model.transaction,
+      changeOutPutTag: model.changeOutPutTag,
+      inputTags: model.inputTags,
+      mode: model.mode,
+      note: model.note,
+      hotWallet: model.hotWallet,
+      uneconomicSpends: model.uneconomicSpends,
+    );
   }
 
   TransactionModel clone() {
@@ -145,7 +146,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       spendableBalance: spendableBalance,
       utxos: utxos,
       changeOutput: changeOutput,
-      note: note
+      note: note,
     ) = _getCommonDeps();
 
     if (handler == null) {
@@ -193,7 +194,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
 
       final draftTx = await handler.composePsbt(transactionParams: params);
       kPrint(
-          "composePSBT : ${draftTx.transaction.txId} | isFinalized : ${draftTx.isFinalized}");
+        "composePSBT : ${draftTx.transaction.txId} | isFinalized : ${draftTx.isFinalized}",
+      );
 
       _updateWithPreparedTransaction(draftTx, params);
 
@@ -228,7 +230,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       spendableBalance: spendableBalance,
       utxos: utxos,
       changeOutput: changeOutput,
-      note: note
+      note: note,
     ) = _getCommonDeps();
 
     TransactionParams? params = state.transactionParams;
@@ -247,11 +249,12 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     );
     DraftTransaction tx = state.draftTransaction!;
     DraftTransaction updatedTx = DraftTransaction(
-        changeOutPutTag: state.changeOutPutTag,
-        transaction: tx.transaction.copyWith(note: stagingNote),
-        psbt: tx.psbt,
-        inputTags: tx.inputTags,
-        isFinalized: tx.isFinalized);
+      changeOutPutTag: state.changeOutPutTag,
+      transaction: tx.transaction.copyWith(note: stagingNote),
+      psbt: tx.psbt,
+      inputTags: tx.inputTags,
+      isFinalized: tx.isFinalized,
+    );
     kPrint("NoteUpdated : ${updatedTx.transaction.note}");
     _updateWithPreparedTransaction(updatedTx, params);
   }
@@ -266,7 +269,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       spendableBalance: spendableBalance,
       utxos: utxos,
       changeOutput: changeOutput,
-      note: note
+      note: note,
     ) = _getCommonDeps();
     final params = state.transactionParams;
 
@@ -284,33 +287,37 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     );
     DraftTransaction tx = state.draftTransaction!;
     DraftTransaction updatedTx = DraftTransaction(
-        transaction: tx.transaction.copyWith(
-          outputs: tx.transaction.outputs.map((output) {
-            if (output.keychain == KeyChain.internal) {
-              return Output(
-                  txId: output.txId,
-                  vout: output.vout,
-                  amount: output.amount,
-                  isConfirmed: output.isConfirmed,
-                  address: output.address,
-                  tag: tag,
-                  date: output.date,
-                  keychain: output.keychain,
-                  doNotSpend: output.doNotSpend);
-            }
-            return output;
-          }).toList(),
-        ),
-        psbt: tx.psbt,
-        changeOutPutTag: tag,
-        inputTags: tx.inputTags,
-        isFinalized: tx.isFinalized);
+      transaction: tx.transaction.copyWith(
+        outputs: tx.transaction.outputs.map((output) {
+          if (output.keychain == KeyChain.internal) {
+            return Output(
+              txId: output.txId,
+              vout: output.vout,
+              amount: output.amount,
+              isConfirmed: output.isConfirmed,
+              address: output.address,
+              tag: tag,
+              date: output.date,
+              keychain: output.keychain,
+              doNotSpend: output.doNotSpend,
+            );
+          }
+          return output;
+        }).toList(),
+      ),
+      psbt: tx.psbt,
+      changeOutPutTag: tag,
+      inputTags: tx.inputTags,
+      isFinalized: tx.isFinalized,
+    );
     kPrint("Tag Updated : ${updatedTx.changeOutPutTag}");
     _updateWithPreparedTransaction(updatedTx, prams);
   }
 
-  Future<bool> validate(ProviderContainer container,
-      {bool settingFee = false}) async {
+  Future<bool> validate(
+    ProviderContainer container, {
+    bool settingFee = false,
+  }) async {
     try {
       var (
         account: account,
@@ -321,7 +328,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         spendableBalance: spendableBalance,
         utxos: utxos,
         changeOutput: changeOutput,
-        note: note
+        note: note,
       ) = _getCommonDeps();
 
       if (handler == null && account == null) {
@@ -344,30 +351,33 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         bool sendMax = spendableBalance == amount;
         final feeRate = Fees().slowRate(network);
         final params = TransactionParams(
-            address: sendTo,
-            amount: BigInt.from(amount),
-            feeRate: BigInt.from(feeRate < 1 ? 1 : feeRate),
-            selectedOutputs: utxos,
-            note: note,
-            tag: changeOutput,
-            doNotSpendChange: false);
+          address: sendTo,
+          amount: BigInt.from(amount),
+          feeRate: BigInt.from(feeRate < 1 ? 1 : feeRate),
+          selectedOutputs: utxos,
+          note: note,
+          tag: changeOutput,
+          doNotSpendChange: false,
+        );
 
         if (handler == null) {
           kPrint("Handler is null");
           return false;
         }
         //calculate max fee only if we are not setting fee
-        final feeCalcResult =
-            await handler.getMaxFee(transactionParams: params);
+        final feeCalcResult = await handler.getMaxFee(
+          transactionParams: params,
+        );
         final preparedTransaction = feeCalcResult.draftTransaction;
 
         //update the fee rate
         container.read(feeChooserStateProvider.notifier).state =
             FeeChooserState(
-                standardFeeRate: Fees().slowRate(network),
-                fasterFeeRate: Fees().fastRate(network),
-                minFeeRate: feeCalcResult.minFeeRate.toInt(),
-                maxFeeRate: feeCalcResult.maxFeeRate.toInt().clamp(2, 5000));
+          standardFeeRate: Fees().slowRate(network),
+          fasterFeeRate: Fees().fastRate(network),
+          minFeeRate: feeCalcResult.minFeeRate.toInt(),
+          maxFeeRate: feeCalcResult.maxFeeRate.toInt().clamp(2, 5000),
+        );
 
         _updateWithPreparedTransaction(preparedTransaction, params);
 
@@ -415,7 +425,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         torPort: port,
       );
       await handler.updateBroadcastState(
-          draftTransaction: state.draftTransaction!);
+        draftTransaction: state.draftTransaction!,
+      );
       syncManager.syncAccount(account);
       Future.delayed(const Duration(seconds: 100));
       state = state.clone()..broadcastProgress = BroadcastProgress.success;
@@ -432,7 +443,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     state = state.clone()..broadcastProgress = BroadcastProgress.staging;
   }
 
-//for RBF review screen
+  //for RBF review screen
   void setAmount(int amount) {
     // state = state.clone()..amount = amount;
   }
@@ -452,15 +463,21 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     }
     try {
       final preparedTx = await EnvoyAccountHandler.decodePsbt(
-          draftTransaction: state.draftTransaction!, psbt: decoded.decoded);
+        draftTransaction: state.draftTransaction!,
+        psbt: decoded.decoded,
+      );
       kPrint(
-          "Decoded PSBT: ${preparedTx.transaction.txId} | isFinalized : ${preparedTx.isFinalized}");
+        "Decoded PSBT: ${preparedTx.transaction.txId} | isFinalized : ${preparedTx.isFinalized}",
+      );
       _updateWithPreparedTransaction(preparedTx, state.transactionParams);
       await Future.delayed(const Duration(milliseconds: 100));
     } catch (e, stack) {
       _setErrorState("Unable to decode PSBT");
-      EnvoyReport()
-          .log("Spend", "Unable to decode PSBT: $e", stackTrace: stack);
+      EnvoyReport().log(
+        "Spend",
+        "Unable to decode PSBT: $e",
+        stackTrace: stack,
+      );
       rethrow;
     }
   }
@@ -476,21 +493,29 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     }
     try {
       final preparedTx = await EnvoyAccountHandler.decodePsbt(
-          draftTransaction: state.draftTransaction!, psbt: psbt);
+        draftTransaction: state.draftTransaction!,
+        psbt: psbt,
+      );
       kPrint(
-          "Decoded PSBT: ${preparedTx.transaction.txId} | isFinalized : ${preparedTx.isFinalized}");
+        "Decoded PSBT: ${preparedTx.transaction.txId} | isFinalized : ${preparedTx.isFinalized}",
+      );
       _updateWithPreparedTransaction(preparedTx, state.transactionParams);
       await Future.delayed(const Duration(milliseconds: 100));
     } catch (e, stack) {
       _setErrorState("Unable to decode PSBT");
-      EnvoyReport()
-          .log("Spend", "Unable to decode PSBT: $e", stackTrace: stack);
+      EnvoyReport().log(
+        "Spend",
+        "Unable to decode PSBT: $e",
+        stackTrace: stack,
+      );
       rethrow;
     }
   }
 
   void _updateWithPreparedTransaction(
-      DraftTransaction draftTransaction, TransactionParams? params) {
+    DraftTransaction draftTransaction,
+    TransactionParams? params,
+  ) {
     state = state.clone()
       ..loading = false
       ..draftTransaction = draftTransaction
@@ -513,8 +538,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     if (error is TxComposeError) {
       TxComposeError composeTxError = error;
 
-      EnvoyReport().log("Spend",
-          "Spend validation failed : ${composeTxError.field0.toString()}");
+      EnvoyReport().log(
+        "Spend",
+        "Spend validation failed : ${composeTxError.field0.toString()}",
+      );
 
       composeTxError.when(
         coinSelectionError: (field0) {

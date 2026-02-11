@@ -273,7 +273,8 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
           color: EnvoyColors.textPrimary,
           elevation: 0,
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(EnvoySpacing.medium3)),
+            borderRadius: BorderRadius.circular(EnvoySpacing.medium3),
+          ),
           child: Center(
             child: Container(
               width: MediaQuery.of(context).size.width * 0.9,
@@ -281,10 +282,7 @@ class _TutorialDialogState extends ConsumerState<TutorialDialog> {
                 gradient: const LinearGradient(
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
-                  colors: [
-                    EnvoyColors.textSecondary,
-                    EnvoyColors.textPrimary,
-                  ],
+                  colors: [EnvoyColors.textSecondary, EnvoyColors.textPrimary],
                 ),
                 borderRadius: BorderRadius.circular(EnvoySpacing.medium3),
               ),

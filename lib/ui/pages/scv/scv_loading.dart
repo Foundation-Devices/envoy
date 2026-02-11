@@ -36,8 +36,10 @@ class _ScvLoadingPageState extends State<ScvLoadingPage> {
   }
 
   void _initRive() async {
-    _riveFile = await rive.File.asset("assets/envoy_loader.riv",
-        riveFactory: rive.Factory.rive);
+    _riveFile = await rive.File.asset(
+      "assets/envoy_loader.riv",
+      riveFactory: rive.Factory.rive,
+    );
     _controller = rive.RiveWidgetController(
       _riveFile!,
       stateMachineSelector: rive.StateMachineSelector.byName('STM'),
@@ -73,26 +75,34 @@ class _ScvLoadingPageState extends State<ScvLoadingPage> {
             PassportFirmwareVersion version =
                 object.objects[2] as PassportFirmwareVersion;
 
-            UpdatesManager()
-                .shouldUpdate(version.version, model.type)
-                .then((bool shouldUpdate) {
-              mustUpdateFirmware = shouldUpdate;
-            });
+            UpdatesManager().shouldUpdate(version.version, model.type).then(
+              (bool shouldUpdate) {
+                mustUpdateFirmware = shouldUpdate;
+              },
+            );
           }
 
           if (!context.mounted) return;
 
           // ignore: use_build_context_synchronously
-          Navigator.of(context)
-              .pushReplacement(MaterialPageRoute(builder: (context) {
-            return ScvResultOkPage(mustUpdateFirmware: mustUpdateFirmware);
-          }));
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) {
+                return ScvResultOkPage(
+                  mustUpdateFirmware: mustUpdateFirmware,
+                );
+              },
+            ),
+          );
         } else {
           // ignore: use_build_context_synchronously
-          Navigator.of(context)
-              .pushReplacement(MaterialPageRoute(builder: (context) {
-            return const ScvResultFailPage();
-          }));
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) {
+                return const ScvResultFailPage();
+              },
+            ),
+          );
         }
       });
     }
@@ -104,21 +114,14 @@ class _ScvLoadingPageState extends State<ScvLoadingPage> {
       key: const Key("scv_loading"),
       rightFunction: null,
       leftFunction: null,
-      text: [
-        OnboardingText(
-          header: S().scv_checkingDeviceSecurity,
-        ),
-      ],
+      text: [OnboardingText(header: S().scv_checkingDeviceSecurity)],
       clipArt: Padding(
         padding: const EdgeInsets.only(top: EnvoySpacing.xl),
         child: SizedBox(
           width: 300,
           height: 300,
           child: _isInitialized && _controller != null
-              ? rive.RiveWidget(
-                  controller: _controller!,
-                  fit: rive.Fit.contain,
-                )
+              ? rive.RiveWidget(controller: _controller!, fit: rive.Fit.contain)
               : const SizedBox(),
         ),
       ),

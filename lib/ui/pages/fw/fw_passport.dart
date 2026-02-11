@@ -22,25 +22,23 @@ class FwPassportPage extends StatelessWidget {
     bool onboarding = fwPagePayload.onboarding;
     return CustomOnboardingPage(
       key: const Key("fw_passport"),
-      mainWidget: Image.asset(
-        "assets/fw_passport.png",
-        height: 270,
-      ),
+      mainWidget: Image.asset("assets/fw_passport.png", height: 270),
       title: S().envoy_fw_passport_heading,
       subheading: onboarding
           ? S().envoy_fw_passport_subheading
           : S().envoy_fw_passport_onboarded_subheading,
       buttons: [
-        EnvoyButton(S().component_done,
-            borderRadius:
-                BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
-            onTap: () {
-          if (!onboarding) {
-            context.go("/");
-          } else {
-            context.pushNamed(PASSPORT_INTRO);
-          }
-        }),
+        EnvoyButton(
+          S().component_done,
+          borderRadius: BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
+          onTap: () {
+            if (!onboarding) {
+              context.go("/");
+            } else {
+              context.pushNamed(PASSPORT_INTRO);
+            }
+          },
+        ),
       ],
     );
   }

@@ -19,13 +19,14 @@ class EnvoyQR extends StatefulWidget {
 
   final String data;
 
-  const EnvoyQR(
-      {super.key,
-      this.dimension,
-      this.embeddedImage,
-      this.embeddedImageSize,
-      this.qrSize,
-      required this.data});
+  const EnvoyQR({
+    super.key,
+    this.dimension,
+    this.embeddedImage,
+    this.embeddedImageSize,
+    this.qrSize,
+    required this.data,
+  });
 
   @override
   State<EnvoyQR> createState() => _EnvoyQRState();
@@ -35,19 +36,16 @@ class _EnvoyQRState extends State<EnvoyQR> {
   @override
   Widget build(BuildContext context) {
     Widget qrWidget = QrImageView(
-        data: widget.data,
-        gapless: true,
-        embeddedImage: widget.embeddedImage,
-        embeddedImageStyle:
-            QrEmbeddedImageStyle(size: widget.embeddedImageSize),
-        backgroundColor: Colors.transparent,
-        errorCorrectionLevel: widget.embeddedImage == null
-            ? QrErrorCorrectLevel.L
-            : QrErrorCorrectLevel.M,
-        size: widget.qrSize);
-    return SizedBox.square(
-      dimension: widget.dimension,
-      child: qrWidget,
+      data: widget.data,
+      gapless: true,
+      embeddedImage: widget.embeddedImage,
+      embeddedImageStyle: QrEmbeddedImageStyle(size: widget.embeddedImageSize),
+      backgroundColor: Colors.transparent,
+      errorCorrectionLevel: widget.embeddedImage == null
+          ? QrErrorCorrectLevel.L
+          : QrErrorCorrectLevel.M,
+      size: widget.qrSize,
     );
+    return SizedBox.square(dimension: widget.dimension, child: qrWidget);
   }
 }

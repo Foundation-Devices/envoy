@@ -11,8 +11,11 @@ class EmbeddedVideo extends StatefulWidget {
   final String path;
   final double aspectRatio;
 
-  const EmbeddedVideo(
-      {super.key, required this.path, this.aspectRatio = 4 / 3});
+  const EmbeddedVideo({
+    super.key,
+    required this.path,
+    this.aspectRatio = 4 / 3,
+  });
 
   @override
   State<EmbeddedVideo> createState() => EmbeddedVideoState();
@@ -43,8 +46,9 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
   }
 
   void _periodicallyUpdatePosition() {
-    _updatePositionTimer =
-        Timer.periodic(const Duration(seconds: 1), (_) async {
+    _updatePositionTimer = Timer.periodic(const Duration(seconds: 1), (
+      _,
+    ) async {
       _position = (await _videoPlayerController!.getPosition()).inSeconds;
       _duration = (await _videoPlayerController!.getDuration()).inSeconds;
 
@@ -90,13 +94,10 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
             child: Align(
               alignment: Alignment.center,
               child: AnimatedOpacity(
-                  opacity: _position >= _duration - 1 ? 1.0 : 0.0,
-                  duration: const Duration(seconds: 1),
-                  child: const Icon(
-                    Icons.replay,
-                    size: 60,
-                    color: Colors.white,
-                  )),
+                opacity: _position >= _duration - 1 ? 1.0 : 0.0,
+                duration: const Duration(seconds: 1),
+                child: const Icon(Icons.replay, size: 60, color: Colors.white),
+              ),
             ),
           ),
         ),
@@ -119,7 +120,7 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
               },
             ),
           ),
-        )
+        ),
       ],
     );
   }

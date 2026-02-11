@@ -22,9 +22,9 @@ class TorWarning extends StatefulWidget {
 class _TorWarningState extends State<TorWarning> {
   @override
   Widget build(BuildContext context) {
-    var textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.w500,
-        );
+    var textStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500);
 
     return EnvoyPopUp(
       icon: EnvoyIcons.alert,
@@ -33,11 +33,14 @@ class _TorWarningState extends State<TorWarning> {
       customWidget: LinkText(
         text: S().torToast_learnMore_warningBody,
         textStyle: textStyle,
-        linkStyle:
-            EnvoyTypography.button.copyWith(color: EnvoyColors.accentPrimary),
+        linkStyle: EnvoyTypography.button.copyWith(
+          color: EnvoyColors.accentPrimary,
+        ),
         onTap: () {
-          launchUrl(Uri.parse("https://docs.foundation.xyz/envoy/tor"),
-              mode: LaunchMode.externalApplication);
+          launchUrl(
+            Uri.parse("https://docs.foundation.xyz/envoy/tor"),
+            mode: LaunchMode.externalApplication,
+          );
         },
       ),
       primaryButtonLabel: S().torToast_learnMore_retryTorConnection,

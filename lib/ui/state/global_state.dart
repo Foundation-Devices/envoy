@@ -4,11 +4,8 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum GlobalState {
-  normal,
-  nuclearDelete,
-  backupDelete,
-}
+enum GlobalState { normal, nuclearDelete, backupDelete }
 
-final globalStateProvider =
-    StateProvider.autoDispose<GlobalState>((ref) => GlobalState.normal);
+final globalStateProvider = StateProvider.autoDispose<GlobalState>(
+  (ref) => GlobalState.normal,
+);

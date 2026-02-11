@@ -53,18 +53,25 @@ class _LearnCardState extends ConsumerState<LearnCard> {
     super.didChangeDependencies();
 
     ref.listenManual(
-        learnFilterStateProvider, (_, __) => _resetScrollOnFilterChange());
+      learnFilterStateProvider,
+      (_, __) => _resetScrollOnFilterChange(),
+    );
     ref.listenManual(
-        deviceFilterStateProvider, (_, __) => _resetScrollOnFilterChange());
+      deviceFilterStateProvider,
+      (_, __) => _resetScrollOnFilterChange(),
+    );
     ref.listenManual(
-        learnSortStateProvider, (_, __) => _resetScrollOnFilterChange());
+      learnSortStateProvider,
+      (_, __) => _resetScrollOnFilterChange(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     List<Video> videos = ref.watch(learnVideosProvider(widget.controller.text));
-    List<BlogPost> blogs =
-        ref.watch(learnBlogsProvider(widget.controller.text));
+    List<BlogPost> blogs = ref.watch(
+      learnBlogsProvider(widget.controller.text),
+    );
     final learnFilterState = ref.watch(learnFilterStateProvider);
     final learnSortState = ref.watch(learnSortStateProvider);
     final deviceFilterState = ref.watch(deviceFilterStateProvider);
@@ -76,9 +83,11 @@ class _LearnCardState extends ConsumerState<LearnCard> {
     var faqs = ref.watch(faqsProvider);
     if (widget.controller.text.isNotEmpty) {
       faqs = faqs
-          .where((entry) => entry.question
-              .toLowerCase()
-              .contains(widget.controller.text.toLowerCase()))
+          .where(
+            (entry) => entry.question.toLowerCase().contains(
+                  widget.controller.text.toLowerCase(),
+                ),
+          )
           .toList();
     }
 
@@ -108,17 +117,16 @@ class _LearnCardState extends ConsumerState<LearnCard> {
           physics: isAllEmpty ? const NeverScrollableScrollPhysics() : null,
           slivers: [
             const SliverToBoxAdapter(
-              child: SizedBox(
-                height: EnvoySpacing.medium1,
-              ),
+              child: SizedBox(height: EnvoySpacing.medium1),
             ),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.only(
-                    bottom: EnvoySpacing.medium2,
-                    top: EnvoySpacing.small,
-                    left: EnvoySpacing.medium2,
-                    right: EnvoySpacing.medium2),
+                  bottom: EnvoySpacing.medium2,
+                  top: EnvoySpacing.small,
+                  left: EnvoySpacing.medium2,
+                  right: EnvoySpacing.medium2,
+                ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -128,48 +136,52 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                           (EnvoySpacing.large1 + EnvoySpacing.xl),
                       height: EnvoySpacing.large1,
                       child: EnvoySearch(
-                          filterSearchResults: (text) {
-                            setState(() {
-                              text = widget.controller.text;
-                            });
-                          },
-                          controller: widget.controller),
+                        filterSearchResults: (text) {
+                          setState(() {
+                            text = widget.controller.text;
+                          });
+                        },
+                        controller: widget.controller,
+                      ),
                     ),
                     GestureDetector(
                       onTap: () {
                         showModalBottomSheet(
-                            context: context,
-                            isDismissible: true,
-                            useRootNavigator: true,
-                            barrierColor: Colors.black.applyOpacity(0.2),
-                            enableDrag: true,
-                            isScrollControlled: true,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(EnvoySpacing.medium1),
-                                topRight: Radius.circular(EnvoySpacing.medium1),
-                              ),
+                          context: context,
+                          isDismissible: true,
+                          useRootNavigator: true,
+                          barrierColor: Colors.black.applyOpacity(0.2),
+                          enableDrag: true,
+                          isScrollControlled: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(EnvoySpacing.medium1),
+                              topRight: Radius.circular(EnvoySpacing.medium1),
                             ),
-                            showDragHandle: true,
-                            builder: (context) {
-                              return const LearnFilterWidget();
-                            });
+                          ),
+                          showDragHandle: true,
+                          builder: (context) {
+                            return const LearnFilterWidget();
+                          },
+                        );
                       },
                       child: Container(
-                          height: EnvoySpacing.medium3,
-                          width: EnvoySpacing.medium3,
-                          decoration: const BoxDecoration(
-                              color: EnvoyColors.surface2,
-                              shape: BoxShape.circle),
-                          child: Padding(
-                            padding: const EdgeInsets.all(EnvoySpacing.xs),
-                            child: EnvoyIcon(
-                              EnvoyIcons.filter,
-                              color: isDefaultFilterAndSorting
-                                  ? EnvoyColors.textTertiary
-                                  : EnvoyColors.accentPrimary,
-                            ),
-                          )),
+                        height: EnvoySpacing.medium3,
+                        width: EnvoySpacing.medium3,
+                        decoration: const BoxDecoration(
+                          color: EnvoyColors.surface2,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(EnvoySpacing.xs),
+                          child: EnvoyIcon(
+                            EnvoyIcons.filter,
+                            color: isDefaultFilterAndSorting
+                                ? EnvoyColors.textTertiary
+                                : EnvoyColors.accentPrimary,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -179,83 +191,96 @@ class _LearnCardState extends ConsumerState<LearnCard> {
                 videos.isNotEmpty &&
                 isDeviceFilterNotEmpty)
               SliverToBoxAdapter(
-                  child: Padding(
-                padding: const EdgeInsets.only(
+                child: Padding(
+                  padding: const EdgeInsets.only(
                     bottom: EnvoySpacing.medium2,
                     left: EnvoySpacing.medium1,
-                    right: EnvoySpacing.medium1),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                      child: Text(
-                        S().learning_center_title_video,
-                        style: EnvoyTypography.subheading
-                            .copyWith(color: EnvoyColors.textPrimary),
+                    right: EnvoySpacing.medium1,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: EnvoySpacing.medium1,
+                        ),
+                        child: Text(
+                          S().learning_center_title_video,
+                          style: EnvoyTypography.subheading.copyWith(
+                            color: EnvoyColors.textPrimary,
+                          ),
+                        ),
                       ),
-                    ),
-                    SizedBox(
+                      SizedBox(
                         height: videoImageHeight + videoInfoHeight,
                         child: ListView.builder(
-                            controller: _videoScrollController,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: videos.length,
-                            itemBuilder: (context, index) {
-                              Video video = videos[index];
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                    right: EnvoySpacing.small),
-                                child: VideoCard(
-                                  video: video,
-                                ),
-                              );
-                            })),
-                  ],
+                          controller: _videoScrollController,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: videos.length,
+                          itemBuilder: (context, index) {
+                            Video video = videos[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                right: EnvoySpacing.small,
+                              ),
+                              child: VideoCard(video: video),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              )),
+              ),
             if (learnFilterState.contains(LearnFilters.blogs) &&
                 blogs.isNotEmpty &&
                 isDeviceFilterNotEmpty)
               SliverToBoxAdapter(
-                  child: Padding(
-                padding: const EdgeInsets.only(
-                    left: EnvoySpacing.medium1, right: EnvoySpacing.medium1),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                      child: Text(
-                        S().learning_center_title_blog,
-                        style: EnvoyTypography.subheading
-                            .copyWith(color: EnvoyColors.textPrimary),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: EnvoySpacing.medium1,
+                    right: EnvoySpacing.medium1,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: EnvoySpacing.medium1,
+                        ),
+                        child: Text(
+                          S().learning_center_title_blog,
+                          style: EnvoyTypography.subheading.copyWith(
+                            color: EnvoyColors.textPrimary,
+                          ),
+                        ),
                       ),
-                    ),
-                    SizedBox(
+                      SizedBox(
                         height: 270.0,
                         child: ListView.builder(
-                            controller: _blogScrollController,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: blogs.length,
-                            itemBuilder: (context, index) {
-                              BlogPost blogPost = blogs[index];
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                    right: EnvoySpacing.small),
-                                child: BlogPostWidget(
-                                    blog: blogPost,
-                                    onTap: () {
-                                      context.go(ROUTE_LEARN_BLOG,
-                                          extra: blogPost);
-                                    }),
-                              );
-                            })),
-                  ],
+                          controller: _blogScrollController,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: blogs.length,
+                          itemBuilder: (context, index) {
+                            BlogPost blogPost = blogs[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                right: EnvoySpacing.small,
+                              ),
+                              child: BlogPostWidget(
+                                blog: blogPost,
+                                onTap: () {
+                                  context.go(ROUTE_LEARN_BLOG, extra: blogPost);
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              )),
+              ),
             if (learnFilterState.contains(LearnFilters.faqs) &&
                 faqs.isNotEmpty &&
                 isDeviceFilterNotEmpty)
@@ -267,30 +292,30 @@ class _LearnCardState extends ConsumerState<LearnCard> {
               ),
             if (!isAllEmpty)
               const SliverToBoxAdapter(
-                  child: Padding(
-                padding: EdgeInsets.only(
-                  top: EnvoySpacing.large2,
-                  bottom: EnvoySpacing.large2,
-                  left: EnvoySpacing.small,
-                  right: EnvoySpacing.small,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: EnvoySpacing.large2,
+                    bottom: EnvoySpacing.large2,
+                    left: EnvoySpacing.small,
+                    right: EnvoySpacing.small,
+                  ),
+                  child: Brandmark(logoSize: 32, style: BrandmarkStyle.endMark),
                 ),
-                child: Brandmark(logoSize: 32, style: BrandmarkStyle.endMark),
-              )),
+              ),
             if (isAllEmpty)
               SliverFillRemaining(
                 child: Center(
                   child: Text(
                     S().learning_center_filterEmpty_subheading,
-                    style: EnvoyTypography.body
-                        .copyWith(color: EnvoyColors.textTertiary),
+                    style: EnvoyTypography.body.copyWith(
+                      color: EnvoyColors.textTertiary,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
               ),
             const SliverToBoxAdapter(
-              child: SizedBox(
-                height: EnvoySpacing.medium3,
-              ),
+              child: SizedBox(height: EnvoySpacing.medium3),
             ),
           ],
         ),

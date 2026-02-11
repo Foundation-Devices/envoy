@@ -49,8 +49,9 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                    vertical: EnvoySpacing.medium1,
-                    horizontal: EnvoySpacing.small),
+                  vertical: EnvoySpacing.medium1,
+                  horizontal: EnvoySpacing.small,
+                ),
                 child: IconButton(
                   icon: const Icon(Icons.close),
                   onPressed: () {
@@ -60,38 +61,38 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
               ),
             ),
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium3),
+              padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.medium3,
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   FutureBuilder<String?>(
-                      future: EnvoySeed().get(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          String seed = snapshot.data!;
+                    future: EnvoySeed().get(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        String seed = snapshot.data!;
 
-                          // Add a note to query the user for passphrase on other device
-                          if (hasPassphrase) {
-                            seed = seed + (" passphrase"); // TODO: FIGMA
-                          }
-
-                          return EnvoyQR(
-                            data: seed,
-                            dimension: 200,
-                          );
-                        } else {
-                          return const SizedBox.shrink();
+                        // Add a note to query the user for passphrase on other device
+                        if (hasPassphrase) {
+                          seed = seed + (" passphrase"); // TODO: FIGMA
                         }
-                      }),
+
+                        return EnvoyQR(data: seed, dimension: 200);
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
                     child: Text(
                       S().export_seed_modal_QR_code_subheading,
                       textAlign: TextAlign.center,
-                      style: EnvoyTypography.info
-                          .copyWith(color: EnvoyColors.textPrimary),
+                      style: EnvoyTypography.info.copyWith(
+                        color: EnvoyColors.textPrimary,
+                      ),
                     ),
                   ),
                   if (hasPassphrase)
@@ -100,8 +101,9 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                       child: Text(
                         S().export_seed_modal_QR_code_subheading_passphrase,
                         textAlign: TextAlign.center,
-                        style: EnvoyTypography.info
-                            .copyWith(color: EnvoyColors.textTertiary),
+                        style: EnvoyTypography.info.copyWith(
+                          color: EnvoyColors.textTertiary,
+                        ),
                       ),
                     ),
                 ],
@@ -109,8 +111,9 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(
-                  horizontal: EnvoySpacing.medium2,
-                  vertical: EnvoySpacing.medium1),
+                horizontal: EnvoySpacing.medium2,
+                vertical: EnvoySpacing.medium1,
+              ),
               child: Column(
                 children: [
                   EnvoyButton(
@@ -123,18 +126,20 @@ class _ExportSeedModalQrCodeState extends State<ExportSeedModalQrCode> {
                           List<String> seed = seedString!.split(" ");
 
                           await showEnvoyDialog(
-                              context: context,
-                              dialog: ExportSeedModalWords(
-                                seed: seed,
-                                hasPassphrase: hasPassphrase,
-                              ));
+                            context: context,
+                            dialog: ExportSeedModalWords(
+                              seed: seed,
+                              hasPassphrase: hasPassphrase,
+                            ),
+                          );
                         }
                       });
                     },
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.medium1),
+                      vertical: EnvoySpacing.medium1,
+                    ),
                     child: EnvoyButton(
                       S().component_done,
                       type: EnvoyButtonTypes.primaryModal,

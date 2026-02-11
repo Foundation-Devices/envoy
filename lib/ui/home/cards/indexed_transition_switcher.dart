@@ -11,13 +11,14 @@ import 'package:flutter/widgets.dart';
 /// animations whilst maintaining their state.
 class IndexedTransitionSwitcher extends StatefulWidget {
   /// Creates an [IndexedTransitionSwitcher].
-  const IndexedTransitionSwitcher(
-      {super.key,
-      required this.index,
-      required this.children,
-      required this.transitionBuilder,
-      this.reverse = false,
-      this.duration = const Duration(milliseconds: 250)});
+  const IndexedTransitionSwitcher({
+    super.key,
+    required this.index,
+    required this.children,
+    required this.transitionBuilder,
+    this.reverse = false,
+    this.duration = const Duration(milliseconds: 250),
+  });
 
   /// The index of the child to show.
   final int index;
@@ -30,8 +31,11 @@ class IndexedTransitionSwitcher extends StatefulWidget {
   /// When the index changes, the new child will animate in with the primary
   /// animation, and the old widget will animate out with the secondary
   /// animation.
-  final Widget Function(Widget child, Animation<double> primaryAnimation,
-      Animation<double> secondaryAnimation) transitionBuilder;
+  final Widget Function(
+    Widget child,
+    Animation<double> primaryAnimation,
+    Animation<double> secondaryAnimation,
+  ) transitionBuilder;
 
   /// The duration of the transition.
   final Duration duration;
@@ -88,31 +92,34 @@ class IndexedTransitionSwitcherState extends State<IndexedTransitionSwitcher>
         newChild.secondaryController.reverse(from: 1);
         // Animate out the old child and unstage it when the animation is complete
         oldChild.secondaryController.value = 0;
-        oldChild.primaryController
-            .reverse(from: 1)
-            .then((value) => setState(() {
-                  oldChild.onStage = false;
-                  oldChild.primaryController.reset();
-                  oldChild.secondaryController.reset();
-                }));
+        oldChild.primaryController.reverse(from: 1).then(
+              (value) => setState(() {
+                oldChild.onStage = false;
+                oldChild.primaryController.reset();
+                oldChild.secondaryController.reset();
+              }),
+            );
       } else {
         // Animate in the new child
         newChild.secondaryController.value = 0;
         newChild.primaryController.forward(from: 0);
         // Animate out the old child and unstage it when the animation is complete
         oldChild.primaryController.value = 1;
-        oldChild.secondaryController.forward().then((value) => setState(() {
-              oldChild.onStage = false;
-              oldChild.primaryController.reset();
-              oldChild.secondaryController.reset();
-            }));
+        oldChild.secondaryController.forward().then(
+              (value) => setState(() {
+                oldChild.onStage = false;
+                oldChild.primaryController.reset();
+                oldChild.secondaryController.reset();
+              }),
+            );
       }
 
       // Reorder the stack and set onStage to true for the new child
       _childEntries.remove(newChild);
       _childEntries.remove(oldChild);
-      _childEntries
-          .addAll(widget.reverse ? [newChild, oldChild] : [oldChild, newChild]);
+      _childEntries.addAll(
+        widget.reverse ? [newChild, oldChild] : [oldChild, newChild],
+      );
       newChild.onStage = true;
     }
   }
@@ -130,13 +137,17 @@ class IndexedTransitionSwitcherState extends State<IndexedTransitionSwitcher>
     );
     // Create the page entry
     return _ChildEntry(
-        key: child.key!,
-        index: index,
-        primaryController: primaryController,
-        secondaryController: secondaryController,
-        transitionChild: widget.transitionBuilder(
-            child, primaryController, secondaryController),
-        onStage: widget.index == index);
+      key: child.key!,
+      index: index,
+      primaryController: primaryController,
+      secondaryController: secondaryController,
+      transitionChild: widget.transitionBuilder(
+        child,
+        primaryController,
+        secondaryController,
+      ),
+      onStage: widget.index == index,
+    );
   }
 
   @override
@@ -153,24 +164,27 @@ class IndexedTransitionSwitcherState extends State<IndexedTransitionSwitcher>
         alignment: Alignment.center,
         fit: StackFit.expand,
         children: _childEntries
-            .map<Widget>((entry) => Offstage(
-                  key: entry.key,
-                  offstage: !entry.onStage,
-                  child: entry.transitionChild,
-                ))
+            .map<Widget>(
+              (entry) => Offstage(
+                key: entry.key,
+                offstage: !entry.onStage,
+                child: entry.transitionChild,
+              ),
+            )
             .toList(),
       );
 }
 
 /// Internal representation of a child.
 class _ChildEntry {
-  _ChildEntry(
-      {required this.index,
-      required this.key,
-      required this.primaryController,
-      required this.secondaryController,
-      required this.transitionChild,
-      required this.onStage});
+  _ChildEntry({
+    required this.index,
+    required this.key,
+    required this.primaryController,
+    required this.secondaryController,
+    required this.transitionChild,
+    required this.onStage,
+  });
 
   /// The child index.
   final int index;

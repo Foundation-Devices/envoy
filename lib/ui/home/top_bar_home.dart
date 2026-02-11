@@ -41,8 +41,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     Future.delayed(const Duration(milliseconds: 10)).then((_) {
       if (context.mounted) {
         _setOptionWidgetsForTabWidgets(
-            // ignore: use_build_context_synchronously
-            GoRouter.of(context).routerDelegate.currentConfiguration.fullPath);
+          // ignore: use_build_context_synchronously
+          GoRouter.of(context).routerDelegate.currentConfiguration.fullPath,
+        );
       }
     });
   }
@@ -58,69 +59,59 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     bool inEditMode =
         ref.watch(spendEditModeProvider) != SpendOverlayContext.hidden;
 
-    Widget rightAction = homeShellState?.rightAction ??
-        const SizedBox(
-          height: 55,
-          width: 55,
-        );
-    HomePageBackgroundState homePageDropState =
-        ref.watch(homePageBackgroundProvider);
+    Widget rightAction =
+        homeShellState?.rightAction ?? const SizedBox(height: 55, width: 55);
+    HomePageBackgroundState homePageDropState = ref.watch(
+      homePageBackgroundProvider,
+    );
     String path = ref.watch(routePathProvider);
     bool backDropEnabled = homePageDropState != HomePageBackgroundState.hidden;
 
     String homePageTitle = ref.watch(homePageTitleProvider);
 
-    ref.listen(
-      homePageBackgroundProvider,
-      (previous, next) {
-        if (context.mounted) {
-          _setOptionWidgetsForTabWidgets(
-              // ignore: use_build_context_synchronously
-              GoRouter.of(context)
-                  .routerDelegate
-                  .currentConfiguration
-                  .fullPath);
-        }
+    ref.listen(homePageBackgroundProvider, (previous, next) {
+      if (context.mounted) {
+        _setOptionWidgetsForTabWidgets(
+          // ignore: use_build_context_synchronously
+          GoRouter.of(context).routerDelegate.currentConfiguration.fullPath,
+        );
+      }
 
-        if (previous != HomePageBackgroundState.hidden &&
-            next == HomePageBackgroundState.hidden) {
-          final paths = mainRouter.routerDelegate.currentConfiguration.fullPath;
-          if (homeTabRoutes.contains(paths)) {
-            ref.read(homePageTitleProvider.notifier).state = "";
-          }
-        }
-      },
-    );
-    ref.listen(
-      routePathProvider,
-      (previous, nextPath) {
-        _setOptionWidgetsForTabWidgets(nextPath);
-        if (homeTabRoutes.contains(nextPath)) {
+      if (previous != HomePageBackgroundState.hidden &&
+          next == HomePageBackgroundState.hidden) {
+        final paths = mainRouter.routerDelegate.currentConfiguration.fullPath;
+        if (homeTabRoutes.contains(paths)) {
           ref.read(homePageTitleProvider.notifier).state = "";
-          ref.read(hideBottomNavProvider.notifier).state = false;
         }
-        if (modalModeRoutes.contains(nextPath)) {
-          ref.read(hideBottomNavProvider.notifier).state = true;
-          if (nextPath == ROUTE_BUY_BITCOIN) {
-            ref.read(buyBTCPageProvider.notifier).state = true;
-          }
-        } else {
-          ref.read(hideBottomNavProvider.notifier).state = false;
+      }
+    });
+    ref.listen(routePathProvider, (previous, nextPath) {
+      _setOptionWidgetsForTabWidgets(nextPath);
+      if (homeTabRoutes.contains(nextPath)) {
+        ref.read(homePageTitleProvider.notifier).state = "";
+        ref.read(hideBottomNavProvider.notifier).state = false;
+      }
+      if (modalModeRoutes.contains(nextPath)) {
+        ref.read(hideBottomNavProvider.notifier).state = true;
+        if (nextPath == ROUTE_BUY_BITCOIN) {
+          ref.read(buyBTCPageProvider.notifier).state = true;
         }
-        if (hideAppBarRoutes.contains(nextPath)) {
-          ref.read(fullscreenHomePageProvider.notifier).state = true;
-        } else {
-          ref.read(fullscreenHomePageProvider.notifier).state = false;
-        }
-        if (nextPath == ROUTE_ACCOUNTS_HOME) {
-          ref.read(backupPageProvider.notifier).state = false;
-          ref.read(coinSelectionStateProvider.notifier).reset();
-          ref.read(spendEditModeProvider.notifier).state =
-              SpendOverlayContext.hidden;
-          clearSpendState(ProviderScope.containerOf(context));
-        }
-      },
-    );
+      } else {
+        ref.read(hideBottomNavProvider.notifier).state = false;
+      }
+      if (hideAppBarRoutes.contains(nextPath)) {
+        ref.read(fullscreenHomePageProvider.notifier).state = true;
+      } else {
+        ref.read(fullscreenHomePageProvider.notifier).state = false;
+      }
+      if (nextPath == ROUTE_ACCOUNTS_HOME) {
+        ref.read(backupPageProvider.notifier).state = false;
+        ref.read(coinSelectionStateProvider.notifier).reset();
+        ref.read(spendEditModeProvider.notifier).state =
+            SpendOverlayContext.hidden;
+        clearSpendState(ProviderScope.containerOf(context));
+      }
+    });
 
     if (_showBackArrow(path)) {
       state = HamburgerState.back;
@@ -214,54 +205,60 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
             ? AbsorbPointer(
                 absorbing: false,
                 child: AnimatedSwitcher(
-                    duration: _animationsDuration, child: rightAction),
+                  duration: _animationsDuration,
+                  child: rightAction,
+                ),
               )
             : Opacity(
                 opacity: (inEditMode || backDropEnabled) ? 0.0 : 1.0,
                 child: AnimatedSwitcher(
-                    duration: _animationsDuration,
-                    child: AbsorbPointer(
-                        absorbing: (backDropEnabled || modalShown) &&
-                            !buyBTCRightAction,
-                        child: AnimatedOpacity(
-                            opacity: (backDropEnabled || modalShown) &&
-                                    !buyBTCRightAction
-                                ? 0.0
-                                : 1.0,
-                            duration: _animationsDuration,
-                            child: AnimatedSwitcher(
-                                duration: _animationsDuration,
-                                child: backDropEnabled || optionsShown
-                                    ? GestureDetector(
-                                        behavior: HitTestBehavior.opaque,
-                                        onTap: () {
-                                          if (optionsShown) {
-                                            ref
-                                                .read(
-                                                    homePageOptionsVisibilityProvider
-                                                        .notifier)
-                                                .state = false;
-                                          } else {
-                                            if (backDropEnabled) {
-                                              ref
-                                                  .read(
-                                                      homePageBackdropModeProvider
-                                                          .notifier)
-                                                  .state = false;
-                                            }
-                                          }
-                                        },
-                                        child: Container(
-                                          height: 55,
-                                          width: 55,
-                                          color: Colors.transparent,
-                                          child: const Icon(
-                                            Icons.close,
-                                          ),
-                                        ),
-                                      )
-                                    : rightAction)))),
-              )
+                  duration: _animationsDuration,
+                  child: AbsorbPointer(
+                    absorbing:
+                        (backDropEnabled || modalShown) && !buyBTCRightAction,
+                    child: AnimatedOpacity(
+                      opacity:
+                          (backDropEnabled || modalShown) && !buyBTCRightAction
+                              ? 0.0
+                              : 1.0,
+                      duration: _animationsDuration,
+                      child: AnimatedSwitcher(
+                        duration: _animationsDuration,
+                        child: backDropEnabled || optionsShown
+                            ? GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  if (optionsShown) {
+                                    ref
+                                        .read(
+                                          homePageOptionsVisibilityProvider
+                                              .notifier,
+                                        )
+                                        .state = false;
+                                  } else {
+                                    if (backDropEnabled) {
+                                      ref
+                                          .read(
+                                            homePageBackdropModeProvider
+                                                .notifier,
+                                          )
+                                          .state = false;
+                                    }
+                                  }
+                                },
+                                child: Container(
+                                  height: 55,
+                                  width: 55,
+                                  color: Colors.transparent,
+                                  child: const Icon(Icons.close),
+                                ),
+                              )
+                            : rightAction,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
       ],
     );
   }
@@ -330,8 +327,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   }
 
   void _setOptionWidgetsForTabWidgets(String nextPath) {
-    StateController<HomeShellOptions?> optionsState =
-        ref.read(homeShellOptionsProvider.notifier);
+    StateController<HomeShellOptions?> optionsState = ref.read(
+      homeShellOptionsProvider.notifier,
+    );
 
     switch (nextPath) {
       case ROUTE_DEVICES:
@@ -351,9 +349,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
               height: 55,
               width: 55,
               color: Colors.transparent,
-              child: const Icon(
-                Icons.add,
-              ),
+              child: const Icon(Icons.add),
             ),
           ),
           optionsWidget: Container(),
@@ -379,9 +375,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
               height: 55,
               width: 55,
               color: Colors.transparent,
-              child: const Icon(
-                Icons.add,
-              ),
+              child: const Icon(Icons.add),
             ),
           ),
           optionsWidget: Container(),
@@ -409,19 +403,18 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
   }
 }
 
-enum HamburgerState {
-  idle,
-  upward,
-  back,
-}
+enum HamburgerState { idle, upward, back }
 
 //animated hamburger menu
 class HamburgerMenu extends ConsumerStatefulWidget {
   final HamburgerState iconState;
   final GestureTapCallback onPressed;
 
-  const HamburgerMenu(
-      {super.key, required this.iconState, required this.onPressed});
+  const HamburgerMenu({
+    super.key,
+    required this.iconState,
+    required this.onPressed,
+  });
 
   @override
   ConsumerState<HamburgerMenu> createState() => _HamburgerMenuState();
@@ -439,8 +432,10 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
   }
 
   Future<void> _loadMenu() async {
-    _riveFile = await rive.File.asset('assets/hamburger.riv',
-        riveFactory: rive.Factory.rive);
+    _riveFile = await rive.File.asset(
+      'assets/hamburger.riv',
+      riveFactory: rive.Factory.rive,
+    );
     _controller = rive.RiveWidgetController(
       _riveFile!,
       stateMachineSelector: rive.StateMachineSelector.byName('statemachine'),

@@ -17,20 +17,26 @@ class PpNewSeedPage extends StatelessWidget {
       clipArt: Image.asset("assets/pp_new_seed.png"),
       text: [
         OnboardingText(
-            header: S().envoy_pp_new_seed_heading,
-            text: S().envoy_pp_new_seed_subheading),
+          header: S().envoy_pp_new_seed_heading,
+          text: S().envoy_pp_new_seed_subheading,
+        ),
       ],
       navigationDots: 3,
       navigationDotsIndex: 0,
       rightFunction: null,
       buttons: [
         OnboardingButton(
-            label: S().component_continue,
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return const PpNewSeedBackupPage();
-              }));
-            }),
+          label: S().component_continue,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return const PpNewSeedBackupPage();
+                },
+              ),
+            );
+          },
+        ),
       ],
     );
   }

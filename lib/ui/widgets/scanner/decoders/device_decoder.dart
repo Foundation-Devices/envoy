@@ -18,8 +18,11 @@ class DeviceDecoder extends ScannerDecoder {
   //to avoid sending invalid code through onScan when scanning UR codes
   String previousCode = "";
 
-  DeviceDecoder(
-      {required this.onScan, required this.pairPayloadDecoder, this.onXidScan});
+  DeviceDecoder({
+    required this.onScan,
+    required this.pairPayloadDecoder,
+    this.onXidScan,
+  });
 
   @override
   Future<void> onDetectBarCode(Barcode barCode) async {
@@ -42,8 +45,9 @@ class DeviceDecoder extends ScannerDecoder {
           });
       }
       primeQlPayloadDecoder!.onDetectBarCode(barCode);
-      progressCallBack
-          ?.call(primeQlPayloadDecoder!.urDecoder.urDecoder.progress);
+      progressCallBack?.call(
+        primeQlPayloadDecoder!.urDecoder.urDecoder.progress,
+      );
     } else if (barCode.code?.toLowerCase().startsWith("ur:") == true) {
       pairPayloadDecoder.onDetectBarCode(barCode);
       progressCallBack?.call(pairPayloadDecoder.urDecoder.urDecoder.progress);

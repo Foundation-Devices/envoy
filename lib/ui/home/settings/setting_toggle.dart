@@ -15,12 +15,15 @@ class SettingToggle extends StatefulWidget {
   final Function()? onEnabled;
   final Function()? onDisabled;
 
-  const SettingToggle(this.getter, this.setter,
-      {super.key,
-      this.delay = 0,
-      this.enabled = true,
-      this.onEnabled,
-      this.onDisabled});
+  const SettingToggle(
+    this.getter,
+    this.setter, {
+    super.key,
+    this.delay = 0,
+    this.enabled = true,
+    this.onEnabled,
+    this.onDisabled,
+  });
 
   @override
   State<SettingToggle> createState() => _SettingToggleState();
@@ -34,27 +37,28 @@ class _SettingToggleState extends State<SettingToggle> {
     return IgnorePointer(
       ignoring: !widget.enabled,
       child: EnvoySwitch(
-          value: widget.getter(),
-          onChanged: (enabled) {
-            if (enabled) {
-              widget.onEnabled?.call();
-            } else {
-              widget.onDisabled?.call();
-            }
+        value: widget.getter(),
+        onChanged: (enabled) {
+          if (enabled) {
+            widget.onEnabled?.call();
+          } else {
+            widget.onDisabled?.call();
+          }
 
-            if (widget.delay > 0) {
-              _timer?.cancel();
-              _timer = Timer(Duration(seconds: widget.delay), () {
-                setState(() {
-                  widget.setter(enabled);
-                });
-              });
-            } else {
+          if (widget.delay > 0) {
+            _timer?.cancel();
+            _timer = Timer(Duration(seconds: widget.delay), () {
               setState(() {
                 widget.setter(enabled);
               });
-            }
-          }),
+            });
+          } else {
+            setState(() {
+              widget.setter(enabled);
+            });
+          }
+        },
+      ),
     );
   }
 }
@@ -63,11 +67,7 @@ class EnvoySwitch extends StatelessWidget {
   final bool value;
   final ValueChanged<bool>? onChanged;
 
-  const EnvoySwitch({
-    super.key,
-    required this.value,
-    required this.onChanged,
-  });
+  const EnvoySwitch({super.key, required this.value, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
