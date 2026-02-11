@@ -281,7 +281,7 @@ class Devices extends ChangeNotifier {
     if (device.type == DeviceType.passportPrime) {
       final qlConnection = device.qlConnection();
       await qlConnection.disconnect();
-      qlConnection.dispose();
+      BluetoothChannel().removeDeviceChannel(qlConnection.deviceId);
       if (Platform.isIOS) {
         await BluetoothChannel().removeAccessory(qlConnection.deviceId);
       }

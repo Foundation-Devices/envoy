@@ -256,34 +256,6 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                                 color: NewEnvoyColor.contentSecondary),
                           ),
                         ),
-                      Divider(
-                        color: NewEnvoyColor.neutral200,
-                        height: 1,
-                      ),
-                      ListTile(
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.xs,
-                        ),
-                        dense: true,
-                        minLeadingWidth: 0,
-                        leading: EnvoyIcon(
-                          EnvoyIcons.chain,
-                          color: deviceRemovedFromHostSystemSettings
-                              ? NewEnvoyColor.contentDisabled
-                              : Colors.black,
-                          size: EnvoyIconSize.small,
-                        ),
-                        horizontalTitleGap: EnvoySpacing.xs,
-                        title: Text(
-                          S().manage_device_details_devicePaired,
-                          style: listItemTitleTheme,
-                        ),
-                        trailing: Text(
-                          timeago.format(widget.device.datePaired,
-                              locale: activeLocale.languageCode),
-                          style: listItemTrailingTheme,
-                        ),
-                      ),
                       if (widget.device.type == DeviceType.passportPrime)
                         Divider(
                           color: NewEnvoyColor.neutral200,
