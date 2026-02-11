@@ -211,7 +211,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
           Row(
             children: [
               EnvoyFilterChip(
-                icon: Icons.call_made,
+                icon: EnvoyIcons.arrow_up_right,
                 text: S().activity_sent,
                 selected:
                     _filterState?.contains(TransactionFilters.sent) ?? false,
@@ -230,7 +230,7 @@ class _TxFilterWidgetState extends ConsumerState<TxFilterWidget> {
               ),
               const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
               EnvoyFilterChip(
-                icon: Icons.call_received,
+                icon: EnvoyIcons.receive,
                 selected: _filterState?.contains(TransactionFilters.received) ??
                     false,
                 text: S().activity_received,
@@ -447,13 +447,14 @@ class CheckBoxFilterItem extends StatelessWidget {
 
   final String text;
   final GestureTapCallback onTap;
+  final String? subtitle;
 
-  const CheckBoxFilterItem({
-    super.key,
-    required this.checked,
-    required this.text,
-    required this.onTap,
-  });
+  const CheckBoxFilterItem(
+      {super.key,
+      required this.checked,
+      required this.text,
+      required this.onTap,
+      this.subtitle});
 
   @override
   Widget build(BuildContext context) {
@@ -482,12 +483,23 @@ class CheckBoxFilterItem extends StatelessWidget {
                     ),
             ),
             const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-            Text(
-              text,
-              style: EnvoyTypography.body.copyWith(
-                color: new_color_scheme.EnvoyColors.textPrimary,
-              ),
-            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  text,
+                  style: EnvoyTypography.body.copyWith(
+                      color: new_color_scheme.EnvoyColors.textPrimary),
+                ),
+                if (subtitle != null)
+                  Text(
+                    subtitle!,
+                    style: EnvoyTypography.info.copyWith(
+                        color: new_color_scheme.EnvoyColors.textTertiary),
+                  ),
+              ],
+            )
           ],
         ),
       ),
@@ -499,12 +511,26 @@ class SlidingToggle extends StatefulWidget {
   final String value;
   final Duration duration;
   final Function(String value) onChange;
+  final String? firstValue;
+  final String? secondValue;
+  final String? firstLabel;
+  final String? secondLabel;
+  final EnvoyIcons? firstIcon;
+  final EnvoyIcons? secondIcon;
+  final Color? backgroundColor;
 
   const SlidingToggle({
     super.key,
     required this.value,
     required this.onChange,
     this.duration = const Duration(milliseconds: 250),
+    this.firstValue,
+    this.secondValue,
+    this.firstLabel,
+    this.secondLabel,
+    this.firstIcon,
+    this.secondIcon,
+    this.backgroundColor,
   });
 
   @override
@@ -515,7 +541,13 @@ class _SlidingToggleState extends State<SlidingToggle>
     with SingleTickerProviderStateMixin {
   final textTheme = EnvoyTypography.info;
 
-  String value = "Tx"; // TODO: FIGMA
+  late String value;
+  late String _firstValue;
+  late String _secondValue;
+  late String _firstOptionText;
+  late String _secondOptionText;
+  late EnvoyIcons _firstIcon;
+  late EnvoyIcons _secondIcon;
 
   final Duration _duration = const Duration(milliseconds: 150);
   late AnimationController _animationController;
@@ -524,14 +556,20 @@ class _SlidingToggleState extends State<SlidingToggle>
   late Animation<Color?> _activityIconColorAnimation;
   late Animation<Color?> _tagsIconColorAnimation;
   final Color _iconDisabledColor = new_color_scheme.EnvoyColors.textTertiary;
-  final String _firstOptionText = S().coincontrol_switchActivity;
-  final String _secondOptionText = S().coincontrol_switchTags;
-  late String _currentOptionText = _firstOptionText;
+  late String _currentOptionText;
   double _maxOptionWidth = 0.0;
 
   @override
   void initState() {
     super.initState();
+    // Use custom values or fall back to defaults
+    _firstValue = widget.firstValue ?? "Tx";
+    _secondValue = widget.secondValue ?? "Coins";
+    _firstOptionText = widget.firstLabel ?? S().coincontrol_switchActivity;
+    _secondOptionText = widget.secondLabel ?? S().coincontrol_switchTags;
+    _firstIcon = widget.firstIcon ?? EnvoyIcons.history;
+    _secondIcon = widget.secondIcon ?? EnvoyIcons.tag;
+    _currentOptionText = _firstOptionText;
     value = widget.value;
 
     _animationController = AnimationController(
@@ -597,7 +635,7 @@ class _SlidingToggleState extends State<SlidingToggle>
       });
     });
 
-    if (value == "Tx") {
+    if (value == _firstValue) {
       if (mounted) _animationController.reverse();
     } else {
       if (mounted) {
@@ -656,12 +694,11 @@ class _SlidingToggleState extends State<SlidingToggle>
       builder: (context, constraints) {
         return GestureDetector(
           onTap: () async {
-            value = value == "Tx" ? "Coins" : "Tx"; // TODO: FIGMA
+            value = value == _firstValue ? _secondValue : _firstValue;
             if (_animationController.isAnimating) {
               _animationController.stop();
             }
-            if (value == "Tx") {
-              // TODO: FIGMA
+            if (value == _firstValue) {
               _animationController.reverse();
             } else {
               _animationController.forward();
@@ -673,7 +710,8 @@ class _SlidingToggleState extends State<SlidingToggle>
             width: _maxOptionWidth,
             child: Container(
               decoration: BoxDecoration(
-                color: new_color_scheme.EnvoyColors.solidWhite,
+                color: widget.backgroundColor ??
+                    new_color_scheme.EnvoyColors.solidWhite,
                 borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
               ),
               child: Stack(
@@ -705,11 +743,11 @@ class _SlidingToggleState extends State<SlidingToggle>
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   EnvoyIcon(
-                                    value == "Tx"
-                                        ? EnvoyIcons.history
-                                        : EnvoyIcons.tag,
+                                    value == _firstValue
+                                        ? _firstIcon
+                                        : _secondIcon,
                                     size: EnvoyIconSize.small,
-                                    color: value == "Tx"
+                                    color: value == _firstValue
                                         ? _activityIconColorAnimation.value
                                         : _tagsIconColorAnimation.value,
                                   ),
@@ -743,9 +781,9 @@ class _SlidingToggleState extends State<SlidingToggle>
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: const EdgeInsets.only(left: EnvoySpacing.small),
-                      child: value == "Coins"
+                      child: value == _secondValue
                           ? EnvoyIcon(
-                              EnvoyIcons.history,
+                              _firstIcon,
                               size: EnvoyIconSize.small,
                               color: _activityIconColorAnimation.value,
                             )
@@ -764,9 +802,9 @@ class _SlidingToggleState extends State<SlidingToggle>
                     ),
                     child: Builder(
                       builder: (context) {
-                        return value == "Tx"
+                        return value == _firstValue
                             ? EnvoyIcon(
-                                EnvoyIcons.tag,
+                                _secondIcon,
                                 size: EnvoyIconSize.small,
                                 color: _tagsIconColorAnimation.value,
                               )
@@ -791,7 +829,7 @@ class _SlidingToggleState extends State<SlidingToggle>
       if (_animationController.isAnimating) {
         _animationController.stop();
       }
-      if (value == "Tx") {
+      if (value == _firstValue) {
         _animationController.reverse();
       } else {
         _animationController.forward();

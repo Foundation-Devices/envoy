@@ -14,16 +14,15 @@ class SettingToggle extends StatefulWidget {
   final bool enabled;
   final Function()? onEnabled;
   final Function()? onDisabled;
+  final String? semanticsLabel;
 
-  const SettingToggle(
-    this.getter,
-    this.setter, {
-    super.key,
-    this.delay = 0,
-    this.enabled = true,
-    this.onEnabled,
-    this.onDisabled,
-  });
+  const SettingToggle(this.getter, this.setter,
+      {super.key,
+      this.delay = 0,
+      this.enabled = true,
+      this.onEnabled,
+      this.onDisabled,
+      this.semanticsLabel});
 
   @override
   State<SettingToggle> createState() => _SettingToggleState();
@@ -34,30 +33,38 @@ class _SettingToggleState extends State<SettingToggle> {
 
   @override
   Widget build(BuildContext context) {
-    return IgnorePointer(
-      ignoring: !widget.enabled,
-      child: EnvoySwitch(
-        value: widget.getter(),
-        onChanged: (enabled) {
-          if (enabled) {
-            widget.onEnabled?.call();
-          } else {
-            widget.onDisabled?.call();
-          }
+    final id = widget.semanticsLabel != null
+        ? '${widget.semanticsLabel}-${widget.getter()}'
+        : null;
+    return Semantics(
+      identifier: id,
+      container: true,
+      excludeSemantics: true,
+      child: IgnorePointer(
+        ignoring: !widget.enabled,
+        child: EnvoySwitch(
+            value: widget.getter(),
+            semanticsLabel: widget.semanticsLabel,
+            onChanged: (enabled) {
+              if (enabled) {
+                widget.onEnabled?.call();
+              } else {
+                widget.onDisabled?.call();
+              }
 
-          if (widget.delay > 0) {
-            _timer?.cancel();
-            _timer = Timer(Duration(seconds: widget.delay), () {
-              setState(() {
-                widget.setter(enabled);
-              });
-            });
-          } else {
-            setState(() {
-              widget.setter(enabled);
-            });
-          }
-        },
+              if (widget.delay > 0) {
+                _timer?.cancel();
+                _timer = Timer(Duration(seconds: widget.delay), () {
+                  setState(() {
+                    widget.setter(enabled);
+                  });
+                });
+              } else {
+                setState(() {
+                  widget.setter(enabled);
+                });
+              }
+            }),
       ),
     );
   }
@@ -66,17 +73,30 @@ class _SettingToggleState extends State<SettingToggle> {
 class EnvoySwitch extends StatelessWidget {
   final bool value;
   final ValueChanged<bool>? onChanged;
+  final String? semanticsLabel;
 
-  const EnvoySwitch({super.key, required this.value, required this.onChanged});
+  const EnvoySwitch({
+    super.key,
+    required this.value,
+    required this.onChanged,
+    this.semanticsLabel,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoSwitch(
-      activeTrackColor: EnvoyColors.darkTeal,
-      thumbColor: EnvoyColors.whitePrint,
-      inactiveTrackColor: EnvoyColors.grey15,
-      value: value,
-      onChanged: onChanged,
+    final id = semanticsLabel != null ? '$semanticsLabel-$value' : null;
+    return Semantics(
+      identifier: id,
+      container: true,
+      toggled: value,
+      excludeSemantics: true,
+      child: CupertinoSwitch(
+        activeTrackColor: EnvoyColors.darkTeal,
+        thumbColor: EnvoyColors.whitePrint,
+        inactiveTrackColor: EnvoyColors.grey15,
+        value: value,
+        onChanged: onChanged,
+      ),
     );
   }
 }

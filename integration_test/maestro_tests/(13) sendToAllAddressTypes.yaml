@@ -1,0 +1,145 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+
+- tapOn: GH TEST ACC (#1)
+
+- tapOn: Send
+
+# cycle to sats if not already there
+# cycle order: sats → fiat → btc → sats
+
+# if on btc, tap once to get to sats
+- runFlow:
+    when:
+      visible:
+        id: "amount_display btc"
+    commands:
+      - tapOn:
+          id: "amount_display btc"
+
+# if on fiat, tap twice to get to sats (fiat → btc → sats)
+- runFlow:
+    when:
+      visible:
+        id: "amount_display fiat"
+    commands:
+      - tapOn:
+          id: "amount_display fiat"
+      - tapOn:
+          id: "amount_display btc"
+
+# refresh send
+- tapOn:
+    id: hamburger_menu
+- tapOn: Send
+
+# enter amount
+- tapOn: "1"
+- tapOn: "2"
+- tapOn: "3"
+- tapOn: "4"
+
+- tapOn: Enter address
+
+################### p2pkhAddress
+- inputText: "12rYgz414HBXdhhK72BkR9VHZSU23dqqG7"
+
+- tapOn: Back
+
+- tapOn: Confirm
+
+- assertVisible: |-
+    Check Transaction Details
+    Confirm the transaction details are correct before continuing.
+
+- tapOn:
+    id: envoy_icon_chevron_left
+
+# delete current address
+- longPressOn: Backspace
+
+#################### p2shAddress
+- inputText: "3BY19nUKCAkrnzrgRezJoekGv4AFzsTs2z"
+
+- tapOn: Back
+
+- tapOn: Confirm
+
+- assertVisible: |-
+    Check Transaction Details
+    Confirm the transaction details are correct before continuing.
+
+- tapOn:
+    id: envoy_icon_chevron_left
+
+# delete current address
+- longPressOn: Backspace
+
+################### p2wpkhAddress
+- inputText: "bc1qhrnucvul769yld6q09m8skwkp6zrecxhc00jcw"
+
+- tapOn: Back
+
+- tapOn: Confirm
+
+- assertVisible: |-
+    Check Transaction Details
+    Confirm the transaction details are correct before continuing.
+
+- tapOn:
+    id: envoy_icon_chevron_left
+
+# delete current address
+- longPressOn: Backspace
+
+################### p2trAddress
+- inputText: "bc1pgqnxzknhzyypgslhcevt96cnry4jkarv5gqp560a95uv6mzf4x7s0r67mm"
+
+- tapOn: Back
+
+- tapOn: Confirm
+
+- assertVisible: |-
+    Check Transaction Details
+    Confirm the transaction details are correct before continuing.
+
+- tapOn:
+    id: envoy_icon_chevron_left
+
+# delete current address
+- longPressOn: Backspace
+
+# <Send to River all caps address> test
+
+- inputText: "BC1Q4ZE0W0A0MUVXS6NYYF6QE4JNF008KS8U0RH4KQ"
+
+- tapOn: Back
+
+- tapOn: Confirm
+
+- assertVisible: |-
+    Check Transaction Details
+    Confirm the transaction details are correct before continuing.
+
+# Assert amounts are non-zero
+- assertVisible:
+    id: "primary_amount Amount"
+    text: "[1-9][0-9,]*"
+- assertVisible:
+    id: "primary_amount Fee"
+    text: "[1-9][0-9,]*"
+- assertVisible:
+    id: "primary_amount Total"
+    text: "[1-9][0-9,]*"
+
+# go back to home
+- tapOn:
+    id: envoy_icon_chevron_left
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu

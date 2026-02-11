@@ -1,0 +1,165 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+
+- tapOn:
+    id: hamburger_menu
+
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+- tapOn: Advanced
+
+# turn off Taproot if it's on
+- runFlow:
+    when:
+      visible:
+        id: "Taproot Toggle-true"
+    commands:
+      - tapOn:
+          id: "Taproot Toggle-true"
+      - extendedWaitUntil:
+          visible:
+            id: "PopUp Primary Button"
+          timeout: 60000
+      - tapOn:
+          id: "PopUp Primary Button"
+
+# refresh screen
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+# check that the Taproot switch is off
+- assertVisible:
+    id: Taproot Toggle-false
+
+# go back home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+- scrollUntilVisible:
+    element:
+      text: Taproot modal test
+
+- tapOn: Taproot modal test
+
+- tapOn: Receive
+
+# make sure pop-up is not visible
+- assertNotVisible: |-
+    Taproot on Passport
+
+# go back
+- tapOn:
+    id: hamburger_menu
+
+# go to settings
+- tapOn:
+    id: Right Action Button
+
+- tapOn: Show Descriptor
+
+# make sure pop-up is not visible
+- assertNotVisible: |-
+    Taproot on Passport
+
+# go back
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# turn on Taproot
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+- tapOn: Advanced
+
+- tapOn:
+    id: Taproot Toggle-false
+
+# make sure pop-up is visible
+- extendedWaitUntil:
+    visible: "Receive to Taproot"
+    timeout: 60000
+
+- tapOn:
+    id: PopUp Primary Button
+
+- tapOn:
+    id: PopUp Secondary Button
+
+# go back
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# go to acc
+- tapOn: Taproot modal test
+
+#go to descriptor
+- tapOn:
+    id: Right Action Button
+
+- tapOn: Show Descriptor
+
+# make sure pop-up is visible
+- assertVisible: |-
+    Taproot on Passport
+
+- tapOn:
+    id: PopUp Secondary Button
+
+# Check a segwit receive address is displayed
+# already checking this in another test
+
+# Check a segwit descriptor shows
+- assertVisible: Segwit
+
+# Go to another passport account paired after 2.3.0
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+- tapOn: Primary (#0)
+
+- tapOn: Receive
+
+# make sure pop-up is not visible
+- assertNotVisible: |-
+    Taproot on Passport
+
+# Go to descriptor, check that pop up does NOT show up
+- tapOn:
+    id: hamburger_menu
+
+#go to descriptor
+- tapOn:
+    id: Right Action Button
+
+- tapOn: Show Descriptor
+
+# make sure pop-up is not visible
+- assertNotVisible: |-
+    Taproot on Passport
+
+# go back to Home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu

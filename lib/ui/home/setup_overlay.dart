@@ -372,7 +372,7 @@ void addPassportAccount(Binary binary, BuildContext context) async {
 /// Shared function to pair with a Prime device via XidDocument (dynamic QR).
 /// Used by both onboarding welcome screen and home setup overlay scanners.
 Future<void> pairWithDevice(BuildContext context, XidDocument xid) async {
-  final providerContainer = ProviderScope.containerOf(context);
+  final container = ProviderScope.containerOf(context);
   if (!context.mounted) return;
   Navigator.pop(context);
   final connectionStatus = await BluetoothChannel().getConnectedDevices();
@@ -388,14 +388,13 @@ Future<void> pairWithDevice(BuildContext context, XidDocument xid) async {
 
   if (connected != null) {
     if (context.mounted) {
-      resetOnboardingPrimeProviders(providerContainer);
+      resetOnboardingPrimeProviders(container);
     }
     await BluetoothChannel().prepareDevice(connected.deviceId);
     final qlConnection = BluetoothChannel().getDeviceChannel(
       connected.deviceId,
     );
-    providerContainer.read(onboardingDeviceProvider.notifier).state =
-        qlConnection;
+    container.read(onboardingDeviceProvider.notifier).state = qlConnection;
     if (context.mounted) {
       _showPairingProgressDialog(context);
     }

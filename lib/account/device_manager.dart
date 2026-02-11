@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -80,6 +81,14 @@ Future<NgAccountConfig> getPassportAccountFromJson(dynamic json) async {
       id: Uuid().v4(),
       network: network,
       archived: false);
+
+  // show freshly added testnet account if it is the only account (prevents empty Home for new users)
+  if ((accountConfig.network == Network.testnet4 ||
+          accountConfig.network == Network.testnet) &&
+      NgAccountManager().accounts.isEmpty) {
+    Settings().setShowTestnetAccounts(true);
+  }
+
   return accountConfig;
 }
 

@@ -58,13 +58,18 @@ class _ManualSetupImportSeedState extends ConsumerState<ManualSetupImportSeed> {
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: const EdgeInsets.all(EnvoySpacing.medium1),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Icon(
-                          Icons.arrow_back_ios_rounded,
-                          size: EnvoySpacing.medium2,
+                      child: Semantics(
+                        label: "Back button - Seed",
+                        button: true,
+                        enabled: true,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Icon(
+                            Icons.arrow_back_ios_rounded,
+                            size: EnvoySpacing.medium2,
+                          ),
                         ),
                       ),
                     ),

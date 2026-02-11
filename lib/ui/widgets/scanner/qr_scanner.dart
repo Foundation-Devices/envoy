@@ -5,12 +5,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
-import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/util/rive_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,6 +75,8 @@ class _QrScannerState extends State<QrScanner>
   double _progress = 0.0;
 
   bool _viewReady = false;
+
+  bool _isProcessingScan = false; //prevent overlapping decodes
 
   @override
   void initState() {
@@ -207,6 +207,10 @@ class _QrScannerState extends State<QrScanner>
       barcode,
     ) async {
       _userInteractionTimer.cancel();
+
+      // if a decode is already running, ignore new frames
+      if (_isProcessingScan) return;
+
       if (_isScanDialogOpen) {
         navigator.pop();
         _isScanDialogOpen = false;
@@ -222,29 +226,28 @@ class _QrScannerState extends State<QrScanner>
         }
       }
 
+      _isProcessingScan = true;
+
       try {
         await widget.decoder.onDetectBarCode(barcode);
       } catch (e) {
         if (context.mounted) {
-          EnvoyToast(
-            replaceExisting: true,
-            message: e.toString(),
-            actionButtonText: S().component_retry,
-            isDismissible: false,
-            onActionTap: () {
-              EnvoyToast.dismissPreviousToasts(context);
+          widget.decoder.onDecodeError(
+            context,
+            e is Exception ? e : Exception(e.toString()),
+            onRetry: () {
               setState(() {
                 _lastScan = "";
-                _progress = 0;
+                _progress = 0.0;
                 _lastCodeDetected = "";
                 _lastRawBytesDetected = [];
               });
             },
-            icon: const Icon(Icons.info_outline, color: EnvoyColors.white95),
-          ).show(context);
+          );
         }
       } finally {
         _lastScan = barcode.code ?? '';
+        _isProcessingScan = false;
       }
     });
     // ENV-252: hack to get camera on CalyxOS

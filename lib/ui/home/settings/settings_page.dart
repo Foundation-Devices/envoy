@@ -32,6 +32,7 @@ import 'package:envoy/ui/state/app_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/region_manager.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -76,18 +77,24 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             child: ListTile(
               contentPadding: const EdgeInsets.all(0),
               dense: true,
-              title: Wrap(children: [SettingText(S().settings_show_fiat)]),
-              trailing: SettingToggle(() => s.displayFiat() != null, (enabled) {
-                setState(() {
-                  s.setDisplayFiat(enabled ? "USD" : null); // TODO: FIGMA
-                  if (!enabled) {
-                    ref.read(appUnitProvider.notifier).state =
-                        s.displayUnitSat()
-                            ? AmountDisplayUnit.sat
-                            : AmountDisplayUnit.btc;
-                  }
-                });
-              }),
+              title: Wrap(
+                children: [SettingText(S().settings_show_fiat)],
+              ),
+              trailing: SettingToggle(
+                () => s.displayFiat() != null,
+                (enabled) {
+                  setState(() {
+                    s.setDisplayFiat(enabled ? "USD" : null); // TODO: FIGMA
+                    if (!enabled) {
+                      ref.read(appUnitProvider.notifier).state =
+                          s.displayUnitSat()
+                              ? AmountDisplayUnit.sat
+                              : AmountDisplayUnit.btc;
+                    }
+                  });
+                },
+                semanticsLabel: 'Show Fiat Toggle',
+              ),
             ),
           ),
           SliverToBoxAdapter(
@@ -100,6 +107,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               height: s.selectedFiat == null ? 0 : 52,
               child: GestureDetector(
                 onTap: () {
+                  ref.read(homePageBackgroundProvider.notifier).state =
+                      HomePageBackgroundState.fiatChooser;
                   showModalBottomSheet<void>(
                     context: context,
                     isScrollControlled: true,
@@ -146,7 +155,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               dense: true,
               contentPadding: const EdgeInsets.all(0),
               title: SettingText(S().settings_amount),
-              trailing: SettingToggle(s.displayUnitSat, s.setDisplayUnitSat),
+              trailing: SettingToggle(
+                s.displayUnitSat,
+                s.setDisplayUnitSat,
+                semanticsLabel: 'Display Unit Sats Toggle',
+              ),
             ),
           ),
           // SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),

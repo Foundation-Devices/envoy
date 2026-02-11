@@ -7,7 +7,7 @@ import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/background.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
-
+import 'package:envoy/ui/home/cards/accounts/spend/send_qr_review.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/home/settings/backup/erase_warning.dart';
 import 'package:envoy/ui/onboard/manual/manual_setup.dart';
@@ -37,6 +37,7 @@ const PASSPORT_INTRO = "passport_intro";
 const PREFS_ONBOARDED = 'onboarded';
 const PSBT_QR_EXCHANGE_STANDALONE = '"psbt_qr_exchange';
 const TOU_EXTERNAL = 'tou_external';
+const PSBT_SCAN_QR = 'psbt_scan_qr';
 
 /// this key can be used in nested GoRoute to leverage main router
 /// for example:
@@ -103,10 +104,9 @@ final GoRouter mainRouter = GoRouter(
         final params = state.uri.queryParameters;
         //resets any home shell navs
         try {
-          ProviderScope.containerOf(
-            context,
-          ).read(homePageBackgroundProvider.notifier).state =
-              HomePageBackgroundState.hidden;
+          ProviderScope.containerOf(context)
+              .read(homePageBackgroundProvider.notifier)
+              .state = HomePageBackgroundState.hidden;
         } catch (e) {
           kPrint("Could not reset home shell nav state: $e");
         }
@@ -169,36 +169,67 @@ final GoRouter mainRouter = GoRouter(
       },
     ),
     GoRoute(
-      path: "/psbt_qr_exchange",
-      name: PSBT_QR_EXCHANGE_STANDALONE,
-      builder: (context, state) {
-        return Stack(
-          children: [
-            const Positioned.fill(
-              child: AppBackground(showRadialGradient: true),
-            ),
-            Positioned(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 5,
-                      vertical: 8,
-                    ),
-                    child: Shield(
-                      child: PsbtCard(state.extra as DraftTransaction),
-                    ),
+        path: "/psbt_qr_exchange",
+        name: PSBT_QR_EXCHANGE_STANDALONE,
+        builder: (context, state) {
+          return Stack(
+            children: [
+              const Positioned.fill(
+                  child: AppBackground(
+                showRadialGradient: true,
+              )),
+              Positioned(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Scaffold(
+                  backgroundColor: Colors.transparent,
+                  body: SafeArea(
+                    child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 8),
+                        child: Shield(
+                          child:
+                              PsbtCard(state.extra as DraftTransaction, true),
+                        )),
                   ),
                 ),
               ),
-            ),
-          ],
-        );
-      },
-    ),
+            ],
+          );
+        },
+        routes: [
+          GoRoute(
+            name: PSBT_SCAN_QR,
+            path: "qr_review",
+            pageBuilder: (context, state) {
+              return wrapWithEnvoyPageAnimation(
+                  child: Stack(
+                children: [
+                  const Positioned.fill(
+                      child: AppBackground(
+                    showRadialGradient: true,
+                  )),
+                  Positioned(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: Scaffold(
+                      backgroundColor: Colors.transparent,
+                      body: SafeArea(
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 8),
+                            child: Shield(
+                              child:
+                                  SendQrReview(state.extra as DraftTransaction),
+                            )),
+                      ),
+                    ),
+                  ),
+                ],
+              ));
+            },
+          )
+        ]),
   ],
 );
 
@@ -218,10 +249,13 @@ final modalModeRoutes = [
   ROUTE_ACCOUNT_SEND,
   ROUTE_ACCOUNT_RECEIVE,
   ROUTE_ACCOUNT_DESCRIPTOR,
+  ROUTE_ACCOUNT_ADDRESSES,
+  ROUTE_ACCOUNT_ADDRESS_DETAIL,
   ROUTE_BUY_BITCOIN,
   ROUTE_PEER_TO_PEER,
   ROUTE_SELECT_ACCOUNT,
   ROUTE_SELECT_REGION,
+  ROUTE_ACCOUNT_TRANSFER
 ];
 
 ///Any routes that required the app bar and bottom navigation bar to be hidden

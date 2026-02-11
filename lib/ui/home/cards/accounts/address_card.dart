@@ -8,6 +8,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
+import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -33,6 +34,15 @@ class AddressCard extends ConsumerStatefulWidget {
 }
 
 class _AddressCardState extends ConsumerState<AddressCard> {
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration()).then((value) {
+      ref.read(homeShellOptionsProvider.notifier).state = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final account = ref.watch(accountStateProvider(widget.account.id));

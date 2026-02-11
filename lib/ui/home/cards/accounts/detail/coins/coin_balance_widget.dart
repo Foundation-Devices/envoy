@@ -610,15 +610,16 @@ class CoinLockButtonState extends State<CoinLockButton> {
 //Widget to show coin tag selections and lock states
 class CoinSubTitleText extends ConsumerWidget {
   final Tag tag;
+  final Color? textColor;
 
-  const CoinSubTitleText(this.tag, {super.key});
+  const CoinSubTitleText(this.tag, {super.key, this.textColor});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     String message = getMessage(tag, ref);
     return Text(
       message,
-      style: EnvoyTypography.info.copyWith(color: Colors.white),
+      style: EnvoyTypography.info.copyWith(color: textColor ?? Colors.white),
     );
   }
 }

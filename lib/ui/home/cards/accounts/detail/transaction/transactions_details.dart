@@ -78,6 +78,7 @@ class _TransactionsDetailsWidgetState
   bool showAddressExpanded = false;
   bool showStripeIdExpanded = false;
   bool showPaymentId = false;
+  bool showStatusExpanded = false;
   bool _checkingBoost = true;
   bool _checkingCancel = true;
   DraftTransaction? _cancelTx;
@@ -518,18 +519,82 @@ class _TransactionsDetailsWidgetState
                       style: trailingTextStyle,
                     ),
                   ),
-                  EnvoyInfoCardListItem(
-                    title: S().coindetails_overlay_status,
-                    icon: const EnvoyIcon(
-                      EnvoyIcons.activity,
-                      color: EnvoyColors.textPrimary,
-                      size: EnvoyIconSize.small,
-                    ),
-                    trailing: Text(
-                      getTransactionStatusString(tx),
-                      style: trailingTextStyle,
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: tx.isConfirmed
+                        ? () {
+                            setState(() {
+                              showStatusExpanded = !showStatusExpanded;
+                              showTxIdExpanded = false;
+                              showAddressExpanded = false;
+                              showPaymentId = false;
+                              showStripeIdExpanded = false;
+                            });
+                          }
+                        : null,
+                    child: EnvoyInfoCardListItem(
+                      title: S().coindetails_overlay_status,
+                      icon: const EnvoyIcon(EnvoyIcons.activity,
+                          color: EnvoyColors.textPrimary,
+                          size: EnvoyIconSize.small),
+                      trailing: Text(getTransactionStatusString(tx),
+                          style: trailingTextStyle),
                     ),
                   ),
+                  if (showStatusExpanded && tx.isConfirmed) ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.xs,
+                          vertical: EnvoySpacing.small),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left:
+                                    EnvoySpacing.medium3 - EnvoySpacing.xs / 2),
+                            child: Text(
+                              S().coindetails_overlay_confirmations,
+                              style: EnvoyTypography.body.copyWith(
+                                color: EnvoyColors.textPrimary,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            NumberFormat.decimalPattern()
+                                .format(tx.confirmations),
+                            style: trailingTextStyle,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.xs,
+                          vertical: EnvoySpacing.small),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left:
+                                    EnvoySpacing.medium3 - EnvoySpacing.xs / 2),
+                            child: Text(
+                              S().coindetails_overlay_block,
+                              style: EnvoyTypography.body.copyWith(
+                                color: EnvoyColors.textPrimary,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            NumberFormat.decimalPattern()
+                                .format(tx.blockHeight.toInt()),
+                            style: trailingTextStyle,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   if (tx is BtcPayTransaction && tx.pullPaymentId != null)
                     EnvoyInfoCardListItem(
                       title: S().coindetails_overlay_paymentID,

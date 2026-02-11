@@ -2,42 +2,92 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:async';
 import 'dart:convert';
-
-import 'package:envoy/business/devices.dart';
-import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
-import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
-import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/shield_path.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as envoy_colors;
-import 'package:envoy/ui/widgets/scanner/decoders/crypto_tx_decoder.dart';
-import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
+import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/components/step_indicator.dart';
+import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/routes/routes.dart';
 
-//ignore: must_be_immutable
-class PsbtCard extends ConsumerWidget {
-  final DraftTransaction transaction;
+class VerifyCountdownNotifier extends StateNotifier<int> {
+  VerifyCountdownNotifier() : super(5);
 
-  PsbtCard(this.transaction) : super(key: UniqueKey());
+  Timer? _timer;
+
+  void start() {
+    _timer?.cancel();
+    state = 5;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (state <= 1) {
+        state = 0;
+        timer.cancel();
+      } else {
+        state = state - 1;
+      }
+    });
+  }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+}
+
+final verifyCountdownProvider =
+    StateNotifierProvider<VerifyCountdownNotifier, int>((ref) {
+  return VerifyCountdownNotifier();
+});
+
+class PsbtCard extends ConsumerStatefulWidget {
+  final DraftTransaction transaction;
+  final bool rbfFlow;
+
+  const PsbtCard(this.transaction, this.rbfFlow, {super.key});
+
+  @override
+  ConsumerState<PsbtCard> createState() => _PsbtCardState();
+}
+
+class _PsbtCardState extends ConsumerState<PsbtCard> {
+  @override
+  void initState() {
+    super.initState();
+    // Defer the provider write until after the first frame
+    Future.microtask(() {
+      ref.read(verifyCountdownProvider.notifier).start();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     // ignore: unused_local_variable
     final account = ref.read(selectedAccountProvider);
     if (account == null) {
       return const SizedBox();
     }
+
+    final countdown = ref.watch(verifyCountdownProvider);
+
+    final isDisabled = countdown > 0;
+
+    // start countdown only once when widget shows
+    ref.listen<int>(verifyCountdownProvider, (prev, next) {});
+
     return Stack(
       children: [
         ClipPath(
@@ -59,143 +109,126 @@ class PsbtCard extends ConsumerWidget {
         ),
         EnvoyScaffold(
           topBarLeading: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(EnvoySpacing.xs),
             child: IconButton(
-              icon: const Icon(Icons.close, color: Colors.black),
+              icon: const Icon(
+                Icons.chevron_left,
+                color: Colors.black,
+              ),
               onPressed: () {
                 GoRouter.of(context).pop();
               },
             ),
           ),
+          topBarTitle: StepIndicator(currentStep: 1),
+          topBarActions: [
+            SizedBox(
+              width: EnvoySpacing.large1,
+            )
+          ],
           removeAppBarPadding: true,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: QrTab(
-                    title: S().send_qr_code_card_heading,
-                    subtitle: S().send_qr_code_card_subheading,
-                    account: account,
-                    qr: AnimatedQrImage(
-                      transaction.psbt,
-                      urType: "crypto-psbt",
-                      binaryCborTag: true,
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  S().send_qr_code_subheading,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(fontSize: 13),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 50.0,
-                  right: 50.0,
-                  bottom: 30.0,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        Clipboard.setData(
-                          ClipboardData(text: base64Encode(transaction.psbt)),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              "PSBT copied to clipboard!",
-                            ), //TODO: FIGMA
-                          ),
-                        );
-                      },
-                      icon: const EnvoyIcon(
-                        EnvoyIcons.copy,
-                        color: EnvoyColors.darkTeal,
-                      ),
+                    SizedBox(height: EnvoySpacing.medium1),
+                    Text(
+                      S().send_qr_code_card_heading,
+                      style: EnvoyTypography.heading,
+                      textAlign: TextAlign.center,
                     ),
-                    QrShield(
+                    SizedBox(height: EnvoySpacing.small),
+                    Text(
+                      S().send_qr_code_card_subheading,
+                      style: EnvoyTypography.body.copyWith(
+                          color: envoy_colors.EnvoyColors.textSecondary),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: EnvoySpacing.medium2),
+                    Flexible(
                       child: Padding(
-                        padding: const EdgeInsets.all(15),
-                        child: Consumer(
-                          builder: (_, ref, child) {
-                            return IconButton(
-                              padding: EdgeInsets.zero,
-                              icon: const EnvoyIcon(
-                                EnvoyIcons.scan,
-                                size: EnvoyIconSize.medium,
-                                color: EnvoyColors.darkTeal,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: EnvoySpacing.medium1),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                  width: 1,
+                                  color: envoy_colors.EnvoyColors.border2),
+                              borderRadius: const BorderRadius.all(
+                                  Radius.circular(EnvoySpacing.medium1))),
+                          child: AspectRatio(
+                            aspectRatio: 1.0,
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.all(EnvoySpacing.medium1),
+                                child: AnimatedQrImage(
+                                  widget.transaction.psbt,
+                                  urType: "crypto-psbt",
+                                  binaryCborTag: true,
+                                ),
                               ),
-                              onPressed: () {
-                                final navigator = Navigator.of(
-                                  context,
-                                  rootNavigator: true,
-                                );
-                                final gorouter = GoRouter.of(context);
-                                final decoder = CryptoTxDecoder(
-                                  onScan: (CryptoPsbt cryptoPsbt) async {
-                                    navigator.pop(context);
-                                    await Future.delayed(
-                                      const Duration(milliseconds: 100),
-                                    );
-                                    gorouter.pop(cryptoPsbt);
-                                  },
-                                );
-                                QrIntentInfoType qrType =
-                                    QrIntentInfoType.qrCode;
-                                if (!account.isHot) {
-                                  final device = Devices().getDeviceBySerial(
-                                    account.deviceSerial ?? "",
-                                  );
-                                  if (device != null &&
-                                      device.type == DeviceType.passportPrime) {
-                                    qrType = QrIntentInfoType.prime;
-                                  } else {
-                                    qrType = QrIntentInfoType.core;
-                                  }
-                                }
-                                showScannerDialog(
-                                  context: context,
-                                  infoType: qrType,
-                                  onBackPressed: (context) {
-                                    Navigator.pop(context);
-                                  },
-                                  decoder: decoder,
-                                );
-                                return;
-                              },
-                            );
-                          },
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        SharePlus.instance.share(
-                          ShareParams(text: base64Encode(transaction.psbt)),
-                        );
-                      },
-                      icon: const EnvoyIcon(
-                        EnvoyIcons.externalLink,
-                        color: EnvoyColors.darkTeal,
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: EnvoySpacing.medium1,
+                      right: EnvoySpacing.medium1,
+                      bottom: EnvoySpacing.large2),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      EnvoyButton(
+                        S().send_QrScan_saveToFile,
+                        onTap: () {
+                          SharePlus.instance.share(ShareParams(
+                            text: base64Encode(widget.transaction.psbt),
+                          ));
+                        },
+                        type: EnvoyButtonTypes.tertiary,
+                        leading: EnvoyIcon(
+                          EnvoyIcons.sd_card,
+                          color: envoy_colors.EnvoyColors.accentPrimary,
+                          size: EnvoyIconSize.extraSmall,
+                        ),
+                      ),
+                      SizedBox(
+                        height: EnvoySpacing.small,
+                      ),
+                      EnvoyButton(
+                        isDisabled
+                            ? '${countdown.toString()}... ${S().send_qrScan_scanQrWithPassportFirst}'
+                            : S().send_qrScan_verifyOnPassport,
+                        leading: EnvoyIcon(
+                          isDisabled ? EnvoyIcons.clock : EnvoyIcons.eye,
+                          color: envoy_colors.EnvoyColors.solidWhite,
+                          size: EnvoyIconSize.extraSmall,
+                        ),
+                        enabled: !isDisabled,
+                        onTap: () {
+                          GoRouter.of(context).pushNamed(
+                              widget.rbfFlow
+                                  ? PSBT_SCAN_QR
+                                  : ACCOUNT_SEND_SCAN_QR,
+                              extra: widget.transaction);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
         ),
       ],
     );

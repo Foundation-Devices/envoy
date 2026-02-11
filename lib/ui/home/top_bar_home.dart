@@ -68,6 +68,7 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     bool backDropEnabled = homePageDropState != HomePageBackgroundState.hidden;
 
     String homePageTitle = ref.watch(homePageTitleProvider);
+    int? currentAddressIndex = ref.watch(currentAddressDetailIndexProvider);
 
     ref.listen(homePageBackgroundProvider, (previous, next) {
       if (context.mounted) {
@@ -126,58 +127,63 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
       }
     }
 
-    String title = _getTitle(path, homePageTitle);
+    String title = _getTitle(path, homePageTitle, currentAddressIndex);
 
     return AppBar(
       // Get rid of the shadow
       elevation: 0,
       backgroundColor: Colors.transparent,
-      leading: AnimatedOpacity(
-        duration: _animationsDuration,
-        opacity: (optionsShown || inEditMode) ? 0.0 : 1.0,
-        child: HamburgerMenu(
-          iconState: state,
-          onPressed: () async {
-            if (homePageDropState != HomePageBackgroundState.hidden) {
-              if (homePageDropState != HomePageBackgroundState.menu) {
-                ref.read(homePageBackgroundProvider.notifier).state =
-                    HomePageBackgroundState.menu;
-                ref.read(backupPageProvider.notifier).state = false;
-              } else {
-                ref.read(homePageBackgroundProvider.notifier).state =
-                    HomePageBackgroundState.hidden;
-                ref.read(homePageTitleProvider.notifier).state = "";
-              }
-            } else {
-              if (state == HamburgerState.idle) {
-                ref.read(homePageBackgroundProvider.notifier).state =
-                    HomePageBackgroundState.menu;
-                ref.read(homePageTitleProvider.notifier).state =
-                    S().menu_heading.toUpperCase();
-              } else if (state == HamburgerState.back) {
-                if (path == ROUTE_SELECT_ACCOUNT ||
-                    path == ROUTE_PEER_TO_PEER) {
-                  showBuyBitcoinOptions(ref);
-                  context.go(ROUTE_BUY_BITCOIN);
+      leading: Semantics(
+        container: true,
+        identifier: 'hamburger_menu',
+        button: true,
+        child: AnimatedOpacity(
+          duration: _animationsDuration,
+          opacity: (optionsShown || inEditMode) ? 0.0 : 1.0,
+          child: HamburgerMenu(
+            iconState: state,
+            onPressed: () async {
+              if (homePageDropState != HomePageBackgroundState.hidden) {
+                if (homePageDropState != HomePageBackgroundState.menu) {
+                  ref.read(homePageBackgroundProvider.notifier).state =
+                      HomePageBackgroundState.menu;
+                  ref.read(backupPageProvider.notifier).state = false;
+                } else {
+                  ref.read(homePageBackgroundProvider.notifier).state =
+                      HomePageBackgroundState.hidden;
+                  ref.read(homePageTitleProvider.notifier).state = "";
                 }
-
-                if (path == ROUTE_SELECT_REGION &&
-                    await EnvoyStorage().getCountry() != null) {
-                  if (context.mounted) {
+              } else {
+                if (state == HamburgerState.idle) {
+                  ref.read(homePageBackgroundProvider.notifier).state =
+                      HomePageBackgroundState.menu;
+                  ref.read(homePageTitleProvider.notifier).state =
+                      S().menu_heading.toUpperCase();
+                } else if (state == HamburgerState.back) {
+                  if (path == ROUTE_SELECT_ACCOUNT ||
+                      path == ROUTE_PEER_TO_PEER) {
+                    showBuyBitcoinOptions(ref);
                     context.go(ROUTE_BUY_BITCOIN);
                   }
-                } else if (path == ROUTE_BUY_BITCOIN) {
-                  if (context.mounted) {
-                    GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
-                  }
-                } else {
-                  if (context.mounted && GoRouter.of(context).canPop()) {
-                    GoRouter.of(context).pop();
+
+                  if (path == ROUTE_SELECT_REGION &&
+                      await EnvoyStorage().getCountry() != null) {
+                    if (context.mounted) {
+                      context.go(ROUTE_BUY_BITCOIN);
+                    }
+                  } else if (path == ROUTE_BUY_BITCOIN) {
+                    if (context.mounted) {
+                      GoRouter.of(context).go(ROUTE_ACCOUNTS_HOME);
+                    }
+                  } else {
+                    if (context.mounted && GoRouter.of(context).canPop()) {
+                      GoRouter.of(context).pop();
+                    }
                   }
                 }
               }
-            }
-          },
+            },
+          ),
         ),
       ),
       centerTitle: true,
@@ -205,60 +211,67 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
             ? AbsorbPointer(
                 absorbing: false,
                 child: AnimatedSwitcher(
-                  duration: _animationsDuration,
-                  child: rightAction,
-                ),
+                    duration: _animationsDuration,
+                    child: Semantics(
+                      identifier: 'Right Action Button',
+                      container: true,
+                      button: true,
+                      excludeSemantics: true,
+                      child: rightAction,
+                    )),
               )
             : Opacity(
                 opacity: (inEditMode || backDropEnabled) ? 0.0 : 1.0,
                 child: AnimatedSwitcher(
-                  duration: _animationsDuration,
-                  child: AbsorbPointer(
-                    absorbing:
-                        (backDropEnabled || modalShown) && !buyBTCRightAction,
-                    child: AnimatedOpacity(
-                      opacity:
-                          (backDropEnabled || modalShown) && !buyBTCRightAction
-                              ? 0.0
-                              : 1.0,
-                      duration: _animationsDuration,
-                      child: AnimatedSwitcher(
-                        duration: _animationsDuration,
-                        child: backDropEnabled || optionsShown
-                            ? GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () {
-                                  if (optionsShown) {
-                                    ref
-                                        .read(
-                                          homePageOptionsVisibilityProvider
-                                              .notifier,
-                                        )
-                                        .state = false;
-                                  } else {
-                                    if (backDropEnabled) {
-                                      ref
-                                          .read(
-                                            homePageBackdropModeProvider
-                                                .notifier,
-                                          )
-                                          .state = false;
-                                    }
-                                  }
-                                },
-                                child: Container(
-                                  height: 55,
-                                  width: 55,
-                                  color: Colors.transparent,
-                                  child: const Icon(Icons.close),
-                                ),
-                              )
-                            : rightAction,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+                    duration: _animationsDuration,
+                    child: AbsorbPointer(
+                        absorbing: (backDropEnabled || modalShown) &&
+                            !buyBTCRightAction,
+                        child: AnimatedOpacity(
+                            opacity: (backDropEnabled || modalShown) &&
+                                    !buyBTCRightAction
+                                ? 0.0
+                                : 1.0,
+                            duration: _animationsDuration,
+                            child: AnimatedSwitcher(
+                                duration: _animationsDuration,
+                                child: backDropEnabled || optionsShown
+                                    ? GestureDetector(
+                                        behavior: HitTestBehavior.opaque,
+                                        onTap: () {
+                                          if (optionsShown) {
+                                            ref
+                                                .read(
+                                                    homePageOptionsVisibilityProvider
+                                                        .notifier)
+                                                .state = false;
+                                          } else {
+                                            if (backDropEnabled) {
+                                              ref
+                                                  .read(
+                                                      homePageBackdropModeProvider
+                                                          .notifier)
+                                                  .state = false;
+                                            }
+                                          }
+                                        },
+                                        child: Container(
+                                          height: 55,
+                                          width: 55,
+                                          color: Colors.transparent,
+                                          child: const Icon(
+                                            Icons.close,
+                                          ),
+                                        ),
+                                      )
+                                    : Semantics(
+                                        identifier: 'Right Action Button',
+                                        container: true,
+                                        button: true,
+                                        excludeSemantics: true,
+                                        child: rightAction,
+                                      ))))),
+              )
       ],
     );
   }
@@ -291,7 +304,11 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
     return false;
   }
 
-  String _getTitle(String path, String defaultTitle) {
+  String _getTitle(String path, String defaultTitle, int? addressIndex) {
+    // Check if we're viewing an address detail
+    if (addressIndex != null) {
+      return S().exploreAddresses_qr_header(addressIndex);
+    }
     if (defaultTitle.isNotEmpty) return defaultTitle;
     switch (path) {
       case ROUTE_DEVICES:
@@ -320,7 +337,10 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         return S().header_buyBitcoin;
       case ROUTE_SELECT_ACCOUNT:
         return S().header_buyBitcoin;
-
+      case ROUTE_ACCOUNT_TRANSFER:
+        return S().bottomNav_transfer;
+      case ROUTE_ACCOUNT_ADDRESSES:
+        return S().exploreAdresses_activityOptions_exploreAddresses;
       default:
         return S().menu_heading;
     }
@@ -385,6 +405,9 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
         break;
       case ROUTE_ACCOUNT_SEND:
+        ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
+        break;
+      case ROUTE_ACCOUNT_TRANSFER:
         ref.read(homePageOptionsVisibilityProvider.notifier).state = false;
         break;
       case ROUTE_ACTIVITY:
@@ -520,6 +543,7 @@ class _HamburgerMenuState extends ConsumerState<HamburgerMenu> {
         : MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
+              excludeFromSemantics: true,
               behavior: HitTestBehavior.opaque,
               onTap: () {
                 FocusScope.of(context).unfocus(); // ENV-2125

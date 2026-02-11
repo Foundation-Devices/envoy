@@ -9,6 +9,8 @@ import 'package:envoy/ui/state/transactions_state.dart';
 
 class EnvoyTransaction extends BitcoinTransaction
     implements Comparable<EnvoyTransaction> {
+  final DateTime? firstSeen;
+
   EnvoyTransaction(
       {required super.txId,
       required super.blockHeight,
@@ -23,9 +25,11 @@ class EnvoyTransaction extends BitcoinTransaction
       required super.feeRate,
       required super.note,
       required super.accountId,
-      required super.isConfirmed});
+      required super.isConfirmed,
+      this.firstSeen});
 
-  static EnvoyTransaction copyFrom(BitcoinTransaction tx) {
+  static EnvoyTransaction copyFrom(BitcoinTransaction tx,
+      {DateTime? firstSeen}) {
     return EnvoyTransaction(
       txId: tx.txId,
       blockHeight: tx.blockHeight,
@@ -41,6 +45,7 @@ class EnvoyTransaction extends BitcoinTransaction
       vsize: tx.vsize,
       accountId: tx.accountId,
       note: tx.note,
+      firstSeen: firstSeen,
     );
   }
 
@@ -58,6 +63,27 @@ class EnvoyTransaction extends BitcoinTransaction
 
     final thisInMempool = thisDate == null || thisDate < cutoff;
     final otherInMempool = otherDate == null || otherDate < cutoff;
+
+    if (txId == other.txId) {
+      final thisReceived = amount > 0;
+      final otherReceived = other.amount > 0;
+
+      if (thisReceived != otherReceived) {
+        return thisReceived ? -1 : 1; // received goes on top
+      }
+      return 0;
+    }
+
+    if (!isConfirmed || !other.isConfirmed) {
+      if (firstSeen != null && other.firstSeen != null) {
+        final comparison = other.firstSeen!.compareTo(firstSeen!);
+        if (comparison != 0) return comparison;
+      } else if (firstSeen != null) {
+        return -1; // This has firstSeen, other doesn't -> this goes on top
+      } else if (other.firstSeen != null) {
+        return 1; // Other has firstSeen, this doesn't -> other goes on top
+      }
+    }
 
     // 1. if both are in mempool (unconfirmed)
     if (thisInMempool && otherInMempool) {

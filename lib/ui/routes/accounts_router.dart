@@ -8,12 +8,16 @@ import 'package:animations/animations.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_card.dart';
 import 'package:envoy/ui/home/cards/accounts/address_card.dart';
+import 'package:envoy/ui/home/cards/accounts/address_detail_card.dart';
+import 'package:envoy/ui/home/cards/accounts/address_explorer_card.dart';
 import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/transfer_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/send_qr_review.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
@@ -52,11 +56,21 @@ const ROUTE_PEER_TO_PEER = '$ROUTE_BUY_BITCOIN/$_PEER_TO_PEER';
 const _SELECT_ACCOUNT = 'select';
 const ROUTE_SELECT_ACCOUNT = '$ROUTE_BUY_BITCOIN/$_SELECT_ACCOUNT';
 
+const _ACCOUNT_TRANSFER = 'transfer';
+const ROUTE_ACCOUNT_TRANSFER = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_TRANSFER';
+
 const _ACCOUNT_RECEIVE = 'receive';
 const ROUTE_ACCOUNT_RECEIVE = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_RECEIVE';
 
 const _ACCOUNT_DESCRIPTOR = 'desc';
 const ROUTE_ACCOUNT_DESCRIPTOR = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_DESCRIPTOR';
+
+const _ACCOUNT_ADDRESSES = 'addresses';
+const ROUTE_ACCOUNT_ADDRESSES = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_ADDRESSES';
+
+const _ACCOUNT_ADDRESS_DETAIL = 'address_detail';
+const ROUTE_ACCOUNT_ADDRESS_DETAIL =
+    '$ROUTE_ACCOUNT_ADDRESSES/$_ACCOUNT_ADDRESS_DETAIL';
 
 const _ACCOUNT_SEND = 'send';
 const ROUTE_ACCOUNT_SEND = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_SEND';
@@ -69,6 +83,8 @@ const ROUTE_ACCOUNT_SEND_REVIEW =
     '$ROUTE_ACCOUNT_SEND_CONFIRM/$_ACCOUNT_SEND_REVIEW';
 
 const ACCOUNT_SEND_SCAN_PSBT = "spend_scan_psbt";
+
+const ACCOUNT_SEND_SCAN_QR = "spend_scan_qr";
 
 /// simple wrapper to add page animation
 Page wrapWithEnvoyPageAnimation({
@@ -170,7 +186,9 @@ final accountsRouter = StatefulShellBranch(
                 return true;
               },
               pageBuilder: (context, state) {
-                return wrapWithEnvoyPageAnimation(child: SendCard());
+                return wrapWithEnvoyPageAnimation(
+                    child: SendCard(
+                        transferAddress: state.extra as String?));
               },
               routes: [
                 GoRoute(
@@ -181,34 +199,109 @@ final accountsRouter = StatefulShellBranch(
                       name: "spend_review",
                       routes: [
                         GoRoute(
-                          name: ACCOUNT_SEND_SCAN_PSBT,
-                          path: "scan",
-                          pageBuilder: (context, state) {
-                            return wrapWithEnvoyPageAnimation(
-                              child: PsbtCard(state.extra as DraftTransaction),
-                            );
-                          },
-                        ),
+                            name: ACCOUNT_SEND_SCAN_PSBT,
+                            path: "scan",
+                            pageBuilder: (context, state) {
+                              return wrapWithEnvoyPageAnimation(
+                                  child: PsbtCard(
+                                      state.extra as DraftTransaction,
+                                      false));
+                            },
+                            routes: [
+                              GoRoute(
+                                name: ACCOUNT_SEND_SCAN_QR,
+                                path: "qr_review",
+                                pageBuilder: (context, state) {
+                                  return wrapWithEnvoyPageAnimation(
+                                      child: SendQrReview(state.extra
+                                          as DraftTransaction));
+                                },
+                              )
+                            ]),
                       ],
                       onExit: (context, GoRouterState state) {
                         /// if we are exiting the send screen, we need to clear the spend state
                         /// but only if we are not in edit mode
-                        if (ProviderScope.containerOf(
-                              context,
-                            ).read(spendEditModeProvider) !=
+                        if (ProviderScope.containerOf(context)
+                                .read(spendEditModeProvider) !=
                             SpendOverlayContext.hidden) {
-                          clearSpendState(ProviderScope.containerOf(context));
+                          clearSpendState(
+                              ProviderScope.containerOf(context));
                         }
                         return true;
                       },
                       path: _ACCOUNT_SEND_REVIEW,
                       pageBuilder: (context, state) {
-                        return wrapWithEnvoyPageAnimation(child: TxReview());
+                        return wrapWithEnvoyPageAnimation(
+                            child: TxReview());
                       },
                     ),
                   ],
                   pageBuilder: (context, state) {
                     return wrapWithEnvoyPageAnimation(child: TxReview());
+                  },
+                ),
+              ],
+            ),
+            GoRoute(
+              path: _ACCOUNT_TRANSFER,
+              name: ROUTE_ACCOUNT_TRANSFER,
+              pageBuilder: (context, state) {
+                EnvoyAccount? account;
+                try {
+                  account = NgAccountManager()
+                      .getAccountById(state.extra as String);
+                  if (account == null) {
+                    throw Exception("Account not found");
+                  }
+                  return wrapWithEnvoyPageAnimation(
+                      child: SelectAccountTransfer(account));
+                } catch (e) {
+                  return wrapWithEnvoyPageAnimation(child: Container());
+                }
+              },
+            ),
+            GoRoute(
+              path: _ACCOUNT_ADDRESSES,
+              pageBuilder: (context, state) {
+                EnvoyAccount? account;
+                try {
+                  account = NgAccountManager()
+                      .getAccountById(state.extra as String);
+                  if (account == null) {
+                    throw Exception("Account not found");
+                  }
+                  return wrapWithEnvoyPageAnimation(
+                      child: AddressExplorerCard(account));
+                } catch (e) {
+                  return wrapWithEnvoyPageAnimation(
+                      child: Container(
+                    padding: const EdgeInsets.all(20),
+                    child: Center(child: Text("Account not found")),
+                  ));
+                }
+              },
+              routes: [
+                GoRoute(
+                  path: _ACCOUNT_ADDRESS_DETAIL,
+                  pageBuilder: (context, state) {
+                    try {
+                      final extra = state.extra as Map<String, dynamic>;
+                      final account = extra['account'] as EnvoyAccount;
+                      final addressInfo =
+                          extra['addressInfo'] as AddressInfo;
+                      return wrapWithEnvoyPageAnimation(
+                          child: AddressDetailCard(
+                        account: account,
+                        addressInfo: addressInfo,
+                      ));
+                    } catch (e) {
+                      return wrapWithEnvoyPageAnimation(
+                          child: Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Center(child: Text("Address not found")),
+                      ));
+                    }
                   },
                 ),
               ],

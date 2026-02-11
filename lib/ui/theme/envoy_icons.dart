@@ -95,11 +95,18 @@ enum EnvoyIcons {
   qr_scan,
   stripe,
   stripe_text,
+  refresh,
   prime_front,
+  wallet_coin,
+  fee,
+  receipt,
+  change,
+  eye,
+  sd_card,
+  stopwatch,
   locked,
   unlocked,
-  chain,
-  prime_front_faded
+  coins,
 }
 
 class EnvoyIcon extends StatelessWidget {
@@ -116,12 +123,16 @@ class EnvoyIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      "assets/components/icons/${icon.name}.svg",
-      width: size.toDouble,
-      height: size.toDouble,
-      colorFilter:
-          color == null ? null : ColorFilter.mode(color!, BlendMode.srcIn),
+    return Semantics(
+      container: true,
+      identifier: 'envoy_icon_${icon.name}',
+      child: SvgPicture.asset(
+        "assets/components/icons/${icon.name}.svg",
+        width: size.toDouble,
+        height: size.toDouble,
+        colorFilter:
+            color == null ? null : ColorFilter.mode(color!, BlendMode.srcIn),
+      ),
     );
   }
 }
@@ -160,28 +171,41 @@ class NonMainnetIcon extends StatelessWidget {
       }
     }();
 
-    return Stack(
-      children: [
-        SvgPicture.asset(
-          badgeAssetName,
-          width: size.toDouble / 2,
-          height: size.toDouble / 2,
-          colorFilter: badgeColor != null
-              ? ColorFilter.mode(badgeColor!, BlendMode.srcIn)
-              : null,
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: size.toDouble / 5),
+    return Semantics(
+      container: true,
+      identifier: 'envoy_icon_${icon.name}_${network.name}',
+      explicitChildNodes: true,
+      child: Stack(children: [
+        Semantics(
+          container: true,
+          identifier: 'envoy_icon_badge_${network.name}',
           child: SvgPicture.asset(
-            "assets/components/icons/${icon.name}.svg",
-            width: size.toDouble,
-            height: size.toDouble,
-            colorFilter: iconColor == null
-                ? null
-                : ColorFilter.mode(iconColor!, BlendMode.srcIn),
+            badgeAssetName,
+            width: size.toDouble / 2,
+            height: size.toDouble / 2,
+            colorFilter: badgeColor != null
+                ? ColorFilter.mode(badgeColor!, BlendMode.srcIn)
+                : null,
           ),
         ),
-      ],
+        Semantics(
+          container: true,
+          identifier: 'envoy_icon_${icon.name}',
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: size.toDouble / 5,
+            ),
+            child: SvgPicture.asset(
+              "assets/components/icons/${icon.name}.svg",
+              width: size.toDouble,
+              height: size.toDouble,
+              colorFilter: iconColor == null
+                  ? null
+                  : ColorFilter.mode(iconColor!, BlendMode.srcIn),
+            ),
+          ),
+        ),
+      ]),
     );
   }
 }

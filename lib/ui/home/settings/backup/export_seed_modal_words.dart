@@ -56,33 +56,29 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                   ),
                 ),
               ),
-              Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: CustomScrollView(
-                        shrinkWrap: false,
-                        physics: needListView
-                            ? const AlwaysScrollableScrollPhysics()
-                            : const NeverScrollableScrollPhysics(),
-                        slivers: [
-                          SliverPadding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: constraints.maxWidth < 250 ? 0 : 34,
-                            ),
-                            sliver: SliverFillRemaining(
-                              fillOverscroll: false,
-                              hasScrollBody: true,
-                              child: Builder(
-                                builder: (context) {
-                                  const TextStyle textTheme = TextStyle(
-                                    overflow: TextOverflow.fade,
-                                    fontSize: 15,
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.bold,
-                                  );
+            Flexible(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: CustomScrollView(
+                      shrinkWrap: false,
+                      physics: needListView
+                          ? const AlwaysScrollableScrollPhysics()
+                          : const NeverScrollableScrollPhysics(),
+                      slivers: [
+                        SliverPadding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: constraints.maxWidth < 250 ? 0 : 34),
+                          sliver: SliverFillRemaining(
+                            fillOverscroll: false,
+                            hasScrollBody: true,
+                            child: Builder(builder: (context) {
+                              const TextStyle textTheme = TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.bold);
 
                                   if (needListView) {
                                     return ListView(
@@ -103,34 +99,26 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                                           ),
                                           decoration: BoxDecoration(
                                             color: Colors.grey[300],
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
+                                            borderRadius: BorderRadius.circular(8),
                                           ),
                                           child: Row(
                                             children: [
                                               Text(
                                                 "${widget.seed.indexOf(word) + 1}.",
-                                                textScaler: MediaQuery.of(
-                                                  context,
-                                                ).textScaler.clamp(
-                                                      maxScaleFactor: 1.5,
-                                                      minScaleFactor: .8,
-                                                    ),
+                                                textScaler: MediaQuery.of(context)
+                                                    .textScaler
+                                                    .clamp(
+                                                        maxScaleFactor: 1.5,
+                                                        minScaleFactor: .8),
                                                 style: textTheme,
                                               ),
                                               Flexible(
-                                                child: Text(
-                                                  word,
-                                                  style: textTheme,
-                                                  maxLines: 1,
-                                                  textScaler: MediaQuery.of(
-                                                    context,
-                                                  ).textScaler.clamp(
-                                                        maxScaleFactor: 1.5,
-                                                        minScaleFactor: .8,
-                                                      ),
-                                                  softWrap: false,
+                                                child: FittedBox(
+                                                  fit: BoxFit.scaleDown,
+                                                  child: Text(
+                                                    word,
+                                                    style: textTheme,
+                                                  ),
                                                 ),
                                               ),
                                             ],
@@ -184,34 +172,27 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                                         );
                                       });
 
-                                      return Builder(
-                                        builder: (context) {
-                                          return Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Flexible(
+                                      return SingleChildScrollView(
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            Flexible(
                                                 child: _buildMnemonicColumn(
-                                                  section1WithIndex,
-                                                ),
-                                              ),
-                                              Flexible(
+                                                    section1WithIndex)),
+                                            Flexible(
                                                 child: _buildMnemonicColumn(
-                                                  section2WithIndex,
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        },
+                                                    section2WithIndex)),
+                                          ],
+                                        ),
                                       );
                                     },
                                     itemCount: widget.seed.length == 12 ? 1 : 2,
                                   );
-                                },
-                              ),
+                                }),
                             ),
                           ),
                           SliverToBoxAdapter(
@@ -284,11 +265,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
 
   Widget _buildMnemonicColumn(List<Tuple<int, String>> list) {
     const TextStyle textTheme = TextStyle(
-      overflow: TextOverflow.fade,
-      fontSize: 15,
-      color: Colors.black87,
-      fontWeight: FontWeight.bold,
-    );
+        fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: list.map((word) {
@@ -307,14 +284,15 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
           child: Row(
             children: [
               Text("${word.item1}. ", style: textTheme),
-              Flexible(
+              Expanded(
+                  child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
                 child: Text(
                   word.item2,
                   style: textTheme,
-                  maxLines: 1,
-                  softWrap: false,
                 ),
-              ),
+              )),
             ],
           ),
         );

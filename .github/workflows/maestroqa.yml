@@ -1,0 +1,68 @@
+# SPDX-FileCopyrightText: 2024 Foundation Devices, Inc. <hello@foundation.xyz>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Maestro QA
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to run tests on'
+        required: true
+        default: 'android'
+        type: choice
+        options:
+          - android
+          - ios
+          - both
+  schedule:
+    - cron: '0 1 * * *'  # Run daily at 1 AM UTC (after Beef QA)
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  maestro-qa-android:
+    if: ${{ github.event_name == 'schedule' || github.event.inputs.platform == 'android' || github.event.inputs.platform == 'both' }}
+    runs-on: [ self-hosted, macOS, ARM64 ]
+
+    steps:
+      - uses: extractions/setup-just@v1
+      - uses: actions/checkout@v4
+
+      - name: Check connected Android device
+        run: |
+          export ANDROID_HOME="$HOME/Library/Android/sdk"
+          export PATH="$ANDROID_HOME/platform-tools:$PATH"
+
+          echo "Checking for connected Android devices..."
+          adb devices
+          DEVICE_COUNT=$(adb devices | grep -w "device" | wc -l)
+          if [ "$DEVICE_COUNT" -eq 0 ]; then
+            echo "Error: No Android device connected"
+            exit 1
+          fi
+          echo "Found $DEVICE_COUNT device(s)"
+
+      - name: Build Android FFI
+        run: |
+          export ANDROID_HOME="$HOME/Library/Android/sdk"
+          export ANDROID_NDK_ROOT="$ANDROID_HOME/ndk/27.0.12077973"
+          ./scripts/build_ffi_android.sh
+
+      - name: Run Maestro Android Tests (builds and installs APK)
+        run: just maestroqa
+
+  maestro-qa-ios:
+    if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'both' }}
+    runs-on: [ self-hosted, macOS, ARM64 ]
+
+    steps:
+      - uses: extractions/setup-just@v1
+      - uses: actions/checkout@v4
+
+      - name: Install bindgen-cli (for aws-lc-sys)
+        run: cargo install --force --locked bindgen-cli
+
+      - name: Build iOS FFI
+        run: ./scripts/build_ffi_ios.sh
+
+      - name: Run Maestro iOS Tests (builds and installs app)
+        run: just maestroqaios

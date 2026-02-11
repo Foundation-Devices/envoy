@@ -133,23 +133,28 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                 padding: const EdgeInsets.symmetric(
                   horizontal: EnvoySpacing.large3,
                 ),
-                child: GestureDetector(
-                  onLongPress: () {
-                    if (isTest) {
-                      setState(() {
-                        _isRecoveryInProgress = true;
-                      });
-                      openBeefQABackupFile(context).then((value) {
+                child: Semantics(
+                  label: "Import Backup Image",
+                  button: true,
+                  enabled: true,
+                  child: GestureDetector(
+                    onLongPress: () {
+                      if (isTest) {
                         setState(() {
-                          _isRecoveryInProgress = false;
+                          _isRecoveryInProgress = true;
                         });
-                      });
-                    }
-                  },
-                  child: Image.asset(
-                    "assets/fw_download.png",
-                    width: 150,
-                    height: 150,
+                        openBeefQABackupFile(context).then((value) {
+                          setState(() {
+                            _isRecoveryInProgress = false;
+                          });
+                        });
+                      }
+                    },
+                    child: Image.asset(
+                      "assets/fw_download.png",
+                      width: 150,
+                      height: 150,
+                    ),
                   ),
                 ),
               ),

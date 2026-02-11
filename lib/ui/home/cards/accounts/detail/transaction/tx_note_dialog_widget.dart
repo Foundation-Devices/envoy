@@ -111,7 +111,7 @@ class _TxNoteDialogState extends ConsumerState<TxNoteDialog> {
             onTap: () {
               Navigator.of(context).pop();
             },
-            type: EnvoyButtonTypes.tertiary,
+            type: EnvoyButtonTypes.secondary,
           ),
           EnvoyButton(
             S().component_save,

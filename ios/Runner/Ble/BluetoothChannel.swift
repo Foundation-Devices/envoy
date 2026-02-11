@@ -427,16 +427,54 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             result(nil)
             return
         }
-        
+
         // Check if app is in foreground
         guard UIApplication.shared.applicationState == .active else {
             print("Error: Application is not in foreground. Current state: \(UIApplication.shared.applicationState.rawValue)")
             result(nil)
             return
         }
-        
+
+        // Check for existing paired accessories first
+        let existingAccessories = session.accessories
+        if let existingAccessory = existingAccessories.first {
+            print("Found existing accessory: \(existingAccessory.displayName)")
+
+            // Initialize with the existing accessory
+            primeAccessory = existingAccessory
+
+            // Initialize CoreBluetooth manager if needed
+            if centralManager == nil {
+                setupBluetoothManager()
+            }
+
+            //[ENV-2697] If accessory has Bluetooth identifier, connect to it
+            if let bluetoothId = existingAccessory.bluetoothIdentifier {
+                print("Connecting to existing accessory with Bluetooth ID: \(bluetoothId)")
+
+                // Send connection event to Flutter
+                sendConnectionEvent(
+                    connected: false,
+                    peripheralId: bluetoothId.uuidString,
+                    peripheralName: existingAccessory.displayName,
+                    type: "connecting"
+                )
+
+                // Connect if central manager is ready
+                if let central = centralManager, central.state == .poweredOn {
+                    connectToAccessoryPeripheral(bluetoothId: bluetoothId)
+                }
+
+                result(true)
+                return
+            } else {
+                print("Existing accessory has no Bluetooth ID, will show picker")
+            }
+        }
+
         setupResult = result
 
+        // No existing accessories found, show the picker
         // Ensure we're on the main thread for UI operations
         Task { @MainActor in
             await presentAccessoryPicker(call: call)
@@ -485,7 +523,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             guard let accessory = event.accessory else { return }
             initWithAccessory(accessory: accessory)
         case .activated:
-            print("Accessory discovery session activated .")
+            print("Accessory discovery session activated.")
             checkAndConnectToExistingAccessories()
         case .accessoryRemoved:
             handleAccessoryRemoved()

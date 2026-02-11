@@ -8,6 +8,7 @@ import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/account/sync_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -222,6 +223,11 @@ class HomePageState extends ConsumerState<HomePage>
         }
       }
 
+      SyncManager().onFullScanFinished((account, success) {
+        if (!mounted) return;
+        _notifyAboutAccRescanFinishedToast(account, success: success);
+      });
+
       if (event == ConnectivityManagerEvent.foundationServerDown &&
           _serverDownWarningDisplayedMoreThan5minAgo &&
           mounted) {
@@ -388,6 +394,25 @@ class HomePageState extends ConsumerState<HomePage>
     }
   }
 
+  void _notifyAboutAccRescanFinishedToast(EnvoyAccount account,
+      {required bool success}) {
+    if (context.mounted) {
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        duration: const Duration(seconds: 3),
+        message: success
+            ? S().rescanAccount_toast_rescanningSuccessful(account.name)
+            : S().rescanAccount_toast_rescanningFailed(account.name),
+        icon: EnvoyIcon(
+          success ? EnvoyIcons.info : EnvoyIcons.alert,
+          color:
+              success ? EnvoyColors.accentPrimary : EnvoyColors.accentSecondary,
+        ),
+      ).show(context);
+    }
+  }
+
   void _notifyAboutFoundationServerDown() {
     if (context.mounted) {
       EnvoyToast(
@@ -461,12 +486,25 @@ class HomePageState extends ConsumerState<HomePage>
     final currentState = ref.read(homePageBackgroundProvider);
 
     switch (currentState) {
+      case HomePageBackgroundState.fiatChooser:
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.settings;
+        return false;
+      case HomePageBackgroundState.logs:
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.settings;
+        return false;
+      case HomePageBackgroundState.licence:
+        ref.read(homePageBackgroundProvider.notifier).state =
+            HomePageBackgroundState.about;
+        return false;
       case HomePageBackgroundState.settings:
       case HomePageBackgroundState.backups:
       case HomePageBackgroundState.support:
       case HomePageBackgroundState.about:
         ref.read(homePageBackgroundProvider.notifier).state =
             HomePageBackgroundState.menu;
+
         ref.read(backupPageProvider.notifier).state = false;
         return false;
 
@@ -616,114 +654,102 @@ class HomePageState extends ConsumerState<HomePage>
     return CoinSelectionOverlay(
       key: coinSelectionOverlayKey,
       child: Scaffold(
-        extendBodyBehindAppBar: true,
-        resizeToAvoidBottomInset: false,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(
-            AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight,
-          ),
-          child: IgnorePointer(
-            ignoring: fullScreen,
-            child: AnimatedOpacity(
-              opacity: fullScreen ? 0.0 : 1.0,
-              duration: _animationsDuration,
-              child: const HomeAppBar(backGroundShown: false),
-            ),
-          ),
-        ),
-        body: // Something behind
-            Stack(
-          children: [
-            // Main background
-            AnimatedPositioned(
-              top: 0,
-              height: screenHeight,
-              left: 0,
-              right: 0,
-              curve: Curves.easeIn,
-              duration: Duration(
-                milliseconds: _animationsDuration.inMilliseconds - 50,
-              ),
-              child: AppBackground(showRadialGradient: !_backgroundShown),
-            ),
-            // Variable background
-            SafeArea(
-              child: AnimatedSwitcher(
+          extendBodyBehindAppBar: true,
+          resizeToAvoidBottomInset: false,
+          appBar: PreferredSize(
+              preferredSize: Size.fromHeight(
+                  AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight),
+              child: IgnorePointer(
+                ignoring: fullScreen,
+                child: AnimatedOpacity(
+                    opacity: fullScreen ? 0.0 : 1.0,
+                    duration: _animationsDuration,
+                    child: const HomeAppBar(backGroundShown: false)),
+              )),
+          body: // Something behind
+              Stack(
+            children: [
+              // Main background
+              AnimatedPositioned(
+                  top: 0,
+                  height: screenHeight,
+                  left: 0,
+                  right: 0,
+                  curve: Curves.easeIn,
+                  duration: Duration(
+                      milliseconds: _animationsDuration.inMilliseconds - 50),
+                  child: AppBackground(
+                    showRadialGradient: !_backgroundShown,
+                  )),
+              // Shield
+              AnimatedPositioned(
                 duration: _animationsDuration,
-                child: Container(
-                  child: _backgroundShown
-                      ? BackButtonListener(
-                          onBackButtonPressed: () {
-                            return handleBackgroundBackPressed();
-                          },
-                          child: background,
-                        )
-                      : Container(),
+                top: shieldTotalTop,
+                height: shieldTotalHeight,
+                left: 5,
+                right: 5,
+                curve: EnvoyEasing.defaultEasing,
+                child: Stack(
+                  children: [
+                    Hero(
+                      tag: "shield",
+                      child: Shield(child: Container(color: Colors.transparent)),
+                    ),
+                    mainWidget,
+                  ],
                 ),
               ),
-            ),
-            // Tab bar
-            _backgroundShown || (modalShown || optionsShown || fullScreen)
-                ? SizedBox.shrink()
-                : Container(
-                    alignment: Alignment.bottomCenter,
-                    child: IgnorePointer(
-                      ignoring: _backgroundShown || modalShown || fullScreen,
+              // Tab bar - positioned AFTER Shield so it renders on top
+              _backgroundShown || (modalShown || optionsShown || fullScreen)
+                  ? SizedBox.shrink()
+                  : Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
                       child: EnvoyBottomNavigation(
                         onIndexChanged: (selectedIndex) {
                           // ENV-2064: Prevents clunky animation when switching tabs from nested routes.
                           widget.mainNavigationShell.goBranch(
-                            widget.mainNavigationShell.currentIndex,
-                            initialLocation: true,
-                          );
+                              widget.mainNavigationShell.currentIndex,
+                              initialLocation: true);
 
                           WidgetsBinding.instance.addPostFrameCallback((_) {
-                            widget.mainNavigationShell.goBranch(
-                              selectedIndex,
-                              initialLocation: true,
-                            );
+                            widget.mainNavigationShell
+                                .goBranch(selectedIndex, initialLocation: true);
                           });
                         },
                       ),
                     ),
-                  ),
-            Positioned(
-              top: shieldTop - 20,
-              left: 0,
-              right: 0,
-              child: IgnorePointer(
-                ignoring: !optionsShown,
-                child: AnimatedOpacity(
-                  opacity: optionsShown ? 1.0 : 0.0,
-                  duration: _animationsDuration,
+              // Options menu - positioned AFTER Shield so it renders on top
+              Positioned(
+                  top: shieldTop - 20,
+                  left: 0,
+                  right: 0,
+                  child: IgnorePointer(
+                      ignoring: !optionsShown,
+                      child: AnimatedOpacity(
+                          opacity: optionsShown ? 1.0 : 0.0,
+                          duration: _animationsDuration,
+                          child: AnimatedSwitcher(
+                              duration: _animationsDuration, child: options)))),
+              // Variable background (settings menu) - positioned AFTER Shield so it renders on top
+              IgnorePointer(
+                ignoring: !_backgroundShown,
+                child: SafeArea(
                   child: AnimatedSwitcher(
-                    duration: _animationsDuration,
-                    child: options,
-                  ),
+                      duration: _animationsDuration,
+                      child: _backgroundShown
+                          ? BackButtonListener(
+                              key: const ValueKey('settings_menu'),
+                              onBackButtonPressed: () {
+                                return handleBackgroundBackPressed();
+                              },
+                              child: background)
+                          : Container(key: const ValueKey('empty'))),
                 ),
               ),
-            ),
-            // Shield
-            AnimatedPositioned(
-              duration: _animationsDuration,
-              top: shieldTotalTop,
-              height: shieldTotalHeight,
-              left: 5,
-              right: 5,
-              curve: EnvoyEasing.defaultEasing,
-              child: Stack(
-                children: [
-                  Hero(
-                    tag: "shield",
-                    child: Shield(child: Container(color: Colors.transparent)),
-                  ),
-                  mainWidget,
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          )),
     );
   }
 

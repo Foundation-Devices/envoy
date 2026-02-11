@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+appId: com.foundationdevices.envoy
+---
+
+- tapOn:
+    id: hamburger_menu
+
+- tapOn: |-
+    BACKUPS
+    BACKUPS
+
+- tapOn: Erase Mobile Wallet
+
+- tapOn: Continue
+
+- tapOn: Continue
+
+- assertVisible: Delete Accounts anyway
+
+# go home
+- tapOn:
+    id: PopUp Primary Button

@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.2.6+4
+version: 2.3.0+11
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
@@ -124,6 +124,8 @@ dependency_overrides:
   watcher: ^1.1.0
 
 dev_dependencies:
+  kebab_mcp:
+    path: packages/kebab_mcp
   test: any
   flutter_test:
     sdk: flutter

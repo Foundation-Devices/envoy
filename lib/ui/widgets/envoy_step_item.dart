@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
+import 'package:envoy/ui/components/envoy_loaders.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -21,9 +21,9 @@ class StepModel {
 
 class EnvoyStepItem extends StatefulWidget {
   final StepModel? step;
-  final bool? highlight;
+  final bool highlight;
 
-  const EnvoyStepItem({super.key, this.step, this.highlight});
+  const EnvoyStepItem({super.key, this.step, this.highlight = false});
 
   @override
   State<EnvoyStepItem> createState() => _EnvoyStepItemState();
@@ -39,14 +39,9 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
     }
 
     final Widget leading = switch (step.state) {
-      EnvoyStepState.LOADING => const CupertinoActivityIndicator(
-          color: EnvoyColors.contentSecondary,
-          radius: 12,
-        ),
-      EnvoyStepState.FINISHED => const EnvoyIcon(
-          EnvoyIcons.check,
-          color: EnvoyColors.contentSecondary,
-        ),
+      EnvoyStepState.LOADING => const EnvoyActivityIndicator(),
+      EnvoyStepState.FINISHED => const Icon(CupertinoIcons.checkmark_alt,
+          color: EnvoyColors.textPrimary),
       EnvoyStepState.ERROR => const Icon(
           CupertinoIcons.exclamationmark_triangle,
           color: EnvoyColors.copper500,
@@ -87,14 +82,8 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
       return EnvoyColors.copper500;
     }
 
-    if (widget.highlight != null) {
-      return widget.highlight!
-          ? EnvoyColors.contentSecondary
-          : EnvoyColors.contentTertiary;
-    } else {
-      return widget.step?.state == EnvoyStepState.LOADING
-          ? EnvoyColors.contentSecondary
-          : EnvoyColors.contentTertiary;
-    }
+    return widget.highlight
+        ? EnvoyColors.contentSecondary
+        : EnvoyColors.contentTertiary;
   }
 }

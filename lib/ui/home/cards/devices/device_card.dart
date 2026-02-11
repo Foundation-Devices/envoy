@@ -266,7 +266,7 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                         dense: true,
                         minLeadingWidth: 0,
                         leading: EnvoyIcon(
-                          EnvoyIcons.chain,
+                          EnvoyIcons.devices,
                           color: deviceRemovedFromHostSystemSettings
                               ? NewEnvoyColor.contentDisabled
                               : Colors.black,
@@ -500,7 +500,6 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                             textEntry.enteredText,
                           );
                           Navigator.pop(context);
-                          context.go(ROUTE_DEVICES);
                         },
                       ),
                     ],

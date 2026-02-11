@@ -410,6 +410,44 @@ impl EnvoyAccountHandler {
             .collect::<Vec<(String, AddressType)>>()
     }
 
+    /// Get addresses for the given index range without revealing them.
+    /// Set `is_change` to true for change addresses, false for receive addresses.
+    pub fn peek_addresses(
+        &self,
+        address_type: AddressType,
+        from_index: u32,
+        to_index: u32,
+        is_change: bool,
+    ) -> Vec<(u32, String)> {
+        let account = self.ng_account.lock().unwrap();
+        let wallets = account.wallets.read().unwrap();
+
+        // Find wallet matching address_type
+        let wallet = wallets.iter().find(|w| w.address_type == address_type);
+        let keychain = if is_change {
+            KeychainKind::Internal
+        } else {
+            KeychainKind::External
+        };
+
+        if let Some(ng_wallet) = wallet {
+            let bdk_wallet = ng_wallet.bdk_wallet.lock().unwrap();
+            (from_index..to_index)
+                .filter_map(|idx| {
+                    bdk_wallet
+                        .peek_address(keychain, idx)
+                        .address
+                        .to_string()
+                        .into()
+                })
+                .enumerate()
+                .map(|(i, addr)| (from_index + i as u32, addr))
+                .collect()
+        } else {
+            vec![]
+        }
+    }
+
     pub fn request_full_scan(
         &mut self,
         address_type: AddressType,
@@ -531,16 +569,22 @@ impl EnvoyAccountHandler {
         scan_request: Arc<Mutex<Option<FullScanRequest<KeychainKind>>>>,
         electrum_server: &str,
         tor_port: Option<u16>,
+        stop_gap: Option<u16>,
     ) -> anyhow::Result<Arc<Mutex<Update>>> {
+        let stop_gap_usize = stop_gap.map(|v| v as usize);
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_deref();
         let mut scan_request_guard = scan_request
             .lock()
             .expect("Failed to lock scan request mutex");
         if let Some(scan_request) = scan_request_guard.take() {
-            // Use take() to move the value out
-            // Simulate a delay for the scan operation
-            match NgWallet::<Connection>::scan(scan_request, electrum_server, socks_proxy) {
+            let res = NgWallet::<Connection>::scan(
+                scan_request,
+                electrum_server,
+                socks_proxy,
+                stop_gap_usize,
+            );
+            match res {
                 Ok(update) => Ok(Arc::new(Mutex::new(Update::from(update)))),
                 Err(er) => Err(anyhow!("Error during scan: {}", er)),
             }
