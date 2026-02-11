@@ -58,6 +58,9 @@ class ConnectivityManager {
   bool nguConnected = true;
   int failedTorConnectivityAttempts = 0;
 
+  /// Flag to prevent concurrent restartTor() calls
+  bool _isRestartingTor = false;
+
   DateTime? torTemporarilyDisabledTimeStamp;
 
   final StreamController<ConnectivityManagerEvent> events =
@@ -155,14 +158,24 @@ class ConnectivityManager {
   }
 
   Future restartTor() async {
+    // Prevent concurrent restart attempts which can cause race conditions
+    if (_isRestartingTor) {
+      return;
+    }
+
     //if tor is enabled and we've had 5 failed connectivity attempts, restart tor
     if (torEnabled && failedTorConnectivityAttempts >= maxFailedTorAttempts) {
-      if (Tor.instance.bootstrapped) {
-        await Tor.instance.stop();
-        await Future.delayed(const Duration(milliseconds: 200));
+      _isRestartingTor = true;
+      try {
+        if (Tor.instance.bootstrapped) {
+          await Tor.instance.stop();
+          await Future.delayed(const Duration(milliseconds: 200));
+        }
+        await Tor.instance.start();
+        failedTorConnectivityAttempts = 0;
+      } finally {
+        _isRestartingTor = false;
       }
-      await Tor.instance.start();
-      failedTorConnectivityAttempts = 0;
     }
   }
 }
