@@ -68,7 +68,6 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
     } else if (Platform.isAndroid) {
       try {
         // final bonded =
-        //     await BluetoothChannel().isDeviceBonded(widget.device.bleId);
         setState(() {
           isDeviceBonded = false;
         });
@@ -125,8 +124,10 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
           fontSize: 14,
           color: NewEnvoyColor.neutral900,
         );
-    final isConnected = ref.watch(isPrimeConnectedProvider(widget.device));
+    final bleConnected = ref.watch(isPrimeConnectedProvider(widget.device));
+    final qlActive = ref.watch(primeQLActivityProvider(widget.device));
 
+    final isConnected = bleConnected && qlActive;
     //android status is not required
     final deviceRemovedFromHostSystemSettings =
         widget.device.type == DeviceType.passportPrime
@@ -139,11 +140,6 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
         color: deviceRemovedFromHostSystemSettings
             ? NewEnvoyColor.contentDisabled
             : NewEnvoyColor.contentPrimary);
-
-    final listItemTrailingTheme = EnvoyTypography.body.copyWith(
-        color: deviceRemovedFromHostSystemSettings
-            ? NewEnvoyColor.contentDisabled
-            : NewEnvoyColor.contentSecondary);
 
     final isConnectedItemTheme = EnvoyTypography.body.copyWith(
         color: deviceRemovedFromHostSystemSettings
@@ -255,34 +251,6 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                                 color: NewEnvoyColor.contentSecondary),
                           ),
                         ),
-                      Divider(
-                        color: NewEnvoyColor.neutral200,
-                        height: 1,
-                      ),
-                      ListTile(
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.xs,
-                        ),
-                        dense: true,
-                        minLeadingWidth: 0,
-                        leading: EnvoyIcon(
-                          EnvoyIcons.chain,
-                          color: deviceRemovedFromHostSystemSettings
-                              ? NewEnvoyColor.contentDisabled
-                              : Colors.black,
-                          size: EnvoyIconSize.small,
-                        ),
-                        horizontalTitleGap: EnvoySpacing.xs,
-                        title: Text(
-                          S().manage_device_details_devicePaired,
-                          style: listItemTitleTheme,
-                        ),
-                        trailing: Text(
-                          timeago.format(widget.device.datePaired,
-                              locale: activeLocale.languageCode),
-                          style: listItemTrailingTheme,
-                        ),
-                      ),
                       if (widget.device.type == DeviceType.passportPrime)
                         Divider(
                           color: NewEnvoyColor.neutral200,
@@ -307,7 +275,6 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                             S().manage_device_details_QuantumLink,
                             style: listItemTitleTheme,
                           ),
-                          //TODO: implement connection status based on device QL heartbeat
                           trailing: Text(
                             isConnected
                                 ? S().manage_device_details_active
@@ -513,7 +480,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
         const SizedBox(height: 10),
         GestureDetector(
           child: Text(
-            S().manage_device_details_menu_disconnectDevice,
+            S().manage_device_details_menu_unpairPassport,
             style: const TextStyle(color: EnvoyColors.copperLight500),
           ),
           onTap: () {
@@ -526,7 +493,7 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                 showCloseButton: false,
                 title: S().component_areYouSure,
                 content: S().manage_device_deletePassportWarning,
-                primaryButtonLabel: S().componet_disconnect,
+                primaryButtonLabel: S().component_unpair,
                 primaryButtonColor: EnvoyColors.warning,
                 onPrimaryButtonTap: (context) {
                   Devices().deleteDevice(widget.device);
