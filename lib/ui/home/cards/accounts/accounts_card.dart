@@ -232,6 +232,7 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
   final ScrollController _scrollController = ScrollController();
   final double _accountHeight = 124;
   bool _onReOrderStart = false;
+  bool _scrollingToEnd = false;
 
   //keep order state in the widget to avoid unnecessary rebuilds
   List<String> _accountsOrder = [];
@@ -328,16 +329,25 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
       if (previous != null &&
           previous.length < next.length &&
           next.length >= 5) {
-        if (_scrollController.hasClients) {
-          _scrollController.animateTo(
-            listContentHeight, //when new acc, go to bottom to see the acc
-            duration: const Duration(milliseconds: 1),
-            curve: Curves.ease,
-          );
-        }
+        _scrollingToEnd = true;
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (mounted && _scrollController.hasClients) {
+            _scrollController
+                .animateTo(
+                  _scrollController.position.maxScrollExtent,
+                  duration: const Duration(milliseconds: 700),
+                  curve: Curves.ease,
+                )
+                .whenComplete(() => _scrollingToEnd = false);
+          } else {
+            _scrollingToEnd = false;
+          }
+        });
       }
 
-      if (previous != null && previous.length > next.length) {
+      if (previous != null &&
+          previous.length > next.length &&
+          !_scrollingToEnd) {
         if (_scrollController.hasClients) {
           _scrollController.animateTo(
             0, //when delete acc go to top
