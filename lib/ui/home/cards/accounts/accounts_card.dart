@@ -257,8 +257,6 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
       return true;
     }).toList();
 
-    final listContentHeight = accounts.length * _accountHeight;
-
     // Keep _accountsOrder in sync with accountOrderStream
     ref.listen(accountOrderStream, (
       List<String>? previous,
