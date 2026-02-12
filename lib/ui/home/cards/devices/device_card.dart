@@ -6,7 +6,7 @@ import 'dart:io';
 
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
-import 'package:envoy/channels/accessory.dart';
+import 'package:envoy/channels/ble_device_info.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
@@ -41,11 +41,9 @@ class DeviceCard extends ConsumerStatefulWidget {
 }
 
 class _DeviceCardState extends ConsumerState<DeviceCard> {
-  // iOS
-  AccessoryInfo? accessoryInfo;
-
-  // Android
-  bool? isDeviceBonded;
+  // Host OS pairing/connection metadata for this Prime device
+  BleDeviceInfo? _accessoryInfo;
+  bool _loadingAccessoryInfo = true;
 
   void _redraw() {
     setState(() {});
@@ -53,27 +51,18 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
 
   Future loadDevicePairingInfo() async {
     if (widget.device.type != DeviceType.passportPrime) return;
-
-    if (Platform.isIOS) {
-      try {
-        final accessories = await BluetoothChannel().getAccessories();
-        final accessory = accessories.firstWhereOrNull((accessory) =>
-            accessory.peripheralId == widget.device.peripheralId);
-        setState(() {
-          accessoryInfo = accessory;
-        });
-      } catch (e) {
-        // Handle error if needed
-      }
-    } else if (Platform.isAndroid) {
-      try {
-        // final bonded =
-        setState(() {
-          isDeviceBonded = false;
-        });
-      } catch (e) {
-        // Handle error if needed
-      }
+    if (!Platform.isIOS && !Platform.isAndroid) return;
+    try {
+      final accessories = await BluetoothChannel().getAccessories();
+      final accessory = accessories.firstWhereOrNull(
+        (accessory) => accessory.peripheralId == widget.device.peripheralId,
+      );
+      setState(() {
+        _accessoryInfo = accessory;
+        _loadingAccessoryInfo = false;
+      });
+    } catch (e) {
+      // Ignore and keep current state
     }
   }
 
@@ -120,6 +109,12 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
   @override
   Widget build(BuildContext context) {
     final Locale activeLocale = Localizations.localeOf(context);
+    ref.listen(isPrimeConnectedProvider(widget.device), (_, next) {
+      loadDevicePairingInfo();
+    });
+    ref.listen(primeQLActivityProvider(widget.device), (_, next) {
+      loadDevicePairingInfo();
+    });
     final listItemTheme = Theme.of(context).textTheme.labelMedium?.copyWith(
           fontSize: 14,
           color: NewEnvoyColor.neutral900,
@@ -128,13 +123,17 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
     final qlActive = ref.watch(primeQLActivityProvider(widget.device));
 
     final isConnected = bleConnected && qlActive;
-    //android status is not required
-    final deviceRemovedFromHostSystemSettings =
+
+    bool deviceRemovedFromHostSystemSettings =
         widget.device.type == DeviceType.passportPrime
-            ? Platform.isIOS
-                ? accessoryInfo == null
-                : false
+            ? _accessoryInfo == null
             : false;
+
+    //loading state for accessory info,
+    //to fix flickering of connection status when page is first opened
+    if (_loadingAccessoryInfo) {
+      deviceRemovedFromHostSystemSettings = false;
+    }
 
     final listItemTitleTheme = EnvoyTypography.body.copyWith(
         color: deviceRemovedFromHostSystemSettings
@@ -157,8 +156,10 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          physics: const BouncingScrollPhysics(),
           children: [
             Padding(
               padding: const EdgeInsets.only(
@@ -285,8 +286,19 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                     ],
                   ),
                 )),
-            if (widget.device.type == DeviceType.passportPrime)
-              Expanded(child: PrimeOptionsWidget(device: widget.device)),
+            if (widget.device.type == DeviceType.passportPrime) ...[
+              PrimeOptionsWidget(
+                device: widget.device,
+                deviceRemovedFromHostSystemSettings:
+                    deviceRemovedFromHostSystemSettings,
+                onRepairComplete: () {
+                  loadDevicePairingInfo();
+                },
+              ),
+              SizedBox(
+                height: EnvoySpacing.large1,
+              )
+            ]
           ],
         ),
       ),
@@ -296,61 +308,31 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
 
 class PrimeOptionsWidget extends ConsumerStatefulWidget {
   final Device device;
+  final bool deviceRemovedFromHostSystemSettings;
+  final VoidCallback onRepairComplete;
 
-  const PrimeOptionsWidget({super.key, required this.device});
+  const PrimeOptionsWidget(
+      {super.key,
+      required this.device,
+      this.deviceRemovedFromHostSystemSettings = false,
+      required this.onRepairComplete});
 
   @override
   ConsumerState createState() => _PrimeOptionsWidgetState();
 }
 
 class _PrimeOptionsWidgetState extends ConsumerState<PrimeOptionsWidget> {
-  // iOS
-  AccessoryInfo? accessoryInfo;
-
-  // Android
-  bool? isDeviceBonded;
-
-  bool get deviceRemovedFromHostSystemSettings => Platform.isIOS
-      ? accessoryInfo == null
-      : Platform.isAndroid
-          ? !(isDeviceBonded ?? true)
-          : false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      loadDevicePairingInfo();
-    });
-  }
-
-  Future loadDevicePairingInfo() async {
-    if (Platform.isIOS) {
-      try {
-        final accessories = await BluetoothChannel().getAccessories();
-
-        final accessory = accessories.firstWhereOrNull(
-          (accessory) => accessory.peripheralId == widget.device.peripheralId,
-        );
-        setState(() {
-          accessoryInfo = accessory;
-        });
-      } catch (e) {
-        // Handle error if needed
-      }
-    } else if (Platform.isAndroid) {
-      try {
-        setState(() {
-          isDeviceBonded = true;
-        });
-      } catch (e) {
-        // Handle error if needed
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final deviceRemovedFromHostSystemSettings =
+        widget.deviceRemovedFromHostSystemSettings;
+    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+    final verticalActionPadding = devicePixelRatio >= 3.0
+        ? EnvoySpacing.medium1
+        : devicePixelRatio >= 2.0
+            ? EnvoySpacing.medium1
+            : EnvoySpacing.small;
+
     return ColoredBox(
       color: Colors.transparent,
       child: Column(
@@ -377,24 +359,28 @@ class _PrimeOptionsWidgetState extends ConsumerState<PrimeOptionsWidget> {
                     ))
               ],
             ),
-          // TODO: implement later
-          // if (deviceRemovedFromHostSystemSettings)
-          //   Padding(
-          //     padding:
-          //         const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium2),
-          //     child: EnvoyButton(
-          //         Platform.isIOS
-          //             ? S()
-          //                 .device_deviceDetailsPrimeRemoved_completeAccessorySetup
-          //             : S().device_deviceDetailsPrimeRemoved_pairPassportAgain,
-          //         onTap: () async {
-          //       if (deviceRemovedFromHostSystemSettings) {
-          //         await BluetoothChannel().setupBle(widget.device.bleId,
-          //             widget.device.color == Colors.black ? 0 : 1);
-          //         await loadDevicePairingInfo();
-          //       }
-          //     }),
-          //   ),
+          if (deviceRemovedFromHostSystemSettings)
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: EnvoySpacing.medium2,
+                  vertical: verticalActionPadding),
+              child: EnvoyButton(
+                  Platform.isIOS
+                      ? S()
+                          .device_deviceDetailsPrimeRemoved_completeAccessorySetup
+                      : S().device_deviceDetailsPrimeRemoved_pairPassportAgain,
+                  onTap: () async {
+                if (deviceRemovedFromHostSystemSettings) {
+                  final qlConnection = await BluetoothChannel().setupBle(
+                      widget.device.bleId,
+                      widget.device.color == Colors.black ? 0 : 1);
+                  //after repairing the connection,  restore XID's
+                  await qlConnection.reconnect(widget.device);
+                  await Future.delayed(const Duration(seconds: 2));
+                  widget.onRepairComplete.call();
+                }
+              }),
+            ),
           SizedBox(height: EnvoySpacing.xs),
         ],
       ),
