@@ -405,12 +405,13 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         for accessory in accessories {
             let peripheralId = accessory.bluetoothIdentifier?.uuidString ?? ""
             let isConnected = peripheralId.isEmpty ? false : (devices[peripheralId]?.isConnected() ?? false)
-
+           
             let accessoryInfo: [String: Any] = [
                 "peripheralId": peripheralId,
                 "peripheralName": accessory.displayName,
                 "isConnected": isConnected,
-                "state": accessory.state.rawValue
+                "state": accessory.state.rawValue,
+                "bondState": true
             ]
 
             accessoryList.append(accessoryInfo)
