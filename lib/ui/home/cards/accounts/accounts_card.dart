@@ -256,8 +256,6 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
       return true;
     }).toList();
 
-    final listContentHeight = accounts.length * _accountHeight;
-
     // Keep _accountsOrder in sync with accountOrderStream
     ref.listen(accountOrderStream, (
       List<String>? previous,
@@ -324,13 +322,13 @@ class _DefaultAccountsListState extends ConsumerState<DefaultAccountsList> {
         Future.microtask(
             () => NgAccountManager().updateAccountOrder(_accountsOrder));
       }
-
       if (previous != null &&
           previous.length < next.length &&
           next.length >= 5) {
         if (_scrollController.hasClients) {
           _scrollController.animateTo(
-            listContentHeight, //when new acc, go to bottom to see the acc
+            accounts.length *
+                _accountHeight, //when new acc, go to bottom to see the acc
             duration: const Duration(milliseconds: 1),
             curve: Curves.ease,
           );
