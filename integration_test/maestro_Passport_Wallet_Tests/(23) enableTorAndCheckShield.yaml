@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# (23) enableTorAndCheckShield
 appId: com.foundationdevices.envoy
 ---
 # go to privacy

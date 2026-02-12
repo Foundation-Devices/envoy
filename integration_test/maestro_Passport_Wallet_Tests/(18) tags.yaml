@@ -2,8 +2,10 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# (18) tags
 appId: com.foundationdevices.envoy
 ---
+
 - tapOn: GH TEST ACC (#1)
 
 - tapOn: Activity
@@ -15,7 +17,8 @@ appId: com.foundationdevices.envoy
 # 2) Tap Tag selected
 - tapOn: Tag Selected
 
-- tapOn: Back
+- tapOn:
+    id: coin_tag_warning_close
 
 - tapOn:
     id: coin_tag_switch_Untagged_off

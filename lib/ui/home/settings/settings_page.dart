@@ -260,6 +260,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   trailing: SettingToggle(
                     s.showTestnetAccounts,
                     s.setShowTestnetAccounts,
+                    semanticsLabel: "Testnet Toggle",
                     onEnabled: () {
                       showEnvoyDialog(
                         context: context,
@@ -277,6 +278,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   trailing: SettingToggle(
                     s.showSignetAccounts,
                     s.setShowSignetAccounts,
+                    semanticsLabel: "Signet Toggle",
                     onEnabled: () {
                       showEnvoyDialog(
                         context: context,
@@ -292,6 +294,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   trailing: SettingToggle(
                     s.taprootEnabled,
                     s.setTaprootEnabled,
+                    semanticsLabel: "Taproot Toggle",
                     onEnabled: () async {
                       if (context.mounted) {
                         showEnvoyPopUp(
@@ -358,6 +361,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         trailing: SettingToggle(
                           s.isAllowedBuyInEnvoy,
                           s.setAllowBuyInEnvoy,
+                          semanticsLabel: "Buy Toggle",
                         ),
                       )
                     : const SizedBox.shrink(),

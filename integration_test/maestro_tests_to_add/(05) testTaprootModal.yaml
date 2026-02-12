@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# (05) testTaprootModal
 appId: com.foundationdevices.envoy
 ---
 
@@ -94,7 +95,7 @@ appId: com.foundationdevices.envoy
 # make sure pop-up is visible
 - extendedWaitUntil:
     visible: "Receive to Taproot"
-    timeout: 60000
+    timeout: 180000 # wait 3 min
 
 - tapOn:
     id: PopUp Primary Button

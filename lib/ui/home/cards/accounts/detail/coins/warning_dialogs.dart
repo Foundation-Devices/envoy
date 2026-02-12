@@ -104,17 +104,20 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
         children: [
           Align(
             alignment: Alignment.centerRight,
-            child: IconButton(
-              padding: const EdgeInsets.all(EnvoySpacing.small),
-              icon: const Icon(Icons.close),
-              onPressed: () {
-                if (ref.read(selectedAccountProvider) != null) {
-                  coinSelectionOverlayKey.currentState?.show(
-                    SpendOverlayContext.preselectCoins,
-                  );
-                }
-                Navigator.of(context).pop();
-              },
+            child: Semantics(
+              identifier: "coin_tag_warning_close",
+              child: IconButton(
+                padding: const EdgeInsets.all(EnvoySpacing.small),
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  if (ref.read(selectedAccountProvider) != null) {
+                    coinSelectionOverlayKey.currentState?.show(
+                      SpendOverlayContext.preselectCoins,
+                    );
+                  }
+                  Navigator.of(context).pop();
+                },
+              ),
             ),
           ),
           const SizedBox(height: EnvoySpacing.small),

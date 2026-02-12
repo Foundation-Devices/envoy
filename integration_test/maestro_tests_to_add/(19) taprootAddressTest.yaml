@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# (19) taprootAddressTest
 appId: com.foundationdevices.envoy
 ---
 # TODO: test is not working well, taproot switch is not responding in Settings/Advanced

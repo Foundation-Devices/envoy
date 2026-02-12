@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# (16) enableTaproot
 appId: com.foundationdevices.envoy
 ---
 # TODO: taproot is acting weird and app is not responding !!!!

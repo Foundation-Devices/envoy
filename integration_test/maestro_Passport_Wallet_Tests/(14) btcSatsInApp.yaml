@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# (14) btcSatsInApp
 appId: com.foundationdevices.envoy
 ---
 
@@ -105,8 +106,8 @@ appId: com.foundationdevices.envoy
 - tapOn: Send
 
 
-    # cycle to fiat if not already there
-  # cycle order: sats → fiat → btc → sats
+# cycle to fiat if not already there
+# cycle order: sats → fiat → btc → sats
 
 # if on sats, tap once to get to fiat
 - runFlow:

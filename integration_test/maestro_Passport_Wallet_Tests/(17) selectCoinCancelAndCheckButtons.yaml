@@ -2,8 +2,14 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# (17) selectCoinCancelAndCheckButtons
 appId: com.foundationdevices.envoy
 ---
+
+# go to top
+- swipe:
+    direction: DOWN
+    duration: 500
 
 - tapOn: GH TEST ACC (#1)
 
