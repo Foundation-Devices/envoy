@@ -47,32 +47,40 @@ class _FwIntroPageState extends State<FwIntroPage> {
         subheading: _downloading ? "" : S().envoy_fw_intro_subheading,
         onLinkTextTap: () {
           launchUrlString(
-              "https://github.com/Foundation-Devices/passport2/releases");
+            "https://github.com/Foundation-Devices/passport2/releases",
+          );
         },
         buttons: [
           if (!_downloading)
-            EnvoyButton(S().envoy_fw_intro_cta,
-                borderRadius:
-                    BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
-                onTap: () async {
-              // make sure it is downloaded
-              if (!await UpdatesManager()
-                  .isFirmwareDownloaded(widget.fwPagePayload.deviceId)) {
+            EnvoyButton(
+              S().envoy_fw_intro_cta,
+              borderRadius: BorderRadius.all(
+                Radius.circular(EnvoySpacing.medium1),
+              ),
+              onTap: () async {
+                // make sure it is downloaded
+                if (!await UpdatesManager().isFirmwareDownloaded(
+                  widget.fwPagePayload.deviceId,
+                )) {
+                  setState(() {
+                    _downloading = true;
+                  });
+                  await UpdatesManager().fetchAndDownloadFirmwareUpdate(
+                    widget.fwPagePayload.deviceId,
+                  );
+                }
                 setState(() {
-                  _downloading = true;
+                  _downloading = false;
                 });
-                await UpdatesManager().fetchAndDownloadFirmwareUpdate(
-                    widget.fwPagePayload.deviceId);
-              }
-              setState(() {
-                _downloading = false;
-              });
 
-              if (context.mounted) {
-                context.pushNamed(PASSPORT_UPDATE_SD_CARD,
-                    extra: widget.fwPagePayload);
-              }
-            }),
+                if (context.mounted) {
+                  context.pushNamed(
+                    PASSPORT_UPDATE_SD_CARD,
+                    extra: widget.fwPagePayload,
+                  );
+                }
+              },
+            ),
         ],
       ),
     );

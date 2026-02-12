@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
@@ -17,6 +18,7 @@ import 'package:envoy/ui/onboard/manual/widgets/mnemonic_grid_widget.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
+import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -37,6 +39,7 @@ import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+QLConnection? _onboardingDevice;
 // TODO: remove this, store somewhere else
 final estimatedTimeProvider = StateProvider<int>((ref) => 0);
 final bleMacRegex = RegExp(r'^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$');
@@ -138,26 +141,24 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
     try {
       if (bleMacRegex.hasMatch(bleId ?? "")) {
-        if (Platform.isIOS) {
-          final setUpSuccess = await BluetoothChannel().showAccessorySetup();
-          if (setUpSuccess) {
-            if (mounted) {
-              setState(() {
-                bleConnectState = BleConnectState.connected;
-              });
-            }
-            if (context.mounted && mounted) {
-              return showQLScanner(context);
-            }
-          }
-        } else {
+        if (!Platform.isIOS) {
           await BluetoothManager().getPermissions();
         }
 
-        final connectionStatus = await BluetoothManager()
-            .setupBle(id: bleId ?? "", colorWay: colorWay);
+        _onboardingDevice = await BluetoothChannel().setupBle(
+          bleId ?? "",
+          colorWay,
+        );
 
-        if (!connectionStatus && mounted) {
+        ref.read(onboardingDeviceProvider.notifier).state = _onboardingDevice;
+        if (_onboardingDevice == null) {
+          throw Exception("Got null device when trying to connect to Prime.");
+        }
+        if (Platform.isAndroid) {
+          await Future.delayed(const Duration(seconds: 1));
+        }
+        final connectionStatus = _onboardingDevice!.lastDeviceStatus;
+        if (!connectionStatus.connected && mounted) {
           setState(() {
             bleConnectState = BleConnectState.idle;
           });
@@ -166,7 +167,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             throw Exception("Failed to connect to Prime device.");
           }
         }
-        if (mounted && connectionStatus) {
+        if (mounted && connectionStatus.connected) {
           setState(() {
             bleConnectState = BleConnectState.connected;
           });
@@ -251,9 +252,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             Navigator.pop(context);
           }
 
-          await Future.delayed(
-            const Duration(milliseconds: 200),
-          );
+          await Future.delayed(const Duration(milliseconds: 200));
 
           if (!onboardingCompleted) {
             await pairWithPrime(payload);
@@ -263,9 +262,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             if (context.mounted) {
               context.goNamed(ONBOARD_REPAIRING);
             }
-            await Future.delayed(
-              const Duration(milliseconds: 400),
-            );
+            await Future.delayed(const Duration(milliseconds: 400));
             await pairWithPrime(payload);
           }
         },
@@ -279,50 +276,53 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     //TODO: update copy based on s.syncToCloud
     // bool enabledMagicBackup = s.syncToCloud;
     return EnvoyPatternScaffold(
-        gradientHeight: 1.8,
-        appBar: AppBar(
-          elevation: 0,
-          toolbarHeight: kToolbarHeight,
-          backgroundColor: Colors.transparent,
-          leading: CupertinoNavigationBarBackButton(
-            color: Colors.white,
-            onPressed: () {
-              context.pop();
-              return;
-            },
-          ),
-          automaticallyImplyLeading: false,
+      gradientHeight: 1.8,
+      appBar: AppBar(
+        elevation: 0,
+        toolbarHeight: kToolbarHeight,
+        backgroundColor: Colors.transparent,
+        leading: CupertinoNavigationBarBackButton(
+          color: Colors.white,
+          onPressed: () {
+            context.pop();
+            return;
+          },
         ),
-        header: Transform.translate(
-          offset: const Offset(0, 70),
-          child: TweenAnimationBuilder(
-            duration: const Duration(milliseconds: 600),
-            tween: Tween<double>(end: 1.0, begin: 0.0),
-            curve: Curves.decelerate,
-            builder: (context, value, child) {
-              return Opacity(opacity: value, child: child);
-            },
-            child: Hero(
-              tag: "hero_prime_devices",
-              child: Image.asset(
-                "assets/images/prime_bluetooth_shield.png",
-                alignment: Alignment.bottomCenter,
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: 320,
-              ),
+        automaticallyImplyLeading: false,
+      ),
+      header: Transform.translate(
+        offset: const Offset(0, 70),
+        child: TweenAnimationBuilder(
+          duration: const Duration(milliseconds: 600),
+          tween: Tween<double>(end: 1.0, begin: 0.0),
+          curve: Curves.decelerate,
+          builder: (context, value, child) {
+            return Opacity(opacity: value, child: child);
+          },
+          child: Hero(
+            tag: "hero_prime_devices",
+            child: Image.asset(
+              "assets/images/prime_bluetooth_shield.png",
+              alignment: Alignment.bottomCenter,
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: 320,
             ),
           ),
         ),
-        shield: PageTransitionSwitcher(
-            transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
-              return SharedAxisTransition(
-                  fillColor: Colors.transparent,
-                  animation: primaryAnimation,
-                  secondaryAnimation: secondaryAnimation,
-                  transitionType: SharedAxisTransitionType.vertical,
-                  child: child);
-            },
-            child: quantumLinkIntro(context)));
+      ),
+      shield: PageTransitionSwitcher(
+        transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
+          return SharedAxisTransition(
+            fillColor: Colors.transparent,
+            animation: primaryAnimation,
+            secondaryAnimation: secondaryAnimation,
+            transitionType: SharedAxisTransitionType.vertical,
+            child: child,
+          );
+        },
+        child: quantumLinkIntro(context),
+      ),
+    );
   }
 
   Widget quantumLinkIntro(BuildContext context) {
@@ -337,9 +337,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                    height: EnvoySpacing.large1,
-                  ),
+                  SizedBox(height: EnvoySpacing.large1),
                   Text(
                     S().onboarding_bluetoothIntro_header,
                     textAlign: TextAlign.center,
@@ -392,10 +390,12 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                       opacity: bleConnectState == BleConnectState.connecting
                           ? 0.5
                           : 1,
-                      child: EnvoyButton(S().onboarding_bluetoothIntro_connect,
-                          onTap: () {
-                        _connectToPrime();
-                      }),
+                      child: EnvoyButton(
+                        S().onboarding_bluetoothIntro_connect,
+                        onTap: () {
+                          _connectToPrime();
+                        },
+                      ),
                     ),
                     if (bleConnectState == BleConnectState.connecting)
                       const CupertinoActivityIndicator(),
@@ -410,7 +410,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   Future<bool> pairWithPrime(XidDocument payload) async {
-    return await BluetoothManager().pair(payload);
+    return await _onboardingDevice?.pair(payload) ?? false;
   }
 
   Future<void> showCommunicationModal(BuildContext context) async {
@@ -478,73 +478,75 @@ class _QuantumLinkCommunicationInfoState
                 ),
                 const Padding(padding: EdgeInsets.all(EnvoySpacing.xs)),
                 Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.small,
-                        horizontal: EnvoySpacing.xs),
-                    child: Text(
-                      //TODO: copy update
-                      "The Communication is Secured",
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.info,
-                    )),
-                Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: EnvoySpacing.small,
-                        horizontal: EnvoySpacing.medium1),
-                    child: Container(
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height *
-                            0.6, // max size of PageView
-                      ),
-                      child: SingleChildScrollView(
-                        child: ExpandablePageView(
-                          controller: _pageController,
-                          children: [
-                            LinkText(
-                              text: Platform.isAndroid
-                                  ? S()
-                                      .wallet_security_modal_1_4_android_subheading
-                                  : S()
-                                      .wallet_security_modal_1_4_ios_subheading,
-                              linkStyle: EnvoyTypography.info.copyWith(
-                                color: EnvoyColors.accentPrimary,
-                              ),
-                              onTap: () => launchUrl(
-                                Uri.parse(
-                                  Platform.isAndroid
-                                      ? "https://developer.android.com/guide/topics/data/autobackup"
-                                      : "https://support.apple.com/en-us/HT202303",
-                                ),
-                              ),
-                            ),
-                            Text(
-                              S().backups_erase_wallets_and_backups_modal_2_2_subheading,
-                              textAlign: TextAlign.center,
-                              style: EnvoyTypography.info,
-                            ),
-                          ],
-                        ),
-                      ),
-                    )),
-                DotsIndicator(
-                  totalPages: 2,
-                  pageController: _pageController,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: EnvoySpacing.small,
+                    horizontal: EnvoySpacing.xs,
+                  ),
+                  child: Text(
+                    //TODO: copy update
+                    "The Communication is Secured",
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.info,
+                  ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: EnvoySpacing.small,
+                    horizontal: EnvoySpacing.medium1,
+                  ),
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height *
+                          0.6, // max size of PageView
+                    ),
+                    child: SingleChildScrollView(
+                      child: ExpandablePageView(
+                        controller: _pageController,
+                        children: [
+                          LinkText(
+                            text: Platform.isAndroid
+                                ? S()
+                                    .wallet_security_modal_1_4_android_subheading
+                                : S().wallet_security_modal_1_4_ios_subheading,
+                            linkStyle: EnvoyTypography.info.copyWith(
+                              color: EnvoyColors.accentPrimary,
+                            ),
+                            onTap: () => launchUrl(
+                              Uri.parse(
+                                Platform.isAndroid
+                                    ? "https://developer.android.com/guide/topics/data/autobackup"
+                                    : "https://support.apple.com/en-us/HT202303",
+                              ),
+                            ),
+                          ),
+                          Text(
+                            S().backups_erase_wallets_and_backups_modal_2_2_subheading,
+                            textAlign: TextAlign.center,
+                            style: EnvoyTypography.info,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                DotsIndicator(totalPages: 2, pageController: _pageController),
               ],
             ),
             OnboardingButton(
-                type: EnvoyButtonTypes.tertiary,
-                label: S().component_cancel,
-                onTap: () {
-                  context.pop(context);
-                }),
+              type: EnvoyButtonTypes.tertiary,
+              label: S().component_cancel,
+              onTap: () {
+                context.pop(context);
+              },
+            ),
             OnboardingButton(
-                type: EnvoyButtonTypes.primaryModal,
-                label: S().component_continue,
-                onTap: () {
-                  context.pop();
-                  widget.onContinue();
-                }),
+              type: EnvoyButtonTypes.primaryModal,
+              label: S().component_continue,
+              onTap: () {
+                context.pop();
+                widget.onContinue();
+              },
+            ),
             const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
           ],
         ),
@@ -559,47 +561,50 @@ class OnboardBluetoothDenied extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EnvoyPatternScaffold(
-        gradientHeight: 1.8,
-        appBar: AppBar(
-          elevation: 0,
-          toolbarHeight: kToolbarHeight,
-          backgroundColor: Colors.transparent,
-          leading: CupertinoNavigationBarBackButton(
-            color: Colors.white,
-            onPressed: () {
-              context.pop();
-              return;
-            },
-          ),
-          automaticallyImplyLeading: false,
+      gradientHeight: 1.8,
+      appBar: AppBar(
+        elevation: 0,
+        toolbarHeight: kToolbarHeight,
+        backgroundColor: Colors.transparent,
+        leading: CupertinoNavigationBarBackButton(
+          color: Colors.white,
+          onPressed: () {
+            context.pop();
+            return;
+          },
         ),
-        header: Transform.translate(
-          offset: const Offset(0, 70),
-          child: TweenAnimationBuilder(
-            duration: const Duration(milliseconds: 600),
-            tween: Tween<double>(end: 1.0, begin: 0.0),
-            curve: Curves.decelerate,
-            builder: (context, value, child) {
-              return Opacity(opacity: value, child: child);
-            },
-            child: Image.asset(
-              "assets/images/bluetooth_shield_denied.png",
-              alignment: Alignment.bottomCenter,
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: 320,
-            ),
+        automaticallyImplyLeading: false,
+      ),
+      header: Transform.translate(
+        offset: const Offset(0, 70),
+        child: TweenAnimationBuilder(
+          duration: const Duration(milliseconds: 600),
+          tween: Tween<double>(end: 1.0, begin: 0.0),
+          curve: Curves.decelerate,
+          builder: (context, value, child) {
+            return Opacity(opacity: value, child: child);
+          },
+          child: Image.asset(
+            "assets/images/bluetooth_shield_denied.png",
+            alignment: Alignment.bottomCenter,
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: 320,
           ),
         ),
-        shield: PageTransitionSwitcher(
-            transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
-              return SharedAxisTransition(
-                  fillColor: Colors.transparent,
-                  animation: primaryAnimation,
-                  secondaryAnimation: secondaryAnimation,
-                  transitionType: SharedAxisTransitionType.vertical,
-                  child: child);
-            },
-            child: bluetoothPermission(context)));
+      ),
+      shield: PageTransitionSwitcher(
+        transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
+          return SharedAxisTransition(
+            fillColor: Colors.transparent,
+            animation: primaryAnimation,
+            secondaryAnimation: secondaryAnimation,
+            transitionType: SharedAxisTransitionType.vertical,
+            child: child,
+          );
+        },
+        child: bluetoothPermission(context),
+      ),
+    );
   }
 
   Widget bluetoothPermission(BuildContext context) {
@@ -607,9 +612,7 @@ class OnboardBluetoothDenied extends StatelessWidget {
       children: [
         Flexible(
           child: Container(
-            constraints: const BoxConstraints(
-              minHeight: 300,
-            ),
+            constraints: const BoxConstraints(minHeight: 300),
             child: SingleChildScrollView(
               child: Container(
                 margin: const EdgeInsets.symmetric(
@@ -617,7 +620,8 @@ class OnboardBluetoothDenied extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.medium1),
+                    horizontal: EnvoySpacing.medium1,
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -656,16 +660,23 @@ class OnboardBluetoothDenied extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              EnvoyButton(S().component_learnMore,
-                  type: EnvoyButtonTypes.tertiary, onTap: () {
-                launchUrl(
-                    Uri.parse("https://docs.foundation.xyz/prime/quantumlink"));
-              }),
+              EnvoyButton(
+                S().component_learnMore,
+                type: EnvoyButtonTypes.tertiary,
+                onTap: () {
+                  launchUrl(
+                    Uri.parse("https://docs.foundation.xyz/prime/quantumlink"),
+                  );
+                },
+              ),
               const SizedBox(height: EnvoySpacing.small),
-              EnvoyButton(S().onboarding_bluetoothDisabled_enable, onTap: () {
-                context.pop();
-                openAppSettings();
-              }),
+              EnvoyButton(
+                S().onboarding_bluetoothDisabled_enable,
+                onTap: () {
+                  context.pop();
+                  openAppSettings();
+                },
+              ),
               const SizedBox(height: EnvoySpacing.small),
             ],
           ),

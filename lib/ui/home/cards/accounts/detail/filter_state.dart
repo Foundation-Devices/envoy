@@ -4,15 +4,9 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum AccountToggleState {
-  tx,
-  coins,
-}
+enum AccountToggleState { tx, coins }
 
-enum TransactionFilters {
-  sent,
-  received,
-}
+enum TransactionFilters { sent, received }
 
 enum TransactionSortTypes {
   newestFirst,
@@ -29,9 +23,11 @@ enum CoinTagSortTypes {
 }
 
 final txFilterStateProvider = StateProvider<Set<TransactionFilters>>(
-    (ref) => {}..addAll(TransactionFilters.values));
+  (ref) => {}..addAll(TransactionFilters.values),
+);
 final txSortStateProvider = StateProvider<TransactionSortTypes>(
-    (ref) => TransactionSortTypes.newestFirst);
+  (ref) => TransactionSortTypes.newestFirst,
+);
 
 //provider to determine if the transaction filters are enabled
 final isTransactionFiltersEnabled = Provider<bool>((ref) {
@@ -40,11 +36,13 @@ final isTransactionFiltersEnabled = Provider<bool>((ref) {
   return filters.length != 2 || sort != TransactionSortTypes.newestFirst;
 });
 
-final coinTagSortStateProvider =
-    StateProvider<CoinTagSortTypes>((ref) => CoinTagSortTypes.sortByTagNameAsc);
+final coinTagSortStateProvider = StateProvider<CoinTagSortTypes>(
+  (ref) => CoinTagSortTypes.sortByTagNameAsc,
+);
 
-final accountToggleStateProvider =
-    StateProvider<AccountToggleState>((ref) => AccountToggleState.tx);
+final accountToggleStateProvider = StateProvider<AccountToggleState>(
+  (ref) => AccountToggleState.tx,
+);
 
 ///clears existing filter states. this will be called when the user navigates to account detail page
 void clearFilterState(WidgetRef ref) {

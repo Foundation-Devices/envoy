@@ -42,11 +42,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
           : "assets/data_secured_1_ios.png",
       height: 110,
     ),
-    Image.asset(
-      "assets/data_secured_2.png",
-      height: 82,
-      width: 167,
-    ),
+    Image.asset("assets/data_secured_2.png", height: 82, width: 167),
     Image.asset(
       Platform.isAndroid
           ? "assets/data_secured_3_android.png"
@@ -56,12 +52,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
     Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset(
-          "assets/exclamation_icon.png",
-          height: 64,
-        ),
-      ],
+      children: [Image.asset("assets/exclamation_icon.png", height: 64)],
     ),
   ];
 
@@ -123,14 +114,17 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                             children: [
                               SizedBox(height: EnvoySpacing.xs),
                               Center(
-                                  child: SizedBox(
-                                height: 110,
-                                child: stepIllustration[i],
-                              )),
+                                child: SizedBox(
+                                  height: 110,
+                                  child: stepIllustration[i],
+                                ),
+                              ),
                               SizedBox(height: EnvoySpacing.medium3),
-                              Text(stepHeadings[i],
-                                  textAlign: TextAlign.center,
-                                  style: EnvoyTypography.heading),
+                              Text(
+                                stepHeadings[i],
+                                textAlign: TextAlign.center,
+                                style: EnvoyTypography.heading,
+                              ),
                               const SizedBox(height: EnvoySpacing.medium1),
                               LinkText(
                                 text: stepSubHeadings[i],
@@ -145,7 +139,7 @@ class _WalletSecurityModalState extends State<WalletSecurityModal> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: EnvoySpacing.medium3)
+                              const SizedBox(height: EnvoySpacing.medium3),
                             ],
                           ),
                         );

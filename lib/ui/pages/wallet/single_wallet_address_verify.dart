@@ -24,19 +24,25 @@ class SingleWalletAddressVerifyPage extends StatelessWidget {
           alignment: Alignment.center,
           child: SingleChildScrollView(
             child: OnboardingText(
-                header: S().pair_new_device_QR_code_heading,
-                text: S().pair_new_device_QR_code_subheading),
+              header: S().pair_new_device_QR_code_heading,
+              text: S().pair_new_device_QR_code_subheading,
+            ),
           ),
         ),
       ],
       buttons: [
         OnboardingButton(
-            label: S().component_continue,
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return const SingleWalletAddressVerifyConfirmPage();
-              }));
-            }),
+          label: S().component_continue,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return const SingleWalletAddressVerifyConfirmPage();
+                },
+              ),
+            );
+          },
+        ),
       ],
     );
   }

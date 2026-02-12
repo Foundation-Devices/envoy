@@ -53,13 +53,10 @@ class SessionManager with WidgetsBindingObserver {
     }
     if (state == AppLifecycleState.inactive && !_authenticateInProcess) {
       _timer?.cancel();
-      _timer = Timer(
-        envoySessionTimeout,
-        () {
-          kPrint("⏳Session timeout!");
-          _timeout = true;
-        },
-      );
+      _timer = Timer(envoySessionTimeout, () {
+        kPrint("⏳Session timeout!");
+        _timeout = true;
+      });
     }
     //if the app is resumed and the session is timed out, show the AuthenticatePage
     if (state == AppLifecycleState.resumed) {
@@ -73,9 +70,8 @@ class SessionManager with WidgetsBindingObserver {
               PageRouteBuilder(
                 opaque: false,
                 barrierColor: Colors.black12,
-                pageBuilder: (context, a, b) => const AuthenticatePage(
-                  sessionAuthenticate: true,
-                ),
+                pageBuilder: (context, a, b) =>
+                    const AuthenticatePage(sessionAuthenticate: true),
               ),
             )
             //wait for the navigation to complete

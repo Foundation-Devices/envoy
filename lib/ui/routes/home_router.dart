@@ -26,51 +26,61 @@ const ROUTE_LEARN_BLOG = '$ROUTE_LEARN/$_SUBROUTE_BLOG';
 /// in order to maintain the state of the selected tab we use StatefulShellRoute
 /// this will keep the state of the selected tab even if the user navigated to a nested route
 final homeRouter = StatefulShellRoute.indexedStack(
-    restorationScopeId: "homeShellNavRoot",
-    parentNavigatorKey: mainNavigatorKey,
-    builder: (context, state, navigationShell) {
-      return PopScope(
-          canPop: false, child: HomePage(mainNavigationShell: navigationShell));
-    },
-    branches: <StatefulShellBranch>[
-      devicesRouter,
-      StatefulShellBranch(restorationScopeId: "privacyScopeId", routes: [
+  restorationScopeId: "homeShellNavRoot",
+  parentNavigatorKey: mainNavigatorKey,
+  builder: (context, state, navigationShell) {
+    return PopScope(
+      canPop: false,
+      child: HomePage(mainNavigationShell: navigationShell),
+    );
+  },
+  branches: <StatefulShellBranch>[
+    devicesRouter,
+    StatefulShellBranch(
+      restorationScopeId: "privacyScopeId",
+      routes: [
         GoRoute(
-            path: ROUTE_PRIVACY,
-            pageBuilder: (context, state) {
-              return const MaterialPage(child: PrivacyCard());
-            }),
-      ]),
-      accountsRouter,
-      StatefulShellBranch(restorationScopeId: 'activityScopeId', routes: [
+          path: ROUTE_PRIVACY,
+          pageBuilder: (context, state) {
+            return const MaterialPage(child: PrivacyCard());
+          },
+        ),
+      ],
+    ),
+    accountsRouter,
+    StatefulShellBranch(
+      restorationScopeId: 'activityScopeId',
+      routes: [
         GoRoute(
           path: ROUTE_ACTIVITY,
           pageBuilder: (context, state) =>
               const MaterialPage(child: ActivityCard()),
         ),
-      ]),
-      StatefulShellBranch(restorationScopeId: 'learnScopeId', routes: [
+      ],
+    ),
+    StatefulShellBranch(
+      restorationScopeId: 'learnScopeId',
+      routes: [
         GoRoute(
-            path: ROUTE_LEARN,
-            pageBuilder: (context, state) => MaterialPage(child: LearnCard()),
-            routes: [
-              GoRoute(
-                path: _SUBROUTE_BLOG,
-                pageBuilder: (context, state) {
-                  BlogPost? post;
-                  if (state.extra is Map) {
-                    post =
-                        BlogPost.fromJson(state.extra as Map<String, dynamic>);
-                  } else {
-                    post = state.extra as BlogPost;
-                  }
+          path: ROUTE_LEARN,
+          pageBuilder: (context, state) => MaterialPage(child: LearnCard()),
+          routes: [
+            GoRoute(
+              path: _SUBROUTE_BLOG,
+              pageBuilder: (context, state) {
+                BlogPost? post;
+                if (state.extra is Map) {
+                  post = BlogPost.fromJson(state.extra as Map<String, dynamic>);
+                } else {
+                  post = state.extra as BlogPost;
+                }
 
-                  return MaterialPage(
-                      child: BlogPostCard(
-                    blog: post,
-                  ));
-                },
-              )
-            ]),
-      ]),
-    ]);
+                return MaterialPage(child: BlogPostCard(blog: post));
+              },
+            ),
+          ],
+        ),
+      ],
+    ),
+  ],
+);

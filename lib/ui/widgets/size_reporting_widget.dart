@@ -31,10 +31,7 @@ class SizeReportingWidgetState extends State<SizeReportingWidget> {
         return true;
       },
       child: SizeChangedLayoutNotifier(
-        child: Container(
-          key: _widgetKey,
-          child: widget.child,
-        ),
+        child: Container(key: _widgetKey, child: widget.child),
       ),
     );
   }

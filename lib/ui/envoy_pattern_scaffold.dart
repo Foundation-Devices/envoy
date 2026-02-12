@@ -13,18 +13,22 @@ import 'package:flutter/material.dart';
 Widget envoyScaffoldShieldScrollView(BuildContext context, Widget child) {
   double shieldBottom = MediaQuery.of(context).padding.bottom + 6.0;
   return SingleChildScrollView(
-      child: SizedBox(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.height * 0.53,
-          child: Container(
-              padding: EdgeInsets.only(bottom: shieldBottom),
-              decoration: const BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                Color(0x00000000),
-                Color(0xff686868),
-                Color(0xffFFFFFF),
-              ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-              child: Shield(child: child))));
+    child: SizedBox(
+      width: double.infinity,
+      height: MediaQuery.of(context).size.height * 0.53,
+      child: Container(
+        padding: EdgeInsets.only(bottom: shieldBottom),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0x00000000), Color(0xff686868), Color(0xffFFFFFF)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Shield(child: child),
+      ),
+    ),
+  );
 }
 
 class EnvoyPatternScaffold extends StatefulWidget {
@@ -34,15 +38,18 @@ class EnvoyPatternScaffold extends StatefulWidget {
   final PreferredSizeWidget? appBar;
   final bool animate;
   final double gradientHeight;
+  final double shieldHeightFactor;
 
-  const EnvoyPatternScaffold(
-      {super.key,
-      this.animate = true,
-      this.appBar,
-      this.shield,
-      this.header,
-      this.heroTag,
-      this.gradientHeight = 1.5});
+  const EnvoyPatternScaffold({
+    super.key,
+    this.animate = true,
+    this.appBar,
+    this.shield,
+    this.header,
+    this.heroTag,
+    this.gradientHeight = 1.5,
+    this.shieldHeightFactor = 0.52,
+  });
 
   @override
   State<EnvoyPatternScaffold> createState() => _EnvoyPatternScaffoldState();
@@ -60,8 +67,9 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold> {
 
     Widget shield = Shield(
       child: Padding(
-          padding: const EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 40),
-          child: SizedBox.expand(child: widget.shield)),
+        padding: const EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 40),
+        child: SizedBox.expand(child: widget.shield),
+      ),
     );
     return Scaffold(
       extendBody: true,
@@ -82,24 +90,24 @@ class _EnvoyPatternScaffoldState extends State<EnvoyPatternScaffold> {
       ),
       bottomNavigationBar: SizedBox(
         width: double.infinity,
-        height: (MediaQuery.of(context).size.height * 0.52).clamp(350, 580),
+        height: (MediaQuery.of(context).size.height * widget.shieldHeightFactor)
+            .clamp(350, 650),
         child: Container(
-            padding: EdgeInsets.only(bottom: shieldBottom),
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(colors: [
-              Color(0x00000000),
-              Color(0xff686868),
-              Color(0xffFFFFFF),
-            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-            child: widget.heroTag != null
-                ? Hero(
-                    tag: widget.heroTag!,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: shield,
-                    ),
-                  )
-                : shield),
+          padding: EdgeInsets.only(bottom: shieldBottom),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0x00000000), Color(0xff686868), Color(0xffFFFFFF)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: widget.heroTag != null
+              ? Hero(
+                  tag: widget.heroTag!,
+                  child: Material(color: Colors.transparent, child: shield),
+                )
+              : shield,
+        ),
       ),
     );
   }
@@ -110,8 +118,11 @@ class ScaffoldBackGround extends StatefulWidget {
 
   final double gradientHeight;
 
-  const ScaffoldBackGround(
-      {super.key, this.animate = true, this.gradientHeight = 1.5});
+  const ScaffoldBackGround({
+    super.key,
+    this.animate = true,
+    this.gradientHeight = 1.5,
+  });
 
   @override
   State<ScaffoldBackGround> createState() => _ScaffoldBackgroundState();
@@ -151,26 +162,29 @@ class _ScaffoldBackgroundState extends State<ScaffoldBackGround>
     return Stack(
       children: [
         SizedBox.expand(
-            child: CustomPaint(
-          isComplex: true,
-          willChange: false,
-          size: const Size(double.infinity, double.infinity),
-          painter: StripePainter(
-            EnvoyColors.solidWhite.applyOpacity(0.1),
-            stripeWidth: 2.0,
-            gapWidth: 2.0,
-            rotateDegree: 25.0,
-            bgColor: Colors.transparent,
-            clipHalf: true,
-            offsetY: 10.0,
+          child: CustomPaint(
+            isComplex: true,
+            willChange: false,
+            size: const Size(double.infinity, double.infinity),
+            painter: StripePainter(
+              EnvoyColors.solidWhite.applyOpacity(0.1),
+              stripeWidth: 2.0,
+              gapWidth: 2.0,
+              rotateDegree: 25.0,
+              bgColor: Colors.transparent,
+              clipHalf: true,
+              offsetY: 10.0,
+            ),
           ),
-        )),
+        ),
         SizedBox.expand(
-            child: CustomPaint(
-          painter: GradientPainter(
+          child: CustomPaint(
+            painter: GradientPainter(
               gradientRadius: animation?.value ?? 0.8,
-              gradientHeight: widget.gradientHeight),
-        )),
+              gradientHeight: widget.gradientHeight,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -187,7 +201,9 @@ class _ScaffoldBackgroundState extends State<ScaffoldBackGround>
 
   void startAnimation() {
     controller = AnimationController(
-        duration: const Duration(milliseconds: 2200), vsync: this);
+      duration: const Duration(milliseconds: 2200),
+      vsync: this,
+    );
     animation = Tween(begin: 0.6, end: .8).animate(controller!);
     controller?.addListener(() {
       setState(() {});
@@ -214,23 +230,35 @@ class GradientPainter extends CustomPainter {
           const Color(0xffF0BBA4).applyOpacity(0.1),
           const Color(0xffF0BBA4).applyOpacity(0.002),
         ],
-      ).createShader(Rect.fromCircle(
+      ).createShader(
+        Rect.fromCircle(
           center: Offset(size.width / 2, size.height / gradientHeight),
-          radius: min(size.width, size.width * gradientRadius)));
+          radius: min(size.width, size.width * gradientRadius),
+        ),
+      );
 
     final rxect = Rect.fromPoints(
-        Offset(0, -size.height), Offset(size.width, size.height));
+      Offset(0, -size.height),
+      Offset(size.width, size.height),
+    );
     canvas.drawRRect(RRect.fromRectXY(rxect, 0, 0), paint);
 
     canvas.drawPath(
-        Path()
-          ..addRect(Rect.fromPoints(Offset(size.width / 2, -size.height),
-              Offset(size.width, size.height)))
-          ..fillType = PathFillType.evenOdd,
-        Paint()
-          ..color = Colors.black.withAlpha(50)
-          ..maskFilter =
-              MaskFilter.blur(BlurStyle.normal, convertRadiusToSigma(2)));
+      Path()
+        ..addRect(
+          Rect.fromPoints(
+            Offset(size.width / 2, -size.height),
+            Offset(size.width, size.height),
+          ),
+        )
+        ..fillType = PathFillType.evenOdd,
+      Paint()
+        ..color = Colors.black.withAlpha(50)
+        ..maskFilter = MaskFilter.blur(
+          BlurStyle.normal,
+          convertRadiusToSigma(2),
+        ),
+    );
   }
 
   @override

@@ -25,14 +25,16 @@ class AnimatedQrImage extends StatefulWidget {
   final int refreshRate;
   final double? size;
 
-  AnimatedQrImage(Uint8List message,
-      {super.key,
-      this.refreshRate = 3,
-      int maxFragmentLength = 100,
-      this.size,
-      this.cryptoRequest,
-      String urType = "bytes",
-      bool binaryCborTag = false}) {
+  AnimatedQrImage(
+    Uint8List message, {
+    super.key,
+    this.refreshRate = 3,
+    int maxFragmentLength = 100,
+    this.size,
+    this.cryptoRequest,
+    String urType = "bytes",
+    bool binaryCborTag = false,
+  }) {
     List<int> tag = [];
     if (binaryCborTag) {
       // https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-005-ur.md#canonical-cbor
@@ -51,12 +53,19 @@ class AnimatedQrImage extends StatefulWidget {
     List<int> completeMessage = tag + message;
 
     urEncoder = Ur().encoder(
-        urType, Uint8List.fromList(completeMessage), maxFragmentLength);
+      urType,
+      Uint8List.fromList(completeMessage),
+      maxFragmentLength,
+    );
   }
 
-  AnimatedQrImage.fromUrCryptoRequest(CryptoRequest request,
-      {super.key, this.refreshRate = 5, this.size, this.urEncoder})
-      : cryptoRequest = request;
+  AnimatedQrImage.fromUrCryptoRequest(
+    CryptoRequest request, {
+    super.key,
+    this.refreshRate = 5,
+    this.size,
+    this.urEncoder,
+  }) : cryptoRequest = request;
 
   void onLoad(BuildContext context) {}
 
@@ -92,9 +101,10 @@ class AnimatedQrImageState extends State<AnimatedQrImage> {
   @override
   Widget build(BuildContext context) {
     return EnvoyQR(
-        data: widget.urEncoder != null
-            ? widget.urEncoder!.nextPart().toUpperCase()
-            : widget.cryptoRequest!.nextPart().toUpperCase(),
-        qrSize: widget.size);
+      data: widget.urEncoder != null
+          ? widget.urEncoder!.nextPart().toUpperCase()
+          : widget.cryptoRequest!.nextPart().toUpperCase(),
+      qrSize: widget.size,
+    );
   }
 }

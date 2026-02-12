@@ -201,8 +201,11 @@ class CryptoRequest extends UniformResourceWriter {
 
     var buffer = inst.output.getData().cast<int>();
 
-    _urEncoder ??=
-        Ur().encoder('crypto-request', Uint8List.fromList(buffer), 50);
+    _urEncoder ??= Ur().encoder(
+      'crypto-request',
+      Uint8List.fromList(buffer),
+      50,
+    );
 
     return _urEncoder!.nextPart();
   }
@@ -318,12 +321,13 @@ class CryptoHdKey extends CborObject {
     return keypathString;
   }
 
-  CryptoHdKey(
-      {this.keyData,
-      this.chainCode,
-      this.network,
-      this.parentFingerprint,
-      this.keypath});
+  CryptoHdKey({
+    this.keyData,
+    this.chainCode,
+    this.network,
+    this.parentFingerprint,
+    this.keypath,
+  });
 
   CryptoHdKey.fromCbor(Uint8List payload) {
     final inst = cbor.Cbor();
@@ -378,7 +382,7 @@ class CryptoHdKey extends CborObject {
       4: chainCode,
       5: {2: network == HdKeyNetwork.mainnet ? 0 : 1},
       6: {1: keypathList},
-      8: parentFingerprint
+      8: parentFingerprint,
     });
   }
 }

@@ -38,6 +38,9 @@ pub struct Progress {
     pub total: u64,
 }
 
+const REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
+const CONNECT_TIMEOUT: Duration = Duration::from_secs(10);
+
 lazy_static! {
     static ref RUNTIME: Result<Runtime> = Builder::new_multi_thread()
         .enable_all()
@@ -73,9 +76,16 @@ pub async fn get_file(
     let handle = rt.spawn(async move {
         let client: reqwest::Client = if tor_port > 0 {
             let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{}", tor_port))?;
-            reqwest::Client::builder().proxy(proxy).build()?
+            reqwest::Client::builder()
+                .connect_timeout(CONNECT_TIMEOUT)
+                .timeout(REQUEST_TIMEOUT)
+                .proxy(proxy)
+                .build()?
         } else {
-            reqwest::Client::builder().build()?
+            reqwest::Client::builder()
+                .connect_timeout(CONNECT_TIMEOUT)
+                .timeout(REQUEST_TIMEOUT)
+                .build()?
         };
 
         let mut res = client.get(&url).send().await?;
@@ -129,9 +139,16 @@ pub fn request(
 ) -> Result<Response> {
     let client: reqwest::blocking::Client = if tor_port > 0 {
         let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{}", tor_port))?;
-        reqwest::blocking::Client::builder().proxy(proxy).build()?
+        reqwest::blocking::Client::builder()
+            .connect_timeout(CONNECT_TIMEOUT)
+            .timeout(REQUEST_TIMEOUT)
+            .proxy(proxy)
+            .build()?
     } else {
-        reqwest::blocking::Client::builder().build()?
+        reqwest::blocking::Client::builder()
+            .connect_timeout(CONNECT_TIMEOUT)
+            .timeout(REQUEST_TIMEOUT)
+            .build()?
     };
 
     let mut header_map = HeaderMap::new();
@@ -167,9 +184,16 @@ pub fn request(
 pub fn get_ip(tor_port: i32) -> Result<String> {
     let client: reqwest::blocking::Client = if tor_port > 0 {
         let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{}", tor_port))?;
-        reqwest::blocking::Client::builder().proxy(proxy).build()?
+        reqwest::blocking::Client::builder()
+            .connect_timeout(CONNECT_TIMEOUT)
+            .timeout(REQUEST_TIMEOUT)
+            .proxy(proxy)
+            .build()?
     } else {
-        reqwest::blocking::Client::builder().build()?
+        reqwest::blocking::Client::builder()
+            .connect_timeout(CONNECT_TIMEOUT)
+            .timeout(REQUEST_TIMEOUT)
+            .build()?
     };
 
     let response = client.get("https://icanhazip.com").send()?;

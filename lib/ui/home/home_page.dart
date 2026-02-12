@@ -80,14 +80,15 @@ class HomePageNotification extends Notification {
   final bool modal;
   final bool showOptions;
 
-  const HomePageNotification(
-      {this.title,
-      this.leftFunction,
-      this.rightFunction,
-      this.optionsWidget,
-      this.rightFunctionIcon,
-      this.modal = false,
-      this.showOptions = false});
+  const HomePageNotification({
+    this.title,
+    this.leftFunction,
+    this.rightFunction,
+    this.optionsWidget,
+    this.rightFunctionIcon,
+    this.modal = false,
+    this.showOptions = false,
+  });
 }
 
 class HomePage extends ConsumerStatefulWidget {
@@ -137,8 +138,9 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   void _resetServerDownWarningTimer() {
-    _serverDownWarningTimer =
-        Timer.periodic(const Duration(minutes: 5), (_) async {
+    _serverDownWarningTimer = Timer.periodic(const Duration(minutes: 5), (
+      _,
+    ) async {
       _serverDownWarningDisplayedMoreThan5minAgo = true;
     });
   }
@@ -261,8 +263,9 @@ class HomePageState extends ConsumerState<HomePage>
     });
     _subscriptions.add(secureWalletPromptSub);
 
-    final backupCompletedSub =
-        EnvoySeed().backupCompletedStream.stream.listen((bool success) {
+    final backupCompletedSub = EnvoySeed().backupCompletedStream.stream.listen((
+      bool success,
+    ) {
       if (_backupWarningDisplayedMoreThan2minAgo && mounted) {
         _displayBackupToast(success);
         _backupWarningDisplayedMoreThan2minAgo = false;
@@ -300,39 +303,46 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   void _notifyAboutRemovedRampTx(
-      List<EnvoyTransaction> expiredTransactions, context) async {
-    bool dismissed = await EnvoyStorage()
-        .checkPromptDismissed(DismissiblePrompt.buyTxWarning);
+    List<EnvoyTransaction> expiredTransactions,
+    context,
+  ) async {
+    bool dismissed = await EnvoyStorage().checkPromptDismissed(
+      DismissiblePrompt.buyTxWarning,
+    );
 
     if (!dismissed && context.mounted) {
       showEnvoyPopUp(
-          context,
-          title: S().replaceByFee_modal_deletedInactiveTX_ramp_heading,
-          S().replaceByFee_modal_deletedInactiveTX_ramp_subheading,
-          S().send_keyboard_address_confirm,
-          customWidget: RemovedBuyTransactionsList(
-            expiredTransactions: expiredTransactions,
-            transactionIdExpandedState: transactionIdExpandedState,
-          ),
-          (BuildContext context) {
-            Navigator.pop(context);
-            isNewExpiredBuyTxAvailable.add([]); // reset stream after pop
-          },
-          learnMoreText: S().contactRampForSupport,
-          onLearnMore: () {
-            launchUrl(Uri.parse(
-                "https://support.ramp.network/en/collections/6690-customer-support-help-center"));
-          },
-          icon: EnvoyIcons.info,
-          checkBoxText: S().component_dontShowAgain,
-          checkedValue: dismissed,
-          onCheckBoxChanged: (checkedValue) {
-            if (!checkedValue) {
-              EnvoyStorage().addPromptState(DismissiblePrompt.buyTxWarning);
-            } else if (checkedValue) {
-              EnvoyStorage().removePromptState(DismissiblePrompt.buyTxWarning);
-            }
-          });
+        context,
+        title: S().replaceByFee_modal_deletedInactiveTX_ramp_heading,
+        S().replaceByFee_modal_deletedInactiveTX_ramp_subheading,
+        S().send_keyboard_address_confirm,
+        customWidget: RemovedBuyTransactionsList(
+          expiredTransactions: expiredTransactions,
+          transactionIdExpandedState: transactionIdExpandedState,
+        ),
+        (BuildContext context) {
+          Navigator.pop(context);
+          isNewExpiredBuyTxAvailable.add([]); // reset stream after pop
+        },
+        learnMoreText: S().contactRampForSupport,
+        onLearnMore: () {
+          launchUrl(
+            Uri.parse(
+              "https://support.ramp.network/en/collections/6690-customer-support-help-center",
+            ),
+          );
+        },
+        icon: EnvoyIcons.info,
+        checkBoxText: S().component_dontShowAgain,
+        checkedValue: dismissed,
+        onCheckBoxChanged: (checkedValue) {
+          if (!checkedValue) {
+            EnvoyStorage().addPromptState(DismissiblePrompt.buyTxWarning);
+          } else if (checkedValue) {
+            EnvoyStorage().removePromptState(DismissiblePrompt.buyTxWarning);
+          }
+        },
+      );
     }
   }
 
@@ -433,10 +443,7 @@ class HomePageState extends ConsumerState<HomePage>
             ? S().manual_toggle_on_seed_backup_in_progress_toast_heading
             : S().manualToggleOnSeed_toastHeading_failedText,
         icon: success
-            ? const EnvoyIcon(
-                EnvoyIcons.info,
-                color: EnvoyColors.accentPrimary,
-              )
+            ? const EnvoyIcon(EnvoyIcons.info, color: EnvoyColors.accentPrimary)
             : const EnvoyIcon(
                 EnvoyIcons.alert,
                 color: EnvoyColors.accentSecondary,
@@ -541,8 +548,9 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   void toggleOptions() {
-    ref.read(homePageOptionsVisibilityProvider.notifier).state =
-        !ref.read(homePageOptionsVisibilityProvider);
+    ref.read(homePageOptionsVisibilityProvider.notifier).state = !ref.read(
+      homePageOptionsVisibilityProvider,
+    );
   }
 
   void showForceUpdateDialog() {
@@ -597,8 +605,9 @@ class HomePageState extends ConsumerState<HomePage>
     bool modalShown = ref.watch(_fullScreenProvider);
     bool fullScreen = ref.watch(fullscreenHomePageProvider);
 
-    HomePageBackgroundState homepageBackDropState =
-        ref.watch(homePageBackgroundProvider);
+    HomePageBackgroundState homepageBackDropState = ref.watch(
+      homePageBackgroundProvider,
+    );
 
     _backgroundShown = homepageBackDropState != HomePageBackgroundState.hidden;
     Widget background = ref.watch(backdropWidgetProvider);
@@ -607,28 +616,19 @@ class HomePageState extends ConsumerState<HomePage>
 
     Widget? optionsWidget = homeShellOptions?.optionsWidget;
 
-    Widget options = Container(
-      key: _optionsKey,
-      child: optionsWidget,
-    );
+    Widget options = Container(key: _optionsKey, child: optionsWidget);
 
-    ref.listen(
-      homeShellOptionsProvider,
-      (previous, next) {
-        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-          setState(() {
-            _optionsHeight = _optionsKey.currentContext?.size!.height ?? 0;
-          });
+    ref.listen(homeShellOptionsProvider, (previous, next) {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        setState(() {
+          _optionsHeight = _optionsKey.currentContext?.size!.height ?? 0;
         });
-      },
-    );
+      });
+    });
 
-    ref.listen(
-      onboardingStateStreamProvider,
-      (previous, next) {
-        _showTutorialIfNeeded(context);
-      },
-    );
+    ref.listen(onboardingStateStreamProvider, (previous, next) {
+      _showTutorialIfNeeded(context);
+    });
 
     double shieldTotalTop = _backgroundShown
         ? screenHeight + 20
@@ -692,11 +692,10 @@ class HomePageState extends ConsumerState<HomePage>
                 child: Stack(
                   children: [
                     Hero(
-                        tag: "shield",
-                        child: Shield(
-                            child: Container(
-                          color: Colors.transparent,
-                        ))),
+                      tag: "shield",
+                      child:
+                          Shield(child: Container(color: Colors.transparent)),
+                    ),
                     mainWidget,
                   ],
                 ),
@@ -757,26 +756,24 @@ class HomePageState extends ConsumerState<HomePage>
 
   AbsorbPointer buildRightAction() {
     return AbsorbPointer(
-        absorbing: _backgroundShown || _modalShown,
-        child: AnimatedOpacity(
-            opacity: _backgroundShown || _modalShown ? 0.0 : 1.0,
-            duration: _animationsDuration,
-            child: AnimatedSwitcher(
-                duration: _animationsDuration,
-                child: _optionsShown
-                    ? IconButton(
-                        icon: const Icon(
-                          Icons.close,
-                        ),
-                        onPressed: toggleOptions,
-                      )
-                    : IconButton(
-                        icon: Icon(
-                          _rightActionIcon,
-                          color: Colors.white,
-                        ),
-                        onPressed: _rightAction,
-                      ))));
+      absorbing: _backgroundShown || _modalShown,
+      child: AnimatedOpacity(
+        opacity: _backgroundShown || _modalShown ? 0.0 : 1.0,
+        duration: _animationsDuration,
+        child: AnimatedSwitcher(
+          duration: _animationsDuration,
+          child: _optionsShown
+              ? IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: toggleOptions,
+                )
+              : IconButton(
+                  icon: Icon(_rightActionIcon, color: Colors.white),
+                  onPressed: _rightAction,
+                ),
+        ),
+      ),
+    );
   }
 
   static HomePageState? of(BuildContext context) {
@@ -799,8 +796,9 @@ class HomePageState extends ConsumerState<HomePage>
     if (route != ROUTE_ACCOUNTS_HOME) {
       return;
     }
-    final dismissed = await EnvoyStorage()
-        .checkPromptDismissed(DismissiblePrompt.primeAccountTutorial);
+    final dismissed = await EnvoyStorage().checkPromptDismissed(
+      DismissiblePrompt.primeAccountTutorial,
+    );
     if (dismissed) {
       return;
     }
@@ -824,9 +822,7 @@ class HomePageState extends ConsumerState<HomePage>
               opaque: false,
               fullscreenDialog: true,
               pageBuilder: (context, animation, secondaryAnimation) =>
-                  AccountTutorialOverlay(
-                accounts: accounts.toList(),
-              ),
+                  AccountTutorialOverlay(accounts: accounts.toList()),
             ),
           );
           _tutorialIsInProgress = false;

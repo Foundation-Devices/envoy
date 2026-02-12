@@ -62,7 +62,9 @@ class _OnboardEnvoyWelcomeScreenState
         actions: [
           Padding(
             padding: const EdgeInsets.only(
-                right: EnvoySpacing.medium1, top: EnvoySpacing.small),
+              right: EnvoySpacing.medium1,
+              top: EnvoySpacing.small,
+            ),
             child: EnvoyButton(
               S().component_recover,
               textStyle: EnvoyTypography.body,
@@ -82,7 +84,7 @@ class _OnboardEnvoyWelcomeScreenState
                 }
               },
             ),
-          )
+          ),
         ],
       ),
       header: Transform.translate(
@@ -104,9 +106,7 @@ class _OnboardEnvoyWelcomeScreenState
                 const SizedBox(height: EnvoySpacing.medium1),
                 Flexible(
                   child: Container(
-                    constraints: const BoxConstraints(
-                      minHeight: 300,
-                    ),
+                    constraints: const BoxConstraints(minHeight: 300),
                     child: SingleChildScrollView(
                       child: Container(
                         margin: const EdgeInsets.symmetric(
@@ -120,42 +120,50 @@ class _OnboardEnvoyWelcomeScreenState
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: EnvoySpacing.medium1),
+                                    horizontal: EnvoySpacing.medium1,
+                                  ),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Text(
-                                          _magicBackUpEnabled
-                                              ? S()
-                                                  .onboarding_magicUserMobileIntro_header
-                                              : S()
-                                                  .onboarding_sovereignUserMobileIntro_header,
-                                          textAlign: TextAlign.center,
-                                          style: EnvoyTypography.heading),
+                                        _magicBackUpEnabled
+                                            ? S()
+                                                .onboarding_magicUserMobileIntro_header
+                                            : S()
+                                                .onboarding_sovereignUserMobileIntro_header,
+                                        textAlign: TextAlign.center,
+                                        style: EnvoyTypography.heading,
+                                      ),
                                       const SizedBox(
-                                          height: EnvoySpacing.small),
+                                        height: EnvoySpacing.small,
+                                      ),
                                       Text(
-                                          _magicBackUpEnabled
-                                              ? S()
-                                                  .onboarding_magicUserMobileIntro_content1
-                                              : S()
-                                                  .onboarding_sovereignUserMobileIntro_content1,
-                                          textAlign: TextAlign.center,
-                                          style: EnvoyTypography.body.copyWith(
-                                              color: EnvoyColors.textTertiary)),
+                                        _magicBackUpEnabled
+                                            ? S()
+                                                .onboarding_magicUserMobileIntro_content1
+                                            : S()
+                                                .onboarding_sovereignUserMobileIntro_content1,
+                                        textAlign: TextAlign.center,
+                                        style: EnvoyTypography.body.copyWith(
+                                          color: EnvoyColors.textTertiary,
+                                        ),
+                                      ),
                                       const SizedBox(
-                                          height: EnvoySpacing.small),
+                                        height: EnvoySpacing.small,
+                                      ),
                                       Text(
-                                          _magicBackUpEnabled
-                                              ? S()
-                                                  .onboarding_magicUserMobileIntro_content2
-                                              : S()
-                                                  .onboarding_sovereignUserMobileIntro_content2,
-                                          textAlign: TextAlign.center,
-                                          style: EnvoyTypography.body.copyWith(
-                                              color: EnvoyColors.textTertiary)),
+                                        _magicBackUpEnabled
+                                            ? S()
+                                                .onboarding_magicUserMobileIntro_content2
+                                            : S()
+                                                .onboarding_sovereignUserMobileIntro_content2,
+                                        textAlign: TextAlign.center,
+                                        style: EnvoyTypography.body.copyWith(
+                                          color: EnvoyColors.textTertiary,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -169,9 +177,10 @@ class _OnboardEnvoyWelcomeScreenState
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
-                      left: EnvoySpacing.medium1,
-                      right: EnvoySpacing.medium1,
-                      bottom: EnvoySpacing.xs),
+                    left: EnvoySpacing.medium1,
+                    right: EnvoySpacing.medium1,
+                    bottom: EnvoySpacing.xs,
+                  ),
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       return Column(
@@ -184,11 +193,17 @@ class _OnboardEnvoyWelcomeScreenState
                             type: EnvoyButtonTypes.tertiary,
                             onTap: () {
                               if (_magicBackUpEnabled) {
-                                launchUrl(Uri.parse(
-                                    "https://docs.foundation.xyz/backups/envoy/#magic-backup"));
+                                launchUrl(
+                                  Uri.parse(
+                                    "https://docs.foundation.xyz/backups/envoy/#magic-backup",
+                                  ),
+                                );
                               } else {
-                                launchUrl(Uri.parse(
-                                    "https://docs.foundation.xyz/backups/envoy/#manual-backup"));
+                                launchUrl(
+                                  Uri.parse(
+                                    "https://docs.foundation.xyz/backups/envoy/#manual-backup",
+                                  ),
+                                );
                               }
                             },
                           ),
@@ -196,11 +211,13 @@ class _OnboardEnvoyWelcomeScreenState
                           EnvoyButton(
                             S().component_continue,
                             borderRadius: const BorderRadius.all(
-                                Radius.circular(EnvoySpacing.small)),
+                              Radius.circular(EnvoySpacing.small),
+                            ),
                             onTap: () {
                               if (_magicBackUpEnabled) {
                                 context.pushNamed(
-                                    ONBOARD_ENVOY_MAGIC_GENERATE_SETUP);
+                                  ONBOARD_ENVOY_MAGIC_GENERATE_SETUP,
+                                );
                               } else {
                                 context
                                     .pushNamed(ONBOARD_ENVOY_MANUAL_GENERATE);
@@ -234,9 +251,11 @@ class _OnboardEnvoyWelcomeScreenState
             await _showSeedAlert();
             if (mounted) {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const MagicRecoverWallet()));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MagicRecoverWallet(),
+                ),
+              );
             }
           } else {
             if (!ref.read(triedAutomaticRecovery) &&
@@ -247,9 +266,11 @@ class _OnboardEnvoyWelcomeScreenState
                 //make sure automatic recovery only once
                 if (await EnvoySeed().get() != null && mounted) {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MagicRecoverWallet()));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MagicRecoverWallet(),
+                    ),
+                  );
                 }
               } catch (e) {
                 //no-op

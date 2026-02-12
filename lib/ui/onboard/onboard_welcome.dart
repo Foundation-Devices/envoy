@@ -64,10 +64,11 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     escapeHatchTaps.add(tap);
 
     if (listEquals(
-        escapeHatchTaps,
-        secretCombination
-            .getRange(0, min(escapeHatchTaps.length, secretCombination.length))
-            .toList())) {
+      escapeHatchTaps,
+      secretCombination
+          .getRange(0, min(escapeHatchTaps.length, secretCombination.length))
+          .toList(),
+    )) {
       if (escapeHatchTaps.length == secretCombination.length) {
         escapeHatchAccessed = true;
         escapeHatchTaps.clear();
@@ -82,13 +83,17 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
           // issue where old seeds were not deleted properly
           await LocalStorage().secureStorage.deleteAll();
           await Future.delayed(const Duration(milliseconds: 500));
-          scaffold.showSnackBar(const SnackBar(
-            content: Text("Envoy Seed deleted!"), // TODO: FIGMA
-          ));
+          scaffold.showSnackBar(
+            const SnackBar(
+              content: Text("Envoy Seed deleted!"), // TODO: FIGMA
+            ),
+          );
         } on Exception catch (_) {
-          scaffold.showSnackBar(const SnackBar(
-            content: Text("Couldn't delete Envoy Seed!"), // TODO: FIGMA
-          ));
+          scaffold.showSnackBar(
+            const SnackBar(
+              content: Text("Couldn't delete Envoy Seed!"), // TODO: FIGMA
+            ),
+          );
         }
       }
     } else {
@@ -115,14 +120,17 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: TextButton(
-                child: Text(S().component_advanced,
-                    style: EnvoyTypography.button
-                        .copyWith(color: EnvoyColors.textPrimaryInverse)),
+                child: Text(
+                  S().component_advanced,
+                  style: EnvoyTypography.button.copyWith(
+                    color: EnvoyColors.textPrimaryInverse,
+                  ),
+                ),
                 onPressed: () {
                   context.pushNamed(ADVANCED_SETTINGS);
                 },
               ),
-            )
+            ),
           ],
         ),
         heroTag: "shield",
@@ -133,21 +141,21 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
           onLongPress: () {
             if (escapeHatchAccessed) {
               Settings().skipPrimeSecurityCheck = true;
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("Security check disabled"),
-              ));
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Security check disabled")),
+              );
             }
           },
           child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.25,
-            child: Image.asset(
-              "assets/envoy_logo_with_title.png",
-            ),
+            child: Image.asset("assets/envoy_logo_with_title.png"),
           ),
         ),
         shield: Padding(
           padding: const EdgeInsets.symmetric(
-              vertical: EnvoySpacing.xs, horizontal: EnvoySpacing.medium1),
+            vertical: EnvoySpacing.xs,
+            horizontal: EnvoySpacing.medium1,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.min,
@@ -156,8 +164,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                 child: SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.medium1,
-                        vertical: EnvoySpacing.xs),
+                      horizontal: EnvoySpacing.medium1,
+                      vertical: EnvoySpacing.xs,
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -167,10 +176,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                           onLongPress: () {
                             ref.read(devModeEnabledProvider.notifier).state =
                                 true;
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                              content: Text("Dev mode enabled"),
-                            ));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("Dev mode enabled")),
+                            );
                           },
                           child: Text(
                             S().welcome_screen_heading,
@@ -179,19 +187,22 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                           ),
                         ),
                         const Padding(
-                            padding: EdgeInsets.all(EnvoySpacing.small)),
+                          padding: EdgeInsets.all(EnvoySpacing.small),
+                        ),
                         GestureDetector(
                           onTap: () {
                             registerEscapeTap(EscapeHatchTap.text);
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: EnvoySpacing.xs),
+                              horizontal: EnvoySpacing.xs,
+                            ),
                             child: Text(
                               //TODO: sync latest copy and button links
                               S().onboarding_welcome_content,
-                              style: EnvoyTypography.info
-                                  .copyWith(color: EnvoyColors.textTertiary),
+                              style: EnvoyTypography.info.copyWith(
+                                color: EnvoyColors.textTertiary,
+                              ),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -217,8 +228,10 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       ),
                       title: S().onboarding_welcome_createMobileWallet,
                       onTap: () {
-                        context.pushNamed(ONBOARD_ENVOY_SETUP,
-                            queryParameters: {"setupEnvoy": "1"});
+                        context.pushNamed(
+                          ONBOARD_ENVOY_SETUP,
+                          queryParameters: {"setupEnvoy": "1"},
+                        );
                       },
                     ),
                   ),
@@ -238,7 +251,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -254,39 +267,40 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
         Navigator.pop(context);
       },
       decoder: DeviceDecoder(
-          pairPayloadDecoder: PairPayloadDecoder(
-            onScan: (binary) {
-              addPassportAccount(binary, context);
-            },
-          ),
-          onXidScan: (xid) => pairWithDevice(context, xid),
-          onScan: (String payload) {
-            final uri = Uri.parse(payload);
-            final params = uri.queryParameters;
+        pairPayloadDecoder: PairPayloadDecoder(
+          onScan: (binary) {
+            addPassportAccount(binary, context);
+          },
+        ),
+        onXidScan: (xid) => pairWithDevice(context, xid),
+        onScan: (String payload) {
+          final uri = Uri.parse(payload);
+          final params = uri.queryParameters;
 
-            if (params.containsKey("p")) {
-              context.pop();
-              context.goNamed(ONBOARD_PRIME, queryParameters: params);
-            } else if (params.containsKey("t")) {
-              context.pop();
-              context.goNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
-            } else {
-              context.pop();
-              EnvoyToast(
-                replaceExisting: true,
-                duration: const Duration(seconds: 6),
-                message: "Invalid QR code",
-                isDismissible: true,
-                onActionTap: () {
-                  EnvoyToast.dismissPreviousToasts(context);
-                },
-                icon: const Icon(
-                  Icons.info_outline,
-                  color: EnvoyColors.accentPrimary,
-                ),
-              ).show(context);
-            }
-          }),
+          if (params.containsKey("p")) {
+            context.pop();
+            context.goNamed(ONBOARD_PRIME, queryParameters: params);
+          } else if (params.containsKey("t")) {
+            context.pop();
+            context.goNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
+          } else {
+            context.pop();
+            EnvoyToast(
+              replaceExisting: true,
+              duration: const Duration(seconds: 6),
+              message: "Invalid QR code",
+              isDismissible: true,
+              onActionTap: () {
+                EnvoyToast.dismissPreviousToasts(context);
+              },
+              icon: const Icon(
+                Icons.info_outline,
+                color: EnvoyColors.accentPrimary,
+              ),
+            ).show(context);
+          }
+        },
+      ),
       child: LegacyFirmwareAlert(),
     );
   }
@@ -297,11 +311,12 @@ class EnvoyWelcomeButton extends StatefulWidget {
   final String title;
   final GestureTapCallback onTap;
 
-  const EnvoyWelcomeButton(
-      {super.key,
-      required this.asset,
-      required this.onTap,
-      required this.title});
+  const EnvoyWelcomeButton({
+    super.key,
+    required this.asset,
+    required this.onTap,
+    required this.title,
+  });
 
   @override
   State<EnvoyWelcomeButton> createState() => _EnvoyWelcomeButtonState();
@@ -350,147 +365,143 @@ class _EnvoyWelcomeButtonState extends State<EnvoyWelcomeButton> {
                       borderOnForeground: true,
                       clipBehavior: Clip.hardEdge,
                       shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(EnvoySpacing.medium1))),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(EnvoySpacing.medium1),
+                        ),
+                      ),
                       child: child,
                     ),
                   );
                 },
                 child: SizedBox.expand(
-                    child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Flexible(
-                            flex: 5,
-                            child: Container(
-                              color: Colors.white,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Flexible(
+                              flex: 5,
+                              child: Container(color: Colors.white),
                             ),
-                          ),
-                          Container(
-                            height: 2,
-                          ),
-                          Flexible(
-                            flex: 4,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  // Adjust if needed
-                                  end: Alignment.bottomRight,
-                                  // Adjust if needed
-                                  colors: [
-                                    EnvoyColors.gray1000,
-                                    EnvoyColors.gray1000.applyOpacity(0.62),
-                                  ],
-                                  stops: const [
-                                    0.0754, // 7.54%
-                                    0.9235, // 92.35%
-                                  ],
-                                  transform: const GradientRotation(10 *
-                                      3.14159 /
-                                      180), // 10 degrees to radians
-                                ),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(
-                                        0x1A000000), // rgba(0, 0, 0, 0.10)
-                                    blurRadius: 14.0,
-                                    offset: Offset(0, 0), // No offset
+                            Container(height: 2),
+                            Flexible(
+                              flex: 4,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    // Adjust if needed
+                                    end: Alignment.bottomRight,
+                                    // Adjust if needed
+                                    colors: [
+                                      EnvoyColors.gray1000,
+                                      EnvoyColors.gray1000.applyOpacity(0.62),
+                                    ],
+                                    stops: const [
+                                      0.0754, // 7.54%
+                                      0.9235, // 92.35%
+                                    ],
+                                    transform: const GradientRotation(
+                                      10 * 3.14159 / 180,
+                                    ), // 10 degrees to radians
                                   ),
-                                ],
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(
+                                        0x1A000000,
+                                      ), // rgba(0, 0, 0, 0.10)
+                                      blurRadius: 14.0,
+                                      offset: Offset(0, 0), // No offset
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          // Flexible(flex: 1, child: Container())
-                        ],
-                      ),
-                    ),
-                    Positioned.fill(
-                        child: ShaderMask(
-                      shaderCallback: (bounds) {
-                        return LinearGradient(
-                          colors: [
-                            EnvoyColors.gray1000.applyOpacity(1.02),
-                            EnvoyColors.gray1000.applyOpacity(0.01),
-                            EnvoyColors.gray1000.applyOpacity(0.1),
-                            EnvoyColors.gray1000.applyOpacity(0.2),
-                            EnvoyColors.gray1000.applyOpacity(0.8),
-                            EnvoyColors.gray1000.applyOpacity(0.002),
+                            // Flexible(flex: 1, child: Container())
                           ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ).createShader(bounds);
-                      },
-                      child: CustomPaint(
-                        isComplex: true,
-                        willChange: false,
-                        painter: LinesPainter(
-                          opacity: 1,
-                          hideLineGap: false,
-                          color: EnvoyColors.gray1000,
                         ),
                       ),
-                    )),
-                    Positioned.fill(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Flexible(
-                            flex: 5,
-                            child: Container(
-                              color: Colors.transparent,
-                              alignment: Alignment.bottomCenter,
-                              child: Image.asset(
-                                'assets/crop_glow.png',
-                                fit: BoxFit.cover,
-                                scale: .5,
-                                filterQuality: FilterQuality.high,
-                              ),
+                      Positioned.fill(
+                        child: ShaderMask(
+                          shaderCallback: (bounds) {
+                            return LinearGradient(
+                              colors: [
+                                EnvoyColors.gray1000.applyOpacity(1.02),
+                                EnvoyColors.gray1000.applyOpacity(0.01),
+                                EnvoyColors.gray1000.applyOpacity(0.1),
+                                EnvoyColors.gray1000.applyOpacity(0.2),
+                                EnvoyColors.gray1000.applyOpacity(0.8),
+                                EnvoyColors.gray1000.applyOpacity(0.002),
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ).createShader(bounds);
+                          },
+                          child: CustomPaint(
+                            isComplex: true,
+                            willChange: false,
+                            painter: LinesPainter(
+                              opacity: 1,
+                              hideLineGap: false,
+                              color: EnvoyColors.gray1000,
                             ),
                           ),
-                          Container(
-                            height: 2,
-                            color: EnvoyColors.accentSecondary,
-                          ),
-                          Flexible(
-                            flex: 4,
-                            child: Container(),
-                          ),
-                          // Flexible(flex: 1, child: Container())
-                        ],
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.center.add(const Alignment(0, -.5)),
-                      child: SizedBox(
-                        height: imageSize,
-                        child: widget.asset,
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: EnvoySpacing.medium1,
-                        ),
-                        child: Text(
-                          widget.title,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 11),
                         ),
                       ),
-                    )
-                  ],
-                )),
+                      Positioned.fill(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Flexible(
+                              flex: 5,
+                              child: Container(
+                                color: Colors.transparent,
+                                alignment: Alignment.bottomCenter,
+                                child: Image.asset(
+                                  'assets/crop_glow.png',
+                                  fit: BoxFit.cover,
+                                  scale: .5,
+                                  filterQuality: FilterQuality.high,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              height: 2,
+                              color: EnvoyColors.accentSecondary,
+                            ),
+                            Flexible(flex: 4, child: Container()),
+                            // Flexible(flex: 1, child: Container())
+                          ],
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.center.add(
+                          const Alignment(0, -.5),
+                        ),
+                        child: SizedBox(height: imageSize, child: widget.asset),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: EnvoySpacing.medium1,
+                          ),
+                          child: Text(
+                            widget.title,
+                            textAlign: TextAlign.center,
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 11,
+                                    ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
@@ -618,8 +629,10 @@ class WelcomeButtonGradientPainter extends CustomPainter {
   final double gradientRadius;
   final double gradientHeight;
 
-  WelcomeButtonGradientPainter(
-      {required this.gradientRadius, this.gradientHeight = 1.5});
+  WelcomeButtonGradientPainter({
+    required this.gradientRadius,
+    this.gradientHeight = 1.5,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -633,23 +646,35 @@ class WelcomeButtonGradientPainter extends CustomPainter {
           Color.fromRGBO(240, 187, 164, 0.0),
         ],
         stops: [0.0, 0.4836, 0.9466], // Corresponding to the percentages
-      ).createShader(Rect.fromCircle(
+      ).createShader(
+        Rect.fromCircle(
           center: Offset(size.width / 2, size.height / gradientHeight),
-          radius: min(size.width, size.width * gradientRadius)));
+          radius: min(size.width, size.width * gradientRadius),
+        ),
+      );
 
     final rxect = Rect.fromPoints(
-        Offset(0, -size.height), Offset(size.width, size.height));
+      Offset(0, -size.height),
+      Offset(size.width, size.height),
+    );
     canvas.drawRRect(RRect.fromRectXY(rxect, 0, 0), paint);
 
     canvas.drawPath(
-        Path()
-          ..addRect(Rect.fromPoints(Offset(size.width / 2, -size.height),
-              Offset(size.width, size.height)))
-          ..fillType = PathFillType.evenOdd,
-        Paint()
-          ..color = Colors.black.withAlpha(50)
-          ..maskFilter =
-              MaskFilter.blur(BlurStyle.normal, convertRadiusToSigma(2)));
+      Path()
+        ..addRect(
+          Rect.fromPoints(
+            Offset(size.width / 2, -size.height),
+            Offset(size.width, size.height),
+          ),
+        )
+        ..fillType = PathFillType.evenOdd,
+      Paint()
+        ..color = Colors.black.withAlpha(50)
+        ..maskFilter = MaskFilter.blur(
+          BlurStyle.normal,
+          convertRadiusToSigma(2),
+        ),
+    );
   }
 
   @override

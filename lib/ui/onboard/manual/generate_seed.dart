@@ -75,31 +75,38 @@ class _SeedScreenState extends State<SeedScreen> {
             _buildMnemonicGrid(context, widget.generate),
             _buildSeedVerification(context),
             VerifySeedPuzzleWidget(
-                seed: seedList,
-                onVerificationFinished: (bool verified) async {
-                  if (verified) {
-                    if (widget.generate) {
-                      EnvoySeed().create(seedList).then((success) {
-                        if (success && context.mounted) {
-                          Navigator.of(context, rootNavigator: true)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return const ManualSetupCreateAndStoreBackup();
-                          }));
-                        }
-                      });
-                    } else {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return const ManualSetupCreateAndStoreBackup();
-                      }));
-                    }
+              seed: seedList,
+              onVerificationFinished: (bool verified) async {
+                if (verified) {
+                  if (widget.generate) {
+                    EnvoySeed().create(seedList).then((success) {
+                      if (success && context.mounted) {
+                        Navigator.of(context, rootNavigator: true).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const ManualSetupCreateAndStoreBackup();
+                            },
+                          ),
+                        );
+                      }
+                    });
                   } else {
-                    Haptics.heavyImpact();
-                    if (context.mounted) {
-                      showVerificationFailedDialog(context);
-                    }
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const ManualSetupCreateAndStoreBackup();
+                        },
+                      ),
+                    );
                   }
-                }),
+                } else {
+                  Haptics.heavyImpact();
+                  if (context.mounted) {
+                    showVerificationFailedDialog(context);
+                  }
+                }
+              },
+            ),
           ],
         ),
       ),
@@ -169,82 +176,97 @@ class _SeedScreenState extends State<SeedScreen> {
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        child: const Icon(Icons.arrow_back_ios_rounded,
-                            size: EnvoySpacing.medium2))
+                        child: const Icon(
+                          Icons.arrow_back_ios_rounded,
+                          size: EnvoySpacing.medium2,
+                        ),
+                      )
                     : const SizedBox(height: EnvoySpacing.medium2),
           ),
         ),
         Expanded(
-            child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.medium2),
-                child: Text(
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.medium2,
+                  ),
+                  child: Text(
                     seedList.length == 24
                         ? S().manual_setup_generate_seed_write_words_24_heading
                         : S().manual_setup_generate_seed_write_words_heading,
-                    style: EnvoyTypography.heading
-                        .copyWith(color: EnvoyColors.textPrimary),
-                    textAlign: TextAlign.center),
-              ),
-              const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
-              Expanded(
-                child: PageView(
+                    style: EnvoyTypography.heading.copyWith(
+                      color: EnvoyColors.textPrimary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const Padding(padding: EdgeInsets.all(EnvoySpacing.medium1)),
+                Expanded(
+                  child: PageView(
                     controller: _seedDisplayPageController,
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
                       _buildTwoMnemonicColumns(0),
                       if (seedList.length > 12) _buildTwoMnemonicColumns(12),
-                    ]),
-              ),
-              if (seedList.length > 12)
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: EnvoySpacing.small),
-                  child: DotsIndicator(
-                      pageController: _seedDisplayPageController,
-                      totalPages: 2),
+                    ],
+                  ),
                 ),
-              Padding(
-                padding: const EdgeInsets.only(
+                if (seedList.length > 12)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: EnvoySpacing.small,
+                    ),
+                    child: DotsIndicator(
+                      pageController: _seedDisplayPageController,
+                      totalPages: 2,
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.only(
                     left: EnvoySpacing.xs,
                     right: EnvoySpacing.xs,
-                    bottom: EnvoySpacing.medium2),
-                child: OnboardingButton(
-                  onTap: () async {
-                    if (seedList.length == 12 || _onSecondPage) {
-                      await _pageController.nextPage(
+                    bottom: EnvoySpacing.medium2,
+                  ),
+                  child: OnboardingButton(
+                    onTap: () async {
+                      if (seedList.length == 12 || _onSecondPage) {
+                        await _pageController.nextPage(
                           duration: const Duration(milliseconds: 300),
-                          curve: Curves.ease);
-                    } else {
-                      setState(() {
-                        _onSecondPage = true;
-                      });
-                      await _seedDisplayPageController.nextPage(
+                          curve: Curves.ease,
+                        );
+                      } else {
+                        setState(() {
+                          _onSecondPage = true;
+                        });
+                        await _seedDisplayPageController.nextPage(
                           duration: const Duration(milliseconds: 300),
-                          curve: Curves.ease);
-                    }
-                  },
-                  label: seedList.length == 12 || _onSecondPage
-                      ? S().component_done
-                      : S().component_continue,
+                          curve: Curves.ease,
+                        );
+                      }
+                    },
+                    label: seedList.length == 12 || _onSecondPage
+                        ? S().component_done
+                        : S().component_continue,
+                  ),
                 ),
-              )
-            ],
+              ],
+            ),
           ),
-        ))
+        ),
       ],
     );
   }
 
   Widget _buildTwoMnemonicColumns(int startingIndex) {
     List<String> section1 = seedList.sublist(startingIndex, startingIndex + 6);
-    List<String> section2 =
-        seedList.sublist(startingIndex + 6, startingIndex + 12);
+    List<String> section2 = seedList.sublist(
+      startingIndex + 6,
+      startingIndex + 12,
+    );
     List<Tuple<int, String>> section1WithIndex = [];
     List<Tuple<int, String>> section2WithIndex = [];
 
@@ -287,8 +309,9 @@ class _SeedScreenState extends State<SeedScreen> {
   }
 
   Widget _buildMnemonicColumn(List<Tuple<int, String>> list) {
-    TextStyle textTheme =
-        EnvoyTypography.body.copyWith(color: EnvoyColors.textPrimary);
+    TextStyle textTheme = EnvoyTypography.body.copyWith(
+      color: EnvoyColors.textPrimary,
+    );
     double margin = MediaQuery.of(context).devicePixelRatio < 2.5 ? 12 : 16;
 
     return Column(
@@ -297,10 +320,15 @@ class _SeedScreenState extends State<SeedScreen> {
           height: 52,
           margin: EdgeInsets.symmetric(vertical: margin, horizontal: 12),
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          constraints:
-              const BoxConstraints(maxWidth: 220, minWidth: 160, maxHeight: 52),
+          constraints: const BoxConstraints(
+            maxWidth: 220,
+            minWidth: 160,
+            maxHeight: 52,
+          ),
           decoration: BoxDecoration(
-              color: Colors.grey[300], borderRadius: BorderRadius.circular(16)),
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Row(
             children: [
               Text("${word.item1}. ", style: textTheme),
@@ -316,22 +344,26 @@ class _SeedScreenState extends State<SeedScreen> {
     showEnvoyDialog(
       context: context,
       dismissible: false,
-      builder: Builder(builder: (context) {
-        return EnvoyPopUp(
-          icon: EnvoyIcons.alert,
-          typeOfMessage: PopUpState.warning,
-          showCloseButton: false,
-          content: S()
-              .manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading,
-          primaryButtonLabel: S().component_back,
-          onPrimaryButtonTap: (context) async {
-            Navigator.pop(context);
-            _pageController.animateToPage(1,
+      builder: Builder(
+        builder: (context) {
+          return EnvoyPopUp(
+            icon: EnvoyIcons.alert,
+            typeOfMessage: PopUpState.warning,
+            showCloseButton: false,
+            content: S()
+                .manual_setup_generate_seed_verify_seed_quiz_fail_warning_modal_subheading,
+            primaryButtonLabel: S().component_back,
+            onPrimaryButtonTap: (context) async {
+              Navigator.pop(context);
+              _pageController.animateToPage(
+                1,
                 duration: const Duration(milliseconds: 320),
-                curve: Curves.ease);
-          },
-        );
-      }),
+                curve: Curves.ease,
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -350,21 +382,21 @@ class _SeedScreenState extends State<SeedScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(EnvoySpacing.medium1),
-                        child: Icon(Icons.arrow_back_ios_rounded,
-                            size: EnvoySpacing.medium2),
-                      )),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(EnvoySpacing.medium1),
+                      child: Icon(
+                        Icons.arrow_back_ios_rounded,
+                        size: EnvoySpacing.medium2,
+                      ),
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: EnvoySpacing.xs),
-                  child: Image.asset(
-                    "assets/shield_ok.png",
-                    height: 184,
-                  ),
+                  child: Image.asset("assets/shield_ok.png", height: 184),
                 ),
               ],
             ),
@@ -373,19 +405,24 @@ class _SeedScreenState extends State<SeedScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Text(S().manual_setup_generate_seed_verify_seed_heading,
-                        textAlign: TextAlign.center,
-                        style: EnvoyTypography.heading
-                            .copyWith(color: EnvoyColors.textPrimary)),
+                    Text(
+                      S().manual_setup_generate_seed_verify_seed_heading,
+                      textAlign: TextAlign.center,
+                      style: EnvoyTypography.heading.copyWith(
+                        color: EnvoyColors.textPrimary,
+                      ),
+                    ),
                     const SizedBox(height: EnvoySpacing.medium3),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.medium1),
+                        horizontal: EnvoySpacing.medium1,
+                      ),
                       child: Text(
                         S().manual_setup_generate_seed_verify_seed_subheading,
                         textAlign: TextAlign.center,
-                        style: EnvoyTypography.body
-                            .copyWith(color: EnvoyColors.textSecondary),
+                        style: EnvoyTypography.body.copyWith(
+                          color: EnvoyColors.textSecondary,
+                        ),
                       ),
                     ),
                   ],
@@ -396,15 +433,22 @@ class _SeedScreenState extends State<SeedScreen> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(
-              horizontal: EnvoySpacing.xs, vertical: EnvoySpacing.medium2),
-          child: EnvoyButton(S().component_continue,
-              borderRadius:
-                  BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
-              fontWeight: FontWeight.w600, onTap: () {
-            _pageController.nextPage(
+            horizontal: EnvoySpacing.xs,
+            vertical: EnvoySpacing.medium2,
+          ),
+          child: EnvoyButton(
+            S().component_continue,
+            borderRadius: BorderRadius.all(
+              Radius.circular(EnvoySpacing.medium1),
+            ),
+            fontWeight: FontWeight.w600,
+            onTap: () {
+              _pageController.nextPage(
                 duration: const Duration(milliseconds: 300),
-                curve: Curves.ease);
-          }),
+                curve: Curves.ease,
+              );
+            },
+          ),
         ),
       ],
     );

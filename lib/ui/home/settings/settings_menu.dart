@@ -68,8 +68,9 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
           setState(() {
             _currentPage = const SettingsMenuWidget();
             HomePageNotification(
-                    leftFunction: null, title: S().menu_heading.toUpperCase())
-                .dispatch(context);
+              leftFunction: null,
+              title: S().menu_heading.toUpperCase(),
+            ).dispatch(context);
             ref.read(homePageTitleProvider.notifier).state =
                 S().menu_heading.toUpperCase();
           });
@@ -124,39 +125,41 @@ class SettingsMenuWidget extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium3),
+              padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.medium3,
+              ),
               child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const SizedBox(height: EnvoySpacing.medium2),
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(height: EnvoySpacing.medium2),
+                  MenuOption(
+                    label: S().menu_settings.toUpperCase(),
+                    onTap: () {
+                      background.state = HomePageBackgroundState.settings;
+                    },
+                  ),
+                  if (EnvoySeed().walletDerived())
                     MenuOption(
-                      label: S().menu_settings.toUpperCase(),
+                      label: S().menu_backups.toUpperCase(),
                       onTap: () {
-                        background.state = HomePageBackgroundState.settings;
+                        background.state = HomePageBackgroundState.backups;
                       },
                     ),
-                    if (EnvoySeed().walletDerived())
-                      MenuOption(
-                        label: S().menu_backups.toUpperCase(),
-                        onTap: () {
-                          background.state = HomePageBackgroundState.backups;
-                        },
-                      ),
-                    MenuOption(
-                      label: S().menu_support.toUpperCase(),
-                      onTap: () {
-                        background.state = HomePageBackgroundState.support;
-                      },
-                    ),
-                    MenuOption(
-                      label: S().menu_about.toUpperCase(),
-                      onTap: () {
-                        background.state = HomePageBackgroundState.about;
-                      },
-                    ),
-                  ]),
+                  MenuOption(
+                    label: S().menu_support.toUpperCase(),
+                    onTap: () {
+                      background.state = HomePageBackgroundState.support;
+                    },
+                  ),
+                  MenuOption(
+                    label: S().menu_about.toUpperCase(),
+                    onTap: () {
+                      background.state = HomePageBackgroundState.about;
+                    },
+                  ),
+                ],
+              ),
             ),
             TweenAnimationBuilder(
               builder: (context, value, child) {
@@ -164,7 +167,9 @@ class SettingsMenuWidget extends ConsumerWidget {
                   opacity: Tween<double>(begin: 0.3, end: 1).transform(value),
                   child: Transform.translate(
                     offset: Offset(
-                        0, Tween<double>(begin: -400, end: 0).transform(value)),
+                      0,
+                      Tween<double>(begin: -400, end: 0).transform(value),
+                    ),
                     child: child,
                   ),
                 );
@@ -178,33 +183,33 @@ class SettingsMenuWidget extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                        onTap: () {
-                          launchUrl(
-                              Uri.parse("https://twitter.com/FOUNDATIONdvcs"));
-                        },
-                        child: SvgPicture.asset(
-                          "assets/menu_x.svg",
-                        )),
+                      onTap: () {
+                        launchUrl(
+                          Uri.parse("https://twitter.com/FOUNDATIONdvcs"),
+                        );
+                      },
+                      child: SvgPicture.asset("assets/menu_x.svg"),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: GestureDetector(
-                          onTap: () {
-                            launchUrl(
-                                Uri.parse("https://community.foundation.xyz/"),
-                                mode: LaunchMode.externalApplication);
-                          },
-                          child: SvgPicture.asset(
-                            "assets/community.svg",
-                          )),
+                        onTap: () {
+                          launchUrl(
+                            Uri.parse("https://community.foundation.xyz/"),
+                            mode: LaunchMode.externalApplication,
+                          );
+                        },
+                        child: SvgPicture.asset("assets/community.svg"),
+                      ),
                     ),
                     GestureDetector(
-                        onTap: () {
-                          launchUrl(Uri.parse(
-                              "https://github.com/Foundation-Devices"));
-                        },
-                        child: SvgPicture.asset(
-                          "assets/github.svg",
-                        )),
+                      onTap: () {
+                        launchUrl(
+                          Uri.parse("https://github.com/Foundation-Devices"),
+                        );
+                      },
+                      child: SvgPicture.asset("assets/github.svg"),
+                    ),
                   ],
                 ),
               ),
@@ -220,11 +225,7 @@ class MenuOption extends StatelessWidget {
   final String label;
   final Function() onTap;
 
-  const MenuOption({
-    super.key,
-    required this.label,
-    required this.onTap,
-  });
+  const MenuOption({super.key, required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

@@ -18,19 +18,25 @@ class PpRestoreBackupPage extends StatelessWidget {
       rightFunction: null,
       text: [
         OnboardingText(
-            header: S().envoy_pp_restore_backup_heading,
-            text: S().envoy_pp_restore_backup_subheading),
+          header: S().envoy_pp_restore_backup_heading,
+          text: S().envoy_pp_restore_backup_subheading,
+        ),
       ],
       navigationDots: 3,
       navigationDotsIndex: 0,
       buttons: [
         OnboardingButton(
-            label: S().component_continue,
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return const PpRestoreBackupPasswordPage();
-              }));
-            }),
+          label: S().component_continue,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return const PpRestoreBackupPasswordPage();
+                },
+              ),
+            );
+          },
+        ),
       ],
     );
   }

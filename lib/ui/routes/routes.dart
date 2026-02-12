@@ -43,8 +43,9 @@ const PSBT_SCAN_QR = 'psbt_scan_qr';
 /// for example:
 /// GoRoute( path: "account/details/new",parentNavigatorKey: mainNavigatorKey)
 /// here even if the route is nested it will use root navigator to show the widget
-final GlobalKey<NavigatorState> mainNavigatorKey =
-    GlobalKey<NavigatorState>(debugLabel: "rootNavigator");
+final GlobalKey<NavigatorState> mainNavigatorKey = GlobalKey<NavigatorState>(
+  debugLabel: "rootNavigator",
+);
 
 /// The main router for the app.
 /// all the routes defined here will take the whole screen
@@ -135,9 +136,7 @@ final GoRouter mainRouter = GoRouter(
     GoRoute(
       path: "/tou_external",
       name: TOU_EXTERNAL,
-      builder: (context, state) => const TouPage(
-        fromExternal: true,
-      ),
+      builder: (context, state) => const TouPage(fromExternal: true),
     ),
     GoRoute(
       path: "/passport_intro",
@@ -157,19 +156,18 @@ final GoRouter mainRouter = GoRouter(
       },
     ),
     GoRoute(
-        path: "/seed_intro",
-        name: SEED_INTRO,
-        builder: (context, state) {
-          var type = SeedIntroScreenType.verify;
-          for (var element in SeedIntroScreenType.values) {
-            if (element.toString() == state.extra) {
-              type = element;
-            }
+      path: "/seed_intro",
+      name: SEED_INTRO,
+      builder: (context, state) {
+        var type = SeedIntroScreenType.verify;
+        for (var element in SeedIntroScreenType.values) {
+          if (element.toString() == state.extra) {
+            type = element;
           }
-          return SeedIntroScreen(
-            mode: type,
-          );
-        }),
+        }
+        return SeedIntroScreen(mode: type);
+      },
+    ),
     GoRoute(
         path: "/psbt_qr_exchange",
         name: PSBT_QR_EXCHANGE_STANDALONE,
@@ -264,5 +262,5 @@ final modalModeRoutes = [
 final hideAppBarRoutes = [
   // ROUTE_ACCOUNT_SEND,
   ROUTE_ACCOUNT_SEND_CONFIRM,
-  ROUTE_ACCOUNT_SEND_REVIEW
+  ROUTE_ACCOUNT_SEND_REVIEW,
 ];

@@ -30,8 +30,9 @@ Map<String, dynamic> _$VideoToJson(Video instance) => <String, dynamic>{
       'url': instance.url,
       'id': instance.id,
       'duration': instance.duration,
-      'resolutionLinkMap':
-          instance.resolutionLinkMap.map((k, e) => MapEntry(k.toString(), e)),
+      'resolutionLinkMap': instance.resolutionLinkMap.map(
+        (k, e) => MapEntry(k.toString(), e),
+      ),
       'watched': instance.watched,
       'order': instance.order,
       'tags': instance.tags,

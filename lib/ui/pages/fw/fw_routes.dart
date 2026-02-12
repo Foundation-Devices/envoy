@@ -29,54 +29,50 @@ class FwPagePayload {
 }
 
 final fwRoutes = GoRoute(
-    path: "/passport_update",
-    name: PASSPORT_UPDATE,
-    builder: (context, state) => FwIntroPage(
-          fwPagePayload: state.extra as FwPagePayload,
+  path: "/passport_update",
+  name: PASSPORT_UPDATE,
+  builder: (context, state) =>
+      FwIntroPage(fwPagePayload: state.extra as FwPagePayload),
+  routes: [
+    GoRoute(
+      path: 'passport',
+      name: PASSPORT_UPDATE_PASSPORT,
+      builder: (context, state) =>
+          FwPassportPage(fwPagePayload: state.extra as FwPagePayload),
+    ),
+    GoRoute(
+      path: "sd_card",
+      name: PASSPORT_UPDATE_SD_CARD,
+      builder: (context, state) =>
+          FwMicrosdPage(fwPagePayload: state.extra as FwPagePayload),
+      routes: [
+        GoRoute(
+          path: "android",
+          name: PASSPORT_UPDATE_ANDROID,
+          builder: (context, state) =>
+              FwAndroidProgressPage(payload: state.extra as FwPagePayload),
         ),
-    routes: [
-      GoRoute(
-        path: 'passport',
-        name: PASSPORT_UPDATE_PASSPORT,
-        builder: (context, state) => FwPassportPage(
-          fwPagePayload: state.extra as FwPagePayload,
-        ),
-      ),
-      GoRoute(
-        path: "sd_card",
-        name: PASSPORT_UPDATE_SD_CARD,
-        builder: (context, state) => FwMicrosdPage(
-          fwPagePayload: state.extra as FwPagePayload,
-        ),
-        routes: [
-          GoRoute(
-            path: "android",
-            name: PASSPORT_UPDATE_ANDROID,
-            builder: (context, state) => FwAndroidProgressPage(
-              payload: state.extra as FwPagePayload,
-            ),
+        GoRoute(
+          path: "ios_instruction",
+          name: PASSPORT_UPDATE_IOS_INSTRUCTION,
+          builder: (context, state) => FwIosInstructionsPage(
+            fwPagePayload: state.extra as FwPagePayload,
           ),
-          GoRoute(
-            path: "ios_instruction",
-            name: PASSPORT_UPDATE_IOS_INSTRUCTION,
-            builder: (context, state) => FwIosInstructionsPage(
-              fwPagePayload: state.extra as FwPagePayload,
-            ),
-          ),
-          GoRoute(
-            path: "android_instruction",
-            name: PASSPORT_UPDATE_ANDROID_INSTRUCTION,
-            builder: (context, state) => FwAndroidInstructionsPage(
-              fwPagePayload: state.extra as FwPagePayload,
-            ),
-          )
-        ],
-      ),
-      GoRoute(
-        path: "ios_success",
-        name: PASSPORT_UPDATE_IOS_SUCCESS,
-        builder: (context, state) => FwIosSuccessPage(
-          fwPagePayload: state.extra as FwPagePayload,
         ),
-      )
-    ]);
+        GoRoute(
+          path: "android_instruction",
+          name: PASSPORT_UPDATE_ANDROID_INSTRUCTION,
+          builder: (context, state) => FwAndroidInstructionsPage(
+            fwPagePayload: state.extra as FwPagePayload,
+          ),
+        ),
+      ],
+    ),
+    GoRoute(
+      path: "ios_success",
+      name: PASSPORT_UPDATE_IOS_SUCCESS,
+      builder: (context, state) =>
+          FwIosSuccessPage(fwPagePayload: state.extra as FwPagePayload),
+    ),
+  ],
+);

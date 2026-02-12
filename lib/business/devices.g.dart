@@ -19,6 +19,8 @@ Device _$DeviceFromJson(Map<String, dynamic> json) => Device(
       bleId: json['bleId'] as String? ?? '',
       peripheralId: json['peripheralId'] as String? ?? '',
       xid: const Uint8ListConverter().fromJson(json['xid'] as List?),
+      senderXid:
+          const Uint8ListConverter().fromJson(json['senderXid'] as List?),
       pairedAccountIds: (json['pairedAccountIds'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -35,6 +37,7 @@ Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
       'peripheralId': instance.peripheralId,
       'onboardingComplete': instance.onboardingComplete,
       'xid': const Uint8ListConverter().toJson(instance.xid),
+      'senderXid': const Uint8ListConverter().toJson(instance.senderXid),
       'datePaired': instance.datePaired.toIso8601String(),
       'firmwareVersion': instance.firmwareVersion,
       'pairedAccountIds': instance.pairedAccountIds,

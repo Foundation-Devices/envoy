@@ -17,8 +17,9 @@ class ScvShowQrPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<CryptoRequest> cryptoRequest =
-        ScvServer().getChallenge().then((challenge) {
+    Future<CryptoRequest> cryptoRequest = ScvServer().getChallenge().then((
+      challenge,
+    ) {
       _challenge = challenge;
       var request = CryptoRequest();
       request.objects.add(ScvChallengeRequest.fromServer(challenge));
@@ -34,23 +35,28 @@ class ScvShowQrPage extends StatelessWidget {
           alignment: Alignment.center,
           child: SingleChildScrollView(
             child: OnboardingText(
-                header: S().envoy_scv_show_qr_heading,
-                text: S().envoy_scv_show_qr_subheading),
+              header: S().envoy_scv_show_qr_heading,
+              text: S().envoy_scv_show_qr_subheading,
+            ),
           ),
-        )
+        ),
       ],
       buttons: [
         OnboardingButton(
-            label: S().component_next,
-            onTap: () {
-              if (_challenge != null) {
-                // ENV-216: remove ScvShowQrPage off navigation stack so it doesn't animate in background
-                Navigator.of(context)
-                    .pushReplacement(MaterialPageRoute(builder: (context) {
-                  return ScvScanQrPage(_challenge!);
-                }));
-              }
-            }),
+          label: S().component_next,
+          onTap: () {
+            if (_challenge != null) {
+              // ENV-216: remove ScvShowQrPage off navigation stack so it doesn't animate in background
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return ScvScanQrPage(_challenge!);
+                  },
+                ),
+              );
+            }
+          },
+        ),
       ],
     );
   }

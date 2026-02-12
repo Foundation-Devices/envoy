@@ -64,6 +64,6 @@ class EnvoyColors {
   static List<ColorPair> listTileColorPairs = [
     ColorPair(blue, lightBlue),
     ColorPair(brown, lightBrown),
-    ColorPair(blackish, lightBlackish)
+    ColorPair(blackish, lightBlackish),
   ];
 }

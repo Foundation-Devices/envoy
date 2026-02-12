@@ -15,9 +15,10 @@ const ROUTE_DEVICES = '/devices';
 const _DEVICE_DETAIL = 'details';
 const ROUTE_DEVICE_DETAIL = '$ROUTE_DEVICES/$_DEVICE_DETAIL';
 
-final devicesRouter =
-    StatefulShellBranch(restorationScopeId: 'devicesScopeId', routes: [
-  GoRoute(
+final devicesRouter = StatefulShellBranch(
+  restorationScopeId: 'devicesScopeId',
+  routes: [
+    GoRoute(
       path: ROUTE_DEVICES,
       onExit: (context, state) {
         final container = ProviderScope.containerOf(context);
@@ -32,15 +33,18 @@ final devicesRouter =
           wrapWithEnvoyPageAnimation(child: const DevicesCard()),
       routes: [
         GoRoute(
-            path: _DEVICE_DETAIL,
-            pageBuilder: (context, state) {
-              Device? device;
-              if (state.extra is Map) {
-                device = Device.fromJson(state.extra as Map<String, dynamic>);
-              } else {
-                device = state.extra as Device;
-              }
-              return wrapWithEnvoyPageAnimation(child: DeviceCard(device));
-            }),
-      ]),
-]);
+          path: _DEVICE_DETAIL,
+          pageBuilder: (context, state) {
+            Device? device;
+            if (state.extra is Map) {
+              device = Device.fromJson(state.extra as Map<String, dynamic>);
+            } else {
+              device = state.extra as Device;
+            }
+            return wrapWithEnvoyPageAnimation(child: DeviceCard(device));
+          },
+        ),
+      ],
+    ),
+  ],
+);

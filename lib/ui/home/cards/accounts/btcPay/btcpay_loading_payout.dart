@@ -14,11 +14,12 @@ class BtcPayLoadingPayout extends StatefulWidget {
   final PageController controller;
   final EnvoyAccount account;
 
-  const BtcPayLoadingPayout(
-      {super.key,
-      required this.voucher,
-      required this.controller,
-      required this.account});
+  const BtcPayLoadingPayout({
+    super.key,
+    required this.voucher,
+    required this.controller,
+    required this.account,
+  });
 
   @override
   BtcPayLoadingPayoutState createState() => BtcPayLoadingPayoutState();
@@ -34,20 +35,22 @@ class BtcPayLoadingPayoutState extends State<BtcPayLoadingPayout> {
   Future<void> _createPayout() async {
     //TODO: address for vouchers
     String address = widget.account.getPreferredAddress();
-    BtcPayVoucherRedeemResult result =
-        await widget.voucher.createPayout(address);
+    BtcPayVoucherRedeemResult result = await widget.voucher.createPayout(
+      address,
+    );
 
     if (result == BtcPayVoucherRedeemResult.success) {
       {
         addPendingTx(
-            widget.voucher.pullPaymentId,
-            address,
-            widget.account,
-            widget.voucher.amountSats,
-            widget.voucher.currency,
-            widget.voucher.amount,
-            widget.voucher.payoutId,
-            widget.voucher.uri);
+          widget.voucher.pullPaymentId,
+          address,
+          widget.account,
+          widget.voucher.amountSats,
+          widget.voucher.currency,
+          widget.voucher.amount,
+          widget.voucher.payoutId,
+          widget.voucher.uri,
+        );
         widget.controller.jumpToPage(4);
       }
     } else {

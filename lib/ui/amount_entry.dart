@@ -43,13 +43,14 @@ class AmountEntry extends ConsumerStatefulWidget {
   final Function(ParseResult)? onPaste;
   final bool trailingZeroes;
 
-  const AmountEntry(
-      {this.account,
-      this.onAmountChanged,
-      this.initalSatAmount = 0,
-      this.onPaste,
-      this.trailingZeroes = false,
-      super.key});
+  const AmountEntry({
+    this.account,
+    this.onAmountChanged,
+    this.initalSatAmount = 0,
+    this.onPaste,
+    this.trailingZeroes = false,
+    super.key,
+  });
 
   @override
   ConsumerState<AmountEntry> createState() => AmountEntryState();
@@ -70,12 +71,15 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
       _amountSats = widget.initalSatAmount;
 
       if (unit == AmountDisplayUnit.fiat) {
-        _enteredAmount = ExchangeRate()
-            .formatFiatToString(ref.read(displayFiatSendAmountProvider)!);
+        _enteredAmount = ExchangeRate().formatFiatToString(
+          ref.read(displayFiatSendAmountProvider)!,
+        );
       } else {
         _enteredAmount = getDisplayAmount(
-            _amountSats, ref.read(sendUnitProvider),
-            trailingZeros: widget.onPaste != null);
+          _amountSats,
+          ref.read(sendUnitProvider),
+          trailingZeros: widget.onPaste != null,
+        );
       }
     }
 
@@ -146,8 +150,10 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         {
           setState(() {
             if (_enteredAmount.isNotEmpty) {
-              _enteredAmount =
-                  _enteredAmount.substring(0, _enteredAmount.length - 1);
+              _enteredAmount = _enteredAmount.substring(
+                0,
+                _enteredAmount.length - 1,
+              );
             }
 
             if (_enteredAmount.isEmpty) {
@@ -209,8 +215,10 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
             // Limit entered amount
             if (_amountSats >= 2.1e15) {
-              _enteredAmount =
-                  _enteredAmount.substring(0, _enteredAmount.length - 1);
+              _enteredAmount = _enteredAmount.substring(
+                0,
+                _enteredAmount.length - 1,
+              );
             }
           });
         }
@@ -249,16 +257,18 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
       sanitizedAmount = sanitizedAmount.replaceAll(fiatDecimalSeparator, '.');
 
-      ref.read(displayFiatSendAmountProvider.notifier).state =
-          double.tryParse(sanitizedAmount);
+      ref.read(displayFiatSendAmountProvider.notifier).state = double.tryParse(
+        sanitizedAmount,
+      );
 
       if (!addDot && !addZero) {
         setState(() {
           // Format it nicely
           _enteredAmount = getDisplayAmount(
-              _amountSats,
-              displayFiat: ref.read(displayFiatSendAmountProvider),
-              unit);
+            _amountSats,
+            displayFiat: ref.read(displayFiatSendAmountProvider),
+            unit,
+          );
         });
       }
     }
@@ -266,18 +276,23 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     /// if entering btc/sat
     else {
       if (s.displayFiat() != null) {
-        String formattedFiatAmount =
-            getDisplayAmount(_amountSats, AmountDisplayUnit.fiat);
+        String formattedFiatAmount = getDisplayAmount(
+          _amountSats,
+          AmountDisplayUnit.fiat,
+        );
 
         String sanitizedFiatAmount = formattedFiatAmount
             .replaceAll(RegExp('[^0-9$fiatDecimalSeparator]'), '')
             .replaceAll(fiatGroupSeparator, '');
 
-        sanitizedFiatAmount =
-            sanitizedFiatAmount.replaceAll(fiatDecimalSeparator, '.');
+        sanitizedFiatAmount = sanitizedFiatAmount.replaceAll(
+          fiatDecimalSeparator,
+          '.',
+        );
 
-        ref.read(displayFiatSendAmountProvider.notifier).state =
-            double.parse(sanitizedFiatAmount);
+        ref.read(displayFiatSendAmountProvider.notifier).state = double.parse(
+          sanitizedFiatAmount,
+        );
       }
 
       if (!addDot && !addZero && _amountSats != 0) {
@@ -298,14 +313,18 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
     ref.watch(settingsProvider);
     var unit = ref.watch(sendUnitProvider);
 
-    NumPad numpad = NumPad(unit,
-        isAmountZero: _enteredAmount.isEmpty || _enteredAmount == "0",
-        onDigitEntered: (digit) {
-      onNumPadEvents(digit);
-    }, onNumPadEvents: (event) {
-      onNumPadEvents(event);
-      ref.read(isNumpadPressed.notifier).state = true;
-    }, isDecimalSeparator: _enteredAmount.contains(fiatDecimalSeparator));
+    NumPad numpad = NumPad(
+      unit,
+      isAmountZero: _enteredAmount.isEmpty || _enteredAmount == "0",
+      onDigitEntered: (digit) {
+        onNumPadEvents(digit);
+      },
+      onNumPadEvents: (event) {
+        onNumPadEvents(event);
+        ref.read(isNumpadPressed.notifier).state = true;
+      },
+      isDecimalSeparator: _enteredAmount.contains(fiatDecimalSeparator),
+    );
 
     return Column(
       children: [
@@ -325,13 +344,16 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
                 final unit = ref.watch(sendUnitProvider);
                 if (unit == AmountDisplayUnit.fiat) {
                   enteredAmount = ExchangeRate().formatFiatToString(
-                      ref.watch(displayFiatSendAmountProvider)!,
-                      isPrimaryValue: true);
+                    ref.watch(displayFiatSendAmountProvider)!,
+                    isPrimaryValue: true,
+                  );
                 }
                 if (unit == AmountDisplayUnit.btc) {
                   enteredAmount = getDisplayAmount(
-                      _amountSats, AmountDisplayUnit.btc,
-                      trailingZeros: _amountSats != 0);
+                    _amountSats,
+                    AmountDisplayUnit.btc,
+                    trailingZeros: _amountSats != 0,
+                  );
                 }
                 _enteredAmount = enteredAmount;
               },
@@ -370,8 +392,9 @@ class SpendableAmountWidget extends ConsumerWidget {
         ? S().coincontrol_edit_transaction_selectedAmount
         : S().coincontrol_edit_transaction_available_balance;
 
-    TextStyle textStyle =
-        EnvoyTypography.info.copyWith(color: EnvoyColors.textSecondary);
+    TextStyle textStyle = EnvoyTypography.info.copyWith(
+      color: EnvoyColors.textSecondary,
+    );
 
     double infoTextHeight = 15.0;
     TextScaler textScaler = MediaQuery.of(context).textScaler;
@@ -384,40 +407,37 @@ class SpendableAmountWidget extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                text,
-                style: textStyle,
-              ),
+              Text(text, style: textStyle),
               EnvoyAmount(
                 unit: sendScreenUnit,
                 amountSats: totalAmount,
                 amountWidgetStyle: AmountWidgetStyle.sendScreen,
                 account: account,
                 alignToEnd: true,
-              )
+              ),
             ],
           )
         : Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                text,
-                style: textStyle,
-              ),
+              Text(text, style: textStyle),
               EnvoyAmount(
                 unit: sendScreenUnit,
                 amountSats: totalAmount,
                 amountWidgetStyle: AmountWidgetStyle.sendScreen,
                 account: account,
                 alignToEnd: true,
-              )
+              ),
             ],
           );
   }
 
   double calculateTextHeight(
-      String text, TextStyle style, TextScaler textScaler) {
+    String text,
+    TextStyle style,
+    TextScaler textScaler,
+  ) {
     final TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       maxLines: 1,
@@ -440,12 +460,14 @@ class NumPad extends StatefulWidget {
   final bool isAmountZero;
   final bool isDecimalSeparator;
 
-  const NumPad(this.amountDisplayUnit,
-      {super.key,
-      required this.isAmountZero,
-      required this.onDigitEntered,
-      required this.onNumPadEvents,
-      required this.isDecimalSeparator});
+  const NumPad(
+    this.amountDisplayUnit, {
+    super.key,
+    required this.isAmountZero,
+    required this.onDigitEntered,
+    required this.onNumPadEvents,
+    required this.isDecimalSeparator,
+  });
 
   @override
   State<NumPad> createState() => _NumPadState();
@@ -466,7 +488,10 @@ class _NumPadState extends State<NumPad> {
     final childAspectRatio = (width / crossAxisCount) / (height / rowCount);
 
     intl.NumberFormat currencyFormatter = intl.NumberFormat.currency(
-        locale: currentLocale, symbol: "", name: Settings().selectedFiat);
+      locale: currentLocale,
+      symbol: "",
+      name: Settings().selectedFiat,
+    );
 
     return GridView.count(
       crossAxisCount: crossAxisCount,
@@ -571,30 +596,35 @@ class NumpadButton extends StatelessWidget {
             shape: BoxShape.circle,
             color: EnvoyColors.border2,
           ),
-          child: Center(child: () {
-            switch (type) {
-              case NumpadButtonType.text:
-                return Text(
-                  text!,
-                  style: EnvoyTypography.body
-                      .copyWith(
-                        fontSize: 24,
-                        color: EnvoyColors.textSecondary,
-                      )
-                      .setWeight(FontWeight.w400),
-                );
-              case NumpadButtonType.backspace:
-                return const Padding(
+          child: Center(
+            child: () {
+              switch (type) {
+                case NumpadButtonType.text:
+                  return Text(
+                    text!,
+                    style: EnvoyTypography.body
+                        .copyWith(
+                          fontSize: 24,
+                          color: EnvoyColors.textSecondary,
+                        )
+                        .setWeight(FontWeight.w400),
+                  );
+                case NumpadButtonType.backspace:
+                  return const Padding(
                     padding: EdgeInsets.only(right: 3, top: 2),
-                    child: EnvoyIcon(EnvoyIcons.delete,
-                        color: EnvoyColors.accentPrimary));
-              case NumpadButtonType.clipboard:
-                return const EnvoyIcon(
-                  EnvoyIcons.clipboard,
-                  color: EnvoyColors.accentPrimary,
-                );
-            }
-          }()),
+                    child: EnvoyIcon(
+                      EnvoyIcons.delete,
+                      color: EnvoyColors.accentPrimary,
+                    ),
+                  );
+                case NumpadButtonType.clipboard:
+                  return const EnvoyIcon(
+                    EnvoyIcons.clipboard,
+                    color: EnvoyColors.accentPrimary,
+                  );
+              }
+            }(),
+          ),
         ),
       ),
     );

@@ -11,7 +11,7 @@ import 'package:foundation_api/foundation_api.dart' as api;
 /// Handler for timezone messages over Quantum Link.
 /// Responds to incoming timezone messages by sending a timezone back.
 class TimeZoneHandler extends PassportMessageHandler {
-  TimeZoneHandler(super.writer);
+  TimeZoneHandler(super.connection);
   static const _platform = MethodChannel('envoy');
 
   @override
@@ -20,8 +20,7 @@ class TimeZoneHandler extends PassportMessageHandler {
   }
 
   @override
-  Future<void> handleMessage(
-      api.QuantumLinkMessage message, String bleId) async {
+  Future<void> handleMessage(api.QuantumLinkMessage message) async {
     if (message case api.QuantumLinkMessage_TimezoneRequest _) {
       kPrint("Received timezone, sending timezone response");
       await _sendTimezoneResponse();
@@ -38,10 +37,14 @@ class TimeZoneHandler extends PassportMessageHandler {
     final zone = await _platform.invokeMethod('get_time_zone');
 
     final timezoneResponse = api.TimezoneResponse(
-        offsetMinutes: dateTime.timeZoneOffset.inMinutes, zone: zone);
-    await writer.writeMessage(
-        api.QuantumLinkMessage.timezoneResponse(timezoneResponse));
+      offsetMinutes: dateTime.timeZoneOffset.inMinutes,
+      zone: zone,
+    );
+    await qlConnection.writeMessage(
+      api.QuantumLinkMessage.timezoneResponse(timezoneResponse),
+    );
     kPrint(
-        "Successfully sent timezone response with offsetMinutes: ${dateTime.timeZoneOffset.inMinutes}, zone: $zone");
+      "Successfully sent timezone response with offsetMinutes: ${dateTime.timeZoneOffset.inMinutes}, zone: $zone",
+    );
   }
 }

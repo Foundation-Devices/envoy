@@ -29,14 +29,15 @@ class CoinRepository {
 
   /// Transforms the stream of records to a stream of map
   final _coinBlockStateTransformer = StreamTransformer<
-      List<RecordSnapshot<String, bool>>,
-      Map<String, bool?>>.fromHandlers(handleData: (snapshot, sink) {
-    Map<String, bool> map = {};
-    for (var element in snapshot) {
-      map[element.key] = element.value;
-    }
-    sink.add(map);
-  });
+      List<RecordSnapshot<String, bool>>, Map<String, bool?>>.fromHandlers(
+    handleData: (snapshot, sink) {
+      Map<String, bool> map = {};
+      for (var element in snapshot) {
+        map[element.key] = element.value;
+      }
+      sink.add(map);
+    },
+  );
 
   Future addUtxoBlockState(String hash, bool isBlocked) async {
     await storage.utxoBlockState.record(hash).put(db, isBlocked);
@@ -105,12 +106,17 @@ class CoinRepository {
   }
 
   Future<int> updateCoinTag(CoinTag existingTag) async {
-    return await storage.tagStore.update(db, existingTag.toJson(),
-        finder: Finder(filter: Filter.equals("id", existingTag.id)));
+    return await storage.tagStore.update(
+      db,
+      existingTag.toJson(),
+      finder: Finder(filter: Filter.equals("id", existingTag.id)),
+    );
   }
 
   Future deleteTag(CoinTag coinTag) async {
-    await storage.tagStore
-        .delete(db, finder: Finder(filter: Filter.equals("id", coinTag.id)));
+    await storage.tagStore.delete(
+      db,
+      finder: Finder(filter: Filter.equals("id", coinTag.id)),
+    );
   }
 }

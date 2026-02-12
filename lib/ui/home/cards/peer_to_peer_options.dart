@@ -42,7 +42,9 @@ class _PeerToPeerCardState extends ConsumerState<PeerToPeerCard> {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(
-            vertical: EnvoySpacing.medium1, horizontal: EnvoySpacing.medium2),
+          vertical: EnvoySpacing.medium1,
+          horizontal: EnvoySpacing.medium2,
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -56,9 +58,7 @@ class _PeerToPeerCardState extends ConsumerState<PeerToPeerCard> {
                       style: EnvoyTypography.subheading,
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(
-                      height: EnvoySpacing.medium2,
-                    ),
+                    const SizedBox(height: EnvoySpacing.medium2),
                     BuyOptionCard(
                       icon: EnvoyIcons.hodlHodl,
                       label: S()
@@ -70,9 +70,7 @@ class _PeerToPeerCardState extends ConsumerState<PeerToPeerCard> {
                         _updateState(PeerToPeerState.hodl);
                       },
                     ),
-                    const SizedBox(
-                      height: EnvoySpacing.medium1,
-                    ),
+                    const SizedBox(height: EnvoySpacing.medium1),
                     BuyOptionCard(
                       icon: EnvoyIcons.bisq,
                       label: S().buy_bitcoin_buyOptions_peerToPeer_options_bisq,
@@ -83,9 +81,7 @@ class _PeerToPeerCardState extends ConsumerState<PeerToPeerCard> {
                         _updateState(PeerToPeerState.bisq);
                       },
                     ),
-                    const SizedBox(
-                      height: EnvoySpacing.medium1,
-                    ),
+                    const SizedBox(height: EnvoySpacing.medium1),
                     BuyOptionCard(
                       icon: EnvoyIcons.robosats,
                       label: S()
@@ -97,9 +93,7 @@ class _PeerToPeerCardState extends ConsumerState<PeerToPeerCard> {
                         _updateState(PeerToPeerState.robosats);
                       },
                     ),
-                    const SizedBox(
-                      height: EnvoySpacing.medium1,
-                    ),
+                    const SizedBox(height: EnvoySpacing.medium1),
                     BuyOptionCard(
                       icon: EnvoyIcons.peach,
                       label:
@@ -129,7 +123,7 @@ class _PeerToPeerCardState extends ConsumerState<PeerToPeerCard> {
                   launchPeerToPeerPage(currentState);
                 },
               ),
-            )
+            ),
           ],
         ),
       ),

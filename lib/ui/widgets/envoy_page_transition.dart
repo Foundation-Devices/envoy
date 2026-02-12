@@ -116,8 +116,9 @@ class _OpenUpwardsPageTransitionState
         ).animate(_primaryAnimation);
 
         final Animation<Offset> primaryTranslationAnimation =
-            _OpenUpwardsPageTransition._primaryTranslationTween
-                .animate(_primaryAnimation);
+            _OpenUpwardsPageTransition._primaryTranslationTween.animate(
+          _primaryAnimation,
+        );
 
         final Animation<Offset> secondaryTranslationAnimation =
             _OpenUpwardsPageTransition._secondaryTranslationTween.animate(

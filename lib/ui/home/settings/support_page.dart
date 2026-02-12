@@ -23,43 +23,46 @@ class SupportPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium3),
+              padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.medium3,
+              ),
               child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const SizedBox(height: EnvoySpacing.medium2),
-                    MenuOption(
-                      icon: EnvoyIcons.externalLink,
-                      label: S().envoy_support_documentation,
-                      onTap: () {
-                        launchUrl(Uri.parse("https://docs.foundation.xyz"));
-                      },
-                    ),
-                    const SizedBox(height: 0),
-                    MenuOption(
-                      icon: EnvoyIcons.externalLink,
-                      label: S().envoy_support_community,
-                      onTap: () {
-                        launchUrl(
-                            Uri.parse("https://community.foundation.xyz/"),
-                            mode: LaunchMode.externalApplication);
-                      },
-                    ),
-                    const SizedBox(height: 0),
-                    MenuOption(
-                      icon: EnvoyIcons.mail,
-                      label: S().envoy_support_email,
-                      onTap: () {
-                        final Uri emailUri = Uri(
-                          scheme: 'mailto',
-                          path: 'hello@foundation.xyz',
-                        );
-                        launchUrl(emailUri);
-                      },
-                    ),
-                  ]),
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(height: EnvoySpacing.medium2),
+                  MenuOption(
+                    icon: EnvoyIcons.externalLink,
+                    label: S().envoy_support_documentation,
+                    onTap: () {
+                      launchUrl(Uri.parse("https://docs.foundation.xyz"));
+                    },
+                  ),
+                  const SizedBox(height: 0),
+                  MenuOption(
+                    icon: EnvoyIcons.externalLink,
+                    label: S().envoy_support_community,
+                    onTap: () {
+                      launchUrl(
+                        Uri.parse("https://community.foundation.xyz/"),
+                        mode: LaunchMode.externalApplication,
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 0),
+                  MenuOption(
+                    icon: EnvoyIcons.mail,
+                    label: S().envoy_support_email,
+                    onTap: () {
+                      final Uri emailUri = Uri(
+                        scheme: 'mailto',
+                        path: 'hello@foundation.xyz',
+                      );
+                      launchUrl(emailUri);
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -87,29 +90,30 @@ class MenuOption extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(
-            horizontal: EnvoySpacing.large2, vertical: EnvoySpacing.medium1),
+          horizontal: EnvoySpacing.large2,
+          vertical: EnvoySpacing.medium1,
+        ),
         child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                label.toUpperCase(),
-                textAlign: TextAlign.center,
-                style: EnvoyTypography.subheading
-                    .copyWith(
-                      color: EnvoyColors.textPrimaryInverse,
-                    )
-                    .setWeight(FontWeight.w500),
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.subheading
+                  .copyWith(color: EnvoyColors.textPrimaryInverse)
+                  .setWeight(FontWeight.w500),
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              child: EnvoyIcon(
+                icon,
+                size: EnvoyIconSize.extraSmall,
+                color: EnvoyColors.textPrimaryInverse,
               ),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: EnvoyIcon(
-                  icon,
-                  size: EnvoyIconSize.extraSmall,
-                  color: EnvoyColors.textPrimaryInverse,
-                ),
-              )
-            ]),
+            ),
+          ],
+        ),
       ),
     );
   }

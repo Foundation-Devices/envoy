@@ -45,7 +45,12 @@ class FiatCurrency {
 
   static FiatCurrency fromCode(String code) {
     return FiatCurrency(
-        code: code, title: "", symbol: "", flag: "", decimalPoints: 2);
+      code: code,
+      title: "",
+      symbol: "",
+      flag: "",
+      decimalPoints: 2,
+    );
   }
 
   static FiatCurrency fromJson(Map<String, dynamic> json) {
@@ -65,7 +70,11 @@ class ExchangeRate extends ChangeNotifier {
     FiatCurrency(title: "US Dollar", code: 'USD', symbol: '\$', flag: "🇺🇸"),
     FiatCurrency(title: "Euro", code: 'EUR', symbol: '€', flag: "🇪🇺"),
     FiatCurrency(
-        title: "British Pound", code: 'GBP', symbol: '£', flag: "🇬🇧"),
+      title: "British Pound",
+      code: 'GBP',
+      symbol: '£',
+      flag: "🇬🇧",
+    ),
   ];
 
   List<FiatCurrency> get supportedFiat => _supportedFiat;
@@ -123,18 +132,21 @@ class ExchangeRate extends ChangeNotifier {
     kPrint("Instance of ExchangeRate created!");
 
     //load supported currencies
-    rootBundle.loadString("assets/currencies.json").then((value) {
-      final List<dynamic> json = jsonDecode(value);
-      _supportedFiat = json.map((e) => FiatCurrency.fromJson(e)).toList();
-      kPrint("Currencies loaded");
-      // Get rate from storage and set currency from Settings
-      restore();
-    }, onError: (e, stackTrace) {
-      kPrint("ExchangeRate", stackTrace: stackTrace);
-      EnvoyReport().log("ExchangeRate", "Error loading currencies: $e");
-      // Get rate from storage and set currency from Settings
-      restore();
-    });
+    rootBundle.loadString("assets/currencies.json").then(
+      (value) {
+        final List<dynamic> json = jsonDecode(value);
+        _supportedFiat = json.map((e) => FiatCurrency.fromJson(e)).toList();
+        kPrint("Currencies loaded");
+        // Get rate from storage and set currency from Settings
+        restore();
+      },
+      onError: (e, stackTrace) {
+        kPrint("ExchangeRate", stackTrace: stackTrace);
+        EnvoyReport().log("ExchangeRate", "Error loading currencies: $e");
+        // Get rate from storage and set currency from Settings
+        restore();
+      },
+    );
 
     // Refresh from time to time
     Timer.periodic(const Duration(seconds: 30), (_) async {
@@ -318,7 +330,10 @@ class ExchangeRate extends ChangeNotifier {
     }
     // format via Settings().selectedFiat
     NumberFormat currencyFormatter = NumberFormat.currency(
-        locale: currentLocale, symbol: "", name: Settings().selectedFiat);
+      locale: currentLocale,
+      symbol: "",
+      name: Settings().selectedFiat,
+    );
 
     return currencyFormatter.format(amount);
   }
@@ -351,7 +366,10 @@ class ExchangeRate extends ChangeNotifier {
 
     final currencyFormatter = useFiatFormatting
         ? NumberFormat.currency(
-            locale: currentLocale, symbol: "", name: Settings().selectedFiat)
+            locale: currentLocale,
+            symbol: "",
+            name: Settings().selectedFiat,
+          )
         : NumberFormat.decimalPattern(currentLocale);
 
     String formattedAmount;
@@ -359,13 +377,16 @@ class ExchangeRate extends ChangeNotifier {
     if (displayFiat != null) {
       formattedAmount = currencyFormatter.format(displayFiat);
     } else {
-      formattedAmount = currencyFormatter
-          .format(_selectedCurrencyRate! * amountSats / 100000000);
+      formattedAmount = currencyFormatter.format(
+        _selectedCurrencyRate! * amountSats / 100000000,
+      );
 
       // NumberFormat still adds a non-breaking space if symbol is empty
       const int nonBreakingSpace = 0x00A0;
-      formattedAmount =
-          formattedAmount.replaceAll(String.fromCharCode(nonBreakingSpace), "");
+      formattedAmount = formattedAmount.replaceAll(
+        String.fromCharCode(nonBreakingSpace),
+        "",
+      );
     }
 
     return (includeSymbol ? _selectedCurrency?.symbol ?? '' : "") +
@@ -414,10 +435,7 @@ class RatePoint {
   final double price;
   final int timestamp;
 
-  RatePoint({
-    required this.price,
-    required this.timestamp,
-  });
+  RatePoint({required this.price, required this.timestamp});
 
   factory RatePoint.fromJson(Map<String, dynamic> json) {
     return RatePoint(
@@ -426,20 +444,14 @@ class RatePoint {
     );
   }
 
-  Map<String, dynamic> toJson() => {
-        "price": price,
-        "ts": timestamp,
-      };
+  Map<String, dynamic> toJson() => {"price": price, "ts": timestamp};
 }
 
 class ExchangeRateHistory {
   final String currency;
   final List<RatePoint> points;
 
-  ExchangeRateHistory({
-    required this.currency,
-    required this.points,
-  });
+  ExchangeRateHistory({required this.currency, required this.points});
 
   factory ExchangeRateHistory.fromJson(Map<String, dynamic> json) {
     return ExchangeRateHistory(

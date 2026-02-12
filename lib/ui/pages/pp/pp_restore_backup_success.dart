@@ -14,28 +14,29 @@ class PpRestoreBackupSuccessPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingPage(
       key: const Key("pp_restore_backup_success"),
-      clipArt: Center(
-        child: Image.asset(
-          "assets/circle_ok.png",
-          height: 140,
-        ),
-      ),
+      clipArt: Center(child: Image.asset("assets/circle_ok.png", height: 140)),
       text: [
         OnboardingText(
-            header: S().envoy_pp_restore_backup_success_heading,
-            text: S().envoy_pp_new_seed_success_subheading),
+          header: S().envoy_pp_restore_backup_success_heading,
+          text: S().envoy_pp_new_seed_success_subheading,
+        ),
       ],
       navigationDots: 3,
       navigationDotsIndex: 2,
       rightFunction: null,
       buttons: [
         OnboardingButton(
-            label: S().component_continue,
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return const SingleImportPpIntroPage(isExistingDevice: false);
-              }));
-            }),
+          label: S().component_continue,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return const SingleImportPpIntroPage(isExistingDevice: false);
+                },
+              ),
+            );
+          },
+        ),
       ],
     );
   }

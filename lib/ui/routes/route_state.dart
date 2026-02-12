@@ -13,13 +13,15 @@ StreamController<RouteMatchList> routeStreamController =
 
 void listenToRouteChanges() {
   mainRouter.routerDelegate.addListener(() {
-    routeStreamController.sink
-        .add(mainRouter.routerDelegate.currentConfiguration);
+    routeStreamController.sink.add(
+      mainRouter.routerDelegate.currentConfiguration,
+    );
   });
 }
 
-final _routerStreamProvider =
-    StreamProvider((ref) => routeStreamController.stream);
+final _routerStreamProvider = StreamProvider(
+  (ref) => routeStreamController.stream,
+);
 
 /// Returns the current route path.
 final routePathProvider = Provider<String>((ref) {

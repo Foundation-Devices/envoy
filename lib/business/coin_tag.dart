@@ -34,11 +34,12 @@ class CoinTag {
   @JsonKey(name: 'coins_id')
   Set<String> coinsId = {};
 
-  CoinTag(
-      {required this.id,
-      required this.name,
-      required this.account,
-      this.untagged = false});
+  CoinTag({
+    required this.id,
+    required this.name,
+    required this.account,
+    this.untagged = false,
+  });
 
   int get numOfLockedCoins => coins.where((element) => element.locked).length;
 
@@ -58,7 +59,9 @@ class CoinTag {
 
   int getSelectedAmount(Set<String> selectedCoins) {
     return coins.where((element) => selectedCoins.contains(element.id)).fold(
-        0, (previousValue, element) => previousValue + element.utxo.value);
+          0,
+          (previousValue, element) => previousValue + element.utxo.value,
+        );
   }
 
   int getNumSelectedCoins(Set<String> selectedCoins) {
@@ -87,9 +90,9 @@ class CoinTag {
   }
 
   EnvoyAccount? getAccount() {
-    return NgAccountManager()
-        .accounts
-        .firstWhereOrNull((account) => this.account == account.id);
+    return NgAccountManager().accounts.firstWhereOrNull(
+          (account) => this.account == account.id,
+        );
   }
 
   static String generateNewId() {

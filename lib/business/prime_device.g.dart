@@ -11,7 +11,9 @@ PrimeDevice _$PrimeDeviceFromJson(Map<String, dynamic> json) => PrimeDevice(
       const Uint8ListBase64Converter().fromJson(json['xidDocument'] as String),
     );
 
-Map<String, dynamic> _$PrimeDeviceToJson(PrimeDevice instance) =>
+Map<String, dynamic> _$PrimeDeviceToJson(
+  PrimeDevice instance,
+) =>
     <String, dynamic>{
       'bleId': instance.bleId,
       'xidDocument':

@@ -93,10 +93,13 @@ String calculateChecksum(String bitstream) {
   String firstBits = bitstream.substring(0, is24seedWord ? 256 : 128);
 
   // Convert the bitstream to bytes
-  Uint8List bytes = Uint8List.fromList(List.generate(
+  Uint8List bytes = Uint8List.fromList(
+    List.generate(
       firstBits.length ~/ 8,
-      (index) => int.parse(firstBits.substring(index * 8, (index + 1) * 8),
-          radix: 2)));
+      (index) =>
+          int.parse(firstBits.substring(index * 8, (index + 1) * 8), radix: 2),
+    ),
+  );
 
   // Calculate the SHA-256 hash of the bytes
   Digest hash = sha256.convert(bytes);

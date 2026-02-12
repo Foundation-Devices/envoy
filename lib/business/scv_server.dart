@@ -4,6 +4,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
@@ -12,6 +13,7 @@ import 'package:http_tor/http_tor.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:foundation_api/foundation_api.dart';
+import 'package:tor/tor.dart';
 
 // Generated
 part 'scv_server.g.dart';
@@ -32,6 +34,15 @@ class ScvServer {
   static HttpTor http = HttpTor();
   static String serverAddress = "https://validate.foundation.xyz";
   static String primeSecurityCheckUrl = "https://security-check.foundation.xyz";
+  static String primeSecurityCheckOnion =
+      "http://rmaxv6sivzvw2agnnl3uuyukrkgqjqsnudlq75tbqj5m6hmej4ybp2ad.onion";
+
+  static String get primeSecurityCheckBaseUrl {
+    if (Settings().torEnabled()) {
+      return primeSecurityCheckOnion;
+    }
+    return primeSecurityCheckUrl;
+  }
 
   final LocalStorage _ls = LocalStorage();
   static const String SCV_CHALLENGE_PREFS = "scv_challenge";
@@ -96,8 +107,10 @@ class ScvServer {
       _storeChallenge(challenge);
       return challenge;
     } else {
-      EnvoyReport().log("scv",
-          "Failed to get challenge,status: ${response.statusCode},body: ${response.body}");
+      EnvoyReport().log(
+        "scv",
+        "Failed to get challenge,status: ${response.statusCode},body: ${response.body}",
+      );
       throw Exception('Failed to get challenge');
     }
   }
@@ -117,25 +130,50 @@ class ScvServer {
     };
 
     // TODO: parametrise the Passport batch?
-    final response = await http.post('$serverAddress/validate?batch=2',
-        body: jsonEncode(request),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=utf-8'
-        });
+    final response = await http.post(
+      '$serverAddress/validate?batch=2',
+      body: jsonEncode(request),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+    );
 
     if (response.statusCode == 200) {
       var json = jsonDecode(response.body);
       return json['isValidated'] == true;
     } else {
-      EnvoyReport().log("scv",
-          "Failed to validate challenge,status: ${response.statusCode},body: ${response.body}");
+      EnvoyReport().log(
+        "scv",
+        "Failed to validate challenge,status: ${response.statusCode},body: ${response.body}",
+      );
+      return false;
+    }
+  }
+
+  /// Checks if the Prime security check server is reachable.
+  /// Returns true if we can connect to the server, false otherwise.
+  Future<bool> canReachPrimeServer() async {
+    try {
+      final uri = Uri.parse(ScvServer.primeSecurityCheckBaseUrl);
+      if (Settings().torEnabled()) {
+        await Tor.instance.isReady();
+      } else {
+        // DNS lookup for faster network check (clearnet only).
+        await InternetAddress.lookup(uri.host);
+        return true;
+      }
+      final response = await http.get('$primeSecurityCheckBaseUrl/challenge');
+      kPrint("connectivity check status code: ${response.statusCode}");
+      return response.statusCode == 200;
+    } catch (e) {
+      kPrint("connectivity check failed: $e");
       return false;
     }
   }
 
   Future<ChallengeRequest?> getPrimeChallenge() async {
     try {
-      final response = await http.get('$primeSecurityCheckUrl/challenge');
+      final response = await http.get('$primeSecurityCheckBaseUrl/challenge');
 
       kPrint("response status code: ${response.statusCode}");
       if (response.statusCode != 200) {
@@ -163,7 +201,7 @@ class ScvServer {
       return ScvVerificationResult.success;
     }
 
-    final uri = '$primeSecurityCheckUrl/verify';
+    final uri = '$primeSecurityCheckBaseUrl/verify';
     final dataStr = data.map((d) => d.toString()).join(",");
 
     try {

@@ -49,7 +49,9 @@ class ActivityCardState extends State<ActivityCard> {
     return const PopScope(
       canPop: false,
       child: AnimatedSwitcher(
-          duration: Duration(milliseconds: 250), child: TopLevelActivityCard()),
+        duration: Duration(milliseconds: 250),
+        child: TopLevelActivityCard(),
+      ),
     );
   }
 }
@@ -118,8 +120,9 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
 
         return ScrollGradientMask(
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
+            padding: const EdgeInsets.symmetric(
+              horizontal: EnvoySpacing.medium1,
+            ),
             child: CustomScrollView(
               slivers: [
                 const SliverToBoxAdapter(
@@ -135,48 +138,52 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
                               children: [
                                 const SizedBox(height: EnvoySpacing.small),
                                 ListHeader(
-                                    title: S().activity_listHeader_Today),
+                                  title: S().activity_listHeader_Today,
+                                ),
                                 const ActivityGhostListTile(animate: false),
                               ],
                             ),
                             Text(
                               S().activity_emptyState_label,
-                              style: EnvoyTypography.body
-                                  .copyWith(color: EnvoyColors.textSecondary),
+                              style: EnvoyTypography.body.copyWith(
+                                color: EnvoyColors.textSecondary,
+                              ),
                             ),
                             const SizedBox(height: EnvoySpacing.medium2),
                           ],
                         ),
                       )
                     : SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            return Column(
-                              children: [
-                                if (index == 0 ||
-                                    (index > 0 &&
-                                        showHeader(envoyNotification[index],
-                                            envoyNotification[index - 1])))
-                                  Column(
-                                    children: [
-                                      if (index != 0)
-                                        const SizedBox(
-                                            height: EnvoySpacing.medium2),
-                                      if (index == 0)
-                                        const SizedBox(
-                                            height: EnvoySpacing.small),
-                                      ListHeader(
-                                        title: getTransactionDateString(
-                                            envoyNotification[index]),
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          return Column(
+                            children: [
+                              if (index == 0 ||
+                                  (index > 0 &&
+                                      showHeader(
+                                        envoyNotification[index],
+                                        envoyNotification[index - 1],
+                                      )))
+                                Column(
+                                  children: [
+                                    if (index != 0)
+                                      const SizedBox(
+                                        height: EnvoySpacing.medium2,
                                       ),
-                                    ],
-                                  ),
-                                ActivityListTile(envoyNotification[index]),
-                              ],
-                            );
-                          },
-                          childCount: envoyNotification.length,
-                        ),
+                                    if (index == 0)
+                                      const SizedBox(
+                                        height: EnvoySpacing.small,
+                                      ),
+                                    ListHeader(
+                                      title: getTransactionDateString(
+                                        envoyNotification[index],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ActivityListTile(envoyNotification[index]),
+                            ],
+                          );
+                        }, childCount: envoyNotification.length),
                       ),
                 const SliverToBoxAdapter(
                   child: SizedBox(height: EnvoySpacing.large2),
@@ -191,23 +198,25 @@ class TopLevelActivityCardState extends ConsumerState<TopLevelActivityCard> {
 }
 
 String getTransactionDateString(EnvoyNotification notification) {
-  return DateFormat.yMd(currentLocale)
-      .format(notification.date ?? DateTime.now());
+  return DateFormat.yMd(
+    currentLocale,
+  ).format(notification.date ?? DateTime.now());
 }
 
-bool showHeader(EnvoyNotification currentNotification,
-    EnvoyNotification previousNotification) {
-  return !DateUtils.isSameDay(currentNotification.date ?? DateTime.now(),
-      previousNotification.date ?? DateTime.now());
+bool showHeader(
+  EnvoyNotification currentNotification,
+  EnvoyNotification previousNotification,
+) {
+  return !DateUtils.isSameDay(
+    currentNotification.date ?? DateTime.now(),
+    previousNotification.date ?? DateTime.now(),
+  );
 }
 
 class ActivityGhostListTile extends StatelessWidget {
   final bool animate;
 
-  const ActivityGhostListTile({
-    this.animate = false,
-    super.key,
-  });
+  const ActivityGhostListTile({this.animate = false, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -217,20 +226,14 @@ class ActivityGhostListTile extends StatelessWidget {
       horizontalTitleGap: EnvoySpacing.small,
       title: Padding(
         padding: const EdgeInsets.only(top: 2, right: EnvoySpacing.medium2),
-        child: LoaderGhost(
-          width: 10,
-          height: 14,
-          animate: animate,
-        ),
+        child: LoaderGhost(width: 10, height: 14, animate: animate),
       ),
       subtitle: Padding(
-        padding:
-            const EdgeInsets.only(top: 5.0, right: (EnvoySpacing.medium2 + 75)),
-        child: LoaderGhost(
-          width: 30,
-          height: 14,
-          animate: animate,
+        padding: const EdgeInsets.only(
+          top: 5.0,
+          right: (EnvoySpacing.medium2 + 75),
         ),
+        child: LoaderGhost(width: 30, height: 14, animate: animate),
       ),
       leading: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -249,19 +252,11 @@ class ActivityGhostListTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            LoaderGhost(
-              width: 60,
-              height: 14,
-              animate: animate,
-            ),
+            LoaderGhost(width: 60, height: 14, animate: animate),
             Padding(
               padding: const EdgeInsets.only(top: 5.0),
-              child: LoaderGhost(
-                width: 40,
-                height: 14,
-                animate: animate,
-              ),
-            )
+              child: LoaderGhost(width: 40, height: 14, animate: animate),
+            ),
           ],
         ),
       ),

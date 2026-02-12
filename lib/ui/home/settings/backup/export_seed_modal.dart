@@ -29,7 +29,9 @@ class _ExportSeedModalState extends State<ExportSeedModal> {
       onPrimaryButtonTap: (context) {
         Navigator.of(context).pop();
         showEnvoyDialog(
-            context: context, dialog: const ExportSeedModalQrCode());
+          context: context,
+          dialog: const ExportSeedModalQrCode(),
+        );
       },
     );
   }

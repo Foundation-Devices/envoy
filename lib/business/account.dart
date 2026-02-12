@@ -42,18 +42,19 @@ class Account with _$Account {
     return number == 2147483646;
   }
 
-  const factory Account(
-      {required Wallet wallet,
-      // ignore: invalid_annotation_target
-      @JsonKey(defaultValue: "Account") required String name,
-      required String deviceSerial,
-      required DateTime dateAdded,
-      required int number,
-      // ignore: invalid_annotation_target
-      @JsonKey(defaultValue: Account.generateNewId) required String? id,
-      // Flipped the first time we sync
-      // ignore: invalid_annotation_target
-      @JsonKey(defaultValue: null) required DateTime? dateSynced}) = _Account;
+  const factory Account({
+    required Wallet wallet,
+    // ignore: invalid_annotation_target
+    @JsonKey(defaultValue: "Account") required String name,
+    required String deviceSerial,
+    required DateTime dateAdded,
+    required int number,
+    // ignore: invalid_annotation_target
+    @JsonKey(defaultValue: Account.generateNewId) required String? id,
+    // Flipped the first time we sync
+    // ignore: invalid_annotation_target
+    @JsonKey(defaultValue: null) required DateTime? dateSynced,
+  }) = _Account;
 
   // Serialisation
   factory Account.fromJson(Map<String, Object?> json) =>

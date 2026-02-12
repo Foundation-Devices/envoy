@@ -19,11 +19,7 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-enum SeedIntroScreenType {
-  generate,
-  import,
-  verify,
-}
+enum SeedIntroScreenType { generate, import, verify }
 
 class SeedIntroScreen extends StatelessWidget {
   final SeedIntroScreenType mode;
@@ -33,199 +29,214 @@ class SeedIntroScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OnboardPageBackground(
-        child: Material(
-            color: Colors.transparent,
-            child: Column(
+      child: Material(
+        color: Colors.transparent,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
                   mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: GestureDetector(
-                              onTap: () {
-                                context.pop();
-                              },
-                              child: const Padding(
-                                padding: EdgeInsets.all(EnvoySpacing.medium1),
-                                child: Icon(Icons.arrow_back_ios_rounded,
-                                    size: EnvoySpacing.medium2),
-                              )),
-                        ),
-                        const SizedBox(height: EnvoySpacing.xs),
-                        Container(
-                          child: mode == SeedIntroScreenType.generate ||
-                                  mode == SeedIntroScreenType.verify
-                              ? Image.asset(
-                                  "assets/shield_inspect.png",
-                                  width: 184,
-                                )
-                              : Image.asset(
-                                  "assets/fw_download.png",
-                                  width: 150,
-                                  height: 150,
-                                ),
-                        ),
-                      ],
-                    ),
-                    Flexible(
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: EnvoySpacing.medium1,
-                              vertical: EnvoySpacing.medium3),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                mode == SeedIntroScreenType.generate ||
-                                        mode == SeedIntroScreenType.verify
-                                    ? S()
-                                        .backups_erase_wallets_and_backups_show_seed_heading
-                                    : S().manual_setup_import_seed_heading,
-                                textAlign: TextAlign.center,
-                                style: EnvoyTypography.heading,
-                              ),
-                              const SizedBox(
-                                height: EnvoySpacing.medium3,
-                              ),
-                              Text(
-                                mode == SeedIntroScreenType.generate ||
-                                        mode == SeedIntroScreenType.verify
-                                    ? S()
-                                        .backups_erase_wallets_and_backups_show_seed_subheading
-                                    : S().manual_setup_import_seed_subheading,
-                                textAlign: TextAlign.center,
-                                style: EnvoyTypography.body
-                                    .copyWith(color: EnvoyColors.textSecondary),
-                              ),
-                              const SizedBox(
-                                height: EnvoySpacing.medium2,
-                              ),
-                              if (mode == SeedIntroScreenType.import)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: EnvoySpacing.medium2,
-                                  ),
-                                  child: Text(
-                                    S().manual_setup_import_seed_passport_warning,
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall!
-                                        .copyWith(
-                                            fontSize: 13,
-                                            color: EnvoyColors.accentSecondary,
-                                            fontWeight: FontWeight.w700),
-                                  ),
-                                ),
-                            ],
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: GestureDetector(
+                        onTap: () {
+                          context.pop();
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(EnvoySpacing.medium1),
+                          child: Icon(
+                            Icons.arrow_back_ios_rounded,
+                            size: EnvoySpacing.medium2,
                           ),
                         ),
                       ),
                     ),
+                    const SizedBox(height: EnvoySpacing.xs),
+                    Container(
+                      child: mode == SeedIntroScreenType.generate ||
+                              mode == SeedIntroScreenType.verify
+                          ? Image.asset("assets/shield_inspect.png", width: 184)
+                          : Image.asset(
+                              "assets/fw_download.png",
+                              width: 150,
+                              height: 150,
+                            ),
+                    ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.xs,
-                      vertical: EnvoySpacing.medium2),
-                  child: mode == SeedIntroScreenType.generate ||
-                          mode == SeedIntroScreenType.verify
-                      ? EnvoyButton(
-                          mode == SeedIntroScreenType.generate
-                              ? S().manual_setup_generate_seed_CTA
-                              : S()
-                                  .backups_erase_wallets_and_backups_show_seed_CTA,
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(EnvoySpacing.medium1)),
-                          fontWeight: FontWeight.w600, onTap: () {
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return Builder(builder: (context) {
-                              return SeedScreen(
-                                  generate:
-                                      mode == SeedIntroScreenType.generate);
-                            });
-                          }));
-                        })
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            EnvoyButton(S().component_12WordSeed,
-                                type: EnvoyButtonTypes.secondary,
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(EnvoySpacing.medium1)),
-                                fontWeight: FontWeight.w600, onTap: () {
-                              context.goNamed(ONBOARD_ENVOY_MANUAL_IMPORT_12);
-                            }),
-                            const SizedBox(
-                              height: EnvoySpacing.medium1,
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium1,
+                        vertical: EnvoySpacing.medium3,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            mode == SeedIntroScreenType.generate ||
+                                    mode == SeedIntroScreenType.verify
+                                ? S()
+                                    .backups_erase_wallets_and_backups_show_seed_heading
+                                : S().manual_setup_import_seed_heading,
+                            textAlign: TextAlign.center,
+                            style: EnvoyTypography.heading,
+                          ),
+                          const SizedBox(height: EnvoySpacing.medium3),
+                          Text(
+                            mode == SeedIntroScreenType.generate ||
+                                    mode == SeedIntroScreenType.verify
+                                ? S()
+                                    .backups_erase_wallets_and_backups_show_seed_subheading
+                                : S().manual_setup_import_seed_subheading,
+                            textAlign: TextAlign.center,
+                            style: EnvoyTypography.body.copyWith(
+                              color: EnvoyColors.textSecondary,
                             ),
-                            EnvoyButton(S().component_24WordSeed,
-                                type: EnvoyButtonTypes.secondary,
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(EnvoySpacing.medium1)),
-                                fontWeight: FontWeight.w600, onTap: () {
-                              context.goNamed(ONBOARD_ENVOY_MANUAL_IMPORT_24);
-                            }),
-                            const SizedBox(
-                              height: EnvoySpacing.medium1,
+                          ),
+                          const SizedBox(height: EnvoySpacing.medium2),
+                          if (mode == SeedIntroScreenType.import)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: EnvoySpacing.medium2,
+                              ),
+                              child: Text(
+                                S().manual_setup_import_seed_passport_warning,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(
+                                      fontSize: 13,
+                                      color: EnvoyColors.accentSecondary,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                              ),
                             ),
-                            EnvoyButton(S().component_recoverWithQR,
-                                type: EnvoyButtonTypes.primary,
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(EnvoySpacing.medium1)),
-                                fontWeight: FontWeight.w600, onTap: () {
-                              showScannerDialog(
-                                  context: context,
-                                  onBackPressed: (context) {
-                                    Navigator.pop(context);
-                                  },
-                                  decoder: SeedQrDecoder(
-                                    onSeedValidated: (String result) {
-                                      context.pop();
-                                      List<String> seedWords =
-                                          result.split(" ");
-                                      bool isValid = seedWords
-                                          .map((e) => seedEn.contains(e))
-                                          .reduce((value, element) =>
-                                              value && element);
-                                      if (!isValid) {
-                                        showInvalidSeedDialog(
-                                          context: context,
-                                        );
-                                        return;
-                                      }
-
-                                      kPrint("isValid $isValid $seedWords");
-                                      Future.delayed(Duration.zero, () {
-                                        if (context.mounted) {
-                                          checkSeed(context, result);
-                                        }
-                                      });
-                                    },
-                                  ));
-                            }),
-                          ],
-                        ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ],
-            )));
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: EnvoySpacing.xs,
+                vertical: EnvoySpacing.medium2,
+              ),
+              child: mode == SeedIntroScreenType.generate ||
+                      mode == SeedIntroScreenType.verify
+                  ? EnvoyButton(
+                      mode == SeedIntroScreenType.generate
+                          ? S().manual_setup_generate_seed_CTA
+                          : S().backups_erase_wallets_and_backups_show_seed_CTA,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(EnvoySpacing.medium1),
+                      ),
+                      fontWeight: FontWeight.w600,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return Builder(
+                                builder: (context) {
+                                  return SeedScreen(
+                                    generate:
+                                        mode == SeedIntroScreenType.generate,
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        EnvoyButton(
+                          S().component_12WordSeed,
+                          type: EnvoyButtonTypes.secondary,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(EnvoySpacing.medium1),
+                          ),
+                          fontWeight: FontWeight.w600,
+                          onTap: () {
+                            context.goNamed(ONBOARD_ENVOY_MANUAL_IMPORT_12);
+                          },
+                        ),
+                        const SizedBox(height: EnvoySpacing.medium1),
+                        EnvoyButton(
+                          S().component_24WordSeed,
+                          type: EnvoyButtonTypes.secondary,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(EnvoySpacing.medium1),
+                          ),
+                          fontWeight: FontWeight.w600,
+                          onTap: () {
+                            context.goNamed(ONBOARD_ENVOY_MANUAL_IMPORT_24);
+                          },
+                        ),
+                        const SizedBox(height: EnvoySpacing.medium1),
+                        EnvoyButton(
+                          S().component_recoverWithQR,
+                          type: EnvoyButtonTypes.primary,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(EnvoySpacing.medium1),
+                          ),
+                          fontWeight: FontWeight.w600,
+                          onTap: () {
+                            showScannerDialog(
+                              context: context,
+                              onBackPressed: (context) {
+                                Navigator.pop(context);
+                              },
+                              decoder: SeedQrDecoder(
+                                onSeedValidated: (String result) {
+                                  context.pop();
+                                  List<String> seedWords = result.split(" ");
+                                  bool isValid = seedWords
+                                      .map((e) => seedEn.contains(e))
+                                      .reduce(
+                                        (value, element) => value && element,
+                                      );
+                                  if (!isValid) {
+                                    showInvalidSeedDialog(context: context);
+                                    return;
+                                  }
+
+                                  kPrint("isValid $isValid $seedWords");
+                                  Future.delayed(Duration.zero, () {
+                                    if (context.mounted) {
+                                      checkSeed(context, result);
+                                    }
+                                  });
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
 Future<void> checkSeed(BuildContext context, String seed) async {
   if (!await EnvoySeed().create(seed.split(" ")) && context.mounted) {
-    showInvalidSeedDialog(
-      context: context,
-    );
+    showInvalidSeedDialog(context: context);
   } else {
     context.goNamed(ONBOARD_ENVOY_MANUAL_IMPORT_SEED, extra: seed);
   }

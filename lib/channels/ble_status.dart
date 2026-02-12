@@ -13,6 +13,32 @@ enum BluetoothConnectionEventType {
   connectionError,
 }
 
+/// Represents a connected device info returned from getConnectedDevices
+class ConnectedDeviceInfo {
+  final String deviceId;
+  final String name;
+  final bool bonded;
+
+  const ConnectedDeviceInfo({
+    required this.deviceId,
+    required this.name,
+    required this.bonded,
+  });
+
+  factory ConnectedDeviceInfo.fromMap(Map<dynamic, dynamic> map) {
+    return ConnectedDeviceInfo(
+      deviceId: map['deviceId']?.toString() ?? '',
+      name: map['name']?.toString() ?? 'Unknown',
+      bonded: map['bonded'] ?? false,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'ConnectedDeviceInfo { deviceId: $deviceId, name: $name, bonded: $bonded }';
+  }
+}
+
 class WriteProgress {
   final double progress;
   final String id;

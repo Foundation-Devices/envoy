@@ -8,13 +8,20 @@ import 'package:envoy/business/coordinates.dart';
 import 'package:envoy/util/console.dart';
 import 'package:http/http.dart' as http;
 
-const String mapApiKey =
-    String.fromEnvironment("MAP_API_KEY", defaultValue: '');
+const String mapApiKey = String.fromEnvironment(
+  "MAP_API_KEY",
+  defaultValue: '',
+);
 
 Future<Coordinates> getCoordinatesByGeoapify(
-    String divisionName, String countryName) async {
-  final response = await http.get(Uri.parse(
-      'https://api.geoapify.com/v1/geocode/search?text=$divisionName&format=json&apiKey=$mapApiKey'));
+  String divisionName,
+  String countryName,
+) async {
+  final response = await http.get(
+    Uri.parse(
+      'https://api.geoapify.com/v1/geocode/search?text=$divisionName&format=json&apiKey=$mapApiKey',
+    ),
+  );
 
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
@@ -34,9 +41,13 @@ Future<Coordinates> getCoordinatesByGeoapify(
 
 // Function to get coordinates by division name using OpenStreetMap (Nominatim)
 Future<Coordinates> getCoordinatesByDivisionOpenStreetMap(
-    String divisionName) async {
-  final response = await http.get(Uri.parse(
-      'https://nominatim.openstreetmap.org/search?format=json&q=$divisionName'));
+  String divisionName,
+) async {
+  final response = await http.get(
+    Uri.parse(
+      'https://nominatim.openstreetmap.org/search?format=json&q=$divisionName',
+    ),
+  );
 
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
@@ -52,9 +63,13 @@ Future<Coordinates> getCoordinatesByDivisionOpenStreetMap(
 
 // Function to get coordinates by country name using OpenStreetMap (Nominatim)
 Future<Coordinates> getCoordinatesByCountryOpenStreetMap(
-    String countryName) async {
-  final response = await http.get(Uri.parse(
-      'https://nominatim.openstreetmap.org/search?format=json&q=$countryName'));
+  String countryName,
+) async {
+  final response = await http.get(
+    Uri.parse(
+      'https://nominatim.openstreetmap.org/search?format=json&q=$countryName',
+    ),
+  );
 
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
@@ -96,8 +111,10 @@ void main() async {
       var divisionName = divisions[divisionCode];
 
       // Try Geoapify first
-      var coordinates =
-          await getCoordinatesByGeoapify(divisionName, countryName);
+      var coordinates = await getCoordinatesByGeoapify(
+        divisionName,
+        countryName,
+      );
 
       // If Geoapify doesn't find coordinates, try OpenStreetMap by division name
       if (coordinates.lat == 0 && coordinates.lon == 0) {
@@ -109,7 +126,8 @@ void main() async {
       if (coordinates.lat == 0 && coordinates.lon == 0) {
         if (firstDivision) {
           kPrint(
-              'Coordinates not found for first division $divisionName, searching by country: $countryName');
+            'Coordinates not found for first division $divisionName, searching by country: $countryName',
+          );
           coordinates = await getCoordinatesByCountryOpenStreetMap(countryName);
           lastKnownCoordinates[countryName] = coordinates;
         }

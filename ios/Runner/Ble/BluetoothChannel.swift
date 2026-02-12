@@ -4,40 +4,41 @@ import Flutter
 import Foundation
 import UIKit
 
-class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate,
-    FlutterStreamHandler
+/// BluetoothChannel manages shared Bluetooth operations and multiple BLE device connections.
+///
+/// Shared operations (handled here):
+/// - AccessorySetupKit integration
+/// - Bluetooth state management
+/// - Device scanning and discovery
+/// - Managing QLConnection instances
+///
+/// Device-specific operations (handled by QLConnection):
+/// - GATT connection and state
+/// - Characteristics and MTU
+/// - Data transfer (read/write)
+/// - Device-specific Flutter channels
+///
+/// Channel naming:
+/// - Main channel: envoy/bluetooth (for shared operations)
+/// - Scan stream: envoy/bluetooth/scan/stream
+/// - Bluetooth state stream: envoy/bluetooth/stream
+class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler, QLConnectionDelegate
 {
+    private static let TAG = "BluetoothChannel"
 
     private let methodChannelName = "envoy/bluetooth"
     private let bleStreamName = "envoy/bluetooth/stream"
-    private let bleReadChannelName = "envoy/ble/read"
-    private let bleWriteChannelName = "envoy/ble/write"
-    private let bleConnectionStreamName = "envoy/bluetooth/connection/stream"
-    private let bleWriteStreamProgressChannelName = "envoy/ble/write/progress"
+    private let bleScanStreamName = "envoy/bluetooth/scan/stream"
 
     var centralManager: CBCentralManager?
-    var connectedPeripheral: CBPeripheral?
     var methodChannel: FlutterMethodChannel?
     private var eventSink: FlutterEventSink? = nil
-    var connectionEventSink: FlutterEventSink? = nil
-    var writeStreamSink: FlutterEventSink? = nil
+    var scanEventSink: FlutterEventSink? = nil
     var setupResult: FlutterResult? = nil
     let session = ASAccessorySession()
 
-    // Binary message channel for efficient BLE data transmission
-    var bleBinaryChannel: FlutterBasicMessageChannel?
-
-    // Binary message channel for write operations
-    var bleWriteChannel: FlutterBasicMessageChannel?
-
-    // Characteristics for reading/writing
-    var writeCharacteristic: CBCharacteristic?
-    var readCharacteristic: CBCharacteristic?
-
-    // BLE write queue for proper write operation handling
-    var bleWriteQueue: BleWriteQueue?
-    
-    var transferTask: Task<Void, Never>?
+    // Connected QLConnection instances, keyed by UUID string
+    private var devices: [String: QLConnection] = [:]
 
     // Accessory (for AccessorySetupKit integration)
     var primeAccessory: ASAccessory?
@@ -53,21 +54,14 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
     // Add a flag to track if we need to rediscover services once BT is powered on
     private var needsServiceRediscovery: Bool = false
-
-    var needsToResendConnectionState: [String: Any]? = nil
-
-    // Write retry 
-    private var pendingWriteData: Data?
-    private var writeRetryCount: Int = 0
-    private let maxWriteRetries: Int = 2
+    private var restoredPeripheralId: String?
 
     // Connection state tracking
     private var isPickerPresented = false
-    private var deviceReady = false
     private var reconnectionTimer: Timer?
     private var reconnectionAttempts: Int = 0
     private var isShuttingDown = false
-    
+
     private let bleQueue = DispatchQueue(label: "com.envoy.ble", qos: .userInteractive)
 
     let connectOptions: [String: Any] = [
@@ -82,59 +76,22 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
     init(flutterController: FlutterViewController) {
         super.init()
-        
-        print(UIDevice.current.name)
-        
+
+        print("\(Self.TAG) Device name: \(UIDevice.current.name)")
+
         self.flutterController = flutterController
 
-        // Set up event channel for streaming Bluetooth metadata (connection status, errors, etc.)
+        // Set up event channel for streaming Bluetooth state
         FlutterEventChannel(name: bleStreamName, binaryMessenger: flutterController.binaryMessenger)
             .setStreamHandler(self)
 
-        bleBinaryChannel = FlutterBasicMessageChannel(
-            name: bleReadChannelName,
-            binaryMessenger: flutterController.binaryMessenger,
-            codec: FlutterBinaryCodec.sharedInstance()
-        )
+        // Set up scan event channel
+        FlutterEventChannel(name: bleScanStreamName, binaryMessenger: flutterController.binaryMessenger)
+            .setStreamHandler(ScanStreamHandler(bluetoothChannel: self))
 
-        bleWriteChannel = FlutterBasicMessageChannel(
-            name: bleWriteChannelName,
-            binaryMessenger: flutterController.binaryMessenger,
-            codec: FlutterBinaryCodec.sharedInstance()
-        )
+        print("\(Self.TAG) Initialized BLE channels")
 
-        // Set up connection event channel for streaming connection status
-        FlutterEventChannel(
-            name: bleConnectionStreamName, binaryMessenger: flutterController.binaryMessenger
-        )
-        .setStreamHandler(ConnectionStreamHandler(bluetoothChannel: self))
-
-        // Set up connection event channel for streaming write updates
-        FlutterEventChannel(
-            name: bleWriteStreamProgressChannelName,
-            binaryMessenger: flutterController.binaryMessenger
-        )
-        .setStreamHandler(ProgressStreamHandler(bluetoothChannel: self))
-
-        bleWriteChannel?.setMessageHandler({ [weak self] (message, reply) in
-            guard let self = self else {
-                // Send failure buffer (0 bytes) when deallocated
-                reply(Data())
-                return
-            }
-
-            if let data = message as? Data {
-               let replyStaus =   self.handleBinaryWrite(data: data)
-                reply(replyStaus)
-            } else {
-                // Send failure buffer (0 bytes) for invalid data
-                reply(Data())
-            }
-        })
-
-        print("Initialized BLE channels:")
-
-        // Set up method channel for method calls
+        // Set up method channel for shared operations
         self.methodChannel = FlutterMethodChannel(
             name: methodChannelName,
             binaryMessenger: flutterController.binaryMessenger)
@@ -147,27 +104,23 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             }
 
             switch call.method {
+            // Shared operations
             case "showAccessorySetup":
                 self.showAccessorySetup(call: call, result: result)
-            case "getConnectedPeripheralId":
-                result(self.getConnectedPeripheralId())
-            case "isConnected":
-                result(self.isConnected())
-            case "reconnect":
-                reconnect( result: result)
-            case "disconnect":
-                self.disconnectPeripheral()
-                result(true)
             case "deviceName":
                 result(UIDevice.current.name)
-            case "transmitFromFile":
-                self.transmitFromFile(call: call, result: result)
             case "getAccessories":
                 self.getAccessories(result: result)
-            case "getCurrentDeviceStatus":
-                self.getCurrentDeviceStatus(result: result)
-            case "cancelTransfer":
-                self.cancelTransfer(result: result)
+
+            // Device management operations
+            case "prepareDevice":
+                self.prepareDevice(call: call, result: result)
+            case "reconnect":
+                self.reconnect(call: call, result: result)
+            case "getConnectedDevices":
+                self.getConnectedDevices(result: result)
+            case "removeDevice":
+                self.removeDeviceAndAccessory(call: call, result: result)
             default:
                 result(FlutterMethodNotImplemented)
             }
@@ -179,6 +132,157 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
     override init() {
         super.init()
         setupAccessorySession()
+    }
+
+    // MARK: - QLConnectionDelegate
+
+    func onDeviceDisconnected(device: QLConnection) {
+        print("\(Self.TAG) Device disconnected: \(device.deviceId)")
+        // Keep the device in the map but note it's disconnected
+        // The device can be reconnected using the reconnect method
+    }
+
+    func getCentralManager() -> CBCentralManager? {
+        return centralManager
+    }
+
+    // MARK: - Device Management
+
+    /// Get or create a QLConnection for the given device ID.
+    /// This ensures the device's channels are registered before Dart tries to use them.
+    private func getOrCreateDevice(deviceId: String) -> QLConnection {
+        if let existingDevice = devices[deviceId] {
+            return existingDevice
+        }
+
+        print("\(Self.TAG) Creating QLConnection for: \(deviceId)")
+        guard let messenger = flutterController?.binaryMessenger else {
+            fatalError("Flutter binary messenger not available")
+        }
+
+        let device = QLConnection(
+            deviceId: deviceId,
+            binaryMessenger: messenger,
+            delegate: self,
+            accessorySession: session
+        )
+        devices[deviceId] = device
+        return device
+    }
+
+    /// Prepare a device for connection by creating its QLConnection and registering channels.
+    /// This must be called BEFORE Dart creates its QLConnection to ensure the native
+    /// EventChannel StreamHandler is registered before Dart tries to listen.
+    private func prepareDevice(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let arguments = call.arguments as? [String: Any],
+              let deviceId = arguments["deviceId"] as? String,
+              !deviceId.isEmpty else {
+            result(FlutterError(code: "INVALID_DEVICE_ID", message: "Device ID is required", details: nil))
+            return
+        }
+
+        // Create QLConnection so its channels are registered
+        let _ = getOrCreateDevice(deviceId: deviceId)
+        print("\(Self.TAG) Prepared device: \(deviceId)")
+        result(true)
+    }
+
+    /// Reconnect to a previously paired device.
+    /// prepareDevice() should be called first to register native channels.
+    private func reconnect(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let arguments = call.arguments as? [String: Any],
+              let deviceId = arguments["deviceId"] as? String,
+              !deviceId.isEmpty else {
+            result(FlutterError(code: "INVALID_DEVICE_ID", message: "Device ID is required", details: nil))
+            return
+        }
+
+        guard let central = centralManager, central.state == .poweredOn else {
+            result(FlutterError(code: "NO_CENTRAL", message: "Central manager not available or not powered on", details: nil))
+            return
+        }
+
+        guard let uuid = UUID(uuidString: deviceId) else {
+            result(FlutterError(code: "INVALID_UUID", message: "Invalid device UUID: \(deviceId)", details: nil))
+            return
+        }
+
+        // Get or create QLConnection (may already exist from prepareDevice)
+        let qlConnection = getOrCreateDevice(deviceId: deviceId)
+
+        // Get the remote peripheral
+        let peripherals = central.retrievePeripherals(withIdentifiers: [uuid])
+        guard let peripheral = peripherals.first else {
+            result(FlutterError(code: "DEVICE_NOT_FOUND", message: "Device not found: \(deviceId)", details: nil))
+            return
+        }
+
+        print("\(Self.TAG) Reconnecting to device: \(deviceId)")
+        qlConnection.connect(peripheral: peripheral)
+        result(["reconnecting": true])
+    }
+
+    private func getConnectedDevices(result: @escaping FlutterResult) {
+        let connectedDevices = devices.filter { $0.value.isConnected() }.map { (deviceId, device) in
+            [
+                "deviceId": deviceId,
+                "name": device.peripheralName ?? "Unknown",
+                "bonded": device.isBonded
+            ]
+        }
+        result(connectedDevices)
+    }
+    
+    private func removeDeviceAndAccessory(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let arguments = call.arguments as? [String: Any],
+              let deviceId = arguments["deviceId"] as? String,
+              !deviceId.isEmpty else {
+            result(FlutterError(code: "INVALID_DEVICE_ID", message: "Device ID is required", details: nil))
+            return
+        }
+
+        var didRemoveLocalDevice = false
+        if let device = devices.removeValue(forKey: deviceId) {
+            device.cleanup()
+            didRemoveLocalDevice = true
+            print("\(Self.TAG) Removed device: \(deviceId)")
+        }
+
+        guard let uuid = UUID(uuidString: deviceId) else {
+            // Not a UUID; only local cleanup is possible.
+            result(didRemoveLocalDevice)
+            return
+        }
+
+        guard let accessory = session.accessories.first(where: { $0.bluetoothIdentifier == uuid }) else {
+            if primeAccessory?.bluetoothIdentifier == uuid {
+                primeAccessory = nil
+            }
+            print("\(Self.TAG) No accessory found for device: \(deviceId)")
+            result(didRemoveLocalDevice)
+            return
+        }
+
+        session.removeAccessory(accessory) { [weak self] error in
+            if let error = error {
+                print("\(Self.TAG) Failed to remove accessory for \(deviceId): \(error.localizedDescription)")
+                result(
+                    FlutterError(
+                        code: "REMOVE_ACCESSORY_FAILED",
+                        message: "Failed to remove accessory",
+                        details: error.localizedDescription
+                    )
+                )
+                return
+            }
+
+            if self?.primeAccessory?.bluetoothIdentifier == uuid {
+                self?.primeAccessory = nil
+            }
+
+            print("\(Self.TAG) Removed accessory for device: \(deviceId)")
+            result(true)
+        }
     }
 
     private func setupBluetoothManager() {
@@ -201,72 +305,67 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         // Stop any pending reconnection timers
         stopReconnection()
 
-        // Cancel any ongoing transfer tasks
-        transferTask?.cancel()
-        transferTask = nil
+        // Stop scanning if active
+        centralManager?.stopScan()
+
+        // Clean up all device connections
+        for (_, device) in devices {
+            device.cleanup()
+        }
+        devices.removeAll()
 
         // Clear all Flutter sinks to prevent callbacks to destroyed engine
         eventSink = nil
-        connectionEventSink = nil
-        writeStreamSink = nil
+        scanEventSink = nil
+        setupResult = nil
 
-        // Disconnect from peripheral if connected
-        if let peripheral = connectedPeripheral, let central = centralManager {
-            central.cancelPeripheralConnection(peripheral)
-        }
-        connectedPeripheral = nil
+        // Clear accessory reference
+        primeAccessory = nil
 
         // Remove delegate to prevent further callbacks
         centralManager?.delegate = nil
         centralManager = nil
-
     }
 
-    private func reconnect(result: @escaping FlutterResult) {
-        attemptReconnection()
-        result(["reconnecting": true])
-    }
-    
+
+    // Legacy single-device reconnect (for backward compatibility)
     private func attemptReconnection() {
-
         let accessories = session.accessories
-        
+
         guard !accessories.isEmpty else {
-            print("No accessories available - stopping reconnection")
+            print("\(Self.TAG) No accessories available - stopping reconnection")
             stopReconnection()
             return
         }
-        
+
         // Try to reconnect to the first paired accessory (or previously connected one)
-        // TODO: multi-accessory support
         let targetAccessory = accessories.first { accessory in
             accessory.bluetoothIdentifier == primeAccessory?.bluetoothIdentifier
         } ?? accessories.first
-        
+
         guard let accessory = targetAccessory else {
-            print("No valid accessory to reconnect")
+            print("\(Self.TAG) No valid accessory to reconnect")
             scheduleReconnection()
             return
         }
-        
-        print("Attempting reconnection to: \(accessory.displayName) (attempt \(reconnectionAttempts + 1))")
-        
-        primeAccessory = accessory
-        
-        if let bluetoothId = accessory.bluetoothIdentifier {
 
+        print("\(Self.TAG) Attempting reconnection to: \(accessory.displayName) (attempt \(reconnectionAttempts + 1))")
+
+        primeAccessory = accessory
+
+        if let bluetoothId = accessory.bluetoothIdentifier {
             guard let central = centralManager, central.state == .poweredOn else {
-                print("Central manager not ready, will retry...")
+                print("\(Self.TAG) Central manager not ready, will retry...")
                 scheduleReconnection()
                 return
             }
-            
+
             connectToAccessoryPeripheral(bluetoothId: bluetoothId)
         } else {
             scheduleReconnection()
         }
     }
-    
+
     private func scheduleReconnection() {
         reconnectionAttempts += 1
         reconnectionTimer?.invalidate()
@@ -278,182 +377,61 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             }
         }
     }
-    
+
     private func stopReconnection() {
         reconnectionTimer?.invalidate()
         reconnectionTimer = nil
         reconnectionAttempts = 0
-        print("Reconnection attempts stopped")
-    }
-
-    private func transmitFromFile(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard let arguments = call.arguments as? [String: Any],
-              let path = arguments["path"] as? String else {
-            result(FlutterError(code: "INVALID_ARGUMENTS", message: "Expected path parameter", details: nil))
-            return
-        }
-        
-        if path.isEmpty {
-            result(FlutterError(code: "INVALID_PATH", message: "File path is null or empty", details: nil))
-            return
-        }
-        
-        let fileURL = URL(fileURLWithPath: path)
-        guard FileManager.default.fileExists(atPath: path) else {
-            result(FlutterError(code: "FILE_NOT_FOUND", message: "File does not exist: \(path)", details: nil))
-            return
-        }
-        
-        transferTask =  Task {
-            do {
-                let attributes = try FileManager.default.attributesOfItem(atPath: path)
-                let fileSize = attributes[.size] as? Int64 ?? 0
-                var bytesProcessed: Int64 = 0
-                
-                let fileHandle = try FileHandle(forReadingFrom: fileURL)
-                defer { 
-                    try? fileHandle.close()
-                }
-                
-                let chunkSize = 244
-                
-                while true {
-                    let chunk = try fileHandle.read(upToCount: chunkSize)
-                    
-                    guard let data = chunk, !data.isEmpty else {
-                        break
-                    }
-                    
-                    let success = await bleWriteQueue?.enqueue(data: data) ?? false
-                    
-                    if !success {
-                        throw NSError(
-                            domain: "BLEWriteError",
-                            code: 1,
-                            userInfo: [NSLocalizedDescriptionKey: "Failed to write data at byte \(bytesProcessed)"]
-                        )
-                    }
-                    
-                    bytesProcessed += Int64(data.count)
-                    
-                    let progress = fileSize > 0 ? Float(bytesProcessed) / Float(fileSize) : 0.0
-                    sendWriteProgress(progress, id: path, bytesProcessed: bytesProcessed, totalBytes: fileSize)
-                }
-                
-                sendWriteProgress(1.0, id: path, bytesProcessed: fileSize, totalBytes: fileSize)
-                
-                try? FileManager.default.removeItem(at: fileURL)
-                print("Successfully deleted file: \(path)")
-                
-                await MainActor.run {
-                    result([
-                        "success": true,
-                        "message": "Large data processed successfully"
-                    ])
-                }
-                
-            } catch {
-                print("Error reading large data file: \(error.localizedDescription)")
-                await MainActor.run {
-                    result(FlutterError(code: "FILE_READ_ERROR", message: "Failed to read file: \(error.localizedDescription)", details: nil))
-                }
-            }
-        }
+        print("\(Self.TAG) Reconnection attempts stopped")
     }
 
     private func setupAccessorySession() {
         session.activate(on: DispatchQueue.main, eventHandler: handleAccessoryEvent)
     }
 
-    func getConnectedPeripheralId() -> String? {
-        if let peripheral = connectedPeripheral {
-            print("connectedPeripheral: \(peripheral.identifier.uuidString)")
-            print("description: \(peripheral.identifier.description)")
-            return peripheral.identifier.uuidString
-        }
-        return nil
-    }
-
     func getAccessories(result: @escaping FlutterResult) {
         // Get all accessories from the session
         let accessories = session.accessories
-        
+
         if accessories.isEmpty {
             // No accessories paired
             result([])
             return
         }
-        
+
         // Build list of accessory info
         var accessoryList: [[String: Any]] = []
-        
+
         for accessory in accessories {
             let peripheralId = accessory.bluetoothIdentifier?.uuidString ?? ""
-            let isConnected = accessory.bluetoothIdentifier != nil && 
-                             connectedPeripheral?.identifier == accessory.bluetoothIdentifier &&
-                             connectedPeripheral?.state == .connected
-            
+            let isConnected = peripheralId.isEmpty ? false : (devices[peripheralId]?.isConnected() ?? false)
+
             let accessoryInfo: [String: Any] = [
                 "peripheralId": peripheralId,
                 "peripheralName": accessory.displayName,
                 "isConnected": isConnected,
                 "state": accessory.state.rawValue
             ]
-            
+
             accessoryList.append(accessoryInfo)
         }
-        
+
         result(accessoryList)
     }
-    
-    func cancelTransfer(result: @escaping FlutterResult) {
-        if let task = transferTask {
-            task.cancel()
-            transferTask = nil
-            bleWriteQueue?.cancel()
-            // Send cancellation progress event
-            sendWriteProgress(0.0, id: "transfer_cancelled", bytesProcessed: 0, totalBytes: 0)
-            bleWriteQueue?.restart()
-            result(["cancelled": true])
-            print("Transfer cancelled successfully")
-        } else {
-            result(["cancelled": false, "message": "No active transfer to cancel"])
-            print("No active transfer to cancel")
-        }
-    }
-  
-    
-    func getCurrentDeviceStatus(result: @escaping FlutterResult) {
-        let peripheralId = connectedPeripheral?.identifier.uuidString
-        let peripheralName = connectedPeripheral?.name ?? primeAccessory?.displayName ?? "Unknown Device"
-        let connected = isConnected()
-        let bonded = primeAccessory != nil
-        
-        let statusData: [String: Any?] = [
-            "type": nil,
-            "connected": connected,
-            "peripheralId": peripheralId,
-            "peripheralName": peripheralName,
-            "bonded": bonded,
-            "rssi": nil,
-            "error": nil
-        ]
-        
-        result(statusData)
-    }
+
 
     func showAccessorySetup(call: FlutterMethodCall, result: @escaping FlutterResult) {
         // Ensure we have a flutter controller to present on
-        guard let controller = flutterController else {
+        guard flutterController != nil else {
             print("Error: No FlutterViewController available for presenting accessory sheet")
-            result(false)
+            result(nil)
             return
         }
 
         // Check if app is in foreground
         guard UIApplication.shared.applicationState == .active else {
             print("Error: Application is not in foreground. Current state: \(UIApplication.shared.applicationState.rawValue)")
-            result(false)
+            result(nil)
             return
         }
 
@@ -527,7 +505,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             print("Failed to show picker: \(error.localizedDescription)")
             // Call the result callback with failure if picker fails to show
             if let result = setupResult {
-                result(false)
+                result(nil)
                 setupResult = nil
             }
         }
@@ -546,15 +524,14 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
             initWithAccessory(accessory: accessory)
         case .activated:
             print("Accessory discovery session activated.")
-            // Check for existing accessories and auto-connect
-           checkAndConnectToExistingAccessories()
+            checkAndConnectToExistingAccessories()
         case .accessoryRemoved:
             handleAccessoryRemoved()
         case .pickerDidPresent:
             print("Accessory picker presented")
         case .pickerDidDismiss:
-            if(setupResult != nil){
-                setupResult!(false)
+            if let result = setupResult {
+                result(nil)
                 setupResult = nil
             }
         default:
@@ -567,33 +544,36 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
 
         let peripheralId = accessory.bluetoothIdentifier?.uuidString ?? accessory.displayName
         let peripheralName = accessory.displayName
-        let isConnected = accessory.bluetoothIdentifier != nil
+        let hasBluetoothId = accessory.bluetoothIdentifier != nil
 
-        print("Saving accessory: \(peripheralName)")
-        print("  - Bluetooth ID: \(accessory.bluetoothIdentifier?.uuidString ?? "None")")
-        print("  - Is connected: \(isConnected)")
+        print("\(Self.TAG) Saving accessory: \(peripheralName)")
+        print("\(Self.TAG)   - Bluetooth ID: \(accessory.bluetoothIdentifier?.uuidString ?? "None")")
+        print("\(Self.TAG)   - Has Bluetooth ID: \(hasBluetoothId)")
 
         // Initialize CoreBluetooth manager if needed
         if centralManager == nil {
             setupBluetoothManager()
         }
 
-        // Send connection event to Flutter
-        sendConnectionEvent(
-            connected: isConnected,
-            peripheralId: peripheralId,
-            peripheralName: peripheralName
-        )
-        
-        if(setupResult != nil){
-            setupResult!(true)
+        // Create QLConnection for this accessory if it has a Bluetooth ID
+        var deviceId: String? = nil
+        if let bluetoothId = accessory.bluetoothIdentifier {
+            deviceId = bluetoothId.uuidString
+            let _ = getOrCreateDevice(deviceId: deviceId!)
+        }
+
+        // Send scan event to Flutter
+        sendScanEvent(type: "device_found", deviceId: peripheralId, deviceName: peripheralName)
+
+        if let result = setupResult {
+            result(deviceId)
             setupResult = nil
         }
 
         // If accessory has Bluetooth identifier, try to connect via CoreBluetooth
         if let bluetoothId = accessory.bluetoothIdentifier,
-            let central = centralManager,
-            central.state == .poweredOn
+           let central = centralManager,
+           central.state == .poweredOn
         {
             connectToAccessoryPeripheral(bluetoothId: bluetoothId)
         }
@@ -622,17 +602,14 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         if let bluetoothId = existingAccessory.bluetoothIdentifier {
             print("Auto-connecting to existing accessory with Bluetooth ID: \(bluetoothId)")
 
-            // Send connecting event to Flutter
-//            sendConnectionEvent(
-//                connected: false,
-//                peripheralId: bluetoothId.uuidString,
-//                peripheralName: existingAccessory.displayName,
-//                type: "connecting"
-//            )
+            // Ensure QLConnection exists so channels are registered
+            let _ = getOrCreateDevice(deviceId: bluetoothId.uuidString)
+
+            // Send scan event to Flutter so UI can reflect the device
+            sendScanEvent(type: "device_found", deviceId: bluetoothId.uuidString, deviceName: existingAccessory.displayName)
 
             // Connect if central manager is ready, otherwise it will connect when powered on
             if let central = centralManager, central.state == .poweredOn {
-                print("connectToAccessoryPeripheral ID: \(bluetoothId)")
                 connectToAccessoryPeripheral(bluetoothId: bluetoothId)
             }
         } else {
@@ -646,255 +623,150 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         let peripheralId = accessory.bluetoothIdentifier?.uuidString ?? accessory.displayName
         let peripheralName = accessory.displayName
 
-        print("Accessory removed: \(peripheralName)")
+        print("\(Self.TAG) Accessory removed: \(peripheralName)")
 
-        // Disconnect CoreBluetooth connection if active
-        if let peripheral = connectedPeripheral {
-            disconnectPeripheral()
+        // Clean up the QLConnection for this accessory
+        if let bluetoothId = accessory.bluetoothIdentifier {
+            let deviceId = bluetoothId.uuidString
+            if let device = devices[deviceId] {
+                device.cleanup()
+                devices.removeValue(forKey: deviceId)
+            }
         }
 
         // Clear all references
         primeAccessory = nil
-        deviceReady = false
 
-        // Send disconnection event to Flutter
-        sendConnectionEvent(
-            connected: false,
-            peripheralId: peripheralId,
-            peripheralName: peripheralName,
-            type: "device_disconnected"
-        )
-
+        // Send disconnection event via scan event
+        sendScanEvent(type: "device_disconnected", deviceId: peripheralId, deviceName: peripheralName)
     }
 
     private func connectToAccessoryPeripheral(bluetoothId: UUID) {
         guard let central = centralManager, central.state == .poweredOn else {
-            print("Central manager not ready for connection")
+            print("\(Self.TAG) Central manager not ready for connection")
             return
         }
 
         let peripherals = central.retrievePeripherals(withIdentifiers: [bluetoothId])
         guard let peripheral = peripherals.first else {
-            print("Could not retrieve peripheral with ID: \(bluetoothId)")
+            print("\(Self.TAG) Could not retrieve peripheral with ID: \(bluetoothId)")
             return
         }
 
-        print("Connecting to accessory peripheral: \(peripheral.name ?? "Unknown")")
-        connectedPeripheral = peripheral
-        peripheral.delegate = self
-        central.connect(peripheral, options: connectOptions)
-    }
+        let deviceId = peripheral.identifier.uuidString
+        print("\(Self.TAG) Connecting to accessory peripheral: \(peripheral.name ?? "Unknown") (\(deviceId))")
 
-    // MARK: - Binary Channel Handlers
-
-    private func handleBinaryWrite(data: Data) -> Data {
-
-        guard let peripheral = connectedPeripheral else {
-            return Data()
-        }
-
-        guard peripheral.state == .connected && deviceReady else {
-            return Data()
-        }
-
-        guard let writeChar = writeCharacteristic else {
-            return Data()
-        }
-
-        if data.count < 8 {
-            return Data()
-        }
-
-        if bleWriteQueue == nil {
-            bleWriteQueue = BleWriteQueue(peripheral: peripheral, characteristic: writeChar)
-        }
-
-        let writeType: CBCharacteristicWriteType =
-            writeChar.properties.contains(.writeWithoutResponse) ? .withoutResponse : .withResponse
-        //prime only supports 244 mtu
-        let maxMTU = 244
-
-        Task {
-            if data.count <= maxMTU {
-                let _ = await bleWriteQueue?.enqueue(data: data) ?? false
-            } else {
-                let chunks = data.chunked(into: maxMTU)
-                print("Writing chunk of size: \(chunks.count)")
-                for chunk in chunks {
-                    Task{
-                        let _ =   await bleWriteQueue?.enqueue(data: chunk) ?? false
-                    }
-//                    if !success {
-//                        break
-//                    }
-                }
-            }
-        }
-        
-        // Return success immediately (actual write happens asynchronously)
-        return Data([1])
+        // Get or create QLConnection and connect
+        let qlConnection = getOrCreateDevice(deviceId: deviceId)
+        qlConnection.connect(peripheral: peripheral)
     }
 
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        print("Central manager state: \(central.state)")
+        print("\(Self.TAG) Central manager state: \(central.state)")
         // Send state update to Flutter
         sendBluetoothState(central.state)
 
         switch central.state {
         case .poweredOn:
-            print("Bluetooth is powered on")
+            print("\(Self.TAG) Bluetooth is powered on")
             handleBluetoothPoweredOn(central: central)
 
         case .poweredOff:
-            print("Bluetooth is powered off")
+            print("\(Self.TAG) Bluetooth is powered off")
             handleBluetoothPoweredOff()
 
         case .unauthorized:
-            print("Bluetooth access unauthorized")
-            sendConnectionEvent(
-                connected: false,
-                peripheralId: "bluetooth_system",
-                peripheralName: "Bluetooth System",
-                type: nil,
-                error: "Bluetooth access unauthorized"
-            )
+            print("\(Self.TAG) Bluetooth access unauthorized")
 
         case .unsupported:
-            print("Bluetooth not supported on this device")
-            sendConnectionEvent(
-                connected: false,
-                peripheralId: "bluetooth_system",
-                peripheralName: "Bluetooth System",
-                type: nil,
-                error: "Bluetooth not supported"
-            )
+            print("\(Self.TAG) Bluetooth not supported on this device")
 
         case .unknown:
-            print("Bluetooth state unknown - waiting for state update...")
+            print("\(Self.TAG) Bluetooth state unknown - waiting for state update...")
 
         case .resetting:
-            print("Bluetooth is resetting")
-            handleBluetoothResetting()
+            print("\(Self.TAG) Bluetooth is resetting")
 
         @unknown default:
-            print("Unknown Bluetooth state: \(central.state.rawValue)")
-            sendConnectionEvent(
-                connected: false,
-                peripheralId: "bluetooth_system",
-                peripheralName: "Bluetooth System",
-                type: nil,
-                error: "Unknown Bluetooth state"
-            )
+            print("\(Self.TAG) Unknown Bluetooth state: \(central.state.rawValue)")
         }
     }
 
     private func handleBluetoothPoweredOn(central: CBCentralManager) {
-
-        // Send connection event for powered on state
-        sendConnectionEvent(
-            connected: false,
-            peripheralId: "bluetooth_system",
-            peripheralName: "Passport Prime",
-            type: nil,
-            error: nil
-        )
-
         // Check if we have an accessory that needs CoreBluetooth connection
         if let accessory = primeAccessory,
-            let bluetoothId = accessory.bluetoothIdentifier
+           let bluetoothId = accessory.bluetoothIdentifier
         {
             connectToAccessoryPeripheral(bluetoothId: bluetoothId)
             return
         }
 
-        if needsServiceRediscovery, let peripheral = connectedPeripheral {
-            handleRestoredPeripheral(peripheral: peripheral, central: central)
+        // Handle restored peripheral
+        if needsServiceRediscovery, let peripheralId = restoredPeripheralId {
+            handleRestoredPeripheral(peripheralId: peripheralId, central: central)
             return
         }
 
         if primeAccessory == nil {
-            print("Starting scan for peripherals...")
+            print("\(Self.TAG) Starting scan for peripherals...")
             central.scanForPeripherals(withServices: [primeUUID], options: nil)
         }
     }
 
     private func handleBluetoothPoweredOff() {
-        deviceReady = false
-
-        // Send disconnection event for any connected peripheral
-        if let peripheral = connectedPeripheral {
-            sendConnectionEvent(
-                connected: false,
-                peripheralId: peripheral.identifier.uuidString,
-                peripheralName: peripheral.name,
-                type: nil,
-                error: "Bluetooth powered off"
-            )
-        } else {
-            // Send generic bluetooth off event
-            sendConnectionEvent(
-                connected: false,
-                peripheralId: "bluetooth_system",
-                peripheralName: "Bluetooth System",
-                type: nil,
-                error: "Bluetooth powered off"
-            )
+        // Notify all connected devices about Bluetooth being powered off
+        for (_, device) in devices {
+            if device.isConnected() {
+                device.sendConnectionEvent(type: nil, error: "Bluetooth powered off")
+            }
         }
     }
 
-    private func handleBluetoothResetting() {
-        deviceReady = false
-
-        // Send temporary disconnection event
-        if let peripheral = connectedPeripheral {
-            sendConnectionEvent(
-                connected: false,
-                peripheralId: peripheral.identifier.uuidString,
-                peripheralName: peripheral.name,
-                error: "Bluetooth resetting"
-            )
+    private func handleRestoredPeripheral(peripheralId: String, central: CBCentralManager) {
+        guard let uuid = UUID(uuidString: peripheralId) else {
+            needsServiceRediscovery = false
+            return
         }
-    }
 
-    private func handleRestoredPeripheral(peripheral: CBPeripheral, central: CBCentralManager) {
+        let peripherals = central.retrievePeripherals(withIdentifiers: [uuid])
+        guard let peripheral = peripherals.first else {
+            needsServiceRediscovery = false
+            return
+        }
+
+        let qlConnection = getOrCreateDevice(deviceId: peripheralId)
+
         if peripheral.state == .connected {
-            peripheral.discoverServices([primeUUID])
-
-            // Send reconnection event
-            sendConnectionEvent(
-                connected: true,
-                peripheralId: peripheral.identifier.uuidString,
-                peripheralName: peripheral.name,
-                type: "device_connected"
-            )
+            qlConnection.onDidConnect(peripheral: peripheral)
         } else {
-            print("Attempting to reconnect to restored peripheral...")
-            central.connect(
-                peripheral,
-                options: connectOptions)
+            print("\(Self.TAG) Attempting to reconnect to restored peripheral...")
+            qlConnection.connect(peripheral: peripheral)
         }
         needsServiceRediscovery = false
+        restoredPeripheralId = nil
     }
 
     func centralManager(_ central: CBCentralManager, willRestoreState dict: [String: Any]) {
-        print("Central state changed: \(central.state.rawValue)")
+        print("\(Self.TAG) Central state restoration: \(central.state.rawValue)")
 
         // Retrieve peripherals that were connected or pending
         if let peripherals = dict[CBCentralManagerRestoredStatePeripheralsKey] as? [CBPeripheral] {
             for peripheral in peripherals {
-                peripheral.delegate = self
-                connectedPeripheral = peripheral
-                print("Restored peripheral: \(peripheral.identifier)")
-                print("  - Name: \(peripheral.name ?? "Unknown")")
-                print("  - State: \(peripheral.state.rawValue)")
-                deviceReady = false
-                print("  - Characteristics will be rediscovered after restoration")
+                let deviceId = peripheral.identifier.uuidString
+                print("\(Self.TAG) Restored peripheral: \(deviceId)")
+                print("\(Self.TAG)   - Name: \(peripheral.name ?? "Unknown")")
+                print("\(Self.TAG)   - State: \(peripheral.state.rawValue)")
+
+                // Create QLConnection for restored peripheral
+                let _ = getOrCreateDevice(deviceId: deviceId)
+
                 if peripheral.state == .connected {
                     needsServiceRediscovery = true
+                    restoredPeripheralId = deviceId
                 }
             }
         } else {
-            print("No peripherals to restore")
+            print("\(Self.TAG) No peripherals to restore")
         }
     }
 
@@ -902,397 +774,70 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         _ central: CBCentralManager, didDiscover peripheral: CBPeripheral,
         advertisementData: [String: Any], rssi RSSI: NSNumber
     ) {
-        print("Discovered peripheral: \(peripheral.name ?? "Unknown") with RSSI: \(RSSI)")
+        print("\(Self.TAG) Discovered peripheral: \(peripheral.name ?? "Unknown") with RSSI: \(RSSI)")
         central.stopScan()
-        connectedPeripheral = peripheral
-        peripheral.delegate = self
-        central.connect(
-            peripheral,
-            options: connectOptions)
+
+        let deviceId = peripheral.identifier.uuidString
+        sendScanEvent(type: "device_found", deviceId: deviceId, deviceName: peripheral.name)
+
+        // Create QLConnection and connect
+        let qlConnection = getOrCreateDevice(deviceId: deviceId)
+        qlConnection.connect(peripheral: peripheral)
     }
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        print("Successfully connected to peripheral: \(peripheral.name ?? "Unknown")")
-        print(" - Identifier: \(peripheral.identifier)")
-        peripheral.delegate = self
-        deviceReady = false  // Will be set to true once characteristics are discovered
+        let deviceId = peripheral.identifier.uuidString
+        print("\(Self.TAG) Successfully connected to peripheral: \(peripheral.name ?? "Unknown") (\(deviceId))")
 
         stopReconnection()
 
-        peripheral.discoverServices([primeUUID])
-
-        sendConnectionEvent(
-            connected: true,
-            peripheralId: peripheral.identifier.uuidString,
-            peripheralName: peripheral.name,
-            type:"device_connected"
-        )
+        // Route to the appropriate QLConnection
+        if let qlConnection = devices[deviceId] {
+            qlConnection.onDidConnect(peripheral: peripheral)
+        } else {
+            print("\(Self.TAG) WARNING: No QLConnection found for connected peripheral: \(deviceId)")
+        }
     }
 
     func centralManager(
         _ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?
     ) {
+        let deviceId = peripheral.identifier.uuidString
+        print("\(Self.TAG) Failed to connect to peripheral: \(error?.localizedDescription ?? "Unknown error")")
 
-        print("Failed to connect to peripheral: \(error?.localizedDescription ?? "Unknown error")")
-        connectedPeripheral = nil
-        deviceReady = false
-        sendConnectionEvent(
-            connected: false,
-            peripheralId: peripheral.identifier.uuidString,
-            peripheralName: peripheral.name, error: error?.localizedDescription)
+        // Route to the appropriate QLConnection
+        if let qlConnection = devices[deviceId] {
+            qlConnection.onDidFailToConnect(peripheral: peripheral, error: error)
+        }
     }
 
     func centralManager(
         _ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?
     ) {
-        print("Disconnected from peripheral: \(error?.localizedDescription ?? "No error")")
+        let deviceId = peripheral.identifier.uuidString
+        print("\(Self.TAG) Disconnected from peripheral: \(error?.localizedDescription ?? "No error")")
 
-        // Clear peripheral reference and characteristics
-        if connectedPeripheral?.identifier == peripheral.identifier {
-            connectedPeripheral = nil
-            writeCharacteristic = nil
-            readCharacteristic = nil
-            bleWriteQueue?.cancel()
-            bleWriteQueue = nil
-            deviceReady = false
+        // Route to the appropriate QLConnection
+        if let qlConnection = devices[deviceId] {
+            qlConnection.onDidDisconnect(peripheral: peripheral, error: error)
         }
 
-        sendConnectionEvent(
-            connected: false,
-            peripheralId: peripheral.identifier.uuidString,
-            peripheralName: peripheral.name,
-            type:"device_disconnected",
-            error: error?.localizedDescription
-        )
-
-        print("Starting automatic reconnection...")
+        print("\(Self.TAG) Starting automatic reconnection...")
         attemptReconnection()
     }
 
-    // MARK: - CBPeripheralDelegate
+    // MARK: - Scan Event Sending
 
-    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-        if let error = error {
-            print("Error discovering services: \(error.localizedDescription)")
-            return
-        }
-
-        guard let services = peripheral.services else {
-            print("No services found")
-            return
-        }
-
-        print("Discovered \(services.count) services:")
-        for service in services {
-            print("  - Service: \(service.uuid)")
-            if service.uuid == primeUUID {
-                print("Found target Prime service, discovering characteristics...")
-                peripheral.discoverCharacteristics(nil, for: service)
-            } else {
-                print("Skipping non-target service")
-            }
-        }
-    }
-
-    func peripheral(
-        _ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?
-    ) {
-        if let error = error {
-            print("Error discovering characteristics: \(error.localizedDescription)")
-            return
-        }
-
-        guard let characteristics = service.characteristics else {
-            print("No characteristics found for service: \(service.uuid)")
-            return
-        }
-
-        print("Discovered \(characteristics.count) characteristics for service \(service.uuid):")
-
-        for characteristic in characteristics {
-
-            // Store characteristics based on their properties
-            if characteristic.properties.contains(.write)
-                || characteristic.properties.contains(.writeWithoutResponse)
-            {
-                writeCharacteristic = characteristic
-                // Initialize write queue with new characteristic
-                bleWriteQueue = BleWriteQueue(peripheral: peripheral, characteristic: characteristic)
-                print("Set write characteristic: \(characteristic.uuid)")
-            }
-
-            if characteristic.properties.contains(.read) {
-                readCharacteristic = characteristic
-                peripheral.readValue(for: characteristic)
-                print("Set read characteristic: \(characteristic.uuid)")
-            }
-
-            if characteristic.properties.contains(.notify) {
-                peripheral.setNotifyValue(true, for: characteristic)
-                print("Enabled notifications for characteristic: \(characteristic.uuid)")
-            }
-
-            if characteristic.properties.contains(.indicate) {
-                peripheral.setNotifyValue(true, for: characteristic)
-                print("Enabled indications for characteristic: \(characteristic.uuid)")
-            }
-        }
-
-        // Log the final state
-        print("Characteristics setup complete:")
-        print("  - Write characteristic: \(writeCharacteristic?.uuid.uuidString ?? "None")")
-        print("  - Read characteristic: \(readCharacteristic?.uuid.uuidString ?? "None")")
-
-        // Mark device as ready for communication
-        if writeCharacteristic != nil || readCharacteristic != nil {
-            deviceReady = true
-            print("Device is ready for communication")
-
-            // Notify Flutter that device is ready for communication
-            sendConnectionEvent(
-                connected: true,
-                peripheralId: peripheral.identifier.uuidString,
-                peripheralName: peripheral.name
-            )
-        } else {
-            print("No usable characteristics found")
-            deviceReady = false
-        }
-    }
-
-    func peripheral(
-        _ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic,
-        error: Error?
-    ) {
-        if let error = error {
-            print("Error reading characteristic value: \(error.localizedDescription)")
-            if let sink = eventSink {
-                sink(
-                    FlutterError(
-                        code: "BLE_READ_ERROR",
-                        message: "Failed to read characteristic value",
-                        details: error.localizedDescription))
-            }
-            return
-        }
-
-        guard let data = characteristic.value else {
-            print("No data received from characteristic: \(characteristic.uuid)")
-            return
-        }
-
-        sendBinaryData(data)
-    }
-
-    
-    
-    func peripheral(
-        _ peripheral: CBPeripheral,
-        didReadRSSI RSSI: NSNumber,
-        error: (any Error)?
-    ) {
-        print("didReadRSSI : \(RSSI)")
-    }
-    
-    func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
-        // Forward to write queue (only called for writeWithoutResponse)
-    }
-
-    func peripheral(
-        _ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic,
-        error: Error?
-    ) {
-        if let error: any Error = error {
-            print("Error updating notification state: \(error.localizedDescription)")
-            return
-        }
-
-    }
-
-    private func sendBinaryData(_ data: Data) {
+    private func sendScanEvent(type: String, deviceId: String? = nil, deviceName: String? = nil) {
         guard !isShuttingDown else { return }
-        guard let binaryChannel = bleBinaryChannel else {
-            print("Warning: No binary channel available for data transmission")
-            return
-        }
-
-        binaryChannel.sendMessage(data) { (reply) in
-            if let error = reply as? FlutterError {
-                print("Flutter binary data error: \(error.message ?? "Unknown error")")
-            } else if reply != nil {
-
-            }
-        }
-
-    }
-
-    func isConnected() -> Bool {
-        return connectedPeripheral != nil
-    }
-
-    // MARK: - Connection Management
-
-    func disconnectPeripheral() {
-        guard let central = centralManager else {
-            print("No central manager available for disconnect")
-            return
-        }
-
-        guard let peripheral = connectedPeripheral else {
-            print("No peripheral to disconnect")
-            return
-        }
-
-        // Only disconnect if actually connected
-        guard peripheral.state == .connected || peripheral.state == .connecting else {
-            print("Peripheral not connected (state: \(peripheral.state)), skipping disconnect")
-            return
-        }
-        
-        bleWriteQueue?.cancel()
-        bleWriteQueue = nil
-        
-        central.cancelPeripheralConnection(peripheral)
-        Task {
-            await removeAccessory()
-        }
-        deviceReady = false
-    }
-
-    // MARK: - Accessory Management
-
-    func removeAccessory() async {
-        guard let accessory = primeAccessory else { return }
-
-        if isConnected() {
-            disconnectPeripheral()
-        }
-
-        do {
-            try await session.removeAccessory(accessory)
-            primeAccessory = nil
-            deviceReady = false
-            print("Successfully removed accessory")
-        } catch {
-            print("Failed to remove accessory: \(error.localizedDescription)")
-        }
-    }
-
-    // MARK: - Stream Helper Methods
-
-    /// Verifies and updates connection status using proper CoreBluetooth APIs
-    func verifyAndUpdateConnectionStatus() {
-        guard let central = centralManager else {
-            print(" No central manager available for connection verification")
-            return
-        }
-
-        // Only check if central is powered on
-        guard central.state == .poweredOn else {
-            print(
-                "Central manager not powered on (state: \(central.state)), skipping verification")
-            return
-        }
-
-        let connectedPeripherals = central.retrieveConnectedPeripherals(withServices: [primeUUID])
-        print(
-            "CoreBluetooth reports \(connectedPeripherals.count) connected peripherals with target service"
-        )
-
-        if let storedPeripheral = connectedPeripheral {
-            let isStillConnected = connectedPeripherals.contains {
-                $0.identifier == storedPeripheral.identifier
-            }
-
-            if !isStillConnected {
-                print("Stored peripheral is no longer connected, sending disconnect event")
-                sendConnectionEvent(
-                    connected: false,
-                    peripheralId: storedPeripheral.identifier.uuidString,
-                    peripheralName: storedPeripheral.name,
-                    error: "Connection lost - not in retrieveConnectedPeripherals"
-                )
-
-                // Clear all references to avoid API misuse
-                connectedPeripheral = nil
-                writeCharacteristic = nil
-                readCharacteristic = nil
-                deviceReady = false
-            }
-        }
-
-        // Check if there are new connected peripherals we don't know about
-        for peripheral in connectedPeripherals {
-            if connectedPeripheral?.identifier != peripheral.identifier {
-                print(" Found unknown connected peripheral: \(peripheral.name ?? "Unknown")")
-                print("  - State: \(peripheral.state)")
-                print("  - Identifier: \(peripheral.identifier)")
-
-                // Only update if peripheral is actually connected
-                if peripheral.state == .connected {
-                    connectedPeripheral = peripheral
-                    peripheral.delegate = self
-
-                    sendConnectionEvent(
-                        connected: true,
-                        peripheralId: peripheral.identifier.uuidString,
-                        peripheralName: peripheral.name
-                    )
-
-                    // Discover services for this peripheral
-                    peripheral.discoverServices([primeUUID])
-                } else {
-                    print("  - Peripheral not in connected state, skipping")
-                }
-            }
-        }
-    }
-
-    func sendConnectionEvent(
-        connected: Bool,
-        peripheralId: String,
-        peripheralName: String? = nil,
-        type: String? = nil,
-        error: String? = nil
-    ) {
-        guard !isShuttingDown else { return }
-
-        let connectionData: [String: Any] = [
+        let eventData: [String: Any?] = [
             "type": type,
-            "connected": connected,
-            "peripheralId": peripheralId,
-            "peripheralName": peripheralName ?? NSNull(),
-            "timestamp": Date().timeIntervalSince1970 * 1000,
-            "error": error ?? NSNull(),
+            "deviceId": deviceId,
+            "deviceName": deviceName
         ]
 
-        guard let sink = connectionEventSink else {
-            needsToResendConnectionState = connectionData
-            print("Warning: Connection event sink not available, event not sent")
-            return
-        }
-
-        sink(connectionData)
-        print(
-            "Connection Event -> Flutter: connected=\(connected), peripheral=\(peripheralName ?? peripheralId)"
-        )
-        if let error = error {
-            print("   Error: \(error)")
-        }
-    }
-    
-    private func sendWriteProgress(_ progress: Float, id: String, bytesProcessed: Int64 = 0, totalBytes: Int64 = 0) {
-        guard !isShuttingDown else { return }
-        guard let sink = writeStreamSink else { return }
-        
-        let stateData: [String: Any] = [
-            "id": id,
-            "progress": progress,
-            "bytes_processed": bytesProcessed,
-            "total_bytes": totalBytes
-         ]
-    
-        sink(stateData)
+        scanEventSink?(eventData)
+        print("\(Self.TAG) Scan Event -> Flutter: type=\(type), device=\(deviceName ?? deviceId ?? "unknown")")
     }
 
     private func sendBluetoothState(_ state: CBManagerState) {
@@ -1317,7 +862,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         ]
 
         sink(stateData)
-        print("Sent Bluetooth state to Flutter: \(stateString)")
+        print("\(Self.TAG) Sent Bluetooth state to Flutter: \(stateString)")
     }
 
     // MARK: - FlutterStreamHandler
@@ -1326,29 +871,26 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate
         withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink
     ) -> FlutterError? {
         eventSink = events
-        print("Flutter stream listener attached")
+        print("\(Self.TAG) Flutter stream listener attached")
 
         // Send current Bluetooth state when listener attaches
         if let manager = centralManager {
             sendBluetoothState(manager.state)
         }
 
-        // Verify and send actual connection status using proper CoreBluetooth API
-        verifyAndUpdateConnectionStatus()
-
         return nil
     }
 
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
         eventSink = nil
-        print("Flutter stream listener detached")
+        print("\(Self.TAG) Flutter stream listener detached")
         return nil
     }
 }
 
-// MARK: - ConnectionStreamHandler
+// MARK: - ScanStreamHandler
 
-class ConnectionStreamHandler: NSObject, FlutterStreamHandler {
+class ScanStreamHandler: NSObject, FlutterStreamHandler {
     weak var bluetoothChannel: BluetoothChannel?
 
     init(bluetoothChannel: BluetoothChannel) {
@@ -1358,47 +900,12 @@ class ConnectionStreamHandler: NSObject, FlutterStreamHandler {
     func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink)
         -> FlutterError?
     {
-        bluetoothChannel?.connectionEventSink = events
-
-        // Stream attached send any pending connection state
-        if let needsToResend = bluetoothChannel?.needsToResendConnectionState {
-            events(needsToResend)
-            bluetoothChannel?.needsToResendConnectionState = nil
-        }
-
-        // Verify and send actual connection status using proper CoreBluetooth API
-        if let channel = bluetoothChannel {
-            channel.verifyAndUpdateConnectionStatus()
-        }
-
+        bluetoothChannel?.scanEventSink = events
         return nil
     }
 
     func onCancel(withArguments arguments: Any?) -> FlutterError? {
-        bluetoothChannel?.connectionEventSink = nil
-        return nil
-    }
-
-}
-
-// MARK: - ConnectionStreamHandler
-
-class ProgressStreamHandler: NSObject, FlutterStreamHandler {
-    weak var bluetoothChannel: BluetoothChannel?
-
-    init(bluetoothChannel: BluetoothChannel) {
-        self.bluetoothChannel = bluetoothChannel
-    }
-
-    func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink)
-        -> FlutterError?
-    {
-        bluetoothChannel?.writeStreamSink = events
-        return nil
-    }
-
-    func onCancel(withArguments arguments: Any?) -> FlutterError? {
-        bluetoothChannel?.writeStreamSink = nil
+        bluetoothChannel?.scanEventSink = nil
         return nil
     }
 }

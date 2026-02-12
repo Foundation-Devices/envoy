@@ -43,10 +43,7 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'allowBuyInEnvoy': instance.allowBuyInEnvoy,
     };
 
-const _$DisplayUnitEnumMap = {
-  DisplayUnit.btc: 'btc',
-  DisplayUnit.sat: 'sat',
-};
+const _$DisplayUnitEnumMap = {DisplayUnit.btc: 'btc', DisplayUnit.sat: 'sat'};
 
 const _$AmountDisplayUnitEnumMap = {
   AmountDisplayUnit.btc: 'btc',

@@ -46,12 +46,14 @@ class UpdatesManager {
     final primeDevices = Devices().getPrimeDevices;
     if (primeDevices.isNotEmpty) {
       await checkAndStoreLatestPrimeFirmware(
-          primeDevices.first.firmwareVersion);
+        primeDevices.first.firmwareVersion,
+      );
     }
   }
 
   Future<void> checkAndStoreLatestPrimeFirmware(
-      String? currentFirmwareVersion) async {
+    String? currentFirmwareVersion,
+  ) async {
     if (currentFirmwareVersion == null) {
       return;
     }
@@ -61,12 +63,18 @@ class UpdatesManager {
     // TODO: Check this against a live endpoint
     if (patches.isNotEmpty) {
       EnvoyStorage().addNewFirmware(
-          DeviceType.passportPrime.index, patches.first.version, "");
+        DeviceType.passportPrime.index,
+        patches.first.version,
+        "",
+      );
     }
     // The update check returned no patches, which indicates no newer firmware is available.
     else {
       EnvoyStorage().addNewFirmware(
-          DeviceType.passportPrime.index, currentFirmwareVersion, "");
+        DeviceType.passportPrime.index,
+        currentFirmwareVersion,
+        "",
+      );
     }
   }
 
@@ -105,7 +113,9 @@ class UpdatesManager {
   /// This allows the system to later handle firmware updates and inform the user about firmware status.
   ///
   Future<void> _addPrimeFirmwareToEnvoyStorage(
-      String fileName, FirmwareUpdate fw) async {
+    String fileName,
+    FirmwareUpdate fw,
+  ) async {
     try {
       Directory appSupportDir = await getApplicationSupportDirectory();
       final folderName = fileName.replaceAll('.tar', '');
@@ -124,11 +134,16 @@ class UpdatesManager {
         throw Exception("Failed to parse JSON from manifest: $e");
       }
 
-      List<PackageAction> actionInfo =
-          await createPackageActionsFromManifest(data);
+      List<PackageAction> actionInfo = await createPackageActionsFromManifest(
+        data,
+      );
 
-      await _envoyStorage.addNewFirmware(fw.deviceId, fw.version, folderName,
-          packageActions: actionInfo);
+      await _envoyStorage.addNewFirmware(
+        fw.deviceId,
+        fw.version,
+        folderName,
+        packageActions: actionInfo,
+      );
     } catch (e) {
       throw Exception("Failed to add prime firmware to storage: $e");
     }
@@ -150,8 +165,12 @@ class UpdatesManager {
     }
   }
 
-  void _verifyChecksum(List<int> bytes, String expected,
-      Hash Function() algorithm, String name) {
+  void _verifyChecksum(
+    List<int> bytes,
+    String expected,
+    Hash Function() algorithm,
+    String name,
+  ) {
     final computedHash = algorithm().convert(bytes).toString();
     if (computedHash != expected) {
       throw Exception('Wrong $name hash');
@@ -212,8 +231,10 @@ class UpdatesManager {
 
     final newFileName =
         "$storedFwVersion${deviceId == 0 ? "-founders" : ""}-passport.bin";
-    final newFile =
-        _localStorage.saveFileBytesSync(newFileName, file.readAsBytesSync());
+    final newFile = _localStorage.saveFileBytesSync(
+      newFileName,
+      file.readAsBytesSync(),
+    );
 
     _envoyStorage.addNewFirmware(deviceId, storedFwVersion, newFileName);
     return newFile;
@@ -231,22 +252,25 @@ class UpdatesManager {
   }
 
   Future<List<PackageAction>> createPackageActionsFromManifest(
-      Map<String, dynamic> manifest) async {
+    Map<String, dynamic> manifest,
+  ) async {
     final actionsData = manifest['signed-data']['actions'] as List<dynamic>;
 
     return actionsData.map((actionGroup) {
       final name = actionGroup['action'];
       final actionsList = actionGroup['actions'] as List<dynamic>? ?? [];
       final actions = actionsList
-          .map((action) => Action(
-                action: action['action'],
-                source: action['source'],
-                dest: action['dest'],
-                patchFile: action['patch-file'],
-                patchSource: action['patch-source'],
-                baseVersion: action['base-version'],
-                newVersion: action['new-version'],
-              ))
+          .map(
+            (action) => Action(
+              action: action['action'],
+              source: action['source'],
+              dest: action['dest'],
+              patchFile: action['patch-file'],
+              patchSource: action['patch-source'],
+              baseVersion: action['base-version'],
+              newVersion: action['new-version'],
+            ),
+          )
           .toList();
 
       return PackageAction(name: name, actions: actions);
@@ -255,12 +279,14 @@ class UpdatesManager {
 
   Future<bool> shouldUpdate(String version, DeviceType type) async {
     final parsedVersion = Version.parse(sanitizeVersion(version));
-    final storedVersionString =
-        await getStoredFirmwareVersionString(type.index);
+    final storedVersionString = await getStoredFirmwareVersionString(
+      type.index,
+    );
     if (storedVersionString == null) return false;
 
-    final currentVersion =
-        Version.parse(storedVersionString.replaceAll("v", ""));
+    final currentVersion = Version.parse(
+      storedVersionString.replaceAll("v", ""),
+    );
     return currentVersion > parsedVersion;
   }
 }

@@ -15,8 +15,14 @@ class Passport {
 
   final int model, fwVersion;
 
-  Passport(this.xfp, this.publicKey, this.xpub, this.datePaired, this.model,
-      this.fwVersion);
+  Passport(
+    this.xfp,
+    this.publicKey,
+    this.xpub,
+    this.datePaired,
+    this.model,
+    this.fwVersion,
+  );
 
   // Generated
   factory Passport.fromJson(Map<String, dynamic> json) =>

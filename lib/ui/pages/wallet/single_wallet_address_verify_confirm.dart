@@ -37,10 +37,11 @@ class SingleWalletAddressVerifyConfirmPage extends StatelessWidget {
           type: EnvoyButtonTypes.secondary,
         ),
         OnboardingButton(
-            label: S().component_continue,
-            onTap: () {
-              context.go("/");
-            }),
+          label: S().component_continue,
+          onTap: () {
+            context.go("/");
+          },
+        ),
       ],
     );
   }

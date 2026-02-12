@@ -12,12 +12,13 @@ class LoaderGhost extends StatefulWidget {
   final bool diagonal;
   final bool animate;
 
-  const LoaderGhost(
-      {super.key,
-      required this.width,
-      required this.height,
-      this.diagonal = false,
-      this.animate = false});
+  const LoaderGhost({
+    super.key,
+    required this.width,
+    required this.height,
+    this.diagonal = false,
+    this.animate = false,
+  });
 
   @override
   State<LoaderGhost> createState() => _LoaderGhostState();
@@ -31,16 +32,21 @@ class _LoaderGhostState extends State<LoaderGhost>
   @override
   initState() {
     super.initState();
-    _animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
 
     _animation = Tween(begin: .3, end: .8).animate(
-        CurvedAnimation(parent: _animationController, curve: Curves.ease));
+      CurvedAnimation(parent: _animationController, curve: Curves.ease),
+    );
     _animationController.addListener(() {
       if (mounted) setState(() {});
     });
     _animationController.repeat(
-        reverse: true, period: const Duration(seconds: 1));
+      reverse: true,
+      period: const Duration(seconds: 1),
+    );
   }
 
   @override
@@ -63,9 +69,9 @@ class _LoaderGhostState extends State<LoaderGhost>
                     width: widget.width - 5,
                     height: 10,
                     decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(20))),
+                      color: Colors.grey.shade300,
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                    ),
                   ),
                 ),
               ),
@@ -74,8 +80,9 @@ class _LoaderGhostState extends State<LoaderGhost>
               width: widget.width,
               height: widget.height,
               decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: const BorderRadius.all(Radius.circular(20))),
+                color: Colors.grey.shade300,
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+              ),
             );
     }
     return widget.diagonal
@@ -89,9 +96,9 @@ class _LoaderGhostState extends State<LoaderGhost>
                   width: widget.width - 5,
                   height: 10,
                   decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20))),
+                    color: Colors.grey.shade300,
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  ),
                 ),
               ),
             ),
@@ -101,8 +108,9 @@ class _LoaderGhostState extends State<LoaderGhost>
             height: widget.height,
             // child: Text('${_animation.value}'),
             decoration: BoxDecoration(
-                color: Colors.grey.shade400.applyOpacity(_animation.value),
-                borderRadius: const BorderRadius.all(Radius.circular(20))),
+              color: Colors.grey.shade400.applyOpacity(_animation.value),
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
+            ),
           );
   }
 }

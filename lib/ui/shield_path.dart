@@ -13,12 +13,18 @@ class ShieldClipper extends CustomClipper<Path> {
 
   @override
   Path getClip(Size size) {
-    return shieldPath(size,
-        arcSizeRatio: arcSizeRatio, isBlurShield: isBlurShield);
+    return shieldPath(
+      size,
+      arcSizeRatio: arcSizeRatio,
+      isBlurShield: isBlurShield,
+    );
   }
 
-  static Path shieldPath(Size size,
-      {double arcSizeRatio = 4.8, bool isBlurShield = false}) {
+  static Path shieldPath(
+    Size size, {
+    double arcSizeRatio = 4.8,
+    bool isBlurShield = false,
+  }) {
     // Method to convert degree to radians
     double degToRad(double deg) => deg * (pi / 180.0);
 
@@ -33,36 +39,49 @@ class ShieldClipper extends CustomClipper<Path> {
     double shieldCrestOffset =
         (size.width - (2 * padding)) * tan(degToRad(arcAngle)) / 2;
 
-    path.arcTo(Rect.fromLTWH(padding, topShieldPadding, arcSize, arcSize),
-        degToRad(180), degToRad(90), false);
     path.arcTo(
-        Rect.fromLTWH(size.width - (arcSize + padding), topShieldPadding,
-            arcSize, arcSize),
-        degToRad(270),
-        degToRad(90),
-        false);
+      Rect.fromLTWH(padding, topShieldPadding, arcSize, arcSize),
+      degToRad(180),
+      degToRad(90),
+      false,
+    );
+    path.arcTo(
+      Rect.fromLTWH(
+        size.width - (arcSize + padding),
+        topShieldPadding,
+        arcSize,
+        arcSize,
+      ),
+      degToRad(270),
+      degToRad(90),
+      false,
+    );
 
     path.arcTo(
-        Rect.fromLTWH(
-            size.width - (arcSize + padding),
-            size.height - (arcSize + padding + shieldCrestOffset),
-            arcSize,
-            arcSize),
-        degToRad(0),
-        degToRad(90 - arcAngle),
-        false);
+      Rect.fromLTWH(
+        size.width - (arcSize + padding),
+        size.height - (arcSize + padding + shieldCrestOffset),
+        arcSize,
+        arcSize,
+      ),
+      degToRad(0),
+      degToRad(90 - arcAngle),
+      false,
+    );
 
     path.lineTo(size.width / 2, size.height - padding);
 
     path.arcTo(
-        Rect.fromLTWH(
-            padding,
-            size.height - (arcSize + padding + shieldCrestOffset),
-            arcSize,
-            arcSize),
-        degToRad(90 + arcAngle),
-        degToRad(90 - arcAngle),
-        false);
+      Rect.fromLTWH(
+        padding,
+        size.height - (arcSize + padding + shieldCrestOffset),
+        arcSize,
+        arcSize,
+      ),
+      degToRad(90 + arcAngle),
+      degToRad(90 - arcAngle),
+      false,
+    );
 
     path.close();
     return path;

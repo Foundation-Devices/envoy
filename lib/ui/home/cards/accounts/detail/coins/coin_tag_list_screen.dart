@@ -52,8 +52,10 @@ class _CoinsListState extends ConsumerState<CoinsList> {
               controller: _scrollController,
               itemCount: tags.length,
               itemBuilder: (BuildContext context, int index) {
-                final coinTagDetailsScreen =
-                    CoinTagDetailsScreen(showCoins: true, coinTag: tags[index]);
+                final coinTagDetailsScreen = CoinTagDetailsScreen(
+                  showCoins: true,
+                  coinTag: tags[index],
+                );
                 return BlurContainerTransform(
                   useRootNavigator: true,
                   onTap: () {
@@ -111,93 +113,95 @@ class CoinItemWidget extends ConsumerWidget {
       height: 108 + extraSpace,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(cardRadius - 1)),
-        border:
-            Border.all(color: Colors.black, width: 2, style: BorderStyle.solid),
+        border: Border.all(
+          color: Colors.black,
+          width: 2,
+          style: BorderStyle.solid,
+        ),
         gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              cardBackground,
-              Colors.black,
-            ]),
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [cardBackground, Colors.black],
+        ),
       ),
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(cardRadius - 3)),
-            border: Border.all(
-                color: cardBackground, width: 2, style: BorderStyle.solid)),
+          borderRadius: BorderRadius.all(Radius.circular(cardRadius - 3)),
+          border: Border.all(
+            color: cardBackground,
+            width: 2,
+            style: BorderStyle.solid,
+          ),
+        ),
         child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(cardRadius - 4)),
-            child: CustomPaint(
-              isComplex: true,
-              willChange: false,
-              painter: StripePainter(
-                EnvoyColors.gray1000.applyOpacity(0.4),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: EnvoySpacing.medium1,
-                        right: EnvoySpacing.xs,
-                        top: EnvoySpacing.xs,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: SingleChildScrollView(
-                              physics:
-                                  const NeverScrollableScrollPhysics(), // to fix overflow in tests
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    tag.name,
-                                    style: textStyleWallet,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                                  CoinSubTitleText(tag),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+          borderRadius: BorderRadius.all(Radius.circular(cardRadius - 4)),
+          child: CustomPaint(
+            isComplex: true,
+            willChange: false,
+            painter: StripePainter(EnvoyColors.gray1000.applyOpacity(0.4)),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: EnvoySpacing.medium1,
+                      right: EnvoySpacing.xs,
+                      top: EnvoySpacing.xs,
                     ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          height: 30,
-                          margin: const EdgeInsets.all(EnvoySpacing.xs),
-                          child: Consumer(
-                            builder: (context, ref, child) {
-                              return CoinTagBalanceWidget(
-                                coinTag: tag,
-                              );
-                            },
+                        Flexible(
+                          child: SingleChildScrollView(
+                            physics:
+                                const NeverScrollableScrollPhysics(), // to fix overflow in tests
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  tag.name,
+                                  style: textStyleWallet,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                                CoinSubTitleText(tag),
+                              ],
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
-            )),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        height: 30,
+                        margin: const EdgeInsets.all(EnvoySpacing.xs),
+                        child: Consumer(
+                          builder: (context, ref, child) {
+                            return CoinTagBalanceWidget(coinTag: tag);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
