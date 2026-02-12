@@ -173,11 +173,9 @@ class Devices extends ChangeNotifier {
     await Future.delayed(const Duration(seconds: 1));
     kPrint("Connecting to ${getPrimeDevices.length} primes");
     for (var device in getPrimeDevices) {
-      if (device.bleId.isNotEmpty &&
+      final deviceId = Platform.isAndroid ? device.bleId : device.peripheralId;
+      if (deviceId.isNotEmpty &&
           !device.qlConnection().lastDeviceStatus.connected) {
-        final deviceId =
-            Platform.isAndroid ? device.bleId : device.peripheralId;
-
         // 1. Create native QLConnection on platform level and sets up
         //event-channels and method channels
         await BluetoothChannel().prepareDevice(deviceId);

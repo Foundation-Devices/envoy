@@ -31,10 +31,10 @@ bool _isDialogShowing = false;
 /// Starts listening for Bluetooth disconnection events and shows a dialog if disconnected
 void startBluetoothDisconnectionListener(BuildContext context, WidgetRef ref) {
   final qlConnection = ref.read(onboardingDeviceProvider);
-  if (qlConnection == null) {
+  if (qlConnection == null || qlConnection.getDevice() == null) {
     return;
   }
-  ref.listen(deviceConnectionStatusStreamProvider(qlConnection.deviceId), (
+  ref.listen(deviceConnectionStatusStreamProvider(qlConnection.getDevice()!), (
     previous,
     next,
   ) {
