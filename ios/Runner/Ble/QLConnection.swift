@@ -207,7 +207,7 @@ class QLConnection: NSObject {
     // MARK: - Connection State
 
     func isConnected() -> Bool {
-        return connectedPeripheral?.state == .connected && deviceReady
+        return connectedPeripheral?.state == .connected
     }
 
     // MARK: - Connection Management
@@ -485,10 +485,19 @@ class QLConnection: NSObject {
     }
 
     private func sendBinaryData(_ data: Data) {
-        bleReadChannel.sendMessage(data) { reply in
-            if let error = reply as? FlutterError {
-                print("\(Self.TAG) [\(self.deviceId)] Flutter binary data error: \(error.message ?? "Unknown error")")
+        let send = { [weak self] in
+            guard let self = self else { return }
+            self.bleReadChannel.sendMessage(data) { reply in
+                if let error = reply as? FlutterError {
+                    print("\(Self.TAG) [\(self.deviceId)] Flutter binary data error: \(error.message ?? "Unknown error")")
+                }
             }
+        }
+
+        if Thread.isMainThread {
+            send()
+        } else {
+            DispatchQueue.main.async(execute: send)
         }
     }
 
