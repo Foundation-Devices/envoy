@@ -27,19 +27,18 @@ final qlConnectionStreamProvider = StreamProvider<List<QLConnection>>((ref) {
 });
 
 final deviceConnectionStatusStreamProvider =
-    StreamProvider.family<DeviceStatus, String>((ref, deviceId) {
+    StreamProvider.family<DeviceStatus, Device>((ref, device) {
   //watching the device stream to trigger rebuilds when devices change
   ref.watch(qlConnectionStreamProvider);
-  final qlConnection = BluetoothChannel().getDeviceChannel(deviceId);
-  return qlConnection.deviceStatusStream;
+  return device.qlConnection().deviceStatusStream;
 });
 
 final isPrimeConnectedProvider = Provider.family<bool, Device?>((ref, device) {
   if (device == null) return false;
   DeviceStatus? status =
-      ref.watch(deviceConnectionStatusStreamProvider(device.bleId)).valueOrNull;
-  status ??= BluetoothChannel().getDeviceChannel(device.bleId).lastDeviceStatus;
-  return status.connected == true;
+      ref.watch(deviceConnectionStatusStreamProvider(device)).valueOrNull;
+  status ??= device.qlConnection().lastDeviceStatus;
+  return status.connected;
 });
 
 final _qlActiveStreamProvider =
