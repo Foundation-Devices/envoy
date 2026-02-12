@@ -223,6 +223,7 @@ class _MagicSetupGenerateState extends ConsumerState<MagicSetupGenerate> {
                           : const SizedBox(),
                     ),
                     ExpandablePageView(
+                      estimatedPageSize: 150,
                       physics: const NeverScrollableScrollPhysics(),
                       controller: _pageController,
                       children: List.generate(
