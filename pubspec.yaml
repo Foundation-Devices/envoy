@@ -59,10 +59,7 @@ dependencies:
       ref: 2dabebfd6caff27db87e9e917f8b87d6fc2ede3b
       path: flutter_vlc_player
 
-  tor:
-    git:
-      url: https://github.com/Foundation-Devices/tor.git
-      ref: b92e2bc5a404367298b6016f171df29d1aae66d0
+  tor: 0.1.1
   qr_flutter: ^4.1.0
   dots_indicator: ^4.0.1
   flutter_secure_storage: ^9.2.2
