@@ -1414,6 +1414,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  rust_lib_ur:
+    dependency: transitive
+    description:
+      path: "packages/ur/rust_builder"
+      relative: true
+    source: path
+    version: "0.0.1"
   rxdart:
     dependency: transitive
     description:

@@ -16,6 +16,10 @@ import 'package:collection/collection.dart';
 final ur = Ur();
 
 void main() {
+  setUpAll(() async {
+    await Ur.init();
+  });
+
   test('UR encode / decode test', () {
     var list = [1, 2, 3];
     var encoder = ur.encoder('bytes', Uint8List.fromList(list), 30);
