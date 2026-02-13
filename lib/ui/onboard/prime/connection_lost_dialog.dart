@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ble/bluetooth_manager.dart';
-import 'package:envoy/business/devices.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -28,13 +27,9 @@ import 'package:go_router/go_router.dart';
 /// this flag will be set to false when the dialog widget get disposed.
 bool _isDialogShowing = false;
 
-/// Starts listening for Bluetooth disconnection events and shows a dialog if disconnected
+/// Starts listening for onboarding device bluetooth disconnection events and shows a dialog if disconnected
 void startBluetoothDisconnectionListener(BuildContext context, WidgetRef ref) {
-  final qlConnection = ref.read(onboardingDeviceProvider);
-  if (qlConnection == null || qlConnection.getDevice() == null) {
-    return;
-  }
-  ref.listen(deviceConnectionStatusStreamProvider(qlConnection.getDevice()!), (
+  ref.listen(onboardingDeviceConnectionStatusStream, (
     previous,
     next,
   ) {
@@ -56,6 +51,10 @@ void startBluetoothDisconnectionListener(BuildContext context, WidgetRef ref) {
         }
       } else if (event.type == BluetoothConnectionEventType.deviceConnected) {
         //maybe handle dialog dismissal??
+        if (_isDialogShowing && context.mounted && Navigator.canPop(context)) {
+          Navigator.pop(context);
+          _isDialogShowing = false;
+        }
       }
     }
   });
@@ -93,12 +92,10 @@ class ConnectionLostModal extends ConsumerStatefulWidget {
 class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
   bool _isReconnecting = false;
 
-  //TODO: implement device speicific reconnect
   Future<void> _attemptReconnect() async {
     setState(() {
       _isReconnecting = true;
     });
-
     final qlConnection = ref.read(onboardingDeviceProvider);
     if (qlConnection == null) {
       return;
@@ -154,8 +151,7 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
   @override
   Widget build(BuildContext context) {
     final onboardingDevice = ref.watch(onboardingDeviceProvider);
-    final device =
-        onboardingDevice?.getDevice() ?? Devices().getPrimeDevices.first;
+    final device = onboardingDevice?.getDevice();
     return Padding(
       padding: const EdgeInsets.all(EnvoySpacing.medium2),
       child: Column(
@@ -185,8 +181,7 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
           const SizedBox(height: EnvoySpacing.medium3),
           Column(
             children: [
-              if (Devices().getPrimeDevices.isEmpty ||
-                  !device.onboardingComplete)
+              if (!(device?.onboardingComplete ?? false))
                 EnvoyButton(
                   S().firmware_updateModalConnectionLost_exit,
                   borderRadius: BorderRadius.circular(EnvoySpacing.small),
