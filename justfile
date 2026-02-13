@@ -66,15 +66,12 @@ bump:
 
 fmt:
     cargo-fmt && \
-    dart format .
+    ./scripts/format.sh
 
 lint: fmt
     reuse lint && \
     flutter analyze && \
     cargo clippy -- -Dwarnings -A clippy::missing_safety_doc
-
-build-ffi:
-    bash scripts/build_ffi.sh
 
 copy:
     localazy download

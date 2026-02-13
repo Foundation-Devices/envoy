@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:typed_data';
-
+import 'dart:io';
 import 'package:envoy/util/console.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:test/test.dart';
 import 'package:ur/ur.dart';
 import 'package:envoy/business/uniform_resource.dart';
@@ -16,6 +16,17 @@ import 'package:collection/collection.dart';
 final ur = Ur();
 
 void main() {
+  setUpAll(() async {
+    // Load library from workspace target directory for testing
+    // Check debug first (CI uses cargo build), then release (local dev)
+    final basePath = Directory.current.path;
+    final debugLib = File('$basePath/target/debug/librust_lib_ur.so');
+    final releaseLib = File('$basePath/target/release/librust_lib_ur.so');
+
+    final libPath = debugLib.existsSync() ? debugLib.path : releaseLib.path;
+    await Ur.init(externalLibrary: ExternalLibrary.open(libPath));
+  });
+
   test('UR encode / decode test', () {
     var list = [1, 2, 3];
     var encoder = ur.encoder('bytes', Uint8List.fromList(list), 30);
