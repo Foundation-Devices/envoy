@@ -18,8 +18,12 @@ final ur = Ur();
 void main() {
   setUpAll(() async {
     // Load library from workspace target directory for testing
-    final libPath =
-        '${Directory.current.path}/target/release/librust_lib_ur.so';
+    // Check debug first (CI uses cargo build), then release (local dev)
+    final basePath = Directory.current.path;
+    final debugLib = File('$basePath/target/debug/librust_lib_ur.so');
+    final releaseLib = File('$basePath/target/release/librust_lib_ur.so');
+
+    final libPath = debugLib.existsSync() ? debugLib.path : releaseLib.path;
     await Ur.init(externalLibrary: ExternalLibrary.open(libPath));
   });
 
