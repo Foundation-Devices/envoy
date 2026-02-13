@@ -5,7 +5,7 @@
 # (19) taprootAddressTest
 appId: com.foundationdevices.envoy
 ---
-# TODO: test is not working well, taproot switch is not responding in Settings/Advanced
+
 # go to advanced
 - tapOn:
     id: hamburger_menu

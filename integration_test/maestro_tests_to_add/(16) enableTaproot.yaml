@@ -5,7 +5,7 @@
 # (16) enableTaproot
 appId: com.foundationdevices.envoy
 ---
-# TODO: taproot is acting weird and app is not responding !!!!
+
 # go to advanced
 - tapOn:
     id: hamburger_menu

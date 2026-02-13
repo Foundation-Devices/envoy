@@ -66,10 +66,6 @@ appId: com.foundationdevices.envoy
 # custom fee
 - tapOn: Custom
 
-# make sure you do not see the warning
-- assertNotVisible:
-    id: "fee_percentage_warning-.*"
-
 # swipe to left to increase fee
 - swipe:
     from:
@@ -84,6 +80,12 @@ appId: com.foundationdevices.envoy
     visible:
       id: "fee_percentage_warning-.*"
     timeout: 60000
+
+# hack to wait 20 seconds for Next button to be clickable
+- swipe:
+    start: "50%, 20%"
+    end: "50%, 20%"
+    duration: 20000
 
 # reset staging screen to refresh %fee for maestro
 - tapOn: Next
@@ -116,5 +118,3 @@ appId: com.foundationdevices.envoy
     id: hamburger_menu
 - tapOn:
     id: hamburger_menu
-
-

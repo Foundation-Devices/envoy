@@ -197,10 +197,11 @@ if [ "$BUILD_APP" = true ]; then
     echo -e "${YELLOW}Building Android APK...${NC}"
     cd "$PROJECT_ROOT" || exit 1
 
-    flutter build apk --debug || {
+    flutter build apk --debug --dart-define=IS_MAESTRO_TEST=true || {
         echo -e "${RED}✗ Build failed${NC}"
         exit 1
     }
+
 
     echo -e "${YELLOW}Installing APK...${NC}"
     $ADB_CMD -s "$DEVICE_ID" install -r build/app/outputs/flutter-apk/app-debug.apk || {

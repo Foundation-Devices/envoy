@@ -414,6 +414,9 @@ class HomePageState extends ConsumerState<HomePage>
   }
 
   void _notifyAboutFoundationServerDown() {
+    const isMaestroTest =
+        bool.fromEnvironment('IS_MAESTRO_TEST', defaultValue: false);
+    if (isMaestroTest) return;
     if (context.mounted) {
       EnvoyToast(
         backgroundColor: Colors.lightBlue,

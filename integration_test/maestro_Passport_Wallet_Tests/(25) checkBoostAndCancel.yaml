@@ -7,7 +7,7 @@ appId: com.foundationdevices.envoy
 ---
 
 #     //const testnetReceiveAddress =
-#     //    'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql';
+#     //    'tb1q3aas79p2f5pane8yvqav5nep4e4eu99kwsw7fw';
 #     // TODO: fill this wallet if there is no money from here https://coinfaucet.eu/en/btc-testnet4/
 #     // TODO: when getting more coins you need to wait for the transaction confirmation before running the tests!!!
 

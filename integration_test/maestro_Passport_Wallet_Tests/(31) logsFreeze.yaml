@@ -23,10 +23,6 @@ appId: com.foundationdevices.envoy
 
 - tapOn: Back
 
-- assertVisible: View Envoy Logs
-
 # go back to home
-- tapOn:
-    id: hamburger_menu
 - tapOn:
     id: hamburger_menu

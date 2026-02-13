@@ -44,7 +44,7 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                   EnvoyToast(
                     backgroundColor: Colors.lightBlue,
                     replaceExisting: true,
-                    duration: const Duration(milliseconds: 2000),
+                    duration: const Duration(milliseconds: 3000),
                     message: "Logs copied to clipboard",
                     // TODO: FIGMA
                     icon: const Icon(Icons.copy, color: EnvoyColors.teal),

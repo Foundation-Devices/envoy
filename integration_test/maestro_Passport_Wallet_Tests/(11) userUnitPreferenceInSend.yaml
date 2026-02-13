@@ -45,10 +45,16 @@ appId: com.foundationdevices.envoy
 - assertVisible:
     id: Show Fiat Toggle-true
 
+# go back to home
 - tapOn:
     id: hamburger_menu
 - tapOn:
     id: hamburger_menu
+
+# go to top
+- swipe:
+    direction: DOWN
+    duration: 500
 
 # tap first mainet acc with money
 - tapOn: GH TEST ACC (#1)

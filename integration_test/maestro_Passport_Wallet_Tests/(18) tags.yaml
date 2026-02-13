@@ -51,7 +51,7 @@ appId: com.foundationdevices.envoy
 - tapOn: Retag Selected
 
 - tapOn:
-    text: Back
+    id: coin_tag_warning_close
 
 # 12) Repeat steps 10 and 11
 - tapOn:

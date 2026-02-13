@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# (01) magicRecoveryFromFoundationServer
 appId: com.foundationdevices.envoy
 ---
 - launchApp:
@@ -182,3 +183,44 @@ appId: com.foundationdevices.envoy
 
 # Make sure you are in Home
 - assertVisible: ACCOUNTS
+
+# turn Testnet and Signet OFF and ON for the right account order
+
+# go to advanced
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+# turn them off
+- tapOn:
+    id: Testnet Toggle-true
+- tapOn:
+    id: Signet Toggle-true
+
+# refresh the page
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+# turn them ON again
+- tapOn:
+    id: Testnet Toggle-false
+- tapOn: Continue
+
+- tapOn:
+    id: Signet Toggle-false
+- tapOn:
+    id: signet_modal_continue
+
+
+# go back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu

@@ -7,7 +7,7 @@ appId: com.foundationdevices.envoy
 ---
 
 #      //const hotSignetReceiveAddress =
-#      //    'tb1puds2rgwgyq79xxg9es0f7cvvcqp8es75494zvucxyxrv6cl3sc3sdc9vql';
+#      //    'tb1q94lefpc0sfeg623yjy5m0xtm05cpyq85r8f6er';
 #      // TODO: fill this wallet if there is no money from here https://signet257.bublina.eu.org/
 #      // TODO: when getting more coins you need to wait for the transaction confirmation before running the tests!!!
 
@@ -22,7 +22,7 @@ appId: com.foundationdevices.envoy
 # send a tx
 - tapOn: Send
 - tapOn: Enter address
-- inputText: "tb1qn63asnfy0p2g3u466kzfcv85x03hfg5qcjhsux"
+- inputText: "tb1q94lefpc0sfeg623yjy5m0xtm05cpyq85r8f6er"
 
 - tapOn: Back
 
