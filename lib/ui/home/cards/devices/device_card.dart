@@ -222,6 +222,16 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: EnvoySpacing.xs,
                         ),
+                        dense: true,
+                        minLeadingWidth: 0,
+                        leading: EnvoyIcon(
+                          EnvoyIcons.chain,
+                          color: deviceRemovedFromHostSystemSettings
+                              ? NewEnvoyColor.contentDisabled
+                              : Colors.black,
+                          size: EnvoyIconSize.small,
+                        ),
+                        horizontalTitleGap: EnvoySpacing.xs,
                         title: Text(
                           S().manage_device_details_devicePaired,
                           style: listItemTheme,
@@ -236,27 +246,6 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                       ),
                       if (widget.device.type == DeviceType.passportPrime)
                         Divider(color: NewEnvoyColor.neutral200, height: 1),
-                      if (widget.device.type == DeviceType.passportPrime)
-                        ListTile(
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.xs,
-                          ),
-                          title: Text(
-                            S().manage_device_details_deviceSerial,
-                            style: EnvoyTypography.body
-                                .copyWith(color: NewEnvoyColor.contentPrimary),
-                          ),
-                          trailing: Text(
-                            widget.device.serial,
-                            style: EnvoyTypography.body.copyWith(
-                                color: NewEnvoyColor.contentSecondary),
-                          ),
-                        ),
-                      if (widget.device.type == DeviceType.passportPrime)
-                        Divider(
-                          color: NewEnvoyColor.neutral200,
-                          height: 1,
-                        ),
                       if (widget.device.type == DeviceType.passportPrime)
                         ListTile(
                           contentPadding: EdgeInsets.symmetric(
