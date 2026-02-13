@@ -82,6 +82,7 @@ class DialogCheckBox extends StatefulWidget {
   final bool isChecked;
   final bool isRadio;
   final ValueChanged<bool?> onChanged;
+  final TextStyle? labelTextStyle;
 
   const DialogCheckBox({
     super.key,
@@ -89,6 +90,7 @@ class DialogCheckBox extends StatefulWidget {
     required this.isChecked,
     this.isRadio = false,
     required this.onChanged,
+    this.labelTextStyle,
   });
 
   @override
@@ -149,9 +151,10 @@ class DialogCheckBoxState extends State<DialogCheckBox> {
             padding: const EdgeInsets.only(left: EnvoySpacing.medium1),
             child: Text(
               widget.label,
-              style: EnvoyTypography.info.copyWith(
-                color: EnvoyColors.textSecondary,
-              ),
+              style: widget.labelTextStyle ??
+                  EnvoyTypography.info.copyWith(
+                    color: EnvoyColors.textSecondary,
+                  ),
             ),
           ),
         ],

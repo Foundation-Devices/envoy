@@ -341,6 +341,10 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         return S().bottomNav_transfer;
       case ROUTE_ACCOUNT_ADDRESSES:
         return S().exploreAdresses_activityOptions_exploreAddresses;
+      case ROUTE_ACCOUNT_SIGN_MESSAGE:
+        return S().receive_qr_signMessage;
+      case ROUTE_ACCOUNT_SIGN_MESSAGE_RESULT:
+        return S().signMessage_mainSigned_header;
       default:
         return S().menu_heading;
     }

@@ -2682,7 +2682,7 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?rev=70a666e826a9550f6bbf504b8584a4aeb4d9e5cb#70a666e826a9550f6bbf504b8584a4aeb4d9e5cb"
+source = "git+https://github.com/Foundation-Devices/ngwallet?rev=187773dea471c58887b9733e1fe7fff84d34d70a#187773dea471c58887b9733e1fe7fff84d34d70a"
 dependencies = [
  "anyhow",
  "bdk_core",
@@ -2690,6 +2690,7 @@ dependencies = [
  "bdk_wallet",
  "bip39",
  "bip85",
+ "bitcoin 0.32.7",
  "log",
  "minicbor-serde",
  "redb",

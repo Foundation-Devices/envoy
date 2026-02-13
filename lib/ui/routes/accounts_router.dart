@@ -13,10 +13,12 @@ import 'package:envoy/ui/home/cards/accounts/address_explorer_card.dart';
 import 'package:envoy/ui/home/cards/accounts/descriptor_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/coins/coins_state.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/transfer_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/psbt_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/send_card.dart';
+import 'package:envoy/ui/home/cards/accounts/sign_message_card.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/send_qr_review.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
@@ -71,6 +73,14 @@ const ROUTE_ACCOUNT_ADDRESSES = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_ADDRESSES';
 const _ACCOUNT_ADDRESS_DETAIL = 'address_detail';
 const ROUTE_ACCOUNT_ADDRESS_DETAIL =
     '$ROUTE_ACCOUNT_ADDRESSES/$_ACCOUNT_ADDRESS_DETAIL';
+
+const _ACCOUNT_SIGN_MESSAGE = 'sign_message';
+const ROUTE_ACCOUNT_SIGN_MESSAGE =
+    '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_SIGN_MESSAGE';
+
+const _ACCOUNT_SIGN_MESSAGE_RESULT = 'result';
+const ROUTE_ACCOUNT_SIGN_MESSAGE_RESULT =
+    '$ROUTE_ACCOUNT_SIGN_MESSAGE/$_ACCOUNT_SIGN_MESSAGE_RESULT';
 
 const _ACCOUNT_SEND = 'send';
 const ROUTE_ACCOUNT_SEND = '$ROUTE_ACCOUNT_DETAIL/$_ACCOUNT_SEND';
@@ -343,6 +353,53 @@ final accountsRouter = StatefulShellBranch(
                   );
                 }
               },
+            ),
+            GoRoute(
+              path: _ACCOUNT_SIGN_MESSAGE,
+              pageBuilder: (context, state) {
+                EnvoyAccount? account;
+                try {
+                  if (state.extra is String) {
+                    account = NgAccountManager()
+                        .getAccountById(state.extra as String);
+                  }
+                  account ??= ProviderScope.containerOf(context)
+                      .read(selectedAccountProvider);
+                  if (account == null) {
+                    throw Exception("Account not found");
+                  }
+                  return wrapWithEnvoyPageAnimation(
+                    child: SignMessageCard(account),
+                  );
+                } catch (e) {
+                  return wrapWithEnvoyPageAnimation(
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      child: Center(child: Text("Account not found")),
+                    ),
+                  );
+                }
+              },
+              routes: [
+                GoRoute(
+                  path: _ACCOUNT_SIGN_MESSAGE_RESULT,
+                  pageBuilder: (context, state) {
+                    try {
+                      final extra = state.extra as SignMessageResultData;
+                      return wrapWithEnvoyPageAnimation(
+                        child: SignMessageResultCard(data: extra),
+                      );
+                    } catch (e) {
+                      return wrapWithEnvoyPageAnimation(
+                        child: Container(
+                          padding: const EdgeInsets.all(20),
+                          child: Center(child: Text("Error")),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
             ),
           ],
           pageBuilder: (context, state) {

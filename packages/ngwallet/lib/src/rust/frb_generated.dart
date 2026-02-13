@@ -16,6 +16,7 @@ import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'third_party/ngwallet/config.dart';
 import 'third_party/ngwallet/send.dart';
+import 'third_party/ngwallet/sign_message.dart';
 import 'third_party/ngwallet/transaction.dart';
 
 /// Main entrypoint of the Rust API
@@ -77,7 +78,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 553883983;
+  int get rustContentHash => 2145000556;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -345,7 +346,17 @@ abstract class RustLibApi extends BaseApi {
       String? passphrase,
       required Network network});
 
+  Future<String> crateApiBip39EnvoyBip39FormatSignedMessage(
+      {required SignedMessage signed});
+
   Future<String> crateApiBip39EnvoyBip39GenerateSeed();
+
+  Future<SignedMessage> crateApiBip39EnvoyBip39SignMessage(
+      {required String seedWords,
+      String? passphrase,
+      required String derivationPath,
+      required String message,
+      required Network network});
 
   Future<bool> crateApiBip39EnvoyBip39ValidateSeed({required String seedWords});
 
@@ -2297,12 +2308,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
 
   @override
+  Future<String> crateApiBip39EnvoyBip39FormatSignedMessage(
+      {required SignedMessage signed}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_signed_message(signed, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 59, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiBip39EnvoyBip39FormatSignedMessageConstMeta,
+      argValues: [signed],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBip39EnvoyBip39FormatSignedMessageConstMeta =>
+      const TaskConstMeta(
+        debugName: "envoy_bip_39_format_signed_message",
+        argNames: ["signed"],
+      );
+
+  @override
   Future<String> crateApiBip39EnvoyBip39GenerateSeed() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 59, port: port_);
+            funcId: 60, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -2321,6 +2358,46 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<SignedMessage> crateApiBip39EnvoyBip39SignMessage(
+      {required String seedWords,
+      String? passphrase,
+      required String derivationPath,
+      required String message,
+      required Network network}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(seedWords, serializer);
+        sse_encode_opt_String(passphrase, serializer);
+        sse_encode_String(derivationPath, serializer);
+        sse_encode_String(message, serializer);
+        sse_encode_network(network, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 61, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_signed_message,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiBip39EnvoyBip39SignMessageConstMeta,
+      argValues: [seedWords, passphrase, derivationPath, message, network],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBip39EnvoyBip39SignMessageConstMeta =>
+      const TaskConstMeta(
+        debugName: "envoy_bip_39_sign_message",
+        argNames: [
+          "seedWords",
+          "passphrase",
+          "derivationPath",
+          "message",
+          "network"
+        ],
+      );
+
+  @override
   Future<bool> crateApiBip39EnvoyBip39ValidateSeed(
       {required String seedWords}) {
     return handler.executeNormal(NormalTask(
@@ -2328,7 +2405,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(seedWords, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 60, port: port_);
+            funcId: 62, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -2355,7 +2432,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(server, serializer);
         sse_encode_opt_String(proxy, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 61, port: port_);
+            funcId: 63, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_server_features,
@@ -2379,7 +2456,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 62, port: port_);
+            funcId: 64, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -2402,7 +2479,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_output(that, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 63)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 65)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -2429,7 +2506,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerTransactionComposeError(
             transactionComposeError, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 64, port: port_);
+            funcId: 66, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_tx_compose_error,
@@ -2795,6 +2872,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Output dco_decode_box_autoadd_output(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_output(raw);
+  }
+
+  @protected
+  SignedMessage dco_decode_box_autoadd_signed_message(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_signed_message(raw);
   }
 
   @protected
@@ -3330,6 +3413,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SignedMessage dco_decode_signed_message(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return SignedMessage(
+      message: dco_decode_String(arr[0]),
+      address: dco_decode_String(arr[1]),
+      signature: dco_decode_String(arr[2]),
+    );
+  }
+
+  @protected
   TransactionFeeResult dco_decode_transaction_fee_result(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -3744,6 +3840,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Output sse_decode_box_autoadd_output(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_output(deserializer));
+  }
+
+  @protected
+  SignedMessage sse_decode_box_autoadd_signed_message(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_signed_message(deserializer));
   }
 
   @protected
@@ -4411,6 +4514,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SignedMessage sse_decode_signed_message(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_message = sse_decode_String(deserializer);
+    var var_address = sse_decode_String(deserializer);
+    var var_signature = sse_decode_String(deserializer);
+    return SignedMessage(
+        message: var_message, address: var_address, signature: var_signature);
+  }
+
+  @protected
   TransactionFeeResult sse_decode_transaction_fee_result(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4834,6 +4947,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_box_autoadd_output(Output self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_output(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_signed_message(
+      SignedMessage self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_signed_message(self, serializer);
   }
 
   @protected
@@ -5365,6 +5485,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_signed_message(SignedMessage self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.message, serializer);
+    sse_encode_String(self.address, serializer);
+    sse_encode_String(self.signature, serializer);
+  }
+
+  @protected
   void sse_encode_transaction_fee_result(
       TransactionFeeResult self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5606,10 +5734,8 @@ class EnvoyAccountHandlerImpl extends RustOpaque
         that: this,
       );
 
-  /// Get addresses at specific indices without revealing them.
-  /// Returns a list of (index, address) tuples for the given address type and index range.
-  /// This is useful for displaying address lists in an address explorer UI.
-  /// Set `is_change` to true to get change (internal) addresses, false for receive (external) addresses.
+  /// Get addresses for the given index range without revealing them.
+  /// Set `is_change` to true for change addresses, false for receive addresses.
   Future<List<(int, String)>> peekAddresses(
           {required AddressType addressType,
           required int fromIndex,
