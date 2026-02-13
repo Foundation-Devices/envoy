@@ -13,6 +13,14 @@ analyzer:
     - 'packages/shards/**'
     - 'packages/bluart/**'
     - 'packages/http_tor/**'
+    - 'packages/ur/**'
+    - 'packages/foundation_api/**'
+    - '**/cargokit/**'
+    - '**/src/rust/**'
+    - '**/frb_generated*'
+    - '**/*.freezed.dart'
+    - '**/*.g.dart'
     - 'test/*.mocks.dart'
+    - 'build/**'
   plugins:
     - custom_lint

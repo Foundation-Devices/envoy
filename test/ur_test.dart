@@ -2,9 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:envoy/util/console.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:test/test.dart';
 import 'package:ur/ur.dart';
 import 'package:envoy/business/uniform_resource.dart';
@@ -17,7 +19,10 @@ final ur = Ur();
 
 void main() {
   setUpAll(() async {
-    await Ur.init();
+    // Load library from workspace target directory for testing
+    final libPath =
+        '${Directory.current.path}/target/release/librust_lib_ur.so';
+    await Ur.init(externalLibrary: ExternalLibrary.open(libPath));
   });
 
   test('UR encode / decode test', () {

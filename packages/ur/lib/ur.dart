@@ -4,6 +4,7 @@
 
 import 'dart:typed_data';
 
+import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'src/rust/api/ur.dart' as rust;
 import 'src/rust/frb_generated.dart';
 
@@ -27,8 +28,11 @@ class Ur {
   }
 
   /// Initialize the Rust library. Call this once before using the UR library.
-  static Future<void> init() async {
-    await RustLib.init();
+  ///
+  /// For testing, you can provide an [externalLibrary] to load the library
+  /// from a specific path.
+  static Future<void> init({ExternalLibrary? externalLibrary}) async {
+    await RustLib.init(externalLibrary: externalLibrary);
   }
 }
 
