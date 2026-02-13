@@ -18,6 +18,7 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/ntp.dart';
 import 'package:envoy/util/transfer_rate_estimator.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 
 class FwUpdateState {
@@ -113,8 +114,9 @@ class FwUpdateHandler extends PassportMessageHandler {
         S().firmware_downloadingUpdate_downloaded,
         EnvoyStepState.FINISHED,
       );
-    } catch (e) {
+    } catch (e, stack) {
       kPrint("failed to fetch patches: $e");
+      debugPrintStack(stackTrace: stack);
       _updateDownloadState(
         S().firmware_updateError_downloadFailed,
         EnvoyStepState.ERROR,
@@ -140,10 +142,13 @@ class FwUpdateHandler extends PassportMessageHandler {
           }
           patchBinaries.add(binary);
         }
-      } catch (e) {
-        kPrint("failed to download patch binaries: $e");
+      } catch (e, stack) {
+        kPrint("failed to fetch firmware: $e");
         _updateFwUpdateState(PrimeFwUpdateStep.error);
         await _handleFirmwareError(S().firmware_updateError_downloadFailed);
+        EnvoyReport().log(
+            "fw_update_handler", "Failed to check for updates: $e",
+            stackTrace: stack);
         return;
       }
 
@@ -223,34 +228,40 @@ class FwUpdateHandler extends PassportMessageHandler {
       S().onboarding_connectionChecking_forUpdates,
       EnvoyStepState.LOADING,
     );
-    final patches = await Server().fetchPrimePatches(currentVersion);
+    try {
+      final patches = await Server().fetchPrimePatches(currentVersion);
 
-    final stepUpdate = patches.isNotEmpty
-        ? S().onboarding_connectionUpdatesAvailable_updatesAvailable
-        : S().onboarding_connectionNoUpdates_noUpdates;
+      final stepUpdate = patches.isNotEmpty
+          ? S().onboarding_connectionUpdatesAvailable_updatesAvailable
+          : S().onboarding_connectionNoUpdates_noUpdates;
 
-    _updateFetchState(
-      S().onboarding_connectionChecking_forUpdates,
-      EnvoyStepState.LOADING,
-    );
-    if (patches.isEmpty) {
+      _updateFetchState(
+        S().onboarding_connectionChecking_forUpdates,
+        EnvoyStepState.LOADING,
+      );
+      if (patches.isEmpty) {
+        _updateFetchState(stepUpdate, EnvoyStepState.FINISHED);
+        qlConnection.writeMessage(
+          api.QuantumLinkMessage.firmwareUpdateCheckResponse(
+            api.FirmwareUpdateCheckResponse_NotAvailable(),
+          ),
+        );
+      } else {
+        newVersion = patches.last.version;
+        final response = api.QuantumLinkMessage.firmwareUpdateCheckResponse(
+          api.FirmwareUpdateCheckResponse.available(
+            updateAvailableMessage(patches),
+          ),
+        );
+        await qlConnection.writeMessage(response);
+      }
       _updateFetchState(stepUpdate, EnvoyStepState.FINISHED);
-      qlConnection.writeMessage(
-        api.QuantumLinkMessage.firmwareUpdateCheckResponse(
-          api.FirmwareUpdateCheckResponse_NotAvailable(),
-        ),
-      );
-    } else {
-      newVersion = patches.last.version;
-      final response = api.QuantumLinkMessage.firmwareUpdateCheckResponse(
-        api.FirmwareUpdateCheckResponse.available(
-          updateAvailableMessage(patches),
-        ),
-      );
-      await qlConnection.writeMessage(response);
+    } catch (e, stack) {
+      EnvoyReport().log("fw_update_handler", "Failed to check for updates: $e",
+          stackTrace: stack);
+      _updateFwUpdateState(PrimeFwUpdateStep.error);
+      await _handleFirmwareError(S().firmware_updateError_downloadFailed);
     }
-
-    _updateFetchState(stepUpdate, EnvoyStepState.FINISHED);
   }
 
   Future<void> _handleFirmwareError(String errorBody) async {
