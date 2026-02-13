@@ -33,6 +33,14 @@ final deviceConnectionStatusStreamProvider =
   return device.qlConnection().deviceStatusStream;
 });
 
+final onboardingDeviceConnectionStatusStream =
+    StreamProvider<DeviceStatus>((ref) {
+  final device = ref.watch(onboardingDeviceProvider);
+  //watching the device stream to trigger rebuilds when devices change
+  ref.watch(qlConnectionStreamProvider);
+  return device?.deviceStatusStream ?? const Stream.empty();
+});
+
 final isPrimeConnectedProvider = Provider.family<bool, Device?>((ref, device) {
   if (device == null) return false;
   DeviceStatus? status =
