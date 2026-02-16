@@ -228,14 +228,15 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
         return;
       }
 
-      final signed = await EnvoyBip39.signMessage(
+      final signed = await EnvoySignMessage.signMessage(
         seedWords: seed,
         derivationPath: _resolvedDerivationPath!,
         message: message,
         network: widget.account.network,
       );
 
-      final formatted = await EnvoyBip39.formatSignedMessage(signed: signed);
+      final formatted =
+          await EnvoySignMessage.formatSignedMessage(signed: signed);
 
       setState(() {
         _signing = false;
@@ -292,7 +293,8 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
       signature: signature.trim(),
     );
 
-    final formatted = await EnvoyBip39.formatSignedMessage(signed: signed);
+    final formatted =
+        await EnvoySignMessage.formatSignedMessage(signed: signed);
 
     _navigateToResult(SignMessageResultData(
       address: address,

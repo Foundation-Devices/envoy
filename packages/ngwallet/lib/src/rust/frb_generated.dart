@@ -7,6 +7,7 @@ import 'api/bip39.dart';
 import 'api/envoy_account.dart';
 import 'api/envoy_wallet.dart';
 import 'api/errors.dart';
+import 'api/sign_message.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -78,7 +79,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 2145000556;
+  int get rustContentHash => 1825533099;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -346,19 +347,19 @@ abstract class RustLibApi extends BaseApi {
       String? passphrase,
       required Network network});
 
-  Future<String> crateApiBip39EnvoyBip39FormatSignedMessage(
-      {required SignedMessage signed});
-
   Future<String> crateApiBip39EnvoyBip39GenerateSeed();
 
-  Future<SignedMessage> crateApiBip39EnvoyBip39SignMessage(
+  Future<bool> crateApiBip39EnvoyBip39ValidateSeed({required String seedWords});
+
+  Future<String> crateApiSignMessageEnvoySignMessageFormatSignedMessage(
+      {required SignedMessage signed});
+
+  Future<SignedMessage> crateApiSignMessageEnvoySignMessageSignMessage(
       {required String seedWords,
       String? passphrase,
       required String derivationPath,
       required String message,
       required Network network});
-
-  Future<bool> crateApiBip39EnvoyBip39ValidateSeed({required String seedWords});
 
   Future<ServerFeatures> crateApiEnvoyWalletGetServerFeatures(
       {required String server, String? proxy});
@@ -2308,38 +2309,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
 
   @override
-  Future<String> crateApiBip39EnvoyBip39FormatSignedMessage(
-      {required SignedMessage signed}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_box_autoadd_signed_message(signed, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 59, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiBip39EnvoyBip39FormatSignedMessageConstMeta,
-      argValues: [signed],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiBip39EnvoyBip39FormatSignedMessageConstMeta =>
-      const TaskConstMeta(
-        debugName: "envoy_bip_39_format_signed_message",
-        argNames: ["signed"],
-      );
-
-  @override
   Future<String> crateApiBip39EnvoyBip39GenerateSeed() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 60, port: port_);
+            funcId: 59, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -2358,46 +2333,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<SignedMessage> crateApiBip39EnvoyBip39SignMessage(
-      {required String seedWords,
-      String? passphrase,
-      required String derivationPath,
-      required String message,
-      required Network network}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(seedWords, serializer);
-        sse_encode_opt_String(passphrase, serializer);
-        sse_encode_String(derivationPath, serializer);
-        sse_encode_String(message, serializer);
-        sse_encode_network(network, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 61, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_signed_message,
-        decodeErrorData: sse_decode_AnyhowException,
-      ),
-      constMeta: kCrateApiBip39EnvoyBip39SignMessageConstMeta,
-      argValues: [seedWords, passphrase, derivationPath, message, network],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiBip39EnvoyBip39SignMessageConstMeta =>
-      const TaskConstMeta(
-        debugName: "envoy_bip_39_sign_message",
-        argNames: [
-          "seedWords",
-          "passphrase",
-          "derivationPath",
-          "message",
-          "network"
-        ],
-      );
-
-  @override
   Future<bool> crateApiBip39EnvoyBip39ValidateSeed(
       {required String seedWords}) {
     return handler.executeNormal(NormalTask(
@@ -2405,7 +2340,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(seedWords, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 62, port: port_);
+            funcId: 60, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -2421,6 +2356,74 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(
         debugName: "envoy_bip_39_validate_seed",
         argNames: ["seedWords"],
+      );
+
+  @override
+  Future<String> crateApiSignMessageEnvoySignMessageFormatSignedMessage(
+      {required SignedMessage signed}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_signed_message(signed, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 61, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiSignMessageEnvoySignMessageFormatSignedMessageConstMeta,
+      argValues: [signed],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiSignMessageEnvoySignMessageFormatSignedMessageConstMeta =>
+          const TaskConstMeta(
+            debugName: "envoy_sign_message_format_signed_message",
+            argNames: ["signed"],
+          );
+
+  @override
+  Future<SignedMessage> crateApiSignMessageEnvoySignMessageSignMessage(
+      {required String seedWords,
+      String? passphrase,
+      required String derivationPath,
+      required String message,
+      required Network network}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(seedWords, serializer);
+        sse_encode_opt_String(passphrase, serializer);
+        sse_encode_String(derivationPath, serializer);
+        sse_encode_String(message, serializer);
+        sse_encode_network(network, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 62, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_signed_message,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSignMessageEnvoySignMessageSignMessageConstMeta,
+      argValues: [seedWords, passphrase, derivationPath, message, network],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSignMessageEnvoySignMessageSignMessageConstMeta =>
+      const TaskConstMeta(
+        debugName: "envoy_sign_message_sign_message",
+        argNames: [
+          "seedWords",
+          "passphrase",
+          "derivationPath",
+          "message",
+          "network"
+        ],
       );
 
   @override
@@ -2988,6 +2991,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (arr.isNotEmpty)
       throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
     return EnvoyBip39();
+  }
+
+  @protected
+  EnvoySignMessage dco_decode_envoy_sign_message(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.isNotEmpty)
+      throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
+    return EnvoySignMessage();
   }
 
   @protected
@@ -3975,6 +3987,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   EnvoyBip39 sse_decode_envoy_bip_39(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return EnvoyBip39();
+  }
+
+  @protected
+  EnvoySignMessage sse_decode_envoy_sign_message(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EnvoySignMessage();
   }
 
   @protected
@@ -5043,6 +5061,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void sse_encode_envoy_bip_39(EnvoyBip39 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_envoy_sign_message(
+      EnvoySignMessage self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
   }
 

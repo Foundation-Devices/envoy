@@ -30,6 +30,7 @@ export 'src/rust/third_party/ngwallet/transaction.dart' show KeyChain;
 export 'src/rust/third_party/ngwallet/send.dart' show TransactionParams;
 export 'src/rust/third_party/ngwallet/send.dart' show DraftTransaction;
 export 'src/rust/third_party/ngwallet/send.dart' show TransactionFeeResult;
+export 'src/rust/api/sign_message.dart' show EnvoySignMessage;
 export 'src/rust/third_party/ngwallet/sign_message.dart' show SignedMessage;
 export 'src/wallet.dart';
 export 'src/exceptions.dart';

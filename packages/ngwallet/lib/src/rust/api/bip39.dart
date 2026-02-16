@@ -5,7 +5,6 @@
 
 import '../frb_generated.dart';
 import '../third_party/ngwallet/config.dart';
-import '../third_party/ngwallet/sign_message.dart';
 import 'envoy_wallet.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
@@ -64,25 +63,8 @@ class EnvoyBip39 {
       RustLib.instance.api.crateApiBip39EnvoyBip39DeriveFingerprintFromSeed(
           seedWords: seedWords, passphrase: passphrase, network: network);
 
-  static Future<String> formatSignedMessage({required SignedMessage signed}) =>
-      RustLib.instance.api
-          .crateApiBip39EnvoyBip39FormatSignedMessage(signed: signed);
-
   static Future<String> generateSeed() =>
       RustLib.instance.api.crateApiBip39EnvoyBip39GenerateSeed();
-
-  static Future<SignedMessage> signMessage(
-          {required String seedWords,
-          String? passphrase,
-          required String derivationPath,
-          required String message,
-          required Network network}) =>
-      RustLib.instance.api.crateApiBip39EnvoyBip39SignMessage(
-          seedWords: seedWords,
-          passphrase: passphrase,
-          derivationPath: derivationPath,
-          message: message,
-          network: network);
 
   static Future<bool> validateSeed({required String seedWords}) =>
       RustLib.instance.api

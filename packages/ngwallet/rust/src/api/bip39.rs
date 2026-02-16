@@ -11,7 +11,6 @@ use ngwallet::bdk_wallet::bitcoin::Network;
 use ngwallet::bdk_wallet::miniscript::descriptor::DescriptorType;
 use ngwallet::bip39::{get_descriptors, get_random_seed};
 use ngwallet::config::AddressType;
-use ngwallet::sign_message::{self, SignedMessage};
 
 pub struct Seed {
     pub mnemonic: String,
@@ -89,23 +88,6 @@ impl EnvoyBip39 {
         let fingerprint = xprv.fingerprint(&Secp256k1::new());
         Ok(fingerprint.to_string())
     }
-    pub fn sign_message(
-        seed_words: &str,
-        passphrase: Option<String>,
-        derivation_path: &str,
-        message: &str,
-        network: Network,
-    ) -> Result<SignedMessage> {
-        let mnemonic = Mnemonic::parse(seed_words)?;
-        let seed = mnemonic.to_seed(passphrase.unwrap_or_default());
-        sign_message::sign_message(&seed, derivation_path, message, network)
-            .map_err(|e| anyhow::anyhow!("{}", e))
-    }
-
-    pub fn format_signed_message(signed: &SignedMessage) -> String {
-        sign_message::format_signed_message(signed)
-    }
-
     //
     fn get_address_type(descriptor_type: DescriptorType) -> Option<AddressType> {
         match descriptor_type {

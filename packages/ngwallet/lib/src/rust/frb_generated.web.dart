@@ -10,6 +10,7 @@ import 'api/bip39.dart';
 import 'api/envoy_account.dart';
 import 'api/envoy_wallet.dart';
 import 'api/errors.dart';
+import 'api/sign_message.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -236,6 +237,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   EnvoyBip39 dco_decode_envoy_bip_39(dynamic raw);
+
+  @protected
+  EnvoySignMessage dco_decode_envoy_sign_message(dynamic raw);
 
   @protected
   int dco_decode_i_32(dynamic raw);
@@ -588,6 +592,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   EnvoyBip39 sse_decode_envoy_bip_39(SseDeserializer deserializer);
+
+  @protected
+  EnvoySignMessage sse_decode_envoy_sign_message(SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
@@ -958,6 +965,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_envoy_bip_39(EnvoyBip39 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_envoy_sign_message(
+      EnvoySignMessage self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
