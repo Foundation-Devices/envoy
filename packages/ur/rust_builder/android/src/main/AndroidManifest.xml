@@ -5,5 +5,5 @@ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.flutter_rust_bridge.rust_lib_shards">
+  package="com.flutter_rust_bridge.rust_lib_ur">
 </manifest>
