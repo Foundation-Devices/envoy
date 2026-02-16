@@ -391,6 +391,33 @@ class Settings extends ChangeNotifier {
   }
 
   @JsonKey(defaultValue: true)
+  bool usingDefaultBlockExplorer = true;
+
+  @JsonKey(defaultValue: "")
+  String personalBlockExplorerAddress = "";
+
+  bool isUsingDefaultBlockExplorer() {
+    return usingDefaultBlockExplorer;
+  }
+
+  void setUsingDefaultBlockExplorer(bool enabled) {
+    usingDefaultBlockExplorer = enabled;
+    notifyListeners();
+    store();
+  }
+
+  String getPersonalBlockExplorerAddress() {
+    return personalBlockExplorerAddress;
+  }
+
+  Future<void> setPersonalBlockExplorerAddress(String address) async {
+    personalBlockExplorerAddress = address;
+    usingDefaultBlockExplorer = false;
+    notifyListeners();
+    store();
+  }
+
+  @JsonKey(defaultValue: true)
   bool allowBuyInEnvoy = true;
 
   bool isAllowedBuyInEnvoy() {

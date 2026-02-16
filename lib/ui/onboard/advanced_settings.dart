@@ -12,6 +12,7 @@ import 'package:envoy/ui/components/select_dropdown.dart';
 import 'package:envoy/ui/components/settings_header.dart';
 import 'package:envoy/ui/components/toggle.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
+import 'package:envoy/ui/home/settings/block_explorer_entry.dart';
 import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -42,6 +43,7 @@ class _AdvancedSettingsOptionsState
   final ScrollController _scrollController = ScrollController();
   bool _betterPerformance = !Settings().torEnabled();
   bool _showPersonalNodeTextField = getInitialElectrumDropdownIndex() == 1;
+  bool _showPersonalExplorerTextField = !Settings().usingDefaultBlockExplorer;
 
   @override
   Widget build(BuildContext context) {
@@ -371,6 +373,63 @@ class _AdvancedSettingsOptionsState
                                         ),
                                       ),
                                     ),
+                                  buildDivider(),
+                                  SettingsHeader(
+                                    title: S().privacy_explorer_title,
+                                    linkText: S().component_learnMore,
+                                    onTap: () {
+                                      launchUrl(
+                                        Uri.parse(
+                                          "https://docs.foundation.xyz/envoy/envoy-menu/privacy/#block-explorer",
+                                        ),
+                                        mode: LaunchMode.externalApplication,
+                                      );
+                                    },
+                                    icon: EnvoyIcons.node,
+                                  ),
+                                  const SizedBox(height: EnvoySpacing.medium2),
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: EnvoyDropdown(
+                                      openAbove: true,
+                                      dropdownMaxHeight: 100,
+                                      initialIndex:
+                                          Settings().usingDefaultBlockExplorer
+                                              ? 0
+                                              : 1,
+                                      options: [
+                                        EnvoyDropdownOption(
+                                          label: S()
+                                              .privacy_node_nodeType_foundation,
+                                          value: "foundation",
+                                        ),
+                                        EnvoyDropdownOption(
+                                          label: S()
+                                              .privacy_explorer_explorerType_personal,
+                                          value: "personalExplorer",
+                                        ),
+                                      ],
+                                      onOptionChanged: (selectedOption) {
+                                        if (selectedOption != null) {
+                                          _handleExplorerDropdownChange(
+                                            selectedOption,
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  if (_showPersonalExplorerTextField)
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: EnvoySpacing.medium1,
+                                      ),
+                                      child: SingleChildScrollView(
+                                        child: BlockExplorerEntry(
+                                          s.getPersonalBlockExplorerAddress,
+                                          s.setPersonalBlockExplorerAddress,
+                                        ),
+                                      ),
+                                    ),
                                   if (keyboardHeight != 0.0 &&
                                       bottomPadding > 0)
                                     Padding(
@@ -397,6 +456,23 @@ class _AdvancedSettingsOptionsState
         ),
       ),
     );
+  }
+
+  void _handleExplorerDropdownChange(EnvoyDropdownOption newOption) {
+    if (newOption.value == "foundation") {
+      setState(() {
+        _showPersonalExplorerTextField = false;
+      });
+      Settings().setUsingDefaultBlockExplorer(true);
+      return;
+    }
+    if (newOption.value == "personalExplorer") {
+      setState(() {
+        _showPersonalExplorerTextField = true;
+      });
+      Settings().setUsingDefaultBlockExplorer(false);
+      return;
+    }
   }
 
   Future<void> _handleDropdownChange(EnvoyDropdownOption newOption) async {
