@@ -1031,6 +1031,19 @@ void openTxDetailPage(Network network, String txId) {
 
 /// Returns the base URL for [network]; we don't launch URLs via Tor.
 String? getBaseUrlForNetwork(Network network) {
+  if (network == Network.bitcoin &&
+      !Settings().usingDefaultBlockExplorer &&
+      Settings().personalBlockExplorerAddress.isNotEmpty) {
+    String customUrl = Settings().personalBlockExplorerAddress;
+    if (!customUrl.startsWith('http')) {
+      customUrl = 'https://$customUrl';
+    }
+    if (customUrl.endsWith('/')) {
+      customUrl = customUrl.substring(0, customUrl.length - 1);
+    }
+    return customUrl;
+  }
+
   switch (network) {
     case Network.bitcoin:
       return Fees.mempoolFoundationUrl;

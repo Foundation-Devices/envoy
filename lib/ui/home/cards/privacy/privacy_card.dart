@@ -22,6 +22,7 @@ import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
+import 'package:envoy/ui/home/settings/block_explorer_entry.dart';
 import 'dart:io';
 
 //ignore: must_be_immutable
@@ -34,6 +35,7 @@ class PrivacyCard extends ConsumerStatefulWidget {
 
 class PrivacyCardState extends ConsumerState<PrivacyCard> {
   bool _showPersonalNodeTextField = getInitialElectrumDropdownIndex() == 1;
+  bool _showPersonalExplorerTextField = !Settings().usingDefaultBlockExplorer;
   bool _betterPerformance = !Settings().torEnabled();
 
   bool? _useLocalAuth = false;
@@ -85,6 +87,23 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
     if (newOption.value == "diyNodes") {
       Settings().setCustomElectrumAddress(PublicServer.diyNodes.address);
       Settings().useDefaultElectrumServer(false);
+      return;
+    }
+  }
+
+  void _handleExplorerDropdownChange(EnvoyDropdownOption newOption) {
+    if (newOption.value == "foundation") {
+      setState(() {
+        _showPersonalExplorerTextField = false;
+      });
+      Settings().setUsingDefaultBlockExplorer(true);
+      return;
+    }
+    if (newOption.value == "personalExplorer") {
+      setState(() {
+        _showPersonalExplorerTextField = true;
+      });
+      Settings().setUsingDefaultBlockExplorer(false);
       return;
     }
   }
@@ -231,6 +250,52 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                           child: ElectrumServerEntry(
                             Settings().getPersonalElectrumAddress,
                             Settings().setPersonalElectrumAddress,
+                          ),
+                        ),
+                      ),
+                    buildDivider(),
+                    SettingsHeader(
+                      title: S().privacy_explorer_title,
+                      linkText: S().component_learnMore,
+                      onTap: () {
+                        launchUrl(
+                          Uri.parse(
+                            "https://docs.foundation.xyz/envoy/envoy-menu/privacy/#block-explorer",
+                          ),
+                          mode: LaunchMode.externalApplication,
+                        );
+                      },
+                      icon: EnvoyIcons.node,
+                    ),
+                    const SizedBox(height: EnvoySpacing.medium2),
+                    EnvoyDropdown(
+                      initialIndex:
+                          Settings().usingDefaultBlockExplorer ? 0 : 1,
+                      options: [
+                        EnvoyDropdownOption(
+                          label: S().privacy_node_nodeType_foundation,
+                          value: "foundation",
+                        ),
+                        EnvoyDropdownOption(
+                          label: S().privacy_explorer_explorerType_personal,
+                          value: "personalExplorer",
+                        ),
+                      ],
+                      onOptionChanged: (selectedOption) {
+                        if (selectedOption != null) {
+                          _handleExplorerDropdownChange(selectedOption);
+                        }
+                      },
+                    ),
+                    if (_showPersonalExplorerTextField)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: EnvoySpacing.medium1,
+                        ),
+                        child: SingleChildScrollView(
+                          child: BlockExplorerEntry(
+                            Settings().getPersonalBlockExplorerAddress,
+                            Settings().setPersonalBlockExplorerAddress,
                           ),
                         ),
                       ),
