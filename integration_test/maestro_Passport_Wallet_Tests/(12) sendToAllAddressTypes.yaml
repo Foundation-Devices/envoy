@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# (13) sendToAllAddressTypes
+# (12) sendToAllAddressTypes
 appId: com.foundationdevices.envoy
 ---
 

@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# (19) taprootAddressTest (and enableTaproot test)
+# (17) taprootAddressTest
 appId: com.foundationdevices.envoy
 ---
 

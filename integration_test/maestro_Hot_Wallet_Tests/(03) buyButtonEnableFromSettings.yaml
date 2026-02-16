@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (03) buyButtonEnableFromSettings
+appId: com.foundationdevices.envoy
+---
+
+# Find the Buy button (enabled in Settings by default)
+- assertVisible:
+    id: QR Shield Buy
+
+# now turn it off from settings
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+# turn it off
+- tapOn:
+    id: Buy Toggle-true
+
+# back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# expect no Buy button
+- assertNotVisible:
+    id: QR Shield Buy
+

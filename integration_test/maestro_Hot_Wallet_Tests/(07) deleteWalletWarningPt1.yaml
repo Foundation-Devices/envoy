@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (07) deleteWalletWarningPt1
+appId: com.foundationdevices.envoy
+---
+
+# go to backups
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    BACKUPS
+    BACKUPS
+
+# press to erase wallet
+- tapOn: Erase Mobile Wallet and Backups
+
+# skip dialogs
+- tapOn: Continue
+- tapOn: Continue
+
+# make sure there is no warning pop-up
+- assertVisible: Keep Your Seed Private
+
+# go back to home
+- tapOn: Back
+- tapOn:
+    id: hamburger_menu

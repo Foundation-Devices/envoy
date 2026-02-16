@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# (06) testingPromptsForWalletsWithBalances
+# (05) testingPromptsForWalletsWithBalances
 appId: com.foundationdevices.envoy
 ---
 

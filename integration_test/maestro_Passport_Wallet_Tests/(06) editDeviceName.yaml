@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# (07) editDeviceName
+# (06) editDeviceName
 appId: com.foundationdevices.envoy
 ---
 

@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# (30) deleteDevice
+# (27) deleteDevice
 appId: com.foundationdevices.envoy
 ---
 

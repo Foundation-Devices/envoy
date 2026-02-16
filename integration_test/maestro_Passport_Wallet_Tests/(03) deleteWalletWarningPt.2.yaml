@@ -2,23 +2,25 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# (04) deleteWalletWarningPt.2
+# (03) deleteWalletWarningPt.2
 appId: com.foundationdevices.envoy
 ---
 
+# go to backups
 - tapOn:
     id: hamburger_menu
-
 - tapOn: |-
     BACKUPS
     BACKUPS
 
+# press to erase wallet
 - tapOn: Erase Mobile Wallet
 
+# skip dialogs
+- tapOn: Continue
 - tapOn: Continue
 
-- tapOn: Continue
-
+# make sure warning dialog is open
 - assertVisible: Delete Accounts anyway
 
 # go home
