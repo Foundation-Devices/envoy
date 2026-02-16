@@ -252,6 +252,7 @@ class Settings extends ChangeNotifier {
   void setTorEnabled(bool torEnabled) {
     usingTor = torEnabled;
     if (torEnabled) {
+      ConnectivityManager().startTorGracePeriod();
       Tor.instance.enable();
     } else {
       Tor.instance.disable();
