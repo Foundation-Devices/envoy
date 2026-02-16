@@ -167,14 +167,20 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               ),
               actions: [
                 !widget.coinTag.untagged && _selectedCoin == null
-                    ? IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _menuVisible = !_menuVisible;
-                          });
-                        },
-                        icon: Icon(
-                          _menuVisible ? Icons.close : CupertinoIcons.ellipsis,
+                    ? Semantics(
+                        container: true,
+                        identifier: "coin_tag_ellipsis_menu",
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _menuVisible = !_menuVisible;
+                            });
+                          },
+                          icon: Icon(
+                            _menuVisible
+                                ? Icons.close
+                                : CupertinoIcons.ellipsis,
+                          ),
                         ),
                       )
                     : const SizedBox.shrink(),

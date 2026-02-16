@@ -78,6 +78,3 @@ test/failures
 # Kebab mcp
 packages/kebab_mcp/bin/kebab_mcp
 
-# db test files
-*.db
-

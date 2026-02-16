@@ -266,15 +266,19 @@ class _EnvoyPopUpState extends State<EnvoyPopUp> {
                     ),
                   ),
                 if (widget.tertiaryButtonLabel != null)
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(bottom: EnvoySpacing.medium1),
-                    child: EnvoyButton(widget.tertiaryButtonLabel!,
-                        type: EnvoyButtonTypes.tertiary, onTap: () {
-                      if (widget.onTertiaryButtonTap != null) {
-                        widget.onTertiaryButtonTap!(context);
-                      }
-                    }),
+                  Semantics(
+                    container: true,
+                    identifier: "popup_tertiary_${widget.tertiaryButtonLabel}",
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(bottom: EnvoySpacing.medium1),
+                      child: EnvoyButton(widget.tertiaryButtonLabel!,
+                          type: EnvoyButtonTypes.tertiary, onTap: () {
+                        if (widget.onTertiaryButtonTap != null) {
+                          widget.onTertiaryButtonTap!(context);
+                        }
+                      }),
+                    ),
                   ),
                 if (widget.secondaryButtonLabel != null)
                   Padding(

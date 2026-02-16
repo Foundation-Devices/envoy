@@ -1,0 +1,134 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (16) enableTestnet
+appId: com.foundationdevices.envoy
+---
+
+# go to advanced
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+# disable testnet
+- runFlow:
+    when:
+      visible:
+        id: "Testnet Toggle-true"
+    commands:
+      - tapOn:
+          id: Testnet Toggle-true
+
+# refresh settings
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+# enable it:
+- runFlow:
+    when:
+      visible:
+        id: "Testnet Toggle-false"
+    commands:
+      - tapOn:
+          id: Testnet Toggle-false
+
+# Check that a pop up comes up and tap continue
+- tapOn: Continue
+
+# refresh settings
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+# disable testnet
+- runFlow:
+    when:
+      visible:
+        id: "Testnet Toggle-true"
+    commands:
+      - tapOn:
+          id: Testnet Toggle-true
+
+# refresh settings
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+# enable it:
+- runFlow:
+    when:
+      visible:
+        id: "Testnet Toggle-false"
+    commands:
+      - tapOn:
+          id: Testnet Toggle-false
+
+- tapOn:
+    id: settings_close
+
+# check that popup close
+- assertNotVisible: "Learn how to do that "
+
+# back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# check that testnet is visible
+- scrollUntilVisible:
+    element:
+      text: Testnet
+
+# disable it in settings
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+# turn it off
+- tapOn:
+    id: Testnet Toggle-true
+
+# go back
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# check home and expect no testnet
+- assertNotVisible: "Testnet"
+
+# enable testnet again
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+- tapOn:
+    id: Testnet Toggle-false
+- tapOn: Continue
+
+# go back
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu

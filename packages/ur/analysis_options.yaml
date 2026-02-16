@@ -3,6 +3,4 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 analyzer:
-  exclude: 
-    - 'lib/generated_bindings.dart'
-    - 'rust_builder'
+  exclude: [lib/generated_bindings.dart]

@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (29) deleteDevice
+appId: com.foundationdevices.envoy
+---
+
+- tapOn: Devices
+
+- tapOn: |-
+    Passport
+    Founder's Edition
+
+- tapOn:
+    id: Right Action Button
+
+- tapOn: Disconnect
+
+- tapOn:
+    id: PopUp Primary Button
+
+# make sure you deleted the Passport
+- assertNotVisible: |-
+    Passport
+    Founder's Edition
+
+- tapOn: Accounts
+

@@ -173,36 +173,42 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
                 },
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: QrShield(
-                    arcSizeRatio: 15.0,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.large3,
-                        vertical: EnvoySpacing.small,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          EnvoyIcon(
-                            EnvoyIcons.btc,
-                            color: disabled
-                                ? EnvoyColors.textTertiary
-                                : EnvoyColors.accentPrimary,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: EnvoySpacing.xs,
+                  child: Semantics(
+                    identifier: "QR Shield Buy",
+                    button: true,
+                    container: true,
+                    excludeSemantics: true,
+                    child: QrShield(
+                      arcSizeRatio: 15.0,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.large3,
+                          vertical: EnvoySpacing.small,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            EnvoyIcon(
+                              EnvoyIcons.btc,
+                              color: disabled
+                                  ? EnvoyColors.textTertiary
+                                  : EnvoyColors.accentPrimary,
                             ),
-                            child: Text(
-                              S().component_minishield_buy,
-                              style: EnvoyTypography.label.copyWith(
-                                color: disabled
-                                    ? EnvoyColors.textTertiary
-                                    : EnvoyColors.accentPrimary,
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: EnvoySpacing.xs,
+                              ),
+                              child: Text(
+                                S().component_minishield_buy,
+                                style: EnvoyTypography.label.copyWith(
+                                  color: disabled
+                                      ? EnvoyColors.textTertiary
+                                      : EnvoyColors.accentPrimary,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

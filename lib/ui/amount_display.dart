@@ -4,6 +4,7 @@
 
 import 'package:envoy/ui/state/send_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/exchange_rate.dart';
@@ -56,7 +57,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
     // Fiat is always at the end of enum
     if (Settings().selectedFiat == null ||
-        widget.account?.network != Network.bitcoin) {
+        (!kDebugMode && widget.account?.network != Network.bitcoin)) {
       length--;
     }
 

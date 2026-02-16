@@ -141,6 +141,7 @@ class _EnvoyBarItemWidgetState extends State<_EnvoyBarItemWidget> {
     final isEnabled = widget.item.enabled;
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
       onTapCancel: _onTapCancel,

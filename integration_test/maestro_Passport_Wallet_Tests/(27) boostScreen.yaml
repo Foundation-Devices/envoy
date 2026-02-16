@@ -1,0 +1,114 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (27) boostScreen
+appId: com.foundationdevices.envoy
+---
+
+#      //const hotSignetReceiveAddress =
+#      //    'tb1q94lefpc0sfeg623yjy5m0xtm05cpyq85r8f6er';
+#      // TODO: fill this wallet if there is no money from here https://signet257.bublina.eu.org/
+#      // TODO: when getting more coins you need to wait for the transaction confirmation before running the tests!!!
+
+# go to Hot Signet wallet
+- scrollUntilVisible:
+    element:
+      id: account_card_Mobile Wallet_hot_signet
+
+- tapOn:
+    id: account_card_Mobile Wallet_hot_signet
+
+# send a tx
+- tapOn: Send
+- tapOn: Enter address
+- inputText: "tb1q94lefpc0sfeg623yjy5m0xtm05cpyq85r8f6er"
+
+- tapOn: Back
+
+# check if it is in sats
+- assertVisible:
+    id: amount_display sats
+
+# enter amount
+- tapOn: "5"
+- tapOn: "6"
+- tapOn: "7"
+
+- tapOn: Confirm
+
+# wait the app to enter Staging
+- extendedWaitUntil:
+    visible: |-
+      Your transaction is ready 
+      to be sent
+      Confirm the transaction details are correct before sending.
+    timeout: 300000 # wait for 5 min
+
+- tapOn: Send Transaction
+- tapOn: Save
+
+# wait for tx confirmation
+- extendedWaitUntil:
+    visible: Your transaction was successfully sent
+    timeout: 300000 # wait for 5 min
+
+- tapOn: Continue
+
+# go to tags
+- tapOn: Activity
+
+# lock all coins in the Untagged
+- tapOn: coin_lock_icon-unlocked
+
+# lock
+- tapOn:
+    id: PopUp Primary Button
+
+# wait for the lock to lock
+- extendedWaitUntil:
+    visible: coin_lock_icon-locked
+    timeout: 300000 # wait for 5 min
+
+- tapOn: Tags
+
+- tapOn: |-
+    Sent
+    Awaiting confirmation
+
+# wait for the boost to load
+- extendedWaitUntil:
+    visible: |-
+      boost button-ready
+      Boost
+    timeout: 600000 # wait for 5 min
+
+# try to boost
+- tapOn: |-
+    boost button-ready
+    Boost
+
+# check it the cannot boost popup shows
+- assertVisible:
+    id: envoy_icon_alert
+- tapOn:
+    id: PopUp Primary Button
+
+# go back and unlock all coins for the next test
+- tapOn: Back
+- tapOn: Activity
+
+# unlock all
+- tapOn: coin_lock_icon-locked
+
+- tapOn:
+    id: PopUp Primary Button
+
+# wait for the lock to unlock
+- extendedWaitUntil:
+    visible: coin_lock_icon-unlocked
+    timeout: 300000 # wait for 5 min
+
+# go to home
+- tapOn: Accounts
+

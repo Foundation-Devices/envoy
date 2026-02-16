@@ -320,6 +320,7 @@ class PrimaryAmountWidget extends StatelessWidget {
             identifier: semanticSuffix != null
                 ? 'primary_amount $semanticSuffix'
                 : 'primary_amount_value',
+            label: '$amountSats',
             child: RichText(
               textScaler: TextScaler.linear(textScaleFactor),
               text: TextSpan(

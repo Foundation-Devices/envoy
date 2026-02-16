@@ -186,8 +186,17 @@ final accountsRouter = StatefulShellBranch(
                 return true;
               },
               pageBuilder: (context, state) {
+                final extra = state.extra;
+                final String? transferAddress;
+                if (extra is String?) {
+                  transferAddress = extra;
+                } else if (extra is Map) {
+                  transferAddress = extra["address"] as String?;
+                } else {
+                  transferAddress = null;
+                }
                 return wrapWithEnvoyPageAnimation(
-                    child: SendCard(transferAddress: state.extra as String?));
+                    child: SendCard(transferAddress: transferAddress));
               },
               routes: [
                 GoRoute(

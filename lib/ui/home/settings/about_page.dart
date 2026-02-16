@@ -70,9 +70,12 @@ class _AboutPageState extends ConsumerState<AboutPage> {
                 future: PackageInfo.fromPlatform(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return AboutText(
-                      "${snapshot.data!.version} (${snapshot.data!.buildNumber})",
-                      dark: true,
+                    return Semantics(
+                      identifier: "app_version",
+                      child: AboutText(
+                        "${snapshot.data!.version} (${snapshot.data!.buildNumber})",
+                        dark: true,
+                      ),
                     );
                   } else {
                     return const SizedBox.shrink();

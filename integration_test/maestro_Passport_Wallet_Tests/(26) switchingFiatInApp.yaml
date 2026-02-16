@@ -1,0 +1,177 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (26) switchingFiatInApp
+appId: com.foundationdevices.envoy
+---
+
+# Open Envoy settings, enable fiat
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+# check fiat is enabled
+- runFlow:
+    when:
+      visible:
+        id: "Show Fiat Toggle-false"
+    commands:
+      - tapOn:
+          id: "Show Fiat Toggle-false"
+
+# check if it is USD
+- assertVisible: USD
+
+# go back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# check fiat on the screen
+- assertVisible:
+    text: $
+
+# extract fiat on the screen to .js
+- copyTextFrom:
+    id: secondary_amount_value
+    index: 1
+- runScript:
+    file: scripts/store_usd_fiat.js
+
+# go to settings and change to YPY
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+- tapOn: USD
+
+- tapOn: JPY
+
+- assertVisible: JPY
+
+# go back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# wait JPY to load in home
+- extendedWaitUntil:
+    visible: ¥
+    timeout: 120000 # wait for 2 min
+
+# extract fiat value from the screen to .js and check JPY != USD
+- copyTextFrom:
+    id: secondary_amount_value
+    index: 1
+- runScript:
+    file: scripts/store_jpy_fiat_and_compare.js
+
+# do the same thing when tor is ON ###########################################
+
+# turn the tor ON
+- tapOn: Privacy
+- tapOn: |-
+    Improved
+    Privacy
+
+# check if Tor connects via top bar Shield icon
+- extendedWaitUntil:
+    visible: "PRIVACY connected"
+    timeout: 300000 # wait for 5 min
+
+# change to USD and start the test again
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+- tapOn: JPY
+- tapOn: USD
+
+- assertVisible: USD
+
+# back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+- tapOn: Accounts
+
+# check fiat on the screen
+- assertVisible:
+    text: $
+
+# extract fiat on the screen to .js
+- copyTextFrom:
+    id: secondary_amount_value
+    index: 1
+- runScript:
+    file: scripts/store_usd_fiat.js
+
+# go to settings and change to YPY
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+- tapOn: USD
+
+- tapOn: JPY
+
+- assertVisible: JPY
+
+# go back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# wait JPY to load in home
+- extendedWaitUntil:
+    visible: ¥
+    timeout: 120000 # wait for 2 min
+
+# extract fiat value from the screen to .js and check JPY != USD
+- copyTextFrom:
+    id: secondary_amount_value
+    index: 1
+- runScript:
+    file: scripts/store_jpy_fiat_and_compare.js
+
+# turn the tor OFF for the next test
+- tapOn: Privacy
+- tapOn: |-
+    Better 
+    Performance
+- assertVisible: |-
+    PRIVACY
+    off
+- tapOn: Accounts
+
+# change to USD for the next test
+- tapOn:
+      id: hamburger_menu
+- tapOn: |-
+      SETTINGS
+      SETTINGS
+
+- tapOn: JPY
+- tapOn: USD
+
+- assertVisible: USD
+
+# back to home
+- tapOn:
+      id: hamburger_menu
+- tapOn:
+      id: hamburger_menu
+- tapOn: Accounts

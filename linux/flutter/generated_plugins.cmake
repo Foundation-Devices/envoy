@@ -16,7 +16,6 @@ list(APPEND FLUTTER_FFI_PLUGIN_LIST
   rust_lib_http_tor
   rust_lib_ngwallet
   rust_lib_shards
-  rust_lib_ur
   tor
 )
 

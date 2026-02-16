@@ -1086,17 +1086,22 @@ class _TransactionReviewScreenState
 }
 
 Widget feeOverSpendWarning(int feePercentage) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      const Padding(
-        padding: EdgeInsets.only(right: EnvoySpacing.small),
-        child: EnvoyIcon(EnvoyIcons.alert,
-            size: EnvoyIconSize.extraSmall, color: EnvoyColors.copper500),
-      ),
-      Text(S().coincontrol_tx_detail_fee_alert(feePercentage),
-          style: EnvoyTypography.button.copyWith(color: EnvoyColors.copper500)),
-    ],
+  return Semantics(
+    identifier: 'fee_percentage_warning-$feePercentage',
+    excludeSemantics: true,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(right: EnvoySpacing.small),
+          child: EnvoyIcon(EnvoyIcons.alert,
+              size: EnvoyIconSize.extraSmall, color: EnvoyColors.copper500),
+        ),
+        Text(S().coincontrol_tx_detail_fee_alert(feePercentage),
+            style:
+                EnvoyTypography.button.copyWith(color: EnvoyColors.copper500)),
+      ],
+    ),
   );
 }
 
@@ -1249,26 +1254,29 @@ class _TxNoteDialogState extends ConsumerState<TxReviewNoteDialog> {
                       color: EnvoyColors.surface4,
                       borderRadius: BorderRadius.circular(EnvoySpacing.small),
                     ),
-                    child: TextFormField(
-                      maxLines: 1,
-                      maxLength: 34,
-                      controller: _textEditingController,
-                      textAlign: TextAlign.center,
-                      textInputAction: TextInputAction.done,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(fontSize: 14),
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.all(EnvoySpacing.small),
-                        border: InputBorder.none,
-                        counter: SizedBox.shrink(),
-                        fillColor: Colors.redAccent,
-                        focusedBorder: InputBorder.none,
-                        isDense: true,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                        focusedErrorBorder: InputBorder.none,
+                    child: Semantics(
+                      identifier: 'tx_note_input',
+                      child: TextFormField(
+                        maxLines: 1,
+                        maxLength: 34,
+                        controller: _textEditingController,
+                        textAlign: TextAlign.center,
+                        textInputAction: TextInputAction.done,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(fontSize: 14),
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.all(EnvoySpacing.small),
+                          border: InputBorder.none,
+                          counter: SizedBox.shrink(),
+                          fillColor: Colors.redAccent,
+                          focusedBorder: InputBorder.none,
+                          isDense: true,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                          focusedErrorBorder: InputBorder.none,
+                        ),
                       ),
                     ),
                   ),
