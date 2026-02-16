@@ -37,6 +37,7 @@ appId: com.foundationdevices.envoy
 # enter dot
 - tapOn:
     text: .
+    index: 10
 
 # make sure the dot is pressed
 - assertVisible: "0."
