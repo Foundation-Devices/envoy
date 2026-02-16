@@ -869,7 +869,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: EnvoySpacing.xs),
-                  _MenuItem(
+                  MenuItem(
                     label: S().exploreAdresses_activityOptions_showDescriptor,
                     icon: EnvoyIcons.info,
                     onTap: () {
@@ -902,7 +902,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                       }
                     },
                   ),
-                  _MenuItem(
+                  MenuItem(
                     label: S().exploreAdresses_activityOptions_editAccountName,
                     icon: EnvoyIcons.edit,
                     onTap: () {
@@ -970,7 +970,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                       );
                     },
                   ),
-                  _MenuItem(
+                  MenuItem(
                     label: S().exploreAdresses_activityOptions_exploreAddresses,
                     icon: EnvoyIcons.list,
                     onTap: () {
@@ -980,7 +980,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                           extra: widget.account.id);
                     },
                   ),
-                  _MenuItem(
+                  MenuItem(
                     label: S().receive_qr_signMessage,
                     icon: EnvoyIcons.envelope,
                     onTap: () {
@@ -989,7 +989,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                           extra: widget.account.id);
                     },
                   ),
-                  _MenuItem(
+                  MenuItem(
                     label: S().receive_qr_rescanAccount,
                     icon: EnvoyIcons.refresh,
                     onTap: () {
@@ -999,7 +999,7 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                           dialog: RescanAccountDialog(account: widget.account));
                     },
                   ),
-                  _MenuItem(
+                  MenuItem(
                     label: S().exploreAdresses_activityOptions_deleteAccount,
                     icon: EnvoyIcons.close,
                     color: EnvoyColors.accentSecondary,
@@ -1061,15 +1061,16 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
   }
 }
 
-class _MenuItem extends StatelessWidget {
+class MenuItem extends StatelessWidget {
   final String label;
   final EnvoyIcons icon;
   final Color color;
   final VoidCallback onTap;
   final bool useDivider;
 
-  const _MenuItem(
-      {required this.label,
+  const MenuItem(
+      {super.key,
+      required this.label,
       required this.icon,
       required this.onTap,
       this.color = EnvoyColors.textPrimary,
