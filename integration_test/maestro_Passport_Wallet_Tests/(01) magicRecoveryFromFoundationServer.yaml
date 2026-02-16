@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# (01) magicRecoveryFromFoundationServer
+# (01) magicRecoveryFromFoundationServer ( and ENV-2315)
 appId: com.foundationdevices.envoy
 ---
 - launchApp:

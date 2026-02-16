@@ -81,16 +81,19 @@ appId: com.foundationdevices.envoy
     Improved
     Privacy
 
-## hack to wait 5 min for tor shield to turn blue
-#- swipe:
-#    start: "50%, 50%"
-#    end: "50%, 50%"
-#    duration: 300000
-
 # check if Tor connects via top bar Shield icon
 - extendedWaitUntil:
     visible: "PRIVACY connected"
     timeout: 300000 # wait for 5 min
+
+# hack to wait 45 sec
+- swipe:
+      start: "50%, 5%"
+      end: "50%, 5%"
+      duration: 45000
+
+# check if Tor shield is still blue
+- assertVisible: "PRIVACY connected"
 
 # change to USD and start the test again
 - tapOn:

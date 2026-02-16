@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# (25) checkBoostAndCancel
+# (25) checkBoostAndCancel (and (26) saveNotePopup)
 appId: com.foundationdevices.envoy
 ---
 
@@ -36,6 +36,13 @@ appId: com.foundationdevices.envoy
     timeout: 300000 # wait for 5 min
 
 - tapOn: Send Transaction
+
+# save the note for the (26) saveNotePopup test
+- tapOn:
+    id: tx_note_input
+
+- inputText: "This Note"
+
 - tapOn: Save
 
 # wait for tx confirmation
@@ -67,3 +74,20 @@ appId: com.foundationdevices.envoy
 - tapOn: Back
 - tapOn: Accounts
 
+# check the sent tx note for the (26) saveNotePopup test
+- tapOn:
+    id: account_card_Mobile Wallet_hot_signet
+
+# open the tx
+- tapOn: |-
+    Sent
+    Awaiting confirmation
+
+- assertVisible: |-
+    Note
+    This Note
+
+# go back to home
+- tapOn: Back
+- tapOn:
+    id: hamburger_menu
