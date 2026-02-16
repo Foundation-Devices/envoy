@@ -26,10 +26,15 @@ class ConnectedDeviceInfo {
   });
 
   factory ConnectedDeviceInfo.fromMap(Map<dynamic, dynamic> map) {
+    final deviceId = (map['deviceId'] ?? map['peripheralId'])?.toString() ?? '';
+    final name =
+        (map['name'] ?? map['peripheralName'])?.toString() ?? 'Unknown';
+    final bonded = (map['bonded'] ?? map['bondState']) == true;
+
     return ConnectedDeviceInfo(
-      deviceId: map['deviceId']?.toString() ?? '',
-      name: map['name']?.toString() ?? 'Unknown',
-      bonded: map['bonded'] ?? false,
+      deviceId: deviceId,
+      name: name,
+      bonded: bonded,
     );
   }
 

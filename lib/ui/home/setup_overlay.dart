@@ -28,6 +28,7 @@ import 'package:envoy/ui/widgets/scanner/decoders/device_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/pair_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
@@ -387,6 +388,8 @@ Future<void> pairWithDevice(BuildContext context, XidDocument xid) async {
   });
 
   if (connected != null) {
+    kPrint(
+        "Found unpaired Bluetooth device: ${connected.name} (${connected.deviceId})");
     if (context.mounted) {
       resetOnboardingPrimeProviders(providerContainer);
     }
@@ -411,13 +414,16 @@ Future<void> pairWithDevice(BuildContext context, XidDocument xid) async {
           context.goNamed(ONBOARD_REPAIRING);
         }
       }
-    } catch (e) {
+    } catch (e, stack) {
+      EnvoyReport().log("HomeSetupOverlay", "Error during pairing: $e",
+          stackTrace: stack);
       if (context.mounted) {
         Navigator.pop(context);
         EnvoyToast(
           replaceExisting: true,
           duration: const Duration(seconds: 6),
-          message: e.toString(),
+          message:
+              "Failed to connect to device. Please ensure your Passport Prime is in pairing mode and try again.",
           isDismissible: true,
           onActionTap: () {
             EnvoyToast.dismissPreviousToasts(context);

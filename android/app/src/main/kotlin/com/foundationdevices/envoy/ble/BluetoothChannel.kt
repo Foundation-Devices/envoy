@@ -198,13 +198,20 @@ class BluetoothChannel(
                 } catch (_: Exception) {
                     BluetoothProfile.STATE_DISCONNECTED
                 }
+                val deviceName = device.name ?: "Unknown Device"
+                val isBonded = device.bondState == BluetoothDevice.BOND_BONDED
 
                 mapOf(
+                    // Keys used by ConnectedDeviceInfo on Dart side
+                    "deviceId" to device.address,
+                    "name" to deviceName,
+                    "bonded" to isBonded,
+                    // Legacy keys used by BleDeviceInfo on Dart side
                     "peripheralId" to device.address,
-                    "peripheralName" to (device.name ?: "Unknown Device"),
+                    "peripheralName" to deviceName,
                     "isConnected" to (connectionState == BluetoothProfile.STATE_CONNECTED),
                     "state" to connectionState,
-                    "bondState" to (device.bondState == BluetoothDevice.BOND_BONDED)
+                    "bondState" to isBonded
                 )
             }
 

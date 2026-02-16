@@ -18,12 +18,14 @@ class BleDeviceInfo {
   });
 
   factory BleDeviceInfo.fromMap(Map<String, dynamic> map) {
+    final isConnected = map['isConnected'] as bool? ?? false;
+
     return BleDeviceInfo(
-      peripheralId: map['peripheralId'] as String? ?? '',
-      peripheralName: map['peripheralName'] as String? ?? '',
-      isConnected: map['isConnected'] as bool? ?? false,
-      state: map['state'] as int? ?? 0,
-      bondState: map['bondState'] as bool,
+      peripheralId: (map['peripheralId'] ?? map['deviceId']) as String? ?? '',
+      peripheralName: (map['peripheralName'] ?? map['name']) as String? ?? '',
+      isConnected: isConnected,
+      state: map['state'] as int? ?? (isConnected ? 2 : 0),
+      bondState: (map['bondState'] ?? map['bonded']) == true,
     );
   }
 
