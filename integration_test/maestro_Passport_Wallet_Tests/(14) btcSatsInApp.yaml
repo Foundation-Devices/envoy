@@ -126,6 +126,7 @@ appId: com.foundationdevices.envoy
     commands:
       - tapOn:
           id: "amount_display btc"
+          # refresh send screen
       - tapOn:
           id: hamburger_menu
       - tapOn: Send
@@ -245,6 +246,7 @@ appId: com.foundationdevices.envoy
     commands:
       - tapOn:
           id: "amount_display btc"
+      # refresh send screen
       - tapOn:
           id: hamburger_menu
       - tapOn: Send

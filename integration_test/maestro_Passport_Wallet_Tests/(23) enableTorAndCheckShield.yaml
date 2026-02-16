@@ -19,11 +19,11 @@ appId: com.foundationdevices.envoy
     visible: "PRIVACY connected"
     timeout: 300000 # wait for 5 min
 
-# hack to wait 45 sec
+# hack to wait 30 sec
 - swipe:
     start: "50%, 5%"
     end: "50%, 5%"
-    duration: 45000
+    duration: 30000
 
 # check if Tor shield is still blue
 - assertVisible: "PRIVACY connected"

@@ -30,7 +30,7 @@ appId: com.foundationdevices.envoy
 - tapOn:
     id: hamburger_menu
 
-# find last testner passport acc and enter
+# find last testnet passport acc and enter
 - scroll
 - scroll
 - tapOn: Primary (#0)

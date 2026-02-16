@@ -5,6 +5,7 @@
 # (20) checkSignetInApp
 appId: com.foundationdevices.envoy
 ---
+
 # go to advanced menu
 - tapOn:
     id: hamburger_menu
@@ -107,3 +108,22 @@ appId: com.foundationdevices.envoy
 - scroll
 - assertNotVisible:
     id: account_card_Mobile Wallet_hot_signet
+
+# Go back to settings, tap Signet switch again to enable it
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+# enable Signet
+- tapOn:
+    id: Signet Toggle-false
+- tapOn: Continue
+
+# back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu

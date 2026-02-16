@@ -76,7 +76,7 @@ appId: com.foundationdevices.envoy
 
 # check the sent tx note for the (26) saveNotePopup test
 - tapOn:
-    id: account_card_Mobile Wallet_hot_signet
+    id: account_card_Mobile Wallet_hot_testnet
 
 # open the tx
 - tapOn: |-

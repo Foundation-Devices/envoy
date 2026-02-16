@@ -176,6 +176,7 @@ class _AccountsCardState extends ConsumerState<AccountsCard>
                   child: Semantics(
                     identifier: "QR Shield Buy",
                     button: true,
+                    container: true,
                     excludeSemantics: true,
                     child: QrShield(
                       arcSizeRatio: 15.0,

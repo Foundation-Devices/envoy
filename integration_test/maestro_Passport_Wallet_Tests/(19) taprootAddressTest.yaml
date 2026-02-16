@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# (19) taprootAddressTest
+# (19) taprootAddressTest (and enableTaproot test)
 appId: com.foundationdevices.envoy
 ---
 
@@ -14,61 +14,21 @@ appId: com.foundationdevices.envoy
     SETTINGS
 - tapOn: Advanced
 
-# disable taproot if enabled
+# enable taproot if disabled
 - runFlow:
     when:
       visible:
-        id: "Taproot Toggle-true"
+        id: "Taproot Toggle-false"
     commands:
       - tapOn:
-          id: Taproot Toggle-true
+          id: Taproot Toggle-false
       - tapOn:
           id: PopUp Primary Button
-      - assertNotVisible: Receive to Segwit
-
-# back to home
-- tapOn:
-    id: hamburger_menu
-- tapOn:
-    id: hamburger_menu
-
-- tapOn: GH TEST ACC (#1)
-- tapOn: Receive
-
-- assertVisible:
-    text: "bc1q.*"
-
-# back to account
-- tapOn:
-    id: hamburger_menu
-
-# open menu
-- tapOn:
-    id: Right Action Button
-
-- tapOn: Show Descriptor
-
-# check for segwit
-- assertVisible: Segwit
-
-# back to home
-- tapOn:
-    id: hamburger_menu
-- tapOn:
-    id: hamburger_menu
-
-# settings
-- tapOn:
-    id: hamburger_menu
-- tapOn: |-
-    SETTINGS
-    SETTINGS
-- tapOn: Advanced
-# enable taproot
-- tapOn:
-    id: Taproot Toggle-false
-- tapOn:
-    id: PopUp Primary Button
+      - tapOn:
+          id: PopUp Secondary Button
+      - assertNotVisible:
+          id: envoy_icon_info
+      - assertNotVisible: Taproot on Passport
 
 # back to home
 - tapOn:
@@ -93,7 +53,54 @@ appId: com.foundationdevices.envoy
 
 - tapOn: Show Descriptor
 
+# check for Taproot
 - assertVisible: Taproot
+
+# back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# settings
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+# disable taproot
+- tapOn:
+    id: Taproot Toggle-true
+- tapOn:
+    id: PopUp Primary Button
+
+# back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+- tapOn: GH TEST ACC (#1)
+- tapOn: Receive
+
+# check the addres is "bc1q"
+- assertVisible:
+    text: "bc1q.*"
+
+# back to account
+- tapOn:
+    id: hamburger_menu
+
+# open menu
+- tapOn:
+    id: Right Action Button
+
+- tapOn: Show Descriptor
+
+# check for segwit
+- assertVisible: Segwit
 
 # go home
 - tapOn:

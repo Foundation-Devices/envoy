@@ -48,9 +48,10 @@ appId: com.foundationdevices.envoy
 - tapOn:
     id: hamburger_menu
 
-- scrollUntilVisible:
-    element:
-      text: Taproot modal test
+- swipe:
+    start: "50%, 40%"
+    end: "50%, 80%"
+    duration: 300
 
 - tapOn: Taproot modal test
 
@@ -136,6 +137,10 @@ appId: com.foundationdevices.envoy
     id: hamburger_menu
 - tapOn:
     id: hamburger_menu
+
+- scrollUntilVisible:
+    element:
+      text: Primary (#0)
 
 - tapOn: Primary (#0)
 

@@ -26,6 +26,7 @@ appId: com.foundationdevices.envoy
 # Make sure you are in Home
 - assertVisible: ACCOUNTS
 
+
 - tapOn:
     id: QR Shield Buy
 
@@ -71,3 +72,11 @@ appId: com.foundationdevices.envoy
 
 # check that the atm address is in Spain Granada
 - assertVisible: Bulevard Billy Wilder, Pulianas
+
+# go back to home
+- tapOn:
+    id: atm_dialog_close
+- tapOn:
+    id: envoy_icon_close
+- tapOn:
+    id: hamburger_menu
