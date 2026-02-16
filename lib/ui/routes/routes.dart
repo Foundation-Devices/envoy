@@ -255,7 +255,9 @@ final modalModeRoutes = [
   ROUTE_PEER_TO_PEER,
   ROUTE_SELECT_ACCOUNT,
   ROUTE_SELECT_REGION,
-  ROUTE_ACCOUNT_TRANSFER
+  ROUTE_ACCOUNT_TRANSFER,
+  ROUTE_ACCOUNT_SIGN_MESSAGE,
+  ROUTE_ACCOUNT_SIGN_MESSAGE_RESULT,
 ];
 
 ///Any routes that required the app bar and bottom navigation bar to be hidden

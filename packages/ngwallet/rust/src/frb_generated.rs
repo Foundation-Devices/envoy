@@ -60,7 +60,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 553883983;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1825533099;
 
 // Section: executor
 
@@ -3052,6 +3052,88 @@ fn wire__crate__api__bip39__envoy_bip_39_validate_seed_impl(
         },
     )
 }
+fn wire__crate__api__sign_message__envoy_sign_message_format_signed_message_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "envoy_sign_message_format_signed_message",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_signed = <ngwallet::sign_message::SignedMessage>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Result::<_, ()>::Ok(
+                        crate::api::sign_message::EnvoySignMessage::format_signed_message(
+                            &api_signed,
+                        ),
+                    )?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__sign_message__envoy_sign_message_sign_message_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "envoy_sign_message_sign_message",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_seed_words = <String>::sse_decode(&mut deserializer);
+            let api_passphrase = <Option<String>>::sse_decode(&mut deserializer);
+            let api_derivation_path = <String>::sse_decode(&mut deserializer);
+            let api_message = <String>::sse_decode(&mut deserializer);
+            let api_network = <crate::api::envoy_wallet::Network>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let output_ok = crate::api::sign_message::EnvoySignMessage::sign_message(
+                            &api_seed_words,
+                            api_passphrase,
+                            &api_derivation_path,
+                            &api_message,
+                            api_network,
+                        )?;
+                        Ok(output_ok)
+                    })(),
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__envoy_wallet__get_server_features_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -3271,6 +3353,12 @@ const _: fn() = || {
         let _: String = Output.address;
         let _: bool = Output.do_not_spend;
         let _: Option<ngwallet::transaction::KeyChain> = Output.keychain;
+    }
+    {
+        let SignedMessage = None::<ngwallet::sign_message::SignedMessage>.unwrap();
+        let _: String = SignedMessage.message;
+        let _: String = SignedMessage.address;
+        let _: String = SignedMessage.signature;
     }
     {
         let TransactionFeeResult = None::<ngwallet::send::TransactionFeeResult>.unwrap();
@@ -3725,6 +3813,13 @@ impl SseDecode for crate::api::bip39::EnvoyBip39 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         return crate::api::bip39::EnvoyBip39 {};
+    }
+}
+
+impl SseDecode for crate::api::sign_message::EnvoySignMessage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        return crate::api::sign_message::EnvoySignMessage {};
     }
 }
 
@@ -4305,6 +4400,20 @@ impl SseDecode for crate::api::envoy_wallet::ServerFeatures {
     }
 }
 
+impl SseDecode for ngwallet::sign_message::SignedMessage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_message = <String>::sse_decode(deserializer);
+        let mut var_address = <String>::sse_decode(deserializer);
+        let mut var_signature = <String>::sse_decode(deserializer);
+        return ngwallet::sign_message::SignedMessage {
+            message: var_message,
+            address: var_address,
+            signature: var_signature,
+        };
+    }
+}
+
 impl SseDecode for ngwallet::send::TransactionFeeResult {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -4723,14 +4832,26 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        61 => wire__crate__api__envoy_wallet__get_server_features_impl(
+        61 => wire__crate__api__sign_message__envoy_sign_message_format_signed_message_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        62 => wire__crate__api__envoy_wallet__init_app_impl(port, ptr, rust_vec_len, data_len),
-        64 => wire__crate__api__errors__tx_compose_error_map_err_impl(
+        62 => wire__crate__api__sign_message__envoy_sign_message_sign_message_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        63 => wire__crate__api__envoy_wallet__get_server_features_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        64 => wire__crate__api__envoy_wallet__init_app_impl(port, ptr, rust_vec_len, data_len),
+        66 => wire__crate__api__errors__tx_compose_error_map_err_impl(
             port,
             ptr,
             rust_vec_len,
@@ -4800,7 +4921,7 @@ fn pde_ffi_dispatcher_sync_impl(
             rust_vec_len,
             data_len,
         ),
-        63 => wire__ngwallet__transaction__output_get_id_impl(ptr, rust_vec_len, data_len),
+        65 => wire__ngwallet__transaction__output_get_id_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -5154,6 +5275,23 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::bip39::EnvoyBip39>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::sign_message::EnvoySignMessage {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        Vec::<u8>::new().into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::sign_message::EnvoySignMessage
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::sign_message::EnvoySignMessage>
+    for crate::api::sign_message::EnvoySignMessage
+{
+    fn into_into_dart(self) -> crate::api::sign_message::EnvoySignMessage {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for FrbWrapper<ngwallet::transaction::Input> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -5400,6 +5538,28 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::envoy_wallet::ServerFeatures>
 {
     fn into_into_dart(self) -> crate::api::envoy_wallet::ServerFeatures {
         self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<ngwallet::sign_message::SignedMessage> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.0.message.into_into_dart().into_dart(),
+            self.0.address.into_into_dart().into_dart(),
+            self.0.signature.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<ngwallet::sign_message::SignedMessage>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<ngwallet::sign_message::SignedMessage>>
+    for ngwallet::sign_message::SignedMessage
+{
+    fn into_into_dart(self) -> FrbWrapper<ngwallet::sign_message::SignedMessage> {
+        self.into()
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -5833,6 +5993,11 @@ impl SseEncode for crate::api::envoy_account::EnvoyAccount {
 }
 
 impl SseEncode for crate::api::bip39::EnvoyBip39 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+}
+
+impl SseEncode for crate::api::sign_message::EnvoySignMessage {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
 }
@@ -6310,6 +6475,15 @@ impl SseEncode for crate::api::envoy_wallet::ServerFeatures {
         <Option<String>>::sse_encode(self.protocol_max, serializer);
         <Option<String>>::sse_encode(self.hash_function, serializer);
         <Option<i64>>::sse_encode(self.pruning, serializer);
+    }
+}
+
+impl SseEncode for ngwallet::sign_message::SignedMessage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.message, serializer);
+        <String>::sse_encode(self.address, serializer);
+        <String>::sse_encode(self.signature, serializer);
     }
 }
 
