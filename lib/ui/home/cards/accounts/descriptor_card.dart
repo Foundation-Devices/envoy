@@ -8,8 +8,10 @@ import 'package:envoy/ui/components/envoy_bar.dart';
 import 'package:envoy/ui/components/select_dropdown.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/ui/widgets/envoy_qr_widget.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
@@ -148,10 +150,16 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
                   text: S().receive_qr_copy,
                   onTap: () {
                     Clipboard.setData(ClipboardData(text: descriptor));
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content:
-                          Text("Descriptor copied to clipboard!"), //TODO: FIGMA
-                    ));
+                    EnvoyToast(
+                      backgroundColor: Colors.lightBlue,
+                      replaceExisting: true,
+                      duration: const Duration(seconds: 1),
+                      message: S().descriptor_toast_descriptorCopied,
+                      icon: const EnvoyIcon(
+                        EnvoyIcons.info,
+                        color: EnvoyColors.accentPrimary,
+                      ),
+                    ).show(context, rootNavigator: true);
                   }),
               EnvoyBarItem(
                   icon: EnvoyIcons.externalLink,

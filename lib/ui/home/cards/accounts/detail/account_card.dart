@@ -772,7 +772,6 @@ Future<void> copyTxId(
   String txId,
   EnvoyTransaction? tx,
 ) async {
-  final scaffoldMessenger = ScaffoldMessenger.of(context);
   bool dismissed = await EnvoyStorage().checkPromptDismissed(
     DismissiblePrompt.copyTxId,
   );
@@ -782,13 +781,24 @@ Future<void> copyTxId(
     Clipboard.setData(ClipboardData(text: txId));
     String message;
     if (tx is RampTransaction) {
-      message = "Ramp ID copied to clipboard!";
+      message = "Ramp ID copied to clipboard";
     } else if (tx is BtcPayTransaction) {
-      message = "Payment ID copied to clipboard!";
+      message = "Payment ID copied to clipboard";
     } else {
-      message = "Transaction ID copied to clipboard!"; //TODO: FIGMA
+      message = "Transaction ID copied to clipboard";
     }
-    scaffoldMessenger.showSnackBar(SnackBar(content: Text(message)));
+    if (context.mounted) {
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        duration: const Duration(seconds: 1),
+        message: message,
+        icon: const EnvoyIcon(
+          EnvoyIcons.info,
+          color: EnvoyColors.accentPrimary,
+        ),
+      ).show(context, rootNavigator: true);
+    }
   }
 }
 
@@ -798,13 +808,18 @@ void showWarningOnTxIdCopy(BuildContext context, String txId) {
     S().coincontrol_coin_change_spendable_tate_modal_subheading,
     S().component_continue,
     (BuildContext context) {
-      Clipboard.setData(ClipboardData(text: txId)); // here
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Transaction ID copied to clipboard!"), //TODO: FIGMA
-        ),
-      );
+      Clipboard.setData(ClipboardData(text: txId));
       Navigator.pop(context);
+      EnvoyToast(
+        backgroundColor: Colors.lightBlue,
+        replaceExisting: true,
+        duration: const Duration(seconds: 1),
+        message: "Transaction ID copied to clipboard",
+        icon: const EnvoyIcon(
+          EnvoyIcons.info,
+          color: EnvoyColors.accentPrimary,
+        ),
+      ).show(context, rootNavigator: true);
     },
     icon: EnvoyIcons.info,
     secondaryButtonLabel: S().component_cancel,

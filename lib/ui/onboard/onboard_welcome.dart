@@ -288,7 +288,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             EnvoyToast(
               replaceExisting: true,
               duration: const Duration(seconds: 6),
-              message: "Invalid QR code",
+              message: S().scanner_toast_notValidQr,
               isDismissible: true,
               onActionTap: () {
                 EnvoyToast.dismissPreviousToasts(context);

@@ -30,6 +30,7 @@ import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -608,11 +609,16 @@ class _TransactionsDetailsWidgetState
                           Clipboard.setData(
                             ClipboardData(text: tx.pullPaymentId!),
                           );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Payment ID copied to clipboard!'),
+                          EnvoyToast(
+                            backgroundColor: Colors.lightBlue,
+                            replaceExisting: true,
+                            duration: const Duration(seconds: 1),
+                            message: "Payment ID copied to clipboard",
+                            icon: const EnvoyIcon(
+                              EnvoyIcons.info,
+                              color: EnvoyColors.accentPrimary,
                             ),
-                          ); //TODO: FIGMA
+                          ).show(context, rootNavigator: true);
                         },
                         onTap: () {
                           setState(() {

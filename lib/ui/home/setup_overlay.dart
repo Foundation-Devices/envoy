@@ -293,7 +293,7 @@ void scanForDevice(BuildContext context, WidgetRef ref) async {
           EnvoyToast(
             replaceExisting: true,
             duration: const Duration(seconds: 6),
-            message: "Invalid QR code",
+            message: S().scanner_toast_notValidQr,
             isDismissible: true,
             onActionTap: () {
               EnvoyToast.dismissPreviousToasts(context);
