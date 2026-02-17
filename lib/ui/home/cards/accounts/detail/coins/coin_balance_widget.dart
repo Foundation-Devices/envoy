@@ -237,7 +237,6 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
                   label: "coin switch ${isSelected ? 'true' : 'false'}",
                   toggled: isSelected,
                   container: true,
-                  excludeSemantics: true,
                   child: CoinTagSwitch(
                     value: isSelected
                         ? CoinTagSwitchState.on

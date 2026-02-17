@@ -143,7 +143,8 @@ appId: com.foundationdevices.envoy
 # go back to home
 - tapOn:
     id: envoy_icon_chevron_left
-- tapOn:
-    id: hamburger_menu
+# close the warning
+- assertNotVisible:
+    id: PopUp Secondary Button
 - tapOn:
     id: hamburger_menu
