@@ -286,20 +286,31 @@ class SpendRequirementOverlayState
 
     return BackButtonListener(
       onBackButtonPressed: () async {
-        if (inTagSelectionMode && !ref.read(coinDetailsActiveProvider)) {
-          if (!_isDialogShown) {
-            await cancel(context); // Make sure to await the async call
-          }
+        // If the cancel dialog is visible, do NOT handle back here.
+        // Let it propagate to the dialog route.
+        if (_isDialogShown) {
+          return false;
         }
+
+        if (inTagSelectionMode && !ref.read(coinDetailsActiveProvider)) {
+          // First back press: show dialog
+          await cancel(context); // Make sure to await the async call
+          return true; // this press handled by opening the dialog
+        }
+
         if (inTagSelectionMode && ref.read(coinDetailsActiveProvider)) {
           if (context.mounted) {
             Navigator.of(context).pop();
             //wait for coin details screen to animate out
             await Future.delayed(const Duration(milliseconds: 100));
           }
+
+          // Return true to always intercept the back button and avoid app exit
+          return true;
         }
-        // Return true to always intercept the back button and avoid app exit
-        return true;
+
+        // For everything else, let parent routes decide
+        return false;
       },
       child: IgnorePointer(
         ignoring: _hideOverlay,
@@ -870,24 +881,21 @@ class SpendRequirementOverlayState
     if (context.mounted) {
       _isDialogShown = true;
       bool discard = await showEnvoyDialog(
-        dismissible: false,
+        dismissible: true,
         context: context,
-        useRootNavigator: true,
+        useRootNavigator: false,
         dialog: const SpendSelectionCancelWarning(),
         onDispose: () {
           _isDialogShown = false;
+          setState(() {
+            _hideOverlay = false;
+          });
         },
       );
       await Future.delayed(const Duration(milliseconds: 130));
       setState(() {
         _hideOverlay = false;
       });
-      if (!discard && context.mounted) {
-        _isInMinimizedState = false;
-        ref.read(coinSelectionOverlayMinimized.notifier).state = false;
-        _runSpringSimulation(
-            const Offset(0, 0), _endAlignment, MediaQuery.of(context).size);
-      }
       if (discard) {
         ref.read(coinSelectionStateProvider.notifier).reset();
         ref.read(hideBottomNavProvider.notifier).state = false;
@@ -936,33 +944,41 @@ class _SpendSelectionCancelWarningState
     bool isDismissed = ref.watch(
       arePromptsDismissedProvider(DismissiblePrompt.txDiscardWarning),
     );
-    return EnvoyPopUp(
-      icon: EnvoyIcons.alert,
-      typeOfMessage: PopUpState.warning,
-      showCloseButton: false,
-      content: S().manual_coin_preselection_dialog_description,
-      primaryButtonLabel: S().component_yes,
-      onPrimaryButtonTap: (context) {
-        hideCoinSnack(ref);
-        Navigator.of(context).pop(true);
-      },
-      tertiaryButtonLabel: S().component_no,
-      onTertiaryButtonTap: (context) {
-        Navigator.of(context).pop(false);
-      },
-      checkBoxText: S().component_dontShowAgain,
-      checkedValue: isDismissed,
-      onCheckBoxChanged: (checkedValue) async {
-        if (!checkedValue) {
-          await EnvoyStorage().addPromptState(
-            DismissiblePrompt.txDiscardWarning,
-          );
-        } else {
-          await EnvoyStorage().removePromptState(
-            DismissiblePrompt.txDiscardWarning,
-          );
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          Navigator.of(context).pop(false);
         }
       },
+      child: EnvoyPopUp(
+        icon: EnvoyIcons.alert,
+        typeOfMessage: PopUpState.warning,
+        showCloseButton: false,
+        content: S().manual_coin_preselection_dialog_description,
+        primaryButtonLabel: S().component_yes,
+        onPrimaryButtonTap: (context) {
+          hideCoinSnack(ref);
+          Navigator.of(context).pop(true);
+        },
+        tertiaryButtonLabel: S().component_no,
+        onTertiaryButtonTap: (context) {
+          Navigator.of(context).pop(false);
+        },
+        checkBoxText: S().component_dontShowAgain,
+        checkedValue: isDismissed,
+        onCheckBoxChanged: (checkedValue) async {
+          if (!checkedValue) {
+            await EnvoyStorage().addPromptState(
+              DismissiblePrompt.txDiscardWarning,
+            );
+          } else {
+            await EnvoyStorage().removePromptState(
+              DismissiblePrompt.txDiscardWarning,
+            );
+          }
+        },
+      ),
     );
   }
 }

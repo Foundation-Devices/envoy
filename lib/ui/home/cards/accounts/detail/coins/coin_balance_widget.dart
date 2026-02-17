@@ -233,24 +233,29 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
               ref.watch(tagProvider(widget.coinTag.name)) ?? widget.coinTag;
           return tag.isAllCoinsLocked
               ? const SizedBox.shrink()
-              : CoinTagSwitch(
-                  value: isSelected
-                      ? CoinTagSwitchState.on
-                      : CoinTagSwitchState.off,
-                  onChanged: (value) {
-                    if (widget.onEnable != null && !isSelected) {
-                      widget.onEnable!();
-                    }
-                    final selectionState = ref.read(
-                      coinSelectionStateProvider.notifier,
-                    );
-                    if (value == CoinTagSwitchState.on) {
-                      selectionState.add(output.getId());
-                    } else {
-                      selectionState.remove(output.getId());
-                    }
-                  },
-                );
+              : Semantics(
+                  label: "coin switch ${isSelected ? 'true' : 'false'}",
+                  toggled: isSelected,
+                  container: true,
+                  excludeSemantics: true,
+                  child: CoinTagSwitch(
+                    value: isSelected
+                        ? CoinTagSwitchState.on
+                        : CoinTagSwitchState.off,
+                    onChanged: (value) {
+                      if (widget.onEnable != null && !isSelected) {
+                        widget.onEnable!();
+                      }
+                      final selectionState = ref.read(
+                        coinSelectionStateProvider.notifier,
+                      );
+                      if (value == CoinTagSwitchState.on) {
+                        selectionState.add(output.getId());
+                      } else {
+                        selectionState.remove(output.getId());
+                      }
+                    },
+                  ));
         },
       ),
     );
