@@ -108,42 +108,58 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
     double bottom = View.of(context).viewInsets.bottom;
     double pixRatio = MediaQuery.of(context).devicePixelRatio;
 
+    int pageIndexOffset = page == 1 ? 1 : 12;
+    List<TextEditingController> seeds =
+        page == 1 ? _controllers.sublist(0, 12) : _controllers.sublist(12, 24);
+    List<TextEditingController> section1 = seeds.sublist(0, 6);
+    List<TextEditingController> section2 = seeds.sublist(6, 12);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: EnvoySpacing.medium1),
-      child: CustomScrollView(
-        shrinkWrap: true,
-        controller: page == 1 ? _scrollControllerPage1 : _scrollControllerPage2,
-        slivers: [
-          SliverFillViewport(
-            padEnds: false,
-            delegate: SliverChildBuilderDelegate((context, index) {
-              return Builder(
-                builder: (context) {
-                  int pageIndexOffset = page == 1 ? 1 : 12;
-                  List<TextEditingController> seeds = page == 1
-                      ? _controllers.sublist(0, 12)
-                      : _controllers.sublist(12, 24);
-                  List<TextEditingController> section1 = seeds.sublist(0, 6);
-                  List<TextEditingController> section2 = seeds.sublist(6, 12);
-                  return Row(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          bool showAsList = !_twoColumnsFit(context, constraints.maxWidth);
+          return CustomScrollView(
+            shrinkWrap: true,
+            controller:
+                page == 1 ? _scrollControllerPage1 : _scrollControllerPage2,
+            slivers: [
+              if (showAsList)
+                SliverToBoxAdapter(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
                     children: [
-                      Flexible(
-                        child: _buildMnemonicColumn(section1, pageIndexOffset),
-                      ),
-                      Flexible(
-                        child: _buildMnemonicColumn(section2, pageIndexOffset),
-                      ),
+                      _buildMnemonicColumn(section1, pageIndexOffset),
+                      _buildMnemonicColumn(section2, pageIndexOffset),
                     ],
-                  );
-                },
-              );
-            }, childCount: 1),
-          ),
-          SliverPadding(padding: EdgeInsets.all((pixRatio * bottom))),
-        ],
+                  ),
+                )
+              else
+                SliverFillViewport(
+                  padEnds: false,
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Flexible(
+                          child:
+                              _buildMnemonicColumn(section1, pageIndexOffset),
+                        ),
+                        Flexible(
+                          child:
+                              _buildMnemonicColumn(section2, pageIndexOffset),
+                        ),
+                      ],
+                    );
+                  }, childCount: 1),
+                ),
+              SliverPadding(padding: EdgeInsets.all((pixRatio * bottom))),
+            ],
+          );
+        },
       ),
     );
   }
@@ -200,6 +216,23 @@ class MnemonicEntryGridState extends State<MnemonicEntryGrid>
         }).toList(),
       ),
     );
+  }
+
+  /// Check if two mnemonic input columns fit side by side.
+  /// Uses "24. umbrella" as the widest possible content
+  /// ("24." is the longest prefix, "umbrella" is on of the longest BIP39 words).
+  bool _twoColumnsFit(BuildContext context, double availableWidth) {
+    final textScaler = MediaQuery.textScalerOf(context);
+    final painter = TextPainter(
+      text: TextSpan(
+        text: '24. umbrella',
+        style: TextStyle(fontSize: textScaler.scale(16)),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    // Each box needs: text width + inner padding (8*2) + outer margin (8*2)
+    final minColumnWidth = painter.width + 32;
+    return availableWidth >= minColumnWidth * 2;
   }
 
   void _showOverlay(BuildContext context, int index) async {
