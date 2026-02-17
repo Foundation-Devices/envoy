@@ -17,18 +17,18 @@ class Video extends Media {
   final List<String>? tags;
 
   Video(
-      String title,
-      String? description,
-      this.duration,
-      DateTime publicationDate,
-      this.resolutionLinkMap,
-      String url,
-      String id,
-      this.watched,
-      this.order,
-      this.tags,
-      {String? thumbnailUrl})
-      : super(title, description, thumbnailUrl, publicationDate, url, id);
+    String title,
+    String? description,
+    this.duration,
+    DateTime publicationDate,
+    this.resolutionLinkMap,
+    String url,
+    String id,
+    this.watched,
+    this.order,
+    this.tags, {
+    String? thumbnailUrl,
+  }) : super(title, description, thumbnailUrl, publicationDate, url, id);
 
   // Generated
   factory Video.fromJson(Map<String, dynamic> json) => _$VideoFromJson(json);

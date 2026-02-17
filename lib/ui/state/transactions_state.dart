@@ -72,12 +72,14 @@ final pendingTransactionsProvider =
   List<EnvoyTransaction> pendingTransactions = [];
 
   // Listen to Pending transactions from database
-  AsyncValue<List<EnvoyTransaction>> asyncPendingTx =
-      ref.watch(pendingTxStreamProvider(accountId));
+  AsyncValue<List<EnvoyTransaction>> asyncPendingTx = ref.watch(
+    pendingTxStreamProvider(accountId),
+  );
 
   if (asyncPendingTx.hasValue) {
-    pendingTransactions
-        .addAll((asyncPendingTx.value as List<EnvoyTransaction>));
+    pendingTransactions.addAll(
+      (asyncPendingTx.value as List<EnvoyTransaction>),
+    );
   }
 
   return pendingTransactions;
@@ -94,8 +96,9 @@ final filteredTransactionsProvider =
   final txFilterState = ref.watch(txFilterStateProvider);
   final txSortState = ref.watch(txSortStateProvider);
 
-  List<EnvoyTransaction> walletTransactions =
-      ref.watch(transactionsProvider(accountId));
+  List<EnvoyTransaction> walletTransactions = ref.watch(
+    transactionsProvider(accountId),
+  );
 
   List<EnvoyTransaction> pendingTransactions =
       walletTransactions.where((e) => e.confirmations < 3).toList();
@@ -138,13 +141,15 @@ final filteredTransactionsProvider =
       break;
 
     case TransactionSortTypes.amountLowToHigh:
-      transactions
-          .sort((a, b) => a.amount.abs().toInt().compareTo(b.amount.abs()));
+      transactions.sort(
+        (a, b) => a.amount.abs().toInt().compareTo(b.amount.abs()),
+      );
       break;
 
     case TransactionSortTypes.amountHighToLow:
-      transactions
-          .sort((a, b) => b.amount.abs().toInt().compareTo(a.amount.abs()));
+      transactions.sort(
+        (a, b) => b.amount.abs().toInt().compareTo(a.amount.abs()),
+      );
       break;
   }
 
@@ -234,44 +239,49 @@ final allTxProvider = Provider<List<EnvoyTransaction>>((ref) {
 });
 
 final combinedNotificationsProvider = Provider<List<EnvoyNotification>>((ref) {
-  List<EnvoyNotification> nonTxNotifications =
-      ref.watch(nonTxNotificationStreamProvider);
+  List<EnvoyNotification> nonTxNotifications = ref.watch(
+    nonTxNotificationStreamProvider,
+  );
   List<EnvoyTransaction> transactions = ref.watch(allTxProvider);
 
-  List<EnvoyNotification> combinedItems =
-      combineNotifications(nonTxNotifications, transactions);
+  List<EnvoyNotification> combinedItems = combineNotifications(
+    nonTxNotifications,
+    transactions,
+  );
 
   return combinedItems;
 });
 
 final transactionsProvider = NotifierProvider.family<TransactionsNotifier,
-    List<EnvoyTransaction>, String?>(
-  TransactionsNotifier.new,
-);
+    List<EnvoyTransaction>, String?>(TransactionsNotifier.new);
 
 class TransactionsNotifier
     extends FamilyNotifier<List<EnvoyTransaction>, String?> {
   @override
   List<EnvoyTransaction> build(String? arg) {
-    List<EnvoyTransaction> pendingTransactions =
-        ref.watch(pendingTransactionsProvider(arg));
-    List<EnvoyTransaction> walletTransactions =
-        ref.watch(walletTransactionsProvider(arg));
+    List<EnvoyTransaction> pendingTransactions = ref.watch(
+      pendingTransactionsProvider(arg),
+    );
+    List<EnvoyTransaction> walletTransactions = ref.watch(
+      walletTransactionsProvider(arg),
+    );
     List<EnvoyTransaction> transactions = [...walletTransactions];
 
     final recentRBFs = ref.watch(rbfBroadCastedTxProvider);
 
     for (var pending in pendingTransactions) {
-      final tx = transactions
-          .firstWhereOrNull((element) => element.txId == pending.txId);
+      final tx = transactions.firstWhereOrNull(
+        (element) => element.txId == pending.txId,
+      );
       if (tx == null && !recentRBFs.contains(pending.txId)) {
         transactions.add(pending);
       }
     }
 
     for (var txId in recentRBFs) {
-      final tx =
-          transactions.firstWhereOrNull((element) => element.txId == txId);
+      final tx = transactions.firstWhereOrNull(
+        (element) => element.txId == txId,
+      );
       if (tx != null && !tx.isConfirmed) {
         Notifications().deleteNotification(
           tx.txId,
@@ -283,10 +293,12 @@ class TransactionsNotifier
     }
 
     listenSelf((previous, next) {
-      List<EnvoyTransaction> pendingTransactions =
-          ref.read(pendingTransactionsProvider(arg));
-      List<EnvoyTransaction> walletTransactions =
-          ref.read(walletTransactionsProvider(arg));
+      List<EnvoyTransaction> pendingTransactions = ref.read(
+        pendingTransactionsProvider(arg),
+      );
+      List<EnvoyTransaction> walletTransactions = ref.read(
+        walletTransactionsProvider(arg),
+      );
       prunePendingTransactions(ref, [
         ...pendingTransactions,
         ...walletTransactions,
@@ -307,71 +319,70 @@ final isThereAnyTransactionsProvider = Provider<bool>((ref) {
   return false;
 });
 
-final getTransactionProvider = Provider.family<EnvoyTransaction?, String>(
-  (ref, txId) {
-    final selectedAccount = ref.watch(selectedAccountProvider);
-    final tx = ref
-        .watch(transactionsProvider(selectedAccount?.id ?? ""))
-        .firstWhereOrNull((element) => element.txId == txId);
+final getTransactionProvider = Provider.family<EnvoyTransaction?, String>((
+  ref,
+  txId,
+) {
+  final selectedAccount = ref.watch(selectedAccountProvider);
+  final tx = ref
+      .watch(transactionsProvider(selectedAccount?.id ?? ""))
+      .firstWhereOrNull((element) => element.txId == txId);
 
-    if (tx == null) {
-      return null;
-    }
-    return tx;
-  },
-);
+  if (tx == null) {
+    return null;
+  }
+  return tx;
+});
 
-final rbfTxStateProvider = StreamProvider.family<RBFState?, String>(
-  (ref, txId) {
-    return EnvoyStorage().getRBFBoostState(txId);
-  },
-);
+final rbfTxStateProvider = StreamProvider.family<RBFState?, String>((
+  ref,
+  txId,
+) {
+  return EnvoyStorage().getRBFBoostState(txId);
+});
 
-final isTxBoostedProvider = Provider.family<bool?, String>(
-  (ref, txId) {
-    return ref.watch(rbfTxStateProvider(txId)).when(
-          data: (data) {
-            if (data != null) {
-              if (data.newTxId == txId || data.originalTxId == txId) {
-                return true;
-              } else {
-                return false;
-              }
+final isTxBoostedProvider = Provider.family<bool?, String>((ref, txId) {
+  return ref.watch(rbfTxStateProvider(txId)).when(
+        data: (data) {
+          if (data != null) {
+            if (data.newTxId == txId || data.originalTxId == txId) {
+              return true;
+            } else {
+              return false;
             }
-            return null;
-          },
-          loading: () => null,
-          error: (err, stack) {
-            if (kDebugMode) debugPrintStack(stackTrace: stack);
-            return null;
-          },
-        );
-  },
-);
+          }
+          return null;
+        },
+        loading: () => null,
+        error: (err, stack) {
+          if (kDebugMode) debugPrintStack(stackTrace: stack);
+          return null;
+        },
+      );
+});
 
-final cancelTxStateFutureProvider = FutureProvider.family<RBFState?, String>(
-  (ref, txId) {
-    return EnvoyStorage().getCancelTxState(txId);
-  },
-);
+final cancelTxStateFutureProvider = FutureProvider.family<RBFState?, String>((
+  ref,
+  txId,
+) {
+  return EnvoyStorage().getCancelTxState(txId);
+});
 
-final cancelTxStateProvider = Provider.family<RBFState?, String>(
-  (ref, txId) {
-    return ref.watch(cancelTxStateFutureProvider(txId)).when(
-          data: (data) {
-            if (data != null) {
-              return data;
-            }
-            return null;
-          },
-          loading: () => null,
-          error: (err, stack) {
-            debugPrintStack(stackTrace: stack);
-            return null;
-          },
-        );
-  },
-);
+final cancelTxStateProvider = Provider.family<RBFState?, String>((ref, txId) {
+  return ref.watch(cancelTxStateFutureProvider(txId)).when(
+        data: (data) {
+          if (data != null) {
+            return data;
+          }
+          return null;
+        },
+        loading: () => null,
+        error: (err, stack) {
+          debugPrintStack(stackTrace: stack);
+          return null;
+        },
+      );
+});
 
 Future prunePendingTransactions(
   Ref ref,
@@ -401,12 +412,14 @@ Future prunePendingTransactions(
   //prune azteco transactions
   for (var pendingTx in azteco) {
     transactions
-        .where((tx) =>
-            tx.outputs.any((output) => output.address == pendingTx.address))
+        .where(
+      (tx) => tx.outputs.any((output) => output.address == pendingTx.address),
+    )
         .forEach((actualAztecoTx) {
       kPrint("Pruning Azteco tx: ${actualAztecoTx.txId}");
-      EnvoyAccount? account =
-          NgAccountManager().getAccountById(actualAztecoTx.accountId);
+      EnvoyAccount? account = NgAccountManager().getAccountById(
+        actualAztecoTx.accountId,
+      );
 
       account?.handler?.setNote(
         note: pendingTx.note ?? "",
@@ -421,20 +434,25 @@ Future prunePendingTransactions(
     if (pendingTx.btcPayVoucherUri != null &&
         pendingTx.payoutId != null &&
         pendingTx.pullPaymentId != null) {
-      String? state = await checkPayoutStatus(pendingTx.btcPayVoucherUri!,
-          pendingTx.pullPaymentId!, pendingTx.payoutId!);
+      String? state = await checkPayoutStatus(
+        pendingTx.btcPayVoucherUri!,
+        pendingTx.pullPaymentId!,
+        pendingTx.payoutId!,
+      );
       if (state == "Cancelled") {
         EnvoyStorage().deleteTxNote(pendingTx.pullPaymentId!);
         EnvoyStorage().deletePendingTx(pendingTx.txId);
       }
     }
     transactions
-        .where((tx) =>
-            tx.outputs.any((output) => output.address == pendingTx.address))
+        .where(
+      (tx) => tx.outputs.any((output) => output.address == pendingTx.address),
+    )
         .forEach((actualBtcPayTx) {
       kPrint("Pruning BtcPay tx: ${actualBtcPayTx.txId}");
-      EnvoyAccount? account =
-          NgAccountManager().getAccountById(actualBtcPayTx.accountId);
+      EnvoyAccount? account = NgAccountManager().getAccountById(
+        actualBtcPayTx.accountId,
+      );
 
       account?.handler?.setNote(
         note: pendingTx.note ?? "",
@@ -450,8 +468,9 @@ Future prunePendingTransactions(
         pendingTx.amount == 0 &&
         pendingTx.currency == Settings().selectedFiat) {
       try {
-        int amountSats =
-            ExchangeRate().convertFiatStringToSats(pendingTx.currencyAmount!);
+        int amountSats = ExchangeRate().convertFiatStringToSats(
+          pendingTx.currencyAmount!,
+        );
         EnvoyStorage().updatePendingTx(pendingTx.txId, amount: amountSats);
       } catch (e) {
         kPrint("Error converting fiat to sats: $e");
@@ -461,8 +480,10 @@ Future prunePendingTransactions(
   for (var (pendingTx as RampTransaction) in ramp) {
     if (pendingTx.purchaseViewToken != null) {
       try {
-        String? state =
-            await checkPurchase(pendingTx.txId, pendingTx.purchaseViewToken!);
+        String? state = await checkPurchase(
+          pendingTx.txId,
+          pendingTx.purchaseViewToken!,
+        );
         if (state == "EXPIRED" || state == "CANCELLED") {
           isNewExpiredBuyTxAvailable.add([pendingTx]);
           EnvoyStorage().deleteTxNote(pendingTx.txId);
@@ -474,15 +495,17 @@ Future prunePendingTransactions(
     }
 
     transactions
-        .where((tx) =>
-            tx.outputs.any((output) => output.address == pendingTx.address))
+        .where(
+      (tx) => tx.outputs.any((output) => output.address == pendingTx.address),
+    )
         .forEach((actualRampTx) {
       kPrint("Pruning Ramp tx: ${actualRampTx.txId}");
       //TODO: fix ramp for ngWallet
       // actualRampTx.setRampFee(pendingTx.rampFee);
       // actualRampTx.setRampId(pendingTx.rampId);
-      EnvoyAccount? account =
-          NgAccountManager().getAccountById(actualRampTx.accountId);
+      EnvoyAccount? account = NgAccountManager().getAccountById(
+        actualRampTx.accountId,
+      );
 
       account?.handler?.setNote(
         note: pendingTx.note ?? "",
@@ -503,19 +526,22 @@ Future prunePendingTransactions(
 
       if (onrampSessionInfo?.sourceCurrency ==
           Settings().selectedFiat?.toLowerCase()) {
-        final stripeFee = ExchangeRate()
-            .convertFiatStringToSats(totalFeeInCurrency.toString());
+        final stripeFee = ExchangeRate().convertFiatStringToSats(
+          totalFeeInCurrency.toString(),
+        );
 
         EnvoyStorage().updatePendingTx(pendingTx.txId, stripeFee: stripeFee);
       }
     }
     transactions
-        .where((tx) =>
-            tx.outputs.any((output) => output.address == pendingTx.address))
+        .where(
+      (tx) => tx.outputs.any((output) => output.address == pendingTx.address),
+    )
         .forEach((actualStripeTx) {
       kPrint("Pruning Stripe tx: ${actualStripeTx.txId}");
-      EnvoyAccount? account =
-          NgAccountManager().getAccountById(actualStripeTx.accountId);
+      EnvoyAccount? account = NgAccountManager().getAccountById(
+        actualStripeTx.accountId,
+      );
 
       account?.handler?.setNote(
         note: pendingTx.note ?? "",

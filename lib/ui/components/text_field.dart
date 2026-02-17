@@ -152,6 +152,7 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                           final text = cdata?.text;
                           if (text != null) {
                             widget.controller.text = text;
+                            widget.onChanged(text);
                           }
                         },
                       ),

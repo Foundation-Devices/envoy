@@ -39,8 +39,11 @@ class CoinTagDetailsScreen extends ConsumerStatefulWidget {
   final bool showCoins;
   final Tag coinTag;
 
-  const CoinTagDetailsScreen(
-      {super.key, this.showCoins = false, required this.coinTag});
+  const CoinTagDetailsScreen({
+    super.key,
+    this.showCoins = false,
+    required this.coinTag,
+  });
 
   @override
   ConsumerState<CoinTagDetailsScreen> createState() => _CoinTagWidgetState();
@@ -87,16 +90,17 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            _menuVisible ? Colors.black : Colors.transparent,
-            _menuVisible ? Colors.black : Colors.transparent,
-            Colors.transparent,
-            Colors.transparent,
-          ],
-        )),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              _menuVisible ? Colors.black : Colors.transparent,
+              _menuVisible ? Colors.black : Colors.transparent,
+              Colors.transparent,
+              Colors.transparent,
+            ],
+          ),
+        ),
         child: GestureDetector(
           onTapUp: (details) {
             if (_selectedCoin != null) {
@@ -109,8 +113,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               /// if the tap is outside of the coin details widget and menu is not active, pop the screen
               final RenderBox box = _detailWidgetKey.currentContext
                   ?.findRenderObject() as RenderBox;
-              final Offset localOffset =
-                  box.globalToLocal(details.globalPosition);
+              final Offset localOffset = box.globalToLocal(
+                details.globalPosition,
+              );
               if (box.paintBounds.contains(localOffset) == false &&
                   _menuVisible == false) {
                 Navigator.of(context).pop();
@@ -145,10 +150,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    const SizedBox(
-                      height: 100,
-                      child: IndicatorShield(),
-                    ),
+                    const SizedBox(height: 100, child: IndicatorShield()),
                     Text(
                       _selectedCoin == null
                           ? S().coinDetails_tagDetails.toUpperCase()
@@ -165,15 +167,22 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               ),
               actions: [
                 !widget.coinTag.untagged && _selectedCoin == null
-                    ? IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _menuVisible = !_menuVisible;
-                          });
-                        },
-                        icon: Icon(_menuVisible
-                            ? Icons.close
-                            : CupertinoIcons.ellipsis))
+                    ? Semantics(
+                        container: true,
+                        identifier: "coin_tag_ellipsis_menu",
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _menuVisible = !_menuVisible;
+                            });
+                          },
+                          icon: Icon(
+                            _menuVisible
+                                ? Icons.close
+                                : CupertinoIcons.ellipsis,
+                          ),
+                        ),
+                      )
                     : const SizedBox.shrink(),
               ],
             ),
@@ -189,7 +198,10 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                   fillColor: Colors.transparent,
                   secondaryAnimation: secondaryAnimation,
                   transitionType: SharedAxisTransitionType.scaled,
-                  child: Align(alignment: Alignment.topCenter, child: child),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: child,
+                  ),
                 );
               },
               child: _selectedCoin != null
@@ -202,7 +214,8 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                     )
                   : Align(
                       alignment: Alignment.topCenter,
-                      child: coinTagDetails(context)),
+                      child: coinTagDetails(context),
+                    ),
             ),
           ),
         ),
@@ -286,9 +299,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             opacity: _menuVisible ? 1 : 0,
             child: SingleChildScrollView(
               clipBehavior: Clip.none,
-              child: Column(
-                children: _getMenuItems(context, tag),
-              ),
+              child: Column(children: _getMenuItems(context, tag)),
             ),
           ),
         ),
@@ -299,17 +310,19 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               duration: const Duration(milliseconds: 300),
               key: _detailWidgetKey,
               decoration: BoxDecoration(
-                borderRadius:
-                    const BorderRadius.all(Radius.circular(cardRadius - 1)),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(cardRadius - 1),
+                ),
                 border: Border.all(
-                    color: Colors.black, width: 2, style: BorderStyle.solid),
+                  color: Colors.black,
+                  width: 2,
+                  style: BorderStyle.solid,
+                ),
                 gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      cardBackground,
-                      Colors.black,
-                    ]),
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [cardBackground, Colors.black],
+                ),
               ),
               child: AnimatedContainer(
                 constraints: BoxConstraints(
@@ -317,22 +330,31 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                   maxHeight: selectedMaxHeight,
                 ),
                 decoration: BoxDecoration(
-                    borderRadius:
-                        const BorderRadius.all(Radius.circular(cardRadius - 3)),
-                    border: Border.all(
-                        color: border, width: 2, style: BorderStyle.solid)),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(cardRadius - 3),
+                  ),
+                  border: Border.all(
+                    color: border,
+                    width: 2,
+                    style: BorderStyle.solid,
+                  ),
+                ),
                 duration: const Duration(milliseconds: 300),
                 child: RawScrollbar(
                   controller: scrollController,
                   thumbVisibility: isScrollable,
                   padding: const EdgeInsets.only(
-                      right: -EnvoySpacing.medium1, top: 100, bottom: -100),
+                    right: -EnvoySpacing.medium1,
+                    top: 100,
+                    bottom: -100,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
                   ),
                   child: ClipRRect(
-                    borderRadius:
-                        const BorderRadius.all(Radius.circular(cardRadius - 4)),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(cardRadius - 4),
+                    ),
                     child: CustomPaint(
                       isComplex: true,
                       willChange: false,
@@ -349,60 +371,71 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                     ? Flexible(
                                         child: Container(
                                           margin: const EdgeInsets.all(
-                                              EnvoySpacing.xs),
+                                            EnvoySpacing.xs,
+                                          ),
                                           decoration: const BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(
-                                                      cardRadius - 9))),
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(cardRadius - 9),
+                                            ),
+                                          ),
                                           child: ClipRRect(
                                             borderRadius:
                                                 const BorderRadius.all(
-                                                    Radius.circular(
-                                                        cardRadius - 9)),
+                                              Radius.circular(
+                                                cardRadius - 9,
+                                              ),
+                                            ),
                                             child: ScrollConfiguration(
                                               behavior: ScrollConfiguration.of(
-                                                      context)
-                                                  .copyWith(scrollbars: false),
+                                                context,
+                                              ).copyWith(scrollbars: false),
                                               child: ListView(
-                                                  controller: scrollController,
-                                                  shrinkWrap: true,
-                                                  physics:
-                                                      const BouncingScrollPhysics(),
-                                                  padding: EdgeInsets.zero,
-                                                  children: List.generate(
-                                                    tag.utxo.length,
-                                                    (index) {
-                                                      final coin =
-                                                          tag.utxo[index];
-                                                      return InkWell(
-                                                        splashColor:
-                                                            Colors.transparent,
-                                                        onTap: () {
-                                                          selectCoin(
-                                                              context, coin);
-                                                        },
-                                                        child: Container(
-                                                            alignment: Alignment
-                                                                .center,
-                                                            child:
-                                                                CoinBalanceWidget(
-                                                              output: coin,
-                                                              coinTag: tag,
-                                                              onEnable: () {
-                                                                Future.delayed(
-                                                                    const Duration(
-                                                                        milliseconds:
-                                                                            300),
-                                                                    () {
-                                                                  animateToIndex(
-                                                                      index);
-                                                                });
+                                                controller: scrollController,
+                                                shrinkWrap: true,
+                                                physics:
+                                                    const BouncingScrollPhysics(),
+                                                padding: EdgeInsets.zero,
+                                                children: List.generate(
+                                                  tag.utxo.length,
+                                                  (index) {
+                                                    final coin =
+                                                        tag.utxo[index];
+                                                    return InkWell(
+                                                      splashColor:
+                                                          Colors.transparent,
+                                                      onTap: () {
+                                                        selectCoin(
+                                                          context,
+                                                          coin,
+                                                        );
+                                                      },
+                                                      child: Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child:
+                                                            CoinBalanceWidget(
+                                                          output: coin,
+                                                          coinTag: tag,
+                                                          onEnable: () {
+                                                            Future.delayed(
+                                                              const Duration(
+                                                                milliseconds:
+                                                                    300,
+                                                              ),
+                                                              () {
+                                                                animateToIndex(
+                                                                  index,
+                                                                );
                                                               },
-                                                            )),
-                                                      );
-                                                    },
-                                                  )),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -412,13 +445,17 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                     ? Container(
                                         alignment: Alignment.center,
                                         margin: const EdgeInsets.all(
-                                            EnvoySpacing.xs),
+                                          EnvoySpacing.xs,
+                                        ),
                                         padding: const EdgeInsets.all(
-                                            EnvoySpacing.medium1),
+                                          EnvoySpacing.medium1,
+                                        ),
                                         decoration: const BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(16))),
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(16),
+                                          ),
+                                        ),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           mainAxisAlignment:
@@ -435,8 +472,10 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                                   EnvoySpacing.xl,
                                             ),
                                             const Padding(
-                                                padding: EdgeInsets.only(
-                                                    top: EnvoySpacing.medium1)),
+                                              padding: EdgeInsets.only(
+                                                top: EnvoySpacing.medium1,
+                                              ),
+                                            ),
                                             Text(
                                               S().tagged_tagDetails_emptyState_explainer,
                                               style: EnvoyTypography.subheading
@@ -447,8 +486,10 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                                               ),
                                             ),
                                             const Padding(
-                                                padding: EdgeInsets.only(
-                                                    top: EnvoySpacing.medium1))
+                                              padding: EdgeInsets.only(
+                                                top: EnvoySpacing.medium1,
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       )
@@ -461,7 +502,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
               ),
             ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -489,7 +530,9 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
                 width: double.infinity,
                 height: 62,
                 padding: const EdgeInsets.symmetric(
-                    horizontal: EnvoySpacing.small, vertical: 0),
+                  horizontal: EnvoySpacing.small,
+                  vertical: 0,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -616,8 +659,10 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
             builder: (context, ref, child) {
               return Container(
                 alignment: Alignment.bottomCenter,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 2, horizontal: 4.5),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 2,
+                  horizontal: 4.5,
+                ),
                 height: 42,
                 child: CoinTagBalanceWidget(coinTag: tag),
               );
@@ -637,26 +682,29 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       dialog: Builder(
         builder: (context) {
           return DeleteTagDialog(
-              dialogSubheading: S().delete_tag_modal_subheading,
-              primaryButtonText: S().component_back,
-              secondaryButtonText: S().delete_tag_modal_cta2,
-              onPrimaryButtonTap: () {
-                navigator.pop();
-              },
-              onSecondaryButtonTap: () async {
-                final selectedAccount = ref.read(selectedAccountProvider);
-                if (selectedAccount != null) {
-                  try {
-                    await selectedAccount.handler?.renameTag(
-                        existingTag: widget.coinTag.name, newTag: "");
-                  } catch (e) {
-                    kPrint("Error deleting tag: $e");
-                  }
+            dialogSubheading: S().delete_tag_modal_subheading,
+            primaryButtonText: S().component_back,
+            secondaryButtonText: S().delete_tag_modal_cta2,
+            onPrimaryButtonTap: () {
+              navigator.pop();
+            },
+            onSecondaryButtonTap: () async {
+              final selectedAccount = ref.read(selectedAccountProvider);
+              if (selectedAccount != null) {
+                try {
+                  await selectedAccount.handler?.renameTag(
+                    existingTag: widget.coinTag.name,
+                    newTag: "",
+                  );
+                } catch (e) {
+                  kPrint("Error deleting tag: $e");
                 }
-                navigator.pop();
-                _menuVisible = false;
-                navigator.pop();
-              });
+              }
+              navigator.pop();
+              _menuVisible = false;
+              navigator.pop();
+            },
+          );
         },
       ),
     );
@@ -671,26 +719,29 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
       dialog: Builder(
         builder: (context) {
           return DeleteTagDialog(
-              dialogSubheading: S().delete_emptyTag_modal_subheading,
-              primaryButtonText: S().component_back,
-              secondaryButtonText: S().delete_tag_modal_cta2,
-              onPrimaryButtonTap: () {
-                navigator.pop();
-              },
-              onSecondaryButtonTap: () async {
-                final selectedAccount = ref.read(selectedAccountProvider);
-                if (selectedAccount != null) {
-                  try {
-                    await selectedAccount.handler?.renameTag(
-                        existingTag: widget.coinTag.name, newTag: "");
-                  } catch (e) {
-                    kPrint("Error deleting empty tag: $e");
-                  }
+            dialogSubheading: S().delete_emptyTag_modal_subheading,
+            primaryButtonText: S().component_back,
+            secondaryButtonText: S().delete_tag_modal_cta2,
+            onPrimaryButtonTap: () {
+              navigator.pop();
+            },
+            onSecondaryButtonTap: () async {
+              final selectedAccount = ref.read(selectedAccountProvider);
+              if (selectedAccount != null) {
+                try {
+                  await selectedAccount.handler?.renameTag(
+                    existingTag: widget.coinTag.name,
+                    newTag: "",
+                  );
+                } catch (e) {
+                  kPrint("Error deleting empty tag: $e");
                 }
-                navigator.pop();
-                _menuVisible = false;
-                navigator.pop();
-              });
+              }
+              navigator.pop();
+              _menuVisible = false;
+              navigator.pop();
+            },
+          );
         },
       ),
     );
@@ -704,70 +755,72 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
     );
     bool renameInProgress = false;
     showEnvoyDialog(
-        context: context,
-        linearGradient: true,
-        blurColor: Colors.black,
-        dialog: EnvoyDialog(
-          title: S().tagDetails_EditTagName,
-          content: textEntry,
-          actions: [
-            StatefulBuilder(
-              builder: (context, stateSetter) {
-                return Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    EnvoyButton(
-                      label: S().component_save,
-                      type: ButtonType.primary,
-                      state: renameInProgress
-                          ? ButtonState.loading
-                          : ButtonState.defaultState,
-                      onTap: () async {
-                        String newTagName =
-                            textEntry.enteredText.toString().trim();
-                        if (newTagName.isEmpty) {
-                          return;
-                        }
-                        stateSetter(() {
-                          renameInProgress = true;
+      context: context,
+      linearGradient: true,
+      blurColor: Colors.black,
+      dialog: EnvoyDialog(
+        title: S().tagDetails_EditTagName,
+        content: textEntry,
+        actions: [
+          StatefulBuilder(
+            builder: (context, stateSetter) {
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  EnvoyButton(
+                    label: S().component_save,
+                    type: ButtonType.primary,
+                    state: renameInProgress
+                        ? ButtonState.loading
+                        : ButtonState.defaultState,
+                    onTap: () async {
+                      String newTagName =
+                          textEntry.enteredText.toString().trim();
+                      if (newTagName.isEmpty) {
+                        return;
+                      }
+                      stateSetter(() {
+                        renameInProgress = true;
+                      });
+                      final selectedAccount = ref.read(selectedAccountProvider);
+                      if (selectedAccount != null) {
+                        await selectedAccount.handler?.renameTag(
+                          existingTag: widget.coinTag.name,
+                          newTag: textEntry.enteredText,
+                        );
+                      }
+                      stateSetter(() {
+                        renameInProgress = false;
+                      });
+                      await Future.delayed(const Duration(milliseconds: 100));
+                      if (context.mounted) {
+                        setState(() {
+                          //update local tag name so it will be used to update instance from provider
+                          widget.coinTag.name = textEntry.enteredText;
+                          _menuVisible = false;
                         });
-                        final selectedAccount =
-                            ref.read(selectedAccountProvider);
-                        if (selectedAccount != null) {
-                          await selectedAccount.handler?.renameTag(
-                              existingTag: widget.coinTag.name,
-                              newTag: textEntry.enteredText);
-                        }
-                        stateSetter(() {
-                          renameInProgress = false;
+                        Navigator.of(context).pop();
+                        setState(() {
+                          _menuVisible = false;
                         });
-                        await Future.delayed(const Duration(milliseconds: 100));
-                        if (context.mounted) {
-                          setState(() {
-                            //update local tag name so it will be used to update instance from provider
-                            widget.coinTag.name = textEntry.enteredText;
-                            _menuVisible = false;
-                          });
-                          Navigator.of(context).pop();
-                          setState(() {
-                            _menuVisible = false;
-                          });
-                        }
-                      },
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
-        ));
+                      }
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   void selectCoin(BuildContext context, Output coin) {
     final selectedAccount = ref.read(selectedAccountProvider);
     final transactions = ref.read(transactionsProvider(selectedAccount!.id));
-    final tx =
-        transactions.firstWhereOrNull((element) => element.txId == coin.txId);
+    final tx = transactions.firstWhereOrNull(
+      (element) => element.txId == coin.txId,
+    );
     if (tx != null) {
       setState(() {
         _selectedCoin = coin;
@@ -778,10 +831,7 @@ class _CoinTagWidgetState extends ConsumerState<CoinTagDetailsScreen> {
         replaceExisting: true,
         duration: const Duration(seconds: 4),
         message: "Error: Transaction Not found",
-        icon: const Icon(
-          Icons.info_outline,
-          color: Colors.white,
-        ),
+        icon: const Icon(Icons.info_outline, color: Colors.white),
       ).show(context);
     }
   }

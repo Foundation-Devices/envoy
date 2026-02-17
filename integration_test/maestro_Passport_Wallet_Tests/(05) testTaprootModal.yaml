@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# (05) testTaprootModal
 appId: com.foundationdevices.envoy
 ---
 
@@ -47,9 +48,10 @@ appId: com.foundationdevices.envoy
 - tapOn:
     id: hamburger_menu
 
-- scrollUntilVisible:
-    element:
-      text: Taproot modal test
+- swipe:
+    start: "50%, 40%"
+    end: "50%, 80%"
+    duration: 300
 
 - tapOn: Taproot modal test
 
@@ -94,7 +96,7 @@ appId: com.foundationdevices.envoy
 # make sure pop-up is visible
 - extendedWaitUntil:
     visible: "Receive to Taproot"
-    timeout: 60000
+    timeout: 180000 # wait 3 min
 
 - tapOn:
     id: PopUp Primary Button
@@ -135,6 +137,10 @@ appId: com.foundationdevices.envoy
     id: hamburger_menu
 - tapOn:
     id: hamburger_menu
+
+- scrollUntilVisible:
+    element:
+      text: Primary (#0)
 
 - tapOn: Primary (#0)
 

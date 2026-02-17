@@ -2,16 +2,42 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# TODO: uncomment this
+# (10) buyForeverBackLoop
+appId: com.foundationdevices.envoy
+---
 
-#appId: com.foundationdevices.envoy
-#---
-#- launchApp:
-#    clearState: false
-#
-## make sure you entered the app again before testing
-#- extendedWaitUntil:
-#    visible: "ACCOUNTS"
-#    timeout: 720000  # wait up to 12 min for it to appear
-
-# TODO: add test here
+#  // testWidgets('<BUY forever back loop>', (tester) async {
+#  //   final stopwatch = Stopwatch()..start(); // Start timer
+#  //
+#  //   await goBackHome(tester);
+#  //
+#  //   await fromHomeToBuyOptions(tester);
+#  //
+#  //   await findAndPressTextButton(tester, "Continue");
+#  //
+#  //   // this is to choose passport account so we can see the Verify button !!!!
+#//   await findAndPressWidget<CardSwipeWrapper>(tester, findFirst: true);
+#  //   await findLastTextButtonAndPress(tester, "GH TEST ACC (#1)");
+#  //
+#  //   await findAndPressTextButton(tester, "Verify Address with Passport");
+#  //   Finder doneButton = find.text("Done");
+#  //   await tester.pumpUntilFound(doneButton);
+#  //   await findAndPressTextButton(tester, "Done");
+#  //   await pressHamburgerMenu(tester);
+#  //   await pressHamburgerMenu(tester);
+#  //   await tester.pump(Durations.long2);
+#  //   await findTextOnScreen(tester, "ACCOUNTS");
+#  //   await tester.pump(Durations.long2);
+#  //   await findTextOnScreen(tester, "Accounts");
+#  //   await tester.pump(Durations.long2);
+#  //   // Make sure you do not go back to BUY after hamburger (and closing the loop)
+#  //   await pressHamburgerMenu(tester);
+#  //   await tester.pump(Durations.long2);
+#  //   await findTextOnScreen(tester, "SETTINGS");
+#  //   await tester.pump(Durations.long2);
+#  //
+#  //   stopwatch.stop();
+#  //   debugPrint(
+#  //     '⏱ Test took ${(stopwatch.elapsedMilliseconds / 1000).toStringAsFixed(2)} s',
+#  //   );
+#  // });

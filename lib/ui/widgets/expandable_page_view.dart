@@ -263,8 +263,10 @@ class ExpandablePageViewState extends State<ExpandablePageView> {
       _currentPage = _sizes.length - 1;
       widget.onPageChanged?.call(_currentPage);
 
-      _previousPage = (_currentPage + differenceFromPreviousToCurrent)
-          .clamp(0, _sizes.length - 1);
+      _previousPage = (_currentPage + differenceFromPreviousToCurrent).clamp(
+        0,
+        _sizes.length - 1,
+      );
     }
 
     _previousPage = _previousPage.clamp(0, _sizes.length - 1);
@@ -387,10 +389,7 @@ class OverflowPage extends StatelessWidget {
       maxHeight: scrollDirection == Axis.horizontal ? double.infinity : null,
       maxWidth: scrollDirection == Axis.vertical ? double.infinity : null,
       alignment: alignment,
-      child: SizeReportingWidget(
-        onSizeChange: onSizeChange,
-        child: child,
-      ),
+      child: SizeReportingWidget(onSizeChange: onSizeChange, child: child),
     );
   }
 }

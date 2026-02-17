@@ -46,12 +46,12 @@ class PrimeShard {
 
   Future<Uint8List?> getShard({required Uint8List fingerprint}) async {
     return ShardBackupFile.getShardByFingerprint(
-        filePath: getPrimeSecretPath(), fingerprint: U8Array32(fingerprint));
+      filePath: getPrimeSecretPath(),
+      fingerprint: U8Array32(fingerprint),
+    );
   }
 
-  Future addShard({
-    required List<int> shard,
-  }) async {
+  Future addShard({required List<int> shard}) async {
     await ShardBackupFile.addNewShard(
       shard: shard,
       filePath: getPrimeSecretPath(),
@@ -66,15 +66,18 @@ class PrimeShard {
   }
 
   Future<DateTime?> getNonSecureLastBackupTimestamp() async {
-    if (!await LocalStorage()
-        .fileExists(PRIME_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME)) {
+    if (!await LocalStorage().fileExists(
+      PRIME_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME,
+    )) {
       return null;
     }
 
-    String timestampString = await LocalStorage()
-        .readFile(PRIME_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME);
-    int timestamp =
-        int.parse(timestampString.replaceAll(".", "").substring(0, 13));
+    String timestampString = await LocalStorage().readFile(
+      PRIME_SECRET_LAST_BACKUP_TIMESTAMP_FILE_NAME,
+    );
+    int timestamp = int.parse(
+      timestampString.replaceAll(".", "").substring(0, 13),
+    );
     return DateTime.fromMillisecondsSinceEpoch(timestamp);
   }
 }

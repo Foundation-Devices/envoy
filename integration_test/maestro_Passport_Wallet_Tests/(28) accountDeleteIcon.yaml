@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (28) accountDeleteIcon
+appId: com.foundationdevices.envoy
+---
+
+- tapOn: GH TEST ACC (#1)
+- tapOn:
+    id: Right Action Button
+- tapOn: Delete Account
+
+# check the icon
+- assertVisible:
+    id: envoy_icon_alert
+
+- tapOn:
+    id: PopUp Close Button
+
+# go home
+- tapOn: Accounts

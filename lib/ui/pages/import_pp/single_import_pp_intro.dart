@@ -40,35 +40,37 @@ class SingleImportPpIntroPage extends StatelessWidget {
         ),
       ),
       shield: Padding(
-          padding: const EdgeInsets.only(
-              right: EnvoySpacing.medium1,
-              left: EnvoySpacing.medium1,
-              top: EnvoySpacing.small),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: SingleChildScrollView(
-                  child: OnboardingText(
-                    header: S().pair_existing_device_intro_heading,
-                    text: isExistingDevice
-                        ? S().pair_existing_device_intro_subheading
-                        : S().pair_new_device_intro_connect_envoy_subheading,
-                  ),
+        padding: const EdgeInsets.only(
+          right: EnvoySpacing.medium1,
+          left: EnvoySpacing.medium1,
+          top: EnvoySpacing.small,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: SingleChildScrollView(
+                child: OnboardingText(
+                  header: S().pair_existing_device_intro_heading,
+                  text: isExistingDevice
+                      ? S().pair_existing_device_intro_subheading
+                      : S().pair_new_device_intro_connect_envoy_subheading,
                 ),
               ),
-              const SizedBox(height: EnvoySpacing.small),
-              Padding(
-                padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
-                child: EnvoyButton(
-                  S().accounts_empty_text_learn_more,
-                  onTap: () {
-                    context.pushNamed(ONBOARD_PASSPORT_EXISTING_SCAN);
-                  },
-                ),
+            ),
+            const SizedBox(height: EnvoySpacing.small),
+            Padding(
+              padding: const EdgeInsets.only(bottom: EnvoySpacing.small),
+              child: EnvoyButton(
+                S().accounts_empty_text_learn_more,
+                onTap: () {
+                  context.pushNamed(ONBOARD_PASSPORT_EXISTING_SCAN);
+                },
               ),
-            ],
-          )),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

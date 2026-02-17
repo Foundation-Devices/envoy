@@ -25,8 +25,10 @@ class _AztecoRedeemModalSuccess extends State<AztecoRedeemModalSuccess> {
         Align(
           alignment: Alignment.centerRight,
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 4 * 4, vertical: 4 * 4),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 4 * 4,
+              vertical: 4 * 4,
+            ),
             child: IconButton(
               icon: const Icon(Icons.close),
               onPressed: () {
@@ -41,8 +43,13 @@ class _AztecoRedeemModalSuccess extends State<AztecoRedeemModalSuccess> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset("assets/trophy_icon.png",
-                  scale: 1.0, width: 56, height: 56, fit: BoxFit.contain),
+              Image.asset(
+                "assets/trophy_icon.png",
+                scale: 1.0,
+                width: 56,
+                height: 56,
+                fit: BoxFit.contain,
+              ),
               Padding(
                 padding: const EdgeInsets.only(top: 5 * 4),
                 child: Text(
@@ -63,8 +70,10 @@ class _AztecoRedeemModalSuccess extends State<AztecoRedeemModalSuccess> {
           ),
         ),
         Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 7 * 4, vertical: 6 * 4),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 7 * 4,
+            vertical: 6 * 4,
+          ),
           child: Column(
             children: [
               Padding(

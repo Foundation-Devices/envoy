@@ -20,26 +20,32 @@ class ScvResultFailPage extends StatelessWidget {
       rightFunction: null,
       text: [
         OnboardingText(
-            header: S().envoy_scv_result_fail_heading,
-            text: S().envoy_scv_result_fail_subheading)
+          header: S().envoy_scv_result_fail_heading,
+          text: S().envoy_scv_result_fail_subheading,
+        ),
       ],
       buttons: [
         Column(
           children: [
             OnboardingButton(
-                type: EnvoyButtonTypes.secondary,
-                label: S().envoy_scv_result_fail_cta1,
-                onTap: () {
-                  launchUrl(Uri.parse("mailto:hello@foundation.xyz"));
-                }),
+              type: EnvoyButtonTypes.secondary,
+              label: S().envoy_scv_result_fail_cta1,
+              onTap: () {
+                launchUrl(Uri.parse("mailto:hello@foundation.xyz"));
+              },
+            ),
             OnboardingButton(
-                label: S().component_retry,
-                onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return ScvShowQrPage();
-                  }));
-                }),
+              label: S().component_retry,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return ScvShowQrPage();
+                    },
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ],

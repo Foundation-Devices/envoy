@@ -1,0 +1,60 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (21) nodeSelection
+appId: com.foundationdevices.envoy
+---
+# go to privacy
+- tapOn: Privacy
+
+- tapOn: Foundation (Default)
+
+# select personal node
+- tapOn: Personal Node
+
+#  Check that it gets selected and the field to enter the personal node shows up
+- assertVisible: Personal Node
+- assertVisible: Enter your node address
+
+- tapOn: Enter your node address
+
+# delete anything before pasting
+- longPressOn: Backspace
+
+# enter personal node
+- inputText: "ssl://mainnet-0.foundation.xyz:50002"
+
+# check if it connects
+- assertVisible: Connected to Fulcrum 1.11.1
+
+# Tap Personal Node to open dropdown
+- tapOn: Personal Node
+
+# Select Blockstream
+- tapOn: Blockstream
+
+# Check that it gets selected
+- assertVisible: Blockstream
+
+# Tap Block Stream to open dropdown
+- tapOn: Blockstream
+
+# Change back to Personal Node, and check the pasted node was
+# NOT overwritten, and it connects to that one
+
+- tapOn: Personal Node
+
+# check if it connects
+- assertVisible: Connected to Fulcrum 1.11.1
+
+# check if the node was the pasted node
+- assertVisible: ssl://mainnet-0.foundation.xyz:50002
+
+# change back to Foundation default
+- tapOn: Personal Node
+
+- tapOn: Foundation (Default)
+
+# go back to home
+- tapOn: Accounts

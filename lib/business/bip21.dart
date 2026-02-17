@@ -55,8 +55,10 @@ class Bip21 {
       "label": uriOptions["label"],
     });
 
-    String address =
-        uri.substring(urnScheme.length + 1, split == -1 ? null : split);
+    String address = uri.substring(
+      urnScheme.length + 1,
+      split == -1 ? null : split,
+    );
 
     if (uriOptions["amount"] != null) {
       String? amountString = uriOptions["amount"];
@@ -72,9 +74,6 @@ class Bip21 {
       options["amount"] = amount;
     }
 
-    return BitcoinRequest(
-      address: address,
-      options: options,
-    );
+    return BitcoinRequest(address: address, options: options);
   }
 }

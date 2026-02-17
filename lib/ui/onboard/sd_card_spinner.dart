@@ -28,8 +28,10 @@ class _SdCardSpinnerState extends ConsumerState<SdCardSpinner> {
   }
 
   void _initRive() async {
-    _riveFile = await rive.File.asset('assets/envoy_loader.riv',
-        riveFactory: rive.Factory.rive);
+    _riveFile = await rive.File.asset(
+      'assets/envoy_loader.riv',
+      riveFactory: rive.Factory.rive,
+    );
     _controller = rive.RiveWidgetController(
       _riveFile!,
       stateMachineSelector: rive.StateMachineSelector.byName('STM'),
@@ -50,10 +52,11 @@ class _SdCardSpinnerState extends ConsumerState<SdCardSpinner> {
     super.dispose();
   }
 
-  void _setAnimationState(
-      {required bool happy,
-      required bool unhappy,
-      required bool indeterminate}) {
+  void _setAnimationState({
+    required bool happy,
+    required bool unhappy,
+    required bool indeterminate,
+  }) {
     if (_controller?.stateMachine == null) return;
     final stateMachine = _controller!.stateMachine;
 
@@ -90,9 +93,7 @@ class _SdCardSpinnerState extends ConsumerState<SdCardSpinner> {
       width: double.infinity,
       key: key,
       child: _isInitialized && _controller != null
-          ? rive.RiveWidget(
-              controller: _controller!,
-            )
+          ? rive.RiveWidget(controller: _controller!)
           : const SizedBox(),
     );
   }

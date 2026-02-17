@@ -18,8 +18,11 @@ class DeviceDecoder extends ScannerDecoder {
   //to avoid sending invalid code through onScan when scanning UR codes
   String previousCode = "";
 
-  DeviceDecoder(
-      {required this.onScan, required this.pairPayloadDecoder, this.onXidScan});
+  DeviceDecoder({
+    required this.onScan,
+    required this.pairPayloadDecoder,
+    this.onXidScan,
+  });
 
   @override
   void reset() {

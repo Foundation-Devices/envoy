@@ -2,16 +2,17 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# (01) magicRecoveryFromFoundationServer
 appId: com.foundationdevices.envoy
 ---
 - launchApp:
-    clearState: false # TODO: change this to true if running over GH !!!
+    clearState: true
 
 # Go to Advanced
 - tapOn: Advanced
 
 # Turn off Magic Backup
-- tapOn: Magic Backup Toggle
+- tapOn: magic backup
 - tapOn:
     id: PopUp Secondary Button
 - tapOn: Back
@@ -19,9 +20,7 @@ appId: com.foundationdevices.envoy
     Create a 
     Mobile Wallet
 - tapOn: Recover
-
-
-##### 12 word err test ENV-2315 #####
+###### 12 word err test ENV-2315 #####
 
 # Insert seed words (12 word)
 - tapOn: 12 Word Seed
@@ -129,41 +128,41 @@ appId: com.foundationdevices.envoy
 - tapOn: Back
 # back to seed menu
 - tapOn: Back button - Seed
-##################################### end of ENV-2315
+###################################### end of ENV-2315
 
 ###### 12 word valid seed test #####
 
 # Insert seed words (12 word)
 - tapOn: 12 Word Seed
 - tapOn: "1. "
-- inputText: "minor"
+- inputText: "ripple"
 - tapOn: "2. "
-- inputText: "inspire"
+- inputText: "bomb"
 - tapOn: "3. "
-- inputText: "domain"
+- inputText: "rich"
 - tapOn: "4. "
-- inputText: "sport"
+- inputText: "talent"
 - tapOn: "5. "
-- inputText: "radio"
+- inputText: "cloth"
 - tapOn: "6. "
-- inputText: "put"
+- inputText: "food"
 - tapOn: "7. "
-- inputText: "museum"
+- inputText: "nation"
 - tapOn: "8. "
-- inputText: "sure"
+- inputText: "trouble"
 - tapOn: "9. "
-- inputText: "dose"
+- inputText: "section"
 - tapOn: "10. "
-- inputText: "peanut"
+- inputText: "lend"
 - tapOn: "11. "
-- inputText: "home"
+- inputText: "energy"
 - tapOn: "12. "
-- inputText: "comfort"
+- inputText: "head"
 - tapOn: Done
 
 - extendedWaitUntil:
-    visible: "Magic Backup Detected"
-    timeout: 10000
+    visible: Magic Backup Detected
+    timeout: 30000 # timeout 30 s
 
 # ignore button
 - tapOn:
@@ -171,7 +170,7 @@ appId: com.foundationdevices.envoy
 
 - extendedWaitUntil:
     visible: "Import Envoy Backup File"
-    timeout: 10000
+    timeout: 300000 # timeout 5 min
 
 # Press on the icon to load backup file
 - longPressOn: |-
@@ -179,8 +178,59 @@ appId: com.foundationdevices.envoy
 
 - extendedWaitUntil:
     visible: "Your Mobile Wallet Is Ready"
-    timeout: 15000
+    timeout: 300000 # timeout 5 min
 - tapOn: Continue
 
 # Make sure you are in Home
 - assertVisible: ACCOUNTS
+
+# turn Testnet and Signet OFF and ON for the right account order
+
+# go to advanced
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+# turn them off
+- tapOn:
+    id: Testnet Toggle-true
+- tapOn:
+    id: Signet Toggle-true
+
+# refresh the page
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+# turn them ON again
+- tapOn:
+    id: Testnet Toggle-false
+- tapOn: Continue
+
+- tapOn:
+    id: Signet Toggle-false
+- tapOn:
+    id: signet_modal_continue
+
+# disable taproot if enabled
+- runFlow:
+    when:
+      visible:
+        id: "Taproot Toggle-true"
+    commands:
+      - tapOn:
+          id: Taproot Toggle-true
+      - tapOn:
+          id: PopUp Primary Button
+
+# go back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu

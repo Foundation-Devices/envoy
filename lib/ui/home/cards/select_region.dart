@@ -47,8 +47,10 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
       if (region != null) {
         selectedCountry = getCountryByCode(region.code);
         selectedRegion = region.division;
-        _initialRegionIndex =
-            getDivisionIndex(selectedCountry!.divisions, selectedRegion!);
+        _initialRegionIndex = getDivisionIndex(
+          selectedCountry!.divisions,
+          selectedRegion!,
+        );
         dropdownDivisionKey.currentState?.setSelectedIndex(_initialRegionIndex);
         _divisionSelected = true;
       }
@@ -78,8 +80,9 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
   }
 
   Future<void> readJson() async {
-    final String response =
-        await rootBundle.loadString('assets/iso-3166-2.json');
+    final String response = await rootBundle.loadString(
+      'assets/iso-3166-2.json',
+    );
     Map<String, dynamic> countryData = jsonDecode(response);
 
     countryData.forEach((countryCode, countryInfo) {
@@ -172,18 +175,26 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
 
   Widget buildWidget() {
     List<EnvoyDropdownOption> dropdownCountryOptions = countries
-        .map((country) =>
-            EnvoyDropdownOption(label: country.name, value: country.code))
+        .map(
+          (country) =>
+              EnvoyDropdownOption(label: country.name, value: country.code),
+        )
         .toList();
     List<EnvoyDropdownOption> divisionDropdownOptions = [];
-    divisionDropdownOptions.add(EnvoyDropdownOption(
-        label: 'Select State', value: 'selectState')); // TODO:Figma
-    divisionDropdownOptions.addAll(selectedCountry!.divisions.map(
-        (division) => EnvoyDropdownOption(label: division, value: division)));
+    divisionDropdownOptions.add(
+      EnvoyDropdownOption(label: 'Select State', value: 'selectState'),
+    ); // TODO:Figma
+    divisionDropdownOptions.addAll(
+      selectedCountry!.divisions.map(
+        (division) => EnvoyDropdownOption(label: division, value: division),
+      ),
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-          vertical: EnvoySpacing.medium2, horizontal: EnvoySpacing.medium2),
+        vertical: EnvoySpacing.medium2,
+        horizontal: EnvoySpacing.medium2,
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -198,41 +209,32 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
                     style: EnvoyTypography.subheading,
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(
-                    height: EnvoySpacing.medium2,
-                  ),
+                  const SizedBox(height: EnvoySpacing.medium2),
                   Text(
                     S().buy_bitcoin_defineLocation_subheading,
-                    style: EnvoyTypography.body
-                        .copyWith(color: EnvoyColors.textTertiary),
+                    style: EnvoyTypography.body.copyWith(
+                      color: EnvoyColors.textTertiary,
+                    ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(
-                    height: EnvoySpacing.medium2,
-                  ),
+                  const SizedBox(height: EnvoySpacing.medium2),
                   EnvoyDropdown(
                     showCheckIcon: false,
                     dropdownMaxHeight: 400,
                     initialIndex: _initialCountryIndex,
-                    options: [
-                      ...dropdownCountryOptions,
-                    ],
+                    options: [...dropdownCountryOptions],
                     onOptionChanged: (selectedOption) {
                       _updateState(getCountryByName(selectedOption!.label));
                     },
                   ),
-                  const SizedBox(
-                    height: EnvoySpacing.medium2,
-                  ),
+                  const SizedBox(height: EnvoySpacing.medium2),
                   EnvoyDropdown(
                     key: dropdownDivisionKey,
                     showCheckIcon: false,
                     dropdownMaxHeight: 300,
                     initialIndex:
                         selectedRegion != null ? _initialRegionIndex + 1 : 0,
-                    options: [
-                      ...divisionDropdownOptions,
-                    ],
+                    options: [...divisionDropdownOptions],
                     onOptionChanged: (selectedOption) {
                       setState(() {
                         selectedRegion = selectedOption!.label;
@@ -248,23 +250,24 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
           Padding(
             padding: const EdgeInsets.only(bottom: EnvoySpacing.large1),
             child: EnvoyButton(
-                label: S().component_continue,
-                type: ButtonType.primary,
-                state: _divisionSelected
-                    ? ButtonState.defaultState
-                    : ButtonState.disabled,
-                onTap: () async {
-                  await EnvoyStorage().updateCountry(
-                    selectedCountry!.code,
-                    selectedCountry!.name,
-                    selectedRegion!,
-                  );
+              label: S().component_continue,
+              type: ButtonType.primary,
+              state: _divisionSelected
+                  ? ButtonState.defaultState
+                  : ButtonState.disabled,
+              onTap: () async {
+                await EnvoyStorage().updateCountry(
+                  selectedCountry!.code,
+                  selectedCountry!.name,
+                  selectedRegion!,
+                );
 
-                  if (mounted) {
-                    context.go(ROUTE_BUY_BITCOIN);
-                  }
-                }),
-          )
+                if (mounted) {
+                  context.go(ROUTE_BUY_BITCOIN);
+                }
+              },
+            ),
+          ),
         ],
       ),
     );

@@ -6,31 +6,36 @@
 
 # Maestro iOS Physical Device Test Runner for Envoy
 # Uses maestro-ios-device community tool for real iPhone/iPad testing
-# Usage: ./run_ios_maestro.sh [--build] [--team-id TEAM_ID] [test_name.yaml]
+# Usage: ./run_ios_maestro.sh [--build] [--team-id TEAM_ID] [--device DEVICE_ID] [test_name.yaml]
 
-set -e
+set -o pipefail
 
+# ------------------------------------------------------------
+# Paths
+# ------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_tests"
+HOT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Hot_Wallet_Tests"
+PASSPORT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Passport_Wallet_Tests"
+
 APP_FILE=""
 BRIDGE_PID=""
 DRIVER_PORT=6001
+DEVICE_ID=""
+TEST_ARG=""
+BUILD_APP=false
+TEAM_ID=""
 
-# Colors for output
+# ------------------------------------------------------------
+# Colors
+# ------------------------------------------------------------
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 BOLD='\033[1m'
-NC='\033[0m' # No Color
-
-# Arguments
-BUILD_APP=false
-TEAM_ID=""
-TEST_ARG=""
-DEVICE_ID=""
+NC='\033[0m'
 
 # ------------------------------------------------------------
 # UI Helpers
@@ -93,11 +98,11 @@ print_summary() {
 # Cleanup function
 # ------------------------------------------------------------
 cleanup() {
-    if [ -n "$BRIDGE_PID" ] && kill -0 "$BRIDGE_PID" 2>/dev/null; then
-        echo -e "${YELLOW}Stopping device bridge (PID: $BRIDGE_PID)...${NC}"
-        kill "$BRIDGE_PID" 2>/dev/null || true
-        wait "$BRIDGE_PID" 2>/dev/null || true
-    fi
+    echo -e "${YELLOW}Stopping test processes...${NC}"
+    [ -n "$XCTEST_PID" ] && kill "$XCTEST_PID" 2>/dev/null
+    [ -n "$IPROXY_PID" ] && kill "$IPROXY_PID" 2>/dev/null
+    [ -n "$BRIDGE_PID" ] && kill "$BRIDGE_PID" 2>/dev/null
+    wait 2>/dev/null
 }
 
 trap cleanup EXIT
@@ -159,7 +164,6 @@ if ! command -v maestro-ios-device &> /dev/null; then
     echo -e "${CYAN}  This enables Maestro to run on physical iOS devices${NC}"
     curl -fsSL https://raw.githubusercontent.com/devicelab-dev/maestro-ios-device/main/setup.sh | bash
 
-    # Verify installation
     if ! command -v maestro-ios-device &> /dev/null; then
         echo -e "${RED}✗ Error: maestro-ios-device installation failed${NC}"
         echo -e "  Try manual installation: https://github.com/devicelab-dev/maestro-ios-device"
@@ -176,7 +180,6 @@ if [ -z "$TEAM_ID" ]; then
     TEAM_ID=$(security find-identity -v -p codesigning 2>/dev/null | grep "Apple Development" | head -1 | awk -F'[()]' '{print $(NF-1)}' | tr -d ' ')
 
     if [ -z "$TEAM_ID" ]; then
-        # Try alternative pattern
         TEAM_ID=$(security find-identity -v -p codesigning 2>/dev/null | grep "Developer" | head -1 | awk -F'[()]' '{print $(NF-1)}' | tr -d ' ')
     fi
 
@@ -204,10 +207,11 @@ if [ -z "$DEVICE_ID" ]; then
     exit 1
 fi
 
-# Get device name for display
 DEVICE_NAME=$(xcrun xctrace list devices 2>&1 | grep "$DEVICE_ID" | sed 's/ (.*//')
 echo -e "${GREEN}✓${NC} iOS device: $DEVICE_NAME"
 echo -e "${GREEN}✓${NC} Device UDID: $DEVICE_ID"
+echo -e "${GREEN}✓${NC} Hot Wallet tests: $HOT_WALLET_TESTS_DIR"
+echo -e "${GREEN}✓${NC} Passport Wallet tests: $PASSPORT_WALLET_TESTS_DIR"
 
 # ------------------------------------------------------------
 # Build iOS App (IPA for physical device)
@@ -216,29 +220,13 @@ build_ios_app() {
     echo ""
     cd "$PROJECT_ROOT"
 
-    # Build iOS FFI libraries first (Rust native code)
-    echo -e "${YELLOW}Building iOS FFI libraries...${NC}"
-    if [ -f "$PROJECT_ROOT/scripts/build_ffi_ios.sh" ]; then
-        "$PROJECT_ROOT/scripts/build_ffi_ios.sh" || {
-            echo -e "${RED}✗ FFI build failed${NC}"
-            exit 1
-        }
-        echo -e "${GREEN}✓${NC} FFI libraries built"
-    else
-        echo -e "${RED}✗ Error: build_ffi_ios.sh not found${NC}"
-        exit 1
-    fi
-
-    # Build Flutter iOS app for physical device (profile mode - runs without debugger)
     echo -e "${YELLOW}Building iOS app for physical device...${NC}"
     flutter build ios --profile
 
-    # Create IPA from the built app
     APP_PATH="$PROJECT_ROOT/build/ios/iphoneos/Runner.app"
     IPA_PATH="$PROJECT_ROOT/build/ios/iphoneos/Envoy.ipa"
 
     if [ ! -d "$APP_PATH" ]; then
-        # Try alternative path
         APP_PATH="$PROJECT_ROOT/build/ios/Debug-iphoneos/Runner.app"
         IPA_PATH="$PROJECT_ROOT/build/ios/Debug-iphoneos/Envoy.ipa"
     fi
@@ -252,7 +240,6 @@ build_ios_app() {
 
     echo -e "${YELLOW}Creating IPA package...${NC}"
 
-    # Create Payload directory and package IPA
     PAYLOAD_DIR="$PROJECT_ROOT/build/ios/Payload"
     rm -rf "$PAYLOAD_DIR"
     mkdir -p "$PAYLOAD_DIR"
@@ -266,7 +253,6 @@ build_ios_app() {
     APP_FILE="$PROJECT_ROOT/build/ios/Envoy.ipa"
     echo -e "${GREEN}✓${NC} IPA created: $APP_FILE"
 
-    # Install app on device
     echo -e "${YELLOW}Installing app on device...${NC}"
     flutter install -d "$DEVICE_ID" --profile || {
         echo -e "${RED}✗ Failed to install app${NC}"
@@ -280,7 +266,6 @@ build_ios_app() {
 if [ "$BUILD_APP" = true ]; then
     build_ios_app
 else
-    # Try to find existing IPA
     if [ -f "$PROJECT_ROOT/build/ios/Envoy.ipa" ]; then
         APP_FILE="$PROJECT_ROOT/build/ios/Envoy.ipa"
         echo -e "${GREEN}✓${NC} Using existing IPA: $APP_FILE"
@@ -299,7 +284,6 @@ fi
 echo ""
 echo -e "${YELLOW}Starting iOS test bridge...${NC}"
 
-# Find pre-built xctestrun file from Xcode DerivedData
 XCTESTRUN_FILE=$(find ~/Library/Developer/Xcode/DerivedData/maestro-driver-ios* -name "*.xctestrun" 2>/dev/null | head -1)
 
 if [ -z "$XCTESTRUN_FILE" ]; then
@@ -313,7 +297,6 @@ fi
 
 echo -e "${GREEN}✓${NC} Found XCTest runner: $(basename "$XCTESTRUN_FILE")"
 
-# Start XCTest runner on device (runs HTTP server on port 22087)
 echo -e "${YELLOW}Deploying test runner to device...${NC}"
 xcodebuild test-without-building \
     -xctestrun "$XCTESTRUN_FILE" \
@@ -321,7 +304,6 @@ xcodebuild test-without-building \
     > /tmp/xctest-runner.log 2>&1 &
 XCTEST_PID=$!
 
-# Wait for XCTest to start
 sleep 5
 
 if ! kill -0 "$XCTEST_PID" 2>/dev/null; then
@@ -330,21 +312,10 @@ if ! kill -0 "$XCTEST_PID" 2>/dev/null; then
     exit 1
 fi
 
-# Start port forwarding (localhost:6001 -> device:22087)
 echo -e "${YELLOW}Starting port forwarding...${NC}"
 iproxy "$DRIVER_PORT" 22087 -u "$DEVICE_ID" > /tmp/iproxy.log 2>&1 &
 IPROXY_PID=$!
 
-# Update cleanup to kill both processes
-cleanup() {
-    echo -e "${YELLOW}Stopping test processes...${NC}"
-    [ -n "$XCTEST_PID" ] && kill "$XCTEST_PID" 2>/dev/null
-    [ -n "$IPROXY_PID" ] && kill "$IPROXY_PID" 2>/dev/null
-    [ -n "$BRIDGE_PID" ] && kill "$BRIDGE_PID" 2>/dev/null
-    wait 2>/dev/null
-}
-
-# Wait for port forwarding to be ready
 echo -e "${YELLOW}Waiting for bridge to be ready...${NC}"
 MAX_WAIT=30
 WAITED=0
@@ -388,7 +359,6 @@ run_single_test() {
 
     print_test_start "$test_name"
 
-    # Build maestro command with proper flags for physical device
     MAESTRO_ARGS="--driver-host-port $DRIVER_PORT --device $DEVICE_ID"
 
     if [ -n "$APP_FILE" ]; then
@@ -408,30 +378,37 @@ run_single_test() {
     fi
 }
 
-# Run tests
-echo ""
-echo -e "${YELLOW}Running Maestro tests on physical iOS device...${NC}"
-echo -e "${GREEN}✓${NC} Tests directory: $TESTS_DIR"
+run_test_group() {
+    local group_name="$1"
+    local tests_dir="$2"
 
-if [ -n "$TEST_ARG" ]; then
-    TEST_FILE="$TESTS_DIR/$TEST_ARG"
-    if [ ! -f "$TEST_FILE" ]; then
-        echo -e "${RED}✗ Test not found: $TEST_FILE${NC}"
-        exit 1
+    echo ""
+    echo -e "${BLUE}╔════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${BLUE}║${NC}${BOLD}  Running group: $group_name${NC}"
+    echo -e "${BLUE}╚════════════════════════════════════════════════════════════╝${NC}"
+
+    if [ -n "$TEST_ARG" ]; then
+        TEST_FILE="$tests_dir/$TEST_ARG"
+        [ -f "$TEST_FILE" ] || {
+            echo -e "${RED}✗ Test not found: $TEST_FILE${NC}"
+            return
+        }
+        run_single_test "$TEST_FILE"
+    else
+        echo -e "${CYAN}Test files found:${NC}"
+        ls -1 "$tests_dir"/*.yaml 2>&1 || echo "No files found!"
+        echo ""
+        for test_file in "$tests_dir"/*.yaml; do
+            [ -f "$test_file" ] && run_single_test "$test_file"
+        done
     fi
-    run_single_test "$TEST_FILE"
-else
-    echo ""
-    echo -e "${CYAN}Test files:${NC}"
-    ls -1 "$TESTS_DIR"/*.yaml 2>&1 | while read -r f; do echo "  $(basename "$f")"; done
-    echo ""
+}
 
-    for test_file in "$TESTS_DIR"/*.yaml; do
-        if [ -f "$test_file" ]; then
-            run_single_test "$test_file"
-        fi
-    done
-fi
+# --- Group 1: Hot Wallet Tests ---
+run_test_group "Hot Wallet Tests" "$HOT_WALLET_TESTS_DIR"
+
+# --- Group 2: Passport Wallet Tests ---
+run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
 
 # ------------------------------------------------------------
 # Summary

@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (02) buyButton
+appId: com.foundationdevices.envoy
+---
+
+# check Buy shield and press it
+- tapOn:
+    id: QR Shield Buy
+
+# check that you are in buy
+- assertVisible: |-
+    BUY BITCOIN
+    off
+
+# go back to home
+- tapOn:
+    id: hamburger_menu
+

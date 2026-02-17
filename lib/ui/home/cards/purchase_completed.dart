@@ -53,11 +53,7 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
     );
 
     // Start in indeterminate/loading mode
-    _setAnimationState(
-      happy: false,
-      unhappy: false,
-      indeterminate: true,
-    );
+    _setAnimationState(happy: false, unhappy: false, indeterminate: true);
 
     setState(() => _isInitialized = true);
   }
@@ -103,11 +99,7 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
     });
 
     // Update Rive animation state based on result
-    _setAnimationState(
-      happy: success,
-      unhappy: !success,
-      indeterminate: false,
-    );
+    _setAnimationState(happy: success, unhappy: !success, indeterminate: false);
   }
 
   @override
@@ -145,8 +137,9 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
                   Transform.scale(
                     scale: 1.2,
                     child: Container(
-                      constraints:
-                          BoxConstraints.tight(const Size.fromHeight(280)),
+                      constraints: BoxConstraints.tight(
+                        const Size.fromHeight(280),
+                      ),
                       child: _isInitialized && _controller != null
                           ? rive.RiveWidget(
                               controller: _controller!,
@@ -164,9 +157,7 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
                     style: EnvoyTypography.heading,
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(
-                    height: EnvoySpacing.medium3,
-                  ),
+                  SizedBox(height: EnvoySpacing.medium3),
                   Text(
                     _isPaymentSuccess == null
                         ? ""
@@ -174,19 +165,19 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
                             ? S().buy_bitcoin_purchaseComplete_subheading
                             : S().buy_bitcoin_purchaseError_contactStripe,
                     style: EnvoyTypography.body.copyWith(
-                        color: success
-                            ? EnvoyColors.textSecondary
-                            : EnvoyColors.teal500),
+                      color: success
+                          ? EnvoyColors.textSecondary
+                          : EnvoyColors.teal500,
+                    ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(
-                    height: EnvoySpacing.medium3,
-                  ),
+                  SizedBox(height: EnvoySpacing.medium3),
                   if (_isPaymentSuccess == false)
                     Text(
                       "${S().buy_bitcoin_purchaseError_purchaseID} $sessionId",
-                      style: EnvoyTypography.body
-                          .copyWith(color: EnvoyColors.textTertiary),
+                      style: EnvoyTypography.body.copyWith(
+                        color: EnvoyColors.textTertiary,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                 ],
@@ -202,8 +193,9 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
                     builder: (context, ref, child) {
                       return EnvoyButton(
                         S().component_continue,
-                        borderRadius:
-                            BorderRadius.circular(EnvoySpacing.medium1),
+                        borderRadius: BorderRadius.circular(
+                          EnvoySpacing.medium1,
+                        ),
                         onTap: () async {
                           final router = GoRouter.of(context);
                           ref.read(selectedAccountProvider.notifier).state =
@@ -216,7 +208,8 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
                             );
                           }
                           await Future.delayed(
-                              const Duration(milliseconds: 50));
+                            const Duration(milliseconds: 50),
+                          );
                         },
                       );
                     },
@@ -225,54 +218,57 @@ class _PurchaseCompleteState extends ConsumerState<PurchaseComplete> {
 
               if (_isPaymentSuccess == null && _launched)
                 Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.small,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        EnvoyButton(
-                          S().component_cancel,
-                          type: EnvoyButtonTypes.secondary,
-                          borderRadius:
-                              BorderRadius.circular(EnvoySpacing.medium1),
-                          onTap: () async {
-                            await EnvoyStorage()
-                                .deleteOnrampSession(sessionId ?? "");
-                            await EnvoyStorage()
-                                .deletePendingTx(sessionId ?? "");
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.small,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      EnvoyButton(
+                        S().component_cancel,
+                        type: EnvoyButtonTypes.secondary,
+                        borderRadius: BorderRadius.circular(
+                          EnvoySpacing.medium1,
+                        ),
+                        onTap: () async {
+                          await EnvoyStorage().deleteOnrampSession(
+                            sessionId ?? "",
+                          );
+                          await EnvoyStorage().deletePendingTx(sessionId ?? "");
 
-                            if (context.mounted) {
-                              final router = GoRouter.of(context);
-                              Navigator.of(context).pop();
+                          if (context.mounted) {
+                            final router = GoRouter.of(context);
+                            Navigator.of(context).pop();
 
-                              router.go(ROUTE_BUY_BITCOIN);
-                            }
-                            await Future.delayed(
-                                const Duration(milliseconds: 50));
-                          },
+                            router.go(ROUTE_BUY_BITCOIN);
+                          }
+                          await Future.delayed(
+                            const Duration(milliseconds: 50),
+                          );
+                        },
+                      ),
+                      SizedBox(height: EnvoySpacing.medium1),
+                      EnvoyButton(
+                        S().component_retry,
+                        borderRadius: BorderRadius.circular(
+                          EnvoySpacing.medium1,
                         ),
-                        SizedBox(
-                          height: EnvoySpacing.medium1,
-                        ),
-                        EnvoyButton(
-                          S().component_retry,
-                          borderRadius:
-                              BorderRadius.circular(EnvoySpacing.medium1),
-                          onTap: () async {
-                            await EnvoyStorage()
-                                .deleteOnrampSession(sessionId ?? "");
-                            await EnvoyStorage()
-                                .deletePendingTx(sessionId ?? "");
-                            if (context.mounted) {
-                              Navigator.of(context).pop();
-                            }
-                            await Future.delayed(
-                                const Duration(milliseconds: 50));
-                          },
-                        ),
-                      ],
-                    )),
+                        onTap: () async {
+                          await EnvoyStorage().deleteOnrampSession(
+                            sessionId ?? "",
+                          );
+                          await EnvoyStorage().deletePendingTx(sessionId ?? "");
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                          }
+                          await Future.delayed(
+                            const Duration(milliseconds: 50),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
         ),

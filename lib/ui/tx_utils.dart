@@ -12,7 +12,10 @@ import 'package:envoy/util/string_utils.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 String getTransactionTitleText(
-    EnvoyTransaction transaction, RBFState? cancelState, bool? isBoosted) {
+  EnvoyTransaction transaction,
+  RBFState? cancelState,
+  bool? isBoosted,
+) {
   bool isSent = transaction.amount < 0;
 
   if (cancelState != null) {
@@ -55,10 +58,12 @@ String getTransactionSubtitleText(EnvoyTransaction transaction, Locale locale) {
     }
     return timeago
         .format(
-            DateTime.fromMillisecondsSinceEpoch(
-                transaction.date!.toInt() * 1000,
-                isUtc: true),
-            locale: locale.languageCode)
+          DateTime.fromMillisecondsSinceEpoch(
+            transaction.date!.toInt() * 1000,
+            isUtc: true,
+          ),
+          locale: locale.languageCode,
+        )
         .capitalize();
   } else {
     return S().receive_tx_list_awaitingConfirmation;
@@ -66,7 +71,10 @@ String getTransactionSubtitleText(EnvoyTransaction transaction, Locale locale) {
 }
 
 EnvoyIcons? getTransactionIcon(
-    EnvoyTransaction transaction, RBFState? cancelState, bool? isBoosted) {
+  EnvoyTransaction transaction,
+  RBFState? cancelState,
+  bool? isBoosted,
+) {
   if (isBoosted == true) {
     return EnvoyIcons.rbf_boost;
   }

@@ -209,7 +209,8 @@ class _SendCardState extends ConsumerState<SendCard>
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.medium1),
+                          horizontal: EnvoySpacing.medium1,
+                        ),
                         child: _amountEntry,
                       ),
                     ],
@@ -217,8 +218,10 @@ class _SendCardState extends ConsumerState<SendCard>
                 ),
               ),
               Container(
-                constraints:
-                    const BoxConstraints(minHeight: 64, maxHeight: 140),
+                constraints: const BoxConstraints(
+                  minHeight: 64,
+                  maxHeight: 140,
+                ),
                 height: MediaQuery.sizeOf(context).height * 0.1,
                 alignment: Alignment.topCenter,
                 padding: const EdgeInsets.only(top: EnvoySpacing.xs),
@@ -227,16 +230,18 @@ class _SendCardState extends ConsumerState<SendCard>
                     final isCoinSelected = ref.watch(isCoinsSelectedProvider);
                     final formValidation = ref.watch(spendValidationProvider);
                     int spendAmount = ref.watch(spendAmountProvider);
-                    int spendableBalance =
-                        ref.watch(totalSpendableAmountProvider);
+                    int spendableBalance = ref.watch(
+                      totalSpendableAmountProvider,
+                    );
                     TransactionModel tx = ref.watch(spendTransactionProvider);
                     bool txValidation = tx.valid;
                     bool valid = formValidation;
 
                     final addressEmpty =
                         ref.watch(spendAddressProvider).isEmpty;
-                    final validationError =
-                        ref.watch(spendValidationErrorProvider);
+                    final validationError = ref.watch(
+                      spendValidationErrorProvider,
+                    );
                     String buttonText = "";
                     bool isFormEmpty = addressEmpty || spendAmount == 0;
 
@@ -311,15 +316,16 @@ class _SendCardState extends ConsumerState<SendCard>
                           ref.read(spendAmountProvider.notifier).state =
                               ref.read(totalSpendableAmountProvider);
                           ref
-                                  .read(displayFiatSendAmountProvider.notifier)
-                                  .state =
-                              ExchangeRate().convertSatsToFiat(
-                                  ref.read(totalSpendableAmountProvider));
+                              .read(displayFiatSendAmountProvider.notifier)
+                              .state = ExchangeRate().convertSatsToFiat(
+                            ref.read(totalSpendableAmountProvider),
+                          );
                           setState(() {
                             _amountEntry = AmountEntry(
                               onAmountChanged: _updateAmount,
-                              initalSatAmount:
-                                  ref.read(totalSpendableAmountProvider),
+                              initalSatAmount: ref.read(
+                                totalSpendableAmountProvider,
+                              ),
                               key: UniqueKey(),
                               account: account!,
                               onPaste: _onPaste,

@@ -56,6 +56,45 @@ class HttpTor {
     await RustLib.init();
   }
 
+  bool _isRetryableStatus(int code) =>
+      code == 429 || code == 502 || code == 503 || code == 504;
+
+  Future<http.Response> getWithRetry(
+    String uri, {
+    String? body,
+    Map<String, String>? headers,
+    int maxAttempts = 5,
+    Duration baseDelay = const Duration(seconds: 1),
+  }) async {
+    http.Response? lastResponse;
+    Object? lastError;
+
+    for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        final res = await get(uri, body: body, headers: headers);
+        lastResponse = res;
+
+        if (res.statusCode == 200) return res;
+
+        if (!_isRetryableStatus(res.statusCode) || attempt == maxAttempts) {
+          return res; // non-retryable or out of attempts
+        }
+      } catch (e) {
+        lastError = e;
+        if (attempt == maxAttempts) rethrow;
+      }
+
+      final backoffMs = baseDelay.inMilliseconds * (1 << (attempt - 1));
+      final jitterMs = (backoffMs * 0.25).round(); // small jitter
+      final waitMs = backoffMs + (DateTime.now().microsecond % (jitterMs + 1));
+      await Future.delayed(Duration(milliseconds: waitMs));
+    }
+
+    // Should be unreachable, but just in case:
+    if (lastResponse != null) return lastResponse;
+    throw lastError ?? Exception('Request failed with no response');
+  }
+
   Future<http.Response> get(
     String uri, {
     String? body,

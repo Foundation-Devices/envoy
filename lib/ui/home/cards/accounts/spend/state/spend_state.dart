@@ -21,21 +21,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 
-enum BroadcastProgress {
-  inProgress,
-  success,
-  failed,
-  staging,
-}
+enum BroadcastProgress { inProgress, success, failed, staging }
 
 //user can spend coins in 3 contexts, preselectCoins,edit from transaction
 //review screen and edit from RBF screen
-enum SpendOverlayContext {
-  preselectCoins,
-  rbfSelection,
-  editCoins,
-  hidden,
-}
+enum SpendOverlayContext { preselectCoins, rbfSelection, editCoins, hidden }
 
 enum SpendMode {
   normal,
@@ -48,53 +38,62 @@ final draftTransactionProvider = Provider<DraftTransaction?>((ref) {
 });
 
 final emptyTransactionModel = TransactionModel(
-    transaction: null,
-    draftTransaction: null,
-    valid: false,
-    loading: false,
-    error: null);
+  transaction: null,
+  draftTransaction: null,
+  valid: false,
+  loading: false,
+  error: null,
+);
 
 final spendTransactionProvider =
     StateNotifierProvider<TransactionModeNotifier, TransactionModel>((ref) {
   return TransactionModeNotifier(
-      TransactionModel(
-        transaction: null,
-        draftTransaction: null,
-        valid: false,
-        loading: false,
-      ),
-      ref: ref);
+    TransactionModel(
+      transaction: null,
+      draftTransaction: null,
+      valid: false,
+      loading: false,
+    ),
+    ref: ref,
+  );
 });
 
 // Providers needed to show the fee/inputs warning
 final coinSelectionChangedProvider = StateProvider<bool>((ref) => false);
 
 // We reset this once user exit tx_review and it is set, to true, once, for the session
-final userSelectedCoinsThisSessionProvider =
-    StateProvider<bool>((ref) => false);
+final userSelectedCoinsThisSessionProvider = StateProvider<bool>(
+  (ref) => false,
+);
 final userHasChangedFeesProvider = StateProvider<bool>((ref) => false);
 final transactionInputsChangedProvider = StateProvider<bool>((ref) => false);
 
-final spendEditModeProvider =
-    StateProvider<SpendOverlayContext>((ref) => SpendOverlayContext.hidden);
+final spendEditModeProvider = StateProvider<SpendOverlayContext>(
+  (ref) => SpendOverlayContext.hidden,
+);
 final spendAddressProvider = StateProvider((ref) => "");
 final spendValidationErrorProvider = StateProvider<String?>((ref) => null);
 final spendAmountProvider = StateProvider((ref) => 0);
 
 final uneconomicSpendsProvider = Provider<bool>(
-    (ref) => ref.watch(spendTransactionProvider).uneconomicSpends);
+  (ref) => ref.watch(spendTransactionProvider).uneconomicSpends,
+);
 
 /// these providers will extract receive Address and Amount from the staging transaction
 final receiveOutputProvider = Provider<Tuple<String, int>?>((ref) {
-  BitcoinTransaction? preparedTransaction = ref.watch(spendTransactionProvider
-      .select((value) => value.draftTransaction?.transaction));
+  BitcoinTransaction? preparedTransaction = ref.watch(
+    spendTransactionProvider.select(
+      (value) => value.draftTransaction?.transaction,
+    ),
+  );
   if (preparedTransaction == null) {
     return null;
   }
 
   ///output that is destination output
   Output? out = preparedTransaction.outputs.firstWhereOrNull(
-      (element) => element.address == preparedTransaction.address);
+    (element) => element.address == preparedTransaction.address,
+  );
 
   if (out == null) {
     return null;
@@ -104,8 +103,11 @@ final receiveOutputProvider = Provider<Tuple<String, int>?>((ref) {
 
 final spendInputTagsProvider = Provider<List<Tuple<CoinTag, Coin>>?>((ref) {
   EnvoyAccount? account = ref.watch(selectedAccountProvider);
-  BitcoinTransaction? preparedTransaction = ref.watch(spendTransactionProvider
-      .select((value) => value.draftTransaction?.transaction));
+  BitcoinTransaction? preparedTransaction = ref.watch(
+    spendTransactionProvider.select(
+      (value) => value.draftTransaction?.transaction,
+    ),
+  );
 
   if (account == null || preparedTransaction == null) {
     return null;
@@ -141,7 +143,9 @@ final _totalSpendableAmountProvider = FutureProvider<int>((ref) async {
       .where((element) => element.doNotSpend)
       .toList();
   final blockedAmount = lockedCoins.fold(
-      0, (previousValue, element) => previousValue + element.amount.toInt());
+    0,
+    (previousValue, element) => previousValue + element.amount.toInt(),
+  );
   return accountState.balance.toInt() - blockedAmount;
 });
 
@@ -154,7 +158,9 @@ final totalSpendableAmountProvider = Provider<int>((ref) {
 final getTotalSelectedAmount = Provider.family<int, String>((ref, accountId) {
   List<Output> outputs = ref.watch(getSelectedCoinsProvider(accountId));
   return outputs.fold(
-      0, (previousValue, element) => previousValue + element.amount.toInt());
+    0,
+    (previousValue, element) => previousValue + element.amount.toInt(),
+  );
 });
 
 ///these providers are used to track notes and change output tag for staging transaction
@@ -187,7 +193,9 @@ final _spendValidationProviderFuture = FutureProvider<bool>((ref) async {
   }
 
   bool validAddress = await EnvoyAccountHandler.validateAddress(
-      address: address, network: account.network);
+    address: address,
+    network: account.network,
+  );
   if (!validAddress) {
     ref.read(spendValidationErrorProvider.notifier).state =
         S().send_keyboard_amount_enter_valid_address;
@@ -211,8 +219,10 @@ final spendValidationProvider = Provider<bool>((ref) {
 });
 
 /// returns selected coins for a given account
-final getSelectedCoinsProvider =
-    Provider.family<List<Output>, String>((ref, accountId) {
+final getSelectedCoinsProvider = Provider.family<List<Output>, String>((
+  ref,
+  accountId,
+) {
   List<Output> outputs = ref.watch(outputsProvider(accountId));
   Set<String> selectedCoinIds = ref.watch(coinSelectionStateProvider);
   return outputs
@@ -220,15 +230,13 @@ final getSelectedCoinsProvider =
       .toList();
 });
 
-final showSpendRequirementOverlayProvider = Provider<bool>(
-  (ref) {
-    EnvoyAccount? account = ref.watch(selectedAccountProvider);
-    if (account == null) {
-      return false;
-    }
-    return ref.watch(getTotalSelectedAmount(account.id)) != 0;
-  },
-);
+final showSpendRequirementOverlayProvider = Provider<bool>((ref) {
+  EnvoyAccount? account = ref.watch(selectedAccountProvider);
+  if (account == null) {
+    return false;
+  }
+  return ref.watch(getTotalSelectedAmount(account.id)) != 0;
+});
 
 ///clears all the spend related states. this is need once the user exits the spend screen or account details...
 ///or when the user finishes the spend flow

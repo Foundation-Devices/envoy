@@ -40,36 +40,41 @@ final primeRoutes = GoRoute(
       name: ONBOARD_PRIME_BLUETOOTH,
       routes: [
         GoRoute(
-            path: "pairing",
-            builder: (context, state) => const PrimeOnboardParing(),
-            name: ONBOARD_PRIME_PAIR),
+          path: "pairing",
+          builder: (context, state) => const PrimeOnboardParing(),
+          name: ONBOARD_PRIME_PAIR,
+        ),
         GoRoute(
-            path: "update",
-            builder: (context, state) => const OnboardPrimeFwUpdate(),
-            name: ONBOARD_PRIME_FIRMWARE_UPDATE),
+          path: "update",
+          builder: (context, state) => const OnboardPrimeFwUpdate(),
+          name: ONBOARD_PRIME_FIRMWARE_UPDATE,
+        ),
         GoRoute(
-            path: "continuing_setup",
-            builder: (context, state) => const PrimeContinuingSetup(),
-            name: ONBOARD_PRIME_CONTINUING_SETUP),
+          path: "continuing_setup",
+          builder: (context, state) => const PrimeContinuingSetup(),
+          name: ONBOARD_PRIME_CONTINUING_SETUP,
+        ),
         GoRoute(
-            path: "magic",
-            name: ONBOARD_PRIME_MAGIC_BACKUP,
-            builder: (context, state) => const PrimeMagicBackup()),
+          path: "magic",
+          name: ONBOARD_PRIME_MAGIC_BACKUP,
+          builder: (context, state) => const PrimeMagicBackup(),
+        ),
         GoRoute(
-            path: "connected_success",
-            name: ONBOARD_PRIME_CONNECTED_SUCCESS,
-            builder: (context, state) => const WalletSetupSuccess(
-                  isPrimeWallet: true,
-                )),
+          path: "connected_success",
+          name: ONBOARD_PRIME_CONNECTED_SUCCESS,
+          builder: (context, state) =>
+              const WalletSetupSuccess(isPrimeWallet: true),
+        ),
       ],
       builder: (context, state) => const OnboardPrimeBluetooth(),
     ),
     GoRoute(
-        path: "repair",
-        name: ONBOARD_REPAIRING,
-        builder: (context, state) {
-          return const PrimeReconnect();
-        }),
+      path: "repair",
+      name: ONBOARD_REPAIRING,
+      builder: (context, state) {
+        return const PrimeReconnect();
+      },
+    ),
   ],
   builder: (context, state) => const OnboardPrimeWelcome(),
 );

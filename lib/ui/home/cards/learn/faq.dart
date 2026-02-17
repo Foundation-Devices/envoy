@@ -30,14 +30,16 @@ List<FaqEntry> extractFaqs() {
   int index = 1;
 
   for (;;) {
-    String? question =
-        getTranslationByKey("envoy_faq_question_${index.toString()}");
+    String? question = getTranslationByKey(
+      "envoy_faq_question_${index.toString()}",
+    );
     if (question == null) {
       break;
     }
 
-    String? answer =
-        getTranslationByKey("envoy_faq_answer_${index.toString()}");
+    String? answer = getTranslationByKey(
+      "envoy_faq_answer_${index.toString()}",
+    );
     if (answer == null) {
       break;
     }
@@ -45,8 +47,9 @@ List<FaqEntry> extractFaqs() {
     List<String> links = [];
     int linkIndex = 1;
     // First, check if there is a single link without an index
-    String? singleLink =
-        getTranslationByKey("envoy_faq_link_${index.toString()}");
+    String? singleLink = getTranslationByKey(
+      "envoy_faq_link_${index.toString()}",
+    );
 
     if (singleLink != null) {
       links.add(singleLink);
@@ -54,7 +57,8 @@ List<FaqEntry> extractFaqs() {
       // If no single link is found, check for multiple links
       for (;;) {
         String? link = getTranslationByKey(
-            "envoy_faq_link_${index.toString()}_${linkIndex.toString()}");
+          "envoy_faq_link_${index.toString()}_${linkIndex.toString()}",
+        );
         if (link == null) {
           break;
         }
@@ -73,18 +77,18 @@ List<FaqEntry> extractFaqs() {
 class Faq extends ConsumerWidget {
   final String? searchText;
 
-  const Faq({
-    super.key,
-    this.searchText,
-  });
+  const Faq({super.key, this.searchText});
 
   @override
   Widget build(context, ref) {
     var faqs = ref.watch(faqsProvider);
     if (searchText != null || searchText != "") {
       faqs = faqs
-          .where((entry) =>
-              entry.question.toLowerCase().contains(searchText!.toLowerCase()))
+          .where(
+            (entry) => entry.question.toLowerCase().contains(
+                  searchText!.toLowerCase(),
+                ),
+          )
           .toList();
     }
     return Column(
@@ -107,24 +111,23 @@ class Faq extends ConsumerWidget {
             dividerColor: Colors.transparent,
             expandedHeaderPadding: EdgeInsets.zero,
             children: faqs
-                .map((e) => envoy.ExpansionPanelRadio(
-                      hasIcon: false,
-                      canTapOnHeader: true,
-                      backgroundColor: Colors.transparent,
-                      headerBuilder: (BuildContext context, bool isExpanded) {
-                        return FaqItemWidget(
-                          title: e.question,
-                          isExpanded: isExpanded,
-                          text: e.answer,
-                          links: e.links,
-                        );
-                      },
-                      body: const SizedBox(
-                        height: 0,
-                        width: 0,
-                      ),
-                      value: e.question,
-                    ))
+                .map(
+                  (e) => envoy.ExpansionPanelRadio(
+                    hasIcon: false,
+                    canTapOnHeader: true,
+                    backgroundColor: Colors.transparent,
+                    headerBuilder: (BuildContext context, bool isExpanded) {
+                      return FaqItemWidget(
+                        title: e.question,
+                        isExpanded: isExpanded,
+                        text: e.answer,
+                        links: e.links,
+                      );
+                    },
+                    body: const SizedBox(height: 0, width: 0),
+                    value: e.question,
+                  ),
+                )
                 .toList(),
           ),
         ),
@@ -141,10 +144,12 @@ class FaqBodyText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle defaultStyle =
-        EnvoyTypography.body.copyWith(color: EnvoyColors.textSecondary);
-    TextStyle linkStyle =
-        EnvoyTypography.button.copyWith(color: EnvoyColors.accentPrimary);
+    TextStyle defaultStyle = EnvoyTypography.body.copyWith(
+      color: EnvoyColors.textSecondary,
+    );
+    TextStyle linkStyle = EnvoyTypography.button.copyWith(
+      color: EnvoyColors.accentPrimary,
+    );
 
     List<TextSpan> spans = [];
 
@@ -156,13 +161,16 @@ class FaqBodyText extends StatelessWidget {
         spans.add(TextSpan(text: span));
       } else {
         int index = linkIndex;
-        spans.add(TextSpan(
+        spans.add(
+          TextSpan(
             text: span.split("]]")[0],
             style: linkStyle,
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 launchUrl(Uri.parse(links[index]));
-              }));
+              },
+          ),
+        );
 
         spans.add(TextSpan(text: span.split("]]")[1]));
         linkIndex++;
@@ -171,10 +179,7 @@ class FaqBodyText extends StatelessWidget {
 
     return RichText(
       textAlign: TextAlign.left,
-      text: TextSpan(
-        style: defaultStyle,
-        children: <TextSpan>[...spans],
-      ),
+      text: TextSpan(style: defaultStyle, children: <TextSpan>[...spans]),
     );
   }
 }
@@ -229,8 +234,9 @@ class FaqItemWidget extends StatelessWidget {
                             Flexible(
                               child: Text(
                                 title,
-                                style: EnvoyTypography.button
-                                    .copyWith(color: EnvoyColors.accentPrimary),
+                                style: EnvoyTypography.button.copyWith(
+                                  color: EnvoyColors.accentPrimary,
+                                ),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 4,
                               ),
@@ -246,11 +252,7 @@ class FaqItemWidget extends StatelessWidget {
                         ),
                         if (isExpanded)
                           const SizedBox(height: EnvoySpacing.small),
-                        if (isExpanded)
-                          FaqBodyText(
-                            text,
-                            links: links,
-                          ),
+                        if (isExpanded) FaqBodyText(text, links: links),
                       ],
                     ),
                   ),

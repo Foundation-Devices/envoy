@@ -9,3 +9,4 @@ pub mod envoy_account;
 pub mod errors;
 /// flutter_rust_bridge:ignore
 mod migration;
+pub mod sign_message;

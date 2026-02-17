@@ -34,15 +34,16 @@ class AddressEntry extends ConsumerStatefulWidget {
   final TextEditingController? controller;
   final Function(ParseResult)? onPaste;
 
-  const AddressEntry(
-      {super.key,
-      this.initalAddress,
-      this.onAddressChanged,
-      this.onAmountChanged,
-      this.canEdit = true,
-      this.controller,
-      this.onPaste,
-      required this.account});
+  const AddressEntry({
+    super.key,
+    this.initalAddress,
+    this.onAddressChanged,
+    this.onAmountChanged,
+    this.canEdit = true,
+    this.controller,
+    this.onPaste,
+    required this.account,
+  });
 
   @override
   ConsumerState<AddressEntry> createState() => _AddressEntryState();
@@ -270,7 +271,9 @@ class _AddressEntryState extends ConsumerState<AddressEntry> {
 
   Future<void> validate(String value) async {
     final check = await EnvoyAccountHandler.validateAddress(
-        address: value, network: widget.account.network);
+      address: value,
+      network: widget.account.network,
+    );
     setState(() => addressValid = check);
     widget.onAddressChanged?.call(value);
   }

@@ -79,9 +79,7 @@ class FeedManager {
 
       if (lastNum > 1) {
         for (var i = 2; i <= lastNum; i++) {
-          var response = await getVimeoData(
-            page: i,
-          );
+          var response = await getVimeoData(page: i);
 
           final data = json.decode(response.body);
           final videos = (data['data'] as List);
@@ -116,8 +114,9 @@ class FeedManager {
 
       if (vimeoTags.length >= 1) {
         Map<String, dynamic>? orderTag = vimeoTags.singleWhere(
-            (element) => element["name"].toString().contains("Order"),
-            orElse: () => null);
+          (element) => element["name"].toString().contains("Order"),
+          orElse: () => null,
+        );
 
         orderString = orderTag?["tag"] ?? "";
       }
@@ -129,11 +128,7 @@ class FeedManager {
           : int.tryParse(orderString.split('-').last);
 
       // Extract additional tags
-      List<String> filterTags = [
-        "Envoy",
-        "Passport",
-        "PassportPrime",
-      ];
+      List<String> filterTags = ["Envoy", "Passport", "PassportPrime"];
 
       for (var tag in vimeoTags) {
         String tagName = tag["name"].toString();
@@ -142,19 +137,21 @@ class FeedManager {
         }
       }
 
-      currentVideos.add(Video(
-        video["name"],
-        video["description"],
-        video["duration"],
-        DateTime.parse(video["release_time"]),
-        contentMap,
-        video["player_embed_url"],
-        video["link"],
-        null,
-        order,
-        tags,
-        thumbnailUrl: (video["pictures"])["sizes"][3]["link"],
-      ));
+      currentVideos.add(
+        Video(
+          video["name"],
+          video["description"],
+          video["duration"],
+          DateTime.parse(video["release_time"]),
+          contentMap,
+          video["player_embed_url"],
+          video["link"],
+          null,
+          order,
+          tags,
+          thumbnailUrl: (video["pictures"])["sizes"][3]["link"],
+        ),
+      );
     }
 
     return currentVideos;
@@ -187,29 +184,30 @@ class FeedManager {
 
       if (item.categories != null) {
         // Extract category values and store them in tags
-        tags.addAll(item.categories!
-            .map((category) => category.value.trim().toLowerCase()));
+        tags.addAll(
+          item.categories!.map(
+            (category) => category.value.trim().toLowerCase(),
+          ),
+        );
       }
 
-      List<String> filterTags = [
-        "envoy",
-        "passport core",
-        "passport prime",
-      ];
+      List<String> filterTags = ["envoy", "passport core", "passport prime"];
 
       // Filter tags to include only the relevant ones
       tags = tags.where((tag) => filterTags.contains(tag)).toList();
 
-      currentBlogPosts.add(BlogPost(
-        item.title!,
-        htmlContent, // Use the decoded HTML content
-        item.pubDate!,
-        item.link!,
-        item.guid!,
-        null,
-        tags: tags,
-        thumbnailUrl: thumbnailUrl,
-      ));
+      currentBlogPosts.add(
+        BlogPost(
+          item.title!,
+          htmlContent, // Use the decoded HTML content
+          item.pubDate!,
+          item.link!,
+          item.guid!,
+          null,
+          tags: tags,
+          thumbnailUrl: thumbnailUrl,
+        ),
+      );
     }
     updateBlogPosts(currentBlogPosts);
   }

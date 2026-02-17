@@ -11,7 +11,7 @@ import 'package:envoy/util/console.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 
 class ShardsHandler extends PassportMessageHandler {
-  ShardsHandler(super.writer);
+  ShardsHandler(super.connection);
 
   @override
   bool canHandle(api.QuantumLinkMessage message) {
@@ -23,8 +23,7 @@ class ShardsHandler extends PassportMessageHandler {
   }
 
   @override
-  Future<void> handleMessage(
-      api.QuantumLinkMessage message, String bleId) async {
+  Future<void> handleMessage(api.QuantumLinkMessage message) async {
     if (message case api.QuantumLinkMessage_BackupShardRequest request) {
       kPrint("Got shard backup request!");
       final shard = request.field0.shard;
@@ -32,13 +31,19 @@ class ShardsHandler extends PassportMessageHandler {
       // TODO: add shard ids to API
       try {
         await PrimeShard().addShard(shard: shard.field0);
-        writer.writeMessage(api.QuantumLinkMessage.backupShardResponse(
-            api.BackupShardResponse_Success()));
+        qlConnection.writeMessage(
+          api.QuantumLinkMessage.backupShardResponse(
+            api.BackupShardResponse_Success(),
+          ),
+        );
         kPrint("Shard backed up!");
       } catch (e, _) {
         kPrint("Shard backup failure: $e");
-        writer.writeMessage(api.QuantumLinkMessage.backupShardResponse(
-            api.BackupShardResponse_Error(error: e.toString())));
+        qlConnection.writeMessage(
+          api.QuantumLinkMessage.backupShardResponse(
+            api.BackupShardResponse_Error(error: e.toString()),
+          ),
+        );
       }
     }
     if (message
@@ -46,18 +51,22 @@ class ShardsHandler extends PassportMessageHandler {
       kPrint("Got shard health check request!");
       final fingerprint = request.field0.seedFingerprint;
       try {
-        final shard = await PrimeShard()
-            .getShard(fingerprint: Uint8List.fromList(fingerprint.field0));
-        await writer.writeMessage(
-            api.QuantumLinkMessage.primeMagicBackupStatusResponse(
-                api.PrimeMagicBackupStatusResponse(
-                    shardBackupFound: shard != null)));
+        final shard = await PrimeShard().getShard(
+          fingerprint: Uint8List.fromList(fingerprint.field0),
+        );
+        await qlConnection.writeMessage(
+          api.QuantumLinkMessage.primeMagicBackupStatusResponse(
+            api.PrimeMagicBackupStatusResponse(shardBackupFound: shard != null),
+          ),
+        );
         kPrint("Shard health checked! found ? ${shard != null}");
       } catch (e, _) {
         kPrint("Shard health check failure: $e");
-        await writer.writeMessage(
-            api.QuantumLinkMessage.primeMagicBackupStatusResponse(
-                api.PrimeMagicBackupStatusResponse(shardBackupFound: false)));
+        await qlConnection.writeMessage(
+          api.QuantumLinkMessage.primeMagicBackupStatusResponse(
+            api.PrimeMagicBackupStatusResponse(shardBackupFound: false),
+          ),
+        );
       }
     }
 
@@ -66,24 +75,32 @@ class ShardsHandler extends PassportMessageHandler {
       final fingerprint = request.field0.seedFingerprint;
 
       try {
-        final shard = await PrimeShard()
-            .getShard(fingerprint: Uint8List.fromList(fingerprint.field0));
+        final shard = await PrimeShard().getShard(
+          fingerprint: Uint8List.fromList(fingerprint.field0),
+        );
         if (shard == null) {
-          await writer.writeMessage(api.QuantumLinkMessage.restoreShardResponse(
-              api.RestoreShardResponse_NotFound()));
+          await qlConnection.writeMessage(
+            api.QuantumLinkMessage.restoreShardResponse(
+              api.RestoreShardResponse_NotFound(),
+            ),
+          );
           throw Exception("Shard not found!");
         }
 
-        final result = await writer.writeMessage(
-            api.QuantumLinkMessage.restoreShardResponse(
-                api.RestoreShardResponse_Success(
-                    shard: api.Shard(field0: shard))));
+        final result = await qlConnection.writeMessage(
+          api.QuantumLinkMessage.restoreShardResponse(
+            api.RestoreShardResponse_Success(shard: api.Shard(field0: shard)),
+          ),
+        );
 
         kPrint("Shard restored! success ? $result");
       } catch (e, _) {
         kPrint("Shard restore failure: $e");
-        await writer.writeMessage(api.QuantumLinkMessage.backupShardResponse(
-            api.BackupShardResponse_Error(error: e.toString())));
+        await qlConnection.writeMessage(
+          api.QuantumLinkMessage.backupShardResponse(
+            api.BackupShardResponse_Error(error: e.toString()),
+          ),
+        );
       }
     }
   }

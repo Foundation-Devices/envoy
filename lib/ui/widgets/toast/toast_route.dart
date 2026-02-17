@@ -27,15 +27,15 @@ class EnvoyToastRoute<T> extends OverlayRoute<T> {
   T? _result;
   EnvoyToastRouteStatus? currentStatus;
 
-  EnvoyToastRoute({
-    required this.envoy,
-    super.settings,
-  })  : _builder = Builder(builder: (BuildContext innerContext) {
-          return GestureDetector(
-            onTap: envoy.onTap != null ? () => envoy.onTap!(envoy) : null,
-            child: envoy,
-          );
-        }),
+  EnvoyToastRoute({required this.envoy, super.settings})
+      : _builder = Builder(
+          builder: (BuildContext innerContext) {
+            return GestureDetector(
+              onTap: envoy.onTap != null ? () => envoy.onTap!(envoy) : null,
+              child: envoy,
+            );
+          },
+        ),
         _onStatusChanged = envoy.onStatusChanged {
     _configureAlignment();
   }
@@ -67,25 +67,23 @@ class EnvoyToastRoute<T> extends OverlayRoute<T> {
 
     overlays.add(
       OverlayEntry(
-          builder: (BuildContext context) {
-            final Widget annotatedChild = Semantics(
-              focused: false,
-              container: true,
-              explicitChildNodes: true,
-              child: AlignTransition(
-                alignment: _animation!,
-                child: envoy.isDismissible
-                    ? _getDismissible(_builder)
-                    : Container(
-                        margin: envoy.margin,
-                        child: _builder,
-                      ),
-              ),
-            );
-            return annotatedChild;
-          },
-          maintainState: false,
-          opaque: opaque),
+        builder: (BuildContext context) {
+          final Widget annotatedChild = Semantics(
+            focused: false,
+            container: true,
+            explicitChildNodes: true,
+            child: AlignTransition(
+              alignment: _animation!,
+              child: envoy.isDismissible
+                  ? _getDismissible(_builder)
+                  : Container(margin: envoy.margin, child: _builder),
+            ),
+          );
+          return annotatedChild;
+        },
+        maintainState: false,
+        opaque: opaque,
+      ),
     );
     return overlays;
   }
@@ -94,31 +92,29 @@ class EnvoyToastRoute<T> extends OverlayRoute<T> {
 
   Widget _getDismissible(Widget child) {
     return Dismissible(
-        direction: DismissDirection.up,
-        resizeDuration: null,
-        confirmDismiss: (_) {
-          if (currentStatus == EnvoyToastRouteStatus.IS_APPEARING ||
-              currentStatus == EnvoyToastRouteStatus.IS_HIDING) {
-            return Future.value(false);
-          }
-          return Future.value(true);
-        },
-        key: Key(dismissibleKeyGen),
-        onDismissed: (_) {
-          dismissibleKeyGen += '1';
-          _cancelTimer();
-          _wasDismissedBySwipe = true;
+      direction: DismissDirection.up,
+      resizeDuration: null,
+      confirmDismiss: (_) {
+        if (currentStatus == EnvoyToastRouteStatus.IS_APPEARING ||
+            currentStatus == EnvoyToastRouteStatus.IS_HIDING) {
+          return Future.value(false);
+        }
+        return Future.value(true);
+      },
+      key: Key(dismissibleKeyGen),
+      onDismissed: (_) {
+        dismissibleKeyGen += '1';
+        _cancelTimer();
+        _wasDismissedBySwipe = true;
 
-          if (isCurrent) {
-            navigator!.pop();
-          } else {
-            navigator!.removeRoute(this);
-          }
-        },
-        child: Container(
-          margin: envoy.margin,
-          child: _builder,
-        ));
+        if (isCurrent) {
+          navigator!.pop();
+        } else {
+          navigator!.removeRoute(this);
+        }
+      },
+      child: Container(margin: envoy.margin, child: _builder),
+    );
   }
 
   @override
@@ -138,8 +134,10 @@ class EnvoyToastRoute<T> extends OverlayRoute<T> {
   AnimationController? _controller;
 
   AnimationController createAnimationController() {
-    assert(!_transitionCompleter.isCompleted,
-        'Cannot reuse a $runtimeType after disposing it.');
+    assert(
+      !_transitionCompleter.isCompleted,
+      'Cannot reuse a $runtimeType after disposing it.',
+    );
     assert(envoy.animationDuration >= Duration.zero);
     return AnimationController(
       duration: envoy.animationDuration,
@@ -149,8 +147,10 @@ class EnvoyToastRoute<T> extends OverlayRoute<T> {
   }
 
   Animation<Alignment> createAnimation() {
-    assert(!_transitionCompleter.isCompleted,
-        'Cannot reuse a $runtimeType after disposing it.');
+    assert(
+      !_transitionCompleter.isCompleted,
+      'Cannot reuse a $runtimeType after disposing it.',
+    );
     assert(_controller != null);
     return AlignmentTween(begin: _initialAlignment, end: _endAlignment).animate(
       CurvedAnimation(
@@ -202,11 +202,15 @@ class EnvoyToastRoute<T> extends OverlayRoute<T> {
 
   @override
   void install() {
-    assert(!_transitionCompleter.isCompleted,
-        'Cannot install a $runtimeType after disposing it.');
+    assert(
+      !_transitionCompleter.isCompleted,
+      'Cannot install a $runtimeType after disposing it.',
+    );
     _controller = createAnimationController();
-    assert(_controller != null,
-        '$runtimeType.createAnimationController() returned null.');
+    assert(
+      _controller != null,
+      '$runtimeType.createAnimationController() returned null.',
+    );
     _animation = createAnimation();
     assert(_animation != null, '$runtimeType.createAnimation() returned null.');
     super.install();
@@ -214,10 +218,14 @@ class EnvoyToastRoute<T> extends OverlayRoute<T> {
 
   @override
   TickerFuture didPush() {
-    assert(_controller != null,
-        '$runtimeType.didPush called before calling install() or after calling dispose().');
-    assert(!_transitionCompleter.isCompleted,
-        'Cannot reuse a $runtimeType after disposing it.');
+    assert(
+      _controller != null,
+      '$runtimeType.didPush called before calling install() or after calling dispose().',
+    );
+    assert(
+      !_transitionCompleter.isCompleted,
+      'Cannot reuse a $runtimeType after disposing it.',
+    );
     _animation!.addStatusListener(_handleStatusChanged);
     _configureTimer();
     super.didPush();
@@ -226,10 +234,14 @@ class EnvoyToastRoute<T> extends OverlayRoute<T> {
 
   @override
   void didReplace(Route<dynamic>? oldRoute) {
-    assert(_controller != null,
-        '$runtimeType.didReplace called before calling install() or after calling dispose().');
-    assert(!_transitionCompleter.isCompleted,
-        'Cannot reuse a $runtimeType after disposing it.');
+    assert(
+      _controller != null,
+      '$runtimeType.didReplace called before calling install() or after calling dispose().',
+    );
+    assert(
+      !_transitionCompleter.isCompleted,
+      'Cannot reuse a $runtimeType after disposing it.',
+    );
     if (oldRoute is EnvoyToastRoute) {
       _controller!.value = oldRoute._controller!.value;
     }
@@ -239,10 +251,14 @@ class EnvoyToastRoute<T> extends OverlayRoute<T> {
 
   @override
   bool didPop(T? result) {
-    assert(_controller != null,
-        '$runtimeType.didPop called before calling install() or after calling dispose().');
-    assert(!_transitionCompleter.isCompleted,
-        'Cannot reuse a $runtimeType after disposing it.');
+    assert(
+      _controller != null,
+      '$runtimeType.didPop called before calling install() or after calling dispose().',
+    );
+    assert(
+      !_transitionCompleter.isCompleted,
+      'Cannot reuse a $runtimeType after disposing it.',
+    );
 
     _result = result;
     _cancelTimer();
@@ -299,8 +315,10 @@ class EnvoyToastRoute<T> extends OverlayRoute<T> {
 
   @override
   void dispose() {
-    assert(!_transitionCompleter.isCompleted,
-        'Cannot dispose a $runtimeType twice.');
+    assert(
+      !_transitionCompleter.isCompleted,
+      'Cannot dispose a $runtimeType twice.',
+    );
     _controller?.dispose();
     _transitionCompleter.complete(_result);
     super.dispose();
@@ -313,8 +331,10 @@ class EnvoyToastRoute<T> extends OverlayRoute<T> {
   String toString() => '$runtimeType(animation: $_controller)';
 }
 
-EnvoyToastRoute showToast<T>(
-    {required BuildContext context, required EnvoyToast toast}) {
+EnvoyToastRoute showToast<T>({
+  required BuildContext context,
+  required EnvoyToast toast,
+}) {
   return EnvoyToastRoute<T>(
     envoy: toast,
     settings: const RouteSettings(name: ENVY_TOAST_ROUTE),

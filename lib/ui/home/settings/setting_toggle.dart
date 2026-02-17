@@ -39,7 +39,6 @@ class _SettingToggleState extends State<SettingToggle> {
     return Semantics(
       identifier: id,
       container: true,
-      excludeSemantics: true,
       child: IgnorePointer(
         ignoring: !widget.enabled,
         child: EnvoySwitch(
@@ -84,12 +83,7 @@ class EnvoySwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final id = semanticsLabel != null ? '$semanticsLabel-$value' : null;
-    return Semantics(
-      identifier: id,
-      container: true,
-      toggled: value,
-      excludeSemantics: true,
+    return ExcludeSemantics(
       child: CupertinoSwitch(
         activeTrackColor: EnvoyColors.darkTeal,
         thumbColor: EnvoyColors.whitePrint,

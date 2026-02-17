@@ -10,14 +10,12 @@ class EnvoyGradientProgress extends StatefulWidget {
   final List<Color> colors;
   final double progress;
   final Color backgroundColor;
-  const EnvoyGradientProgress(
-      {super.key,
-      required this.progress,
-      this.colors = const [
-        Color(0xff232728),
-        Color(0xff6D7576),
-      ],
-      this.backgroundColor = EnvoyColors.gray500});
+  const EnvoyGradientProgress({
+    super.key,
+    required this.progress,
+    this.colors = const [Color(0xff232728), Color(0xff6D7576)],
+    this.backgroundColor = EnvoyColors.gray500,
+  });
 
   @override
   State<EnvoyGradientProgress> createState() => _EnvoyGradientProgressState();
@@ -33,9 +31,10 @@ class _EnvoyGradientProgressState extends State<EnvoyGradientProgress>
       builder: (context, value, child) {
         return CustomPaint(
           painter: GradientProgressPainter(
-              progress: value,
-              colors: widget.colors,
-              backgroundColor: widget.backgroundColor),
+            progress: value,
+            colors: widget.colors,
+            backgroundColor: widget.backgroundColor,
+          ),
           size: const Size(double.infinity, 12), // Height of 4 pixels
         );
       },
@@ -64,8 +63,9 @@ class GradientProgressPainter extends CustomPainter {
     final backGroundPaint = Paint()..color = backgroundColor;
 
     final backgroundRect = RRect.fromRectAndRadius(
-        Rect.fromLTWH(0, 0, size.width, size.height),
-        Radius.circular(size.height));
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      Radius.circular(size.height),
+    );
 
     final rect = RRect.fromRectAndRadius(
       Rect.fromLTWH(0, 0, size.width * progress, size.height),

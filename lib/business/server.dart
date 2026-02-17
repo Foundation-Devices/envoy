@@ -23,8 +23,9 @@ class Server {
   }
 
   Future<FirmwareUpdate> fetchFirmwareUpdateInfo(int deviceId) async {
-    final response =
-        await http!.get('$_serverAddress/firmware/device?id=$deviceId');
+    final response = await http!.get(
+      '$_serverAddress/firmware/device?id=$deviceId',
+    );
 
     if (response.statusCode == 202) {
       var fw = FirmwareUpdate.fromJson(jsonDecode(response.body));
@@ -35,8 +36,9 @@ class Server {
   }
 
   Future<List<PrimePatch>> fetchPrimePatches(String currentVersion) async {
-    final response = await http!
-        .get('$_serverAddress/prime/patches?version=$currentVersion');
+    final response = await http!.get(
+      '$_serverAddress/prime/patches?version=$currentVersion',
+    );
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> json = jsonDecode(response.body);
@@ -65,18 +67,22 @@ class Server {
         return Uint8List.fromList(response.bodyBytes);
       } else {
         throw Exception(
-            'Failed to fetch prime patch ${response.statusCode} ${response.body}');
+          'Failed to fetch prime patch ${response.statusCode} ${response.body}',
+        );
       }
     } catch (e) {
-      EnvoyReport()
-          .log("Sever", "Error fetching prime patches: $e : ${patch.url}");
+      EnvoyReport().log(
+        "Sever",
+        "Error fetching prime patches: $e : ${patch.url}",
+      );
     }
 
     return null;
   }
 
   Future<List<PatchBinary>> fetchPrimePatchBinaries(
-      String currentVersion) async {
+    String currentVersion,
+  ) async {
     List<PatchBinary> result = [];
 
     try {
@@ -84,8 +90,10 @@ class Server {
       for (final patch in patches) {
         final response = await http!.get(patch.url);
         if (response.statusCode == 200) {
-          PatchBinary patchBinary =
-              (binary: Uint8List.fromList(response.bodyBytes), patch: patch);
+          PatchBinary patchBinary = (
+            binary: Uint8List.fromList(response.bodyBytes),
+            patch: patch,
+          );
           result.add(patchBinary);
         } else {
           throw Exception('Failed to fetch prime patch');
@@ -130,11 +138,15 @@ class Server {
         return isDeprecated;
       } else {
         throw Exception(
-            'Failed to fetch deprecated versions,server error ${response.statusCode}');
+          'Failed to fetch deprecated versions,server error ${response.statusCode}',
+        );
       }
     } catch (e, stackTrace) {
-      EnvoyReport().log("UpdateCheck", "Error checking envoy update: $e",
-          stackTrace: stackTrace);
+      EnvoyReport().log(
+        "UpdateCheck",
+        "Error checking envoy update: $e",
+        stackTrace: stackTrace,
+      );
       kPrint("Error checking for force update: $e");
       return false;
     }
@@ -166,17 +178,16 @@ class PrimePatch {
 
   factory PrimePatch.fromJson(Map<String, dynamic> json) {
     return PrimePatch(
-        version: json['version'],
-        baseVersion: json['base_version'],
-        signedSha256: json['signed_sha256'],
-        unsignedSha256: json['unsigned_sha256'],
-        updateFilename: json['update_filename'],
-        signatureFilename: json['signature_filename'],
-        url: json['url'],
-        changelog: json['changelog'],
-        releaseDate: DateTime.parse(
-          (json['release_date']),
-        ));
+      version: json['version'],
+      baseVersion: json['base_version'],
+      signedSha256: json['signed_sha256'],
+      unsignedSha256: json['unsigned_sha256'],
+      updateFilename: json['update_filename'],
+      signatureFilename: json['signature_filename'],
+      url: json['url'],
+      changelog: json['changelog'],
+      releaseDate: DateTime.parse((json['release_date'])),
+    );
   }
 }
 
@@ -184,10 +195,7 @@ class ApiKeys {
   final String mapsKey;
   final String rampKey;
 
-  ApiKeys({
-    required this.mapsKey,
-    required this.rampKey,
-  });
+  ApiKeys({required this.mapsKey, required this.rampKey});
 
   factory ApiKeys.fromJson(Map<String, dynamic> json) {
     final keys = json['keys'];
@@ -196,10 +204,7 @@ class ApiKeys {
 
   Map<String, dynamic> toJson() {
     return {
-      'keys': {
-        'maps_api': mapsKey,
-        'ramp_api': rampKey,
-      }
+      'keys': {'maps_api': mapsKey, 'ramp_api': rampKey},
     };
   }
 }
@@ -214,27 +219,30 @@ class FirmwareUpdate {
   final DateTime releaseDate;
   final int deviceId;
 
-  FirmwareUpdate(
-      {required this.version,
-      required this.url,
-      required this.sha256,
-      required this.reproducibleHash,
-      required this.md5,
-      required this.changeLog,
-      required this.releaseDate,
-      required this.deviceId});
+  FirmwareUpdate({
+    required this.version,
+    required this.url,
+    required this.sha256,
+    required this.reproducibleHash,
+    required this.md5,
+    required this.changeLog,
+    required this.releaseDate,
+    required this.deviceId,
+  });
 
   factory FirmwareUpdate.fromJson(Map<String, dynamic> json) {
     final fw = json['firmware'];
     return FirmwareUpdate(
-        deviceId: fw['device_id'],
-        sha256: fw['sha256'],
-        md5: fw['md5'],
-        url: fw['url'],
-        changeLog: fw['changelog'],
-        reproducibleHash: fw['reproducible_hash'],
-        releaseDate: DateTime.fromMillisecondsSinceEpoch(
-            (fw['release_date']['secs_since_epoch']) * 1000),
-        version: fw['version']);
+      deviceId: fw['device_id'],
+      sha256: fw['sha256'],
+      md5: fw['md5'],
+      url: fw['url'],
+      changeLog: fw['changelog'],
+      reproducibleHash: fw['reproducible_hash'],
+      releaseDate: DateTime.fromMillisecondsSinceEpoch(
+        (fw['release_date']['secs_since_epoch']) * 1000,
+      ),
+      version: fw['version'],
+    );
   }
 }

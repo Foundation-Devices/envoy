@@ -156,7 +156,9 @@ class OnrampSessionInfo {
 }
 
 Future<OnrampSessionInfo?> createOnrampSession(
-    String address, String accountId) async {
+  String address,
+  String accountId,
+) async {
   final body = 'wallet_addresses[bitcoin]=$address'
       '&destination_networks[0]=bitcoin'
       '&destination_currencies[0]=btc'
@@ -233,16 +235,18 @@ Future<void> checkAllOnrampSessionStatuses() async {
 
         if (details != null) {
           transactionId = details['transaction_id'];
-          destinationAmount =
-              double.tryParse(details['destination_amount'] ?? '');
+          destinationAmount = double.tryParse(
+            details['destination_amount'] ?? '',
+          );
           walletAddress = details['wallet_address'] as String?;
           sourceCurrency = details['source_currency'] as String?;
 
           if (details['fees'] != null) {
             final fees = details['fees'] as Map;
             networkFee = double.tryParse(fees['network_fee_amount'] ?? '');
-            transactionFee =
-                double.tryParse(fees['transaction_fee_amount'] ?? '');
+            transactionFee = double.tryParse(
+              fees['transaction_fee_amount'] ?? '',
+            );
           }
         }
 
@@ -275,8 +279,9 @@ Future<void> checkAllOnrampSessionStatuses() async {
             break;
 
           case 'fulfillment_processing':
-            EnvoyTransaction? pendingTx =
-                await EnvoyStorage().getPendingTx(session.id);
+            EnvoyTransaction? pendingTx = await EnvoyStorage().getPendingTx(
+              session.id,
+            );
             if (pendingTx == null) {
               int amountInSats = (destinationAmount! * 100000000).toInt();
               await EnvoyStorage().addPendingTx(
@@ -295,8 +300,9 @@ Future<void> checkAllOnrampSessionStatuses() async {
             break;
 
           case 'fulfillment_complete':
-            EnvoyTransaction? pendingTx =
-                await EnvoyStorage().getPendingTx(session.id);
+            EnvoyTransaction? pendingTx = await EnvoyStorage().getPendingTx(
+              session.id,
+            );
             if (pendingTx == null) {
               int amountInSats = (destinationAmount! * 100000000).toInt();
               await EnvoyStorage().addPendingTx(
@@ -330,11 +336,14 @@ Future<void> checkAllOnrampSessionStatuses() async {
 
           await EnvoyStorage().deleteOnrampSession(sessionId);
           await EnvoyStorage().deletePendingTx(sessionId);
-          EnvoyReport().log("Stripe",
-              'Stripe error for session $sessionId: [$code] $message');
+          EnvoyReport().log(
+            "Stripe",
+            'Stripe error for session $sessionId: [$code] $message',
+          );
         } else {
           kPrint(
-              'Failed to check session $sessionId: ${response.statusCode} ${response.body}');
+            'Failed to check session $sessionId: ${response.statusCode} ${response.body}',
+          );
         }
       }
     } catch (e) {
@@ -373,16 +382,18 @@ Future<bool> waitForOnrampSessionCompletion(String sessionId) async {
 
         if (details != null) {
           transactionId = details['transaction_id'];
-          destinationAmount =
-              double.tryParse(details['destination_amount'] ?? '');
+          destinationAmount = double.tryParse(
+            details['destination_amount'] ?? '',
+          );
           walletAddress = details['wallet_address'] as String?;
           sourceCurrency = details['source_currency'] as String?;
 
           if (details['fees'] != null) {
             final fees = details['fees'] as Map;
             networkFee = double.tryParse(fees['network_fee_amount'] ?? '');
-            transactionFee =
-                double.tryParse(fees['transaction_fee_amount'] ?? '');
+            transactionFee = double.tryParse(
+              fees['transaction_fee_amount'] ?? '',
+            );
           }
         }
 
@@ -442,13 +453,15 @@ Future<(bool, OnrampSessionInfo?)> launchOnrampSession(
   // Poll for session status (blocks until success/fail/timeout)
   final success = await waitForOnrampSessionCompletion(session.id);
 
-  final updatedSession =
-      await EnvoyStorage().getStoredOnrampSession(session.id);
+  final updatedSession = await EnvoyStorage().getStoredOnrampSession(
+    session.id,
+  );
 
   if (success && updatedSession != null) {
     kPrint('✅ Onramp session ${updatedSession.id} succeeded.');
-    EnvoyTransaction? pendingTx =
-        await EnvoyStorage().getPendingTx(updatedSession.id);
+    EnvoyTransaction? pendingTx = await EnvoyStorage().getPendingTx(
+      updatedSession.id,
+    );
     if (pendingTx == null && updatedSession.destinationAmount != null) {
       int amountInSats =
           (updatedSession.destinationAmount! * 100000000).toInt();

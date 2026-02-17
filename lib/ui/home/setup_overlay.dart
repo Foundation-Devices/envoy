@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/account/accounts_manager.dart';
-import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
@@ -29,7 +28,6 @@ import 'package:envoy/ui/widgets/scanner/decoders/device_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/pair_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
-import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
@@ -75,9 +73,10 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _animation = Tween<double>(begin: 0, end: overlayHeight).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _animation = Tween<double>(
+      begin: 0,
+      end: overlayHeight,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward(); // Start animation
   }
@@ -140,7 +139,8 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.xs),
+                        horizontal: EnvoySpacing.xs,
+                      ),
                       child: Card(
                         elevation: 100,
                         margin: EdgeInsets.zero,
@@ -156,19 +156,22 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Container(
-                                width: 40,
-                                height: 4,
-                                margin: const EdgeInsets.only(
-                                    top: EnvoySpacing.xs,
-                                    bottom: EnvoySpacing.small),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey,
-                                  borderRadius: BorderRadius.circular(2),
-                                )),
+                              width: 40,
+                              height: 4,
+                              margin: const EdgeInsets.only(
+                                top: EnvoySpacing.xs,
+                                bottom: EnvoySpacing.small,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: EnvoySpacing.medium1),
+                                  horizontal: EnvoySpacing.medium1,
+                                ),
                                 child: SingleChildScrollView(
                                   physics: const NeverScrollableScrollPhysics(),
                                   // this is to remove overflow warning while animating
@@ -181,7 +184,8 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                         Column(
                                           children: [
                                             const SizedBox(
-                                                height: EnvoySpacing.medium3),
+                                              height: EnvoySpacing.medium3,
+                                            ),
                                             EnvoyCardButton(
                                               image:
                                                   'assets/welcome_envoy_sm.png',
@@ -191,16 +195,18 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                               onTap: () {
                                                 Navigator.pop(context);
                                                 context.pushNamed(
-                                                    ONBOARD_ENVOY_SETUP,
-                                                    queryParameters: {
-                                                      "setupEnvoy": "1"
-                                                    });
+                                                  ONBOARD_ENVOY_SETUP,
+                                                  queryParameters: {
+                                                    "setupEnvoy": "1",
+                                                  },
+                                                );
                                               },
                                             ),
                                           ],
                                         ),
                                       const SizedBox(
-                                          height: EnvoySpacing.medium3),
+                                        height: EnvoySpacing.medium3,
+                                      ),
                                       EnvoyCardButton(
                                         image: 'assets/passport_and_prime.png',
                                         imagePaddingLeft: 15,
@@ -216,7 +222,8 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
                                         },
                                       ),
                                       const SizedBox(
-                                          height: EnvoySpacing.medium3),
+                                        height: EnvoySpacing.medium3,
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -239,103 +246,68 @@ class _AnimatedBottomOverlayState extends ConsumerState<AnimatedBottomOverlay>
 
 void removeExistingPrime(BuildContext context, Device device) {
   showEnvoyDialog(
-      context: context,
-      dialog: EnvoyPopUp(
-        icon: EnvoyIcons.alert,
-        typeOfMessage: PopUpState.warning,
-        showCloseButton: true,
-        content: S().manage_device_deletePassportWarning,
-        primaryButtonLabel: S().component_delete,
-        onPrimaryButtonTap: (context) {
-          Devices().deleteDevice(device);
+    context: context,
+    dialog: EnvoyPopUp(
+      icon: EnvoyIcons.alert,
+      typeOfMessage: PopUpState.warning,
+      showCloseButton: true,
+      content: S().manage_device_deletePassportWarning,
+      primaryButtonLabel: S().component_delete,
+      onPrimaryButtonTap: (context) {
+        Devices().deleteDevice(device);
 
-          // Pop the dialog
-          Navigator.pop(context);
+        // Pop the dialog
+        Navigator.pop(context);
 
-          // Go back to devices list
-          context.go(ROUTE_DEVICES);
-        },
-      ));
+        // Go back to devices list
+        context.go(ROUTE_DEVICES);
+      },
+    ),
+  );
 }
 
 void scanForDevice(BuildContext context, WidgetRef ref) async {
   ref.read(bleConnectionProvider);
 
-  void disconnectExistingPrimeDialog(BuildContext context) {
-    showEnvoyDialog(
-      context: context,
-      dismissible: true,
-      dialog: EnvoyPopUp(
-        icon: EnvoyIcons.alert,
-        title: S().manage_deviceDetailsModalDisconnectExistingPassport_header,
-        typeOfMessage: PopUpState.warning,
-        showCloseButton: true,
-        content:
-            S().manage_deviceDetailsModalDisconnectExistingPassport_content,
-        secondaryButtonLabel: S().component_cancel,
-        primaryButtonLabel:
-            S().manage_deviceDetailsModalDisconnectExistingPassport_header,
-        onSecondaryButtonTap: (context) {
-          Navigator.pop(context);
-        },
-        onPrimaryButtonTap: (context) async {
-          Navigator.pop(context);
-          Navigator.pop(context);
-          await Future.delayed(const Duration(milliseconds: 500));
-          if (Devices().getPrimeDevices.isNotEmpty && context.mounted) {
-            final device = Devices().getPrimeDevices.first;
-            removeExistingPrime(context, device);
-          } else {
-            EnvoyReport().log("ScanForDevice",
-                "No existing Prime device found when trying to remove existing Prime during pairing.");
-          }
+  showScannerDialog(
+    context: context,
+    onBackPressed: (context) {
+      Navigator.pop(context);
+    },
+    decoder: DeviceDecoder(
+      pairPayloadDecoder: PairPayloadDecoder(
+        onScan: (binary) {
+          addPassportAccount(binary, context);
         },
       ),
-    );
-  }
-
-  showScannerDialog(
-      context: context,
-      infoType: QrIntentInfoType.prime,
-      onBackPressed: (context) {
+      onXidScan: (xid) => pairWithDevice(context, xid),
+      onScan: (String payload) {
         Navigator.pop(context);
-      },
-      decoder: DeviceDecoder(
-          pairPayloadDecoder: PairPayloadDecoder(
-            onScan: (binary) {
-              addPassportAccount(binary, context);
+        final uri = Uri.parse(payload);
+        final params = uri.queryParameters;
+        if (params.containsKey("p")) {
+          context.pushNamed(ONBOARD_PRIME, queryParameters: params);
+        } else if (params.containsKey("t")) {
+          context.pushNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
+        } else {
+          EnvoyToast(
+            replaceExisting: true,
+            duration: const Duration(seconds: 6),
+            message: "Invalid QR code",
+            isDismissible: true,
+            onActionTap: () {
+              EnvoyToast.dismissPreviousToasts(context);
             },
-          ),
-          onXidScan: (xid) => pairWithDevice(context, xid),
-          onScan: (String payload) {
-            Navigator.pop(context);
-            final uri = Uri.parse(payload);
-            final params = uri.queryParameters;
-            if (params.containsKey("p")) {
-              if (Devices().getPrimeDevices.isNotEmpty && context.mounted) {
-                disconnectExistingPrimeDialog(context);
-                return;
-              }
-              context.pushNamed(ONBOARD_PRIME, queryParameters: params);
-            } else if (params.containsKey("t")) {
-              context.pushNamed(ONBOARD_PASSPORT_TOU, queryParameters: params);
-            } else {
-              EnvoyToast(
-                replaceExisting: true,
-                duration: const Duration(seconds: 6),
-                message: "Invalid QR code",
-                isDismissible: true,
-                onActionTap: () {
-                  EnvoyToast.dismissPreviousToasts(context);
-                },
-                icon: const Icon(
-                  Icons.info_outline,
-                  color: EnvoyColors.accentPrimary,
-                ),
-              ).show(context);
-            }
-          }),
-      child: LegacyFirmwareAlert());
+            icon: const Icon(
+              Icons.info_outline,
+              color: EnvoyColors.accentPrimary,
+            ),
+          ).show(context);
+        }
+      },
+    ),
+    child: LegacyFirmwareAlert(),
+  );
 }
 
 void addPassportAccount(Binary binary, BuildContext context) async {
@@ -375,10 +347,7 @@ void addPassportAccount(Binary binary, BuildContext context) async {
         onActionTap: () {
           EnvoyToast.dismissPreviousToasts(context);
         },
-        icon: const Icon(
-          Icons.info_outline,
-          color: EnvoyColors.accentPrimary,
-        ),
+        icon: const Icon(Icons.info_outline, color: EnvoyColors.accentPrimary),
       ).show(context);
     }
     return;
@@ -394,10 +363,7 @@ void addPassportAccount(Binary binary, BuildContext context) async {
         onActionTap: () {
           EnvoyToast.dismissPreviousToasts(context);
         },
-        icon: const Icon(
-          Icons.info_outline,
-          color: EnvoyColors.accentPrimary,
-        ),
+        icon: const Icon(Icons.info_outline, color: EnvoyColors.accentPrimary),
       ).show(context);
     }
   }
@@ -406,50 +372,60 @@ void addPassportAccount(Binary binary, BuildContext context) async {
 /// Shared function to pair with a Prime device via XidDocument (dynamic QR).
 /// Used by both onboarding welcome screen and home setup overlay scanners.
 Future<void> pairWithDevice(BuildContext context, XidDocument xid) async {
+  final container = ProviderScope.containerOf(context);
   if (!context.mounted) return;
   Navigator.pop(context);
-  final connected = await BluetoothChannel().getCurrentDeviceStatus();
-  if (connected.connected) {
-    final device = Devices().getPrimeDevices.firstWhereOrNull((device) =>
-        device.peripheralId == connected.peripheralId ||
-        device.bleId == connected.peripheralId);
-    if (device != null && context.mounted && device.onboardingComplete) {
-      _showDisconnectExistingPrimeDialog(context);
-      return;
-    } else {
-      if (context.mounted) {
-        resetOnboardingPrimeProviders();
-        _showPairingProgressDialog(context);
+  final connectionStatus = await BluetoothChannel().getConnectedDevices();
+  final connected = connectionStatus.firstWhereOrNull((dev) {
+    //filter ble connection that is not already paired with envoy
+    for (final device in Devices().getPrimeDevices) {
+      if (dev.deviceId == device.peripheralId || dev.deviceId == device.bleId) {
+        return false;
       }
-      try {
-        await BluetoothManager().pair(xid);
-        final pairingResponse =
-            await BluetoothManager().bleOnboardHandler.waitForPairResponse();
-        if (context.mounted) {
-          Navigator.pop(context);
-          if (!pairingResponse.onboardingComplete) {
-            context.goNamed(ONBOARD_PRIME_PAIR);
-          } else {
-            context.goNamed(ONBOARD_REPAIRING);
-          }
+    }
+    return true;
+  });
+
+  if (connected != null) {
+    if (context.mounted) {
+      resetOnboardingPrimeProviders(container);
+    }
+    await BluetoothChannel().prepareDevice(connected.deviceId);
+    final qlConnection = BluetoothChannel().getDeviceChannel(
+      connected.deviceId,
+    );
+    container.read(onboardingDeviceProvider.notifier).state = qlConnection;
+    if (context.mounted) {
+      _showPairingProgressDialog(context);
+    }
+    try {
+      await qlConnection.pair(xid);
+      final pairingResponse =
+          await qlConnection.qlHandler.bleOnboardHandler.waitForPairResponse();
+      if (context.mounted) {
+        Navigator.pop(context);
+        if (!pairingResponse.onboardingComplete) {
+          context.goNamed(ONBOARD_PRIME_PAIR);
+        } else {
+          context.goNamed(ONBOARD_REPAIRING);
         }
-      } catch (e) {
-        if (context.mounted) {
-          Navigator.pop(context);
-          EnvoyToast(
-            replaceExisting: true,
-            duration: const Duration(seconds: 6),
-            message: e.toString(),
-            isDismissible: true,
-            onActionTap: () {
-              EnvoyToast.dismissPreviousToasts(context);
-            },
-            icon: const Icon(
-              Icons.info_outline,
-              color: EnvoyColors.accentPrimary,
-            ),
-          ).show(context);
-        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context);
+        EnvoyToast(
+          replaceExisting: true,
+          duration: const Duration(seconds: 6),
+          message: e.toString(),
+          isDismissible: true,
+          onActionTap: () {
+            EnvoyToast.dismissPreviousToasts(context);
+          },
+          icon: const Icon(
+            Icons.info_outline,
+            color: EnvoyColors.accentPrimary,
+          ),
+        ).show(context);
       }
     }
   } else {
@@ -481,9 +457,7 @@ void _showPairingProgressDialog(BuildContext context) {
       dialog: Container(
         width: MediaQuery.sizeOf(context).width * 0.8,
         decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(EnvoySpacing.medium2),
-          ),
+          borderRadius: BorderRadius.all(Radius.circular(EnvoySpacing.medium2)),
           color: EnvoyColors.textPrimaryInverse,
         ),
         child: Padding(
@@ -494,10 +468,12 @@ void _showPairingProgressDialog(BuildContext context) {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 const Padding(
-                    padding: EdgeInsets.only(top: EnvoySpacing.medium3)),
+                  padding: EdgeInsets.only(top: EnvoySpacing.medium3),
+                ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: EnvoySpacing.xs,
+                  ),
                   child: CircularProgressIndicator(
                     color: EnvoyColors.accentPrimary,
                     backgroundColor: NewEnvoyColor.neutral200,
@@ -505,23 +481,29 @@ void _showPairingProgressDialog(BuildContext context) {
                 ),
                 const SizedBox(height: EnvoySpacing.medium2),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-                  child: Text(S().devices_connectingToPrime_header,
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.heading.copyWith(
-                        color: EnvoyColors.textPrimary,
-                      )),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: EnvoySpacing.xs,
+                  ),
+                  child: Text(
+                    S().devices_connectingToPrime_header,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.heading.copyWith(
+                      color: EnvoyColors.textPrimary,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: EnvoySpacing.medium1),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-                  child: Text(S().devices_connectingToPrime_content,
-                      textAlign: TextAlign.center,
-                      style: EnvoyTypography.body.copyWith(
-                        color: EnvoyColors.textPrimary,
-                      )),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: EnvoySpacing.xs,
+                  ),
+                  child: Text(
+                    S().devices_connectingToPrime_content,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.body.copyWith(
+                      color: EnvoyColors.textPrimary,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: EnvoySpacing.medium2),
               ],
@@ -531,33 +513,6 @@ void _showPairingProgressDialog(BuildContext context) {
       ),
     );
   }
-}
-
-void _showDisconnectExistingPrimeDialog(BuildContext context) {
-  showEnvoyDialog(
-    context: context,
-    dismissible: true,
-    dialog: EnvoyPopUp(
-      icon: EnvoyIcons.alert,
-      title: S().manage_deviceDetailsModalDisconnectExistingPassport_header,
-      typeOfMessage: PopUpState.warning,
-      showCloseButton: true,
-      content: S().manage_deviceDetailsModalDisconnectExistingPassport_content,
-      secondaryButtonLabel: S().component_cancel,
-      primaryButtonLabel:
-          S().manage_deviceDetailsModalDisconnectExistingPassport_header,
-      onSecondaryButtonTap: (ctx) {
-        Navigator.pop(ctx);
-      },
-      onPrimaryButtonTap: (ctx) async {
-        Navigator.pop(ctx);
-        if (Devices().getPrimeDevices.isNotEmpty) {
-          final device = Devices().getPrimeDevices.first;
-          Devices().deleteDevice(device);
-        }
-      },
-    ),
-  );
 }
 
 class EnvoyCardButton extends StatefulWidget {
@@ -705,7 +660,8 @@ class _EnvoyCardButtonState extends State<EnvoyCardButton> {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.only(
-                                left: EnvoySpacing.medium1),
+                              left: EnvoySpacing.medium1,
+                            ),
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: SingleChildScrollView(
@@ -727,10 +683,7 @@ class _EnvoyCardButtonState extends State<EnvoyCardButton> {
                 Positioned(
                   left: widget.imagePaddingLeft,
                   top: 10,
-                  child: Image.asset(
-                    widget.image,
-                    height: imageSize,
-                  ),
+                  child: Image.asset(widget.image, height: imageSize),
                 ),
               ],
             ),

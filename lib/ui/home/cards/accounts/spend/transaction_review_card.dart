@@ -72,16 +72,18 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
     final s = Settings();
 
     /// Leave total as it is (total will be visible after sending)
-    double displayFiatTotalAmount =
-        ExchangeRate().convertSatsToFiat(totalSpendAmount);
+    double displayFiatTotalAmount = ExchangeRate().convertSatsToFiat(
+      totalSpendAmount,
+    );
 
     double? displayFiatSendAmount;
     double? displayFiatFeeAmount;
 
     if (s.displayFiat() != null) {
       if (transactionModel.mode == SpendMode.sendMax) {
-        displayFiatFeeAmount =
-            ExchangeRate().convertSatsToFiat(transaction.fee.toInt());
+        displayFiatFeeAmount = ExchangeRate().convertSatsToFiat(
+          transaction.fee.toInt(),
+        );
         displayFiatSendAmount = displayFiatTotalAmount - displayFiatFeeAmount;
       } else {
         displayFiatFeeAmount =
@@ -133,7 +135,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                         displayFiatAmount: displayFiatSendAmount,
                         millionaireMode: false,
                         amountWidgetStyle: AmountWidgetStyle.normal,
-                        semanticSuffix: "Amount")),
+                        semanticSuffix:
+                            "Amount-${widget.transaction.amount.toInt().abs()}")),
                 _divider(),
                 infoState(
                     EnvoyIcons.wallet_coin,
@@ -159,7 +162,7 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                             displayFiatAmount: displayFiatFeeAmount,
                             millionaireMode: false,
                             amountWidgetStyle: AmountWidgetStyle.normal,
-                            semanticSuffix: "Fee"),
+                            semanticSuffix: "Fee-${transaction.fee.toInt()}"),
                         if (widget.onFeeTap != null)
                           GestureDetector(
                             onTap: () {
@@ -199,7 +202,8 @@ class _TransactionReviewCardState extends ConsumerState<TransactionReviewCard> {
                     displayFiatAmount: displayFiatTotalAmount,
                     millionaireMode: false,
                     amountWidgetStyle: AmountWidgetStyle.normal,
-                    semanticSuffix: "Total")),
+                    semanticSuffix:
+                        "Total-${transaction.amount.toInt().abs() + transaction.fee.toInt()}")),
           ),
         ),
       ],

@@ -16,16 +16,18 @@ import 'package:path_provider/path_provider.dart';
 
 Future showRestoreFailedDialog(BuildContext context) async {
   await showEnvoyPopUp(
-      context,
-      S().manual_setup_import_backup_fails_modal_subheading,
-      S().component_continue, (context) {
-    Navigator.pop(context);
-  },
-      title: S().manual_setup_import_backup_fails_modal_heading,
-      dismissible: false,
-      showCloseButton: false,
-      typeOfMessage: PopUpState.warning,
-      icon: EnvoyIcons.alert);
+    context,
+    S().manual_setup_import_backup_fails_modal_subheading,
+    S().component_continue,
+    (context) {
+      Navigator.pop(context);
+    },
+    title: S().manual_setup_import_backup_fails_modal_heading,
+    dismissible: false,
+    showCloseButton: false,
+    typeOfMessage: PopUpState.warning,
+    icon: EnvoyIcons.alert,
+  );
 }
 
 Future<bool> openBackupFile(BuildContext buildContext, {String? seed}) async {
@@ -33,8 +35,10 @@ Future<bool> openBackupFile(BuildContext buildContext, {String? seed}) async {
   var result = await FilePicker.platform.pickFiles();
   if (result != null) {
     try {
-      success = await EnvoySeed()
-          .restoreData(filePath: result.files.single.path!, seed: seed);
+      success = await EnvoySeed().restoreData(
+        filePath: result.files.single.path!,
+        seed: seed,
+      );
     } catch (e) {
       success = false;
     }
@@ -46,7 +50,7 @@ Future<void> openBeefQABackupFile(BuildContext buildContext) async {
   final navigator = Navigator.of(buildContext);
   final context = buildContext;
 
-  String path = 'assets/beefqa_backup.mla.txt';
+  String path = 'assets/maestro_backup.mla.txt';
 
   var success = false;
   var seed = await EnvoySeed().get();
@@ -56,7 +60,7 @@ Future<void> openBeefQABackupFile(BuildContext buildContext) async {
     final bytes = byteData.buffer.asUint8List();
 
     final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/beefqa_backup.mla.txt');
+    final file = File('${directory.path}/maestro_backup.mla.txt');
 
     await file.writeAsBytes(bytes);
 
@@ -65,9 +69,13 @@ Future<void> openBeefQABackupFile(BuildContext buildContext) async {
     success = false;
   }
   if (success) {
-    navigator.push(MaterialPageRoute(builder: (context) {
-      return const WalletSetupSuccess();
-    }));
+    navigator.push(
+      MaterialPageRoute(
+        builder: (context) {
+          return const WalletSetupSuccess();
+        },
+      ),
+    );
   } else {
     if (context.mounted) {
       showRestoreFailedDialog(context);

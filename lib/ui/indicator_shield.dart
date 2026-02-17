@@ -27,8 +27,10 @@ class IndicatorShieldState extends State<IndicatorShield>
   @override
   initState() {
     super.initState();
-    _circuitEstablishingAnimationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    _circuitEstablishingAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
 
     _circuitEstablishingAnimation = _circuitEstablishingAnimationController
         .drive(Tween(begin: 1.0, end: 0.5));
@@ -71,25 +73,37 @@ class IndicatorShieldState extends State<IndicatorShield>
     _checkIfNeedAnimate();
   }
 
+  String _shieldStatus = 'off';
+
   Widget _determineShield() {
     if (!ConnectivityManager().torEnabled ||
         ConnectivityManager().torTemporarilyDisabled) {
-      // No shield
+      _shieldStatus = 'off';
       return const SizedBox.shrink(key: ValueKey("shield-none"));
-    } else {
-      if (!ConnectivityManager().electrumConnected ||
-          !ConnectivityManager().nguConnected) {
-        return Image.asset(
-          "assets/indicator_shield_red.png",
-          key: const ValueKey("shield-red"),
-        );
-      }
+    }
 
+    if (!ConnectivityManager().torCircuitEstablished) {
+      _shieldStatus = 'connecting';
       return Image.asset(
-        "assets/indicator_shield_teal.png",
-        key: const ValueKey("shield-teal"),
+        "assets/indicator_shield_red.png",
+        key: const ValueKey("shield-red"),
       );
     }
+
+    if (!ConnectivityManager().electrumConnected ||
+        !ConnectivityManager().nguConnected) {
+      _shieldStatus = 'not connected';
+      return Image.asset(
+        "assets/indicator_shield_red.png",
+        key: const ValueKey("shield-red"),
+      );
+    }
+
+    _shieldStatus = 'connected';
+    return Image.asset(
+      "assets/indicator_shield_teal.png",
+      key: const ValueKey("shield-teal"),
+    );
   }
 
   @override
@@ -101,15 +115,24 @@ class IndicatorShieldState extends State<IndicatorShield>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (context, ref, _) {
-      ref.watch(settingsProvider);
-      _updateShield();
-      return Opacity(
-          opacity: ConnectivityManager().torCircuitEstablished
-              ? 1.0
-              : _circuitEstablishingAnimation.value,
-          child: AnimatedSwitcher(
-              duration: const Duration(seconds: 1), child: _currentShield));
-    });
+    return Consumer(
+      builder: (context, ref, _) {
+        ref.watch(settingsProvider);
+        _updateShield();
+        return Semantics(
+          identifier: 'indicator_shield',
+          label: _shieldStatus,
+          child: Opacity(
+            opacity: ConnectivityManager().torCircuitEstablished
+                ? 1.0
+                : _circuitEstablishingAnimation.value,
+            child: AnimatedSwitcher(
+              duration: const Duration(seconds: 1),
+              child: _currentShield,
+            ),
+          ),
+        );
+      },
+    );
   }
 }

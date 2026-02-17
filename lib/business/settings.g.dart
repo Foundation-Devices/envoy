@@ -23,6 +23,10 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
   ..showSignetAccountsSetting =
       json['showSignetAccountsSetting'] as bool? ?? false
   ..enableTaprootSetting = json['enableTaprootSetting'] as bool? ?? false
+  ..usingDefaultBlockExplorer =
+      json['usingDefaultBlockExplorer'] as bool? ?? true
+  ..personalBlockExplorerAddress =
+      json['personalBlockExplorerAddress'] as String? ?? ''
   ..allowBuyInEnvoy = json['allowBuyInEnvoy'] as bool? ?? true;
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
@@ -40,13 +44,12 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'showTestnetAccountsSetting': instance.showTestnetAccountsSetting,
       'showSignetAccountsSetting': instance.showSignetAccountsSetting,
       'enableTaprootSetting': instance.enableTaprootSetting,
+      'usingDefaultBlockExplorer': instance.usingDefaultBlockExplorer,
+      'personalBlockExplorerAddress': instance.personalBlockExplorerAddress,
       'allowBuyInEnvoy': instance.allowBuyInEnvoy,
     };
 
-const _$DisplayUnitEnumMap = {
-  DisplayUnit.btc: 'btc',
-  DisplayUnit.sat: 'sat',
-};
+const _$DisplayUnitEnumMap = {DisplayUnit.btc: 'btc', DisplayUnit.sat: 'sat'};
 
 const _$AmountDisplayUnitEnumMap = {
   AmountDisplayUnit.btc: 'btc',

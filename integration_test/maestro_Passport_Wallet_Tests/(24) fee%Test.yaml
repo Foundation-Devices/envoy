@@ -1,0 +1,120 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (24) fee%Test
+appId: com.foundationdevices.envoy
+---
+
+# make sure Testnet is ON
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+- tapOn: Advanced
+
+- runFlow:
+    when:
+      visible:
+        id: "Testnet Toggle-false"
+    commands:
+      - tapOn:
+          id: "Testnet Toggle-false"
+      - tapOn:
+          id: Continue
+
+# go back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# find last testnet passport acc and enter
+- scroll
+- scroll
+- tapOn: Primary (#0)
+
+# send
+- tapOn: Send
+
+- tapOn: Enter address
+
+- inputText: "tb1qm4055vsr8jr5enc2zlc234wzk87ajcpsgykmrl"
+
+- tapOn: Back
+
+# enter amount
+- tapOn: "5"
+- tapOn: "6"
+- tapOn: "7"
+- tapOn: "8"
+
+- tapOn: Confirm
+
+# wait the app to enter Staging
+- extendedWaitUntil:
+    visible: |-
+      Check Transaction Details
+      Confirm the transaction details are correct before continuing.
+    timeout: 300000 # wait for 5 min
+
+# open fee editor
+- tapOn:
+    id: envoy_icon_chevron_right
+
+# custom fee
+- tapOn: Custom
+
+# swipe to left to increase fee
+- swipe:
+    from:
+      text: "1"
+    direction: LEFT
+
+# exit
+- tapOn: Apply
+
+# wait for the fee warning to appear
+- extendedWaitUntil:
+    visible:
+      id: "fee_percentage_warning-.*"
+    timeout: 60000
+
+# hack to wait 20 seconds for Next button to be clickable
+- swipe:
+    start: "50%, 20%"
+    end: "50%, 20%"
+    duration: 20000
+
+# reset staging screen to refresh %fee for maestro
+- tapOn: Next
+- tapOn: Save
+- tapOn:
+    id: psbt_back_button
+
+# check the % number
+
+# Copy the amount (label contains raw sats)
+- copyTextFrom:
+    id: "primary_amount Amount-.*"
+- runScript:
+    file: scripts/store_amount.js
+
+# Copy the fee (label contains raw sats)
+- copyTextFrom:
+    id: "primary_amount Fee-.*"
+- runScript:
+    file: scripts/store_fee.js
+
+# Calculate expected percentage from fee + amount, then verify the warning ID matches
+- runScript:
+    file: scripts/verify_fee_percentage.js
+
+# go back to home
+- tapOn:
+    id: envoy_icon_chevron_left
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu

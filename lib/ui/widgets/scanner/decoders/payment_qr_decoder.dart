@@ -66,7 +66,9 @@ class PaymentQrDecoder extends ScannerDecoder {
     // Remove bitcoin: prefix in case BIP-21 parsing failed
     address = address.replaceFirst("bitcoin:", "").trim();
     final valid = await EnvoyAccountHandler.validateAddress(
-        address: address, network: account.network);
+      address: address,
+      network: account.network,
+    );
     if (valid) {
       // Convert the address to lowercase for consistent display in Envoy
       if (address.startsWith('bc') || address.startsWith("tb")) {

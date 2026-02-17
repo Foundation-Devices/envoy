@@ -9,8 +9,9 @@ import 'package:envoy/util/envoy_storage.dart';
 
 class AllowedRegions {
   static Future<Map<String, Map<String, dynamic>>> allowedRegions() async {
-    String jsonString =
-        await rootBundle.loadString('assets/allowed_regions.json');
+    String jsonString = await rootBundle.loadString(
+      'assets/allowed_regions.json',
+    );
     Map<String, dynamic> decodedJson = json.decode(jsonString);
 
     return Map<String, Map<String, dynamic>>.from(decodedJson);
@@ -25,8 +26,9 @@ class AllowedRegions {
           allowedCountriesWithRegions[countryCode];
 
       if (countryInfo != null) {
-        Map<String, String> divisions =
-            Map<String, String>.from(countryInfo['divisions']);
+        Map<String, String> divisions = Map<String, String>.from(
+          countryInfo['divisions'],
+        );
 
         if (divisions.isEmpty) {
           return true;
@@ -51,8 +53,10 @@ class AllowedRegions {
       }
 
       final countryCode = country.code.toUpperCase();
-      final canBuy =
-          await AllowedRegions.isRegionAllowed(country.code, country.division);
+      final canBuy = await AllowedRegions.isRegionAllowed(
+        country.code,
+        country.division,
+      );
 
       // Disable if either region is not allowed or country code is in buyDisabled
       final isDisabled = !canBuy || buyDisabled.contains(countryCode);

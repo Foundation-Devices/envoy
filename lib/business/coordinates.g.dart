@@ -12,7 +12,4 @@ Coordinates _$CoordinatesFromJson(Map<String, dynamic> json) => Coordinates(
     );
 
 Map<String, dynamic> _$CoordinatesToJson(Coordinates instance) =>
-    <String, dynamic>{
-      'lat': instance.lat,
-      'lon': instance.lon,
-    };
+    <String, dynamic>{'lat': instance.lat, 'lon': instance.lon};

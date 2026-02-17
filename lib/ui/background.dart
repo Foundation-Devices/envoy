@@ -32,10 +32,7 @@ class LinesBackground extends StatelessWidget {
               width: parentWidth,
               height: MediaQuery.sizeOf(context).height,
               child: CustomPaint(
-                painter: LinesPainter(
-                  opacity: 0.5,
-                  color: Colors.white,
-                ),
+                painter: LinesPainter(opacity: 0.5, color: Colors.white),
               ),
             ),
           ],
@@ -55,70 +52,76 @@ class AppBackgroundState extends State<AppBackground> {
         double parentHeight = constraints.maxHeight;
         double parentWidth = constraints.maxWidth;
 
-        return Stack(children: [
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: Container(
-                color: Colors.black,
-                child: FractionallySizedBox(
-                  alignment: Alignment.centerRight,
-                  // 0.5 would be the perfect symmetry,
-                  // but it leaves a small gap due to the mask filter (see LinesPainter) .
-                  // ios canvas rendering leaves more gap than android ( due to blur filter probably)
-                  widthFactor: Platform.isIOS ? 0.501 : 0.5,
-                  child: ShaderMask(
-                    blendMode: BlendMode.dstIn,
-                    shaderCallback: (bounds) {
-                      return LinearGradient(
-                        colors: [
-                          Colors.white.applyOpacity(0.02),
-                          Colors.white.applyOpacity(0.1),
-                          Colors.white.applyOpacity(0.2),
-                          Colors.white.applyOpacity(0.3),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ).createShader(bounds);
-                    },
-                    child: CustomPaint(
-                      isComplex: true,
-                      willChange: false,
-                      painter: LinesPainter(
-                        opacity: 0.5,
-                        hideLineGap: true,
-                        color: Colors.white,
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: RepaintBoundary(
+                child: Container(
+                  color: Colors.black,
+                  child: FractionallySizedBox(
+                    alignment: Alignment.centerRight,
+                    // 0.5 would be the perfect symmetry,
+                    // but it leaves a small gap due to the mask filter (see LinesPainter) .
+                    // ios canvas rendering leaves more gap than android ( due to blur filter probably)
+                    widthFactor: Platform.isIOS ? 0.501 : 0.5,
+                    child: ShaderMask(
+                      blendMode: BlendMode.dstIn,
+                      shaderCallback: (bounds) {
+                        return LinearGradient(
+                          colors: [
+                            Colors.white.applyOpacity(0.02),
+                            Colors.white.applyOpacity(0.1),
+                            Colors.white.applyOpacity(0.2),
+                            Colors.white.applyOpacity(0.3),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ).createShader(bounds);
+                      },
+                      child: CustomPaint(
+                        isComplex: true,
+                        willChange: false,
+                        painter: LinesPainter(
+                          opacity: 0.5,
+                          hideLineGap: true,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-          AnimatedPositioned(
+            AnimatedPositioned(
               duration: _animDuration,
               height: parentHeight,
               width: parentWidth,
               top: parentHeight * (widget.showRadialGradient ? 0.2 : 0.9),
               curve: Curves.easeOut,
               child: Opacity(
-                  opacity: 0.92,
-                  child: Transform.scale(
-                    scaleY: 0.8,
-                    child: AnimatedContainer(
-                        duration: _animDuration,
-                        decoration: BoxDecoration(
-                            gradient: RadialGradient(
-                          radius: widget.showRadialGradient ? 1.8 : 2.1,
-                          center: Alignment.topCenter,
-                          colors: const [
-                            Colors.transparent,
-                            EnvoyColors.grey,
-                            Colors.white,
-                          ],
-                          stops: const [0.0, 0.60, 0.85],
-                        ))),
-                  ))),
-        ]);
+                opacity: 0.92,
+                child: Transform.scale(
+                  scaleY: 0.8,
+                  child: AnimatedContainer(
+                    duration: _animDuration,
+                    decoration: BoxDecoration(
+                      gradient: RadialGradient(
+                        radius: widget.showRadialGradient ? 1.8 : 2.1,
+                        center: Alignment.topCenter,
+                        colors: const [
+                          Colors.transparent,
+                          EnvoyColors.grey,
+                          Colors.white,
+                        ],
+                        stops: const [0.0, 0.60, 0.85],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
       },
     );
   }
@@ -131,12 +134,13 @@ class LinesPainter extends CustomPainter {
   final double lineDistance;
   final bool hideLineGap;
 
-  LinesPainter(
-      {this.angle = -18,
-      this.lineDistance = 2.5,
-      this.hideLineGap = false,
-      this.color = EnvoyColors.whitePrint,
-      this.opacity = 0.05});
+  LinesPainter({
+    this.angle = -18,
+    this.lineDistance = 2.5,
+    this.hideLineGap = false,
+    this.color = EnvoyColors.whitePrint,
+    this.opacity = 0.05,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {

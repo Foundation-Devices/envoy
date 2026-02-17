@@ -57,13 +57,15 @@ class HideStateNotifier extends ChangeNotifier {
   }
 }
 
-final balanceHideNotifierProvider =
-    ChangeNotifierProvider((ref) => HideStateNotifier());
+final balanceHideNotifierProvider = ChangeNotifierProvider(
+  (ref) => HideStateNotifier(),
+);
 
 //Provider for accessing hide state with account parameter
-final balanceHideStateStatusProvider = Provider.family<bool, String?>(
-  (ref, accountId) {
-    var hideStates = ref.watch(balanceHideNotifierProvider);
-    return hideStates.amountHiddenAccounts.contains(accountId);
-  },
-);
+final balanceHideStateStatusProvider = Provider.family<bool, String?>((
+  ref,
+  accountId,
+) {
+  var hideStates = ref.watch(balanceHideNotifierProvider);
+  return hideStates.amountHiddenAccounts.contains(accountId);
+});

@@ -4,6 +4,7 @@
 
 import 'package:envoy/ui/state/send_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/business/exchange_rate.dart';
@@ -25,15 +26,16 @@ class AmountDisplay extends ConsumerStatefulWidget {
 
   final Function(String)? onUnitToggled;
 
-  AmountDisplay(
-      {this.displayedAmount = "",
-      this.amountSats,
-      this.displayFiat,
-      this.onUnitToggled,
-      this.inputMode = false,
-      this.onLongPress,
-      required this.account,
-      super.key});
+  AmountDisplay({
+    this.displayedAmount = "",
+    this.amountSats,
+    this.displayFiat,
+    this.onUnitToggled,
+    this.inputMode = false,
+    this.onLongPress,
+    required this.account,
+    super.key,
+  });
 
   void setDisplayAmount(AmountDisplayUnit unit) {
     if (unit == AmountDisplayUnit.fiat) {
@@ -55,7 +57,7 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
     // Fiat is always at the end of enum
     if (Settings().selectedFiat == null ||
-        widget.account?.network != Network.bitcoin) {
+        (!kDebugMode && widget.account?.network != Network.bitcoin)) {
       length--;
     }
 
@@ -79,10 +81,9 @@ class _AmountDisplayState extends ConsumerState<AmountDisplay> {
 
   @override
   Widget build(context) {
-    TextScaler textScaler = MediaQuery.of(context).textScaler.clamp(
-          minScaleFactor: 0.8,
-          maxScaleFactor: 1.6,
-        );
+    TextScaler textScaler = MediaQuery.of(
+      context,
+    ).textScaler.clamp(minScaleFactor: 0.8, maxScaleFactor: 1.6);
     double baseFontScale = 1;
     double textScaleFactor = textScaler.scale(baseFontScale);
 

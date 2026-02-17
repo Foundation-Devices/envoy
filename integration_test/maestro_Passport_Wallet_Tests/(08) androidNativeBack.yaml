@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# (08) androidNativeBack
 appId: com.foundationdevices.envoy
 ---
 
@@ -11,7 +12,7 @@ appId: com.foundationdevices.envoy
 - tapOn: Back
 
 # comfirm you are back to home
-- assertVisible: ACCOUNTS
+- assertVisible: ACCOUNTS off
 
 - tapOn:
     id: hamburger_menu
@@ -23,7 +24,7 @@ appId: com.foundationdevices.envoy
 - tapOn: Back
 
 # confirm you are back to Envoy
-- assertVisible: ENVOY
+- assertVisible: ENVOY off
 
 - tapOn: |-
     BACKUPS
@@ -32,7 +33,7 @@ appId: com.foundationdevices.envoy
 - tapOn: Back
 
 # confirm you are back to Envoy
-- assertVisible: ENVOY
+- assertVisible: ENVOY off
 
 - tapOn: |-
     SUPPORT
@@ -41,7 +42,7 @@ appId: com.foundationdevices.envoy
 - tapOn: Back
 
 # confirm you are back to Envoy
-- assertVisible: ENVOY
+- assertVisible: ENVOY off
 
 - tapOn: |-
     ABOUT
@@ -50,7 +51,7 @@ appId: com.foundationdevices.envoy
 - tapOn: Back
 
 # confirm you are back to Envoy
-- assertVisible: ENVOY
+- assertVisible: ENVOY off
 
 # go back to home
 - tapOn:

@@ -34,8 +34,10 @@ class _PrimeMagicBackupState extends ConsumerState<PrimeMagicBackup> {
   }
 
   void _initLockRive() async {
-    _lockFile = await rive.File.asset("assets/anim/lock.riv",
-        riveFactory: rive.Factory.rive);
+    _lockFile = await rive.File.asset(
+      "assets/anim/lock.riv",
+      riveFactory: rive.Factory.rive,
+    );
     _lockController = rive.RiveWidgetController(
       _lockFile!,
       stateMachineSelector: rive.StateMachineSelector.byName('STM'),
@@ -65,44 +67,48 @@ class _PrimeMagicBackupState extends ConsumerState<PrimeMagicBackup> {
     return PopScope(
       canPop: false,
       child: OnboardPageBackground(
-          child: EnvoyScaffold(
-        removeAppBarPadding: true,
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-              horizontal: EnvoySpacing.small, vertical: EnvoySpacing.small),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            spacing: 24,
-            children: [
-              IconLoader(
-                state: _state,
-                child: SizedBox.square(
-                  dimension: 180,
-                  child: _isLockInitialized && _lockController != null
-                      ? rive.RiveWidget(
-                          controller: _lockController!,
-                          fit: rive.Fit.contain,
-                        )
-                      : const SizedBox(),
+        child: EnvoyScaffold(
+          removeAppBarPadding: true,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: EnvoySpacing.small,
+              vertical: EnvoySpacing.small,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              spacing: 24,
+              children: [
+                IconLoader(
+                  state: _state,
+                  child: SizedBox.square(
+                    dimension: 180,
+                    child: _isLockInitialized && _lockController != null
+                        ? rive.RiveWidget(
+                            controller: _lockController!,
+                            fit: rive.Fit.contain,
+                          )
+                        : const SizedBox(),
+                  ),
                 ),
-              ),
-              Text("Create Magic Backup", style: EnvoyTypography.heading),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: EnvoySpacing.small,
-                  vertical: EnvoySpacing.small,
+                Text("Create Magic Backup", style: EnvoyTypography.heading),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: EnvoySpacing.small,
+                    vertical: EnvoySpacing.small,
+                  ),
+                  child: Text(
+                    "Create a secure, fast and easy  2 out of 3 Backup including Envoy and two keycards The locally created Envoy Part will be uploaded encrypted to the keychain in Apples iCloud/ Googles Cloud.",
+                    style: EnvoyTypography.body.copyWith(
+                      color: EnvoyColors.textSecondary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-                child: Text(
-                  "Create a secure, fast and easy  2 out of 3 Backup including Envoy and two keycards The locally created Envoy Part will be uploaded encrypted to the keychain in Apples iCloud/ Googles Cloud.",
-                  style: EnvoyTypography.body
-                      .copyWith(color: EnvoyColors.textSecondary),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      )),
+      ),
     );
   }
 }

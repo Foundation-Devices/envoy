@@ -360,7 +360,8 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
         // Search bar
         Padding(
           padding: const EdgeInsets.all(EnvoySpacing.medium1),
-          child: _AddressSearchEntry(
+          child: AddressSearchEntry(
+            icon: EnvoyIcons.search,
             controller: _searchController,
             onChanged: (value) {
               final queryChanged = _searchQuery != value;
@@ -486,20 +487,23 @@ class _AddressExplorerCardState extends ConsumerState<AddressExplorerCard> {
   }
 }
 
-class _AddressSearchEntry extends StatefulWidget {
+class AddressSearchEntry extends StatefulWidget {
   final TextEditingController controller;
   final Function(String) onChanged;
+  final EnvoyIcons? icon;
 
-  const _AddressSearchEntry({
+  const AddressSearchEntry({
+    super.key,
     required this.controller,
     required this.onChanged,
+    this.icon,
   });
 
   @override
-  State<_AddressSearchEntry> createState() => _AddressSearchEntryState();
+  State<AddressSearchEntry> createState() => _AddressSearchEntryState();
 }
 
-class _AddressSearchEntryState extends State<_AddressSearchEntry> {
+class _AddressSearchEntryState extends State<AddressSearchEntry> {
   final double _verticalPadding = EnvoySpacing.medium1;
 
   @override
@@ -517,15 +521,15 @@ class _AddressSearchEntryState extends State<_AddressSearchEntry> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Search icon
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: _verticalPadding),
-                  child: const EnvoyIcon(
-                    EnvoyIcons.search,
-                    size: EnvoyIconSize.extraSmall,
-                    color: EnvoyColors.textTertiary,
+                if (widget.icon != null)
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: _verticalPadding),
+                    child: EnvoyIcon(
+                      widget.icon!,
+                      size: EnvoyIconSize.extraSmall,
+                      color: EnvoyColors.textTertiary,
+                    ),
                   ),
-                ),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(

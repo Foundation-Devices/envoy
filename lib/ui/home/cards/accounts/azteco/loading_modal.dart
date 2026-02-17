@@ -15,11 +15,12 @@ class AztecoLoadingModal extends StatefulWidget {
   final PageController controller;
   final EnvoyAccount account;
 
-  const AztecoLoadingModal(
-      {super.key,
-      required this.voucher,
-      required this.controller,
-      required this.account});
+  const AztecoLoadingModal({
+    super.key,
+    required this.voucher,
+    required this.controller,
+    required this.account,
+  });
 
   @override
   AztecoLoadingModalState createState() => AztecoLoadingModalState();

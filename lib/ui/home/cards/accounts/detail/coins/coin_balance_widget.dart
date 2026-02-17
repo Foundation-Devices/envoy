@@ -41,15 +41,16 @@ class BalanceWidget extends ConsumerWidget {
   final GestureTapCallback? onLockTap;
   final Widget? switchWidget;
 
-  const BalanceWidget(
-      {super.key,
-      required this.amount,
-      required this.locked,
-      required this.showLock,
-      required this.accountId,
-      this.rbfChangeOutput = false,
-      required this.onLockTap,
-      this.switchWidget});
+  const BalanceWidget({
+    super.key,
+    required this.amount,
+    required this.locked,
+    required this.showLock,
+    required this.accountId,
+    this.rbfChangeOutput = false,
+    required this.onLockTap,
+    this.switchWidget,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -58,20 +59,26 @@ class BalanceWidget extends ConsumerWidget {
 
     List<Widget> rowItems = [];
     if (showLock) {
-      rowItems.add(FittedBox(
-        child: CoinLockButton(
-          locked: locked,
-          gestureTapCallback: () => onLockTap?.call(),
+      rowItems.add(
+        FittedBox(
+          child: CoinLockButton(
+            locked: locked,
+            gestureTapCallback: () => onLockTap?.call(),
+          ),
         ),
-      ));
+      );
     }
     if (switchWidget != null) {
-      rowItems.add(AnimatedOpacity(
+      rowItems.add(
+        AnimatedOpacity(
           opacity: locked ? 0.2 : 1,
           duration: const Duration(milliseconds: 250),
           child: IgnorePointer(
-              ignoring: locked,
-              child: switchWidget ?? const SizedBox.shrink())));
+            ignoring: locked,
+            child: switchWidget ?? const SizedBox.shrink(),
+          ),
+        ),
+      );
     }
 
     return IgnorePointer(
@@ -87,28 +94,31 @@ class BalanceWidget extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
-                  child: Container(
-                child: hide
-                    ? LayoutBuilder(
-                        builder: (context, constraints) {
-                          return LoaderGhost(
+                child: Container(
+                  child: hide
+                      ? LayoutBuilder(
+                          builder: (context, constraints) {
+                            return LoaderGhost(
                               animate: false,
                               width: constraints.maxWidth,
-                              height: 20);
-                        },
-                      )
-                    : EnvoyAmount(
-                        account: account!,
-                        amountSats: amount,
-                        amountWidgetStyle: AmountWidgetStyle.singleLine),
-              )),
+                              height: 20,
+                            );
+                          },
+                        )
+                      : EnvoyAmount(
+                          account: account!,
+                          amountSats: amount,
+                          amountWidgetStyle: AmountWidgetStyle.singleLine,
+                        ),
+                ),
+              ),
               if (rowItems.isNotEmpty)
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: rowItems,
-                )
+                ),
             ],
           ),
         ),
@@ -123,12 +133,13 @@ class CoinBalanceWidget extends ConsumerStatefulWidget {
   final Tag coinTag;
   final Function? onEnable;
 
-  const CoinBalanceWidget(
-      {super.key,
-      required this.output,
-      this.showLock = true,
-      required this.coinTag,
-      this.onEnable});
+  const CoinBalanceWidget({
+    super.key,
+    required this.output,
+    this.showLock = true,
+    required this.coinTag,
+    this.onEnable,
+  });
 
   @override
   ConsumerState<CoinBalanceWidget> createState() => _CoinBalanceWidgetState();
@@ -155,55 +166,58 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
       showLock: widget.showLock,
       onLockTap: () async {
         if (!output.doNotSpend) {
-          bool dismissed = await EnvoyStorage()
-              .checkPromptDismissed(DismissiblePrompt.coinLockWarning);
+          bool dismissed = await EnvoyStorage().checkPromptDismissed(
+            DismissiblePrompt.coinLockWarning,
+          );
           if (!dismissed && context.mounted) {
             showEnvoyDialog(
-                context: context,
-                alignment: const Alignment(0.0, -.6),
-                useRootNavigator: true,
-                builder: Builder(
-                  builder: (context) {
-                    return CoinLockWarning(
-                      buttonTitle: S().coincontrol_lock_coin_modal_cta1,
-                      promptType: DismissiblePrompt.coinLockWarning,
-                      warningMessage:
-                          S().coincontrol_lock_coin_modal_subheading,
-                      onContinue: () async {
-                        Navigator.pop(context);
-                        //wait for dialog to close so that the lock icon animation is not interrupted
-                        await Future.delayed(const Duration(milliseconds: 250));
-                        _lockUnLockCoin(output);
-                      },
-                    );
-                  },
-                ));
+              context: context,
+              alignment: const Alignment(0.0, -.6),
+              useRootNavigator: true,
+              builder: Builder(
+                builder: (context) {
+                  return CoinLockWarning(
+                    buttonTitle: S().coincontrol_lock_coin_modal_cta1,
+                    promptType: DismissiblePrompt.coinLockWarning,
+                    warningMessage: S().coincontrol_lock_coin_modal_subheading,
+                    onContinue: () async {
+                      Navigator.pop(context);
+                      //wait for dialog to close so that the lock icon animation is not interrupted
+                      await Future.delayed(const Duration(milliseconds: 250));
+                      _lockUnLockCoin(output);
+                    },
+                  );
+                },
+              ),
+            );
           } else {
             _lockUnLockCoin(output);
           }
         } else {
-          bool dismissed = await EnvoyStorage()
-              .checkPromptDismissed(DismissiblePrompt.coinUnlockWarning);
+          bool dismissed = await EnvoyStorage().checkPromptDismissed(
+            DismissiblePrompt.coinUnlockWarning,
+          );
           if (!dismissed && context.mounted) {
             showEnvoyDialog(
-                context: context,
-                alignment: const Alignment(0.0, -.6),
-                builder: Builder(
-                  builder: (context) {
-                    return CoinLockWarning(
-                      buttonTitle: S().coincontrol_unlock_coin_modal_cta1,
-                      promptType: DismissiblePrompt.coinUnlockWarning,
-                      warningMessage:
-                          S().coincontrol_unlock_coin_modal_subheading,
-                      onContinue: () async {
-                        Navigator.pop(context);
-                        //wait for dialog to close so that the lock icon animation is not interrupted
-                        await Future.delayed(const Duration(milliseconds: 250));
-                        _lockUnLockCoin(output);
-                      },
-                    );
-                  },
-                ));
+              context: context,
+              alignment: const Alignment(0.0, -.6),
+              builder: Builder(
+                builder: (context) {
+                  return CoinLockWarning(
+                    buttonTitle: S().coincontrol_unlock_coin_modal_cta1,
+                    promptType: DismissiblePrompt.coinUnlockWarning,
+                    warningMessage:
+                        S().coincontrol_unlock_coin_modal_subheading,
+                    onContinue: () async {
+                      Navigator.pop(context);
+                      //wait for dialog to close so that the lock icon animation is not interrupted
+                      await Future.delayed(const Duration(milliseconds: 250));
+                      _lockUnLockCoin(output);
+                    },
+                  );
+                },
+              ),
+            );
           } else {
             _lockUnLockCoin(output);
           }
@@ -227,8 +241,9 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
                     if (widget.onEnable != null && !isSelected) {
                       widget.onEnable!();
                     }
-                    final selectionState =
-                        ref.read(coinSelectionStateProvider.notifier);
+                    final selectionState = ref.read(
+                      coinSelectionStateProvider.notifier,
+                    );
                     if (value == CoinTagSwitchState.on) {
                       selectionState.add(output.getId());
                     } else {
@@ -252,8 +267,9 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
         ref.read(coinSelectionStateProvider.notifier).remove(coin.getId());
       }
     });
-    Future.delayed(const Duration(milliseconds: 100))
-        .then((value) => Haptics.lightImpact());
+    Future.delayed(
+      const Duration(milliseconds: 100),
+    ).then((value) => Haptics.lightImpact());
   }
 }
 
@@ -283,8 +299,9 @@ class CoinTagBalanceWidget extends ConsumerWidget {
 
     return Container(
       decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(cardRadius))),
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
+      ),
       child: BalanceWidget(
         locked: isAllCoinsLocked,
         amount: tag.totalAmount,
@@ -293,62 +310,64 @@ class CoinTagBalanceWidget extends ConsumerWidget {
         showLock: tag.totalAmount != 0,
         onLockTap: () async {
           if (!isAllCoinsLocked) {
-            bool dismissed = await EnvoyStorage()
-                .checkPromptDismissed(DismissiblePrompt.coinLockWarning);
+            bool dismissed = await EnvoyStorage().checkPromptDismissed(
+              DismissiblePrompt.coinLockWarning,
+            );
             if (!dismissed && context.mounted) {
               showEnvoyDialog(
-                  context: context,
-                  alignment: const Alignment(0.0, -.6),
-                  useRootNavigator: true,
-                  builder: Builder(
-                    builder: (context) {
-                      return CoinLockWarning(
-                        buttonTitle: S().coincontrol_lock_coin_modal_cta1,
-                        promptType: DismissiblePrompt.coinLockWarning,
-                        warningMessage:
-                            S().coincontrol_lock_coin_modal_subheading,
-                        onContinue: () async {
-                          Navigator.pop(context);
-                          //wait for dialog to close so that the lock icon animation is not interrupted
-                          await Future.delayed(
-                              const Duration(milliseconds: 250));
-                          if (context.mounted) {
-                            lockAllCoins(context, coinTag, ref);
-                          }
-                        },
-                      );
-                    },
-                  ));
+                context: context,
+                alignment: const Alignment(0.0, -.6),
+                useRootNavigator: true,
+                builder: Builder(
+                  builder: (context) {
+                    return CoinLockWarning(
+                      buttonTitle: S().coincontrol_lock_coin_modal_cta1,
+                      promptType: DismissiblePrompt.coinLockWarning,
+                      warningMessage:
+                          S().coincontrol_lock_coin_modal_subheading,
+                      onContinue: () async {
+                        Navigator.pop(context);
+                        //wait for dialog to close so that the lock icon animation is not interrupted
+                        await Future.delayed(const Duration(milliseconds: 250));
+                        if (context.mounted) {
+                          lockAllCoins(context, coinTag, ref);
+                        }
+                      },
+                    );
+                  },
+                ),
+              );
             } else {
               if (context.mounted) {
                 lockAllCoins(context, coinTag, ref);
               }
             }
           } else {
-            bool dismissed = await EnvoyStorage()
-                .checkPromptDismissed(DismissiblePrompt.coinUnlockWarning);
+            bool dismissed = await EnvoyStorage().checkPromptDismissed(
+              DismissiblePrompt.coinUnlockWarning,
+            );
             if (!dismissed && context.mounted) {
               showEnvoyDialog(
-                  context: context,
-                  alignment: const Alignment(0.0, -.6),
-                  useRootNavigator: true,
-                  builder: Builder(
-                    builder: (context) {
-                      return CoinLockWarning(
-                        buttonTitle: S().coincontrol_unlock_coin_modal_cta1,
-                        promptType: DismissiblePrompt.coinUnlockWarning,
-                        warningMessage:
-                            S().coincontrol_unlock_coin_modal_subheading,
-                        onContinue: () async {
-                          Navigator.pop(context);
-                          //wait for dialog to close so that the lock icon animation is not interrupted
-                          await Future.delayed(
-                              const Duration(milliseconds: 250));
-                          unLockAllCoins(coinTag, ref);
-                        },
-                      );
-                    },
-                  ));
+                context: context,
+                alignment: const Alignment(0.0, -.6),
+                useRootNavigator: true,
+                builder: Builder(
+                  builder: (context) {
+                    return CoinLockWarning(
+                      buttonTitle: S().coincontrol_unlock_coin_modal_cta1,
+                      promptType: DismissiblePrompt.coinUnlockWarning,
+                      warningMessage:
+                          S().coincontrol_unlock_coin_modal_subheading,
+                      onContinue: () async {
+                        Navigator.pop(context);
+                        //wait for dialog to close so that the lock icon animation is not interrupted
+                        await Future.delayed(const Duration(milliseconds: 250));
+                        unLockAllCoins(coinTag, ref);
+                      },
+                    );
+                  },
+                ),
+              );
             } else {
               unLockAllCoins(coinTag, ref);
             }
@@ -378,12 +397,17 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                   if (isRbfChangeOutput) {
                     coinTagSwitchState = CoinTagSwitchState.on;
                   }
-                  return CoinTagSwitch(
+                  return Semantics(
+                    container: true,
+                    identifier:
+                        "coin_tag_switch_${coinTag.name}_${coinTagSwitchState.name}",
+                    child: CoinTagSwitch(
                       triState: true,
                       value: coinTagSwitchState,
                       onChanged: (value) {
-                        final selectionState =
-                            ref.read(coinSelectionStateProvider.notifier);
+                        final selectionState = ref.read(
+                          coinSelectionStateProvider.notifier,
+                        );
                         bool hasLockedItems = coinTag.numOfLockedCoins != 0;
                         if (hasLockedItems && value == CoinTagSwitchState.on) {
                           final ids = coinTag.utxo
@@ -407,7 +431,9 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                             selectionState.removeAll(ids);
                           }
                         }
-                      });
+                      },
+                    ),
+                  );
                 },
               ),
       ),
@@ -452,8 +478,11 @@ class CoinLockButton extends StatefulWidget {
   final bool locked;
   final GestureTapCallback gestureTapCallback;
 
-  const CoinLockButton(
-      {super.key, required this.locked, required this.gestureTapCallback});
+  const CoinLockButton({
+    super.key,
+    required this.locked,
+    required this.gestureTapCallback,
+  });
 
   @override
   State<CoinLockButton> createState() => CoinLockButtonState();
@@ -476,8 +505,9 @@ class CoinLockButtonState extends State<CoinLockButton> {
 
     _controller = rive.RiveWidgetController(
       riveFile,
-      stateMachineSelector:
-          rive.StateMachineSelector.byName('CoinStateMachine'),
+      stateMachineSelector: rive.StateMachineSelector.byName(
+        'CoinStateMachine',
+      ),
     );
 
     //TODO: fix rive with databindings.
@@ -521,65 +551,69 @@ class CoinLockButtonState extends State<CoinLockButton> {
     final borderColor = widget.locked ? EnvoyColors.copper : EnvoyColors.grey85;
     final icon = widget.locked ? "locked" : "unlocked";
 
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: borderColor,
-          width: 1,
+    return Semantics(
+      container: true,
+      button: true,
+      label: 'coin_lock_icon-$icon',
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: borderColor, width: 1),
         ),
-      ),
-      child: SvgPicture.asset(
-        "assets/components/icons/$icon.svg",
-        width: 18.0,
-        height: 18.0,
-        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+        child: SvgPicture.asset(
+          "assets/components/icons/$icon.svg",
+          width: 18.0,
+          height: 18.0,
+          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (context, ref, child) {
-      final riveFile = ref.watch(coinLockRiveProvider);
+    return Consumer(
+      builder: (context, ref, child) {
+        final riveFile = ref.watch(coinLockRiveProvider);
 
-      if (riveFile != null && !_isInitialized) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) _initRive(riveFile);
-        });
-      }
+        if (riveFile != null && !_isInitialized) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) _initRive(riveFile);
+          });
+        }
 
-      final canShowRive =
-          riveFile != null && _isInitialized && _controller != null;
+        final canShowRive =
+            riveFile != null && _isInitialized && _controller != null;
 
-      return GestureDetector(
-        onTap: () {
-          _playTransitionWindow();
-          widget.gestureTapCallback();
-        },
-        behavior: HitTestBehavior.opaque,
-        child: SizedBox(
-          height: 38,
-          width: 50,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: (_showRive && canShowRive)
-                  ? rive.RiveWidget(
-                      key: const ValueKey('rive'),
-                      controller: _controller!,
-                    )
-                  : SizedBox(
-                      key: const ValueKey('icon'),
-                      child: Center(child: _staticIcon()),
-                    ),
+        return GestureDetector(
+          onTap: () {
+            _playTransitionWindow();
+            widget.gestureTapCallback();
+          },
+          behavior: HitTestBehavior.opaque,
+          child: SizedBox(
+            height: 38,
+            width: 50,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.xs),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: (_showRive && canShowRive)
+                    ? rive.RiveWidget(
+                        key: const ValueKey('rive'),
+                        controller: _controller!,
+                      )
+                    : SizedBox(
+                        key: const ValueKey('icon'),
+                        child: Center(child: _staticIcon()),
+                      ),
+              ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }
 

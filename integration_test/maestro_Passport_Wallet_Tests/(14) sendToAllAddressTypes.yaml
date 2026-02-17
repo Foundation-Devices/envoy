@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# (14) sendToAllAddressTypes
 appId: com.foundationdevices.envoy
 ---
 
@@ -127,14 +128,11 @@ appId: com.foundationdevices.envoy
 
 # Assert amounts are non-zero
 - assertVisible:
-    id: "primary_amount Amount"
-    text: "[1-9][0-9,]*"
+    id: "primary_amount Amount-[1-9].*"
 - assertVisible:
-    id: "primary_amount Fee"
-    text: "[1-9][0-9,]*"
+    id: "primary_amount Fee-[1-9].*"
 - assertVisible:
-    id: "primary_amount Total"
-    text: "[1-9][0-9,]*"
+    id: "primary_amount Total-[1-9].*"
 
 # go back to home
 - tapOn:

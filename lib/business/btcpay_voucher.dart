@@ -125,16 +125,18 @@ class BtcPayVoucher {
       "destination": address,
       "amount": amount,
       // it is possible to pay only part of the voucher amount
-      "payoutMethodId": "BTC-CHAIN"
+      "payoutMethodId": "BTC-CHAIN",
     };
     var requestBody = json.encode(data);
 
     try {
-      response = await http.post(url,
-          headers: {
-            'Content-Type': 'application/json', // Set the content type to JSON
-          },
-          body: requestBody);
+      response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json', // Set the content type to JSON
+        },
+        body: requestBody,
+      );
     } on TimeoutException {
       return BtcPayVoucherRedeemResult.voucherInvalid;
     }
@@ -192,27 +194,39 @@ void addPendingTx(
   String payoutId,
   String btcPayVoucherUri,
 ) {
-  EnvoyStorage().addPendingTx(pullPaymentId, account.id, DateTime.now(),
-      TransactionType.btcPay, amountSats ?? 0, 0, address,
-      pullPaymentId: pullPaymentId,
-      currency: currency,
-      currencyAmount: currencyAmount,
-      payoutId: payoutId,
-      btcPayVoucherUri: btcPayVoucherUri,
-      note: S().btcpay_note);
+  EnvoyStorage().addPendingTx(
+    pullPaymentId,
+    account.id,
+    DateTime.now(),
+    TransactionType.btcPay,
+    amountSats ?? 0,
+    0,
+    address,
+    pullPaymentId: pullPaymentId,
+    currency: currency,
+    currencyAmount: currencyAmount,
+    payoutId: payoutId,
+    btcPayVoucherUri: btcPayVoucherUri,
+    note: S().btcpay_note,
+  );
 }
 
 DateTime? convertUnixTimestampToDateTime(int? unixTimestamp) {
   if (unixTimestamp == null) return null;
   int milliseconds = unixTimestamp * 1000;
-  DateTime dateTime =
-      DateTime.fromMillisecondsSinceEpoch(milliseconds, isUtc: true);
+  DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(
+    milliseconds,
+    isUtc: true,
+  );
   DateTime localDateTime = dateTime.toLocal();
   return localDateTime;
 }
 
 Future<String?> checkPayoutStatus(
-    String uri, String pullPaymentId, String payoutId) async {
+  String uri,
+  String pullPaymentId,
+  String payoutId,
+) async {
   var response = await HttpTor().get(
     "https://$uri/api/v1/pull-payments/$pullPaymentId/payouts/$payoutId",
   );
