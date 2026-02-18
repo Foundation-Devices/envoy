@@ -70,6 +70,7 @@ class BluetoothChannel {
       _deviceChannels[deviceId]?.dispose();
       _deviceChannels.remove(deviceId);
       _deviceChannels[deviceId] = QLConnection(deviceId);
+      _notifyDeviceChannelsChanged();
       return _deviceChannels[deviceId]!;
     }
     if (!_deviceChannels.containsKey(deviceId)) {
