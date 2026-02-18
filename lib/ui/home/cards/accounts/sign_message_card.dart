@@ -726,8 +726,7 @@ class _SignMessageResultCardState extends ConsumerState<SignMessageResultCard> {
                         backgroundColor: Colors.lightBlue,
                         replaceExisting: true,
                         duration: const Duration(seconds: 1),
-                        message:
-                            "Signature copied to clipboard", // TODO: localazy
+                        message: S().descriptor_toast_signatureCopied,
                         icon: const EnvoyIcon(
                           EnvoyIcons.info,
                           color: EnvoyColors.accentPrimary,

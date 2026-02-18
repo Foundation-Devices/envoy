@@ -961,6 +961,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Descriptor copied to clipboard.",
         ),
+        "descriptor_toast_signatureCopied":
+            MessageLookupByLibrary.simpleMessage(
+          "Signature copied to clipboard.",
+        ),
         "device_deviceDetailsPrimeRemoved_accessoryRemoved":
             MessageLookupByLibrary.simpleMessage(
           "Accessory removed, please reconnect Prime.",
@@ -2902,6 +2906,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_advanced_receiveToTaproot":
             MessageLookupByLibrary.simpleMessage(
           "Receive to Taproot",
+        ),
+        "settings_advanced_resetWarnings": MessageLookupByLibrary.simpleMessage(
+          "Reset all Warnings",
         ),
         "settings_advanced_signet":
             MessageLookupByLibrary.simpleMessage("Signet"),

@@ -298,9 +298,10 @@ void scanForDevice(BuildContext context, WidgetRef ref) async {
             onActionTap: () {
               EnvoyToast.dismissPreviousToasts(context);
             },
-            icon: const Icon(
-              Icons.info_outline,
-              color: EnvoyColors.accentPrimary,
+            icon: EnvoyIcon(
+              EnvoyIcons.alert,
+              color: NewEnvoyColor.contentNotice,
+              size: EnvoyIconSize.small,
             ),
           ).show(context);
         }

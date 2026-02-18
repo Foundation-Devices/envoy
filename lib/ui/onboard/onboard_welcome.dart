@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:math';
-
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -32,6 +31,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/new_envoy_color.dart';
 
 enum EscapeHatchTap { logo, text }
 
@@ -293,9 +294,10 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
               onActionTap: () {
                 EnvoyToast.dismissPreviousToasts(context);
               },
-              icon: const Icon(
-                Icons.info_outline,
-                color: EnvoyColors.accentPrimary,
+              icon: EnvoyIcon(
+                EnvoyIcons.alert,
+                color: NewEnvoyColor.contentNotice,
+                size: EnvoyIconSize.small,
               ),
             ).show(context);
           }

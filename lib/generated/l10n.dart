@@ -3097,6 +3097,16 @@ class S {
     );
   }
 
+  /// `Signature copied to clipboard.`
+  String get descriptor_toast_signatureCopied {
+    return Intl.message(
+      'Signature copied to clipboard.',
+      name: 'descriptor_toast_signatureCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Accessory removed, please reconnect Prime.`
   String get device_deviceDetailsPrimeRemoved_accessoryRemoved {
     return Intl.message(
@@ -9397,6 +9407,16 @@ class S {
     return Intl.message(
       'Receive to Taproot',
       name: 'settings_advanced_receiveToTaproot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset all Warnings`
+  String get settings_advanced_resetWarnings {
+    return Intl.message(
+      'Reset all Warnings',
+      name: 'settings_advanced_resetWarnings',
       desc: '',
       args: [],
     );
