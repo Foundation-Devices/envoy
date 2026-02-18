@@ -453,12 +453,16 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
                 print("Connecting to existing accessory with Bluetooth ID: \(bluetoothId)")
 
                 // Send connection event to Flutter
-                sendConnectionEvent(
-                    connected: false,
-                    peripheralId: bluetoothId.uuidString,
-                    peripheralName: existingAccessory.displayName,
-                    type: "connecting"
-                )
+                if let sink = eventSink {
+                    let connectionData: [String: Any] = [
+                        "type": "connecting",
+                        "connected": false,
+                        "peripheralId": bluetoothId.uuidString,
+                        "peripheralName": existingAccessory.displayName,
+                        "timestamp": Date().timeIntervalSince1970 * 1000
+                    ]
+                    sink(connectionData)
+                }
 
                 // Connect if central manager is ready
                 if let central = centralManager, central.state == .poweredOn {
