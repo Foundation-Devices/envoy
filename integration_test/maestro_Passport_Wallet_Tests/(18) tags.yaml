@@ -43,7 +43,7 @@ appId: com.foundationdevices.envoy
 # 9) Open the tag created
 - tapOn: Expenses
 
-#10) Select the coin form the tag
+# 10) Select the coin form the tag
 - tapOn:
     id: coin_tag_switch_Expenses_off
 

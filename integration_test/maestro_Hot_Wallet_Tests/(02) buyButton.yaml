@@ -18,4 +18,3 @@ appId: com.foundationdevices.envoy
 # go back to home
 - tapOn:
     id: hamburger_menu
-

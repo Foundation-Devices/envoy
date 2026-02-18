@@ -5,6 +5,7 @@
 # (21) nodeSelection
 appId: com.foundationdevices.envoy
 ---
+
 # go to privacy
 - tapOn: Privacy
 
@@ -13,14 +14,15 @@ appId: com.foundationdevices.envoy
 # select personal node
 - tapOn: Personal Node
 
-#  Check that it gets selected and the field to enter the personal node shows up
+# Check that it gets selected and the field to enter the personal node shows up
 - assertVisible: Personal Node
 - assertVisible: Enter your node address
 
 - tapOn: Enter your node address
 
 # delete anything before pasting
-- longPressOn: Backspace
+- eraseText:
+    charactersToErase: 80
 
 # enter personal node
 - inputText: "ssl://mainnet-0.foundation.xyz:50002"

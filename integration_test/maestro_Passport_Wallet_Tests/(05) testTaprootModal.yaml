@@ -113,7 +113,7 @@ appId: com.foundationdevices.envoy
 # go to acc
 - tapOn: Taproot modal test
 
-#go to descriptor
+# go to descriptor
 - tapOn:
     id: Right Action Button
 
@@ -154,7 +154,7 @@ appId: com.foundationdevices.envoy
 - tapOn:
     id: hamburger_menu
 
-#go to descriptor
+# go to descriptor
 - tapOn:
     id: Right Action Button
 
