@@ -198,7 +198,7 @@ void showWarningOnAddressCopy(BuildContext context, String address) {
       onCheckBoxChanged: (checkedValue) {
         if (checkedValue) {
           EnvoyStorage().addPromptState(DismissiblePrompt.copyAddressWarning);
-        } else if (!checkedValue) {
+        } else {
           EnvoyStorage()
               .removePromptState(DismissiblePrompt.copyAddressWarning);
         }
