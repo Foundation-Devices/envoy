@@ -42,6 +42,7 @@ final onboardingDeviceConnectionStatusStream =
 });
 
 final isPrimeConnectedProvider = Provider.family<bool, Device?>((ref, device) {
+  if (device?.type != DeviceType.passportPrime) return false;
   if (device == null) return false;
   DeviceStatus? status =
       ref.watch(deviceConnectionStatusStreamProvider(device)).valueOrNull;
