@@ -17,7 +17,6 @@ envoy-dev/
 ├── test/                   # Dart tests
 ├── packages/               # Internal packages (mostly Rust FFI)
 │   ├── backup/             # Backup encryption (FRB)
-│   ├── bluart/             # Bluetooth UR transport (FRB)
 │   ├── foundation_api/     # Core crypto APIs (FRB)
 │   ├── http_tor/           # HTTP over Tor (FRB)
 │   ├── kebab_mcp/          # MCP server for hardware test rig
@@ -66,7 +65,7 @@ Runs `build_runner` for Freezed classes, JSON serialization, and other code gene
 3. Runs build_runner if needed
 4. Formats generated files
 
-FRB packages: `backup`, `bluart`, `foundation_api`, `http_tor`, `ngwallet`, `shards`, `ur`
+FRB packages: `backup`, `foundation_api`, `http_tor`, `ngwallet`, `shards`, `ur`
 
 ### Linting
 
