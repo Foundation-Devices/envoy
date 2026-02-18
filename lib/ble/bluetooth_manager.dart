@@ -52,7 +52,6 @@ final isPrimeConnectedProvider = Provider.family<bool, Device?>((ref, device) {
 final _qlActiveStreamProvider =
     StreamProvider.family<bool, Device>((ref, device) {
   // Rebuild the stream provider when the underlying QLConnection instance
-  // is replaced (for example setupBle reset flow on iOS).
   ref.watch(qlConnectionStreamProvider);
   return device.qlConnection().qlActiveStream;
 });

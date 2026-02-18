@@ -365,8 +365,6 @@ class _PrimeOptionsWidgetState extends ConsumerState<PrimeOptionsWidget> {
                       widget.device.color == Colors.black ? 0 : 1);
                   //after repairing the connection,  restore XID's
                   await qlConnection.reconnect(widget.device);
-                  await Future.delayed(const Duration(seconds: 2));
-                  ref.refresh(primeQLActivityProvider(widget.device));
                   widget.onRepairComplete.call();
                 }
               }),
