@@ -281,6 +281,13 @@ class QLConnection with EnvoyMessageWriter {
     _qlActiveController.add(isActive);
   }
 
+  void resetQLStatus() {
+    _qlActiveController.add(false);
+    _lastQLActive = false;
+    _qlActivityMonitorTimer?.cancel();
+    _startQLActivityMonitoring();
+  }
+
   /// Write all data chunks to this BLE device.
   /// Returns true if successful, false otherwise.
   Future<bool> writeAll(List<Uint8List> data) async {
