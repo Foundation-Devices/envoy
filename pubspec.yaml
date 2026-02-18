@@ -126,6 +126,7 @@ dependency_overrides:
 dev_dependencies:
   kebab_mcp:
     path: packages/kebab_mcp
+  flutter_rust_bridge: 2.11.1
   test: any
   flutter_test:
     sdk: flutter
