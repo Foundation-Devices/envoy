@@ -8,27 +8,27 @@ appId: com.foundationdevices.envoy
 
 # go to about
 - tapOn:
-      id: hamburger_menu
+    id: hamburger_menu
 - tapOn: |-
-      ABOUT
-      ABOUT
+    ABOUT
+    ABOUT
 
 # make sure there is app version with patern
 - assertVisible:
-      text: ".*\\(\\d+\\).*"
+    text: ".*\\(\\d+\\).*"
 
 # open Licence
 - tapOn: Show
 
 # make sure the licence is visible
 - assertVisible: |-
-      Envoy
-      This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful,but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-      Powered by Flutter
+    Envoy
+    This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful,but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+    Powered by Flutter
 
 # go back to home
 - tapOn: Back
 - tapOn:
-      id: hamburger_menu
+    id: hamburger_menu
 - tapOn:
-      id: hamburger_menu
+    id: hamburger_menu

@@ -6,7 +6,7 @@
 appId: com.foundationdevices.envoy
 ---
 
-#go to tags
+# go to tags
 - tapOn: Primary (#0)
 - tapOn: Activity
 - tapOn: Untagged
@@ -20,7 +20,7 @@ appId: com.foundationdevices.envoy
     text: coin switch false
     index: 2
 
-#  10 step, native back out of coins and coin selection
+# 10 step, native back out of coins and coin selection
 
 # native back on this screen is on index 1 since there is top bar on index 0
 - tapOn:

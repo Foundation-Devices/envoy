@@ -5,6 +5,7 @@
 # (01) magicRecoveryFromFoundationServer
 appId: com.foundationdevices.envoy
 ---
+
 - launchApp:
     clearState: true
 

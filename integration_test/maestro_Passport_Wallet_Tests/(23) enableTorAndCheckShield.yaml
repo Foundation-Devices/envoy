@@ -5,6 +5,7 @@
 # (23) enableTorAndCheckShield
 appId: com.foundationdevices.envoy
 ---
+
 # go to privacy
 - tapOn: Privacy
 

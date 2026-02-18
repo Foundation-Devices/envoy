@@ -85,7 +85,7 @@ appId: com.foundationdevices.envoy
 - swipe:
     start: "50%, 20%"
     end: "50%, 20%"
-    duration: 20000
+    duration: 10000
 
 # reset staging screen to refresh %fee for maestro
 - tapOn: Next

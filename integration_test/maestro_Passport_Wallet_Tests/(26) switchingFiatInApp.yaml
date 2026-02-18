@@ -159,10 +159,10 @@ appId: com.foundationdevices.envoy
 
 # change to USD for the next test
 - tapOn:
-      id: hamburger_menu
+    id: hamburger_menu
 - tapOn: |-
-      SETTINGS
-      SETTINGS
+    SETTINGS
+    SETTINGS
 
 - tapOn: JPY
 - tapOn: USD
@@ -171,7 +171,7 @@ appId: com.foundationdevices.envoy
 
 # back to home
 - tapOn:
-      id: hamburger_menu
+    id: hamburger_menu
 - tapOn:
-      id: hamburger_menu
+    id: hamburger_menu
 - tapOn: Accounts

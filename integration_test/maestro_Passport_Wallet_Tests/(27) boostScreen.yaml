@@ -81,7 +81,7 @@ appId: com.foundationdevices.envoy
     visible: |-
       boost button-ready
       Boost
-    timeout: 600000 # wait for 5 min
+    timeout: 600000 # wait for 10 min
 
 # try to boost
 - tapOn: |-
@@ -111,4 +111,3 @@ appId: com.foundationdevices.envoy
 
 # go to home
 - tapOn: Accounts
-

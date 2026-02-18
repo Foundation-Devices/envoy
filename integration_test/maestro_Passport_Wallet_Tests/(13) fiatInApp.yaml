@@ -111,8 +111,7 @@ appId: com.foundationdevices.envoy
 - tapOn:
     id: amount_display sats
 
-
-#  With the unit in fiat, paste a valid address, enter a valid amount, tap Confirm
+# With the unit in fiat, paste a valid address, enter a valid amount, tap Confirm
 - tapOn: Enter address
 - inputText: "bc1qcjwyecualcytzgud5ruwrj642fng4tvp8nsgr2"
 - tapOn: Back
@@ -136,9 +135,9 @@ appId: com.foundationdevices.envoy
 
 # close the snack bar
 - swipe:
-    from:
-      id: envoy_icon_utxo
-    direction: DOWN
+    start: 50%, 65%
+    end: 50%, 100%
+    duration: 1000
 
 # go back to home
 - tapOn:
