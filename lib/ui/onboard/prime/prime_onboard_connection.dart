@@ -37,8 +37,6 @@ class PrimeOnboardParing extends ConsumerStatefulWidget {
 }
 
 class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
-  bool canPop = true;
-
   //TODO: use provider to get firmware update status
   bool updateAvailable = false;
 
@@ -92,7 +90,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
     });
 
     return PopScope(
-      canPop: canPop,
+      canPop: false,
       onPopInvokedWithResult: (canPop, _) async {
         final exit = await showExitWarning(context);
         if (exit && context.mounted) {
