@@ -58,9 +58,9 @@ class S {
 
   // skipped getter for the 'FW_Version_No.' key
 
-  /// `Install`
+  /// `sat/vb`
   String get _ {
-    return Intl.message('Install', name: '_', desc: '', args: []);
+    return Intl.message('sat/vb', name: '_', desc: '', args: []);
   }
 
   /// `App Version`
@@ -323,6 +323,16 @@ class S {
     return Intl.message(
       'New Update - See what’s new.',
       name: 'accounts_toastNewUpdate_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Update - See what’s new.`
+  String get accounts_toast_newUpdate {
+    return Intl.message(
+      'New Update - See what’s new.',
+      name: 'accounts_toast_newUpdate',
       desc: '',
       args: [],
     );
@@ -698,6 +708,16 @@ class S {
     return Intl.message(
       'An incoming transaction will appear in your account shortly.',
       name: 'azteco_redeem_modal_success_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy backup is complete.`
+  String get backup_toast_envoyBackupComplete {
+    return Intl.message(
+      'Envoy backup is complete.',
+      name: 'backup_toast_envoyBackupComplete',
       desc: '',
       args: [],
     );
@@ -1805,6 +1825,16 @@ class S {
     );
   }
 
+  /// `Less than 1 sat/vb is an advanced feature. `
+  String get coincontrol_subsat_selectorWarning {
+    return Intl.message(
+      'Less than 1 sat/vb is an advanced feature. ',
+      name: 'coincontrol_subsat_selectorWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Activity`
   String get coincontrol_switchActivity {
     return Intl.message(
@@ -2100,16 +2130,6 @@ class S {
     return Intl.message(
       'Your transaction is ready \nto be sent',
       name: 'coincontrol_tx_detail_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Learn more`
-  String get coincontrol_tx_detail_high_fee_info_overlay_learnMore {
-    return Intl.message(
-      'Learn more',
-      name: 'coincontrol_tx_detail_high_fee_info_overlay_learnMore',
       desc: '',
       args: [],
     );
@@ -2750,11 +2770,11 @@ class S {
     return Intl.message('No', name: 'component_no', desc: '', args: []);
   }
 
-  /// `Learn more`
-  String get component_notificationLink {
+  /// `Issue establishing Tor connectivity`
+  String get component_notificationText {
     return Intl.message(
-      'Learn more',
-      name: 'component_notificationLink',
+      'Issue establishing Tor connectivity',
+      name: 'component_notificationText',
       desc: '',
       args: [],
     );
@@ -3062,6 +3082,26 @@ class S {
     return Intl.message(
       'Your wallet was successfully deleted',
       name: 'delete_wallet_for_good_success_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Descriptor copied to clipboard.`
+  String get descriptor_toast_descriptorCopied {
+    return Intl.message(
+      'Descriptor copied to clipboard.',
+      name: 'descriptor_toast_descriptorCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Signature copied to clipboard.`
+  String get descriptor_toast_signatureCopied {
+    return Intl.message(
+      'Signature copied to clipboard.',
+      name: 'descriptor_toast_signatureCopied',
       desc: '',
       args: [],
     );
@@ -7777,10 +7817,10 @@ class S {
     );
   }
 
-  /// `Enter your explorer address`
+  /// `Enter explorer address`
   String get privacy_explorer_explorerAddress {
     return Intl.message(
-      'Enter your explorer address',
+      'Enter explorer address',
       name: 'privacy_explorer_explorerAddress',
       desc: '',
       args: [],
@@ -7877,10 +7917,10 @@ class S {
     );
   }
 
-  /// `Enter your node address`
+  /// `https://192.168.1.5:2222`
   String get privacy_node_nodeAddress {
     return Intl.message(
-      'Enter your node address',
+      'https://192.168.1.5:2222',
       name: 'privacy_node_nodeAddress',
       desc: '',
       args: [],
@@ -8152,6 +8192,16 @@ class S {
     return Intl.message(
       'Sign Message',
       name: 'receive_qr_signMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Address copied to clipboard.`
+  String get receive_toast_addressCopied {
+    return Intl.message(
+      'Address copied to clipboard.',
+      name: 'receive_toast_addressCopied',
       desc: '',
       args: [],
     );
@@ -8707,6 +8757,26 @@ class S {
     );
   }
 
+  /// `Failed to connect to Passport Prime. Please try again and contact support if issue persists.`
+  String get scanner_toast_failedConnectPrime {
+    return Intl.message(
+      'Failed to connect to Passport Prime. Please try again and contact support if issue persists.',
+      name: 'scanner_toast_failedConnectPrime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not a valid QR.`
+  String get scanner_toast_notValidQr {
+    return Intl.message(
+      'Not a valid QR.',
+      name: 'scanner_toast_notValidQr',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Ensure you are scanning a security check QR code from Passport.`
   String get scv_cameraModalUnexpectedQrFormat_content {
     return Intl.message(
@@ -8802,6 +8872,16 @@ class S {
     return Intl.message(
       'View and Edit Details',
       name: 'send_build_viewEditDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activate`
+  String get send_editTxDetailsSubsatModal_activate {
+    return Intl.message(
+      'Activate',
+      name: 'send_editTxDetailsSubsatModal_activate',
       desc: '',
       args: [],
     );
@@ -9332,6 +9412,16 @@ class S {
     );
   }
 
+  /// `Reset all Warnings`
+  String get settings_advanced_resetWarnings {
+    return Intl.message(
+      'Reset all Warnings',
+      name: 'settings_advanced_resetWarnings',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Signet`
   String get settings_advanced_signet {
     return Intl.message(
@@ -9572,10 +9662,10 @@ class S {
     );
   }
 
-  /// `Your transaction couldn’t be sent`
+  /// `Your transaction could not be sent`
   String get stalls_before_sending_tx_scanning_broadcasting_fail_heading {
     return Intl.message(
-      'Your transaction couldn’t be sent',
+      'Your transaction could not be sent',
       name: 'stalls_before_sending_tx_scanning_broadcasting_fail_heading',
       desc: '',
       args: [],
@@ -9587,6 +9677,18 @@ class S {
     return Intl.message(
       'Please check your connection and try again',
       name: 'stalls_before_sending_tx_scanning_broadcasting_fail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please ensure sure the connected node is able to broadcast transactions containing  sub-sat fee rates.`
+  String
+      get stalls_before_sending_tx_scanning_broadcasting_fail_subsat_subheading {
+    return Intl.message(
+      'Please ensure sure the connected node is able to broadcast transactions containing  sub-sat fee rates.',
+      name:
+          'stalls_before_sending_tx_scanning_broadcasting_fail_subsat_subheading',
       desc: '',
       args: [],
     );

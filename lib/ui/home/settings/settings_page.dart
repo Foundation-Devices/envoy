@@ -44,6 +44,7 @@ class SettingsPage extends ConsumerStatefulWidget {
 class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _animationsDuration = const Duration(milliseconds: 200);
   bool _advancedVisible = false;
+  bool _warningsReset = false;
 
   bool buyDisabledByCountry = true;
 
@@ -224,6 +225,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               onExpansionChanged: (value) {
                 setState(() {
                   _advancedVisible = value;
+                  if (!value) _warningsReset = false;
                 });
               },
               title: Row(
@@ -365,6 +367,35 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ),
                       )
                     : const SizedBox.shrink(),
+                ListTile(
+                  dense: true,
+                  onTap: () {
+                    EnvoyStorage().clearDismissedStatesStore();
+                    setState(() {
+                      _warningsReset = true;
+                    });
+                  },
+                  contentPadding: const EdgeInsets.all(0),
+                  title: SettingText(
+                    S().settings_advanced_resetWarnings,
+                    onTap: () {
+                      EnvoyStorage().clearDismissedStatesStore();
+                      setState(() {
+                        _warningsReset = true;
+                      });
+                    },
+                  ),
+                  trailing: _warningsReset
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.medium1),
+                          child: EnvoyIcon(
+                            EnvoyIcons.check,
+                            color: EnvoyColors.accentPrimary,
+                          ),
+                        )
+                      : null,
+                ),
                 ListTile(
                   dense: true,
                   onTap: () {

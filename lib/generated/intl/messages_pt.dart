@@ -72,7 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("Install"),
+        "_": MessageLookupByLibrary.simpleMessage("sat/vb"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage(
           "Versão da Aplicação",
         ),
@@ -154,6 +154,9 @@ class MessageLookup extends MessageLookupByLibrary {
           "Passphrase",
         ),
         "accounts_toastNewUpdate_content": MessageLookupByLibrary.simpleMessage(
+          "New Update - See what’s new.",
+        ),
+        "accounts_toast_newUpdate": MessageLookupByLibrary.simpleMessage(
           "New Update - See what’s new.",
         ),
         "accounts_upgradeBdkSignetModal_content":
@@ -260,6 +263,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_redeem_modal_success_subheading":
             MessageLookupByLibrary.simpleMessage(
           "Em breve irá aparecer uma transacção a receber na tua conta.",
+        ),
+        "backup_toast_envoyBackupComplete":
+            MessageLookupByLibrary.simpleMessage(
+          "Envoy backup is complete.",
         ),
         "backups_advancedBackups": MessageLookupByLibrary.simpleMessage(
           "Advanced Backups",
@@ -590,6 +597,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "O bloqueio das moedas impossibilita o seu uso em transacções",
         ),
+        "coincontrol_subsat_selectorWarning":
+            MessageLookupByLibrary.simpleMessage(
+          "Less than 1 sat/vb is an advanced feature. ",
+        ),
         "coincontrol_switchActivity": MessageLookupByLibrary.simpleMessage(
           "Atividade",
         ),
@@ -678,8 +689,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_heading": MessageLookupByLibrary.simpleMessage(
           "A tua transacção está pronta\npara ser enviada",
         ),
-        "coincontrol_tx_detail_high_fee_info_overlay_learnMore":
-            MessageLookupByLibrary.simpleMessage("[[Mais informações]]"),
         "coincontrol_tx_detail_high_fee_info_overlay_subheading":
             MessageLookupByLibrary.simpleMessage(
           "Algumas moedas mais pequenas foram excluídas desta transação. Com a taxa de comissão escolhida, o custo da sua inclusão é superior ao seu valor.",
@@ -851,8 +860,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Comprar"),
         "component_next": MessageLookupByLibrary.simpleMessage("Próximo"),
         "component_no": MessageLookupByLibrary.simpleMessage("Não"),
-        "component_notificationLink": MessageLookupByLibrary.simpleMessage(
-          "Learn more",
+        "component_notificationText": MessageLookupByLibrary.simpleMessage(
+          "Issue establishing Tor connectivity",
         ),
         "component_ok": MessageLookupByLibrary.simpleMessage("OK"),
         "component_recover": MessageLookupByLibrary.simpleMessage("Recover"),
@@ -941,6 +950,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete_wallet_for_good_success_heading":
             MessageLookupByLibrary.simpleMessage(
           "A tua carteira foi eliminada com sucesso",
+        ),
+        "descriptor_toast_descriptorCopied":
+            MessageLookupByLibrary.simpleMessage(
+          "Descriptor copied to clipboard.",
+        ),
+        "descriptor_toast_signatureCopied":
+            MessageLookupByLibrary.simpleMessage(
+          "Signature copied to clipboard.",
         ),
         "device_deviceDetailsPrimeRemoved_accessoryRemoved":
             MessageLookupByLibrary.simpleMessage(
@@ -2393,7 +2410,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "privacy_explorer_explorerAddress":
             MessageLookupByLibrary.simpleMessage(
-          "Enter your explorer address",
+          "Enter explorer address",
         ),
         "privacy_explorer_explorerType_personal":
             MessageLookupByLibrary.simpleMessage("Personal Block Explorer"),
@@ -2508,6 +2525,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "receive_qr_share": MessageLookupByLibrary.simpleMessage("Share"),
         "receive_qr_signMessage": MessageLookupByLibrary.simpleMessage(
           "Sign Message",
+        ),
+        "receive_toast_addressCopied": MessageLookupByLibrary.simpleMessage(
+          "Address copied to clipboard.",
         ),
         "receive_tx_list_awaitingConfirmation":
             MessageLookupByLibrary.simpleMessage("A aguardar confirmação"),
@@ -2672,6 +2692,13 @@ class MessageLookup extends MessageLookupByLibrary {
           "Rescanning started. Please do not close Envoy.",
         ),
         "rescanAccount_toast_rescanningSuccessful": m19,
+        "scanner_toast_failedConnectPrime":
+            MessageLookupByLibrary.simpleMessage(
+          "Failed to connect to Passport Prime. Please try again and contact support if issue persists.",
+        ),
+        "scanner_toast_notValidQr": MessageLookupByLibrary.simpleMessage(
+          "Not a valid QR.",
+        ),
         "scv_cameraModalUnexpectedQrFormat_content":
             MessageLookupByLibrary.simpleMessage(
           "Ensure you are scanning a security check QR code from Passport.",
@@ -2699,6 +2726,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_build_viewEditDetails": MessageLookupByLibrary.simpleMessage(
           "View and Edit Details",
         ),
+        "send_editTxDetailsSubsatModal_activate":
+            MessageLookupByLibrary.simpleMessage("Activate"),
         "send_editTxDetailsSubsatModal_content":
             MessageLookupByLibrary.simpleMessage(
           "Check that the connected node can facilitate fee rates below 1 sat/vb before continuing.",
@@ -2860,6 +2889,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Receive to Taproot",
         ),
+        "settings_advanced_resetWarnings": MessageLookupByLibrary.simpleMessage(
+          "Reset all Warnings",
+        ),
         "settings_advanced_signet":
             MessageLookupByLibrary.simpleMessage("Signet"),
         "settings_advanced_taproot": MessageLookupByLibrary.simpleMessage(
@@ -2937,6 +2969,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "stalls_before_sending_tx_scanning_broadcasting_fail_subheading":
             MessageLookupByLibrary.simpleMessage(
           "Por favor verifica a tua ligação e tenta novamente",
+        ),
+        "stalls_before_sending_tx_scanning_broadcasting_fail_subsat_subheading":
+            MessageLookupByLibrary.simpleMessage(
+          "Please ensure sure the connected node is able to broadcast transactions containing  sub-sat fee rates.",
         ),
         "stalls_before_sending_tx_scanning_broadcasting_success_heading":
             MessageLookupByLibrary.simpleMessage(
