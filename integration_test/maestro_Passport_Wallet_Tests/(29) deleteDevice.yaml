@@ -15,7 +15,7 @@ appId: com.foundationdevices.envoy
 - tapOn:
     id: Right Action Button
 
-- tapOn: Disconnect
+- tapOn: Unpair Passport
 
 - tapOn:
     id: PopUp Primary Button
@@ -26,4 +26,3 @@ appId: com.foundationdevices.envoy
     Founder's Edition
 
 - tapOn: Accounts
-

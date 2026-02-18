@@ -61,6 +61,11 @@ appId: com.foundationdevices.envoy
 # check the "Primary (#0)" passport acc
 - tapOn: Primary (#0)
 
+# wait for the tx to appear
+- extendedWaitUntil:
+    visible: Received Awaiting confirmation
+    timeout: 120000 # wait 2 min for the tx
+
 # enter the received tx
 - tapOn: |-
     Received
