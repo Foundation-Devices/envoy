@@ -55,9 +55,6 @@ jobs:
       - run: nix develop --command flutter pub get
         name: Get Flutter dependencies
 
-      - run: nix develop --command ./scripts/build_ffi_android.sh
-        name: Build legacy FFI libs for Android
-
       - run:  echo -n $KEY_JKS | base64 -di > android/key.jks && nix develop --command flutter build apk --release --target-platform android-arm64 --verbose
         name: Build Envoy APK
         env:

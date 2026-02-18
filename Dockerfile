@@ -103,11 +103,7 @@ ENV CARGO_NET_GIT_FETCH_WITH_CLI=true
 # Copy our files
 COPY . .
 
-# Build
 ENV ANDROID_SDK_ROOT=/root/Android/sdk
 ENV ANDROID_NDK_ROOT=$ANDROID_SDK_ROOT/ndk/25.1.8937393
 ENV BINDGEN_EXTRA_CLANG_ARGS="--sysroot=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
-
 ENV CARGO_BUILD_JOBS=4
-RUN chmod +x scripts/build_ffi_android.sh && ./scripts/build_ffi_android.sh
-
