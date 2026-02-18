@@ -8,7 +8,6 @@ members = [
     "packages/http_tor/rust",
     "packages/ur/rust",
     "packages/backup/rust",
-    "packages/bluart/rust",
     "packages/shards/rust",
     "packages/foundation_api/rust",
     "packages/ngwallet/rust"

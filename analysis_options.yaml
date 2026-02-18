@@ -11,7 +11,6 @@ analyzer:
     - 'packages/ngwallet/**'
     - 'packages/backup/**'
     - 'packages/shards/**'
-    - 'packages/bluart/**'
     - 'packages/http_tor/**'
     - 'packages/ur/**'
     - 'packages/foundation_api/**'
