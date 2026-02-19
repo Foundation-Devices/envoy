@@ -94,6 +94,10 @@ class QLConnection with EnvoyMessageWriter {
   bool _sendingExRate = false;
   bool _lastQLActive = false;
 
+  /// Serial number of the connected Prime device, set synchronously when the
+  /// pairing response is received (before the async [getDevice] lookup works).
+  String? primeSerial;
+
   Stream<DeviceStatus> get connectionEvents =>
       deviceStatusStream.where((status) => status.isConnectionEvent);
 
