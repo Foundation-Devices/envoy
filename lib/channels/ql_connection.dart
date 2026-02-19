@@ -65,6 +65,7 @@ class QLConnection with EnvoyMessageWriter {
   final _qlActiveController = StreamController<bool>.broadcast();
 
   Stream<Uint8List> get dataStream => _readController.stream;
+
   Stream<bool> get qlActiveStream => _qlActiveController.stream.replayLatest(
         _lastQLActive,
       );
@@ -172,10 +173,12 @@ class QLConnection with EnvoyMessageWriter {
       _lastDeviceStatus = event;
       if (event.type == BluetoothConnectionEventType.deviceConnected) {
         //wait for heartbeat to be received before marking connection as fully established,
+        //timeout for is set to 4 minutes,the user needs to unlock the prime to receive heartbeat,
+        //so we want to give them enough time to do that without timing out the connection.
         Future.doWhile(() async {
-          await Future.delayed(const Duration(milliseconds: 100));
+          await Future.delayed(const Duration(milliseconds: 200));
           return qlHandler.heartbeatHandler.lastHeartbeat == null;
-        }).timeout(const Duration(seconds: 20)).then((_) {
+        }).timeout(const Duration(minutes: 4)).then((_) {
           onQLConnected();
         }).catchError((e) {
           kPrint("[$deviceId] onConnect error: $e");
