@@ -70,6 +70,7 @@ class BluetoothChannel {
       _deviceChannels[deviceId]?.dispose();
       _deviceChannels.remove(deviceId);
       _deviceChannels[deviceId] = QLConnection(deviceId);
+      _notifyDeviceChannelsChanged();
       return _deviceChannels[deviceId]!;
     }
     if (!_deviceChannels.containsKey(deviceId)) {
@@ -343,24 +344,33 @@ class BluetoothChannel {
     _deviceChannels.clear();
   }
 
-  Future<void> removeAccessory(String deviceId) async {
+  Future<bool> removeAccessory(String deviceId) async {
     if (!Platform.isIOS) {
-      return;
+      return false;
     }
-
-    try {
-      await _methodChannel.invokeMethod<bool>('removeDevice', {
-        'deviceId': deviceId,
-      }).timeout(
-        Duration(seconds: 5),
-        onTimeout: () {
-          throw Exception("Timeout removing accessory");
-        },
-      );
-    } catch (e, stack) {
-      kPrint('Error removing accessory: $e', stackTrace: stack);
-    } finally {
-      removeDeviceChannel(deviceId);
+    bool? result = false;
+    final accessories = await getAccessories();
+    if (accessories.any((a) => a.peripheralId == deviceId)) {
+      try {
+        result = await _methodChannel.invokeMethod<bool>('removeDevice', {
+          'deviceId': deviceId,
+        }).timeout(
+          Duration(seconds: 5),
+          onTimeout: () {
+            throw Exception("Timeout removing accessory");
+          },
+        );
+        return result == true;
+      } catch (e, stack) {
+        kPrint('Error removing accessory: $e', stackTrace: stack);
+        return false;
+      } finally {
+        if (result == true) {
+          removeDeviceChannel(deviceId);
+        }
+      }
+    } else {
+      return false;
     }
   }
 

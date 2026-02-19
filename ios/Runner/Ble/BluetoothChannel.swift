@@ -241,16 +241,10 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
-        var didRemoveLocalDevice = false
-        if let device = devices.removeValue(forKey: deviceId) {
-            device.cleanup()
-            didRemoveLocalDevice = true
-            print("\(Self.TAG) Removed device: \(deviceId)")
-        }
 
         guard let uuid = UUID(uuidString: deviceId) else {
             // Not a UUID; only local cleanup is possible.
-            result(didRemoveLocalDevice)
+            result(false)
             return
         }
 
@@ -259,7 +253,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
                 primeAccessory = nil
             }
             print("\(Self.TAG) No accessory found for device: \(deviceId)")
-            result(didRemoveLocalDevice)
+            result(false)
             return
         }
 
@@ -280,6 +274,10 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
                 self?.primeAccessory = nil
             }
 
+            if let device = self?.devices.removeValue(forKey: deviceId) {
+                device.cleanup()
+                print("\(Self.TAG) Removed device: \(deviceId)")
+            }
             print("\(Self.TAG) Removed accessory for device: \(deviceId)")
             result(true)
         }
@@ -455,7 +453,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
 
         //Maybe tweak this if multiple primes present
         passportDescriptor.bluetoothRange = ASDiscoveryDescriptor.Range.default
-        let productImage = UIImage(named:isMidnight ?  "prime_dark_midgnight_bronze" : "prime_light_arctic_copper") ?? UIImage()
+        let productImage = UIImage(named:isMidnight ?  "prime_dark_midnight_bronze" : "prime_light_arctic_copper") ?? UIImage()
         let passportDisplayItem = ASPickerDisplayItem(
             name: "Passport Prime",
             productImage: productImage,
