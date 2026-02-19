@@ -12,6 +12,7 @@ import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/new_envoy_color.dart';
@@ -721,11 +722,16 @@ class _SignMessageResultCardState extends ConsumerState<SignMessageResultCard> {
                       Clipboard.setData(
                         ClipboardData(text: data.signature),
                       );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Signature copied to clipboard!"),
+                      EnvoyToast(
+                        backgroundColor: Colors.lightBlue,
+                        replaceExisting: true,
+                        duration: const Duration(seconds: 1),
+                        message: S().descriptor_toast_signatureCopied,
+                        icon: const EnvoyIcon(
+                          EnvoyIcons.info,
+                          color: EnvoyColors.accentPrimary,
                         ),
-                      );
+                      ).show(context, rootNavigator: true);
                     },
                     type: EnvoyButtonTypes.secondary,
                     leading: const EnvoyIcon(
