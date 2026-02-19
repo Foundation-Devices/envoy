@@ -179,14 +179,13 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         ..broadcastProgress = BroadcastProgress.staging
         ..loading = true;
 
-      if (feeRate == 0) {
-        feeRate = 1;
-      }
       bool sendMax = spendableBalance == amount;
       final params = TransactionParams(
         address: sendTo,
         amount: BigInt.from(amount),
-        feeRate: BigInt.from(feeRate.toInt()),
+        // fee_rate in Rust expects msat/vB; multiply sat/vB by 1000.
+        // Minimum 1 msat/vB to prevent 0-fee transactions.
+        feeRate: BigInt.from(((feeRate * 1000).round()).clamp(1, 1 << 53)),
         selectedOutputs: utxos,
         note: notes,
         doNotSpendChange: false,
@@ -353,7 +352,8 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         final params = TransactionParams(
           address: sendTo,
           amount: BigInt.from(amount),
-          feeRate: BigInt.from(feeRate < 1 ? 1 : feeRate),
+          // fee_rate in Rust expects msat/vB; multiply sat/vB by 1000.
+          feeRate: BigInt.from(((feeRate * 1000).round()).clamp(1, 1 << 53)),
           selectedOutputs: utxos,
           note: note,
           tag: changeOutput,
