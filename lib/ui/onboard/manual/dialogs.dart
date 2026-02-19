@@ -46,7 +46,7 @@ Future<bool> openBackupFile(BuildContext buildContext, {String? seed}) async {
   return success;
 }
 
-Future<void> openBeefQABackupFile(BuildContext buildContext) async {
+Future<void> openMaestroBackupFile(BuildContext buildContext) async {
   final navigator = Navigator.of(buildContext);
   final context = buildContext;
 

@@ -35,13 +35,9 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
   rive.RiveWidgetController? _controller;
   bool _isInitialized = false;
   bool _isRecoveryInProgress = false;
-  late final bool isTest;
-
   @override
   void initState() {
     super.initState();
-    // IS_TEST flag from run_integration_tests.sh
-    isTest = const bool.fromEnvironment('IS_TEST', defaultValue: true);
     _initRive();
   }
 
@@ -139,16 +135,14 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                   enabled: true,
                   child: GestureDetector(
                     onLongPress: () {
-                      if (isTest) {
+                      setState(() {
+                        _isRecoveryInProgress = true;
+                      });
+                      openMaestroBackupFile(context).then((value) {
                         setState(() {
-                          _isRecoveryInProgress = true;
+                          _isRecoveryInProgress = false;
                         });
-                        openBeefQABackupFile(context).then((value) {
-                          setState(() {
-                            _isRecoveryInProgress = false;
-                          });
-                        });
-                      }
+                      });
                     },
                     child: Image.asset(
                       "assets/fw_download.png",
