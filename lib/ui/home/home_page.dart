@@ -600,7 +600,8 @@ class HomePageState extends ConsumerState<HomePage>
     // With gesture-only navigation the system inset is much smaller so the
     // shield can extend lower, closing the visible gap below it.
     final bool hasNavButtons = _cachedBottomInset > 40.0;
-    double bottomTabBarShieldOffset = hasNavButtons ? 15 : 5;
+    double bottomTabBarShieldOffset =
+        hasNavButtons ? 15 : (Platform.isAndroid ? 5 : -10);
     double shieldHeight = screenHeight -
         _bottomTabBarHeight -
         bottomOffset -

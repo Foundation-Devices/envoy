@@ -176,31 +176,37 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
     // With gesture-only navigation the system inset already reserves the right
     // amount of space and the extra offset makes the bar look too high.
     final bool hasNavButtons = additionalBottomPadding > 40.0;
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: (hasNavButtons
-                ? (Platform.isAndroid ? EnvoySpacing.xs : EnvoySpacing.small)
-                : 0.0) +
-            additionalBottomPadding,
+    return Transform.translate(
+      offset: Offset(
+        0,
+        hasNavButtons ? 0 : (Platform.isAndroid ? 5 : 20),
       ),
-      child: EnvoyBottomNavBar(
-        _navBarItems(),
-        selectedIndex: _selectedIndex,
-        labelStyle: labelStyle,
-        onItemSelected: (int index) {
-          setState(() {
-            if (index == _selectedIndex) {
-              // if selected index is "Accounts"
-              if (index == 2) {
-                context.go("/");
-              } else {
-                return;
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: (hasNavButtons
+                  ? (Platform.isAndroid ? EnvoySpacing.xs : EnvoySpacing.small)
+                  : 0) +
+              additionalBottomPadding,
+        ),
+        child: EnvoyBottomNavBar(
+          _navBarItems(),
+          selectedIndex: _selectedIndex,
+          labelStyle: labelStyle,
+          onItemSelected: (int index) {
+            setState(() {
+              if (index == _selectedIndex) {
+                // if selected index is "Accounts"
+                if (index == 2) {
+                  context.go("/");
+                } else {
+                  return;
+                }
               }
-            }
-            _selectedIndex = index;
-            widget.onIndexChanged?.call(_selectedIndex);
-          });
-        },
+              _selectedIndex = index;
+              widget.onIndexChanged?.call(_selectedIndex);
+            });
+          },
+        ),
       ),
     );
   }
