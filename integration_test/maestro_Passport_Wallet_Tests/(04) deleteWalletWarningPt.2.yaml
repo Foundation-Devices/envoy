@@ -17,8 +17,8 @@ appId: com.foundationdevices.envoy
 - tapOn: Erase Mobile Wallet
 
 # skip dialogs
-- tapOn: Continue
-- tapOn: Continue
+#- tapOn: Continue // TODO: revert this temporary comment
+#- tapOn: Continue
 
 # make sure warning dialog is open
 - assertVisible: Delete Accounts anyway

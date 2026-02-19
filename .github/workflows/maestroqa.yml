@@ -44,6 +44,15 @@ jobs:
       - name: Run Maestro Android Tests (builds and installs APK)
         run: just maestroqa
 
+      - name: Upload failure videos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-failure-videos
+          path: fail-videos/
+          if-no-files-found: ignore
+          retention-days: 14
+
   maestro-qa-ios:
     if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'both' }}
     runs-on: [ self-hosted, macOS, ARM64 ]
