@@ -32,8 +32,15 @@ class DescriptorCard extends ConsumerStatefulWidget {
 }
 
 class _DescriptorCardState extends ConsumerState<DescriptorCard> {
-  late List<(AddressType, String)> descriptors =
-      widget.account.externalPublicDescriptors;
+  // Filter the descriptors to only include p2Tr and p2Wpkh types,
+  //as those are the ones we support for now.
+  late List<(AddressType, String)> descriptors = widget
+      .account.externalPublicDescriptors
+      .where((descriptor) =>
+          descriptor.$1 == AddressType.p2Tr ||
+          descriptor.$1 == AddressType.p2Wpkh)
+      .toList();
+
   int selectedIndex = 0;
 
   @override
