@@ -454,8 +454,8 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         passportDescriptor.bluetoothNameSubstring = "Prime"
 
         //Maybe tweak this if multiple primes present
-        passportDescriptor.bluetoothRange = ASDiscoveryDescriptor.Range.immediate
-        let productImage = UIImage(named:isMidnight ?  "prime_dark_midgnight_bronze" : "prime_light_arctic_copper") ?? UIImage()
+        passportDescriptor.bluetoothRange = ASDiscoveryDescriptor.Range.default
+        let productImage = UIImage(named:isMidnight ?  "prime_dark_midnight_bronze" : "prime_light_arctic_copper") ?? UIImage()
         let passportDisplayItem = ASPickerDisplayItem(
             name: "Passport Prime",
             productImage: productImage,
