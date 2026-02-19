@@ -43,6 +43,7 @@ import 'package:envoy/business/feed_manager.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/scv_server.dart';
 import 'package:envoy/business/stripe.dart';
+import 'package:ur/ur.dart';
 import 'generated/l10n.dart';
 import 'package:tor/util.dart';
 
@@ -89,6 +90,7 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
 
   await LocalStorage.init();
   await RiveNative.init();
+  await Ur.init();
   NgAccountManager.init();
 
   if (!(await MigrationManager().isMigrationRequired())) {
