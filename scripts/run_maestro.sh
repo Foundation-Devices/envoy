@@ -251,9 +251,9 @@ stop_screen_recording() {
         RECORDING_LOOP_PID=""
     fi
 
-    # Kill any active screenrecord process on the device
-    $ADB_CMD -s "$DEVICE_ID" shell pkill -f screenrecord 2>/dev/null
-    sleep 2
+    # Send SIGINT (not SIGTERM) so screenrecord finalizes the mp4 properly
+    $ADB_CMD -s "$DEVICE_ID" shell pkill -2 -f screenrecord 2>/dev/null
+    sleep 5
 
     # Pull all segments from device
     local segments=()
