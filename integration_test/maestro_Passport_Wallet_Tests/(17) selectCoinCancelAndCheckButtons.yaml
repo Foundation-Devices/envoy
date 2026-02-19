@@ -50,4 +50,3 @@ appId: com.foundationdevices.envoy
 # go home
 - tapOn:
     id: hamburger_menu
-

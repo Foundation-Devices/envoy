@@ -30,4 +30,3 @@ appId: com.foundationdevices.envoy
 # expect no Buy button
 - assertNotVisible:
     id: QR Shield Buy
-

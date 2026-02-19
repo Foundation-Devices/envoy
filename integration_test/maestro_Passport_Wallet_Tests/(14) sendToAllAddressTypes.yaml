@@ -61,7 +61,8 @@ appId: com.foundationdevices.envoy
     id: envoy_icon_chevron_left
 
 # delete current address
-- longPressOn: Backspace
+- eraseText:
+    charactersToErase: 50
 
 #################### p2shAddress
 - inputText: "3BY19nUKCAkrnzrgRezJoekGv4AFzsTs2z"
@@ -78,7 +79,8 @@ appId: com.foundationdevices.envoy
     id: envoy_icon_chevron_left
 
 # delete current address
-- longPressOn: Backspace
+- eraseText:
+    charactersToErase: 50
 
 ################### p2wpkhAddress
 - inputText: "bc1qhrnucvul769yld6q09m8skwkp6zrecxhc00jcw"
@@ -95,7 +97,8 @@ appId: com.foundationdevices.envoy
     id: envoy_icon_chevron_left
 
 # delete current address
-- longPressOn: Backspace
+- eraseText:
+    charactersToErase: 50
 
 ################### p2trAddress
 - inputText: "bc1pgqnxzknhzyypgslhcevt96cnry4jkarv5gqp560a95uv6mzf4x7s0r67mm"
@@ -112,7 +115,8 @@ appId: com.foundationdevices.envoy
     id: envoy_icon_chevron_left
 
 # delete current address
-- longPressOn: Backspace
+- eraseText:
+    charactersToErase: 62
 
 # <Send to River all caps address> test
 

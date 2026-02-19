@@ -22,7 +22,8 @@ appId: com.foundationdevices.envoy
 - tapOn: 12 characters remaining
 
 # Delete the current name
-- longPressOn: Backspace
+- eraseText:
+    charactersToErase: 20
 
 - inputText: "New Passport name"
 
@@ -42,7 +43,8 @@ appId: com.foundationdevices.envoy
 - tapOn: Edit Device Name
 
 # Delete the current name "Passport"
-- longPressOn: Backspace
+- eraseText:
+    charactersToErase: 20
 
 - inputText: "Twenty one characters plus ten"
 
@@ -61,7 +63,8 @@ appId: com.foundationdevices.envoy
 - tapOn: Edit Device Name
 
 # Delete the current name "Twenty one characters"
-- longPressOn: Backspace
+- eraseText:
+    charactersToErase: 20
 
 - inputText: "Passport"
 

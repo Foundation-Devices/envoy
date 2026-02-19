@@ -105,7 +105,6 @@ appId: com.foundationdevices.envoy
 
 - tapOn: Send
 
-
 # cycle to fiat if not already there
 # cycle order: sats → fiat → btc → sats
 
@@ -148,7 +147,7 @@ appId: com.foundationdevices.envoy
     id: hamburger_menu
 - tapOn: Send
 
-#check if sats
+# check if sats
 - assertVisible:
     id: envoy_icon_sats
 
@@ -268,7 +267,7 @@ appId: com.foundationdevices.envoy
     id: hamburger_menu
 - tapOn: Send
 
-#check if sats
+# check if sats
 - assertVisible:
     id: envoy_icon_sats
 

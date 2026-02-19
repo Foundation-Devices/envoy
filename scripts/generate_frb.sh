@@ -22,7 +22,7 @@ cargo install cargo-expand
 PACKAGES=(
     "packages/foundation_api"
     "packages/ngwallet"
-    "packages/bluart"
+    "packages/ur"
     "packages/shards"
     "packages/http_tor"
 )

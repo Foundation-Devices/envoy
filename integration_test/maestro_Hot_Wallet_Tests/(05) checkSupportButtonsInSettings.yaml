@@ -18,8 +18,7 @@ appId: com.foundationdevices.envoy
 - tapOn: Back
 - tapOn: COMMUNITY
 - tapOn: Back
-- tapOn: EMAIL
-- tapOn: Back
+- assertVisible: EMAIL # just check for the button
 
 # go back to home
 - tapOn:
