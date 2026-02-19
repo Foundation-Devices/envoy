@@ -171,9 +171,16 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
       });
     }
 
+    // Only add extra padding above the system inset when actual navigation
+    // buttons are present (3-button / 2-button nav bar, typically >= 40dp).
+    // With gesture-only navigation the system inset already reserves the right
+    // amount of space and the extra offset makes the bar look too high.
+    final bool hasNavButtons = additionalBottomPadding > 40.0;
     return Padding(
       padding: EdgeInsets.only(
-        bottom: (Platform.isAndroid ? EnvoySpacing.xs : EnvoySpacing.small) +
+        bottom: (hasNavButtons
+                ? (Platform.isAndroid ? EnvoySpacing.xs : EnvoySpacing.small)
+                : 0.0) +
             additionalBottomPadding,
       ),
       child: EnvoyBottomNavBar(

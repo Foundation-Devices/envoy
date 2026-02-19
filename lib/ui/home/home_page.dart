@@ -126,6 +126,9 @@ class HomePageState extends ConsumerState<HomePage>
   Timer? _torWarningTimer;
   bool _torWarningDisplayedMoreThan5minAgo = true;
 
+  bool _navBarSuppressed = false;
+  double _navBarFadeOpacity = 1.0;
+
   Timer? _serverDownWarningTimer;
   bool _serverDownWarningDisplayedMoreThan5minAgo = true;
   Timer? _backupWarningTimer;
@@ -629,6 +632,32 @@ class HomePageState extends ConsumerState<HomePage>
       });
     });
 
+    ref.listen(homePageBackgroundProvider, (previous, next) {
+      if (next == HomePageBackgroundState.hidden &&
+          previous != HomePageBackgroundState.hidden) {
+        // Menu closing — insert the nav bar at opacity 0 immediately …
+        setState(() {
+          _navBarSuppressed = false;
+        });
+        // … then animate to opacity 1 on the next frame.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            setState(() {
+              _navBarFadeOpacity = 1.0;
+            });
+          }
+        });
+      } else if (next != HomePageBackgroundState.hidden &&
+          previous == HomePageBackgroundState.hidden) {
+        // Menu opening — remove the nav bar immediately and reset opacity for
+        // the next fade-in.
+        setState(() {
+          _navBarSuppressed = true;
+          _navBarFadeOpacity = 0.0;
+        });
+      }
+    });
+
     ref.listen(onboardingStateStreamProvider, (previous, next) {
       _showTutorialIfNeeded(context);
     });
@@ -704,24 +733,29 @@ class HomePageState extends ConsumerState<HomePage>
                 ),
               ),
               // Tab bar - positioned AFTER Shield so it renders on top
-              _backgroundShown || (modalShown || optionsShown || fullScreen)
+              _navBarSuppressed || (modalShown || optionsShown || fullScreen)
                   ? SizedBox.shrink()
                   : Positioned(
                       left: 0,
                       right: 0,
                       bottom: 0,
-                      child: EnvoyBottomNavigation(
-                        onIndexChanged: (selectedIndex) {
-                          // ENV-2064: Prevents clunky animation when switching tabs from nested routes.
-                          widget.mainNavigationShell.goBranch(
-                              widget.mainNavigationShell.currentIndex,
-                              initialLocation: true);
+                      child: AnimatedOpacity(
+                        opacity: _navBarFadeOpacity,
+                        duration: const Duration(milliseconds: 350),
+                        curve: Curves.easeInQuart,
+                        child: EnvoyBottomNavigation(
+                          onIndexChanged: (selectedIndex) {
+                            // ENV-2064: Prevents clunky animation when switching tabs from nested routes.
+                            widget.mainNavigationShell.goBranch(
+                                widget.mainNavigationShell.currentIndex,
+                                initialLocation: true);
 
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            widget.mainNavigationShell
-                                .goBranch(selectedIndex, initialLocation: true);
-                          });
-                        },
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              widget.mainNavigationShell.goBranch(selectedIndex,
+                                  initialLocation: true);
+                            });
+                          },
+                        ),
                       ),
                     ),
               // Options menu - positioned AFTER Shield so it renders on top
