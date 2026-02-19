@@ -2,8 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
+
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/channels/ble_status.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
@@ -186,12 +189,28 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
                   S().firmware_updateModalConnectionLost_exit,
                   borderRadius: BorderRadius.circular(EnvoySpacing.small),
                   type: EnvoyButtonTypes.secondary,
-                  onTap: () {
-                    resetOnboardingPrimeProviders(
-                      ProviderScope.containerOf(context),
-                    );
-                    Navigator.of(context).pop();
-                    context.go("/");
+                  onTap: () async {
+                    try {
+                      if (Platform.isIOS &&
+                          onboardingDevice?.deviceId != null) {
+                        final removed = await BluetoothChannel()
+                            .removeAccessory(onboardingDevice!.deviceId);
+                        if (removed) {
+                          await onboardingDevice.disconnect();
+                        }
+                      }
+                    } catch (e, stack) {
+                      EnvoyReport().log(
+                          "ConnectionLostDialog", "Error during disconnect: $e",
+                          stackTrace: stack);
+                    }
+                    if (mounted && context.mounted) {
+                      resetOnboardingPrimeProviders(
+                        ProviderScope.containerOf(context),
+                      );
+                      Navigator.of(context).pop();
+                      context.go("/");
+                    }
                   },
                 ),
               const SizedBox(height: EnvoySpacing.medium1),

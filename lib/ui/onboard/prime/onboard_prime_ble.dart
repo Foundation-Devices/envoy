@@ -8,8 +8,8 @@ import 'dart:io';
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/settings.dart';
-import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
+import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -269,57 +269,81 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     );
   }
 
+  bool canPop = false;
   @override
   Widget build(BuildContext context) {
     startBluetoothDisconnectionListener(context, ref);
     //TODO: update copy based on s.syncToCloud
     // bool enabledMagicBackup = s.syncToCloud;
-    return EnvoyPatternScaffold(
-      gradientHeight: 1.8,
-      appBar: AppBar(
-        elevation: 0,
-        toolbarHeight: kToolbarHeight,
-        backgroundColor: Colors.transparent,
-        leading: CupertinoNavigationBarBackButton(
-          color: Colors.white,
-          onPressed: () {
-            context.pop();
-            return;
-          },
+    return PopScope(
+      canPop: canPop,
+      onPopInvokedWithResult: (didPop, result) async {
+        final providerScope = ProviderScope.containerOf(context);
+        final onboardingQlConnection =
+            providerScope.read(onboardingDeviceProvider);
+        try {
+          if (Platform.isIOS && onboardingQlConnection?.deviceId != null) {
+            final removed = await BluetoothChannel()
+                .removeAccessory(onboardingQlConnection!.deviceId);
+            if (removed) {
+              await onboardingQlConnection.disconnect();
+            }
+            setState(() {
+              canPop = removed;
+            });
+          }
+        } catch (e, stack) {
+          EnvoyReport().log("onboard_prime_ble", "Error during disconnect: $e",
+              stackTrace: stack);
+        }
+      },
+      child: EnvoyPatternScaffold(
+        gradientHeight: 1.8,
+        appBar: AppBar(
+          elevation: 0,
+          toolbarHeight: kToolbarHeight,
+          backgroundColor: Colors.transparent,
+          leading: CupertinoNavigationBarBackButton(
+            color: Colors.white,
+            onPressed: () {
+              context.pop();
+              return;
+            },
+          ),
+          automaticallyImplyLeading: false,
         ),
-        automaticallyImplyLeading: false,
-      ),
-      header: Transform.translate(
-        offset: const Offset(0, 70),
-        child: TweenAnimationBuilder(
-          duration: const Duration(milliseconds: 600),
-          tween: Tween<double>(end: 1.0, begin: 0.0),
-          curve: Curves.decelerate,
-          builder: (context, value, child) {
-            return Opacity(opacity: value, child: child);
-          },
-          child: Hero(
-            tag: "hero_prime_devices",
-            child: Image.asset(
-              "assets/images/prime_bluetooth_shield.png",
-              alignment: Alignment.bottomCenter,
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: 320,
+        header: Transform.translate(
+          offset: const Offset(0, 70),
+          child: TweenAnimationBuilder(
+            duration: const Duration(milliseconds: 600),
+            tween: Tween<double>(end: 1.0, begin: 0.0),
+            curve: Curves.decelerate,
+            builder: (context, value, child) {
+              return Opacity(opacity: value, child: child);
+            },
+            child: Hero(
+              tag: "hero_prime_devices",
+              child: Image.asset(
+                "assets/images/prime_bluetooth_shield.png",
+                alignment: Alignment.bottomCenter,
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: 320,
+              ),
             ),
           ),
         ),
-      ),
-      shield: PageTransitionSwitcher(
-        transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
-          return SharedAxisTransition(
-            fillColor: Colors.transparent,
-            animation: primaryAnimation,
-            secondaryAnimation: secondaryAnimation,
-            transitionType: SharedAxisTransitionType.vertical,
-            child: child,
-          );
-        },
-        child: quantumLinkIntro(context),
+        shield: PageTransitionSwitcher(
+          transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
+            return SharedAxisTransition(
+              fillColor: Colors.transparent,
+              animation: primaryAnimation,
+              secondaryAnimation: secondaryAnimation,
+              transitionType: SharedAxisTransitionType.vertical,
+              child: child,
+            );
+          },
+          child: quantumLinkIntro(context),
+        ),
       ),
     );
   }
