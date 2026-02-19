@@ -94,6 +94,7 @@ class QLConnection with EnvoyMessageWriter {
 
   bool _sendingExRate = false;
   bool _lastQLActive = false;
+  bool _awaitingHeartbeatAfterConnect = false;
 
   /// Serial number of the connected Prime device, set synchronously when the
   /// pairing response is received (before the async [getDevice] lookup works).
@@ -172,19 +173,12 @@ class QLConnection with EnvoyMessageWriter {
     ) {
       _lastDeviceStatus = event;
       if (event.type == BluetoothConnectionEventType.deviceConnected) {
-        //wait for heartbeat to be received before marking connection as fully established,
-        //timeout for is set to 4 minutes,the user needs to unlock the prime to receive heartbeat,
-        //so we want to give them enough time to do that without timing out the connection.
-        Future.doWhile(() async {
-          await Future.delayed(const Duration(milliseconds: 200));
-          return qlHandler.heartbeatHandler.lastHeartbeat == null;
-        }).timeout(const Duration(minutes: 4)).then((_) {
-          onQLConnected();
-        }).catchError((e) {
-          kPrint("[$deviceId] onConnect error: $e");
-        });
+        // Defer "QL connected" work until we receive a fresh heartbeat
+        // after this BLE connect event.
+        _awaitingHeartbeatAfterConnect = true;
       } else if (event.type ==
           BluetoothConnectionEventType.deviceDisconnected) {
+        _awaitingHeartbeatAfterConnect = false;
         qlHandler.heartbeatHandler.lastHeartbeat = null;
         _emitQLActiveIfChanged();
       }
@@ -235,6 +229,7 @@ class QLConnection with EnvoyMessageWriter {
 
   // send exchange rate history on ble connect.
   void onQLConnected() async {
+    kPrint("[$deviceId] QL Connected");
     if (getDevice()?.onboardingComplete == true && !_sendingExRate) {
       try {
         _sendingExRate = true;
@@ -269,6 +264,10 @@ class QLConnection with EnvoyMessageWriter {
 
   /// Called by HeartbeatHandler when a heartbeat is received.
   void onHeartbeatReceived() {
+    if (_awaitingHeartbeatAfterConnect) {
+      _awaitingHeartbeatAfterConnect = false;
+      onQLConnected();
+    }
     _emitQLActiveIfChanged();
   }
 
