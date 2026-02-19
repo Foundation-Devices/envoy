@@ -18,7 +18,7 @@ appId: com.foundationdevices.envoy
     text: ".*\\(\\d+\\).*"
 
 # open Licence
-#- tapOn: Show // TODO: revert this temporary comment
+- tapOn: Show
 
 # make sure the licence is visible
 - assertVisible: |-
