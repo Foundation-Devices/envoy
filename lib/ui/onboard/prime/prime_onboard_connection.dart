@@ -4,9 +4,11 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/handlers/scv_handler.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
@@ -20,6 +22,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
@@ -224,6 +227,8 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   ) {
     final isNetworkError = deviceCheck.errorType == ScvErrorType.networkError;
 
+    final onboardingQlConnection = ref.watch(onboardingDeviceProvider);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -239,8 +244,24 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: EnvoySpacing.medium1),
           child: EnvoyButton(
-            onTap: () {
-              context.go("/");
+            onTap: () async {
+              try {
+                if (Platform.isIOS &&
+                    onboardingQlConnection?.deviceId != null) {
+                  final removed = await BluetoothChannel()
+                      .removeAccessory(onboardingQlConnection!.deviceId);
+                  if (removed) {
+                    await onboardingQlConnection.disconnect();
+                  }
+                }
+              } catch (e, stack) {
+                EnvoyReport().log(
+                    "PrimeOnboardExit", "Error during disconnect: $e",
+                    stackTrace: stack);
+              }
+              if (context.mounted) {
+                context.go("/");
+              }
             },
             S().onboarding_connectionIntroError_exitSetup,
             type: EnvoyButtonTypes.secondary,
