@@ -182,6 +182,9 @@ class BluetoothChannel(
             return
         }
 
+        val bonded = bluetoothAdapter.bondedDevices?.toList().orEmpty()
+
+
         val connectedDevices = try {
             bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)
         } catch (e: Exception) {
@@ -190,7 +193,7 @@ class BluetoothChannel(
             return
         }
 
-        val accessories = connectedDevices
+        val accessories = (connectedDevices + bonded)
             .distinctBy { it.address }
             .map { device ->
                 val connectionState = try {
