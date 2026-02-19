@@ -595,7 +595,12 @@ class HomePageState extends ConsumerState<HomePage>
     double shieldTopOptionsShown =
         shieldTop + _optionsHeight; // TODO: This needs to be programmatic
 
-    double bottomTabBarShieldOffset = 15;
+    // With OS navigation buttons (3-button / 2-button, _cachedBottomInset > 40)
+    // the shield needs more room at the bottom to clear the button bar.
+    // With gesture-only navigation the system inset is much smaller so the
+    // shield can extend lower, closing the visible gap below it.
+    final bool hasNavButtons = _cachedBottomInset > 40.0;
+    double bottomTabBarShieldOffset = hasNavButtons ? 15 : 5;
     double shieldHeight = screenHeight -
         _bottomTabBarHeight -
         bottomOffset -

@@ -111,12 +111,49 @@ class _SettingsMenuState extends ConsumerState<SettingsMenu> {
   }
 }
 
-class SettingsMenuWidget extends ConsumerWidget {
+class SettingsMenuWidget extends ConsumerStatefulWidget {
   const SettingsMenuWidget({super.key});
 
   @override
-  Widget build(context, ref) {
+  ConsumerState<SettingsMenuWidget> createState() => _SettingsMenuWidgetState();
+}
+
+class _SettingsMenuWidgetState extends ConsumerState<SettingsMenuWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _entryController;
+  late Animation<double> _entryAnimation;
+  double _buttonsOpacity = 1.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _entryController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 380),
+    );
+    _entryAnimation = CurvedAnimation(
+      parent: _entryController,
+      curve: EnvoyEasing.defaultEasing,
+    );
+    _entryController.forward();
+  }
+
+  @override
+  void dispose() {
+    _entryController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     var background = ref.read(homePageBackgroundProvider.notifier);
+
+    ref.listen<HomePageBackgroundState>(homePageBackgroundProvider, (_, next) {
+      if (next != HomePageBackgroundState.menu && mounted) {
+        setState(() => _buttonsOpacity = 0.0);
+      }
+    });
+
     return Padding(
       padding: const EdgeInsets.only(top: 0, bottom: 50),
       child: Center(
@@ -161,56 +198,55 @@ class SettingsMenuWidget extends ConsumerWidget {
                 ],
               ),
             ),
-            TweenAnimationBuilder(
-              builder: (context, value, child) {
-                return Opacity(
-                  opacity: Tween<double>(begin: 0.3, end: 1).transform(value),
-                  child: Transform.translate(
-                    offset: Offset(
-                      0,
-                      Tween<double>(begin: -400, end: 0).transform(value),
+            AnimatedOpacity(
+              opacity: _buttonsOpacity,
+              duration: const Duration(milliseconds: 100),
+              child: AnimatedBuilder(
+                animation: _entryAnimation,
+                builder: (context, child) {
+                  return Opacity(
+                    opacity: _entryAnimation.value,
+                    child: Transform.translate(
+                      offset: Offset(0, (1 - _entryAnimation.value) * -400),
+                      child: child,
                     ),
-                    child: child,
-                  ),
-                );
-              },
-              duration: const Duration(milliseconds: 380),
-              curve: EnvoyEasing.defaultEasing,
-              tween: Tween<double>(begin: 0, end: 1),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 30.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        launchUrl(
-                          Uri.parse("https://twitter.com/FOUNDATIONdvcs"),
-                        );
-                      },
-                      child: SvgPicture.asset("assets/menu_x.svg"),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: GestureDetector(
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 30.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
                         onTap: () {
                           launchUrl(
-                            Uri.parse("https://community.foundation.xyz/"),
-                            mode: LaunchMode.externalApplication,
+                            Uri.parse("https://twitter.com/FOUNDATIONdvcs"),
                           );
                         },
-                        child: SvgPicture.asset("assets/community.svg"),
+                        child: SvgPicture.asset("assets/menu_x.svg"),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        launchUrl(
-                          Uri.parse("https://github.com/Foundation-Devices"),
-                        );
-                      },
-                      child: SvgPicture.asset("assets/github.svg"),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            launchUrl(
+                              Uri.parse("https://community.foundation.xyz/"),
+                              mode: LaunchMode.externalApplication,
+                            );
+                          },
+                          child: SvgPicture.asset("assets/community.svg"),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          launchUrl(
+                            Uri.parse("https://github.com/Foundation-Devices"),
+                          );
+                        },
+                        child: SvgPicture.asset("assets/github.svg"),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
