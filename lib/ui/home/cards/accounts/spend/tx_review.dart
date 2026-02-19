@@ -649,8 +649,6 @@ class _TransactionReviewScreenState
 
   @override
   Widget build(BuildContext context) {
-    bool isTest = const bool.fromEnvironment('IS_TEST', defaultValue: true);
-
     EnvoyAccount? account = ref.watch(selectedAccountProvider);
     TransactionModel transactionModel = ref.watch(spendTransactionProvider);
     String address = ref.watch(spendAddressProvider);
@@ -916,8 +914,6 @@ class _TransactionReviewScreenState
                               ),
                               child: transactionPrimeStatus(context),
                             ),
-                          if (isTest)
-                            const SizedBox(height: EnvoySpacing.medium1),
                         ],
                       ),
 

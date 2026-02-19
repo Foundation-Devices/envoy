@@ -31,6 +31,10 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 HOT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Hot_Wallet_Tests"
 PASSPORT_WALLET_TESTS_DIR="$PROJECT_ROOT/integration_test/maestro_Passport_Wallet_Tests"
 
+FAIL_VIDEOS_DIR="$PROJECT_ROOT/fail-videos"
+mkdir -p "$FAIL_VIDEOS_DIR"
+APP_ID="com.foundationdevices.envoy"
+
 DEVICE_ID=""
 TEST_ARG=""
 BUILD_APP=false
@@ -213,6 +217,118 @@ if [ "$BUILD_APP" = true ]; then
 fi
 
 # ------------------------------------------------------------
+# Video Recording Helpers
+# ------------------------------------------------------------
+RECORDING_LOOP_PID=""
+RECORDING_SEGMENT=0
+
+start_screen_recording() {
+    RECORDING_SEGMENT=0
+    # Clean up any previous segments on device
+    $ADB_CMD -s "$DEVICE_ID" shell "rm -f /sdcard/fail_seg_*.mp4" 2>/dev/null
+
+    # Background loop that records in 170-second chunks
+    (
+        while true; do
+            RECORDING_SEGMENT=$((RECORDING_SEGMENT + 1))
+            SEG_NUM=$(printf "%03d" "$RECORDING_SEGMENT")
+            $ADB_CMD -s "$DEVICE_ID" shell screenrecord --time-limit 170 "/sdcard/fail_seg_${SEG_NUM}.mp4" 2>/dev/null
+        done
+    ) &
+    RECORDING_LOOP_PID=$!
+    echo -e "${CYAN}  ▶ Screen recording started (PID: $RECORDING_LOOP_PID)${NC}"
+}
+
+stop_screen_recording() {
+    local test_name="$1"
+    local temp_dir
+    temp_dir=$(mktemp -d)
+
+    # Kill the recording loop
+    if [ -n "$RECORDING_LOOP_PID" ]; then
+        kill "$RECORDING_LOOP_PID" 2>/dev/null
+        wait "$RECORDING_LOOP_PID" 2>/dev/null
+        RECORDING_LOOP_PID=""
+    fi
+
+    # Send SIGINT (not SIGTERM) so screenrecord finalizes the mp4 properly
+    $ADB_CMD -s "$DEVICE_ID" shell pkill -2 -f screenrecord 2>/dev/null
+    sleep 5
+
+    # Pull all segments from device
+    local segments=()
+    for seg_path in $($ADB_CMD -s "$DEVICE_ID" shell "ls /sdcard/fail_seg_*.mp4 2>/dev/null" | tr -d '\r'); do
+        local seg_name
+        seg_name=$(basename "$seg_path")
+        $ADB_CMD -s "$DEVICE_ID" pull "$seg_path" "$temp_dir/$seg_name" >/dev/null 2>&1
+        segments+=("$temp_dir/$seg_name")
+    done
+
+    if [ ${#segments[@]} -eq 0 ]; then
+        echo -e "${YELLOW}  ⚠ No video segments captured${NC}"
+        rm -rf "$temp_dir"
+        return
+    fi
+
+    # Merge segments or use last one
+    local output_file="$FAIL_VIDEOS_DIR/${test_name}.mp4"
+    if [ ${#segments[@]} -eq 1 ]; then
+        cp "${segments[0]}" "$output_file"
+    elif command -v ffmpeg >/dev/null 2>&1; then
+        # Create concat list for ffmpeg
+        local concat_list="$temp_dir/concat.txt"
+        for seg in "${segments[@]}"; do
+            echo "file '$seg'" >> "$concat_list"
+        done
+        ffmpeg -y -f concat -safe 0 -i "$concat_list" -c copy "$output_file" >/dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            # Fallback: use the last segment
+            cp "${segments[-1]}" "$output_file"
+        fi
+    else
+        # No ffmpeg, use the last segment
+        cp "${segments[-1]}" "$output_file"
+    fi
+
+    # Clean up
+    $ADB_CMD -s "$DEVICE_ID" shell "rm -f /sdcard/fail_seg_*.mp4" 2>/dev/null
+    rm -rf "$temp_dir"
+
+    echo -e "${CYAN}  ▶ Failure video saved: $output_file${NC}"
+}
+
+record_failed_test() {
+    local test_file="$1"
+    local test_name
+    test_name="$(basename "$test_file" .yaml)"
+    # Sanitize: replace spaces, parens, and special chars with underscores
+    test_name=$(echo "$test_name" | sed 's/[^a-zA-Z0-9._-]/_/g')
+
+    echo -e "${YELLOW}  ▶ Re-running failed test with video recording...${NC}"
+
+    # Restart the app without clearing state
+    $ADB_CMD -s "$DEVICE_ID" shell am force-stop "$APP_ID"
+    $ADB_CMD -s "$DEVICE_ID" shell monkey -p "$APP_ID" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
+    echo -e "${CYAN}  ▶ App restarted, waiting 15s for full launch...${NC}"
+    sleep 15
+
+    # Start recording
+    start_screen_recording
+
+    # Re-run the failed test
+    maestro --device "$DEVICE_ID" test "$test_file" 2>&1 || true
+
+    # Stop recording and save video
+    stop_screen_recording "$test_name"
+
+    # Relaunch app (without clearing state) so the next test can continue
+    echo -e "${CYAN}  ▶ Relaunching app for next test...${NC}"
+    $ADB_CMD -s "$DEVICE_ID" shell am force-stop "$APP_ID"
+    $ADB_CMD -s "$DEVICE_ID" shell monkey -p "$APP_ID" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
+    sleep 15
+}
+
+# ------------------------------------------------------------
 # Test Runner
 # ------------------------------------------------------------
 PASSED=0
@@ -234,6 +350,7 @@ run_single_test() {
         ((PASSED++))
     else
         print_test_failure "$test_name" "$OUTPUT"
+        record_failed_test "$test_file"
         ((FAILED++))
         FAILED_TESTS+=("$test_name")
     fi
