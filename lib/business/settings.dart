@@ -182,6 +182,9 @@ class Settings extends ChangeNotifier {
   @JsonKey(defaultValue: true)
   bool usingDefaultElectrumServer = true;
 
+  @JsonKey(defaultValue: false)
+  bool subSatFeeEnabled = false;
+
   String electrumAddress(Network network) {
     if (network == Network.testnet || network == Network.testnet4) {
       if (usingTor) {
@@ -216,6 +219,7 @@ class Settings extends ChangeNotifier {
   void setCustomElectrumAddress(String electrumAddress) {
     selectedElectrumAddress = electrumAddress;
     usingDefaultElectrumServer = false;
+    subSatFeeEnabled = false;
     store();
   }
 

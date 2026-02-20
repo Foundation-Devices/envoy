@@ -264,7 +264,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                         ref.read(_selectedFeeStateProvider.notifier).state =
                             fee;
                       },
-                      allowSubOne: Settings().usingDefaultElectrumServer,
+                      allowSubOne: Settings().usingDefaultElectrumServer ||
+                          Settings().subSatFeeEnabled,
                     ),
                   ),
           ),
@@ -710,6 +711,8 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                                               .settings_advanced_taproot_modal_cta1,
                                           (context) {
                                             Navigator.of(context).pop();
+                                            Settings().subSatFeeEnabled = true;
+                                            Settings().store();
                                             setState(() {
                                               _allowSubOne = true;
                                               _effectiveFees =
