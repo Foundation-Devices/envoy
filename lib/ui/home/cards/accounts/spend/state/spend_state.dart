@@ -21,7 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 
-enum BroadcastProgress { inProgress, success, failed, staging }
+enum BroadcastProgress { inProgress, success, failed, staging, subsatFailed }
 
 //user can spend coins in 3 contexts, preselectCoins,edit from transaction
 //review screen and edit from RBF screen

@@ -328,6 +328,12 @@ class _TxReviewState extends ConsumerState<TxReview> {
                             .stalls_before_sending_tx_scanning_broadcasting_success_heading;
                         subTitle = S()
                             .stalls_before_sending_tx_scanning_broadcasting_success_subheading;
+                      } else if (spendState.broadcastProgress ==
+                          BroadcastProgress.subsatFailed) {
+                        title = S()
+                            .stalls_before_sending_tx_scanning_broadcasting_fail_heading;
+                        subTitle = S()
+                            .stalls_before_sending_tx_scanning_broadcasting_fail_subsat_subheading;
                       } else {
                         title = S()
                             .stalls_before_sending_tx_scanning_broadcasting_fail_heading;
@@ -542,7 +548,8 @@ class _TxReviewState extends ConsumerState<TxReview> {
     if (_controller?.stateMachine == null) return;
 
     bool happy = progress == BroadcastProgress.success;
-    bool unhappy = progress == BroadcastProgress.failed;
+    bool unhappy = progress == BroadcastProgress.failed ||
+        progress == BroadcastProgress.subsatFailed;
     bool indeterminate = progress == BroadcastProgress.inProgress;
 
     final stateMachine = _controller!.stateMachine;

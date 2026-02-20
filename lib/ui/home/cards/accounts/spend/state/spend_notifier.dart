@@ -5,6 +5,7 @@
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/account/sync_manager.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
@@ -425,7 +426,31 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         draftTransaction: state.draftTransaction!,
       );
       syncManager.syncAccount(account);
-      Future.delayed(const Duration(seconds: 100));
+
+      final feeRate = state.transactionParams?.feeRate ?? 1.0;
+      if (Settings().subSatFeeEnabled &&
+          !Settings().usingDefaultElectrumServer &&
+          feeRate < 1.0) {
+        // Sub-sat txs may be silently dropped by the node if minrelaytxfee
+        // is too high. Poll the wallet tx list for up to ~15s to confirm.
+        final txId = state.draftTransaction!.transaction.txId;
+        bool found = false;
+        for (int i = 0; i < 8 && !found; i++) {
+          await Future.delayed(const Duration(seconds: 2));
+          syncManager.syncAccount(account);
+          await Future.delayed(const Duration(milliseconds: 500));
+          final txs = ref.read(transactionsProvider(account.id));
+          if (txs.any((tx) => tx.txId == txId)) {
+            found = true;
+          }
+        }
+        if (!found) {
+          state = state.clone()
+            ..broadcastProgress = BroadcastProgress.subsatFailed;
+          return false;
+        }
+      }
+
       state = state.clone()..broadcastProgress = BroadcastProgress.success;
       return true;
     } catch (e) {
