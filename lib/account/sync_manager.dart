@@ -97,14 +97,14 @@ class SyncManager {
       if (account.handler != null) {
         final futures = <Future>[];
         for (var descriptor in account.descriptors) {
-            final request = await account.handler!
-                .syncRequest(addressType: descriptor.addressType);
-            futures.add(_performWalletSync(
-                account, server, request, port, descriptor.addressType));
-            if (_enableLogging) {
-              kPrint(
-                  "SyncManager: added sync future for ${descriptor.addressType}",
-                  silenceInTests: true);
+          final request = await account.handler!
+              .syncRequest(addressType: descriptor.addressType);
+          futures.add(_performWalletSync(
+              account, server, request, port, descriptor.addressType));
+          if (_enableLogging) {
+            kPrint(
+                "SyncManager: added sync future for ${descriptor.addressType}",
+                silenceInTests: true);
           }
         }
         EnvoyScheduler().parallel.run(() async {
@@ -145,32 +145,30 @@ class SyncManager {
 
       if (account.handler != null) {
         for (var descriptor in account.descriptors) {
-            final accountKey = (account.id, descriptor.addressType);
+          final accountKey = (account.id, descriptor.addressType);
 
-            // Skip if already being processed
-            if (_activeSyncOperations.contains(accountKey) ||
-                _activeFullScanOperations.contains(accountKey)) {
+          // Skip if already being processed
+          if (_activeSyncOperations.contains(accountKey) ||
+              _activeFullScanOperations.contains(accountKey)) {
+            continue;
+          }
+
+          // Check if account is scanned
+          bool isScanned = await EnvoyStorage()
+              .getAccountScanStatus(account.id, descriptor.addressType);
+
+          if (isScanned) {
+            if (_syncRequests.containsKey((account, descriptor.addressType))) {
               continue;
             }
-
-            // Check if account is scanned
-            bool isScanned = await EnvoyStorage()
-                .getAccountScanStatus(account.id, descriptor.addressType);
-
-            if (isScanned) {
-              if (_syncRequests
-                  .containsKey((account, descriptor.addressType))) {
-                continue;
-              }
-              final request = await account.handler!
-                  .syncRequest(addressType: descriptor.addressType);
-              _syncRequests[(account, descriptor.addressType)] = request;
-            } else if (_fullScanRequests[(account, descriptor.addressType)] ==
-                null) {
-              FullScanRequest request = await account.handler!
-                  .requestFullScan(addressType: descriptor.addressType);
-              performFullScan(
-                  account.handler!, descriptor.addressType, request);
+            final request = await account.handler!
+                .syncRequest(addressType: descriptor.addressType);
+            _syncRequests[(account, descriptor.addressType)] = request;
+          } else if (_fullScanRequests[(account, descriptor.addressType)] ==
+              null) {
+            FullScanRequest request = await account.handler!
+                .requestFullScan(addressType: descriptor.addressType);
+            performFullScan(account.handler!, descriptor.addressType, request);
           }
         }
       }
