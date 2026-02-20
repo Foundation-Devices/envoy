@@ -292,6 +292,10 @@ class UpdatesManager {
 }
 
 String sanitizeVersion(String version) {
-  // Remove the v and keep only letters and numbers (Prime sends us NULL chars sometimes)
-  return version.replaceAll("v", "").replaceAll(RegExp(r'[^a-zA-Z0-9.]'), '');
+  // Remove the v prefix and any non-printable characters (Prime sends us NULL chars sometimes)
+  final cleaned =
+      version.replaceAll("v", "").replaceAll(RegExp(r'[^\x20-\x7E]'), '');
+  // Extract only the MAJOR.MINOR.PATCH numeric portion (strips pre-release like b8, beta8, etc.)
+  final match = RegExp(r'^(\d+\.\d+\.\d+)').firstMatch(cleaned);
+  return match?.group(1) ?? cleaned;
 }
