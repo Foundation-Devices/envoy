@@ -202,7 +202,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                   )
                                                 : Semantics(
                                                     identifier:
-                                                        'Firmware Button ${widget.device.name}',
+                                                        'Firmware Button ${widget.device.name}-${fwShouldUpdate.hasValue && fwShouldUpdate.value != null && fwShouldUpdate.value! ? "red dot present" : "no red dot"}',
                                                     container: true,
                                                     button: true,
                                                     excludeSemantics: true,
