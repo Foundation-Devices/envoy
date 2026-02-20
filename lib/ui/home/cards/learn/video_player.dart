@@ -280,10 +280,16 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 25.0,
                                 ),
-                                child: LinearProgressIndicator(
-                                  color: EnvoyColors.grey85,
-                                  backgroundColor: Colors.white,
-                                  value: _downloadProgress,
+                                child: Semantics(
+                                  container: true,
+                                  label: 'vlc player',
+                                  value:
+                                      '${(_downloadProgress * 100).toStringAsFixed(0)}%',
+                                  child: LinearProgressIndicator(
+                                    color: EnvoyColors.grey85,
+                                    backgroundColor: Colors.white,
+                                    value: _downloadProgress,
+                                  ),
                                 ),
                               ),
                               Slider(
@@ -368,24 +374,29 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
               Positioned(
                 top: 20,
                 left: 20,
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white70),
-                  onPressed: () async {
-                    _controller?.stop();
+                child: Semantics(
+                  container: true,
+                  button: true,
+                  label: 'back button',
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white70),
+                    onPressed: () async {
+                      _controller?.stop();
 
-                    setState(() {
-                      _curtains = true;
-                      _downloaded = 0;
-                      _showTorExplainer = false;
-                    });
+                      setState(() {
+                        _curtains = true;
+                        _downloaded = 0;
+                        _showTorExplainer = false;
+                      });
 
-                    setPortraitMode();
+                      setPortraitMode();
 
-                    await Future.delayed(const Duration(milliseconds: 300));
-                    if (context.mounted) {
-                      Navigator.of(context).pop();
-                    }
-                  },
+                      await Future.delayed(const Duration(milliseconds: 300));
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                  ),
                 ),
               ),
             // Black curtains

@@ -1,0 +1,159 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (08) videosLearnPage ( and enableTorAndCheckShield test)
+appId: com.foundationdevices.envoy
+---
+
+# go to learn
+- tapOn: Learn
+
+# make sure videos show up
+- assertVisible: "video card.*"
+
+# enter in a video
+- tapOn: "video card.*"
+
+# make sure the video started
+- assertNotVisible: "video card.*"
+- assertNotVisible: |-
+    LEARN
+    off
+
+# test the player
+# pause
+- tapOn:
+    point: 50%,50%
+
+- assertVisible: Play
+
+# unpause
+- tapOn:
+    point: 50%,50%
+
+# exit the player
+- tapOn: back button # TODO: test this #######################################################
+
+# make sure you are back to LEARN
+- assertVisible: |-
+    LEARN
+    off
+- assertVisible: "video card.*"
+
+# open the video again
+- tapOn: "video card.*"
+
+# Use android's native back to make sure it
+# works the same way as the top left back arrow
+
+# swipe to show OS buttons
+- swipe:
+    start: "100%, 50%" # TODO: test this #######################################################
+    end: "97%, 50%"
+
+# go back with native back
+- tapOn: Back
+
+# Check that the opened video is
+# grayed out and "watched" shows up
+- assertVisible: .*Watched
+
+############################# make sure all works over tor
+
+# go to privacy
+- tapOn: Privacy
+
+# enable tor
+- tapOn: |-
+    Improved
+    Privacy
+
+# check if Tor connects via top bar Shield icon
+- extendedWaitUntil:
+    visible: "PRIVACY connected"
+    timeout: 300000 # wait for 5 min
+
+# hack to wait 30 sec
+- swipe:
+    start: "50%, 5%"
+    end: "50%, 5%"
+    duration: 30000
+
+# check if Tor shield is still blue
+- assertVisible: "PRIVACY connected"
+
+# go to learn
+- tapOn: Learn
+
+# make sure videos show up
+- assertVisible: "video card.*"
+
+# enter in a video
+- tapOn: "video card.*"
+
+# make sure the video started
+- assertNotVisible: "video card.*"
+- assertNotVisible: |-
+    LEARN
+    off
+
+# wait for the tor video to load
+- extendedWaitUntil:
+    notVisible: "Envoy is loading your video over the Tor Network"
+    timeout: 60000
+
+# test the player
+# pause
+- tapOn:
+    point: 50%,50%
+
+- assertVisible: Play
+
+# unpause
+- tapOn:
+    point: 50%,50%
+
+# exit the player
+- tapOn: back button # TODO: test this #######################################################
+
+# make sure you are back to LEARN
+- assertVisible: |-
+    LEARN
+    connected
+- assertVisible: "video card.*"
+
+# open the video again
+- tapOn: "video card.*"
+
+# Use android's native back to make sure it
+# works the same way as the top left back arrow
+
+# swipe to show OS buttons
+- swipe:
+    start: "100%, 50%"  # TODO: test this #######################################################
+    end: "97%, 50%"
+
+# go back with native back
+- tapOn: Back
+
+# Check that the opened video is
+# grayed out and "watched" shows up
+- assertVisible: .*Watched
+
+
+# turn the tor off for another test
+- tapOn: Privacy
+
+# if it is connected turn it off
+- tapOn: |-
+    Better 
+    Performance
+
+# check if it is OFF via shield
+- extendedWaitUntil:
+    visible: "PRIVACY off"
+    timeout: 300000 # wait for 5 min
+
+# go back to home
+- tapOn: Accounts
