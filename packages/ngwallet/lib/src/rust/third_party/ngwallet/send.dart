@@ -73,7 +73,7 @@ class TransactionFeeResult {
 class TransactionParams {
   final String address;
   final BigInt amount;
-  final BigInt feeRate;
+  final double feeRate;
   final List<Output> selectedOutputs;
   final String? note;
   final String? tag;

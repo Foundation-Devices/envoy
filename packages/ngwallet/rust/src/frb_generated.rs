@@ -3370,7 +3370,7 @@ const _: fn() = || {
         let TransactionParams = None::<ngwallet::send::TransactionParams>.unwrap();
         let _: String = TransactionParams.address;
         let _: u64 = TransactionParams.amount;
-        let _: u64 = TransactionParams.fee_rate;
+        let _: f64 = TransactionParams.fee_rate;
         let _: Vec<ngwallet::transaction::Output> = TransactionParams.selected_outputs;
         let _: Option<String> = TransactionParams.note;
         let _: Option<String> = TransactionParams.tag;
@@ -3820,6 +3820,13 @@ impl SseDecode for crate::api::sign_message::EnvoySignMessage {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         return crate::api::sign_message::EnvoySignMessage {};
+    }
+}
+
+impl SseDecode for f64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_f64::<NativeEndian>().unwrap()
     }
 }
 
@@ -4433,7 +4440,7 @@ impl SseDecode for ngwallet::send::TransactionParams {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_address = <String>::sse_decode(deserializer);
         let mut var_amount = <u64>::sse_decode(deserializer);
-        let mut var_feeRate = <u64>::sse_decode(deserializer);
+        let mut var_feeRate = <f64>::sse_decode(deserializer);
         let mut var_selectedOutputs =
             <Vec<ngwallet::transaction::Output>>::sse_decode(deserializer);
         let mut var_note = <Option<String>>::sse_decode(deserializer);
@@ -6002,6 +6009,13 @@ impl SseEncode for crate::api::sign_message::EnvoySignMessage {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
 }
 
+impl SseEncode for f64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_f64::<NativeEndian>(self).unwrap();
+    }
+}
+
 impl SseEncode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -6501,7 +6515,7 @@ impl SseEncode for ngwallet::send::TransactionParams {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.address, serializer);
         <u64>::sse_encode(self.amount, serializer);
-        <u64>::sse_encode(self.fee_rate, serializer);
+        <f64>::sse_encode(self.fee_rate, serializer);
         <Vec<ngwallet::transaction::Output>>::sse_encode(self.selected_outputs, serializer);
         <Option<String>>::sse_encode(self.note, serializer);
         <Option<String>>::sse_encode(self.tag, serializer);
