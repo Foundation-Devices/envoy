@@ -369,7 +369,10 @@ impl EnvoyAccountHandler {
                     .map(|(address, address_type)| (address.to_string(), *address_type))
                     .collect::<Vec<(String, AddressType)>>();
 
-                let external_public_descriptors = account.get_external_public_descriptors();
+                let mut external_public_descriptors = account.get_external_public_descriptors();
+                external_public_descriptors.retain(|(address_type, _)| {
+                    *address_type == AddressType::P2tr || *address_type == AddressType::P2wpkh
+                });
 
                 Ok(EnvoyAccount {
                     name: config.name.clone(),

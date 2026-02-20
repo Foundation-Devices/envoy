@@ -37,11 +37,6 @@ class None extends WalletProgress {}
 class SyncManager {
   static const int _syncInterval = 10;
 
-  static const Set<AddressType> _syncableAddressTypes = {
-    AddressType.p2Tr,
-    AddressType.p2Wpkh,
-  };
-
   final bool _enableLogging = false;
 
   // Track sync and scan requests
@@ -67,10 +62,6 @@ class SyncManager {
 
   factory SyncManager() {
     return _instance;
-  }
-
-  bool _isSyncableAddressType(AddressType addressType) {
-    return _syncableAddressTypes.contains(addressType);
   }
 
   void startSync() {
@@ -106,7 +97,6 @@ class SyncManager {
       if (account.handler != null) {
         final futures = <Future>[];
         for (var descriptor in account.descriptors) {
-          if (_isSyncableAddressType(descriptor.addressType)) {
             final request = await account.handler!
                 .syncRequest(addressType: descriptor.addressType);
             futures.add(_performWalletSync(
@@ -115,7 +105,6 @@ class SyncManager {
               kPrint(
                   "SyncManager: added sync future for ${descriptor.addressType}",
                   silenceInTests: true);
-            }
           }
         }
         EnvoyScheduler().parallel.run(() async {
@@ -156,7 +145,6 @@ class SyncManager {
 
       if (account.handler != null) {
         for (var descriptor in account.descriptors) {
-          if (_isSyncableAddressType(descriptor.addressType)) {
             final accountKey = (account.id, descriptor.addressType);
 
             // Skip if already being processed
@@ -183,7 +171,6 @@ class SyncManager {
                   .requestFullScan(addressType: descriptor.addressType);
               performFullScan(
                   account.handler!, descriptor.addressType, request);
-            }
           }
         }
       }
