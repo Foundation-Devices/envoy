@@ -1,7 +1,3 @@
-# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
-#
-# SPDX-License-Identifier: GPL-3.0-or-later
-
 # (27) boostScreen
 appId: com.foundationdevices.envoy
 ---
@@ -109,5 +105,57 @@ appId: com.foundationdevices.envoy
     visible: coin_lock_icon-unlocked
     timeout: 300000 # wait for 5 min
 
-# go to home
-- tapOn: Accounts
+##################### Simple RBF and Cancel test (ENV-2106)
+
+# go back to tx
+- tapOn: Tags
+
+# enter the sent tx
+- tapOn: |-
+    Sent
+    Awaiting confirmation
+
+# make sure it is boostable
+- assertVisible: |-
+    boost button-ready
+    Boost
+
+# and cancable
+- assertVisible: |-
+    cancel button-ready
+    Cancel Transaction
+
+# tap boost
+- tapOn: |-
+    boost button-ready
+    Boost
+
+# boost tx
+- tapOn: Continue
+- tapOn: Boost Transaction
+- tapOn: Continue
+
+# check the boosted tx
+- tapOn: |-
+    Boosted
+    Awaiting confirmation
+
+# make sure it is boostable
+- assertVisible: |-
+    boost button-ready
+    Boost
+
+# and cancable
+- assertVisible: |-
+    cancel button-ready
+    Cancel Transaction
+
+# cancel tx
+- tapOn: |-
+    cancel button-ready
+    Cancel Transaction
+
+# TODO: I need to wait for the tx's to confirm
+# 9) Go ahead and cancel the transaction
+# 10) Tap the tx that is being canceled
+# 11) Check that no Boost or Cancel options are displayed
