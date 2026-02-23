@@ -2371,7 +2371,7 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?rev=c0bfa649a4dc0ca68f17fd40dce64d4d490e2a28#c0bfa649a4dc0ca68f17fd40dce64d4d490e2a28"
+source = "git+https://github.com/Foundation-Devices/ngwallet?rev=b63e2815ae92497b98cad3fb9dd85926b4a715b3#b63e2815ae92497b98cad3fb9dd85926b4a715b3"
 dependencies = [
  "anyhow",
  "bdk_core",

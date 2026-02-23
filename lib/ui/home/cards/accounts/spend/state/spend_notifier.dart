@@ -184,7 +184,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       final params = TransactionParams(
         address: sendTo,
         amount: BigInt.from(amount),
-        feeRate: feeRate.toDouble(),
+        feeRate: BigInt.from((feeRate * 1000).round()), // sat/vB → msat/vB
         selectedOutputs: utxos,
         note: notes,
         doNotSpendChange: false,
@@ -351,7 +351,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         final params = TransactionParams(
           address: sendTo,
           amount: BigInt.from(amount),
-          feeRate: feeRate.toDouble(),
+          feeRate: BigInt.from(feeRate * 1000), // sat/vB → msat/vB
           selectedOutputs: utxos,
           note: note,
           tag: changeOutput,
@@ -427,10 +427,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       );
       syncManager.syncAccount(account);
 
-      final feeRate = state.transactionParams?.feeRate ?? 1.0;
+      final feeRate = state.transactionParams?.feeRate ?? BigInt.from(1000);
       if (Settings().subSatFeeEnabled &&
           !Settings().usingDefaultElectrumServer &&
-          feeRate < 1.0) {
+          feeRate < BigInt.from(1000)) {
+        // < 1000 msat/vB = < 1 sat/vB
         // Sub-sat txs may be silently dropped by the node if minrelaytxfee
         // is too high. Poll the wallet tx list for up to ~15s to confirm.
         final txId = state.draftTransaction!.transaction.txId;

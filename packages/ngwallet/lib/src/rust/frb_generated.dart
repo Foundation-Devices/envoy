@@ -3003,12 +3003,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  double dco_decode_f_64(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw as double;
-  }
-
-  @protected
   int dco_decode_i_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
@@ -3465,7 +3459,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return TransactionParams(
       address: dco_decode_String(arr[0]),
       amount: dco_decode_u_64(arr[1]),
-      feeRate: dco_decode_f_64(arr[2]),
+      feeRate: dco_decode_u_64(arr[2]),
       selectedOutputs: dco_decode_list_output(arr[3]),
       note: dco_decode_opt_String(arr[4]),
       tag: dco_decode_opt_String(arr[5]),
@@ -3999,12 +3993,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   EnvoySignMessage sse_decode_envoy_sign_message(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return EnvoySignMessage();
-  }
-
-  @protected
-  double sse_decode_f_64(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getFloat64();
   }
 
   @protected
@@ -4572,7 +4560,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_address = sse_decode_String(deserializer);
     var var_amount = sse_decode_u_64(deserializer);
-    var var_feeRate = sse_decode_f_64(deserializer);
+    var var_feeRate = sse_decode_u_64(deserializer);
     var var_selectedOutputs = sse_decode_list_output(deserializer);
     var var_note = sse_decode_opt_String(deserializer);
     var var_tag = sse_decode_opt_String(deserializer);
@@ -5083,12 +5071,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_f_64(double self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putFloat64(self);
-  }
-
-  @protected
   void sse_encode_i_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putInt32(self);
@@ -5549,7 +5531,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.address, serializer);
     sse_encode_u_64(self.amount, serializer);
-    sse_encode_f_64(self.feeRate, serializer);
+    sse_encode_u_64(self.feeRate, serializer);
     sse_encode_list_output(self.selectedOutputs, serializer);
     sse_encode_opt_String(self.note, serializer);
     sse_encode_opt_String(self.tag, serializer);

@@ -53,7 +53,16 @@ class FeeChooser extends ConsumerStatefulWidget {
       onFeeSelect;
   final BitcoinTransaction transaction;
 
-  const FeeChooser(this.transaction, {super.key, required this.onFeeSelect});
+  /// When false, the custom fee slider will not show sub-sat values (<1 sat/vB).
+  /// Should be false for RBF, where the minimum is always ≥1 sat/vB.
+  final bool allowSubOneInCustom;
+
+  const FeeChooser(
+    this.transaction, {
+    super.key,
+    required this.onFeeSelect,
+    this.allowSubOneInCustom = true,
+  });
 
   @override
   ConsumerState createState() => _FeeChooserState();
@@ -264,8 +273,9 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                         ref.read(_selectedFeeStateProvider.notifier).state =
                             fee;
                       },
-                      allowSubOne: Settings().usingDefaultElectrumServer ||
-                          Settings().subSatFeeEnabled,
+                      allowSubOne: widget.allowSubOneInCustom &&
+                          (Settings().usingDefaultElectrumServer ||
+                              Settings().subSatFeeEnabled),
                     ),
                   ),
           ),

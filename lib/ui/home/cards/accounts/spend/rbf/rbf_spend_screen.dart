@@ -350,6 +350,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         pageBuilder: (context, animation, secondaryAnimation) {
           return FeeChooser(
             transaction,
+            allowSubOneInCustom: false,
             onFeeSelect: (fee, context, bool customFee) {
               _setFee(fee, context, customFee);
               ref.read(userHasChangedFeesProvider.notifier).state = true;
