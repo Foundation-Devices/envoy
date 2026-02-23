@@ -11,11 +11,11 @@ appId: com.foundationdevices.envoy
 
 # check if there is red dot present on the device
 - assertVisible:
-    id: Firmware Button TEST-red dot present
+    id: Firmware Red Dot TEST
 
 # update
 - tapOn:
-    id: Firmware Button TEST-red dot present
+    id: Firmware Button TEST
 
 - tapOn: Download Firmware
 
@@ -32,12 +32,12 @@ appId: com.foundationdevices.envoy
 
 # check that you are at the devices with the dot present
 - assertVisible:
-    id: Firmware Button TEST-red dot present
+    id: Firmware Red Dot TEST
 
 # Repeat steps 4-7
 # update
 - tapOn:
-    id: Firmware Button TEST-red dot present
+    id: Firmware Button TEST
 
 - tapOn: Download Firmware
 
@@ -70,7 +70,7 @@ appId: com.foundationdevices.envoy
 - tapOn: Done
 
 # check that you are back to devices menu and Check that the red dot is NOT there
-- assertVisible:
-    id: Firmware Button TEST-no red dot
+- assertNotVisible:
+    id: Firmware Red Dot TEST
 
 

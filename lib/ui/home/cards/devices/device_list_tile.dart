@@ -202,10 +202,9 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                   )
                                                 : Semantics(
                                                     identifier:
-                                                        'Firmware Button ${widget.device.name}-${fwShouldUpdate.hasValue && fwShouldUpdate.value != null && fwShouldUpdate.value! ? "red dot present" : "no red dot"}',
+                                                        'Firmware Button ${widget.device.name}',
                                                     container: true,
                                                     button: true,
-                                                    excludeSemantics: true,
                                                     child: GestureDetector(
                                                       onTap: () {
                                                         if (!fwAvailable) {
@@ -286,21 +285,29 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                                                       null &&
                                                                   fwShouldUpdate
                                                                       .value!)
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                          EnvoySpacing
-                                                                              .xs),
+                                                                Semantics(
+                                                                  identifier:
+                                                                      'Firmware Red Dot ${widget.device.name}',
+                                                                  container:
+                                                                      true,
                                                                   child:
-                                                                      Container(
-                                                                    height: 8.0,
-                                                                    width: 8.0,
-                                                                    decoration: BoxDecoration(
-                                                                        color: Colors
-                                                                            .red,
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(10)),
+                                                                      Padding(
+                                                                    padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                        horizontal:
+                                                                            EnvoySpacing.xs),
+                                                                    child:
+                                                                        Container(
+                                                                      height:
+                                                                          8.0,
+                                                                      width:
+                                                                          8.0,
+                                                                      decoration: BoxDecoration(
+                                                                          color: Colors
+                                                                              .red,
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(10)),
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               Padding(
