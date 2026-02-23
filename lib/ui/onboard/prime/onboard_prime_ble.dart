@@ -292,21 +292,13 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
       ),
       header: Transform.translate(
         offset: const Offset(0, 70),
-        child: TweenAnimationBuilder(
-          duration: const Duration(milliseconds: 600),
-          tween: Tween<double>(end: 1.0, begin: 0.0),
-          curve: Curves.decelerate,
-          builder: (context, value, child) {
-            return Opacity(opacity: value, child: child);
-          },
-          child: Hero(
-            tag: "hero_prime_devices",
-            child: Image.asset(
-              "assets/images/prime_bluetooth_shield.png",
-              alignment: Alignment.bottomCenter,
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: 320,
-            ),
+        child: Hero(
+          tag: "hero_prime_devices",
+          child: Image.asset(
+            "assets/images/prime_bluetooth_shield.png",
+            alignment: Alignment.bottomCenter,
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: 320,
           ),
         ),
       ),
