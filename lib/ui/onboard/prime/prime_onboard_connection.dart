@@ -13,6 +13,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
+import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -77,6 +78,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   Widget build(BuildContext context) {
     final firmWareCheck = ref.watch(firmWareUpdateProvider);
     final deviceCheck = ref.watch(deviceSecurityProvider);
+    startBluetoothDisconnectionListener(context, ref);
 
     ref.listen(onboardingStateStreamProvider, (prev, next) {
       next.whenData((state) {
