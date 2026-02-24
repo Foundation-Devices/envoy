@@ -26,14 +26,14 @@ appId: com.foundationdevices.envoy
 - tapOn:
     point: 50%,50%
 
-- assertVisible: Play # TODO: test this ############################################
+- assertVisible: Play
 
 # unpause
 - tapOn:
     point: 50%,50%
 
 # exit the player
-- tapOn: back button # TODO: test this #######################################################
+- tapOn: back button
 
 # make sure you are back to LEARN
 - assertVisible: |-
@@ -135,7 +135,7 @@ appId: com.foundationdevices.envoy
     point: 50%,50%
 
 # exit the player
-- tapOn: back button # TODO: test this #######################################################
+- tapOn: back button
 
 # make sure you are back to LEARN
 - assertVisible: |-
