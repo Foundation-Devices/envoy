@@ -4,6 +4,7 @@
 
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/pages/fw/fw_routes.dart';
+import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class FwPassportPage extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(EnvoySpacing.medium1)),
           onTap: () {
             if (!onboarding) {
-              context.go("/");
+              context.go(ROUTE_DEVICES);
             } else {
               context.pushNamed(PASSPORT_INTRO);
             }
