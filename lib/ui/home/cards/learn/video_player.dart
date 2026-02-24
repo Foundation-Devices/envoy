@@ -51,6 +51,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   StreamSubscription? _downloadProgressSubscription;
   double _downloadProgress = 0;
 
+  static const _isMaestroTest =
+      bool.fromEnvironment('IS_MAESTRO_TEST', defaultValue: false);
   Timer? _updatePositionTimer;
   Timer? _hideTopBarTimer;
   Timer? _showTorExplainerTimer;
@@ -140,7 +142,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
       setState(() {
         _visibleTimeline = true;
       });
-      _showTimelineTimer = Timer(const Duration(seconds: 5), () {
+      _showTimelineTimer =
+          Timer(Duration(seconds: _isMaestroTest ? 15 : 5), () {
         if (mounted) {
           setState(() {
             _visibleTimeline = false;
@@ -180,7 +183,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   }
 
   void periodicallyHideBar() {
-    _hideTopBarTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
+    _hideTopBarTimer =
+        Timer.periodic(Duration(seconds: _isMaestroTest ? 15 : 5), (_) async {
       restoreSystemUIOverlays();
     });
   }

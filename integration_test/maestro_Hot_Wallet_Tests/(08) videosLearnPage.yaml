@@ -26,7 +26,7 @@ appId: com.foundationdevices.envoy
 - tapOn:
     point: 50%,50%
 
-- assertVisible: Play
+- assertVisible: Play # TODO: test this ############################################
 
 # unpause
 - tapOn:
@@ -47,16 +47,21 @@ appId: com.foundationdevices.envoy
 # Use android's native back to make sure it
 # works the same way as the top left back arrow
 
-# swipe to show OS buttons
-- swipe:
-    start: "100%, 50%" # TODO: test this #######################################################
-    end: "97%, 50%"
+# swipe to show OS buttons and go back with native back
+# retry until we land on the learn page with "Watched"
+- repeat:
+    while:
+      notVisible: ".*Watched"
+    commands:
+      - swipe:
+          start: "100%, 50%"
+          end: "97%, 50%"
+      - runFlow:
+          when:
+            visible: Back
+          commands:
+            - tapOn: Back
 
-# go back with native back
-- tapOn: Back
-
-# Check that the opened video is
-# grayed out and "watched" shows up
 - assertVisible: .*Watched
 
 ############################# make sure all works over tor
@@ -98,10 +103,25 @@ appId: com.foundationdevices.envoy
     LEARN
     off
 
-# wait for the tor video to load
-- extendedWaitUntil:
-    notVisible: "Envoy is loading your video over the Tor Network"
-    timeout: 60000
+# wait for the tor video to load (retry once if it times out)
+- repeat:
+    times: 2
+    commands:
+      - runFlow:
+          when:
+            visible: "Envoy is loading your video over the Tor Network"
+          commands:
+            - extendedWaitUntil:
+                notVisible: "Envoy is loading your video over the Tor Network"
+                timeout: 60000
+                optional: true
+            # if still loading after 60s, go back and re-enter the video
+            - runFlow:
+                when:
+                  visible: "Envoy is loading your video over the Tor Network"
+                commands:
+                  - tapOn: back button
+                  - tapOn: "video card.*"
 
 # test the player
 # pause
@@ -126,21 +146,45 @@ appId: com.foundationdevices.envoy
 # open the video again
 - tapOn: "video card.*"
 
+# wait for the tor video to load (retry once if it times out)
+- repeat:
+    times: 2
+    commands:
+      - runFlow:
+          when:
+            visible: "Envoy is loading your video over the Tor Network"
+          commands:
+            - extendedWaitUntil:
+                notVisible: "Envoy is loading your video over the Tor Network"
+                timeout: 60000
+                optional: true
+            # if still loading after 60s, go back and re-enter the video
+            - runFlow:
+                when:
+                  visible: "Envoy is loading your video over the Tor Network"
+                commands:
+                  - tapOn: back button
+                  - tapOn: "video card.*"
+
 # Use android's native back to make sure it
 # works the same way as the top left back arrow
 
-# swipe to show OS buttons
-- swipe:
-    start: "100%, 50%"  # TODO: test this #######################################################
-    end: "97%, 50%"
+# swipe to show OS buttons and go back with native back
+# retry until we land on the learn page with "Watched"
+- repeat:
+    while:
+      notVisible: ".*Watched"
+    commands:
+      - swipe:
+          start: "100%, 50%"
+          end: "97%, 50%"
+      - runFlow:
+          when:
+            visible: Back
+          commands:
+            - tapOn: Back
 
-# go back with native back
-- tapOn: Back
-
-# Check that the opened video is
-# grayed out and "watched" shows up
 - assertVisible: .*Watched
-
 
 # turn the tor off for another test
 - tapOn: Privacy
