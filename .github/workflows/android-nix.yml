@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-name: Android (Nix)
+name: Android build (Nix)
 on:
   workflow_call:
   workflow_dispatch:
