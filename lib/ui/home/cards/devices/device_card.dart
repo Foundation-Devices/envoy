@@ -245,7 +245,36 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                               .copyWith(color: NewEnvoyColor.contentSecondary),
                         ),
                       ),
+                    Divider(color: NewEnvoyColor.neutral200, height: 1),
+                    ListTile(
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.xs,
+                      ),
+                      dense: true,
+                      minLeadingWidth: 0,
+                      leading: EnvoyIcon(
+                        EnvoyIcons.devices,
+                        color: deviceRemovedFromHostSystemSettings
+                            ? NewEnvoyColor.contentDisabled
+                            : Colors.black,
+                        size: EnvoyIconSize.small,
+                      ),
+                      horizontalTitleGap: EnvoySpacing.xs,
+                      title: Text(
+                        S().manage_device_details_devicePaired,
+                        style: listItemTheme,
+                      ),
+                      trailing: Text(
+                        timeago.format(
+                          widget.device.datePaired,
+                          locale: activeLocale.languageCode,
+                        ),
+                        style: listItemTheme,
+                      ),
+                    ),
+                    if (widget.device.type == DeviceType.passportPrime)
                       Divider(color: NewEnvoyColor.neutral200, height: 1),
+                    if (widget.device.type == DeviceType.passportPrime)
                       ListTile(
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: EnvoySpacing.xs,
@@ -253,7 +282,7 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                         dense: true,
                         minLeadingWidth: 0,
                         leading: EnvoyIcon(
-                          EnvoyIcons.devices,
+                          EnvoyIcons.quantum,
                           color: deviceRemovedFromHostSystemSettings
                               ? NewEnvoyColor.contentDisabled
                               : Colors.black,
@@ -261,63 +290,34 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                         ),
                         horizontalTitleGap: EnvoySpacing.xs,
                         title: Text(
-                          S().manage_device_details_devicePaired,
-                          style: listItemTheme,
+                          S().manage_device_details_QuantumLink,
+                          style: listItemTitleTheme,
                         ),
                         trailing: Text(
-                          timeago.format(
-                            widget.device.datePaired,
-                            locale: activeLocale.languageCode,
-                          ),
-                          style: listItemTheme,
+                          isConnected
+                              ? S().manage_device_details_active
+                              : S().manage_device_details_inactive,
+                          style: isConnectedItemTheme,
                         ),
                       ),
-                      if (widget.device.type == DeviceType.passportPrime)
-                        Divider(color: NewEnvoyColor.neutral200, height: 1),
-                      if (widget.device.type == DeviceType.passportPrime)
-                        ListTile(
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: EnvoySpacing.xs,
-                          ),
-                          dense: true,
-                          minLeadingWidth: 0,
-                          leading: EnvoyIcon(
-                            EnvoyIcons.quantum,
-                            color: deviceRemovedFromHostSystemSettings
-                                ? NewEnvoyColor.contentDisabled
-                                : Colors.black,
-                            size: EnvoyIconSize.small,
-                          ),
-                          horizontalTitleGap: EnvoySpacing.xs,
-                          title: Text(
-                            S().manage_device_details_QuantumLink,
-                            style: listItemTitleTheme,
-                          ),
-                          trailing: Text(
-                            isConnected
-                                ? S().manage_device_details_active
-                                : S().manage_device_details_inactive,
-                            style: isConnectedItemTheme,
-                          ),
-                        ),
-                    ],
-                  ),
-                )),
-            if (widget.device.type == DeviceType.passportPrime) ...[
-              PrimeOptionsWidget(
-                device: widget.device,
-                deviceRemovedFromHostSystemSettings:
-                    deviceRemovedFromHostSystemSettings,
-                onRepairComplete: () {
-                  loadDevicePairingInfo();
-                },
-              ),
-              SizedBox(
-                height: EnvoySpacing.large1,
-              )
-            ]
-          ],
-        ),
+                  ],
+                ),
+              )),
+          if (widget.device.type == DeviceType.passportPrime) ...[
+            PrimeOptionsWidget(
+              device: widget.device,
+              deviceRemovedFromHostSystemSettings:
+                  deviceRemovedFromHostSystemSettings,
+              onRepairComplete: () {
+                loadDevicePairingInfo();
+              },
+            ),
+            SizedBox(
+              height: EnvoySpacing.large1,
+            )
+          ]
+        ],
+      ),
     );
   }
 }
