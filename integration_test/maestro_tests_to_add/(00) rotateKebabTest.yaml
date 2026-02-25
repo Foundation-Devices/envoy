@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (00) maestro-kebab test
+appId: com.foundationdevices.envoy
+---
+
+- launchApp:
+      clearState: true
+
+- tapOn: Advanced
+
+- runScript:
+      file: scripts/kebab.js
+      env:
+          KEBAB_COMMAND: "home"
+
+# hack to wait 5 seconds
+- swipe:
+      start: "50%, 5%"
+      end: "50%, 5%"
+      duration: 5000
+
+- tapOn: magic backup
+
+- tapOn:
+      id: PopUp Primary Button
+
+- runScript:
+      file: scripts/kebab.js
+      env:
+          KEBAB_COMMAND: "face_tester_1"
+
+# hack to wait 5 seconds
+- swipe:
+      start: "50%, 5%"
+      end: "50%, 5%"
+      duration: 5000
+
+- tapOn: Back
