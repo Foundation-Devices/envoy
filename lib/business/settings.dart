@@ -252,6 +252,7 @@ class Settings extends ChangeNotifier {
   void setTorEnabled(bool torEnabled) {
     usingTor = torEnabled;
     if (torEnabled) {
+      ConnectivityManager().startTorGracePeriod();
       Tor.instance.enable();
     } else {
       Tor.instance.disable();
@@ -286,7 +287,7 @@ class Settings extends ChangeNotifier {
         return "https://staging.envoy.foundation.xyz";
       case Environment.production:
         return usingTor
-            ? "http://sb6kqsauvr2cw5n7nkel5jbwdvdjksfhwj62tpcruxtt2r2bg763mrid.onion"
+            ? "http://pcwglac5cacmdgviitf3mkyvrpcx4tkpeew7gyf4ipp4enskr37gquqd.onion"
             : "https://envoy.foundation.xyz";
     }
   }

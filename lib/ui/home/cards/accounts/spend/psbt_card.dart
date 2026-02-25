@@ -12,6 +12,7 @@ import 'package:envoy/ui/shield_path.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as envoy_colors;
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/theme/new_envoy_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -22,6 +23,21 @@ import 'package:envoy/ui/components/step_indicator.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/routes.dart';
+
+enum _QrDensity { low, medium, high }
+
+extension _QrDensityExt on _QrDensity {
+  int get maxFragmentLength {
+    switch (this) {
+      case _QrDensity.low:
+        return 200;
+      case _QrDensity.medium:
+        return 100;
+      case _QrDensity.high:
+        return 20;
+    }
+  }
+}
 
 class VerifyCountdownNotifier extends StateNotifier<int> {
   VerifyCountdownNotifier() : super(5);
@@ -64,6 +80,8 @@ class PsbtCard extends ConsumerStatefulWidget {
 }
 
 class _PsbtCardState extends ConsumerState<PsbtCard> {
+  _QrDensity _qrDensity = _QrDensity.medium;
+
   @override
   void initState() {
     super.initState();
@@ -172,15 +190,22 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
                               padding:
                                   const EdgeInsets.all(EnvoySpacing.medium1),
                               child: AnimatedQrImage(
+                                key: ValueKey(_qrDensity),
                                 widget.transaction.psbt,
                                 urType: "crypto-psbt",
                                 binaryCborTag: true,
+                                maxFragmentLength: _qrDensity.maxFragmentLength,
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
+                  ),
+                  const SizedBox(height: EnvoySpacing.medium2),
+                  _QrDensitySelector(
+                    selected: _qrDensity,
+                    onChanged: (d) => setState(() => _qrDensity = d),
                   ),
                 ],
               ),
@@ -234,6 +259,50 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _QrDensitySelector extends StatelessWidget {
+  final _QrDensity selected;
+  final ValueChanged<_QrDensity> onChanged;
+
+  const _QrDensitySelector({
+    required this.selected,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _buildBox(_QrDensity.low, 6),
+        _buildBox(_QrDensity.medium, 9),
+        _buildBox(_QrDensity.high, 12),
+      ],
+    );
+  }
+
+  Widget _buildBox(_QrDensity level, double size) {
+    final isSelected = selected == level;
+    return GestureDetector(
+      onTap: () => onChanged(level),
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            color: isSelected
+                ? NewEnvoyColor.contentBrand
+                : NewEnvoyColor.contentDisabled,
+          ),
+        ),
+      ),
     );
   }
 }

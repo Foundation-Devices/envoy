@@ -32,6 +32,12 @@ import 'package:foundation_api/foundation_api.dart' as api;
 /// - Write progress stream: envoy/ble/write/progress/{deviceId}
 ///
 class QLConnection with EnvoyMessageWriter {
+  // Threshold for considering the QL connection active based on last heartbeat, in seconds
+  // prime sends heartbeat every 6 seconds,to avoid flapping connection status
+  // we consider connection active if we received heartbeat in the last 8 seconds.
+  static const int _heartbeatActiveThreshold = 8;
+  static const Duration _heartbeatCheckInterval = Duration(seconds: 1);
+
   //Mac address on android, Device UUID on iOS
   final String deviceId;
 
@@ -56,10 +62,16 @@ class QLConnection with EnvoyMessageWriter {
   DeviceStatus get lastDeviceStatus => _lastDeviceStatus;
 
   final _readController = StreamController<Uint8List>.broadcast();
+  final _qlActiveController = StreamController<bool>.broadcast();
 
   Stream<Uint8List> get dataStream => _readController.stream;
 
+  Stream<bool> get qlActiveStream => _qlActiveController.stream.replayLatest(
+        _lastQLActive,
+      );
+
   StreamSubscription? _deviceStatusSubscription;
+  Timer? _qlActivityMonitorTimer;
 
   late final Stream<DeviceStatus> _deviceStatusStream;
   late final Stream<WriteProgress> _writeProgressStream;
@@ -81,6 +93,12 @@ class QLConnection with EnvoyMessageWriter {
       _deviceStatusStream.replayLatest(_lastDeviceStatus);
 
   bool _sendingExRate = false;
+  bool _lastQLActive = false;
+  bool _awaitingHeartbeatAfterConnect = false;
+
+  /// Serial number of the connected Prime device, set synchronously when the
+  /// pairing response is received (before the async [getDevice] lookup works).
+  String? primeSerial;
 
   Stream<DeviceStatus> get connectionEvents =>
       deviceStatusStream.where((status) => status.isConnectionEvent);
@@ -147,6 +165,7 @@ class QLConnection with EnvoyMessageWriter {
     }).asBroadcastStream();
 
     _qlHandlers = QLHandlers(this);
+    _startQLActivityMonitoring();
 
     // Listen to device status updates
     _deviceStatusSubscription = _deviceStatusStream.listen((
@@ -154,18 +173,14 @@ class QLConnection with EnvoyMessageWriter {
     ) {
       _lastDeviceStatus = event;
       if (event.type == BluetoothConnectionEventType.deviceConnected) {
-        //wait for heartbeat to be received before marking connection as fully established,
-        Future.doWhile(() async {
-          await Future.delayed(const Duration(milliseconds: 100));
-          return qlHandler.heartbeatHandler.lastHeartbeat == null;
-        }).timeout(const Duration(seconds: 20)).then((_) {
-          onQLConnected();
-        }).catchError((e) {
-          kPrint("[$deviceId] onConnect error: $e");
-        });
+        // Defer "QL connected" work until we receive a fresh heartbeat
+        // after this BLE connect event.
+        _awaitingHeartbeatAfterConnect = true;
       } else if (event.type ==
           BluetoothConnectionEventType.deviceDisconnected) {
+        _awaitingHeartbeatAfterConnect = false;
         qlHandler.heartbeatHandler.lastHeartbeat = null;
+        _emitQLActiveIfChanged();
       }
       kPrint(
         "[$deviceId] BLE Connection Event: connected=${event.connected}, bonded=${event.bonded}",
@@ -214,6 +229,7 @@ class QLConnection with EnvoyMessageWriter {
 
   // send exchange rate history on ble connect.
   void onQLConnected() async {
+    kPrint("[$deviceId] QL Connected");
     if (getDevice()?.onboardingComplete == true && !_sendingExRate) {
       try {
         _sendingExRate = true;
@@ -235,6 +251,47 @@ class QLConnection with EnvoyMessageWriter {
       debugPrint("[$deviceId] Error checking connection: $e");
       return false;
     }
+  }
+
+  bool isQLActive() {
+    final lastHeartbeat = qlHandler.heartbeatHandler.lastHeartbeat;
+    if (lastHeartbeat == null) {
+      return false;
+    }
+    return DateTime.now().difference(lastHeartbeat).inSeconds <=
+        _heartbeatActiveThreshold;
+  }
+
+  /// Called by HeartbeatHandler when a heartbeat is received.
+  void onHeartbeatReceived() {
+    if (_awaitingHeartbeatAfterConnect) {
+      _awaitingHeartbeatAfterConnect = false;
+      onQLConnected();
+    }
+    _emitQLActiveIfChanged();
+  }
+
+  void _startQLActivityMonitoring() {
+    _emitQLActiveIfChanged();
+    _qlActivityMonitorTimer = Timer.periodic(_heartbeatCheckInterval, (_) {
+      _emitQLActiveIfChanged();
+    });
+  }
+
+  void _emitQLActiveIfChanged() {
+    final isActive = isQLActive();
+    if (_lastQLActive == isActive) {
+      return;
+    }
+    _lastQLActive = isActive;
+    _qlActiveController.add(isActive);
+  }
+
+  void resetQLStatus() {
+    _qlActiveController.add(false);
+    _lastQLActive = false;
+    _qlActivityMonitorTimer?.cancel();
+    _startQLActivityMonitoring();
   }
 
   /// Write all data chunks to this BLE device.
@@ -440,7 +497,9 @@ class QLConnection with EnvoyMessageWriter {
   /// Dispose of stream subscriptions and cleanup
   void dispose() {
     _deviceStatusSubscription?.cancel();
+    _qlActivityMonitorTimer?.cancel();
     _readController.close();
+    _qlActiveController.close();
     _bleReadChannel.setMessageHandler(null);
     kPrint("[$deviceId] QLConnection disposed");
   }

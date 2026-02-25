@@ -259,7 +259,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                           ),
                         ),
                       if (s.syncToCloud && primeDevices.isNotEmpty)
-                        const SizedBox(height: EnvoySpacing.medium1),
+                        const SizedBox(height: EnvoySpacing.medium2),
                       ...primeDevices.map((device) {
                         return primeBackupSection(
                           device,
@@ -268,6 +268,7 @@ class _BackupPageState extends ConsumerState<BackupPage>
                           activeLocale,
                         );
                       }),
+                      const SizedBox(height: EnvoySpacing.medium1),
                       ExpansionTile(
                         tilePadding: const EdgeInsets.all(0),
                         onExpansionChanged: (value) {
