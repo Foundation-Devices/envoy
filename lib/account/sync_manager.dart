@@ -33,6 +33,7 @@ class None extends WalletProgress {}
 
 class SyncManager {
   static const int _syncInterval = 10;
+
   final bool _enableLogging = false;
   Function(EnvoyAccount, bool)? _onAccFullScanFinished;
 

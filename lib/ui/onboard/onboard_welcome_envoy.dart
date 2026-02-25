@@ -10,6 +10,7 @@ import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
+import 'package:envoy/ui/onboard/magic/magic_setup_generate.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -281,6 +282,11 @@ class _OnboardEnvoyWelcomeScreenState
       });
     }
     super.initState();
+
+    // Pre-load Rive file so MagicSetupGenerate shows instantly
+    if (_magicBackUpEnabled) {
+      ref.read(magicSetupRiveFileProvider);
+    }
   }
 
   //ENV-2656

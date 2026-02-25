@@ -27,19 +27,40 @@ final qlConnectionStreamProvider = StreamProvider<List<QLConnection>>((ref) {
 });
 
 final deviceConnectionStatusStreamProvider =
-    StreamProvider.family<DeviceStatus, String>((ref, deviceId) {
+    StreamProvider.family<DeviceStatus, Device>((ref, device) {
   //watching the device stream to trigger rebuilds when devices change
   ref.watch(qlConnectionStreamProvider);
-  final qlConnection = BluetoothChannel().getDeviceChannel(deviceId);
-  return qlConnection.deviceStatusStream;
+  return device.qlConnection().deviceStatusStream;
+});
+
+final onboardingDeviceConnectionStatusStream =
+    StreamProvider<DeviceStatus>((ref) {
+  final device = ref.watch(onboardingDeviceProvider);
+  //watching the device stream to trigger rebuilds when devices change
+  ref.watch(qlConnectionStreamProvider);
+  return device?.deviceStatusStream ?? const Stream.empty();
 });
 
 final isPrimeConnectedProvider = Provider.family<bool, Device?>((ref, device) {
+  if (device?.type != DeviceType.passportPrime) return false;
   if (device == null) return false;
   DeviceStatus? status =
-      ref.watch(deviceConnectionStatusStreamProvider(device.bleId)).valueOrNull;
-  status ??= BluetoothChannel().getDeviceChannel(device.bleId).lastDeviceStatus;
-  return status.connected == true;
+      ref.watch(deviceConnectionStatusStreamProvider(device)).valueOrNull;
+  status ??= device.qlConnection().lastDeviceStatus;
+  return status.connected;
+});
+
+final _qlActiveStreamProvider =
+    StreamProvider.family<bool, Device>((ref, device) {
+  // Rebuild the stream provider when the underlying QLConnection instance
+  ref.watch(qlConnectionStreamProvider);
+  return device.qlConnection().qlActiveStream;
+});
+
+final primeQLActivityProvider = Provider.family<bool, Device?>((ref, device) {
+  if (device == null) return false;
+  final qlActive = ref.watch(_qlActiveStreamProvider(device)).valueOrNull;
+  return qlActive ?? false;
 });
 
 final connectedDeviceProvider = StreamProvider.family<DeviceStatus, String>((

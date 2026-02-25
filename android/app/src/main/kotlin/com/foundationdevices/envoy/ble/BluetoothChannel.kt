@@ -8,6 +8,7 @@ import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
+import android.bluetooth.BluetoothProfile
 import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
@@ -169,15 +170,55 @@ class BluetoothChannel(
         result.success(bluetoothAdapter?.name ?: "Envoy")
     }
 
+    @SuppressLint("MissingPermission")
     private fun getConnectedDevices(result: MethodChannel.Result) {
-        val connectedDevices = devices.filter { it.value.isConnected() }.map { (deviceId, device) ->
-            mapOf(
-                "deviceId" to deviceId,
-                "name" to (device.peripheralName ?: "Unknown"),
-                "bonded" to device.isBonded
-            )
+        if (!checkBluetoothPermissions()) {
+            result.error("PERMISSION_ERROR", "Bluetooth permissions not granted", null)
+            return
         }
-        result.success(connectedDevices)
+
+        if (bluetoothAdapter?.isEnabled != true) {
+            result.success(emptyList<Map<String, Any?>>())
+            return
+        }
+
+        val bonded = bluetoothAdapter.bondedDevices?.toList().orEmpty()
+
+
+        val connectedDevices = try {
+            bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error getting connected BLE devices: ${e.message}", e)
+            result.error("ACCESSORIES_ERROR", "Failed to get connected BLE devices", null)
+            return
+        }
+
+        val accessories = (connectedDevices + bonded)
+            .distinctBy { it.address }
+            .map { device ->
+                val connectionState = try {
+                    bluetoothManager.getConnectionState(device, BluetoothProfile.GATT)
+                } catch (_: Exception) {
+                    BluetoothProfile.STATE_DISCONNECTED
+                }
+                val deviceName = device.name ?: "Unknown Device"
+                val isBonded = device.bondState == BluetoothDevice.BOND_BONDED
+
+                mapOf(
+                    // Keys used by ConnectedDeviceInfo on Dart side
+                    "deviceId" to device.address,
+                    "name" to deviceName,
+                    "bonded" to isBonded,
+                    // Legacy keys used by BleDeviceInfo on Dart side
+                    "peripheralId" to device.address,
+                    "peripheralName" to deviceName,
+                    "isConnected" to (connectionState == BluetoothProfile.STATE_CONNECTED),
+                    "state" to connectionState,
+                    "bondState" to isBonded
+                )
+            }
+
+        result.success(accessories)
     }
 
     private fun removeDevice(call: MethodCall, result: MethodChannel.Result) {

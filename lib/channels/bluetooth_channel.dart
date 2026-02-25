@@ -5,7 +5,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:envoy/channels/accessory.dart';
+import 'package:envoy/channels/ble_device_info.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/util/console.dart';
@@ -65,7 +65,14 @@ class BluetoothChannel {
 
   /// Get or create a device channel for the given device ID.
   /// This creates the device-specific channels if they don't exist.
-  QLConnection getDeviceChannel(String deviceId) {
+  QLConnection getDeviceChannel(String deviceId, {bool reset = false}) {
+    if (reset) {
+      _deviceChannels[deviceId]?.dispose();
+      _deviceChannels.remove(deviceId);
+      _deviceChannels[deviceId] = QLConnection(deviceId);
+      _notifyDeviceChannelsChanged();
+      return _deviceChannels[deviceId]!;
+    }
     if (!_deviceChannels.containsKey(deviceId)) {
       kPrint("Creating new QLConnection for device: $deviceId");
       _deviceChannels[deviceId] = QLConnection(deviceId);
@@ -214,10 +221,12 @@ class BluetoothChannel {
         },
       );
     }
-
     // Now create the device channel after native side has registered its channels
     kPrint("setupBle: obtaining device channel for $resolvedDeviceId");
-    final deviceChannel = getDeviceChannel(resolvedDeviceId);
+    //on IOS we need to reset the channel to clear any previous state since,
+    //this is required for state sync.
+    final deviceChannel =
+        getDeviceChannel(resolvedDeviceId, reset: Platform.isIOS);
 
     bool initiateBonding = false;
     kPrint("setupBle: waiting for connected event on $resolvedDeviceId");
@@ -288,20 +297,21 @@ class BluetoothChannel {
     }
   }
 
-  // ==================== iOS Specific ====================
-
-  /// Get accessories (iOS only)
-  Future<List<AccessoryInfo>> getAccessories() async {
-    if (!Platform.isIOS) {
-      throw Exception("getAccessories is only supported on iOS");
+  /// Get paired/connected BLE devices.
+  /// iOS returns paired accessories from AccessorySetupKit.
+  /// Android returns currently connected BLE GATT devices.
+  Future<List<BleDeviceInfo>> getAccessories() async {
+    if (!Platform.isIOS && !Platform.isAndroid) {
+      throw Exception("getAccessories is only supported on iOS and Android");
     }
     try {
-      final result = await _methodChannel.invokeMethod('getAccessories');
+      final result = await _methodChannel.invokeMethod(
+          Platform.isAndroid ? "getConnectedDevices" : 'getAccessories');
 
       if (result is List) {
         return result
             .map(
-              (item) => AccessoryInfo.fromMap(Map<String, dynamic>.from(item)),
+              (item) => BleDeviceInfo.fromMap(Map<String, dynamic>.from(item)),
             )
             .toList();
       }
@@ -334,24 +344,33 @@ class BluetoothChannel {
     _deviceChannels.clear();
   }
 
-  Future<void> removeAccessory(String deviceId) async {
+  Future<bool> removeAccessory(String deviceId) async {
     if (!Platform.isIOS) {
-      return;
+      return false;
     }
-
-    try {
-      await _methodChannel.invokeMethod<bool>('removeDevice', {
-        'deviceId': deviceId,
-      }).timeout(
-        Duration(seconds: 5),
-        onTimeout: () {
-          throw Exception("Timeout removing accessory");
-        },
-      );
-    } catch (e, stack) {
-      kPrint('Error removing accessory: $e', stackTrace: stack);
-    } finally {
-      removeDeviceChannel(deviceId);
+    bool? result = false;
+    final accessories = await getAccessories();
+    if (accessories.any((a) => a.peripheralId == deviceId)) {
+      try {
+        result = await _methodChannel.invokeMethod<bool>('removeDevice', {
+          'deviceId': deviceId,
+        }).timeout(
+          Duration(seconds: 5),
+          onTimeout: () {
+            throw Exception("Timeout removing accessory");
+          },
+        );
+        return result == true;
+      } catch (e, stack) {
+        kPrint('Error removing accessory: $e', stackTrace: stack);
+        return false;
+      } finally {
+        if (result == true) {
+          removeDeviceChannel(deviceId);
+        }
+      }
+    } else {
+      return false;
     }
   }
 

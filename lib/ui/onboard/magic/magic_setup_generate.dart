@@ -22,20 +22,25 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/expandable_page_view.dart';
 import 'package:envoy/ui/envoy_button.dart';
 
-class MagicSetupGenerate extends StatefulWidget {
+final magicSetupRiveFileProvider = FutureProvider<rive.File>((ref) async {
+  final file = await rive.File.asset(
+    'assets/envoy_magic_setup.riv',
+    riveFactory: rive.Factory.rive,
+  );
+  return file!;
+});
+
+class MagicSetupGenerate extends ConsumerStatefulWidget {
   const MagicSetupGenerate({super.key});
 
   @override
-  State<MagicSetupGenerate> createState() => _MagicSetupGenerateState();
+  ConsumerState<MagicSetupGenerate> createState() => _MagicSetupGenerateState();
 }
 
-class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
+class _MagicSetupGenerateState extends ConsumerState<MagicSetupGenerate> {
   final walletGenerated = EnvoySeed().walletDerived();
 
-  rive.File? _riveFile;
   rive.RiveWidgetController? _controller;
-  bool _isInitialized = false;
-  bool _showContent = false;
 
   final PageController _pageController = PageController();
   late int step;
@@ -68,16 +73,20 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   void initState() {
     super.initState();
     step = 0;
-    _initRive();
+
+    // Try to use pre-loaded Rive file synchronously
+    final preloadedFile = ref.read(magicSetupRiveFileProvider).valueOrNull;
+    if (preloadedFile != null) {
+      _setupController(preloadedFile);
+      _initiateWalletCreate();
+    } else {
+      _initRiveAsync();
+    }
   }
 
-  void _initRive() async {
-    _riveFile = await rive.File.asset(
-      'assets/envoy_magic_setup.riv',
-      riveFactory: rive.Factory.rive,
-    );
+  void _setupController(rive.File file) {
     _controller = rive.RiveWidgetController(
-      _riveFile!,
+      file,
       stateMachineSelector: rive.StateMachineSelector.byName('STM'),
     );
 
@@ -104,19 +113,17 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
       // ignore: deprecated_member_use
       stateMachine.boolean('showShield')?.value = false;
     }
+  }
 
-    setState(() => _isInitialized = true);
+  void _initRiveAsync() async {
+    final file = await ref.read(magicSetupRiveFileProvider.future);
+    if (!mounted) return;
 
-    // Delay to avoid flashing wrong frame
-    await Future.delayed(const Duration(milliseconds: 100));
+    _setupController(file);
 
-    setState(() {
-      _showContent = true;
-    });
+    setState(() {});
 
-    if (_isInitialized) {
-      _initiateWalletCreate();
-    }
+    _initiateWalletCreate();
   }
 
   void _initiateWalletCreate() async {
@@ -207,7 +214,7 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                       alignment: Alignment.topCenter,
                       height: 280,
                       width: 280,
-                      child: _isInitialized && _controller != null
+                      child: _controller != null
                           ? rive.RiveWidget(
                               controller: _controller!,
                               fit: rive.Fit.contain,
@@ -215,50 +222,46 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
                             )
                           : const SizedBox(),
                     ),
-                    AnimatedOpacity(
-                      opacity: _showContent ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 500),
-                      child: ExpandablePageView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        controller: _pageController,
-                        children: List.generate(
-                          stepsHeadings.length,
-                          (index) {
-                            return Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Flexible(
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          stepsHeadings[index],
+                    ExpandablePageView(
+                      estimatedPageSize: 150,
+                      physics: const NeverScrollableScrollPhysics(),
+                      controller: _pageController,
+                      children: List.generate(
+                        stepsHeadings.length,
+                        (index) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Flexible(
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        stepsHeadings[index],
+                                        textAlign: TextAlign.center,
+                                        style: EnvoyTypography.heading,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: EnvoySpacing.medium3,
+                                        ),
+                                        child: Text(
+                                          stepSubHeadings[index],
                                           textAlign: TextAlign.center,
-                                          style: EnvoyTypography.heading,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: EnvoySpacing.medium3,
-                                          ),
-                                          child: Text(
-                                            stepSubHeadings[index],
-                                            textAlign: TextAlign.center,
-                                            style:
-                                                EnvoyTypography.info.copyWith(
-                                              height: 1.2,
-                                              color: EnvoyColors.textSecondary,
-                                            ),
+                                          style: EnvoyTypography.info.copyWith(
+                                            height: 1.2,
+                                            color: EnvoyColors.textSecondary,
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            );
-                          },
-                        ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ),
                   ],
@@ -273,7 +276,6 @@ class _MagicSetupGenerateState extends State<MagicSetupGenerate> {
   @override
   void dispose() {
     _controller?.dispose();
-    _riveFile?.dispose();
     super.dispose();
   }
 }
