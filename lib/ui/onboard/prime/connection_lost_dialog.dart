@@ -29,7 +29,7 @@ import 'package:go_router/go_router.dart';
 /// but we only want to show one dialog at a time.
 /// this flag will be set to false when the dialog widget get disposed.
 bool _isDialogShowing = false;
-const Duration _connectionLostDialogDelay = Duration(seconds: 5);
+const Duration _connectionLostDialogDelay = Duration(seconds: 30);
 
 /// Starts listening for onboarding device bluetooth disconnection events and shows a dialog if disconnected
 void startBluetoothDisconnectionListener(BuildContext context, WidgetRef ref) {
