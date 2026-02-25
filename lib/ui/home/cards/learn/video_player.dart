@@ -51,6 +51,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   StreamSubscription? _downloadProgressSubscription;
   double _downloadProgress = 0;
 
+  static const _isMaestroTest =
+      bool.fromEnvironment('IS_MAESTRO_TEST', defaultValue: false);
   Timer? _updatePositionTimer;
   Timer? _hideTopBarTimer;
   Timer? _showTorExplainerTimer;
@@ -140,7 +142,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
       setState(() {
         _visibleTimeline = true;
       });
-      _showTimelineTimer = Timer(const Duration(seconds: 5), () {
+      _showTimelineTimer =
+          Timer(Duration(seconds: _isMaestroTest ? 15 : 5), () {
         if (mounted) {
           setState(() {
             _visibleTimeline = false;
@@ -180,7 +183,8 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   }
 
   void periodicallyHideBar() {
-    _hideTopBarTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
+    _hideTopBarTimer =
+        Timer.periodic(Duration(seconds: _isMaestroTest ? 15 : 5), (_) async {
       restoreSystemUIOverlays();
     });
   }
@@ -280,10 +284,16 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 25.0,
                                 ),
-                                child: LinearProgressIndicator(
-                                  color: EnvoyColors.grey85,
-                                  backgroundColor: Colors.white,
-                                  value: _downloadProgress,
+                                child: Semantics(
+                                  container: true,
+                                  label: 'vlc player',
+                                  value:
+                                      '${(_downloadProgress * 100).toStringAsFixed(0)}%',
+                                  child: LinearProgressIndicator(
+                                    color: EnvoyColors.grey85,
+                                    backgroundColor: Colors.white,
+                                    value: _downloadProgress,
+                                  ),
                                 ),
                               ),
                               Slider(
@@ -368,24 +378,29 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
               Positioned(
                 top: 20,
                 left: 20,
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white70),
-                  onPressed: () async {
-                    _controller?.stop();
+                child: Semantics(
+                  container: true,
+                  button: true,
+                  label: 'back button',
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white70),
+                    onPressed: () async {
+                      _controller?.stop();
 
-                    setState(() {
-                      _curtains = true;
-                      _downloaded = 0;
-                      _showTorExplainer = false;
-                    });
+                      setState(() {
+                        _curtains = true;
+                        _downloaded = 0;
+                        _showTorExplainer = false;
+                      });
 
-                    setPortraitMode();
+                      setPortraitMode();
 
-                    await Future.delayed(const Duration(milliseconds: 300));
-                    if (context.mounted) {
-                      Navigator.of(context).pop();
-                    }
-                  },
+                      await Future.delayed(const Duration(milliseconds: 300));
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                  ),
                 ),
               ),
             // Black curtains

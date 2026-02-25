@@ -82,10 +82,11 @@ class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
       dialog: EnvoyPopUp(
         icon: EnvoyIcons.alert,
         typeOfMessage: PopUpState.warning,
-        showCloseButton: true,
-        content: "Do you want to exit the onboarding ?",
-        primaryButtonLabel: "Cancel",
-        secondaryButtonLabel: "Exit",
+        showCloseButton: false,
+        title: S().onboarding_connectionModalAbort_header,
+        content: S().onboarding_connectionModalAbort_content,
+        primaryButtonLabel: S().component_cancel,
+        secondaryButtonLabel: S().component_exit,
         onPrimaryButtonTap: (context) async {
           completer.complete(false);
           Navigator.pop(context);

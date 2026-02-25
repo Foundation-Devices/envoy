@@ -3,21 +3,55 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/components/button.dart';
+import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
+import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/components/draggable_overlay.dart';
+import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
+import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+
+enum FeeOption {
+  fast,
+  standard,
+  slow,
+  custom,
+}
+
+final selectedFeeOptionProvider =
+    StateProvider<FeeOption>((ref) => FeeOption.standard);
+
+String selectedFeeLabel(WidgetRef ref) {
+  final option = ref.watch(selectedFeeOptionProvider); // or ref.read(...)
+  switch (option) {
+    case FeeOption.fast:
+      return S().coincontrol_tx_detail_fee_fast;
+    case FeeOption.standard:
+      return S().coincontrol_tx_detail_fee_standard;
+    case FeeOption.slow:
+      return S().coincontrol_tx_detail_fee_slow;
+    case FeeOption.custom:
+      return S().coincontrol_tx_detail_fee_custom;
+  }
+}
 
 class FeeChooser extends ConsumerStatefulWidget {
-  final Function(int fee, BuildContext context, bool setCustomFee) onFeeSelect;
+  final Function(double fee, BuildContext context, bool setCustomFee)
+      onFeeSelect;
+  final BitcoinTransaction transaction;
 
-  const FeeChooser({super.key, required this.onFeeSelect});
+  const FeeChooser(this.transaction, {super.key, required this.onFeeSelect});
 
   @override
   ConsumerState createState() => _FeeChooserState();
@@ -25,23 +59,26 @@ class FeeChooser extends ConsumerStatefulWidget {
 
 class _FeeChooserState extends ConsumerState<FeeChooser>
     with TickerProviderStateMixin {
-  late TabController _tabController;
-
   List<num> feeList = List.generate(2, (index) => index + 1);
 
-  //default fee rates
   num standardFee = 1;
   num fasterFee = 2;
+  num slowerFee = 1;
+
+  FeeOption _selectedOption = FeeOption.standard;
+  bool _showCustom = false;
+  EnvoyAccount? account;
 
   @override
   void initState() {
     super.initState();
 
-    _tabController = TabController(length: 3, vsync: this);
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       setFees(ref.read(feeChooserStateProvider));
+      _selectedOption = ref.read(selectedFeeOptionProvider);
+      _showCustom = ref.read(selectedFeeOptionProvider) == FeeOption.custom;
+      account = ref.read(selectedAccountProvider);
     });
 
     Future.delayed(const Duration(milliseconds: 10)).then((_) {
@@ -50,43 +87,22 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
     });
   }
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
   void setFees(FeeChooserState feeChooserState) {
     standardFee = feeChooserState.standardFeeRate;
     fasterFee = feeChooserState.fasterFeeRate;
+    // choose a slower fee, e.g. minFeeRate or something below standard
+    slowerFee = feeChooserState.minFeeRate;
+
     if (standardFee == fasterFee) {
       fasterFee = standardFee + 1;
     }
   }
 
-  TextStyle? get _labelStyle {
-    return Theme.of(context).textTheme.bodySmall?.copyWith(
-          fontSize: 9.5,
-          fontWeight: FontWeight.w600,
-          fontStyle: FontStyle.normal,
-        );
-  }
-
-  void selectFeeTab(num fee) {
-    int index = 0;
-    if (fee.toInt() == standardFee.toInt()) {
-      index = 0;
-    } else {
-      if (fee.toInt() == fasterFee.toInt()) {
-        index = 1;
-      } else {
-        index = 2;
-      }
-    }
-    _tabController.animateTo(
-      index.toInt(),
-      duration: const Duration(milliseconds: 200),
-    );
+  void _selectOptionLocal(FeeOption option) {
+    setState(() {
+      _selectedOption = option;
+      _showCustom = option == FeeOption.custom;
+    });
   }
 
   @override
@@ -96,145 +112,192 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
       calculateFeeBoundary();
     });
 
-    ref.listen(
-      spendTransactionProvider.select(
-        (value) => value.transaction?.feeRate.toInt() ?? 1,
-      ),
-      (previous, next) {
-        selectFeeTab(next);
-      },
-    );
+    return DraggableOverlay(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _FeeOptionRow(
+            selected: _selectedOption == FeeOption.fast,
+            title: S().coincontrol_tx_detail_fee_fast,
+            subtitle: getAproxTime(account, fasterFee),
+            onTap: () => _selectOptionLocal(FeeOption.fast),
+            trailing: (account != null)
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: EnvoySpacing.xs),
+                        child: Text("~",
+                            style: EnvoyTypography.body
+                                .copyWith(color: EnvoyColors.textTertiary)),
+                      ),
+                      EnvoyAmount(
+                          amountSats: getApproxFeeInSats(
+                              feeRateSatsPerVb: fasterFee.toDouble(),
+                              txVSizeVb: _safeTxVSizeVb(
+                                widget.transaction.fee.toDouble(),
+                                widget.transaction.feeRate.toDouble(),
+                              )),
+                          amountWidgetStyle: AmountWidgetStyle.normal,
+                          account: account!),
+                    ],
+                  )
+                : null,
+          ),
+          const Divider(),
+          _FeeOptionRow(
+            selected: _selectedOption == FeeOption.standard,
+            title: S().coincontrol_tx_detail_fee_standard,
+            subtitle: getAproxTime(account, standardFee),
+            onTap: () => _selectOptionLocal(FeeOption.standard),
+            trailing: (account != null)
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: EnvoySpacing.xs),
+                        child: Text("~",
+                            style: EnvoyTypography.body
+                                .copyWith(color: EnvoyColors.textTertiary)),
+                      ),
+                      EnvoyAmount(
+                          amountSats: getApproxFeeInSats(
+                              feeRateSatsPerVb: standardFee.toDouble(),
+                              txVSizeVb: _safeTxVSizeVb(
+                                widget.transaction.fee.toDouble(),
+                                widget.transaction.feeRate.toDouble(),
+                              )),
+                          amountWidgetStyle: AmountWidgetStyle.normal,
+                          account: account!),
+                    ],
+                  )
+                : null,
+          ),
+          const Divider(),
+          _FeeOptionRow(
+            selected: _selectedOption == FeeOption.slow,
+            title: S().coincontrol_tx_detail_fee_slow,
+            subtitle: getAproxTime(account, slowerFee),
+            onTap: () => _selectOptionLocal(FeeOption.slow),
+            trailing: (account != null)
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: EnvoySpacing.xs),
+                        child: Text("~",
+                            style: EnvoyTypography.body
+                                .copyWith(color: EnvoyColors.textTertiary)),
+                      ),
+                      EnvoyAmount(
+                          amountSats: getApproxFeeInSats(
+                              feeRateSatsPerVb: slowerFee.toDouble(),
+                              txVSizeVb: _safeTxVSizeVb(
+                                widget.transaction.fee.toDouble(),
+                                widget.transaction.feeRate.toDouble(),
+                              )),
+                          amountWidgetStyle: AmountWidgetStyle.normal,
+                          account: account!),
+                    ],
+                  )
+                : null,
+          ),
+          const Divider(),
+          _FeeOptionRow(
+            selected: _selectedOption == FeeOption.custom,
+            title: S().coincontrol_tx_detail_fee_custom,
+            subtitle: _showCustom
+                ? getAproxTime(account, ref.watch(_selectedFeeStateProvider))
+                : null,
+            trailing: _showCustom
+                ? (account != null)
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(right: EnvoySpacing.xs),
+                            child: Text("~",
+                                style: EnvoyTypography.body
+                                    .copyWith(color: EnvoyColors.textTertiary)),
+                          ),
+                          EnvoyAmount(
+                              amountSats: getApproxFeeInSats(
+                                  feeRateSatsPerVb:
+                                      ref.watch(_selectedFeeStateProvider),
+                                  txVSizeVb: _safeTxVSizeVb(
+                                    widget.transaction.fee.toDouble(),
+                                    widget.transaction.feeRate.toDouble(),
+                                  )),
+                              amountWidgetStyle: AmountWidgetStyle.normal,
+                              account: account!),
+                        ],
+                      )
+                    : null
+                : const EnvoyIcon(EnvoyIcons.chevron_down,
+                    size: EnvoyIconSize.extraSmall),
+            onTap: () => _selectOptionLocal(FeeOption.custom),
+          ),
 
-    TextScaler feeTextScaler = MediaQuery.textScalerOf(
-      context,
-    ).clamp(minScaleFactor: 1, maxScaleFactor: 1.1);
-
-    return Container(
-      constraints: const BoxConstraints(
-        maxWidth: 194,
-        minWidth: 194,
-        maxHeight: 24,
-      ),
-      child: Consumer(
-        builder: (context, ref, child) {
-          return IgnorePointer(
-            ignoring: ref.watch(spendFeeProcessing),
-            child: child,
-          );
-        },
-        child: TabBar(
-          textScaler: feeTextScaler,
-          controller: _tabController,
-          indicatorColor: Colors.white,
-          onTap: onTabSelected,
-          labelPadding: const EdgeInsets.symmetric(horizontal: 0),
-          padding: const EdgeInsets.symmetric(horizontal: 0),
-          indicatorPadding: const EdgeInsets.symmetric(horizontal: 0),
-          labelColor: Colors.white,
-          indicatorWeight: 1,
-          tabAlignment: TabAlignment.fill,
-          splashBorderRadius: BorderRadius.circular(0),
-          indicatorSize: TabBarIndicatorSize.label,
-          labelStyle: _labelStyle,
-          tabs: [
-            Tab(
-              child: Text(
-                S().coincontrol_tx_detail_fee_standard,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Tab(
-              child: Text(
-                S().coincontrol_tx_detail_fee_faster,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Tab(
-              child: Text(
-                S().coincontrol_tx_detail_fee_custom,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void onTabSelected(int index) {
-    switch (index) {
-      case 0:
-        widget.onFeeSelect(standardFee.toInt(), context, false);
-        break;
-      case 1:
-        widget.onFeeSelect(fasterFee.toInt(), context, false);
-        break;
-      case 2:
-        {
-          final currentFee = ref.read(
-            spendTransactionProvider.select(
-              (value) => value.transaction?.feeRate.toInt() ?? 1,
-            ),
-          );
-          bool feeChanged = false;
-          showModalBottomSheet(
-            context: context,
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            useRootNavigator: true,
-            barrierColor: Colors.transparent,
-            builder: (context) {
-              return Container(
-                decoration: const BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      spreadRadius: 2,
-                      blurRadius: 24,
-                      offset: Offset(0, -4), // changes position of shadow
-                    ),
-                  ],
-                ),
-                child: Card(
-                  elevation: 0,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(EnvoySpacing.medium2),
-                      topRight: Radius.circular(EnvoySpacing.medium2),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Consumer(
-                      builder: (context, ref, child) {
-                        return FeeSlider(
-                          fees: feeList,
-                          onFeeSelect: (index) {
-                            widget.onFeeSelect(index, context, true);
-                            feeChanged = true;
-                          },
-                        );
+          // Inline FeeSlider for custom
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: !_showCustom
+                ? const SizedBox.shrink()
+                : Padding(
+                    key: const ValueKey('feeSlider'),
+                    padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
+                    child: FeeSlider(
+                      fees: feeList,
+                      transaction: widget.transaction,
+                      onFeeSelect: (fee) {
+                        ref.read(_selectedFeeStateProvider.notifier).state =
+                            fee;
                       },
+                      allowSubOne: false,
                     ),
                   ),
-                ),
-              );
+          ),
+
+          SizedBox(height: EnvoySpacing.medium1),
+          EnvoyButton(
+            S().component_apply,
+            onTap: () async {
+              ref.read(selectedFeeOptionProvider.notifier).state =
+                  _selectedOption;
+              switch (_selectedOption) {
+                case FeeOption.fast:
+                  widget.onFeeSelect(fasterFee.toDouble(), context, false);
+                  break;
+                case FeeOption.standard:
+                  widget.onFeeSelect(standardFee.toDouble(), context, false);
+                  break;
+                case FeeOption.slow:
+                  widget.onFeeSelect(slowerFee.toDouble(), context, false);
+                  break;
+                case FeeOption.custom:
+                  final custom = ref.read(_selectedFeeStateProvider);
+                  await widget.onFeeSelect(custom.toDouble(), context, true);
+                  break;
+              }
+              Future.delayed(const Duration(milliseconds: 200)).then((_) {
+                if (context.mounted) {
+                  Navigator.of(context).maybePop();
+                }
+              });
             },
-          ).then((value) {
-            if (!feeChanged) {
-              /// if the user cancels/sets the fee slider , we need to reset/set the fee rate that used in block estimation
-              /// otherwise set the fee rate to selected value
-              ref.read(spendFeeRateProvider.notifier).state = currentFee;
-              selectFeeTab(currentFee);
-              ref.read(userHasChangedFeesProvider.notifier).state = true;
-            }
-          });
-        }
-        break;
-    }
+          ),
+        ],
+      ),
+    );
   }
 
   void calculateFeeBoundary() {
@@ -262,16 +325,67 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
   }
 }
 
+int _safeTxVSizeVb(double fee, double feeRate) {
+  if (feeRate == 0 || feeRate.isNaN || !feeRate.isFinite) {
+    // fallback – ovisno što ti ima smisla: 0, neki default, ili skip UI
+    return 0;
+  }
+  final vsize = fee / feeRate;
+  if (vsize.isNaN || !vsize.isFinite) {
+    return 0;
+  }
+  return vsize.round(); // ili .toInt(), kako želiš
+}
+
+class _FeeOptionRow extends StatelessWidget {
+  const _FeeOptionRow({
+    required this.selected,
+    required this.title,
+    this.trailing,
+    this.subtitle,
+    this.onTap,
+  });
+
+  final bool selected;
+  final String title;
+  final Widget? trailing;
+  final String? subtitle;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      CheckBoxFilterItem(
+        text: title,
+        checked: selected,
+        subtitle: subtitle,
+        onTap: () {
+          if (onTap != null) {
+            onTap!();
+          }
+        },
+      ),
+      if (trailing != null) trailing!,
+    ]);
+  }
+}
+
 class FeeSlider extends ConsumerStatefulWidget {
-  final Function(int index) onFeeSelect;
+  final Function(double index) onFeeSelect;
   final int selectedItem;
   final List<num> fees;
+  final BitcoinTransaction transaction;
+
+  /// This feature will be implemented in future release
+  final bool allowSubOne;
 
   const FeeSlider({
     super.key,
     this.selectedItem = 1,
     required this.onFeeSelect,
     required this.fees,
+    required this.transaction,
+    required this.allowSubOne,
   });
 
   @override
@@ -281,7 +395,7 @@ class FeeSlider extends ConsumerStatefulWidget {
 //local state notifier to keep track of selected index,
 //this is used to animate the selected item,
 //by using provider we can avoid unnecessary rebuilds on scroll-wheel widget
-final _selectedFeeStateProvider = StateProvider.autoDispose<int>((ref) => 0);
+final _selectedFeeStateProvider = StateProvider.autoDispose<double>((ref) => 0);
 
 class _FeeSliderState extends ConsumerState<FeeSlider> {
   double yOffset = 0.0;
@@ -293,35 +407,63 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     initialItem: 2,
   );
 
+  late List<num> _effectiveFees;
+
+  bool _allowSubOne = false;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      //cache textStyle to avoid creating new instances
+    _allowSubOne = widget.allowSubOne;
+    _effectiveFees = _buildEffectiveFees();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       initializeSelectedRate();
     });
+  }
+
+  List<num> _buildEffectiveFees() {
+    // 1) Start from your original fees and sort ascending first
+    final base = [...widget.fees]..sort(); // numeric sort[web:31]
+
+    final result = <num>[];
+
+    final baseGe1 = base.where((f) => f >= 1).toList()..sort(); // ascending
+    final baseDesc = baseGe1.reversed;
+    result.addAll(baseDesc);
+
+    if (_allowSubOne) {
+      for (int i = 99; i >= 10; i--) {
+        final v = i / 100.0; // 0.99, 0.98, ..., 0.10
+        result.add(double.parse(v.toStringAsFixed(2)));
+      }
+    }
+
+    return result;
   }
 
   void initializeSelectedRate() async {
     num feeRate = ref.read(spendFeeRateProvider);
     final num selectedItem = ref.read(_selectedFeeStateProvider);
+
     if (feeRate != selectedItem) {
       setState(() {
-        ref.read(_selectedFeeStateProvider.notifier).state = feeRate.toInt();
-        //since we are setting the initial item, we need to disable haptic feedback
+        ref.read(_selectedFeeStateProvider.notifier).state = feeRate.toDouble();
         _disableHaptic = true;
       });
-      int jumpIndex = widget.fees.indexOf(feeRate.toInt());
+
+      int jumpIndex = _effectiveFees.indexWhere((f) => f == feeRate);
       if (jumpIndex < 0) {
-        jumpIndex = widget.fees.length - 1;
+        jumpIndex = _effectiveFees.length - 1;
       }
+
       _controller
           .animateToItem(
         jumpIndex,
         duration: const Duration(milliseconds: 60),
         curve: Curves.easeInOut,
       )
-          .then((value) {
+          .then((_) {
         _disableHaptic = false;
         _initializationFinished = true;
       });
@@ -335,21 +477,31 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   }
 
   TextStyle? get _selectedTextStyle {
-    return Theme.of(
-      context,
-    ).textTheme.titleSmall?.copyWith(fontSize: 12, color: EnvoyColors.teal500);
+    return EnvoyTypography.body.copyWith(
+      color: EnvoyColors.accentPrimary,
+    );
+  }
+
+  TextStyle? get _warningTextStyle {
+    return EnvoyTypography.body.copyWith(
+      color: EnvoyColors.warning,
+    );
   }
 
   TextStyle? get _satPerVbStyle {
-    return Theme.of(context).textTheme.bodySmall?.copyWith(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-          color: EnvoyColors.accentPrimary,
-        );
+    return EnvoyTypography.body.copyWith(
+      color: EnvoyColors.accentPrimary,
+    );
+  }
+
+  TextStyle? get _satPerVbWarningStyle {
+    return EnvoyTypography.body.copyWith(
+      color: EnvoyColors.warning,
+    );
   }
 
   //builds the indicator widget
-  Widget _buildIndicatorWidget(num feeRate) {
+  Widget _buildIndicatorWidget(num feeRate, int feePercentage) {
     //consumer to listen to selected index changes, to animate the selected item
     return Consumer(
       builder: (context, ref, child) {
@@ -359,7 +511,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
           child: SizedBox(
             height: 68,
             child: Column(
-              mainAxisSize: MainAxisSize.max,
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 AnimatedScale(
@@ -368,7 +520,9 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                   child: Text(
                     "$feeRate",
                     style: selectedItem == feeRate
-                        ? _selectedTextStyle
+                        ? feePercentage >= 25
+                            ? _warningTextStyle
+                            : _selectedTextStyle
                         : _unselectedTextStyle,
                   ),
                 ),
@@ -378,7 +532,9 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(2),
                     color: selectedItem == feeRate
-                        ? EnvoyColors.teal500
+                        ? feePercentage >= 25
+                            ? EnvoyColors.warning
+                            : EnvoyColors.teal500
                         : EnvoyColors.gray600,
                   ),
                   margin: EdgeInsets.only(top: selectedItem == feeRate ? 4 : 0),
@@ -395,112 +551,199 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   @override
   Widget build(BuildContext context) {
     Color gradientOverlayColor = Colors.white54;
-    bool processingFee = ref.watch(spendFeeProcessing);
+    //bool processingFee = ref.watch(spendFeeProcessing);
+    double selectedFee = ref.watch(_selectedFeeStateProvider);
+    int aproxFee = getApproxFeeInSats(
+        feeRateSatsPerVb: selectedFee,
+        txVSizeVb: _safeTxVSizeVb(
+          widget.transaction.fee.toDouble(),
+          widget.transaction.feeRate.toDouble(),
+        ));
+    int feePercentage =
+        ((aproxFee / (aproxFee + widget.transaction.amount.abs())) * 100)
+            .round();
+
     return Consumer(
       builder: (context, ref, child) {
         ref.listen(spendFeeRateProvider, (previous, next) {
           initializeSelectedRate();
         });
         return Container(
-          constraints: const BoxConstraints(minHeight: 190, maxHeight: 210),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 100,
-                width: MediaQuery.of(context).size.width,
-                child: RotatedBox(
-                  quarterTurns: 1,
-                  child: Stack(
-                    children: <Widget>[
-                      Positioned.fill(
-                        child: ListWheelScrollView.useDelegate(
-                          controller: _controller,
-                          renderChildrenOutsideViewport: false,
-                          physics: const FixedExtentScrollPhysics(
-                            parent: ClampingScrollPhysics(),
-                          ),
-                          diameterRatio: 2.8,
-                          offAxisFraction: -.3,
-                          useMagnifier: false,
-                          perspective: 0.004,
-                          overAndUnderCenterOpacity: 1,
-                          itemExtent: 48,
-                          squeeze: widget.fees.length > 1000 ? 1.0 : 1.3,
-                          onSelectedItemChanged: _handleItemChanged,
-                          childDelegate: ListWheelChildBuilderDelegate(
-                            childCount: widget.fees.length,
-                            builder: (context, index) {
-                              return _buildIndicatorWidget(widget.fees[index]);
-                            },
-                          ),
-                        ),
-                      ),
-                      Center(
+            constraints: const BoxConstraints(maxHeight: 210),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    // TODO: this will be implemented in future releases
+                    // if (!_allowSubOne && selectedFee == 1)
+                    //   SizedBox(
+                    //     width: 100,
+                    //     child: Column(
+                    //       mainAxisSize: MainAxisSize.min,
+                    //       children: [
+                    //         Text(
+                    //           "Less than 1 sat/vb is an advanced feature.",
+                    //           style: EnvoyTypography.label.copyWith(
+                    //             color: EnvoyColors.textTertiary,
+                    //           ),
+                    //           textAlign: TextAlign.center,
+                    //         ),
+                    //         GestureDetector(
+                    //           onTap: () {
+                    //             showEnvoyPopUp(
+                    //                 context,
+                    //                 S().send_editTxDetailsSubsatModal_content,
+                    //                 S().settings_advanced_taproot_modal_cta1,
+                    //                 (context) {
+                    //                   Navigator.of(context).pop();
+                    //                   setState(() {
+                    //                     _allowSubOne = true;
+                    //                     _effectiveFees = _buildEffectiveFees();
+                    //                     final selectedFee =
+                    //                         ref.read(_selectedFeeStateProvider);
+                    //                     final idx = _effectiveFees.indexWhere(
+                    //                         (f) => f == selectedFee);
+                    //                     if (idx != -1) {
+                    //                       _controller.jumpToItem(idx);
+                    //                     }
+                    //                   });
+                    //                 },
+                    //                 title: S()
+                    //                     .send_editTxDetailsSubsatModal_header,
+                    //                 showCloseButton: false,
+                    //                 icon: EnvoyIcons.info,
+                    //                 learnMoreText: S().component_learnMore,
+                    //                 onLearnMore: () {},
+                    //                 secondaryButtonLabel: S().component_back,
+                    //                 onSecondaryButtonTap: (context) {
+                    //                   Navigator.of(context).pop();
+                    //                 });
+                    //           },
+                    //           child: Text(
+                    //             S().component_learnMore,
+                    //             textAlign: TextAlign.center,
+                    //             style: EnvoyTypography.label.copyWith(
+                    //               color: EnvoyColors.accentPrimary,
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    Expanded(
+                      child: SizedBox(
+                        height: 100,
+                        width: MediaQuery.of(context).size.width,
                         child: RotatedBox(
-                          quarterTurns: 3,
-                          child: Container(
-                            alignment: const Alignment(0.0, 1.3),
-                            margin: const EdgeInsets.only(top: 4),
-                            child: Text("sats/Vb", style: _satPerVbStyle),
-                          ),
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: IgnorePointer(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                              gradient: RadialGradient(
-                                transform: const GradientRotation(1.6),
-                                radius: 3,
-                                focal: Alignment.center,
-                                colors: [
-                                  gradientOverlayColor.applyOpacity(0.0),
-                                  gradientOverlayColor.applyOpacity(0.0),
-                                  gradientOverlayColor.applyOpacity(0.0),
-                                  gradientOverlayColor.applyOpacity(0.6),
-                                  gradientOverlayColor.applyOpacity(0.7),
-                                  gradientOverlayColor.applyOpacity(0.8),
-                                  gradientOverlayColor.applyOpacity(0.8),
-                                  gradientOverlayColor.applyOpacity(0.9),
-                                  gradientOverlayColor.applyOpacity(0.9),
-                                  gradientOverlayColor.applyOpacity(1),
-                                ],
+                          quarterTurns: 1,
+                          child: Stack(
+                            children: <Widget>[
+                              Positioned.fill(
+                                child: ListWheelScrollView.useDelegate(
+                                  controller: _controller,
+                                  renderChildrenOutsideViewport: false,
+                                  physics: const FixedExtentScrollPhysics(
+                                      parent: ClampingScrollPhysics()),
+                                  diameterRatio: 2.8,
+                                  offAxisFraction: -.3,
+                                  useMagnifier: false,
+                                  perspective: 0.004,
+                                  overAndUnderCenterOpacity: 1,
+                                  itemExtent: 48,
+                                  squeeze:
+                                      _effectiveFees.length > 1000 ? 1.0 : 1.3,
+                                  onSelectedItemChanged: _handleItemChanged,
+                                  childDelegate: ListWheelChildBuilderDelegate(
+                                    childCount: _effectiveFees.length,
+                                    builder: (context, index) {
+                                      return _buildIndicatorWidget(
+                                          _effectiveFees[index], feePercentage);
+                                    },
+                                  ),
+                                ),
                               ),
-                            ),
+                              Center(
+                                child: RotatedBox(
+                                  quarterTurns: 3,
+                                  child: Container(
+                                      alignment: const Alignment(0.0, 1.3),
+                                      margin: const EdgeInsets.only(top: 4),
+                                      child: Text(
+                                        selectedFee == 1 ? "sat/vb" : "sats/vb",
+                                        style: feePercentage >= 25
+                                            ? _satPerVbWarningStyle
+                                            : _satPerVbStyle,
+                                      )),
+                                ),
+                              ),
+                              Positioned.fill(
+                                child: IgnorePointer(
+                                  child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      decoration: BoxDecoration(
+                                        gradient: RadialGradient(
+                                          transform:
+                                              const GradientRotation(1.6),
+                                          radius: 3,
+                                          focal: Alignment.center,
+                                          colors: [
+                                            gradientOverlayColor
+                                                .applyOpacity(0.0),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.0),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.0),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.6),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.7),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.8),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.8),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.9),
+                                            gradientOverlayColor
+                                                .applyOpacity(0.9),
+                                            gradientOverlayColor
+                                                .applyOpacity(1),
+                                          ],
+                                        ),
+                                      )),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ],
+                    ),
+                  ],
+                ),
+                // const Spacer(),
+                // Padding(
+                //   padding:
+                //       const EdgeInsets.symmetric(vertical: 12, horizontal: 34),
+                //   child: EnvoyButton(
+                //     S().coincontrol_tx_detail_custom_fee_cta,
+                //     onTap: () {
+                //       if (!processingFee) {
+                //         widget.onFeeSelect(ref.read(_selectedFeeStateProvider));
+                //       }
+                //     },
+                //   ),
+                // ),
+                if (feePercentage >= 25)
+                  Padding(
+                    padding: const EdgeInsets.only(top: EnvoySpacing.medium2),
+                    child: feeOverSpendWarning(feePercentage),
                   ),
-                ),
-              ),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 34,
-                ),
-                child: EnvoyButton(
-                  label: S().coincontrol_tx_detail_custom_fee_cta,
-                  onTap: () {
-                    if (!processingFee) {
-                      widget.onFeeSelect(ref.read(_selectedFeeStateProvider));
-                    }
-                  },
-                  type: ButtonType.primary,
-                  state: processingFee
-                      ? ButtonState.loading
-                      : ButtonState.defaultState,
-                ),
-              ),
-              const Padding(padding: EdgeInsets.only(bottom: 8)),
-            ],
-          ),
-        );
+                const Padding(
+                    padding: EdgeInsets.only(bottom: EnvoySpacing.medium1)),
+              ],
+            ));
       },
     );
   }
@@ -510,11 +753,12 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
       _lastHapticIndex = index;
       if (!_disableHaptic) HapticFeedback.selectionClick();
     }
-    ref.read(_selectedFeeStateProvider.notifier).state =
-        widget.fees[index].toInt();
+
+    final fee = _effectiveFees[index].toDouble();
+    ref.read(_selectedFeeStateProvider.notifier).state = fee;
+
     if (_initializationFinished) {
-      ref.read(spendFeeRateProvider.notifier).state =
-          widget.fees[index].toInt();
+      ref.read(spendFeeRateProvider.notifier).state = fee;
     }
   }
 }

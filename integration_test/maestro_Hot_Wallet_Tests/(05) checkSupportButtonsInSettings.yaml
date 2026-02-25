@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (05) checkSupportButtonsInSettings
+appId: com.foundationdevices.envoy
+---
+
+# go to support
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    SUPPORT
+    SUPPORT
+
+# check the buttons
+- tapOn: DOCUMENTATION
+- tapOn: Back
+- tapOn: COMMUNITY
+- tapOn: Back
+- assertVisible: EMAIL # just check for the button
+
+# go back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu

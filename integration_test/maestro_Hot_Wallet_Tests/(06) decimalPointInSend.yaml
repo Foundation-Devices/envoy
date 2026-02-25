@@ -1,0 +1,49 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (06) decimalPointInSend
+appId: com.foundationdevices.envoy
+---
+
+# go to settings
+- tapOn:
+    id: hamburger_menu
+
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+# make sure the sats switch is off, turn it on
+- tapOn:
+    id: Display Unit Sats Toggle-false
+
+# go back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu
+
+# go to hot wallet
+- tapOn: Mobile Wallet
+
+# go to send
+- tapOn: Send
+
+# change to BTC
+- tapOn:
+    id: amount_display sats
+
+# enter dot
+- tapOn:
+    text: .
+    index: 10
+
+# make sure the dot is pressed
+- assertVisible: "0."
+
+# go back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn:
+    id: hamburger_menu

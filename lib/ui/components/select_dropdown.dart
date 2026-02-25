@@ -101,7 +101,7 @@ class EnvoyDropdownState extends State<EnvoyDropdown> {
           color: widget.isDropdownActive
               ? EnvoyColors.surface2
               : EnvoyColors.surface2.applyOpacity(0.5),
-          borderRadius: BorderRadius.circular(EnvoySpacing.small),
+          borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
           border: Border.all(
             color: (!isFocused && widget.isDropdownActive)
                 ? EnvoyColors.accentPrimary
@@ -316,34 +316,38 @@ class _EnvoyDropdownButtonState<T> extends State<_EnvoyDropdownButton<T>> {
                       minWidth: button.size.width + 1, // +1 pixel to border
                       maxWidth: button.size.width + 1,
                     ),
-                    child: Scrollbar(
-                      controller: _scrollController,
-                      thumbVisibility: true,
-                      thickness: 3,
-                      radius: Radius.circular(EnvoySpacing.small),
-                      child: ListView(
+                    child: Semantics(
+                      container: true,
+                      identifier: "dropdown_scroll_list",
+                      child: Scrollbar(
                         controller: _scrollController,
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        children: widget.items!.map((item) {
-                          final bool isSelected =
-                              item.value == widget.selectedItem;
-                          return InkWell(
-                            onTap: () {
-                              _removeDropdown();
-                              widget.onChanged?.call(item.value);
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              color: isSelected
-                                  ? EnvoyColors.accentPrimary
-                                  : null, // highlight
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 12),
-                              child: item.child,
-                            ),
-                          );
-                        }).toList(),
+                        thumbVisibility: true,
+                        thickness: 3,
+                        radius: Radius.circular(EnvoySpacing.small),
+                        child: ListView(
+                          controller: _scrollController,
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          children: widget.items!.map((item) {
+                            final bool isSelected =
+                                item.value == widget.selectedItem;
+                            return InkWell(
+                              onTap: () {
+                                _removeDropdown();
+                                widget.onChanged?.call(item.value);
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                color: isSelected
+                                    ? EnvoyColors.accentPrimary
+                                    : null, // highlight
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 12),
+                                child: item.child,
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
                   ),

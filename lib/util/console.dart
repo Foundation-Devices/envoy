@@ -4,16 +4,11 @@
 
 import 'package:flutter/foundation.dart';
 
-// A debug printing utility with optional silenceInTests flag
+// A debug printing utility
 void kPrint(
   Object? message, {
   StackTrace? stackTrace,
-  bool silenceInTests = false,
 }) {
-  const bool isTest = bool.fromEnvironment('IS_TEST', defaultValue: false);
-
-  if (isTest && silenceInTests) return; // silence if requested during tests
-
   if (!kReleaseMode || !kProfileMode) {
     // ignore: avoid_print
     print(message);

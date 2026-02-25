@@ -193,6 +193,14 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
       RustLib.instance.api
           .crateApiEnvoyWalletEnvoyAccountHandlerOpenAccount(dbPath: dbPath);
 
+  /// Get addresses for the given index range without revealing them.
+  /// Set `is_change` to true for change addresses, false for receive addresses.
+  Future<List<(int, String)>> peekAddresses(
+      {required AddressType addressType,
+      required int fromIndex,
+      required int toIndex,
+      required bool isChange});
+
   Future<void> renameAccount({required String name});
 
   Future<void> renameTag({required String existingTag, String? newTag});
@@ -214,11 +222,13 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   static Future<WalletUpdate> scanWallet(
           {required FullScanRequest scanRequest,
           required String electrumServer,
-          int? torPort}) =>
+          int? torPort,
+          int? stopGap}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerScanWallet(
           scanRequest: scanRequest,
           electrumServer: electrumServer,
-          torPort: torPort);
+          torPort: torPort,
+          stopGap: stopGap);
 
   Future<void> sendUpdate();
 

@@ -113,6 +113,7 @@ const String apiKeysStoreName = "api_keys";
 const String primeDataStoreName = "prime";
 const String quantumLinkIdentityStoreName = "ql_identity";
 const String stripeStoreName = "stripe";
+const String txFirstSeenStoreName = "tx_first_seen";
 
 ///keeps track of the prime account full scan status, and migration,
 ///no backup for this store
@@ -178,6 +179,9 @@ class EnvoyStorage {
 
   StoreRef<int, String> quantumLinkIdentityStore =
       StoreRef<int, String>(quantumLinkIdentityStoreName);
+
+  final StoreRef<String, int> txFirstSeenStore =
+      StoreRef<String, int>(txFirstSeenStoreName);
 
   //do not include in backup
   StoreRef<String, bool> accountFullsScanStateStore =
@@ -1152,6 +1156,36 @@ class EnvoyStorage {
 
   Future<T?> getNoBackUpPreference<T>(String key) async {
     return await (noBackUpPrefsStore.record(key).get(_db)) as T?;
+  }
+
+  Future<bool> setTxFirstSeen(String txId, DateTime firstSeen) async {
+    await txFirstSeenStore
+        .record(txId)
+        .put(_db, firstSeen.millisecondsSinceEpoch);
+    return true;
+  }
+
+  Future<bool> deleteTxFirstSeen(String txId) async {
+    final record = txFirstSeenStore.record(txId);
+    if (await record.exists(_db)) {
+      await record.delete(_db);
+      return true;
+    }
+    return false;
+  }
+
+  Future<Map<String, DateTime>> getAllTxFirstSeen() async {
+    final snapshots = await txFirstSeenStore.find(_db); // all records [web:5]
+    return {
+      for (final s in snapshots)
+        s.key: DateTime.fromMillisecondsSinceEpoch(s.value),
+    };
+  }
+
+  Future<DateTime?> getTxFirstSeen(String txId) async {
+    final millis = await txFirstSeenStore.record(txId).get(_db);
+    if (millis == null) return null;
+    return DateTime.fromMillisecondsSinceEpoch(millis);
   }
 
   Database db() => _db;

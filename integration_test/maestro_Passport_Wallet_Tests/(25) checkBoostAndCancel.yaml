@@ -1,0 +1,98 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (25) checkBoostAndCancel
+appId: com.foundationdevices.envoy
+---
+
+#     //const testnetReceiveAddress =
+#     //    'tb1q3aas79p2f5pane8yvqav5nep4e4eu99kwsw7fw';
+#     // TODO: fill this wallet if there is no money from here https://coinfaucet.eu/en/btc-testnet4/
+#     // TODO: when getting more coins you need to wait for the transaction confirmation before running the tests!!!
+
+# go to testnet hot acc
+- tapOn:
+    id: account_card_Mobile Wallet_hot_testnet
+
+# send a tx to "Primary (#0)" passport acc
+- tapOn: Send
+- tapOn: Enter address
+- inputText: tb1qfazyr3dc6fp6ylvt477dgslrnc8xatng3l03vk
+- tapOn: Back
+
+- tapOn: "5"
+- tapOn: "6"
+- tapOn: "7"
+
+- tapOn: Confirm
+
+# wait the app to enter Staging
+- extendedWaitUntil:
+    visible: |-
+      Your transaction is ready 
+      to be sent
+      Confirm the transaction details are correct before sending.
+    timeout: 300000 # wait for 5 min
+
+- tapOn: Send Transaction
+
+# save the note for the (26) saveNotePopup test
+- tapOn:
+    id: tx_note_input
+
+- inputText: "This Note"
+
+- tapOn: Save
+
+# wait for tx confirmation
+- extendedWaitUntil:
+    visible: Your transaction was successfully sent
+    timeout: 300000 # wait for 5 min
+
+- tapOn: Continue
+
+# go to home
+- tapOn: Accounts
+
+# scroll to bottom
+- scroll
+
+# check the "Primary (#0)" passport acc
+- tapOn: Primary (#0)
+
+# wait for the tx to appear
+- extendedWaitUntil:
+    visible: Received Awaiting confirmation
+    timeout: 120000 # wait 2 min for the tx
+
+# enter the received tx
+- tapOn: |-
+    Received
+    Awaiting confirmation
+
+# make sure there is no boost button
+- assertNotVisible: boost button-loading
+- assertNotVisible: boost button-ready
+
+# go back to home
+- tapOn: Back
+- tapOn: Accounts
+
+# check the sent tx note for the (26) saveNotePopup test
+- tapOn:
+    id: account_card_Mobile Wallet_hot_testnet
+
+# open the tx
+- tapOn: |-
+    Sent
+    Awaiting confirmation
+
+- assertVisible: |-
+    Note
+    This Note
+
+# go back to home
+- tapOn: Back
+- tapOn:
+    id: hamburger_menu

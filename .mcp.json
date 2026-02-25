@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "kebab": {
+      "command": "dart",
+      "args": ["run", "packages/kebab_mcp/bin/kebab_mcp.dart", "--host", "127.0.0.1"],
+      "cwd": "."
+    },
+    "maestro-android": {
+      "command": "maestro",
+      "args": ["mcp"]
+    },
+    "maestro-ios": {
+      "command": "maestro",
+      "args": ["--driver-host-port", "6001", "--device", "00008120-001C348421C3A01E", "mcp"]
+    }
+  }
+}

@@ -67,6 +67,10 @@ jobs:
       - run: nix develop --command flutter pub get
         name: Get Flutter dependencies
 
+      - run: nix develop --command dart pub get
+        name: Get kebab_mcp dependencies
+        working-directory: packages/kebab_mcp
+
       - run: nix develop --command dart format --output=none --set-exit-if-changed .
         name: Check Dart formatting
 

@@ -32,6 +32,7 @@ import 'package:envoy/ui/state/app_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/region_manager.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -43,6 +44,7 @@ class SettingsPage extends ConsumerStatefulWidget {
 class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _animationsDuration = const Duration(milliseconds: 200);
   bool _advancedVisible = false;
+  bool _warningsReset = false;
 
   bool buyDisabledByCountry = true;
 
@@ -76,18 +78,24 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             child: ListTile(
               contentPadding: const EdgeInsets.all(0),
               dense: true,
-              title: Wrap(children: [SettingText(S().settings_show_fiat)]),
-              trailing: SettingToggle(() => s.displayFiat() != null, (enabled) {
-                setState(() {
-                  s.setDisplayFiat(enabled ? "USD" : null); // TODO: FIGMA
-                  if (!enabled) {
-                    ref.read(appUnitProvider.notifier).state =
-                        s.displayUnitSat()
-                            ? AmountDisplayUnit.sat
-                            : AmountDisplayUnit.btc;
-                  }
-                });
-              }),
+              title: Wrap(
+                children: [SettingText(S().settings_show_fiat)],
+              ),
+              trailing: SettingToggle(
+                () => s.displayFiat() != null,
+                (enabled) {
+                  setState(() {
+                    s.setDisplayFiat(enabled ? "USD" : null); // TODO: FIGMA
+                    if (!enabled) {
+                      ref.read(appUnitProvider.notifier).state =
+                          s.displayUnitSat()
+                              ? AmountDisplayUnit.sat
+                              : AmountDisplayUnit.btc;
+                    }
+                  });
+                },
+                semanticsLabel: 'Show Fiat Toggle',
+              ),
             ),
           ),
           SliverToBoxAdapter(
@@ -100,6 +108,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               height: s.selectedFiat == null ? 0 : 52,
               child: GestureDetector(
                 onTap: () {
+                  ref.read(homePageBackgroundProvider.notifier).state =
+                      HomePageBackgroundState.fiatChooser;
                   showModalBottomSheet<void>(
                     context: context,
                     isScrollControlled: true,
@@ -129,10 +139,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       right: EnvoySpacing.medium1,
                     ),
                     title: SettingText(S().settings_currency),
-                    trailing: Text(
-                      s.selectedFiat ?? "",
-                      style: EnvoyTypography.body.copyWith(
-                        color: EnvoyColors.accentPrimary,
+                    trailing: Semantics(
+                      container: true,
+                      button: true,
+                      child: Text(
+                        s.selectedFiat ?? "",
+                        style: EnvoyTypography.body.copyWith(
+                          color: EnvoyColors.accentPrimary,
+                        ),
                       ),
                     ),
                   ),
@@ -146,7 +160,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               dense: true,
               contentPadding: const EdgeInsets.all(0),
               title: SettingText(S().settings_amount),
-              trailing: SettingToggle(s.displayUnitSat, s.setDisplayUnitSat),
+              trailing: SettingToggle(
+                s.displayUnitSat,
+                s.setDisplayUnitSat,
+                semanticsLabel: 'Display Unit Sats Toggle',
+              ),
             ),
           ),
           // SliverPadding(padding: EdgeInsets.all(marginBetweenItems)),
@@ -207,6 +225,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               onExpansionChanged: (value) {
                 setState(() {
                   _advancedVisible = value;
+                  if (!value) _warningsReset = false;
                 });
               },
               title: Row(
@@ -243,6 +262,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   trailing: SettingToggle(
                     s.showTestnetAccounts,
                     s.setShowTestnetAccounts,
+                    semanticsLabel: "Testnet Toggle",
                     onEnabled: () {
                       showEnvoyDialog(
                         context: context,
@@ -260,6 +280,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   trailing: SettingToggle(
                     s.showSignetAccounts,
                     s.setShowSignetAccounts,
+                    semanticsLabel: "Signet Toggle",
                     onEnabled: () {
                       showEnvoyDialog(
                         context: context,
@@ -275,6 +296,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   trailing: SettingToggle(
                     s.taprootEnabled,
                     s.setTaprootEnabled,
+                    semanticsLabel: "Taproot Toggle",
                     onEnabled: () async {
                       if (context.mounted) {
                         showEnvoyPopUp(
@@ -341,9 +363,39 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         trailing: SettingToggle(
                           s.isAllowedBuyInEnvoy,
                           s.setAllowBuyInEnvoy,
+                          semanticsLabel: "Buy Toggle",
                         ),
                       )
                     : const SizedBox.shrink(),
+                ListTile(
+                  dense: true,
+                  onTap: () {
+                    EnvoyStorage().clearDismissedStatesStore();
+                    setState(() {
+                      _warningsReset = true;
+                    });
+                  },
+                  contentPadding: const EdgeInsets.all(0),
+                  title: SettingText(
+                    S().settings_advanced_resetWarnings,
+                    onTap: () {
+                      EnvoyStorage().clearDismissedStatesStore();
+                      setState(() {
+                        _warningsReset = true;
+                      });
+                    },
+                  ),
+                  trailing: _warningsReset
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: EnvoySpacing.medium1),
+                          child: EnvoyIcon(
+                            EnvoyIcons.check,
+                            color: EnvoyColors.accentPrimary,
+                          ),
+                        )
+                      : null,
+                ),
                 ListTile(
                   dense: true,
                   onTap: () {
@@ -492,11 +544,14 @@ class TestnetInfoModal extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: Padding(
               padding: const EdgeInsets.all(12),
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+              child: Semantics(
+                identifier: "settings_close",
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
               ),
             ),
           ),
@@ -580,11 +635,15 @@ class SignetInfoModal extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: Padding(
               padding: const EdgeInsets.all(12),
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+              child: Semantics(
+                container: true,
+                identifier: "signet_modal_close",
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
               ),
             ),
           ),
@@ -599,26 +658,34 @@ class SignetInfoModal extends StatelessWidget {
                   height: 60,
                   width: 60,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 18.0),
-                  child: Text(
-                    S().settings_advanced_enabled_signet_modal_subheading,
-                    textAlign: TextAlign.center,
-                    style: textStyle,
+                Semantics(
+                  container: true,
+                  identifier: "signet_modal_subheading",
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 18.0),
+                    child: Text(
+                      S().settings_advanced_enabled_signet_modal_subheading,
+                      textAlign: TextAlign.center,
+                      style: textStyle,
+                    ),
                   ),
                 ),
                 const Padding(padding: EdgeInsets.all(4)),
-                Padding(
-                  padding: const EdgeInsets.only(top: 18.0),
-                  child: LinkText(
-                    text: S().settings_advanced_enabled_signet_modal_link,
-                    textStyle: textStyle,
-                    linkStyle: EnvoyTypography.button.copyWith(
-                      color: EnvoyColors.accentPrimary,
+                Semantics(
+                  container: true,
+                  identifier: "signet_modal_link",
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 18.0),
+                    child: LinkText(
+                      text: S().settings_advanced_enabled_signet_modal_link,
+                      textStyle: textStyle,
+                      linkStyle: EnvoyTypography.button.copyWith(
+                        color: EnvoyColors.accentPrimary,
+                      ),
+                      onTap: () {
+                        launchUrlString("https://en.bitcoin.it/wiki/Signet");
+                      },
                     ),
-                    onTap: () {
-                      launchUrlString("https://en.bitcoin.it/wiki/Signet");
-                    },
                   ),
                 ),
                 const Padding(padding: EdgeInsets.all(4)),
@@ -629,14 +696,18 @@ class SignetInfoModal extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 28),
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: EnvoyButton(
-                    S().component_continue,
-                    type: EnvoyButtonTypes.primaryModal,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
+                Semantics(
+                  container: true,
+                  identifier: "signet_modal_continue",
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: EnvoyButton(
+                      S().component_continue,
+                      type: EnvoyButtonTypes.primaryModal,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ),
                 ),
               ],

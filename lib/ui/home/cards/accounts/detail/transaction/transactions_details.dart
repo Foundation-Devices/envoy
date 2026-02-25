@@ -30,6 +30,7 @@ import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -78,6 +79,7 @@ class _TransactionsDetailsWidgetState
   bool showAddressExpanded = false;
   bool showStripeIdExpanded = false;
   bool showPaymentId = false;
+  bool showStatusExpanded = false;
   bool _checkingBoost = true;
   bool _checkingCancel = true;
   DraftTransaction? _cancelTx;
@@ -518,18 +520,82 @@ class _TransactionsDetailsWidgetState
                       style: trailingTextStyle,
                     ),
                   ),
-                  EnvoyInfoCardListItem(
-                    title: S().coindetails_overlay_status,
-                    icon: const EnvoyIcon(
-                      EnvoyIcons.activity,
-                      color: EnvoyColors.textPrimary,
-                      size: EnvoyIconSize.small,
-                    ),
-                    trailing: Text(
-                      getTransactionStatusString(tx),
-                      style: trailingTextStyle,
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: tx.isConfirmed
+                        ? () {
+                            setState(() {
+                              showStatusExpanded = !showStatusExpanded;
+                              showTxIdExpanded = false;
+                              showAddressExpanded = false;
+                              showPaymentId = false;
+                              showStripeIdExpanded = false;
+                            });
+                          }
+                        : null,
+                    child: EnvoyInfoCardListItem(
+                      title: S().coindetails_overlay_status,
+                      icon: const EnvoyIcon(EnvoyIcons.activity,
+                          color: EnvoyColors.textPrimary,
+                          size: EnvoyIconSize.small),
+                      trailing: Text(getTransactionStatusString(tx),
+                          style: trailingTextStyle),
                     ),
                   ),
+                  if (showStatusExpanded && tx.isConfirmed) ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.xs,
+                          vertical: EnvoySpacing.small),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left:
+                                    EnvoySpacing.medium3 - EnvoySpacing.xs / 2),
+                            child: Text(
+                              S().coindetails_overlay_confirmations,
+                              style: EnvoyTypography.body.copyWith(
+                                color: EnvoyColors.textPrimary,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            NumberFormat.decimalPattern()
+                                .format(tx.confirmations),
+                            style: trailingTextStyle,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: EnvoySpacing.xs,
+                          vertical: EnvoySpacing.small),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left:
+                                    EnvoySpacing.medium3 - EnvoySpacing.xs / 2),
+                            child: Text(
+                              S().coindetails_overlay_block,
+                              style: EnvoyTypography.body.copyWith(
+                                color: EnvoyColors.textPrimary,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            NumberFormat.decimalPattern()
+                                .format(tx.blockHeight.toInt()),
+                            style: trailingTextStyle,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   if (tx is BtcPayTransaction && tx.pullPaymentId != null)
                     EnvoyInfoCardListItem(
                       title: S().coindetails_overlay_paymentID,
@@ -543,11 +609,16 @@ class _TransactionsDetailsWidgetState
                           Clipboard.setData(
                             ClipboardData(text: tx.pullPaymentId!),
                           );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Payment ID copied to clipboard!'),
+                          EnvoyToast(
+                            backgroundColor: Colors.lightBlue,
+                            replaceExisting: true,
+                            duration: const Duration(seconds: 1),
+                            message: "Payment ID copied to clipboard",
+                            icon: const EnvoyIcon(
+                              EnvoyIcons.info,
+                              color: EnvoyColors.accentPrimary,
                             ),
-                          ); //TODO: FIGMA
+                          ).show(context, rootNavigator: true);
                         },
                         onTap: () {
                           setState(() {
@@ -966,6 +1037,19 @@ void openTxDetailPage(Network network, String txId) {
 
 /// Returns the base URL for [network]; we don't launch URLs via Tor.
 String? getBaseUrlForNetwork(Network network) {
+  if (network == Network.bitcoin &&
+      !Settings().usingDefaultBlockExplorer &&
+      Settings().personalBlockExplorerAddress.isNotEmpty) {
+    String customUrl = Settings().personalBlockExplorerAddress;
+    if (!customUrl.startsWith('http')) {
+      customUrl = 'https://$customUrl';
+    }
+    if (customUrl.endsWith('/')) {
+      customUrl = customUrl.substring(0, customUrl.length - 1);
+    }
+    return customUrl;
+  }
+
   switch (network) {
     case Network.bitcoin:
       return Fees.mempoolFoundationUrl;

@@ -28,6 +28,12 @@ class PairPayloadDecoder extends ScannerDecoder {
   PairPayloadDecoder({required this.onScan});
 
   @override
+  void reset() {
+    super.reset();
+    _scanFinished = false;
+  }
+
+  @override
   Future<void> onDetectBarCode(Barcode barCode) async {
     final String code = barCode.code?.toLowerCase() ?? "";
     if (code.startsWith("ur:") == true) {

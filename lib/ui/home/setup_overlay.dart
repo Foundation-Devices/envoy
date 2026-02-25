@@ -294,14 +294,15 @@ void scanForDevice(BuildContext context, WidgetRef ref) async {
           EnvoyToast(
             replaceExisting: true,
             duration: const Duration(seconds: 6),
-            message: "Invalid QR code",
+            message: S().scanner_toast_notValidQr,
             isDismissible: true,
             onActionTap: () {
               EnvoyToast.dismissPreviousToasts(context);
             },
-            icon: const Icon(
-              Icons.info_outline,
-              color: EnvoyColors.accentPrimary,
+            icon: EnvoyIcon(
+              EnvoyIcons.alert,
+              color: NewEnvoyColor.contentNotice,
+              size: EnvoyIconSize.small,
             ),
           ).show(context);
         }
@@ -373,7 +374,7 @@ void addPassportAccount(Binary binary, BuildContext context) async {
 /// Shared function to pair with a Prime device via XidDocument (dynamic QR).
 /// Used by both onboarding welcome screen and home setup overlay scanners.
 Future<void> pairWithDevice(BuildContext context, XidDocument xid) async {
-  final providerContainer = ProviderScope.containerOf(context);
+  final container = ProviderScope.containerOf(context);
   if (!context.mounted) return;
   Navigator.pop(context);
   final connectionStatus = await BluetoothChannel().getConnectedDevices();
@@ -391,14 +392,13 @@ Future<void> pairWithDevice(BuildContext context, XidDocument xid) async {
     kPrint(
         "Found unpaired Bluetooth device: ${connected.name} (${connected.deviceId})");
     if (context.mounted) {
-      resetOnboardingPrimeProviders(providerContainer);
+      resetOnboardingPrimeProviders(container);
     }
     await BluetoothChannel().prepareDevice(connected.deviceId);
     final qlConnection = BluetoothChannel().getDeviceChannel(
       connected.deviceId,
     );
-    providerContainer.read(onboardingDeviceProvider.notifier).state =
-        qlConnection;
+    container.read(onboardingDeviceProvider.notifier).state = qlConnection;
     if (context.mounted) {
       _showPairingProgressDialog(context);
     }

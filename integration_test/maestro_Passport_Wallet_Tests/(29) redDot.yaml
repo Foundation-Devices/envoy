@@ -1,0 +1,76 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (29) redDot
+appId: com.foundationdevices.envoy
+---
+
+# go to devices
+- tapOn: Devices
+
+# check if there is red dot present on the device
+- assertVisible:
+    id: Firmware Red Dot TEST
+
+# update
+- tapOn:
+    id: Firmware Button TEST
+
+- tapOn: Download Firmware
+
+- tapOn: Continue
+
+# use native back to force exit
+- tapOn: Back
+
+# Check that the FW update process fails with the fail screen
+- assertVisible: Envoy failed to copy the firmware onto the microSD card.
+
+# Tap the top right corner X to go back to Devices
+- tapOn: close button
+
+# check that you are at the devices with the dot present
+- assertVisible:
+    id: Firmware Red Dot TEST
+
+# Repeat steps 4-7
+# update
+- tapOn:
+    id: Firmware Button TEST
+
+- tapOn: Download Firmware
+
+- tapOn: Continue
+
+# use native back to force exit
+- tapOn: Back
+
+# Check that the FW update process fails with the fail screen
+- assertVisible: Envoy failed to copy the firmware onto the microSD card.
+
+# tap try again
+- tapOn: Try Again
+
+# Check this button takes you to earlier in the flow
+- assertVisible: Next, let’s update Passport's firmware
+
+# Continue through the flow until you get to the file picker again
+- tapOn: Download Firmware
+- tapOn: Continue
+
+# Download the file
+- tapOn: SAVE
+
+- assertVisible: |-
+    Firmware was successfully copied onto the
+    microSD card
+
+- tapOn: Continue
+- tapOn: Done
+
+# check that you are back to devices menu and Check that the red dot is NOT there
+- assertNotVisible:
+    id: Firmware Red Dot TEST
+
+

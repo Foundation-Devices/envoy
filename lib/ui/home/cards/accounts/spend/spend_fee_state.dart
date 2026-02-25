@@ -64,8 +64,12 @@ final spendFeeRateProvider = StateProvider<num>((ref) {
 final spendEstimatedBlockTimeProvider = Provider<String>((ref) {
   final feeRate = ref.watch(spendFeeRateProvider);
   final account = ref.watch(selectedAccountProvider);
+  return getAproxTime(account, feeRate);
+});
+
+String getAproxTime(EnvoyAccount? account, num feeRate) {
   if (account == null) {
-    return "~10";
+    return "~10 min";
   }
 
   Network network = account.network;
@@ -80,14 +84,22 @@ final spendEstimatedBlockTimeProvider = Provider<String>((ref) {
   int selectedFeeRate = feeRate.toInt();
 
   if (feeRateFast <= selectedFeeRate) {
-    return "~10";
+    return "~10 min";
   } else if (feeHalfHourRate <= selectedFeeRate &&
       selectedFeeRate < feeRateFast) {
-    return "~20";
+    return "~20 min";
   } else if (feeHourRate <= selectedFeeRate &&
       selectedFeeRate < feeHalfHourRate) {
-    return "~30";
+    return "~30 min";
   } else {
-    return "40+";
+    return "40+ min";
   }
-});
+}
+
+int getApproxFeeInSats({
+  required double feeRateSatsPerVb,
+  required int txVSizeVb,
+}) {
+  // fee [sats] = rate [sats/vB] * vsize [vB]
+  return (feeRateSatsPerVb * txVSizeVb).round();
+}
