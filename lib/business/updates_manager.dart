@@ -73,13 +73,6 @@ class UpdatesManager {
           stablePatches.first.version,
           "",
         );
-      } else {
-        // All patches are pre-release — no stable update available.
-        EnvoyStorage().addNewFirmware(
-          DeviceType.passportPrime.index,
-          currentFirmwareVersion,
-          "",
-        );
       }
     }
     // The update check returned no patches, which indicates no newer firmware is available.
