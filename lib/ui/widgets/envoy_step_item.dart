@@ -61,7 +61,7 @@ class _EnvoyStepItemState extends State<EnvoyStepItem> {
       opacity: step.state == EnvoyStepState.LOADING ? 1 : .6,
       duration: const Duration(milliseconds: 320),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
