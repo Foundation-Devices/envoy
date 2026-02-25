@@ -445,7 +445,7 @@ Future<void> pairWithDevice(BuildContext context, XidDocument xid) async {
           typeOfMessage: PopUpState.warning,
           showCloseButton: true,
           content:
-              "Prime not connected. Please turn on your Passport Prime, ensure Bluetooth is enabled, and try again.",
+              "Passport not connected. Please turn on your Passport Prime, ensure Bluetooth is enabled, and try again.",
           primaryButtonLabel: S().component_back,
           onPrimaryButtonTap: (ctx) async {
             Navigator.pop(ctx);
