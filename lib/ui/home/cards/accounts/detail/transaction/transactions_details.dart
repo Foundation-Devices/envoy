@@ -105,6 +105,7 @@ class _TransactionsDetailsWidgetState
           txid: widget.tx.txId,
           electrumServer: server,
           torPort: port,
+          skipCertVerification: Settings().skipCertVerification(server),
         );
         if (fee != null) {
           await widget.account.handler?.updateTxFee(

@@ -522,10 +522,16 @@ impl EnvoyAccountHandler {
         txid: &str,
         electrum_server: &str,
         tor_port: Option<u16>,
+        skip_cert_verification: bool,
     ) -> Option<u64> {
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_deref();
-        NgAccount::<Connection>::fetch_fee_from_electrum(txid, electrum_server, socks_proxy)
+        NgAccount::<Connection>::fetch_fee_from_electrum(
+            txid,
+            electrum_server,
+            socks_proxy,
+            skip_cert_verification,
+        )
     }
 
     pub fn update_tx_fee(
@@ -550,6 +556,7 @@ impl EnvoyAccountHandler {
         sync_request: Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
         electrum_server: &str,
         tor_port: Option<u16>,
+        skip_cert_verification: bool,
     ) -> anyhow::Result<Arc<Mutex<Update>>> {
         info!(
             "Current Thread request: {:?}, {:?}",
@@ -560,8 +567,13 @@ impl EnvoyAccountHandler {
         let socks_proxy = socks_proxy.as_deref();
         let mut scan_request_guard = sync_request.lock().expect("Failed to lock request");
         if let Some(sync_request) = scan_request_guard.take() {
-            let update = NgWallet::<Connection>::sync(sync_request, electrum_server, socks_proxy)
-                .expect("Electrum sync failed");
+            let update = NgWallet::<Connection>::sync(
+                sync_request,
+                electrum_server,
+                socks_proxy,
+                skip_cert_verification,
+            )
+            .expect("Electrum sync failed");
             Ok(Arc::new(Mutex::new(Update::from(update))))
         } else {
             Err(anyhow!("No sync request found"))
@@ -573,6 +585,7 @@ impl EnvoyAccountHandler {
         electrum_server: &str,
         tor_port: Option<u16>,
         stop_gap: Option<u16>,
+        skip_cert_verification: bool,
     ) -> anyhow::Result<Arc<Mutex<Update>>> {
         let stop_gap_usize = stop_gap.map(|v| v as usize);
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
@@ -586,6 +599,7 @@ impl EnvoyAccountHandler {
                 electrum_server,
                 socks_proxy,
                 stop_gap_usize,
+                skip_cert_verification,
             );
             match res {
                 Ok(update) => Ok(Arc::new(Mutex::new(Update::from(update)))),
@@ -845,12 +859,18 @@ impl EnvoyAccountHandler {
         draft_transaction: DraftTransaction,
         electrum_server: &str,
         tor_port: Option<u16>,
+        skip_cert_verification: bool,
     ) -> Result<String, BroadcastError> {
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_deref();
-        NgAccount::<Connection>::broadcast_psbt(draft_transaction, electrum_server, socks_proxy)
-            .map_err(BroadcastError::from)
-            .map(|tx_id| tx_id.to_string())
+        NgAccount::<Connection>::broadcast_psbt(
+            draft_transaction,
+            electrum_server,
+            socks_proxy,
+            skip_cert_verification,
+        )
+        .map_err(BroadcastError::from)
+        .map(|tx_id| tx_id.to_string())
     }
     pub fn validate_address(address: &str, network: Option<Network>) -> bool {
         match Address::from_str(address) {

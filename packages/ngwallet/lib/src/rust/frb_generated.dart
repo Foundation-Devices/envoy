@@ -124,7 +124,8 @@ abstract class RustLibApi extends BaseApi {
   Future<String> crateApiEnvoyWalletEnvoyAccountHandlerBroadcast(
       {required DraftTransaction draftTransaction,
       required String electrumServer,
-      int? torPort});
+      int? torPort,
+      required bool skipCertVerification});
 
   Future<DraftTransaction>
       crateApiEnvoyWalletEnvoyAccountHandlerComposeCancellationTx(
@@ -160,7 +161,10 @@ abstract class RustLibApi extends BaseApi {
       {required EnvoyAccountHandler that});
 
   Future<BigInt?> crateApiEnvoyWalletEnvoyAccountHandlerFetchElectrumFee(
-      {required String txid, required String electrumServer, int? torPort});
+      {required String txid,
+      required String electrumServer,
+      int? torPort,
+      required bool skipCertVerification});
 
   Future<EnvoyAccountHandler> crateApiEnvoyWalletEnvoyAccountHandlerFromConfig(
       {required String dbPath, required NgAccountConfig config});
@@ -264,7 +268,8 @@ abstract class RustLibApi extends BaseApi {
       {required FullScanRequest scanRequest,
       required String electrumServer,
       int? torPort,
-      int? stopGap});
+      int? stopGap,
+      required bool skipCertVerification});
 
   Future<void> crateApiEnvoyWalletEnvoyAccountHandlerSendUpdate(
       {required EnvoyAccountHandler that});
@@ -312,7 +317,8 @@ abstract class RustLibApi extends BaseApi {
   Future<WalletUpdate> crateApiEnvoyWalletEnvoyAccountHandlerSyncWallet(
       {required SyncRequest syncRequest,
       required String electrumServer,
-      int? torPort});
+      int? torPort,
+      required bool skipCertVerification});
 
   Future<Uint8List> crateApiEnvoyWalletEnvoyAccountHandlerToRemoteUpdate(
       {required EnvoyAccountHandler that});
@@ -692,13 +698,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Future<String> crateApiEnvoyWalletEnvoyAccountHandlerBroadcast(
       {required DraftTransaction draftTransaction,
       required String electrumServer,
-      int? torPort}) {
+      int? torPort,
+      required bool skipCertVerification}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_draft_transaction(draftTransaction, serializer);
         sse_encode_String(electrumServer, serializer);
         sse_encode_opt_box_autoadd_u_16(torPort, serializer);
+        sse_encode_bool(skipCertVerification, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 9, port: port_);
       },
@@ -707,7 +715,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_broadcast_error,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerBroadcastConstMeta,
-      argValues: [draftTransaction, electrumServer, torPort],
+      argValues: [
+        draftTransaction,
+        electrumServer,
+        torPort,
+        skipCertVerification
+      ],
       apiImpl: this,
     ));
   }
@@ -715,7 +728,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiEnvoyWalletEnvoyAccountHandlerBroadcastConstMeta =>
       const TaskConstMeta(
         debugName: "EnvoyAccountHandler_broadcast",
-        argNames: ["draftTransaction", "electrumServer", "torPort"],
+        argNames: [
+          "draftTransaction",
+          "electrumServer",
+          "torPort",
+          "skipCertVerification"
+        ],
       );
 
   @override
@@ -977,13 +995,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<BigInt?> crateApiEnvoyWalletEnvoyAccountHandlerFetchElectrumFee(
-      {required String txid, required String electrumServer, int? torPort}) {
+      {required String txid,
+      required String electrumServer,
+      int? torPort,
+      required bool skipCertVerification}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(txid, serializer);
         sse_encode_String(electrumServer, serializer);
         sse_encode_opt_box_autoadd_u_16(torPort, serializer);
+        sse_encode_bool(skipCertVerification, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 18, port: port_);
       },
@@ -993,7 +1015,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       ),
       constMeta:
           kCrateApiEnvoyWalletEnvoyAccountHandlerFetchElectrumFeeConstMeta,
-      argValues: [txid, electrumServer, torPort],
+      argValues: [txid, electrumServer, torPort, skipCertVerification],
       apiImpl: this,
     ));
   }
@@ -1002,7 +1024,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       get kCrateApiEnvoyWalletEnvoyAccountHandlerFetchElectrumFeeConstMeta =>
           const TaskConstMeta(
             debugName: "EnvoyAccountHandler_fetch_electrum_fee",
-            argNames: ["txid", "electrumServer", "torPort"],
+            argNames: [
+              "txid",
+              "electrumServer",
+              "torPort",
+              "skipCertVerification"
+            ],
           );
 
   @override
@@ -1675,7 +1702,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       {required FullScanRequest scanRequest,
       required String electrumServer,
       int? torPort,
-      int? stopGap}) {
+      int? stopGap,
+      required bool skipCertVerification}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -1684,6 +1712,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(electrumServer, serializer);
         sse_encode_opt_box_autoadd_u_16(torPort, serializer);
         sse_encode_opt_box_autoadd_u_16(stopGap, serializer);
+        sse_encode_bool(skipCertVerification, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 38, port: port_);
       },
@@ -1693,7 +1722,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerScanWalletConstMeta,
-      argValues: [scanRequest, electrumServer, torPort, stopGap],
+      argValues: [
+        scanRequest,
+        electrumServer,
+        torPort,
+        stopGap,
+        skipCertVerification
+      ],
       apiImpl: this,
     ));
   }
@@ -1702,7 +1737,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       get kCrateApiEnvoyWalletEnvoyAccountHandlerScanWalletConstMeta =>
           const TaskConstMeta(
             debugName: "EnvoyAccountHandler_scan_wallet",
-            argNames: ["scanRequest", "electrumServer", "torPort", "stopGap"],
+            argNames: [
+              "scanRequest",
+              "electrumServer",
+              "torPort",
+              "stopGap",
+              "skipCertVerification"
+            ],
           );
 
   @override
@@ -2041,7 +2082,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Future<WalletUpdate> crateApiEnvoyWalletEnvoyAccountHandlerSyncWallet(
       {required SyncRequest syncRequest,
       required String electrumServer,
-      int? torPort}) {
+      int? torPort,
+      required bool skipCertVerification}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -2049,6 +2091,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             syncRequest, serializer);
         sse_encode_String(electrumServer, serializer);
         sse_encode_opt_box_autoadd_u_16(torPort, serializer);
+        sse_encode_bool(skipCertVerification, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 50, port: port_);
       },
@@ -2058,7 +2101,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerSyncWalletConstMeta,
-      argValues: [syncRequest, electrumServer, torPort],
+      argValues: [syncRequest, electrumServer, torPort, skipCertVerification],
       apiImpl: this,
     ));
   }
@@ -2067,7 +2110,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       get kCrateApiEnvoyWalletEnvoyAccountHandlerSyncWalletConstMeta =>
           const TaskConstMeta(
             debugName: "EnvoyAccountHandler_sync_wallet",
-            argNames: ["syncRequest", "electrumServer", "torPort"],
+            argNames: [
+              "syncRequest",
+              "electrumServer",
+              "torPort",
+              "skipCertVerification"
+            ],
           );
 
   @override

@@ -501,6 +501,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_broadcast_impl(
                 <ngwallet::send::DraftTransaction>::sse_decode(&mut deserializer);
             let api_electrum_server = <String>::sse_decode(&mut deserializer);
             let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
+            let api_skip_cert_verification = <bool>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, crate::api::errors::BroadcastError>((move || {
@@ -508,6 +509,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_broadcast_impl(
                         api_draft_transaction,
                         &api_electrum_server,
                         api_tor_port,
+                        api_skip_cert_verification,
                     )?;
                     Ok(output_ok)
                 })())
@@ -947,6 +949,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_fetch_electrum_fee_impl(
             let api_txid = <String>::sse_decode(&mut deserializer);
             let api_electrum_server = <String>::sse_decode(&mut deserializer);
             let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
+            let api_skip_cert_verification = <bool>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, ()>(
@@ -956,6 +959,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_fetch_electrum_fee_impl(
                                 &api_txid,
                                 &api_electrum_server,
                                 api_tor_port,
+                                api_skip_cert_verification,
                             )
                             .await,
                         )?;
@@ -1961,6 +1965,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_scan_wallet_impl(
             let api_electrum_server = <String>::sse_decode(&mut deserializer);
             let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
             let api_stop_gap = <Option<u16>>::sse_decode(&mut deserializer);
+            let api_skip_cert_verification = <bool>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
@@ -1970,6 +1975,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_scan_wallet_impl(
                             &api_electrum_server,
                             api_tor_port,
                             api_stop_gap,
+                            api_skip_cert_verification,
                         )
                         .await?;
                         Ok(output_ok)
@@ -2570,6 +2576,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_sync_wallet_impl(
                 );
             let api_electrum_server = <String>::sse_decode(&mut deserializer);
             let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
+            let api_skip_cert_verification = <bool>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
@@ -2578,6 +2585,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_sync_wallet_impl(
                             api_sync_request,
                             &api_electrum_server,
                             api_tor_port,
+                            api_skip_cert_verification,
                         )
                         .await?;
                         Ok(output_ok)

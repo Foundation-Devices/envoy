@@ -216,7 +216,10 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
 
     for (int attempt = 0; attempt <= maxRetries; attempt++) {
       try {
-        final features = await getServerFeatures(server: address, proxy: proxy);
+        final features = await getServerFeatures(
+          server: address,
+          proxy: proxy,
+        );
 
         final isValid =
             features.serverVersion != null && features.genesisHash != null;

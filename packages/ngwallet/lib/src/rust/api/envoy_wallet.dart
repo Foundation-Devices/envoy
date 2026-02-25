@@ -55,11 +55,13 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   static Future<String> broadcast(
           {required DraftTransaction draftTransaction,
           required String electrumServer,
-          int? torPort}) =>
+          int? torPort,
+          required bool skipCertVerification}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerBroadcast(
           draftTransaction: draftTransaction,
           electrumServer: electrumServer,
-          torPort: torPort);
+          torPort: torPort,
+          skipCertVerification: skipCertVerification);
 
   Future<DraftTransaction> composeCancellationTx(
       {required BitcoinTransaction bitcoinTransaction});
@@ -95,10 +97,14 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   static Future<BigInt?> fetchElectrumFee(
           {required String txid,
           required String electrumServer,
-          int? torPort}) =>
+          int? torPort,
+          required bool skipCertVerification}) =>
       RustLib.instance.api
           .crateApiEnvoyWalletEnvoyAccountHandlerFetchElectrumFee(
-              txid: txid, electrumServer: electrumServer, torPort: torPort);
+              txid: txid,
+              electrumServer: electrumServer,
+              torPort: torPort,
+              skipCertVerification: skipCertVerification);
 
   static Future<EnvoyAccountHandler> fromConfig(
           {required String dbPath, required NgAccountConfig config}) =>
@@ -223,12 +229,14 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
           {required FullScanRequest scanRequest,
           required String electrumServer,
           int? torPort,
-          int? stopGap}) =>
+          int? stopGap,
+          required bool skipCertVerification}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerScanWallet(
           scanRequest: scanRequest,
           electrumServer: electrumServer,
           torPort: torPort,
-          stopGap: stopGap);
+          stopGap: stopGap,
+          skipCertVerification: skipCertVerification);
 
   Future<void> sendUpdate();
 
@@ -256,11 +264,13 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   static Future<WalletUpdate> syncWallet(
           {required SyncRequest syncRequest,
           required String electrumServer,
-          int? torPort}) =>
+          int? torPort,
+          required bool skipCertVerification}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerSyncWallet(
           syncRequest: syncRequest,
           electrumServer: electrumServer,
-          torPort: torPort);
+          torPort: torPort,
+          skipCertVerification: skipCertVerification);
 
   Future<Uint8List> toRemoteUpdate();
 

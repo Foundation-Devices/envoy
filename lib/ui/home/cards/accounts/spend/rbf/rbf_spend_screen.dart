@@ -652,6 +652,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         draftTransaction: draftTransaction,
         electrumServer: server,
         torPort: port,
+        skipCertVerification: Settings().skipCertVerification(server),
       );
       await handler.updateBroadcastState(draftTransaction: draftTransaction);
 

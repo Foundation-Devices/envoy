@@ -420,16 +420,23 @@ int getInitialElectrumDropdownIndex() {
           PublicServer.blockstream.address ||
       Settings().personalElectrumAddress == PublicServer.blockstream.address;
 
+  bool isBitaroo =
+      Settings().selectedElectrumAddress == PublicServer.bitaroo.address ||
+          Settings().personalElectrumAddress == PublicServer.bitaroo.address;
+
   if (Settings().usingDefaultElectrumServer) {
     return 0;
   } else if (!Settings().usingDefaultElectrumServer &&
       !isDiyNodes &&
-      !isBlockstream) {
+      !isBlockstream &&
+      !isBitaroo) {
     return 1;
   } else if (isBlockstream) {
     return 3;
   } else if (isDiyNodes) {
     return 4;
+  } else if (isBitaroo) {
+    return 5;
   }
   return 0;
 }
