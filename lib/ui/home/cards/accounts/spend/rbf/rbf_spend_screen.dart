@@ -594,7 +594,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       );
       await Future.delayed(const Duration(milliseconds: 50));
       ref.read(rbfSpendStateProvider.notifier).state = rbfState.copyWith(
-        feeRate: preparedTx.transaction.feeRate.toInt(),
+        feeRate: (preparedTx.transaction.feeRate ~/ BigInt.from(1000)).toInt(),
         preparedTx: preparedTx,
       );
       received = true;
@@ -729,7 +729,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
       final transaction = await account.handler?.composeRbfPsbt(
         selectedOutputs: selectedOutputs,
-        feeRate: BigInt.from(fee),
+        feeRate: BigInt.from((fee * 1000).round()), // sat/vB → sat/kvB
         bitcoinTransaction: originalTx,
       );
 
@@ -738,7 +738,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       }
 
       ref.read(rbfSpendStateProvider.notifier).state = rbfState.copyWith(
-        feeRate: transaction.transaction.feeRate.toInt(),
+        feeRate: (transaction.transaction.feeRate ~/ BigInt.from(1000)).toInt(),
         preparedTx: transaction,
       );
 
@@ -814,7 +814,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     try {
       final transaction = await account.handler?.composeRbfPsbt(
         selectedOutputs: selectedOutputs,
-        feeRate: BigInt.from(rbfState.feeRate),
+        feeRate: BigInt.from(rbfState.feeRate * 1000), // sat/vB → sat/kvB
         note: note,
         tag: changeOutputTag,
         bitcoinTransaction: rbfState.originalTx,
@@ -823,7 +823,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         return;
       }
       ref.read(rbfSpendStateProvider.notifier).state = rbfState.copyWith(
-        feeRate: transaction.transaction.feeRate.toInt(),
+        feeRate: (transaction.transaction.feeRate ~/ BigInt.from(1000)).toInt(),
         preparedTx: transaction,
       );
     } catch (e) {
@@ -917,8 +917,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           setState(() {
             _rebuildingTx = false;
           });
-          int minRate = result.minFeeRate.toInt();
-          int maxRate = result.maxFeeRate.toInt();
+          int minRate = (result.minFeeRate ~/ BigInt.from(1000)).toInt();
+          int maxRate = (result.maxFeeRate ~/ BigInt.from(1000)).toInt();
           int fasterFeeRate = minRate + 1;
           kPrint("RBF: minRate: $minRate, maxRate: $maxRate");
           if (minRate == maxRate) {

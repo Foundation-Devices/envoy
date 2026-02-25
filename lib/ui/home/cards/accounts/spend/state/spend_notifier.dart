@@ -211,7 +211,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       debugPrintStack(stackTrace: stack);
       //reset the fee rate to the one used in the transaction
       ref.read(spendFeeRateProvider.notifier).state =
-          (state.draftTransaction?.transaction.feeRate)?.toInt() ?? 1;
+          ((state.draftTransaction?.transaction.feeRate ?? BigInt.from(1000)) ~/
+                  BigInt.from(1000))
+              .toInt();
       kPrint("setFee:Fallback fee rate: ${ref.read(spendFeeRateProvider)}");
       _handleComposeError(e);
     }
@@ -373,8 +375,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
             FeeChooserState(
           standardFeeRate: Fees().slowRate(network),
           fasterFeeRate: Fees().fastRate(network),
-          minFeeRate: feeCalcResult.minFeeRate.toInt(),
-          maxFeeRate: feeCalcResult.maxFeeRate.toInt().clamp(2, 5000),
+          minFeeRate: (feeCalcResult.minFeeRate ~/ BigInt.from(1000)).toInt(),
+          maxFeeRate: (feeCalcResult.maxFeeRate ~/ BigInt.from(1000))
+              .toInt()
+              .clamp(2, 5000),
         );
 
         _updateWithPreparedTransaction(preparedTransaction, params);

@@ -120,7 +120,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
   /// [spendFeeRateProvider] when [transaction.feeRate] is 0 (sub-sat tx).
   int _txVSize() {
     final txFeeRate = widget.transaction.feeRate > BigInt.zero
-        ? widget.transaction.feeRate.toDouble()
+        ? widget.transaction.feeRate.toDouble() / 1000 // sat/kvB → sat/vB
         : ref.read(spendFeeRateProvider).toDouble();
     return _safeTxVSizeVb(widget.transaction.fee.toDouble(), txFeeRate);
   }
@@ -246,7 +246,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                                       ref.watch(_selectedFeeStateProvider),
                                   txVSizeVb: _safeTxVSizeVb(
                                     widget.transaction.fee.toDouble(),
-                                    widget.transaction.feeRate.toDouble(),
+                                    widget.transaction.feeRate.toDouble() /
+                                        1000, // sat/kvB → sat/vB
                                   )),
                               amountWidgetStyle: AmountWidgetStyle.normal,
                               account: account!),
@@ -567,7 +568,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     //bool processingFee = ref.watch(spendFeeProcessing);
     double selectedFee = ref.watch(_selectedFeeStateProvider);
     final double txFeeRate = widget.transaction.feeRate > BigInt.zero
-        ? widget.transaction.feeRate.toDouble()
+        ? widget.transaction.feeRate.toDouble() / 1000 // sat/kvB → sat/vB
         : ref.read(spendFeeRateProvider).toDouble();
     int aproxFee = getApproxFeeInSats(
         feeRateSatsPerVb: selectedFee,
