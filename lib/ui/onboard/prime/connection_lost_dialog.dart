@@ -62,7 +62,7 @@ void startBluetoothDisconnectionListener(BuildContext context, WidgetRef ref) {
       } else if (event.type == BluetoothConnectionEventType.deviceConnected) {
         //maybe handle dialog dismissal??
         if (_isDialogShowing && context.mounted && Navigator.canPop(context)) {
-          Navigator.pop(context);
+          Navigator.of(context, rootNavigator: true).pop();
           _isDialogShowing = false;
         }
       }
