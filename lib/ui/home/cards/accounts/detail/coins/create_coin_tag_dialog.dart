@@ -180,8 +180,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
                         : const SizedBox();
                   },
                   decoration: InputDecoration(
-                    hintText: "Enter new tag i.e. Exchange",
-                    // TODO: Figma
+                    hintText: S().create_first_tag_modal_2_2_suggest,
                     hintStyle: EnvoyTypography.info.copyWith(
                       color: EnvoyColors.textTertiary,
                     ),

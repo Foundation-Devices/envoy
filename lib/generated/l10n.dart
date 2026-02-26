@@ -58,9 +58,9 @@ class S {
 
   // skipped getter for the 'FW_Version_No.' key
 
-  /// `sat/vb`
+  /// `a day ago`
   String get _ {
-    return Intl.message('sat/vb', name: '_', desc: '', args: []);
+    return Intl.message('a day ago', name: '_', desc: '', args: []);
   }
 
   /// `App Version`
@@ -333,6 +333,26 @@ class S {
     return Intl.message(
       'New Update - See what’s new.',
       name: 'accounts_toast_newUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment ID copied to clipboard.`
+  String get accounts_toast_paymentCopied {
+    return Intl.message(
+      'Payment ID copied to clipboard.',
+      name: 'accounts_toast_paymentCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction ID copied to clipboard.`
+  String get accounts_toast_txidCopied {
+    return Intl.message(
+      'Transaction ID copied to clipboard.',
+      name: 'accounts_toast_txidCopied',
       desc: '',
       args: [],
     );
@@ -1665,6 +1685,38 @@ class S {
     return Intl.message(
       'Purchase ID:',
       name: 'buy_bitcoin_purchaseError_purchaseID',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select State`
+  String get buy_defineLocation_selectState {
+    return Intl.message(
+      'Select State',
+      name: 'buy_defineLocation_selectState',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'camera_toast_couldn\'tDecodeUr' key
+
+  /// `Not a valid address.`
+  String get camera_toast_notAValidAddress {
+    return Intl.message(
+      'Not a valid address.',
+      name: 'camera_toast_notAValidAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not a valid seed.`
+  String get camera_toast_notAValidSeed {
+    return Intl.message(
+      'Not a valid seed.',
+      name: 'camera_toast_notAValidSeed',
       desc: '',
       args: [],
     );
@@ -3197,10 +3249,10 @@ class S {
     );
   }
 
-  /// `Connecting to Prime`
+  /// `Connecting to Passport`
   String get devices_connectingToPrime_header {
     return Intl.message(
-      'Connecting to Prime',
+      'Connecting to Passport',
       name: 'devices_connectingToPrime_header',
       desc: '',
       args: [],
@@ -5237,10 +5289,10 @@ class S {
     );
   }
 
-  /// `BUY BITCOIN`
+  /// `Buy Bitcoin`
   String get header_buyBitcoin {
     return Intl.message(
-      'BUY BITCOIN',
+      'Buy Bitcoin',
       name: 'header_buyBitcoin',
       desc: '',
       args: [],
@@ -5829,6 +5881,46 @@ class S {
     );
   }
 
+  /// `Passport's QuantumLink connection is no longer available. If you recently erased Passport or unpaired Envoy, this is expected. If you didn't, please contact support.\nEnvoy will now remove the device from your phone's Bluetooth accessory list.`
+  String get manage_deviceDetailsUnpairedModalWarning_content {
+    return Intl.message(
+      'Passport\'s QuantumLink connection is no longer available. If you recently erased Passport or unpaired Envoy, this is expected. If you didn\'t, please contact support.\nEnvoy will now remove the device from your phone\'s Bluetooth accessory list.',
+      name: 'manage_deviceDetailsUnpairedModalWarning_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `QuantumLink Disconnected`
+  String get manage_deviceDetailsUnpairedModalWarning_header {
+    return Intl.message(
+      'QuantumLink Disconnected',
+      name: 'manage_deviceDetailsUnpairedModalWarning_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passport Prime has been unpaired. Envoy will now remove the device from the Bluetooth accessory list of your phone.`
+  String get manage_deviceDetailsUnpairedModal_content {
+    return Intl.message(
+      'Passport Prime has been unpaired. Envoy will now remove the device from the Bluetooth accessory list of your phone.',
+      name: 'manage_deviceDetailsUnpairedModal_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passport Unpaired`
+  String get manage_deviceDetailsUnpairedModal_header {
+    return Intl.message(
+      'Passport Unpaired',
+      name: 'manage_deviceDetailsUnpairedModal_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Pair Again`
   String get manage_deviceDetailsUnpaired_pairAgain {
     return Intl.message(
@@ -5849,10 +5941,10 @@ class S {
     );
   }
 
-  /// `Quantum Link`
+  /// `QuantumLink`
   String get manage_device_details_QuantumLink {
     return Intl.message(
-      'Quantum Link',
+      'QuantumLink',
       name: 'manage_device_details_QuantumLink',
       desc: '',
       args: [],
@@ -6887,6 +6979,66 @@ class S {
     return Intl.message('Support', name: 'menu_support', desc: '', args: []);
   }
 
+  /// `Account already connected.`
+  String get menu_toast_accountAlreadyConnected {
+    return Intl.message(
+      'Account already connected.',
+      name: 'menu_toast_accountAlreadyConnected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn’t delete Envoy seed.`
+  String get menu_toast_couldntDeleteEnvoySeed {
+    return Intl.message(
+      'Couldn’t delete Envoy seed.',
+      name: 'menu_toast_couldntDeleteEnvoySeed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy seed deleted.`
+  String get menu_toast_envoySeedDeleted {
+    return Intl.message(
+      'Envoy seed deleted.',
+      name: 'menu_toast_envoySeedDeleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logs copied to clipboard.`
+  String get menu_toast_logsCopied {
+    return Intl.message(
+      'Logs copied to clipboard.',
+      name: 'menu_toast_logsCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Security check disabled`
+  String get menu_toast_securityCheckDisabled {
+    return Intl.message(
+      'Security check disabled',
+      name: 'menu_toast_securityCheckDisabled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An unexpected error occurred. Please try again.`
+  String get menu_toast_unexpectedError {
+    return Intl.message(
+      'An unexpected error occurred. Please try again.',
+      name: 'menu_toast_unexpectedError',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `From version 2.0.0, all address types are now accessible under a single account card.\n\nThe default receive address type can be changed in Settings.`
   String get onboardin_unifiedAccountsModal_content {
     return Intl.message(
@@ -7367,10 +7519,10 @@ class S {
     );
   }
 
-  /// `Re-syncing your accounts.\nPlease do not close Envoy.\n\n{amount} of {total_amount} synced`
+  /// `Migration in progress.\nPlease do not close Envoy.\n\n{amount} of {total_amount} processed.`
   String onboarding_migrating_xOfYSynced(Object amount, Object total_amount) {
     return Intl.message(
-      'Re-syncing your accounts.\nPlease do not close Envoy.\n\n$amount of $total_amount synced',
+      'Migration in progress.\nPlease do not close Envoy.\n\n$amount of $total_amount processed.',
       name: 'onboarding_migrating_xOfYSynced',
       desc: '',
       args: [amount, total_amount],
@@ -7917,10 +8069,10 @@ class S {
     );
   }
 
-  /// `https://192.168.1.5:2222`
+  /// `Enter your node address`
   String get privacy_node_nodeAddress {
     return Intl.message(
-      'https://192.168.1.5:2222',
+      'Enter your node address',
       name: 'privacy_node_nodeAddress',
       desc: '',
       args: [],
@@ -8827,16 +8979,6 @@ class S {
     );
   }
 
-  /// `Transaction transfered`
-  String get send_QuantumReview_transactionTransferred {
-    return Intl.message(
-      'Transaction transfered',
-      name: 'send_QuantumReview_transactionTransferred',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Amount`
   String get send_build_amount {
     return Intl.message(
@@ -9222,10 +9364,10 @@ class S {
     );
   }
 
-  /// `Transaction transferred`
+  /// `Transaction Transferred`
   String get send_quantumReview_transactionTransferred {
     return Intl.message(
-      'Transaction transferred',
+      'Transaction Transferred',
       name: 'send_quantumReview_transactionTransferred',
       desc: '',
       args: [],

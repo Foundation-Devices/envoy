@@ -51,7 +51,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Passport Prime was successfully \nupdated to ${new_keyOS_version}";
 
   static String m12(amount, total_amount) =>
-      "Re-syncing your accounts.\nPlease do not close Envoy.\n\n${amount} of ${total_amount} synced";
+      "Migration in progress.\nPlease do not close Envoy.\n\n${amount} of ${total_amount} processed.";
 
   static String m13(passport_color) => "Color: ${passport_color}";
 
@@ -72,7 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("sat/vb"),
+        "_": MessageLookupByLibrary.simpleMessage("a day ago"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences": MessageLookupByLibrary.simpleMessage(
           "Open Source Licences",
@@ -156,6 +156,12 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "accounts_toast_newUpdate": MessageLookupByLibrary.simpleMessage(
           "New Update - See what’s new.",
+        ),
+        "accounts_toast_paymentCopied": MessageLookupByLibrary.simpleMessage(
+          "Payment ID copied to clipboard.",
+        ),
+        "accounts_toast_txidCopied": MessageLookupByLibrary.simpleMessage(
+          "Transaction ID copied to clipboard.",
         ),
         "accounts_upgradeBdkSignetModal_content":
             MessageLookupByLibrary.simpleMessage(
@@ -547,6 +553,15 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "buy_bitcoin_purchaseError_purchaseID":
             MessageLookupByLibrary.simpleMessage("Purchase ID:"),
+        "buy_defineLocation_selectState": MessageLookupByLibrary.simpleMessage(
+          "Select State",
+        ),
+        "camera_toast_notAValidAddress": MessageLookupByLibrary.simpleMessage(
+          "Not a valid address.",
+        ),
+        "camera_toast_notAValidSeed": MessageLookupByLibrary.simpleMessage(
+          "Not a valid seed.",
+        ),
         "card_coin_locked": MessageLookupByLibrary.simpleMessage("Coin Locked"),
         "card_coin_selected":
             MessageLookupByLibrary.simpleMessage("Coin Selected"),
@@ -961,7 +976,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "devices_connectingToPrime_header":
             MessageLookupByLibrary.simpleMessage(
-          "Connecting to Prime",
+          "Connecting to Passport",
         ),
         "devices_empty_modal_video_cta1": MessageLookupByLibrary.simpleMessage(
           "Buy Passport",
@@ -1562,7 +1577,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Verifying Update",
         ),
         "header_buyBitcoin":
-            MessageLookupByLibrary.simpleMessage("BUY BITCOIN"),
+            MessageLookupByLibrary.simpleMessage("Buy Bitcoin"),
         "header_chooseAccount": MessageLookupByLibrary.simpleMessage(
           "CHOOSE ACCOUNT",
         ),
@@ -1747,6 +1762,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unpair Existing Prime"),
         "manage_deviceDetailsReconnectQL_reconnect":
             MessageLookupByLibrary.simpleMessage("Re-connect QuantumLink"),
+        "manage_deviceDetailsUnpairedModalWarning_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Passport\'s QuantumLink connection is no longer available. If you recently erased Passport or unpaired Envoy, this is expected. If you didn\'t, please contact support.\nEnvoy will now remove the device from your phone\'s Bluetooth accessory list.",
+        ),
+        "manage_deviceDetailsUnpairedModalWarning_header":
+            MessageLookupByLibrary.simpleMessage("QuantumLink Disconnected"),
+        "manage_deviceDetailsUnpairedModal_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Passport Prime has been unpaired. Envoy will now remove the device from the Bluetooth accessory list of your phone.",
+        ),
+        "manage_deviceDetailsUnpairedModal_header":
+            MessageLookupByLibrary.simpleMessage("Passport Unpaired"),
         "manage_deviceDetailsUnpaired_pairAgain":
             MessageLookupByLibrary.simpleMessage("Pair Again"),
         "manage_device_deletePassportWarning":
@@ -1755,7 +1782,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "manage_device_details_QuantumLink":
             MessageLookupByLibrary.simpleMessage(
-          "Quantum Link",
+          "QuantumLink",
         ),
         "manage_device_details_active": MessageLookupByLibrary.simpleMessage(
           "Active",
@@ -2061,6 +2088,27 @@ class MessageLookup extends MessageLookupByLibrary {
         "menu_privacy": MessageLookupByLibrary.simpleMessage("Privacy"),
         "menu_settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "menu_support": MessageLookupByLibrary.simpleMessage("Support"),
+        "menu_toast_accountAlreadyConnected":
+            MessageLookupByLibrary.simpleMessage(
+          "Account already connected.",
+        ),
+        "menu_toast_couldntDeleteEnvoySeed":
+            MessageLookupByLibrary.simpleMessage(
+          "Couldn’t delete Envoy seed.",
+        ),
+        "menu_toast_envoySeedDeleted": MessageLookupByLibrary.simpleMessage(
+          "Envoy seed deleted.",
+        ),
+        "menu_toast_logsCopied": MessageLookupByLibrary.simpleMessage(
+          "Logs copied to clipboard.",
+        ),
+        "menu_toast_securityCheckDisabled":
+            MessageLookupByLibrary.simpleMessage(
+          "Security check disabled",
+        ),
+        "menu_toast_unexpectedError": MessageLookupByLibrary.simpleMessage(
+          "An unexpected error occurred. Please try again.",
+        ),
         "onboardin_unifiedAccountsModal_content":
             MessageLookupByLibrary.simpleMessage(
           "From version 2.0.0, all address types are now accessible under a single account card.\n\nThe default receive address type can be changed in Settings.",
@@ -2383,7 +2431,7 @@ class MessageLookup extends MessageLookupByLibrary {
           "Even with ‘Improved Privacy’ active, Envoy cannot prevent interference by compromised devices on your local network.",
         ),
         "privacy_node_nodeAddress": MessageLookupByLibrary.simpleMessage(
-          "https://192.168.1.5:2222",
+          "Enter your node address",
         ),
         "privacy_node_nodeType_foundation":
             MessageLookupByLibrary.simpleMessage(
@@ -2655,8 +2703,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_QrScan_saveToFile": MessageLookupByLibrary.simpleMessage(
           "Save to File",
         ),
-        "send_QuantumReview_transactionTransferred":
-            MessageLookupByLibrary.simpleMessage("Transaction transfered"),
         "send_build_amount": MessageLookupByLibrary.simpleMessage("Amount"),
         "send_build_header": MessageLookupByLibrary.simpleMessage(
           "Check Transaction Details",
@@ -2771,7 +2817,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_quantumReview_connectedToPassport":
             MessageLookupByLibrary.simpleMessage("Connected to Passport"),
         "send_quantumReview_transactionTransferred":
-            MessageLookupByLibrary.simpleMessage("Transaction transferred"),
+            MessageLookupByLibrary.simpleMessage("Transaction Transferred"),
         "send_quantumReview_transferringTransaction":
             MessageLookupByLibrary.simpleMessage("Transferring Transaction "),
         "send_quantumReview_waitForSigning":
