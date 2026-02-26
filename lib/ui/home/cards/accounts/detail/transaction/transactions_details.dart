@@ -155,8 +155,8 @@ class _TransactionsDetailsWidgetState
       setState(() {
         _checkingBoost = false;
       });
-      int minRate = (result.minFeeRate ~/ BigInt.from(1000)).toInt();
-      int maxRate = (result.maxFeeRate ~/ BigInt.from(1000)).toInt();
+      int minRate = (result.minFeeRate ~/ BigInt.from(250)).toInt();
+      int maxRate = (result.maxFeeRate ~/ BigInt.from(250)).toInt();
       int fasterFeeRate = minRate + 1;
       if (minRate == maxRate) {
         fasterFeeRate = maxRate;
