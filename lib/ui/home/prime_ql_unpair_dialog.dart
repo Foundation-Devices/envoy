@@ -61,8 +61,18 @@ void showUnpairingDialog(BuildContext context, Device device) {
     dismissible: false,
     dialog: PrimeQLUnpairDialog(
       device: device,
-      onDismiss: () async =>
-          _unPairDialogShownForDeviceIds.remove(device.serial),
+      onDismiss: () async {
+        final deviceId =
+            Platform.isAndroid ? device.bleId : device.peripheralId;
+        _bleActiveSince.remove(deviceId);
+        await device.qlConnection().disconnect();
+        await Future.delayed(const Duration(milliseconds: 200));
+        await Devices().clearDeviceQLKeys(device);
+        if (Platform.isIOS) {
+          final id = device.peripheralId;
+          await BluetoothChannel().removeAccessory(id);
+        }
+      },
     ),
   );
 }
