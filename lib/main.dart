@@ -8,6 +8,7 @@ import 'dart:async';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/connectivity_manager.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/exchange_rate.dart';
 import 'package:envoy/business/keys_manager.dart';
@@ -50,6 +51,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await initSingletons();
+    unawaited(Devices().connect());
   } catch (e, stack) {
     EnvoyReport().log("Envoy init", stack.toString());
   }
