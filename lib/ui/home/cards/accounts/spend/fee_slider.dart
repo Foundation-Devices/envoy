@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/components/draggable_overlay.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
+import 'package:envoy/business/fee_rate.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 
@@ -120,7 +121,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
   /// [spendFeeRateProvider] when [transaction.feeRate] is 0 (sub-sat tx).
   int _txVSize() {
     final txFeeRate = widget.transaction.feeRate > BigInt.zero
-        ? widget.transaction.feeRate.toDouble() / 250 // sat/kwu → sat/vB
+        ? FeeRate.fromSatPerKvb(widget.transaction.feeRate).satPerVb
         : ref.read(spendFeeRateProvider).toDouble();
     return _safeTxVSizeVb(widget.transaction.fee.toDouble(), txFeeRate);
   }
@@ -246,8 +247,9 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                                       ref.watch(_selectedFeeStateProvider),
                                   txVSizeVb: _safeTxVSizeVb(
                                     widget.transaction.fee.toDouble(),
-                                    widget.transaction.feeRate.toDouble() /
-                                        250, // sat/kwu → sat/vB
+                                    FeeRate.fromSatPerKvb(
+                                            widget.transaction.feeRate)
+                                        .satPerVb,
                                   )),
                               amountWidgetStyle: AmountWidgetStyle.normal,
                               account: account!),
@@ -568,7 +570,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     //bool processingFee = ref.watch(spendFeeProcessing);
     double selectedFee = ref.watch(_selectedFeeStateProvider);
     final double txFeeRate = widget.transaction.feeRate > BigInt.zero
-        ? widget.transaction.feeRate.toDouble() / 250 // sat/kwu → sat/vB
+        ? FeeRate.fromSatPerKvb(widget.transaction.feeRate).satPerVb
         : ref.read(spendFeeRateProvider).toDouble();
     int aproxFee = getApproxFeeInSats(
         feeRateSatsPerVb: selectedFee,

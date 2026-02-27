@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'package:animations/animations.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/business/fee_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -594,7 +595,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       );
       await Future.delayed(const Duration(milliseconds: 50));
       ref.read(rbfSpendStateProvider.notifier).state = rbfState.copyWith(
-        feeRate: (preparedTx.transaction.feeRate ~/ BigInt.from(250)).toInt(),
+        feeRate: FeeRate.fromSatPerKvb(preparedTx.transaction.feeRate)
+            .satPerVb
+            .round(),
         preparedTx: preparedTx,
       );
       received = true;
@@ -729,7 +732,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
       final transaction = await account.handler?.composeRbfPsbt(
         selectedOutputs: selectedOutputs,
-        feeRate: BigInt.from((fee * 250).round()), // sat/vB → sat/kwu
+        feeRate: FeeRate.fromSatPerVb(fee).satPerKvb,
         bitcoinTransaction: originalTx,
       );
 
@@ -738,7 +741,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       }
 
       ref.read(rbfSpendStateProvider.notifier).state = rbfState.copyWith(
-        feeRate: (transaction.transaction.feeRate ~/ BigInt.from(250)).toInt(),
+        feeRate: FeeRate.fromSatPerKvb(transaction.transaction.feeRate)
+            .satPerVb
+            .round(),
         preparedTx: transaction,
       );
 
@@ -814,7 +819,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     try {
       final transaction = await account.handler?.composeRbfPsbt(
         selectedOutputs: selectedOutputs,
-        feeRate: BigInt.from(rbfState.feeRate * 250), // sat/vB → sat/kwu
+        feeRate: FeeRate.fromSatPerVb(rbfState.feeRate.toDouble()).satPerKvb,
         note: note,
         tag: changeOutputTag,
         bitcoinTransaction: rbfState.originalTx,
@@ -823,7 +828,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         return;
       }
       ref.read(rbfSpendStateProvider.notifier).state = rbfState.copyWith(
-        feeRate: (transaction.transaction.feeRate ~/ BigInt.from(250)).toInt(),
+        feeRate: FeeRate.fromSatPerKvb(transaction.transaction.feeRate)
+            .satPerVb
+            .round(),
         preparedTx: transaction,
       );
     } catch (e) {
@@ -917,8 +924,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           setState(() {
             _rebuildingTx = false;
           });
-          int minRate = (result.minFeeRate ~/ BigInt.from(250)).toInt();
-          int maxRate = (result.maxFeeRate ~/ BigInt.from(250)).toInt();
+          int minRate =
+              FeeRate.fromSatPerKvb(result.minFeeRate).satPerVb.round();
+          int maxRate =
+              FeeRate.fromSatPerKvb(result.maxFeeRate).satPerVb.round();
           int fasterFeeRate = minRate + 1;
           kPrint("RBF: minRate: $minRate, maxRate: $maxRate");
           if (minRate == maxRate) {

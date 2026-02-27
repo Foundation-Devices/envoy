@@ -17,6 +17,7 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/business/fee_rate.dart';
 import 'package:ngwallet/ngwallet.dart';
 
 class TransactionModel {
@@ -184,7 +185,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       final params = TransactionParams(
         address: sendTo,
         amount: BigInt.from(amount),
-        feeRate: BigInt.from((feeRate * 250).round()), // sat/vB → sat/kwu
+        feeRate: FeeRate.fromSatPerVb(feeRate.toDouble()).satPerKvb,
         selectedOutputs: utxos,
         note: notes,
         doNotSpendChange: false,
@@ -210,10 +211,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       EnvoyReport().log("Spend", "Error composing transaction: $e");
       debugPrintStack(stackTrace: stack);
       //reset the fee rate to the one used in the transaction
-      ref.read(spendFeeRateProvider.notifier).state =
-          ((state.draftTransaction?.transaction.feeRate ?? BigInt.from(250)) ~/
-                  BigInt.from(250))
-              .toInt();
+      ref.read(spendFeeRateProvider.notifier).state = FeeRate.fromSatPerKvb(
+        state.draftTransaction?.transaction.feeRate ?? BigInt.from(1000),
+      ).satPerVb.round();
       kPrint("setFee:Fallback fee rate: ${ref.read(spendFeeRateProvider)}");
       _handleComposeError(e);
     }
@@ -353,7 +353,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         final params = TransactionParams(
           address: sendTo,
           amount: BigInt.from(amount),
-          feeRate: BigInt.from(feeRate * 250), // sat/vB → sat/kwu
+          feeRate: FeeRate.fromSatPerVb(feeRate.toDouble()).satPerKvb,
           selectedOutputs: utxos,
           note: note,
           tag: changeOutput,
@@ -375,9 +375,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
             FeeChooserState(
           standardFeeRate: Fees().slowRate(network),
           fasterFeeRate: Fees().fastRate(network),
-          minFeeRate: (feeCalcResult.minFeeRate ~/ BigInt.from(250)).toInt(),
-          maxFeeRate: (feeCalcResult.maxFeeRate ~/ BigInt.from(250))
-              .toInt()
+          minFeeRate:
+              FeeRate.fromSatPerKvb(feeCalcResult.minFeeRate).satPerVb.round(),
+          maxFeeRate: FeeRate.fromSatPerKvb(feeCalcResult.maxFeeRate)
+              .satPerVb
+              .round()
               .clamp(2, 5000),
         );
 
@@ -431,11 +433,10 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       );
       syncManager.syncAccount(account);
 
-      final feeRate = state.transactionParams?.feeRate ?? BigInt.from(250);
+      final feeRate = state.transactionParams?.feeRate ?? BigInt.from(1000);
       if (Settings().subSatFeeEnabled &&
           !Settings().usingDefaultElectrumServer &&
-          feeRate < BigInt.from(250)) {
-        // < 250 sat/kwu = < 1 sat/vB
+          FeeRate.fromSatPerKvb(feeRate).isSubSat) {
         // Sub-sat txs may be silently dropped by the node if minrelaytxfee
         // is too high. Poll the wallet tx list for up to ~15s to confirm.
         final txId = state.draftTransaction!.transaction.txId;
