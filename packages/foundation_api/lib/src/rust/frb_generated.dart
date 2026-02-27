@@ -1852,6 +1852,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  UnpairingRequest dco_decode_box_autoadd_unpairing_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_unpairing_request(raw);
+  }
+
+  @protected
+  UnpairingResponse dco_decode_box_autoadd_unpairing_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_unpairing_response(raw);
+  }
+
+  @protected
   VerificationResult dco_decode_box_autoadd_verification_result(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_verification_result(raw);
@@ -2521,6 +2533,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return QuantumLinkMessage_TimezoneResponse(
           dco_decode_box_autoadd_timezone_response(raw[1]),
         );
+      case 34:
+        return QuantumLinkMessage_UnpairingRequest(
+          dco_decode_box_autoadd_unpairing_request(raw[1]),
+        );
+      case 35:
+        return QuantumLinkMessage_UnpairingResponse(
+          dco_decode_box_autoadd_unpairing_response(raw[1]),
+        );
       default:
         throw Exception("unreachable");
     }
@@ -2730,6 +2750,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void dco_decode_unit(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return;
+  }
+
+  @protected
+  UnpairingRequest dco_decode_unpairing_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 0)
+      throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
+    return UnpairingRequest();
+  }
+
+  @protected
+  UnpairingResponse dco_decode_unpairing_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return UnpairingResponse(
+      success: dco_decode_bool(arr[0]),
+    );
   }
 
   @protected
@@ -3374,6 +3414,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int sse_decode_box_autoadd_u_8(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_u_8(deserializer));
+  }
+
+  @protected
+  UnpairingRequest sse_decode_box_autoadd_unpairing_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_unpairing_request(deserializer));
+  }
+
+  @protected
+  UnpairingResponse sse_decode_box_autoadd_unpairing_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_unpairing_response(deserializer));
   }
 
   @protected
@@ -4031,6 +4085,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 33:
         var var_field0 = sse_decode_box_autoadd_timezone_response(deserializer);
         return QuantumLinkMessage_TimezoneResponse(var_field0);
+      case 34:
+        var var_field0 = sse_decode_box_autoadd_unpairing_request(deserializer);
+        return QuantumLinkMessage_UnpairingRequest(var_field0);
+      case 35:
+        var var_field0 =
+            sse_decode_box_autoadd_unpairing_response(deserializer);
+        return QuantumLinkMessage_UnpairingResponse(var_field0);
       default:
         throw UnimplementedError('');
     }
@@ -4219,6 +4280,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_decode_unit(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  UnpairingRequest sse_decode_unpairing_request(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return UnpairingRequest();
+  }
+
+  @protected
+  UnpairingResponse sse_decode_unpairing_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_success = sse_decode_bool(deserializer);
+    return UnpairingResponse(success: var_success);
   }
 
   @protected
@@ -4874,6 +4949,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_unpairing_request(
+      UnpairingRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_unpairing_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_unpairing_response(
+      UnpairingResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_unpairing_response(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_verification_result(
       VerificationResult self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5430,6 +5519,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case QuantumLinkMessage_TimezoneResponse(field0: final field0):
         sse_encode_i_32(33, serializer);
         sse_encode_box_autoadd_timezone_response(field0, serializer);
+      case QuantumLinkMessage_UnpairingRequest(field0: final field0):
+        sse_encode_i_32(34, serializer);
+        sse_encode_box_autoadd_unpairing_request(field0, serializer);
+      case QuantumLinkMessage_UnpairingResponse(field0: final field0):
+        sse_encode_i_32(35, serializer);
+        sse_encode_box_autoadd_unpairing_response(field0, serializer);
     }
   }
 
@@ -5588,6 +5683,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_unit(void self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_unpairing_request(
+      UnpairingRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_unpairing_response(
+      UnpairingResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self.success, serializer);
   }
 
   @protected

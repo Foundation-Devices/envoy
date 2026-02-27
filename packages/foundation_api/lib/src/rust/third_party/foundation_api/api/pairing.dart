@@ -62,3 +62,33 @@ class PairingResponse {
           passportColor == other.passportColor &&
           onboardingComplete == other.onboardingComplete;
 }
+
+class UnpairingRequest {
+  const UnpairingRequest();
+
+  @override
+  int get hashCode => 0;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UnpairingRequest && runtimeType == other.runtimeType;
+}
+
+class UnpairingResponse {
+  final bool success;
+
+  const UnpairingResponse({
+    required this.success,
+  });
+
+  @override
+  int get hashCode => success.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UnpairingResponse &&
+          runtimeType == other.runtimeType &&
+          success == other.success;
+}

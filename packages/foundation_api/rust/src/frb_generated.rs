@@ -2049,6 +2049,12 @@ const _: fn() = || {
         foundation_api::api::message::QuantumLinkMessage::TimezoneResponse(field0) => {
             let _: foundation_api::api::status::TimezoneResponse = field0;
         }
+        foundation_api::api::message::QuantumLinkMessage::UnpairingRequest(field0) => {
+            let _: foundation_api::api::pairing::UnpairingRequest = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::UnpairingResponse(field0) => {
+            let _: foundation_api::api::pairing::UnpairingResponse = field0;
+        }
     }
     match None::<foundation_api::api::backup::RestoreMagicBackupEvent>.unwrap() {
         foundation_api::api::backup::RestoreMagicBackupEvent::NotFound => {}
@@ -2125,6 +2131,13 @@ const _: fn() = || {
         let TimezoneResponse = None::<foundation_api::api::status::TimezoneResponse>.unwrap();
         let _: i32 = TimezoneResponse.offset_minutes;
         let _: String = TimezoneResponse.zone;
+    }
+    {
+        let UnpairingRequest = None::<foundation_api::api::pairing::UnpairingRequest>.unwrap();
+    }
+    {
+        let UnpairingResponse = None::<foundation_api::api::pairing::UnpairingResponse>.unwrap();
+        let _: bool = UnpairingResponse.success;
     }
     match None::<foundation_api::api::scv::VerificationResult>.unwrap() {
         foundation_api::api::scv::VerificationResult::Success => {}
@@ -3281,6 +3294,20 @@ impl SseDecode for foundation_api::api::message::QuantumLinkMessage {
                     var_field0,
                 );
             }
+            34 => {
+                let mut var_field0 =
+                    <foundation_api::api::pairing::UnpairingRequest>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::UnpairingRequest(
+                    var_field0,
+                );
+            }
+            35 => {
+                let mut var_field0 =
+                    <foundation_api::api::pairing::UnpairingResponse>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::UnpairingResponse(
+                    var_field0,
+                );
+            }
             _ => {
                 unimplemented!("");
             }
@@ -3519,6 +3546,23 @@ impl SseDecode for [u8; 32] {
 impl SseDecode for () {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {}
+}
+
+impl SseDecode for foundation_api::api::pairing::UnpairingRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        return foundation_api::api::pairing::UnpairingRequest {};
+    }
+}
+
+impl SseDecode for foundation_api::api::pairing::UnpairingResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_success = <bool>::sse_decode(deserializer);
+        return foundation_api::api::pairing::UnpairingResponse {
+            success: var_success,
+        };
+    }
 }
 
 impl SseDecode for usize {
@@ -4882,6 +4926,12 @@ impl flutter_rust_bridge::IntoDart
             foundation_api::api::message::QuantumLinkMessage::TimezoneResponse(field0) => {
                 [33.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
+            foundation_api::api::message::QuantumLinkMessage::UnpairingRequest(field0) => {
+                [34.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::UnpairingResponse(field0) => {
+                [35.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
             _ => {
                 unimplemented!("");
             }
@@ -5186,6 +5236,40 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::status::T
     for foundation_api::api::status::TimezoneResponse
 {
     fn into_into_dart(self) -> FrbWrapper<foundation_api::api::status::TimezoneResponse> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::pairing::UnpairingRequest> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        Vec::<u8>::new().into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::pairing::UnpairingRequest>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::pairing::UnpairingRequest>>
+    for foundation_api::api::pairing::UnpairingRequest
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::pairing::UnpairingRequest> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::pairing::UnpairingResponse> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0.success.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::pairing::UnpairingResponse>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::pairing::UnpairingResponse>>
+    for foundation_api::api::pairing::UnpairingResponse
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::pairing::UnpairingResponse> {
         self.into()
     }
 }
@@ -6136,6 +6220,14 @@ impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
                 <i32>::sse_encode(33, serializer);
                 <foundation_api::api::status::TimezoneResponse>::sse_encode(field0, serializer);
             }
+            foundation_api::api::message::QuantumLinkMessage::UnpairingRequest(field0) => {
+                <i32>::sse_encode(34, serializer);
+                <foundation_api::api::pairing::UnpairingRequest>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::UnpairingResponse(field0) => {
+                <i32>::sse_encode(35, serializer);
+                <foundation_api::api::pairing::UnpairingResponse>::sse_encode(field0, serializer);
+            }
             _ => {
                 unimplemented!("");
             }
@@ -6344,6 +6436,18 @@ impl SseEncode for [u8; 32] {
 impl SseEncode for () {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+}
+
+impl SseEncode for foundation_api::api::pairing::UnpairingRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+}
+
+impl SseEncode for foundation_api::api::pairing::UnpairingResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.success, serializer);
+    }
 }
 
 impl SseEncode for usize {
