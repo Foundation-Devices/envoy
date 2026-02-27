@@ -48,11 +48,11 @@ class Device {
   @JsonKey(defaultValue: false)
   bool onboardingComplete;
   @Uint8ListConverter()
-  final Uint8List? xid;
+  Uint8List? xid;
 
   //type QuantumLinkIdentity
   @Uint8ListConverter()
-  final Uint8List? senderXid;
+  Uint8List? senderXid;
   final DateTime datePaired;
   String firmwareVersion;
   List<String>? pairedAccountIds;
@@ -331,7 +331,7 @@ class Devices extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteDevice(Device device) async {
+  Future deleteDevice(Device device) async {
     if (device.type == DeviceType.passportPrime) {
       final qlConnection = device.qlConnection();
       BluetoothChannel().removeDeviceChannel(qlConnection.deviceId);
@@ -413,6 +413,18 @@ class Devices extends ChangeNotifier {
       if (device.type == DeviceType.passportPrime &&
           device.serial == targetDevice.serial) {
         device.onboardingComplete = onboarded;
+        await storeDevices();
+        notifyListeners();
+        return;
+      }
+    }
+  }
+
+  Future<void> clearDeviceQLKeys(Device targetDevice) async {
+    for (var device in devices) {
+      if (device.serial == targetDevice.serial) {
+        device.xid = null;
+        device.senderXid = null;
         await storeDevices();
         notifyListeners();
         return;

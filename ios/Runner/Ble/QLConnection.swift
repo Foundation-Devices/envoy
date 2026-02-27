@@ -464,8 +464,15 @@ class QLConnection: NSObject {
             return
         }
 
-        sink(connectionData)
-        print("\(Self.TAG) [\(deviceId)] Connection Event -> Flutter: connected=\(isConnected()), type=\(type ?? "nil")")
+        let send = {
+            sink(connectionData)
+            print("\(Self.TAG) [\(self.deviceId)] Connection Event -> Flutter: connected=\(self.isConnected()), type=\(type ?? "nil")")
+        }
+        if Thread.isMainThread {
+            send()
+        } else {
+            DispatchQueue.main.async(execute: send)
+        }
         if let error = error {
             print("\(Self.TAG) [\(deviceId)]    Error: \(error)")
         }
@@ -481,7 +488,12 @@ class QLConnection: NSObject {
             "total_bytes": totalBytes
         ]
 
-        sink(stateData)
+        let send = { sink(stateData) }
+        if Thread.isMainThread {
+            send()
+        } else {
+            DispatchQueue.main.async(execute: send)
+        }
     }
 
     private func sendBinaryData(_ data: Data) {

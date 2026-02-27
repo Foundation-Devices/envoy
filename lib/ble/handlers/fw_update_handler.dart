@@ -17,6 +17,7 @@ import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/ntp.dart';
+import 'package:envoy/util/stream_replay_cache.dart';
 import 'package:envoy/util/transfer_rate_estimator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
@@ -40,7 +41,6 @@ class FwUpdateHandler extends PassportMessageHandler {
 
   Set<PrimeFwUpdateStep> _completedUpdateStates = {};
 
-  //TODO: multi device, move this to somewhere per-device
   String newVersion = "";
   String currentVersion = "";
 
@@ -64,7 +64,12 @@ class FwUpdateHandler extends PassportMessageHandler {
       _primeFwUpdate.stream.asBroadcastStream();
 
   Stream<FwUpdateState> get downloadStateStream =>
-      _downloadState.stream.asBroadcastStream();
+      _downloadState.stream.asBroadcastStream().replayLatest(
+            FwUpdateState(
+              message: S().firmware_updatingDownload_downloading,
+              step: EnvoyStepState.IDLE,
+            ),
+          );
 
   Stream<FwUpdateState> get transferStateStream =>
       _transferState.stream.asBroadcastStream();
@@ -186,18 +191,17 @@ class FwUpdateHandler extends PassportMessageHandler {
     }
     final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
 
-    if (BluetoothManager().qlIdentity == null ||
-        BluetoothManager().recipientXid == null) {
+    if (qlConnection.senderXid == null || qlConnection.recipientXid == null) {
       EnvoyReport().log(
         "fw_update_handler",
-        "Cannot send firmware payload: missing identities,qlIdentity: ${BluetoothManager().qlIdentity},recipientXid ${BluetoothManager().recipientXid}",
+        "Cannot send firmware payload: missing identities,qlIdentity: ${qlConnection.senderXid},recipientXid ${qlConnection.senderXid}",
       );
       return;
     }
     final ready = await api.encodeToUpdateFile(
       payload: patches,
-      sender: BluetoothManager().qlIdentity!,
-      recipient: BluetoothManager().recipientXid!,
+      sender: qlConnection.senderXid!,
+      recipient: qlConnection.recipientXid!,
       path: tempFile.path,
       chunkSize: bleChunkSize,
       timestamp: timestampSeconds,
@@ -309,8 +313,7 @@ class FwUpdateHandler extends PassportMessageHandler {
     _downloadState.sink.add(FwUpdateState(message: message, step: state));
   }
 
-  //end ui stete updates
-
+  //send ui state updates
   void _handleOnboardingState(api.FirmwareInstallEvent event) {
     event.map(
       updateVerified: (event) {
