@@ -43,10 +43,23 @@ QLConnection? _onboardingDevice;
 // TODO: remove this, store somewhere else
 final estimatedTimeProvider = StateProvider<int>((ref) => 0);
 final bleMacRegex = RegExp(r'^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$');
+// Regex to validate if the provided ID is a valid BLE accessory peripheral UUID (for iOS)
+final bleAccessoryPeripheralRegex = RegExp(
+  r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$',
+  caseSensitive: false,
+);
 
 enum BleConnectState { idle, invalidId, connecting, connected }
 
 String? _bleIdCache;
+
+//when the user goes through repair flow, we want to make sure they are connecting to the same device they paired with,
+//this exception will be thrown when the device id doesn't match,
+//and will carry the onboarding device so we can disconnect and remove it if user choose to.
+class MisMatchDeviceIdException implements Exception {
+  QLConnection onboardingDevice;
+  MisMatchDeviceIdException(this.onboardingDevice);
+}
 
 class OnboardPrimeBluetooth extends ConsumerStatefulWidget {
   const OnboardPrimeBluetooth({super.key});
@@ -140,7 +153,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
     });
 
     try {
-      if (bleMacRegex.hasMatch(bleId ?? "")) {
+      if (bleMacRegex.hasMatch(bleId ?? "") ||
+          bleAccessoryPeripheralRegex.hasMatch(bleId ?? "")) {
         if (!Platform.isIOS) {
           await BluetoothManager().getPermissions();
         }
@@ -149,6 +163,17 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           bleId ?? "",
           colorWay,
         );
+
+        if (bleAccessoryPeripheralRegex.hasMatch(bleId ?? "")) {
+          EnvoyReport().log("OnboardPrimeBluetooth",
+              "Received iOS accessory peripheral ID: $bleId");
+          if (_onboardingDevice?.deviceId != bleId &&
+              _onboardingDevice != null) {
+            EnvoyReport().log("OnboardPrimeBluetooth",
+                "Warning: Device ID from onboarding does not match provided accessory peripheral ID. Device ID: ${_onboardingDevice?.deviceId}, Provided ID: $bleId");
+            throw MisMatchDeviceIdException(_onboardingDevice!);
+          }
+        }
 
         ref.read(onboardingDeviceProvider.notifier).state = _onboardingDevice;
         if (_onboardingDevice == null) {
@@ -203,23 +228,47 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         if (e is BleSetupTimeoutException) {
           message = S().onboarding_modalBluetoothUnableConnect_content;
         }
-
+        if (e is MisMatchDeviceIdException) {
+          message =
+              "Wrong device connected. The Passport Prime you paired doesn't match your previous device. Please connect the correct device and try again.";
+        }
         showEnvoyDialog(
           context: context,
-          dismissible: true,
+          dismissible: e is! MisMatchDeviceIdException,
           dialog: EnvoyPopUp(
             icon: EnvoyIcons.alert,
             typeOfMessage: PopUpState.warning,
             showCloseButton: false,
             content: message,
             title: S().onboarding_modalBluetoothUnableConnect_header,
-            primaryButtonLabel: S().component_retry,
-            secondaryButtonLabel: S().component_dismiss,
-            onSecondaryButtonTap: (BuildContext context) {
-              Navigator.pop(context);
+            primaryButtonLabel: e is MisMatchDeviceIdException
+                ? "Remove Accessory"
+                : S().component_retry,
+            secondaryButtonLabel:
+                e is MisMatchDeviceIdException ? null : S().component_dismiss,
+            onSecondaryButtonTap: (BuildContext context) async {
+              if (e is MisMatchDeviceIdException && Platform.isIOS) {
+                await e.onboardingDevice.disconnect();
+                await BluetoothChannel()
+                    .removeAccessory(e.onboardingDevice.deviceId);
+              }
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
             },
             onPrimaryButtonTap: (BuildContext context) async {
-              Navigator.pop(context);
+              if (e is MisMatchDeviceIdException && Platform.isIOS) {
+                await e.onboardingDevice.disconnect();
+                await BluetoothChannel()
+                    .removeAccessory(e.onboardingDevice.deviceId);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
+                return;
+              }
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
               _connectToPrime();
             },
           ),

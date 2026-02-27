@@ -8,6 +8,7 @@ import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/ui/home/prime_ql_unpair_dialog.dart';
 import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
@@ -296,6 +297,11 @@ class HomePageState extends ConsumerState<HomePage>
     });
   }
 
+  void _monitorHeartbeats() {
+    listenForPrimeUnpair(context, ref);
+    startPrimeHeartbeatMonitoring(context, ref);
+  }
+
   void _notifyAboutRemovedRampTx(
     List<EnvoyTransaction> expiredTransactions,
     context,
@@ -534,7 +540,7 @@ class HomePageState extends ConsumerState<HomePage>
   @override
   Widget build(BuildContext context) {
     _checkUpdatesAndNotify();
-
+    _monitorHeartbeats();
     bool optionsShown = ref.watch(homePageOptionsVisibilityProvider);
 
     double screenHeight = MediaQuery.of(context).size.height;
