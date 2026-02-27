@@ -7,6 +7,7 @@ import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/components/pop_up.dart';
@@ -133,16 +134,31 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         icon: EnvoyIcons.alert,
         typeOfMessage: PopUpState.warning,
         showCloseButton: true,
-        content: "Do you want to exit the onboarding ?",
-        primaryButtonLabel: "Cancel",
-        secondaryButtonLabel: "Exit",
+        title: S().onboarding_connectionModalAbort_header,
+        content: S().onboarding_connectionModalAbort_content,
+        primaryButtonLabel: S().component_cancel,
+        secondaryButtonLabel: S().component_exit,
         onPrimaryButtonTap: (context) async {
           completer.complete(false);
           Navigator.pop(context);
         },
         onSecondaryButtonTap: (context) async {
+          final qlConnection = ref.read(onboardingDeviceProvider);
+          if (qlConnection == null) {
+            completer.complete(false);
+            Navigator.pop(context);
+            return;
+          }
+          await qlConnection.disconnect();
+          await Future.delayed(const Duration(milliseconds: 200));
+          if (Platform.isIOS) {
+            final id = qlConnection.deviceId;
+            await BluetoothChannel().removeAccessory(id);
+          }
           completer.complete(true);
-          Navigator.pop(context);
+          if (context.mounted) {
+            Navigator.pop(context);
+          }
         },
       ),
     );
