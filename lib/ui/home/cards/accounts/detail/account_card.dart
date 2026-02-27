@@ -781,11 +781,11 @@ Future<void> copyTxId(
     Clipboard.setData(ClipboardData(text: txId));
     String message;
     if (tx is RampTransaction) {
-      message = "Ramp ID copied to clipboard";
+      message = S().accounts_toast_paymentCopied;
     } else if (tx is BtcPayTransaction) {
-      message = "Payment ID copied to clipboard";
+      message = S().accounts_toast_paymentCopied;
     } else {
-      message = "Transaction ID copied to clipboard";
+      message = S().accounts_toast_txidCopied;
     }
     if (context.mounted) {
       EnvoyToast(
@@ -814,7 +814,7 @@ void showWarningOnTxIdCopy(BuildContext context, String txId) {
         backgroundColor: Colors.lightBlue,
         replaceExisting: true,
         duration: const Duration(seconds: 1),
-        message: "Transaction ID copied to clipboard",
+        message: S().accounts_toast_txidCopied,
         icon: const EnvoyIcon(
           EnvoyIcons.info,
           color: EnvoyColors.accentPrimary,
