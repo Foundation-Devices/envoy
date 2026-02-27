@@ -331,7 +331,7 @@ class Devices extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteDevice(Device device) async {
+  Future deleteDevice(Device device) async {
     if (device.type == DeviceType.passportPrime) {
       final qlConnection = device.qlConnection();
       BluetoothChannel().removeDeviceChannel(qlConnection.deviceId);

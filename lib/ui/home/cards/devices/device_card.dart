@@ -329,12 +329,12 @@ class _PrimeOptionsWidgetState extends ConsumerState<PrimeOptionsWidget> {
 
     return Column(
       mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: deviceRemovedFromHostSystemSettings
           ? MainAxisAlignment.spaceBetween
-          : MainAxisAlignment.end,
+          : MainAxisAlignment.center,
       children: [
-        if (needsBleRepair)
+        if (needsBleRepair && Platform.isIOS)
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -490,16 +490,18 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                 content: S().manage_device_deletePassportWarning,
                 primaryButtonLabel: S().component_unpair,
                 primaryButtonColor: EnvoyColors.warning,
-                onPrimaryButtonTap: (context) {
-                  Devices().deleteDevice(widget.device);
+                onPrimaryButtonTap: (context) async {
+                  await Devices().deleteDevice(widget.device);
 
                   // Pop the dialog
-                  if (Navigator.canPop(context)) {
+                  if (context.mounted && Navigator.canPop(context)) {
                     Navigator.pop(context);
                   }
 
                   // Go back to devices list
-                  context.go(ROUTE_DEVICES);
+                  if (context.mounted) {
+                    context.go(ROUTE_DEVICES);
+                  }
                 },
                 secondaryButtonLabel: S().component_cancel,
                 onSecondaryButtonTap: (context) {
