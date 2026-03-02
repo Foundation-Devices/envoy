@@ -186,8 +186,8 @@ class _ChooseTagForChangeState extends ConsumerState<ChooseTagForStagingTx> {
             ),
             const Padding(padding: EdgeInsets.all(8)),
             tags.isNotEmpty
-                ? const Text("Most Used")
-                : const Text("Suggestions"), // TODO: FIGMA
+                ? Text(S().create_second_tag_modal_2_2_mostUsed)
+                : Text(S().create_first_tag_modal_2_2_suggest),
             Container(
               margin: const EdgeInsets.symmetric(
                 vertical: EnvoySpacing.medium1,

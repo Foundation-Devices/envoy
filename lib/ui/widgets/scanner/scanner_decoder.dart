@@ -12,7 +12,7 @@ import 'package:envoy/ui/theme/new_envoy_color.dart';
 
 class UnableToDecodeException implements Exception {
   @override
-  toString() => "Couldn't decode UR!";
+  toString() => S().camera_toast_couldntDecodeUr;
 }
 
 abstract class ScannerDecoder {

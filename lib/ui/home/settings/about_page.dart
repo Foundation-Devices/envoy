@@ -96,7 +96,7 @@ class _AboutPageState extends ConsumerState<AboutPage> {
                       HomePageBackgroundState.licence;
                   showLicensePage(
                     context: context,
-                    applicationName: "Envoy", // TODO: FIGMA
+                    applicationName: "Envoy",
                     useRootNavigator: true,
                     applicationLegalese:
                         "This program is free software: you can redistribute it and/or modify " // TODO: FIGMA

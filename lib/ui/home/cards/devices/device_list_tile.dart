@@ -192,7 +192,7 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                           children: [
                                             widget.ghostDevice
                                                 ? Text(
-                                                    "FW 2.1.1", // TODO: FIGMA
+                                                    "FW 2.1.1",
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodySmall!

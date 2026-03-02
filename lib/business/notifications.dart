@@ -19,6 +19,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'dart:convert';
 import 'package:envoy/business/account.dart';
+import 'package:envoy/generated/l10n.dart';
 
 part 'notifications.g.dart';
 
@@ -233,7 +234,7 @@ class Notifications {
         if (fwUpdateAvailable) {
           add(
             EnvoyNotification(
-              "Firmware", // TODO: FIGMA
+              S().btn_firmware_version,
               DateTime.now(),
               EnvoyNotificationType.firmware,
               newVersion!,
@@ -259,7 +260,7 @@ class Notifications {
       if (!skip) {
         add(
           EnvoyNotification(
-            "App Update", // TODO: FIGMA
+            S().activity_envoyUpdateAvailable,
             result.publishedAt,
             EnvoyNotificationType.envoyUpdate,
             latestEnvoyVersion,

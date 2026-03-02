@@ -177,7 +177,7 @@ class GhostDevice extends StatelessWidget {
   final device = Device(
     "Primary",
     DeviceType.passportGen12,
-    "serial", // TODO: FIGMA
+    "serial",
     DateTime.now(),
     "2.1.1",
     Colors.grey,

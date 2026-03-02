@@ -11,8 +11,8 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'dart:io';
-
 import 'package:go_router/go_router.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class FwAndroidInstructionsPage extends StatelessWidget {
   final FwPagePayload fwPagePayload;
@@ -45,7 +45,7 @@ class FwAndroidInstructionsPage extends StatelessWidget {
       navigationDotsIndex: 2,
       buttons: [
         OnboardingButton(
-          label: "Continue", // TODO: FIGMA
+          label: S().component_continue,
           onTap: () {
             final router = GoRouter.of(context);
             UpdatesManager().getStoredFirmware(deviceId).then((File file) {
