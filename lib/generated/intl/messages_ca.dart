@@ -564,6 +564,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "buy_defineLocation_selectState": MessageLookupByLibrary.simpleMessage(
           "Select State",
         ),
+        "camera_toast_couldntDecodeUr": MessageLookupByLibrary.simpleMessage(
+          "Couldn’t decode UR.",
+        ),
         "camera_toast_notAValidAddress": MessageLookupByLibrary.simpleMessage(
           "Not a valid address.",
         ),
@@ -928,6 +931,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Les etiquetes són una manera útil d\'organitzar les teves monedes.",
         ),
+        "create_first_tag_modal_2_2_ie_text_field":
+            MessageLookupByLibrary.simpleMessage("Enter new tag i.e. Exchange"),
         "create_first_tag_modal_2_2_suggest":
             MessageLookupByLibrary.simpleMessage(
           "Suggeriments",

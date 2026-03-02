@@ -56,8 +56,6 @@ class S {
 
   // skipped getter for the ':' key
 
-  // skipped getter for the 'FW_Version_No.' key
-
   /// `a day ago`
   String get _ {
     return Intl.message('a day ago', name: '_', desc: '', args: []);
@@ -1700,7 +1698,15 @@ class S {
     );
   }
 
-  // skipped getter for the 'camera_toast_couldn\'tDecodeUr' key
+  /// `Couldn’t decode UR.`
+  String get camera_toast_couldntDecodeUr {
+    return Intl.message(
+      'Couldn’t decode UR.',
+      name: 'camera_toast_couldntDecodeUr',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `Not a valid address.`
   String get camera_toast_notAValidAddress {
@@ -3017,7 +3023,15 @@ class S {
     );
   }
 
-  // skipped getter for the 'create_first_tag_modal_2_2_ie_text-field' key
+  /// `Enter new tag i.e. Exchange`
+  String get create_first_tag_modal_2_2_ie_text_field {
+    return Intl.message(
+      'Enter new tag i.e. Exchange',
+      name: 'create_first_tag_modal_2_2_ie_text_field',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `Suggestions`
   String get create_first_tag_modal_2_2_suggest {

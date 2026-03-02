@@ -180,7 +180,7 @@ class _CreateCoinTagState extends ConsumerState<CreateCoinTag> {
                         : const SizedBox();
                   },
                   decoration: InputDecoration(
-                    hintText: S().create_first_tag_modal_2_2_suggest,
+                    hintText: S().create_first_tag_modal_2_2_ie_text_field,
                     hintStyle: EnvoyTypography.info.copyWith(
                       color: EnvoyColors.textTertiary,
                     ),
