@@ -68,9 +68,9 @@ class SingleImportPpScanPage extends OnboardingPage {
                                 extra: account);
                           }
                         } on AccountAlreadyPaired catch (_) {
-                          scaffold.showSnackBar(const SnackBar(
-                            content: Text(
-                                "Account already connected"), // TODO: FIGMA
+                          scaffold.showSnackBar(SnackBar(
+                            content:
+                                Text(S().menu_toast_accountAlreadyConnected),
                           ));
                           await Future.delayed(const Duration(seconds: 1));
                           goRouter.go("/");

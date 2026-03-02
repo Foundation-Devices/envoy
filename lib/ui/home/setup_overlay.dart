@@ -343,8 +343,7 @@ void addPassportAccount(Binary binary, BuildContext context) async {
       EnvoyToast(
         replaceExisting: true,
         duration: const Duration(seconds: 6),
-        //TODO: Localize
-        message: "Account already connected",
+        message: S().menu_toast_accountAlreadyConnected,
         isDismissible: true,
         onActionTap: () {
           EnvoyToast.dismissPreviousToasts(context);
@@ -359,8 +358,7 @@ void addPassportAccount(Binary binary, BuildContext context) async {
       EnvoyToast(
         replaceExisting: true,
         duration: const Duration(seconds: 6),
-        //TODO: Localize
-        message: "An unexpected error occurred. Please try again.",
+        message: S().menu_toast_unexpectedError,
         isDismissible: true,
         onActionTap: () {
           EnvoyToast.dismissPreviousToasts(context);

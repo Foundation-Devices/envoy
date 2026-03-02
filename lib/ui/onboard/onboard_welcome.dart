@@ -85,14 +85,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
           await LocalStorage().secureStorage.deleteAll();
           await Future.delayed(const Duration(milliseconds: 500));
           scaffold.showSnackBar(
-            const SnackBar(
-              content: Text("Envoy Seed deleted!"), // TODO: FIGMA
+            SnackBar(
+              content: Text(S().menu_toast_envoySeedDeleted),
             ),
           );
         } on Exception catch (_) {
           scaffold.showSnackBar(
-            const SnackBar(
-              content: Text("Couldn't delete Envoy Seed!"), // TODO: FIGMA
+            SnackBar(
+              content: Text(S().menu_toast_couldntDeleteEnvoySeed),
             ),
           );
         }
@@ -143,7 +143,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             if (escapeHatchAccessed) {
               Settings().skipPrimeSecurityCheck = true;
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Security check disabled")),
+                SnackBar(content: Text(S().menu_toast_securityCheckDisabled)),
               );
             }
           },

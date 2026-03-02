@@ -164,6 +164,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "accounts_toast_newUpdate": MessageLookupByLibrary.simpleMessage(
           "New Update - See what’s new.",
         ),
+        "accounts_toast_paymentCopied": MessageLookupByLibrary.simpleMessage(
+          "Payment ID copied to clipboard.",
+        ),
+        "accounts_toast_txidCopied": MessageLookupByLibrary.simpleMessage(
+          "Transaction ID copied to clipboard.",
+        ),
         "accounts_upgradeBdkSignetModal_content":
             MessageLookupByLibrary.simpleMessage(
           "Envoy ahora usa Signet Global en lugar de Mutinynet. Se han eliminado tus cuentas de Signet anteriores. \n\nPara empezar a usar Signet Global, ve a Ajustes y activa el botón Signet.",
@@ -557,6 +563,18 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "buy_bitcoin_purchaseError_purchaseID":
             MessageLookupByLibrary.simpleMessage("ID de compra:"),
+        "buy_defineLocation_selectState": MessageLookupByLibrary.simpleMessage(
+          "Select State",
+        ),
+        "camera_toast_couldntDecodeUr": MessageLookupByLibrary.simpleMessage(
+          "Couldn’t decode UR.",
+        ),
+        "camera_toast_notAValidAddress": MessageLookupByLibrary.simpleMessage(
+          "Not a valid address.",
+        ),
+        "camera_toast_notAValidSeed": MessageLookupByLibrary.simpleMessage(
+          "Not a valid seed.",
+        ),
         "card_coin_locked": MessageLookupByLibrary.simpleMessage(
           "Moneda Bloqueada",
         ),
@@ -914,6 +932,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Las etiquetas son una forma útil de organizar tus monedas.",
         ),
+        "create_first_tag_modal_2_2_ie_text_field":
+            MessageLookupByLibrary.simpleMessage("Enter new tag i.e. Exchange"),
         "create_first_tag_modal_2_2_suggest":
             MessageLookupByLibrary.simpleMessage(
           "Sugerencias",
@@ -990,7 +1010,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "devices_connectingToPrime_header":
             MessageLookupByLibrary.simpleMessage(
-          "Connecting to Prime",
+          "Connecting to Passport",
         ),
         "devices_empty_modal_video_cta1": MessageLookupByLibrary.simpleMessage(
           "Comprar Passport",
@@ -1787,6 +1807,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unpair Existing Prime"),
         "manage_deviceDetailsReconnectQL_reconnect":
             MessageLookupByLibrary.simpleMessage("Re-connect QuantumLink"),
+        "manage_deviceDetailsUnpairedModalWarning_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Passport\'s QuantumLink connection is no longer available. If you recently erased Passport or unpaired Envoy, this is expected. If you didn\'t, please contact support.\nEnvoy will now remove the device from your phone\'s Bluetooth accessory list.",
+        ),
+        "manage_deviceDetailsUnpairedModalWarning_header":
+            MessageLookupByLibrary.simpleMessage("QuantumLink Disconnected"),
+        "manage_deviceDetailsUnpairedModal_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Passport Prime has been unpaired. Envoy will now remove the device from the Bluetooth accessory list of your phone.",
+        ),
+        "manage_deviceDetailsUnpairedModal_header":
+            MessageLookupByLibrary.simpleMessage("Passport Unpaired"),
         "manage_deviceDetailsUnpaired_pairAgain":
             MessageLookupByLibrary.simpleMessage("Pair Again"),
         "manage_device_deletePassportWarning":
@@ -1795,7 +1827,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "manage_device_details_QuantumLink":
             MessageLookupByLibrary.simpleMessage(
-          "Quantum Link",
+          "QuantumLink",
         ),
         "manage_device_details_active": MessageLookupByLibrary.simpleMessage(
           "Active",
@@ -2126,6 +2158,27 @@ class MessageLookup extends MessageLookupByLibrary {
         "menu_privacy": MessageLookupByLibrary.simpleMessage("Privacidad"),
         "menu_settings": MessageLookupByLibrary.simpleMessage("AJUSTES"),
         "menu_support": MessageLookupByLibrary.simpleMessage("AYUDA"),
+        "menu_toast_accountAlreadyConnected":
+            MessageLookupByLibrary.simpleMessage(
+          "Account already connected.",
+        ),
+        "menu_toast_couldntDeleteEnvoySeed":
+            MessageLookupByLibrary.simpleMessage(
+          "Couldn’t delete Envoy seed.",
+        ),
+        "menu_toast_envoySeedDeleted": MessageLookupByLibrary.simpleMessage(
+          "Envoy seed deleted.",
+        ),
+        "menu_toast_logsCopied": MessageLookupByLibrary.simpleMessage(
+          "Logs copied to clipboard.",
+        ),
+        "menu_toast_securityCheckDisabled":
+            MessageLookupByLibrary.simpleMessage(
+          "Security check disabled",
+        ),
+        "menu_toast_unexpectedError": MessageLookupByLibrary.simpleMessage(
+          "An unexpected error occurred. Please try again.",
+        ),
         "onboardin_unifiedAccountsModal_content":
             MessageLookupByLibrary.simpleMessage(
           "A partir de la versión 2.0.0, todos los tipos de dirección son accesibles desde una única cuenta.\n\nEl tipo de dirección de recepción por defecto se puede cambiar en Ajustes.",
@@ -2743,8 +2796,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_QrScan_saveToFile": MessageLookupByLibrary.simpleMessage(
           "Save to File",
         ),
-        "send_QuantumReview_transactionTransferred":
-            MessageLookupByLibrary.simpleMessage("Transaction transfered"),
         "send_build_amount": MessageLookupByLibrary.simpleMessage("Amount"),
         "send_build_header": MessageLookupByLibrary.simpleMessage(
           "Check Transaction Details",
@@ -2861,7 +2912,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_quantumReview_connectedToPassport":
             MessageLookupByLibrary.simpleMessage("Connected to Passport"),
         "send_quantumReview_transactionTransferred":
-            MessageLookupByLibrary.simpleMessage("Transaction transferred"),
+            MessageLookupByLibrary.simpleMessage("Transaction Transferred"),
         "send_quantumReview_transferringTransaction":
             MessageLookupByLibrary.simpleMessage("Transferring Transaction "),
         "send_quantumReview_waitForSigning":

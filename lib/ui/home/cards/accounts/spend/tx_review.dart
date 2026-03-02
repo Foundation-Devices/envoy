@@ -50,7 +50,7 @@ import 'package:envoy/ui/home/cards/accounts/spend/choose_coins_widget.dart';
 final transferTransactionStateProvider =
     StateNotifierProvider<StepNotifier, StepModel>((ref) {
   return StepNotifier(
-    stepName: "Transferring Transaction",
+    stepName: S().send_quantumReview_transferringTransaction,
     state: EnvoyStepState.IDLE,
   );
 });
@@ -161,11 +161,11 @@ class _TxReviewState extends ConsumerState<TxReview> {
 
   void _resetPrimeProviderStates() {
     ref.read(transferTransactionStateProvider.notifier).updateStep(
-          "Transferring Transaction", //TODO: localazy
+          S().send_quantumReview_transferringTransaction,
           EnvoyStepState.IDLE,
         );
     ref.read(signTransactionStateProvider.notifier).updateStep(
-          "Waiting for Signing ", //TODO: localazy
+          S().send_quantumReview_waitingForSigning,
           EnvoyStepState.IDLE,
         );
   }
@@ -626,7 +626,7 @@ class _TransactionReviewScreenState
               .decodePrimePsbt(providerScope, signedPsbt.psbt);
 
           ref.read(signTransactionStateProvider.notifier).updateStep(
-                "Transaction ready", //TODO: localazy
+                S().send_quantumSend_transactionready,
                 EnvoyStepState.FINISHED,
               );
         } catch (e, stack) {
@@ -692,7 +692,7 @@ class _TransactionReviewScreenState
       );
     } else {
       _primeConnectionState = StepModel(
-        stepName: "Reconnecting to Prime", // TODO: localazy
+        stepName: S().devices_reconnecting_content,
         state: EnvoyStepState.LOADING,
       );
     }

@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class AztecoConnectionModalFail extends StatefulWidget {
   final PageController controller;
@@ -19,11 +20,10 @@ class _AztecoRedeemModalFail extends State<AztecoConnectionModalFail> {
   @override
   Widget build(BuildContext context) {
     return EnvoyPopUp(
-      title: "Unable to Connect", // TODO: FIGMA
-      content:
-          "Envoy is unable to connect with Azteco. Please contact support@azte.co or try again later.", // TODO: FIGMA
+      title: S().azteco_connection_modal_fail_heading,
+      content: S().azteco_connection_modal_fail_subheading,
       showCloseButton: true,
-      primaryButtonLabel: "Continue", // TODO: FIGMA
+      primaryButtonLabel: S().component_continue,
       onPrimaryButtonTap: (context) {
         Navigator.of(context).pop();
       },
