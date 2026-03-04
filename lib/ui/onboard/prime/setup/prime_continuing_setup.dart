@@ -104,7 +104,10 @@ class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
           await Future.delayed(const Duration(milliseconds: 200));
           if (Platform.isIOS) {
             final id = qlConnection.deviceId;
-            await BluetoothChannel().removeAccessory(id);
+            final removed = await BluetoothChannel().removeAccessory(id);
+            if (!removed) {
+              return;
+            }
           }
           completer.complete(true);
           if (context.mounted) {

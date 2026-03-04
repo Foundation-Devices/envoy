@@ -286,6 +286,11 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
                 .removeAccessory(onboardingQlConnection!.deviceId);
             if (removed) {
               await onboardingQlConnection.disconnect();
+            } else {
+              setState(() {
+                canPop = false;
+              });
+              return;
             }
             setState(() {
               canPop = removed;

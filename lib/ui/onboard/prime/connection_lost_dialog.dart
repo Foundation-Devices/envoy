@@ -204,6 +204,8 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
                             .removeAccessory(onboardingDevice!.deviceId);
                         if (removed) {
                           await onboardingDevice.disconnect();
+                        } else {
+                          return;
                         }
                       }
                     } catch (e, stack) {
