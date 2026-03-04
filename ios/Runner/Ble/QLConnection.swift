@@ -216,6 +216,7 @@ class QLConnection: NSObject {
     func connect(peripheral: CBPeripheral) {
         print("\(Self.TAG) [\(deviceId)] Connecting to: \(peripheral.name ?? "Unknown") (\(peripheral.identifier))")
 
+
         // Close existing connection if any
         if let existingPeripheral = connectedPeripheral, existingPeripheral.identifier != peripheral.identifier {
             print("\(Self.TAG) [\(deviceId)] Closing existing connection")
@@ -729,7 +730,12 @@ extension QLConnection {
 
     /// Called when the device fails to connect
     func onDidFailToConnect(peripheral: CBPeripheral, error: Error?) {
+        let cbError = error as? CBError
+        let cbErrorCode = cbError.map { "\($0.code.rawValue) (\($0.code))" } ?? "nil"
         print("\(Self.TAG) [\(deviceId)] Failed to connect to peripheral: \(error?.localizedDescription ?? "Unknown error")")
+        print("\(Self.TAG) [\(deviceId)]   - CBError code: \(cbErrorCode)")
+        print("\(Self.TAG) [\(deviceId)]   - peripheral.state: \(peripheral.state.rawValue)")
+        print("\(Self.TAG) [\(deviceId)]   - connectedPeripheral: \(String(describing: connectedPeripheral?.identifier))")
         connectedPeripheral = nil
         deviceReady = false
 

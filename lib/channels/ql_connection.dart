@@ -229,13 +229,13 @@ class QLConnection with EnvoyMessageWriter {
 
   // send exchange rate history on ble connect.
   void onQLConnected() async {
-    kPrint("[$deviceId] QL Connected");
+    kPrint("[$deviceId] onQLConnected ");
     if (getDevice()?.onboardingComplete == true && !_sendingExRate) {
       try {
         _sendingExRate = true;
-        qlHandler.bleAccountHandler.sendExchangeRateHistory();
+        await qlHandler.bleAccountHandler.sendExchangeRateHistory();
         await Future.delayed(const Duration(seconds: 1));
-        qlHandler.bleAccountHandler.sendExchangeRate();
+        await qlHandler.bleAccountHandler.sendExchangeRate();
       } finally {
         _sendingExRate = false;
       }
