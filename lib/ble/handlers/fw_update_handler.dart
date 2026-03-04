@@ -47,6 +47,7 @@ class FwUpdateHandler extends PassportMessageHandler {
   // Transfer rate estimator
   // reset this every time a new transfer starts
   final _transferEstimator = TransferRateEstimator();
+  StreamSubscription<WriteProgress>? _writeProgressSubscription;
 
   final _fetchState = StreamController<FwUpdateState>.broadcast();
   final _downloadState = StreamController<FwUpdateState>.broadcast();
@@ -178,7 +179,9 @@ class FwUpdateHandler extends PassportMessageHandler {
     // reset this every time a new transfer starts
     _transferEstimator.reset();
 
-    qlConnection.writeProgressStream().listen((progress) {
+    _writeProgressSubscription?.cancel();
+    _writeProgressSubscription =
+        qlConnection.writeProgressStream().listen((progress) {
       if (progress.id == tempFile.path) {
         _processProgress(progress);
       }
@@ -375,5 +378,16 @@ class FwUpdateHandler extends PassportMessageHandler {
       FwTransferProgress(progress: 0, remainingTime: ""),
     );
     newVersion = "";
+  }
+
+  @override
+  void dispose() {
+    _writeProgressSubscription?.cancel();
+    _fetchState.close();
+    _downloadState.close();
+    _transferState.close();
+    _primeFwUpdate.close();
+    _transferProgress.close();
+    super.dispose();
   }
 }

@@ -66,6 +66,7 @@ class BluetoothChannel {
   /// Get or create a device channel for the given device ID.
   /// This creates the device-specific channels if they don't exist.
   QLConnection getDeviceChannel(String deviceId, {bool reset = false}) {
+    kPrint("Requesting device channel for deviceId=$deviceId reset=$reset");
     if (reset) {
       _deviceChannels[deviceId]?.dispose();
       _deviceChannels.remove(deviceId);
