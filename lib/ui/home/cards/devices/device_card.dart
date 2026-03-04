@@ -16,7 +16,6 @@ import 'package:envoy/ui/home/cards/devices/device_list_tile.dart';
 import 'package:envoy/ui/home/cards/text_entry.dart';
 import 'package:envoy/ui/home/home_page.dart';
 import 'package:envoy/ui/home/home_state.dart';
-import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/routes/devices_router.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
@@ -322,77 +321,57 @@ class _PrimeOptionsWidgetState extends ConsumerState<PrimeOptionsWidget> {
         : devicePixelRatio >= 2.0
             ? EnvoySpacing.medium1
             : EnvoySpacing.small;
-    //missing QL keys.
-    final unpaired = widget.device.xid == null || widget.device.xid!.isEmpty;
 
-    final needsBleRepair = deviceRemovedFromHostSystemSettings && !unpaired;
-
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: deviceRemovedFromHostSystemSettings
-          ? MainAxisAlignment.spaceBetween
-          : MainAxisAlignment.center,
-      children: [
-        if (needsBleRepair && Platform.isIOS)
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              EnvoyIcon(
-                EnvoyIcons.alert,
-                color: NewEnvoyColor.lightcopper500,
-                size: EnvoyIconSize.extraSmall,
-              ),
-              SizedBox(height: EnvoySpacing.xs),
-              Text(
-                S().device_deviceDetailsPrimeRemoved_accessoryRemoved,
-                style: EnvoyTypography.body.copyWith(
+    return ColoredBox(
+      color: Colors.transparent,
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: deviceRemovedFromHostSystemSettings
+            ? MainAxisAlignment.spaceBetween
+            : MainAxisAlignment.end,
+        children: [
+          if (deviceRemovedFromHostSystemSettings)
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                EnvoyIcon(
+                  EnvoyIcons.alert,
                   color: NewEnvoyColor.lightcopper500,
+                  size: EnvoyIconSize.extraSmall,
                 ),
-                textAlign: TextAlign.center,
-              )
-            ],
-          ),
-        if (needsBleRepair)
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: EnvoySpacing.medium2,
-                vertical: verticalActionPadding),
-            child: EnvoyButton(
-                Platform.isIOS
-                    ? S()
-                        .device_deviceDetailsPrimeRemoved_completeAccessorySetup
-                    : S().device_deviceDetailsPrimeRemoved_pairPassportAgain,
-                onTap: () async {
-              if (deviceRemovedFromHostSystemSettings) {
-                final qlConnection = await BluetoothChannel().setupBle(
-                    widget.device.bleId,
-                    widget.device.color == Colors.black ? 0 : 1);
-                //after repairing the connection,  restore XID's
-                await qlConnection.reconnect(widget.device);
-                widget.onRepairComplete.call();
-              }
-            }),
-          ),
-        if (unpaired)
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: EnvoySpacing.medium2,
-                vertical: verticalActionPadding),
-            child: EnvoyButton(S().manage_deviceDetailsUnpaired_pairAgain,
-                onTap: () async {
-              context.pushNamed(ONBOARD_PRIME, queryParameters: {
-                "p": Platform.isIOS
-                    ? widget.device.peripheralId
-                    : widget.device.bleId,
-                "o": "1",
-                "c": widget.device.deviceColor == DeviceColor.light ? "0" : "1"
-              });
-            }),
-          ),
-        SizedBox(height: EnvoySpacing.xs),
-      ],
+                SizedBox(height: EnvoySpacing.xs),
+                Text(S().device_deviceDetailsPrimeRemoved_accessoryRemoved,
+                    style: EnvoyTypography.body.copyWith(
+                      color: NewEnvoyColor.lightcopper500,
+                    ))
+              ],
+            ),
+          if (deviceRemovedFromHostSystemSettings)
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: EnvoySpacing.medium2,
+                  vertical: verticalActionPadding),
+              child: EnvoyButton(
+                  Platform.isIOS
+                      ? S()
+                          .device_deviceDetailsPrimeRemoved_completeAccessorySetup
+                      : S().device_deviceDetailsPrimeRemoved_pairPassportAgain,
+                  onTap: () async {
+                if (deviceRemovedFromHostSystemSettings) {
+                  final qlConnection = await BluetoothChannel().setupBle(
+                      widget.device.bleId,
+                      widget.device.color == Colors.black ? 0 : 1);
+                  //after repairing the connection,  restore XID's
+                  await qlConnection.reconnect(widget.device);
+                  widget.onRepairComplete.call();
+                }
+              }),
+            ),
+          SizedBox(height: EnvoySpacing.xs),
+        ],
+      ),
     );
   }
 }
@@ -490,18 +469,16 @@ class _DeviceOptionsState extends ConsumerState<DeviceOptions> {
                 content: S().manage_device_deletePassportWarning,
                 primaryButtonLabel: S().component_unpair,
                 primaryButtonColor: EnvoyColors.warning,
-                onPrimaryButtonTap: (context) async {
-                  await Devices().deleteDevice(widget.device);
+                onPrimaryButtonTap: (context) {
+                  Devices().deleteDevice(widget.device);
 
                   // Pop the dialog
-                  if (context.mounted && Navigator.canPop(context)) {
+                  if (Navigator.canPop(context)) {
                     Navigator.pop(context);
                   }
 
                   // Go back to devices list
-                  if (context.mounted) {
-                    context.go(ROUTE_DEVICES);
-                  }
+                  context.go(ROUTE_DEVICES);
                 },
                 secondaryButtonLabel: S().component_cancel,
                 onSecondaryButtonTap: (context) {

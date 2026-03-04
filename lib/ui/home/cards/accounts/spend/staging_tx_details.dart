@@ -384,7 +384,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails> {
                     ),
                     const SizedBox(height: EnvoySpacing.xs),
                     EnvoyButton(
-                      S().component_learnMore,
+                      S().coincontrol_tx_detail_high_fee_info_overlay_learnMore,
                       type: EnvoyButtonTypes.tertiary,
                       onTap: () {
                         launchUrl(

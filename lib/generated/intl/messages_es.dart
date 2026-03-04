@@ -161,15 +161,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "accounts_toastNewUpdate_content": MessageLookupByLibrary.simpleMessage(
           "New Update - See what’s new.",
         ),
-        "accounts_toast_newUpdate": MessageLookupByLibrary.simpleMessage(
-          "New Update - See what’s new.",
-        ),
-        "accounts_toast_paymentCopied": MessageLookupByLibrary.simpleMessage(
-          "Payment ID copied to clipboard.",
-        ),
-        "accounts_toast_txidCopied": MessageLookupByLibrary.simpleMessage(
-          "Transaction ID copied to clipboard.",
-        ),
         "accounts_upgradeBdkSignetModal_content":
             MessageLookupByLibrary.simpleMessage(
           "Envoy ahora usa Signet Global en lugar de Mutinynet. Se han eliminado tus cuentas de Signet anteriores. \n\nPara empezar a usar Signet Global, ve a Ajustes y activa el botón Signet.",
@@ -273,10 +264,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "azteco_redeem_modal_success_subheading":
             MessageLookupByLibrary.simpleMessage(
           "En breve aparecerá una transacción entrante en tu cuenta.",
-        ),
-        "backup_toast_envoyBackupComplete":
-            MessageLookupByLibrary.simpleMessage(
-          "Envoy backup is complete.",
         ),
         "backups_advancedBackups": MessageLookupByLibrary.simpleMessage(
           "Copias de Seguridad Avanzadas",
@@ -563,15 +550,6 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "buy_bitcoin_purchaseError_purchaseID":
             MessageLookupByLibrary.simpleMessage("ID de compra:"),
-        "buy_defineLocation_selectState": MessageLookupByLibrary.simpleMessage(
-          "Select State",
-        ),
-        "camera_toast_notAValidAddress": MessageLookupByLibrary.simpleMessage(
-          "Not a valid address.",
-        ),
-        "camera_toast_notAValidSeed": MessageLookupByLibrary.simpleMessage(
-          "Not a valid seed.",
-        ),
         "card_coin_locked": MessageLookupByLibrary.simpleMessage(
           "Moneda Bloqueada",
         ),
@@ -614,10 +592,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_lock_coin_modal_subheading":
             MessageLookupByLibrary.simpleMessage(
           "Bloquear monedas evitará que se utilicen en transacciones.",
-        ),
-        "coincontrol_subsat_selectorWarning":
-            MessageLookupByLibrary.simpleMessage(
-          "Less than 1 sat/vb is an advanced feature. ",
         ),
         "coincontrol_switchActivity": MessageLookupByLibrary.simpleMessage(
           "Actividad",
@@ -707,6 +681,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "coincontrol_tx_detail_heading": MessageLookupByLibrary.simpleMessage(
           "Transacción lista para ser enviada",
         ),
+        "coincontrol_tx_detail_high_fee_info_overlay_learnMore":
+            MessageLookupByLibrary.simpleMessage("Más información"),
         "coincontrol_tx_detail_high_fee_info_overlay_subheading":
             MessageLookupByLibrary.simpleMessage(
           "Algunas de las monedas más pequeñas han sido excluidas de esta transacción. Con el coste de envío seleccionado, cuesta más incluirlas de lo que valen.",
@@ -880,8 +856,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Comprar"),
         "component_next": MessageLookupByLibrary.simpleMessage("Siguiente"),
         "component_no": MessageLookupByLibrary.simpleMessage("No"),
-        "component_notificationText": MessageLookupByLibrary.simpleMessage(
-          "Issue establishing Tor connectivity",
+        "component_notificationLink": MessageLookupByLibrary.simpleMessage(
+          "Learn more",
         ),
         "component_ok": MessageLookupByLibrary.simpleMessage("OK"),
         "component_recover": MessageLookupByLibrary.simpleMessage("Recuperar"),
@@ -971,14 +947,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Tu cartera se ha eliminado con éxito",
         ),
-        "descriptor_toast_descriptorCopied":
-            MessageLookupByLibrary.simpleMessage(
-          "Descriptor copied to clipboard.",
-        ),
-        "descriptor_toast_signatureCopied":
-            MessageLookupByLibrary.simpleMessage(
-          "Signature copied to clipboard.",
-        ),
         "device_deviceDetailsPrimeRemoved_accessoryRemoved":
             MessageLookupByLibrary.simpleMessage(
           "Accessory removed, please reconnect Prime.",
@@ -1005,7 +973,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "devices_connectingToPrime_header":
             MessageLookupByLibrary.simpleMessage(
-          "Connecting to Passport",
+          "Connecting to Prime",
         ),
         "devices_empty_modal_video_cta1": MessageLookupByLibrary.simpleMessage(
           "Comprar Passport",
@@ -1802,18 +1770,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unpair Existing Prime"),
         "manage_deviceDetailsReconnectQL_reconnect":
             MessageLookupByLibrary.simpleMessage("Re-connect QuantumLink"),
-        "manage_deviceDetailsUnpairedModalWarning_content":
-            MessageLookupByLibrary.simpleMessage(
-          "Passport\'s QuantumLink connection is no longer available. If you recently erased Passport or unpaired Envoy, this is expected. If you didn\'t, please contact support.\nEnvoy will now remove the device from your phone\'s Bluetooth accessory list.",
-        ),
-        "manage_deviceDetailsUnpairedModalWarning_header":
-            MessageLookupByLibrary.simpleMessage("QuantumLink Disconnected"),
-        "manage_deviceDetailsUnpairedModal_content":
-            MessageLookupByLibrary.simpleMessage(
-          "Passport Prime has been unpaired. Envoy will now remove the device from the Bluetooth accessory list of your phone.",
-        ),
-        "manage_deviceDetailsUnpairedModal_header":
-            MessageLookupByLibrary.simpleMessage("Passport Unpaired"),
         "manage_deviceDetailsUnpaired_pairAgain":
             MessageLookupByLibrary.simpleMessage("Pair Again"),
         "manage_device_deletePassportWarning":
@@ -1822,7 +1778,7 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "manage_device_details_QuantumLink":
             MessageLookupByLibrary.simpleMessage(
-          "QuantumLink",
+          "Quantum Link",
         ),
         "manage_device_details_active": MessageLookupByLibrary.simpleMessage(
           "Active",
@@ -2153,27 +2109,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "menu_privacy": MessageLookupByLibrary.simpleMessage("Privacidad"),
         "menu_settings": MessageLookupByLibrary.simpleMessage("AJUSTES"),
         "menu_support": MessageLookupByLibrary.simpleMessage("AYUDA"),
-        "menu_toast_accountAlreadyConnected":
-            MessageLookupByLibrary.simpleMessage(
-          "Account already connected.",
-        ),
-        "menu_toast_couldntDeleteEnvoySeed":
-            MessageLookupByLibrary.simpleMessage(
-          "Couldn’t delete Envoy seed.",
-        ),
-        "menu_toast_envoySeedDeleted": MessageLookupByLibrary.simpleMessage(
-          "Envoy seed deleted.",
-        ),
-        "menu_toast_logsCopied": MessageLookupByLibrary.simpleMessage(
-          "Logs copied to clipboard.",
-        ),
-        "menu_toast_securityCheckDisabled":
-            MessageLookupByLibrary.simpleMessage(
-          "Security check disabled",
-        ),
-        "menu_toast_unexpectedError": MessageLookupByLibrary.simpleMessage(
-          "An unexpected error occurred. Please try again.",
-        ),
         "onboardin_unifiedAccountsModal_content":
             MessageLookupByLibrary.simpleMessage(
           "A partir de la versión 2.0.0, todos los tipos de dirección son accesibles desde una única cuenta.\n\nEl tipo de dirección de recepción por defecto se puede cambiar en Ajustes.",
@@ -2202,17 +2137,6 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_advanced_title": MessageLookupByLibrary.simpleMessage(
           "Avanzado",
-        ),
-        "onboarding_appclip_header": MessageLookupByLibrary.simpleMessage(
-          "Welcome to Passport ",
-        ),
-        "onboarding_appclip_subheaderCore":
-            MessageLookupByLibrary.simpleMessage(
-          "Install Envoy to set up your Passport Core.",
-        ),
-        "onboarding_appclip_subheaderPrime":
-            MessageLookupByLibrary.simpleMessage(
-          "Install Envoy to set up your Passport Prime.",
         ),
         "onboarding_bluetoothDisabled_content":
             MessageLookupByLibrary.simpleMessage(
@@ -2601,9 +2525,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "receive_qr_signMessage": MessageLookupByLibrary.simpleMessage(
           "Firmar Mensaje",
         ),
-        "receive_toast_addressCopied": MessageLookupByLibrary.simpleMessage(
-          "Address copied to clipboard.",
-        ),
         "receive_tx_list_awaitingConfirmation":
             MessageLookupByLibrary.simpleMessage("Esperando confirmación"),
         "receive_tx_list_change":
@@ -2769,13 +2690,6 @@ class MessageLookup extends MessageLookupByLibrary {
           "Rescanning started. Please do not close Envoy.",
         ),
         "rescanAccount_toast_rescanningSuccessful": m19,
-        "scanner_toast_failedConnectPrime":
-            MessageLookupByLibrary.simpleMessage(
-          "Failed to connect to Passport Prime. Please try again and contact support if issue persists.",
-        ),
-        "scanner_toast_notValidQr": MessageLookupByLibrary.simpleMessage(
-          "Not a valid QR.",
-        ),
         "scv_cameraModalUnexpectedQrFormat_content":
             MessageLookupByLibrary.simpleMessage(
           "Ensure you are scanning a security check QR code from Passport.",
@@ -2791,6 +2705,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_QrScan_saveToFile": MessageLookupByLibrary.simpleMessage(
           "Save to File",
         ),
+        "send_QuantumReview_transactionTransferred":
+            MessageLookupByLibrary.simpleMessage("Transaction transfered"),
         "send_build_amount": MessageLookupByLibrary.simpleMessage("Amount"),
         "send_build_header": MessageLookupByLibrary.simpleMessage(
           "Check Transaction Details",
@@ -2801,8 +2717,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_build_viewEditDetails": MessageLookupByLibrary.simpleMessage(
           "View and Edit Details",
         ),
-        "send_editTxDetailsSubsatModal_activate":
-            MessageLookupByLibrary.simpleMessage("Activate"),
         "send_editTxDetailsSubsatModal_content":
             MessageLookupByLibrary.simpleMessage(
           "Check that the connected node can facilitate fee rates below 1 sat/vb before continuing.",
@@ -2907,7 +2821,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "send_quantumReview_connectedToPassport":
             MessageLookupByLibrary.simpleMessage("Connected to Passport"),
         "send_quantumReview_transactionTransferred":
-            MessageLookupByLibrary.simpleMessage("Transaction Transferred"),
+            MessageLookupByLibrary.simpleMessage("Transaction transferred"),
         "send_quantumReview_transferringTransaction":
             MessageLookupByLibrary.simpleMessage("Transferring Transaction "),
         "send_quantumReview_waitForSigning":
@@ -2963,9 +2877,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_advanced_receiveToTaproot":
             MessageLookupByLibrary.simpleMessage(
           "Recibir a Taproot",
-        ),
-        "settings_advanced_resetWarnings": MessageLookupByLibrary.simpleMessage(
-          "Reset all Warnings",
         ),
         "settings_advanced_signet":
             MessageLookupByLibrary.simpleMessage("Signet"),
@@ -3045,10 +2956,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "stalls_before_sending_tx_scanning_broadcasting_fail_subheading":
             MessageLookupByLibrary.simpleMessage(
           "Comprueba tu conexión e inténtalo de nuevo",
-        ),
-        "stalls_before_sending_tx_scanning_broadcasting_fail_subsat_subheading":
-            MessageLookupByLibrary.simpleMessage(
-          "Please ensure sure the connected node is able to broadcast transactions containing  sub-sat fee rates.",
         ),
         "stalls_before_sending_tx_scanning_broadcasting_success_heading":
             MessageLookupByLibrary.simpleMessage(
