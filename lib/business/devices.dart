@@ -331,15 +331,21 @@ class Devices extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteDevice(Device device) async {
+  Future deleteDevice(Device device) async {
     if (device.type == DeviceType.passportPrime) {
       final qlConnection = device.qlConnection();
-      BluetoothChannel().removeDeviceChannel(qlConnection.deviceId);
       if (Platform.isIOS) {
-        final removed =
-            await BluetoothChannel().removeAccessory(qlConnection.deviceId);
-        if (removed) {
-          await qlConnection.disconnect();
+        try {
+          final removed =
+              await BluetoothChannel().removeAccessory(qlConnection.deviceId);
+          if (removed) {
+            BluetoothChannel().removeDeviceChannel(qlConnection.deviceId);
+            await qlConnection.disconnect();
+          } else {
+            return;
+          }
+        } catch (e) {
+          return;
         }
       } else if (Platform.isAndroid) {
         await qlConnection.disconnect();
