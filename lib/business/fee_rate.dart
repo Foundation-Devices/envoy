@@ -2,39 +2,84 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/// A fee rate value that converts between the units used across the stack:
+/// Represents a Bitcoin fee rate.
 ///
-/// - **sat/vB**  — the human-readable unit shown in the UI and stored in [FeeRates].
-/// - **sat/kvB** — the API boundary unit accepted/returned by ngwallet (BigInt).
+/// Stored internally as **sat/kvB** (integer) — the unit ngwallet uses —
+/// so the value is always exact with no floating-point rounding.
 ///
-/// Relationship: 1 sat/vB = 1 000 sat/kvB
+/// Sub-sat rates are representable: 0.5 sat/vB = 500 sat/kvB (still an int).
 ///
-/// Usage:
 /// ```dart
-/// // UI → ngwallet API
-/// final rate = FeeRate.fromSatPerVb(feeRate);
-/// params = TransactionParams(feeRate: rate.satPerKvb, ...);
+/// // From display input
+/// FeeRate.fromSatPerVb(5)       // 5 sat/vB
+/// FeeRate.fromSatPerVb(0.99)    // 0.99 sat/vB (sub-sat)
 ///
-/// // ngwallet API → UI
-/// final rate = FeeRate.fromSatPerKvb(transaction.feeRate);
-/// display(rate.satPerVb);
+/// // From ngwallet BigInt
+/// FeeRate.fromBigInt(tx.feeRate.field0)
+///
+/// // From internal int sat/kvB
+/// FeeRate.fromSatPerKvb(1000)   // 1 sat/vB
+///
+/// // Read back
+/// rate.satPerVb       // double — for display
+/// rate.satPerKvb      // int   — for state arithmetic
+/// rate.asBigInt       // BigInt — for ngwallet API calls
+/// rate.displayString  // "1", "5", "0.99", "0.5"
 /// ```
 class FeeRate {
-  final double _satPerVb;
+  final int _satPerKvb;
 
-  /// Construct from the UI/display unit (sat/vB).
-  const FeeRate.fromSatPerVb(double satPerVb) : _satPerVb = satPerVb;
+  FeeRate._(this._satPerKvb);
 
-  /// Construct from the ngwallet API unit (sat/kvB).
-  FeeRate.fromSatPerKvb(BigInt satPerKvb)
-      : _satPerVb = satPerKvb.toDouble() / 1000;
+  /// From sat/vB — the human-visible unit. Accepts int or double.
+  factory FeeRate.fromSatPerVb(num satPerVb) =>
+      FeeRate._((satPerVb * 1000).round());
 
-  /// Rate for display in the UI (sat/vB).
-  double get satPerVb => _satPerVb;
+  /// From sat/kvB integer — the internal arithmetic unit.
+  FeeRate.fromSatPerKvb(int satPerKvb) : _satPerKvb = satPerKvb;
 
-  /// Rate for the ngwallet API boundary (sat/kvB).
-  BigInt get satPerKvb => BigInt.from((_satPerVb * 1000).round());
+  /// From ngwallet's BigInt sat/kvB.
+  FeeRate.fromBigInt(BigInt satPerKvb) : _satPerKvb = satPerKvb.toInt();
 
-  /// True when the rate is below 1 sat/vB (sub-sat transaction).
-  bool get isSubSat => _satPerVb < 1.0;
+  /// sat/vB as double — use for display only.
+  double get satPerVb => _satPerKvb / 1000.0;
+
+  /// sat/kvB as int — use for state and arithmetic.
+  int get satPerKvb => _satPerKvb;
+
+  /// sat/kvB as BigInt — use when calling ngwallet.
+  BigInt get asBigInt => BigInt.from(_satPerKvb);
+
+  /// True when the rate is below 1 sat/vB.
+  bool get isSubSat => _satPerKvb < 1000;
+
+  /// Formatted sat/vB for display: 1000 → "1", 990 → "0.99", 500 → "0.5".
+  String get displayString {
+    if (_satPerKvb % 1000 == 0) return '${_satPerKvb ~/ 1000}';
+    return (_satPerKvb / 1000.0)
+        .toStringAsFixed(2)
+        .replaceAll(RegExp(r'0+$'), '');
+  }
+
+  FeeRate operator +(FeeRate other) => FeeRate._(_satPerKvb + other._satPerKvb);
+
+  bool operator <(FeeRate other) => _satPerKvb < other._satPerKvb;
+  bool operator <=(FeeRate other) => _satPerKvb <= other._satPerKvb;
+  bool operator >(FeeRate other) => _satPerKvb > other._satPerKvb;
+  bool operator >=(FeeRate other) => _satPerKvb >= other._satPerKvb;
+
+  /// Clamps this fee rate to the [min]..[max] range.
+  FeeRate clamp(FeeRate min, FeeRate max) =>
+      FeeRate._(_satPerKvb.clamp(min._satPerKvb, max._satPerKvb));
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FeeRate && other._satPerKvb == _satPerKvb;
+
+  @override
+  int get hashCode => _satPerKvb.hashCode;
+
+  @override
+  String toString() => '$displayString sat/vB';
 }

@@ -156,15 +156,14 @@ class _TransactionsDetailsWidgetState
       setState(() {
         _checkingBoost = false;
       });
-      int minRate = FeeRate.fromSatPerKvb(result.minFeeRate).satPerVb.round();
-      int maxRate = FeeRate.fromSatPerKvb(result.maxFeeRate).satPerVb.round();
-      int fasterFeeRate = minRate + 1;
+      FeeRate minRate = FeeRate.fromBigInt(result.minFeeRate.field0);
+      FeeRate maxRate = FeeRate.fromBigInt(result.maxFeeRate.field0);
+      FeeRate fasterFeeRate = minRate + FeeRate.fromSatPerVb(1);
       if (minRate == maxRate) {
         fasterFeeRate = maxRate;
-      } else {
-        if (minRate < maxRate) {
-          fasterFeeRate = (minRate + 1).clamp(minRate, maxRate);
-        }
+      } else if (minRate < maxRate) {
+        fasterFeeRate =
+            (minRate + FeeRate.fromSatPerVb(1)).clamp(minRate, maxRate);
       }
       ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
         standardFeeRate: minRate,

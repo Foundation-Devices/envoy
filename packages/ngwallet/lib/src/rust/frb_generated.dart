@@ -16,6 +16,7 @@ import 'frb_generated.io.dart'
 import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'third_party/ngwallet/config.dart';
+import 'third_party/ngwallet/fee_rate.dart';
 import 'third_party/ngwallet/send.dart';
 import 'third_party/ngwallet/sign_message.dart';
 import 'third_party/ngwallet/transaction.dart';
@@ -2790,7 +2791,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       confirmations: dco_decode_u_32(arr[2]),
       isConfirmed: dco_decode_bool(arr[3]),
       fee: dco_decode_u_64(arr[4]),
-      feeRate: dco_decode_u_64(arr[5]),
+      feeRate: dco_decode_fee_rate_sat_per_kvb(arr[5]),
       amount: dco_decode_i_64(arr[6]),
       inputs: dco_decode_list_input(arr[7]),
       address: dco_decode_String(arr[8]),
@@ -3000,6 +3001,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (arr.isNotEmpty)
       throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
     return EnvoySignMessage();
+  }
+
+  @protected
+  FeeRateSatPerKvb dco_decode_fee_rate_sat_per_kvb(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return FeeRateSatPerKvb(
+      field0: dco_decode_u_64(arr[0]),
+    );
   }
 
   @protected
@@ -3444,8 +3456,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (arr.length != 3)
       throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
     return TransactionFeeResult(
-      maxFeeRate: dco_decode_u_64(arr[0]),
-      minFeeRate: dco_decode_u_64(arr[1]),
+      maxFeeRate: dco_decode_fee_rate_sat_per_kvb(arr[0]),
+      minFeeRate: dco_decode_fee_rate_sat_per_kvb(arr[1]),
       draftTransaction: dco_decode_draft_transaction(arr[2]),
     );
   }
@@ -3459,7 +3471,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return TransactionParams(
       address: dco_decode_String(arr[0]),
       amount: dco_decode_u_64(arr[1]),
-      feeRate: dco_decode_u_64(arr[2]),
+      feeRate: dco_decode_fee_rate_sat_per_kvb(arr[2]),
       selectedOutputs: dco_decode_list_output(arr[3]),
       note: dco_decode_opt_String(arr[4]),
       tag: dco_decode_opt_String(arr[5]),
@@ -3747,7 +3759,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_confirmations = sse_decode_u_32(deserializer);
     var var_isConfirmed = sse_decode_bool(deserializer);
     var var_fee = sse_decode_u_64(deserializer);
-    var var_feeRate = sse_decode_u_64(deserializer);
+    var var_feeRate = sse_decode_fee_rate_sat_per_kvb(deserializer);
     var var_amount = sse_decode_i_64(deserializer);
     var var_inputs = sse_decode_list_input(deserializer);
     var var_address = sse_decode_String(deserializer);
@@ -3993,6 +4005,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   EnvoySignMessage sse_decode_envoy_sign_message(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return EnvoySignMessage();
+  }
+
+  @protected
+  FeeRateSatPerKvb sse_decode_fee_rate_sat_per_kvb(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_u_64(deserializer);
+    return FeeRateSatPerKvb(field0: var_field0);
   }
 
   @protected
@@ -4545,8 +4565,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TransactionFeeResult sse_decode_transaction_fee_result(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_maxFeeRate = sse_decode_u_64(deserializer);
-    var var_minFeeRate = sse_decode_u_64(deserializer);
+    var var_maxFeeRate = sse_decode_fee_rate_sat_per_kvb(deserializer);
+    var var_minFeeRate = sse_decode_fee_rate_sat_per_kvb(deserializer);
     var var_draftTransaction = sse_decode_draft_transaction(deserializer);
     return TransactionFeeResult(
         maxFeeRate: var_maxFeeRate,
@@ -4560,7 +4580,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_address = sse_decode_String(deserializer);
     var var_amount = sse_decode_u_64(deserializer);
-    var var_feeRate = sse_decode_u_64(deserializer);
+    var var_feeRate = sse_decode_fee_rate_sat_per_kvb(deserializer);
     var var_selectedOutputs = sse_decode_list_output(deserializer);
     var var_note = sse_decode_opt_String(deserializer);
     var var_tag = sse_decode_opt_String(deserializer);
@@ -4873,7 +4893,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_u_32(self.confirmations, serializer);
     sse_encode_bool(self.isConfirmed, serializer);
     sse_encode_u_64(self.fee, serializer);
-    sse_encode_u_64(self.feeRate, serializer);
+    sse_encode_fee_rate_sat_per_kvb(self.feeRate, serializer);
     sse_encode_i_64(self.amount, serializer);
     sse_encode_list_input(self.inputs, serializer);
     sse_encode_String(self.address, serializer);
@@ -5068,6 +5088,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_envoy_sign_message(
       EnvoySignMessage self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_fee_rate_sat_per_kvb(
+      FeeRateSatPerKvb self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self.field0, serializer);
   }
 
   @protected
@@ -5520,8 +5547,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_transaction_fee_result(
       TransactionFeeResult self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_u_64(self.maxFeeRate, serializer);
-    sse_encode_u_64(self.minFeeRate, serializer);
+    sse_encode_fee_rate_sat_per_kvb(self.maxFeeRate, serializer);
+    sse_encode_fee_rate_sat_per_kvb(self.minFeeRate, serializer);
     sse_encode_draft_transaction(self.draftTransaction, serializer);
   }
 
@@ -5531,7 +5558,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.address, serializer);
     sse_encode_u_64(self.amount, serializer);
-    sse_encode_u_64(self.feeRate, serializer);
+    sse_encode_fee_rate_sat_per_kvb(self.feeRate, serializer);
     sse_encode_list_output(self.selectedOutputs, serializer);
     sse_encode_opt_String(self.note, serializer);
     sse_encode_opt_String(self.tag, serializer);

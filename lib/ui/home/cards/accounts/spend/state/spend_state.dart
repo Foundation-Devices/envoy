@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
+import 'package:envoy/business/fee_rate.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -246,8 +247,8 @@ void clearSpendState(ProviderContainer ref) {
     ref.read(spendAmountProvider.notifier).state = 0;
     //reset fee to default
     if (ref.read(selectedAccountProvider) != null) {
-      ref.read(spendFeeRateProvider.notifier).state = Fees().slowRate(
-        ref.read(selectedAccountProvider)!.network,
+      ref.read(spendFeeRateProvider.notifier).state = FeeRate.fromSatPerVb(
+        Fees().slowRate(ref.read(selectedAccountProvider)!.network),
       );
     }
 

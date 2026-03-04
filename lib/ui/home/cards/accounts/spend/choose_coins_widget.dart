@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/fee_rate.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/draggable_overlay.dart';
@@ -265,9 +266,8 @@ class _ChooseCoinsWidget extends ConsumerState<ChooseCoinsWidget> {
                 final navigator = Navigator.of(context);
                 final account = ref.read(selectedAccountProvider);
 
-                ///reset fees if coin selection changed
                 ref.read(spendFeeRateProvider.notifier).state =
-                    Fees().slowRate(account!.network);
+                    FeeRate.fromSatPerVb(Fees().slowRate(account!.network));
                 ref.read(spendTransactionProvider.notifier).validate(scope);
 
                 await Future.delayed(const Duration(milliseconds: 120));

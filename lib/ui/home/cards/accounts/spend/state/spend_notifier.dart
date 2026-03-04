@@ -112,7 +112,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
   ({
     EnvoyAccount? account,
     int amount,
-    num feeRate,
+    FeeRate feeRate,
     EnvoyAccountHandler? handler,
     String sendTo,
     int spendableBalance,
@@ -185,7 +185,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       final params = TransactionParams(
         address: sendTo,
         amount: BigInt.from(amount),
-        feeRate: FeeRate.fromSatPerVb(feeRate.toDouble()).satPerKvb,
+        feeRate: FeeRateSatPerKvb(field0: feeRate.asBigInt),
         selectedOutputs: utxos,
         note: notes,
         doNotSpendChange: false,
@@ -210,10 +210,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     } catch (e, stack) {
       EnvoyReport().log("Spend", "Error composing transaction: $e");
       debugPrintStack(stackTrace: stack);
-      //reset the fee rate to the one used in the transaction
-      ref.read(spendFeeRateProvider.notifier).state = FeeRate.fromSatPerKvb(
-        state.draftTransaction?.transaction.feeRate ?? BigInt.from(1000),
-      ).satPerVb.round();
+      ref.read(spendFeeRateProvider.notifier).state = FeeRate.fromBigInt(
+        state.draftTransaction?.transaction.feeRate.field0 ?? BigInt.from(1000),
+      );
       kPrint("setFee:Fallback fee rate: ${ref.read(spendFeeRateProvider)}");
       _handleComposeError(e);
     }
@@ -347,13 +346,12 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           ..error = null
           ..broadcastProgress = BroadcastProgress.staging
           ..loading = true;
-        //remove if there is any duplicates
         bool sendMax = spendableBalance == amount;
-        final feeRate = Fees().slowRate(network);
+        final slowRate = FeeRate.fromSatPerVb(Fees().slowRate(network));
         final params = TransactionParams(
           address: sendTo,
           amount: BigInt.from(amount),
-          feeRate: FeeRate.fromSatPerVb(feeRate.toDouble()).satPerKvb,
+          feeRate: FeeRateSatPerKvb(field0: slowRate.asBigInt),
           selectedOutputs: utxos,
           note: note,
           tag: changeOutput,
@@ -370,17 +368,13 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         );
         final preparedTransaction = feeCalcResult.draftTransaction;
 
-        //update the fee rate
         container.read(feeChooserStateProvider.notifier).state =
             FeeChooserState(
-          standardFeeRate: Fees().slowRate(network),
-          fasterFeeRate: Fees().fastRate(network),
-          minFeeRate:
-              FeeRate.fromSatPerKvb(feeCalcResult.minFeeRate).satPerVb.round(),
-          maxFeeRate: FeeRate.fromSatPerKvb(feeCalcResult.maxFeeRate)
-              .satPerVb
-              .round()
-              .clamp(2, 5000),
+          standardFeeRate: FeeRate.fromSatPerVb(Fees().slowRate(network)),
+          fasterFeeRate: FeeRate.fromSatPerVb(Fees().fastRate(network)),
+          minFeeRate: FeeRate.fromBigInt(feeCalcResult.minFeeRate.field0),
+          maxFeeRate: FeeRate.fromBigInt(feeCalcResult.maxFeeRate.field0)
+              .clamp(FeeRate.fromSatPerVb(2), FeeRate.fromSatPerVb(5000)),
         );
 
         _updateWithPreparedTransaction(preparedTransaction, params);
@@ -433,10 +427,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
       );
       syncManager.syncAccount(account);
 
-      final feeRate = state.transactionParams?.feeRate ?? BigInt.from(1000);
+      final feeRate = state.transactionParams?.feeRate ??
+          FeeRateSatPerKvb(field0: BigInt.from(1000));
       if (Settings().subSatFeeEnabled &&
           !Settings().usingDefaultElectrumServer &&
-          FeeRate.fromSatPerKvb(feeRate).isSubSat) {
+          FeeRate.fromBigInt(feeRate.field0).isSubSat) {
         // Sub-sat txs may be silently dropped by the node if minrelaytxfee
         // is too high. Poll the wallet tx list for up to ~15s to confirm.
         final txId = state.draftTransaction!.transaction.txId;

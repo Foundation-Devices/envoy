@@ -9,6 +9,7 @@ import 'dart:ui';
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
+import 'package:envoy/business/fee_rate.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
@@ -1013,13 +1014,12 @@ class _TransactionReviewScreenState
     );
   }
 
-  void setFee(double fee, BuildContext context, bool customFee) async {
+  void setFee(FeeRate fee, BuildContext context, bool customFee) async {
     if (!mounted) {
       return;
     }
-    // Set the fee
     ref.read(spendFeeProcessing.notifier).state = true;
-    ref.read(spendFeeRateProvider.notifier).state = fee.toDouble();
+    ref.read(spendFeeRateProvider.notifier).state = fee;
     await ref.read(spendTransactionProvider.notifier).setFee();
     ref.read(spendFeeProcessing.notifier).state = false;
   }

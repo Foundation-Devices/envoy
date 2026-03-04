@@ -50,7 +50,7 @@ String selectedFeeLabel(WidgetRef ref) {
 }
 
 class FeeChooser extends ConsumerStatefulWidget {
-  final Function(double fee, BuildContext context, bool setCustomFee)
+  final Function(FeeRate fee, BuildContext context, bool setCustomFee)
       onFeeSelect;
   final BitcoinTransaction transaction;
 
@@ -71,11 +71,14 @@ class FeeChooser extends ConsumerStatefulWidget {
 
 class _FeeChooserState extends ConsumerState<FeeChooser>
     with TickerProviderStateMixin {
-  List<num> feeList = List.generate(2, (index) => index + 1);
+  List<FeeRate> feeList = List.generate(
+    2,
+    (index) => FeeRate.fromSatPerKvb((index + 1) * 1000),
+  );
 
-  num standardFee = 1;
-  num fasterFee = 2;
-  num slowerFee = 1;
+  FeeRate standardFee = FeeRate.fromSatPerKvb(1000);
+  FeeRate fasterFee = FeeRate.fromSatPerKvb(2000);
+  FeeRate slowerFee = FeeRate.fromSatPerKvb(1000);
 
   FeeOption _selectedOption = FeeOption.standard;
   bool _showCustom = false;
@@ -102,11 +105,10 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
   void setFees(FeeChooserState feeChooserState) {
     standardFee = feeChooserState.standardFeeRate;
     fasterFee = feeChooserState.fasterFeeRate;
-    // choose a slower fee, e.g. minFeeRate or something below standard
     slowerFee = feeChooserState.minFeeRate;
 
     if (standardFee == fasterFee) {
-      fasterFee = standardFee + 1;
+      fasterFee = standardFee + FeeRate.fromSatPerVb(1);
     }
   }
 
@@ -120,10 +122,10 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
   /// Returns the vsize derived from the current transaction, falling back to
   /// [spendFeeRateProvider] when [transaction.feeRate] is 0 (sub-sat tx).
   int _txVSize() {
-    final txFeeRate = widget.transaction.feeRate > BigInt.zero
-        ? FeeRate.fromSatPerKvb(widget.transaction.feeRate).satPerVb
-        : ref.read(spendFeeRateProvider).toDouble();
-    return _safeTxVSizeVb(widget.transaction.fee.toDouble(), txFeeRate);
+    final txFeeRateSatVb = widget.transaction.feeRate.field0 > BigInt.zero
+        ? FeeRate.fromBigInt(widget.transaction.feeRate.field0).satPerVb
+        : ref.read(spendFeeRateProvider).satPerVb;
+    return _safeTxVSizeVb(widget.transaction.fee.toDouble(), txFeeRateSatVb);
   }
 
   @override
@@ -156,8 +158,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                       ),
                       EnvoyAmount(
                           amountSats: getApproxFeeInSats(
-                              feeRateSatsPerVb: fasterFee.toDouble(),
-                              txVSizeVb: _txVSize()),
+                              feeRate: fasterFee, txVSizeVb: _txVSize()),
                           amountWidgetStyle: AmountWidgetStyle.normal,
                           account: account!),
                     ],
@@ -184,8 +185,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                       ),
                       EnvoyAmount(
                           amountSats: getApproxFeeInSats(
-                              feeRateSatsPerVb: standardFee.toDouble(),
-                              txVSizeVb: _txVSize()),
+                              feeRate: standardFee, txVSizeVb: _txVSize()),
                           amountWidgetStyle: AmountWidgetStyle.normal,
                           account: account!),
                     ],
@@ -212,8 +212,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                       ),
                       EnvoyAmount(
                           amountSats: getApproxFeeInSats(
-                              feeRateSatsPerVb: slowerFee.toDouble(),
-                              txVSizeVb: _txVSize()),
+                              feeRate: slowerFee, txVSizeVb: _txVSize()),
                           amountWidgetStyle: AmountWidgetStyle.normal,
                           account: account!),
                     ],
@@ -226,7 +225,7 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
             title: S().coincontrol_tx_detail_fee_custom,
             subtitle: _showCustom
                 ? getAproxTime(account, ref.watch(_selectedFeeStateProvider))
-                : null,
+                : null, // _selectedFeeStateProvider is sat/kvB
             trailing: _showCustom
                 ? (account != null)
                     ? Row(
@@ -243,12 +242,11 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                           ),
                           EnvoyAmount(
                               amountSats: getApproxFeeInSats(
-                                  feeRateSatsPerVb:
-                                      ref.watch(_selectedFeeStateProvider),
+                                  feeRate: ref.watch(_selectedFeeStateProvider),
                                   txVSizeVb: _safeTxVSizeVb(
                                     widget.transaction.fee.toDouble(),
-                                    FeeRate.fromSatPerKvb(
-                                            widget.transaction.feeRate)
+                                    FeeRate.fromBigInt(
+                                            widget.transaction.feeRate.field0)
                                         .satPerVb,
                                   )),
                               amountWidgetStyle: AmountWidgetStyle.normal,
@@ -291,17 +289,17 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                   _selectedOption;
               switch (_selectedOption) {
                 case FeeOption.fast:
-                  widget.onFeeSelect(fasterFee.toDouble(), context, false);
+                  widget.onFeeSelect(fasterFee, context, false);
                   break;
                 case FeeOption.standard:
-                  widget.onFeeSelect(standardFee.toDouble(), context, false);
+                  widget.onFeeSelect(standardFee, context, false);
                   break;
                 case FeeOption.slow:
-                  widget.onFeeSelect(slowerFee.toDouble(), context, false);
+                  widget.onFeeSelect(slowerFee, context, false);
                   break;
                 case FeeOption.custom:
                   final custom = ref.read(_selectedFeeStateProvider);
-                  await widget.onFeeSelect(custom.toDouble(), context, true);
+                  await widget.onFeeSelect(custom, context, true);
                   break;
               }
               Future.delayed(const Duration(milliseconds: 200)).then((_) {
@@ -319,22 +317,25 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
   void calculateFeeBoundary() {
     FeeChooserState feeChooserState = ref.read(feeChooserStateProvider);
     setState(() {
-      if (feeChooserState.minFeeRate.abs() >=
-          feeChooserState.maxFeeRate.abs()) {
+      if (feeChooserState.minFeeRate >= feeChooserState.maxFeeRate) {
         feeList = [feeChooserState.minFeeRate];
         return;
       }
-      int totalFeeSuggestion =
-          feeChooserState.maxFeeRate - feeChooserState.minFeeRate;
+      // One step per sat/vB
+      final int totalSteps = (feeChooserState.maxFeeRate.satPerKvb -
+              feeChooserState.minFeeRate.satPerKvb) ~/
+          1000;
       kPrint(
-        "totalFeeSuggestion $totalFeeSuggestion (${feeChooserState.minFeeRate} to ${feeChooserState.maxFeeRate})",
+        "totalFeeSuggestion $totalSteps steps "
+        "(${feeChooserState.minFeeRate} to ${feeChooserState.maxFeeRate})",
       );
-      if (totalFeeSuggestion <= 1) {
-        feeList.add(feeChooserState.minFeeRate);
+      if (totalSteps <= 0) {
+        feeList = [feeChooserState.minFeeRate];
       } else {
         feeList = List.generate(
-          totalFeeSuggestion,
-          (index) => (feeChooserState.minFeeRate) + index,
+          totalSteps,
+          (index) =>
+              feeChooserState.minFeeRate + FeeRate.fromSatPerKvb(index * 1000),
         ).reversed.toList();
       }
     });
@@ -387,9 +388,9 @@ class _FeeOptionRow extends StatelessWidget {
 }
 
 class FeeSlider extends ConsumerStatefulWidget {
-  final Function(double index) onFeeSelect;
+  final Function(FeeRate fee) onFeeSelect;
   final int selectedItem;
-  final List<num> fees;
+  final List<FeeRate> fees;
   final BitcoinTransaction transaction;
 
   /// This feature will be implemented in future release
@@ -411,7 +412,8 @@ class FeeSlider extends ConsumerStatefulWidget {
 //local state notifier to keep track of selected index,
 //this is used to animate the selected item,
 //by using provider we can avoid unnecessary rebuilds on scroll-wheel widget
-final _selectedFeeStateProvider = StateProvider.autoDispose<double>((ref) => 0);
+final _selectedFeeStateProvider =
+    StateProvider.autoDispose<FeeRate>((ref) => FeeRate.fromSatPerKvb(0));
 
 class _FeeSliderState extends ConsumerState<FeeSlider> {
   double yOffset = 0.0;
@@ -423,7 +425,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     initialItem: 2,
   );
 
-  late List<num> _effectiveFees;
+  late List<FeeRate> _effectiveFees;
 
   bool _allowSubOne = false;
 
@@ -438,20 +440,20 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     });
   }
 
-  List<num> _buildEffectiveFees() {
-    // 1) Start from your original fees and sort ascending first
-    final base = [...widget.fees]..sort(); // numeric sort[web:31]
+  List<FeeRate> _buildEffectiveFees() {
+    final base = [...widget.fees]
+      ..sort((a, b) => a.satPerKvb.compareTo(b.satPerKvb));
 
-    final result = <num>[];
+    final result = <FeeRate>[];
 
-    final baseGe1 = base.where((f) => f >= 1).toList()..sort(); // ascending
-    final baseDesc = baseGe1.reversed;
-    result.addAll(baseDesc);
+    // Keep only ≥1 sat/vB, sorted descending
+    final baseGe1 = base.where((f) => !f.isSubSat).toList();
+    result.addAll(baseGe1.reversed);
 
     if (_allowSubOne) {
-      for (int i = 99; i >= 10; i--) {
-        final v = i / 100.0; // 0.99, 0.98, ..., 0.10
-        result.add(double.parse(v.toStringAsFixed(2)));
+      // 0.99 → 0.10 sat/vB in 0.01 steps
+      for (int i = 990; i >= 100; i -= 10) {
+        result.add(FeeRate.fromSatPerKvb(i));
       }
     }
 
@@ -459,12 +461,12 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   }
 
   void initializeSelectedRate() async {
-    num feeRate = ref.read(spendFeeRateProvider);
-    final num selectedItem = ref.read(_selectedFeeStateProvider);
+    FeeRate feeRate = ref.read(spendFeeRateProvider);
+    final FeeRate selectedItem = ref.read(_selectedFeeStateProvider);
 
     if (feeRate != selectedItem) {
       setState(() {
-        ref.read(_selectedFeeStateProvider.notifier).state = feeRate.toDouble();
+        ref.read(_selectedFeeStateProvider.notifier).state = feeRate;
         _disableHaptic = true;
       });
 
@@ -516,8 +518,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
     );
   }
 
-  //builds the indicator widget
-  Widget _buildIndicatorWidget(num feeRate, int feePercentage) {
+  Widget _buildIndicatorWidget(FeeRate feeRate, int feePercentage) {
     //consumer to listen to selected index changes, to animate the selected item
     return Consumer(
       builder: (context, ref, child) {
@@ -534,7 +535,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                   duration: const Duration(milliseconds: 200),
                   scale: selectedItem == feeRate ? 1.2 : 1,
                   child: Text(
-                    "$feeRate",
+                    feeRate.displayString,
                     style: selectedItem == feeRate
                         ? feePercentage >= 25
                             ? _warningTextStyle
@@ -567,16 +568,16 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
   @override
   Widget build(BuildContext context) {
     Color gradientOverlayColor = Colors.white54;
-    //bool processingFee = ref.watch(spendFeeProcessing);
-    double selectedFee = ref.watch(_selectedFeeStateProvider);
-    final double txFeeRate = widget.transaction.feeRate > BigInt.zero
-        ? FeeRate.fromSatPerKvb(widget.transaction.feeRate).satPerVb
-        : ref.read(spendFeeRateProvider).toDouble();
+    FeeRate selectedFee = ref.watch(_selectedFeeStateProvider);
+    final double txFeeRateSatVb =
+        widget.transaction.feeRate.field0 > BigInt.zero
+            ? FeeRate.fromBigInt(widget.transaction.feeRate.field0).satPerVb
+            : ref.read(spendFeeRateProvider).satPerVb;
     int aproxFee = getApproxFeeInSats(
-        feeRateSatsPerVb: selectedFee,
+        feeRate: selectedFee,
         txVSizeVb: _safeTxVSizeVb(
           widget.transaction.fee.toDouble(),
-          txFeeRate,
+          txFeeRateSatVb,
         ));
     int feePercentage =
         ((aproxFee / (aproxFee + widget.transaction.amount.abs())) * 100)
@@ -640,7 +641,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                                         alignment: const Alignment(0.0, 1.3),
                                         margin: const EdgeInsets.only(top: 4),
                                         child: Text(
-                                          selectedFee == 1
+                                          selectedFee == FeeRate.fromSatPerVb(1)
                                               ? "sat/vb"
                                               : "sats/vb",
                                           style: feePercentage >= 25
@@ -692,7 +693,8 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
                         ),
                       ),
                       // Warning centred in the left half of the screen.
-                      if (!_allowSubOne && selectedFee == 1)
+                      if (!_allowSubOne &&
+                          selectedFee == FeeRate.fromSatPerVb(1))
                         Positioned(
                           left: 0,
                           top: 0,
@@ -801,7 +803,7 @@ class _FeeSliderState extends ConsumerState<FeeSlider> {
       if (!_disableHaptic) HapticFeedback.selectionClick();
     }
 
-    final fee = _effectiveFees[index].toDouble();
+    final FeeRate fee = _effectiveFees[index];
     ref.read(_selectedFeeStateProvider.notifier).state = fee;
 
     if (_initializationFinished) {
