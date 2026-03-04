@@ -174,10 +174,4 @@ sealed class QuantumLinkMessage with _$QuantumLinkMessage {
   const factory QuantumLinkMessage.timezoneResponse(
     TimezoneResponse field0,
   ) = QuantumLinkMessage_TimezoneResponse;
-  const factory QuantumLinkMessage.unpairingRequest(
-    UnpairingRequest field0,
-  ) = QuantumLinkMessage_UnpairingRequest;
-  const factory QuantumLinkMessage.unpairingResponse(
-    UnpairingResponse field0,
-  ) = QuantumLinkMessage_UnpairingResponse;
 }

@@ -293,5 +293,4 @@ void resetOnboardingPrimeProviders(ProviderContainer container) {
     device.qlHandler.bleOnboardHandler.reset();
     device.qlHandler.scvAccountHandler.reset();
   }
-  container.read(onboardingDeviceProvider.notifier).state = null;
 }

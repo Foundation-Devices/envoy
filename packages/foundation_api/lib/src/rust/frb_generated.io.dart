@@ -365,12 +365,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int dco_decode_box_autoadd_u_8(dynamic raw);
 
   @protected
-  UnpairingRequest dco_decode_box_autoadd_unpairing_request(dynamic raw);
-
-  @protected
-  UnpairingResponse dco_decode_box_autoadd_unpairing_response(dynamic raw);
-
-  @protected
   VerificationResult dco_decode_box_autoadd_verification_result(dynamic raw);
 
   @protected
@@ -581,12 +575,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void dco_decode_unit(dynamic raw);
-
-  @protected
-  UnpairingRequest dco_decode_unpairing_request(dynamic raw);
-
-  @protected
-  UnpairingResponse dco_decode_unpairing_response(dynamic raw);
 
   @protected
   BigInt dco_decode_usize(dynamic raw);
@@ -929,14 +917,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int sse_decode_box_autoadd_u_8(SseDeserializer deserializer);
 
   @protected
-  UnpairingRequest sse_decode_box_autoadd_unpairing_request(
-      SseDeserializer deserializer);
-
-  @protected
-  UnpairingResponse sse_decode_box_autoadd_unpairing_response(
-      SseDeserializer deserializer);
-
-  @protected
   VerificationResult sse_decode_box_autoadd_verification_result(
       SseDeserializer deserializer);
 
@@ -1168,12 +1148,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_decode_unit(SseDeserializer deserializer);
-
-  @protected
-  UnpairingRequest sse_decode_unpairing_request(SseDeserializer deserializer);
-
-  @protected
-  UnpairingResponse sse_decode_unpairing_response(SseDeserializer deserializer);
 
   @protected
   BigInt sse_decode_usize(SseDeserializer deserializer);
@@ -1518,14 +1492,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_u_8(int self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_unpairing_request(
-      UnpairingRequest self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_box_autoadd_unpairing_response(
-      UnpairingResponse self, SseSerializer serializer);
-
-  @protected
   void sse_encode_box_autoadd_verification_result(
       VerificationResult self, SseSerializer serializer);
 
@@ -1769,14 +1735,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_unit(void self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_unpairing_request(
-      UnpairingRequest self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_unpairing_response(
-      UnpairingResponse self, SseSerializer serializer);
 
   @protected
   void sse_encode_usize(BigInt self, SseSerializer serializer);

@@ -5,7 +5,6 @@
 
 import 'dart:async';
 import 'dart:typed_data';
-
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/server.dart';

@@ -394,14 +394,18 @@ Future<void> pairWithDevice(BuildContext context, XidDocument xid) async {
       resetOnboardingPrimeProviders(providerContainer);
     }
     await BluetoothChannel().prepareDevice(connected.deviceId);
-    final qlConnection = BluetoothChannel().getDeviceChannel(
-      connected.deviceId,
-    );
+    final qlConnection =
+        BluetoothChannel().getDeviceChannel(connected.deviceId, reset: true);
     providerContainer.read(onboardingDeviceProvider.notifier).state =
         qlConnection;
     if (context.mounted) {
       _showPairingProgressDialog(context);
     }
+    //reset with new instance
+    if (context.mounted) {
+      resetOnboardingPrimeProviders(providerContainer);
+    }
+
     try {
       await qlConnection.pair(xid);
       final pairingResponse =
