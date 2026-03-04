@@ -498,6 +498,7 @@ class QLConnection with EnvoyMessageWriter {
   void dispose() {
     _deviceStatusSubscription?.cancel();
     _qlActivityMonitorTimer?.cancel();
+    _qlHandlers.dispose();
     _readController.close();
     _qlActiveController.close();
     _bleReadChannel.setMessageHandler(null);

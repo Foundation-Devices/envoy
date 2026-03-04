@@ -24,6 +24,8 @@ class BleAccountHandler extends PassportMessageHandler {
   final _unpairRequestStream =
       StreamController<api.UnpairingRequest?>.broadcast();
 
+  late final void Function() _onExchangeRateChanged;
+
   Stream<api.UnpairingRequest?> get unpairRequestStream =>
       _unpairRequestStream.stream.asBroadcastStream();
 
@@ -40,9 +42,18 @@ class BleAccountHandler extends PassportMessageHandler {
   }
 
   void setupExchangeRateListener() {
-    ExchangeRate().addListener(() async {
-      await sendExchangeRate();
-    });
+    _onExchangeRateChanged = () {
+      unawaited(sendExchangeRate());
+    };
+    ExchangeRate().addListener(_onExchangeRateChanged);
+  }
+
+  @override
+  void dispose() {
+    ExchangeRate().removeListener(_onExchangeRateChanged);
+    _applyPassphraseStream.close();
+    _unpairRequestStream.close();
+    super.dispose();
   }
 
   @override

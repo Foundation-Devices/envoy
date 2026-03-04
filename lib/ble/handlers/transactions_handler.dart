@@ -40,4 +40,10 @@ class TransactionHandler extends PassportMessageHandler {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _txBroadcast.close();
+    super.dispose();
+  }
 }

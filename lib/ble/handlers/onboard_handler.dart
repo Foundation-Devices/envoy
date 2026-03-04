@@ -173,6 +173,8 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
         if (qlConnection.getDevice() != null) {
           await Devices().markPrimeOnboarded(true, qlConnection.getDevice()!);
         }
+        kPrint(
+            "Onboarding complete, device added. Sending exchange rate history...");
         await qlConnection.qlHandler.bleAccountHandler
             .sendExchangeRateHistory();
       } catch (e) {
@@ -208,5 +210,12 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
     _pairingResponse = null;
     _completedOnboardingStates.clear();
     updateBlePairState("Connecting to device", EnvoyStepState.IDLE);
+  }
+
+  @override
+  void dispose() {
+    _blePairingState.close();
+    _onboardingState.close();
+    super.dispose();
   }
 }

@@ -23,6 +23,9 @@ abstract class PassportMessageHandler {
 
   ///
   void onDeviceStatus(api.DeviceStatus status) {}
+
+  /// Cleanup hook invoked when the parent QLConnection is disposed.
+  void dispose() {}
 }
 
 /// Writer used by handlers to send messages to the device.

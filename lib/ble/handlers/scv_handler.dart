@@ -183,4 +183,10 @@ class ScvHandler extends PassportMessageHandler {
       EnvoyStepState.IDLE,
     );
   }
+
+  @override
+  void dispose() {
+    _scvUpdateController.close();
+    super.dispose();
+  }
 }
