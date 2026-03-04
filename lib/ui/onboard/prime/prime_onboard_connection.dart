@@ -73,11 +73,18 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
             Navigator.pop(context);
             return;
           }
-          await qlConnection.disconnect();
-          await Future.delayed(const Duration(milliseconds: 200));
+
           if (Platform.isIOS) {
             final id = qlConnection.deviceId;
-            await BluetoothChannel().removeAccessory(id);
+            final removed = await BluetoothChannel().removeAccessory(id);
+            if (!removed) {
+              return;
+            } else {
+              await qlConnection.disconnect();
+              await Future.delayed(const Duration(milliseconds: 200));
+            }
+          } else {
+            await qlConnection.disconnect();
           }
           completer.complete(true);
           if (context.mounted) {
@@ -269,6 +276,8 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
                       .removeAccessory(onboardingQlConnection!.deviceId);
                   if (removed) {
                     await onboardingQlConnection.disconnect();
+                  } else {
+                    return;
                   }
                 }
               } catch (e, stack) {
