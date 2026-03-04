@@ -127,7 +127,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
       //   message: "SAVING recipientXid",
       // );
       final device = Device(
-        "Prime",
+        "Passport Prime",
         DeviceType.passportPrime,
         response.passportSerial.field0,
         DateTime.now(),
