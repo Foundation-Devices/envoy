@@ -234,8 +234,8 @@ class Settings extends ChangeNotifier {
     return !usingDefaultElectrumServer;
   }
 
-  bool skipCertVerification(String server) {
-    return server == PublicServer.bitaroo.address;
+  bool validateDomain(String server) {
+    return server != PublicServer.bitaroo.address;
   }
 
   @JsonKey(defaultValue: "")

@@ -126,7 +126,7 @@ abstract class RustLibApi extends BaseApi {
       {required DraftTransaction draftTransaction,
       required String electrumServer,
       int? torPort,
-      required bool skipCertVerification});
+      bool? validateDomain});
 
   Future<DraftTransaction>
       crateApiEnvoyWalletEnvoyAccountHandlerComposeCancellationTx(
@@ -165,7 +165,7 @@ abstract class RustLibApi extends BaseApi {
       {required String txid,
       required String electrumServer,
       int? torPort,
-      required bool skipCertVerification});
+      bool? validateDomain});
 
   Future<EnvoyAccountHandler> crateApiEnvoyWalletEnvoyAccountHandlerFromConfig(
       {required String dbPath, required NgAccountConfig config});
@@ -270,7 +270,7 @@ abstract class RustLibApi extends BaseApi {
       required String electrumServer,
       int? torPort,
       int? stopGap,
-      required bool skipCertVerification});
+      bool? validateDomain});
 
   Future<void> crateApiEnvoyWalletEnvoyAccountHandlerSendUpdate(
       {required EnvoyAccountHandler that});
@@ -319,7 +319,7 @@ abstract class RustLibApi extends BaseApi {
       {required SyncRequest syncRequest,
       required String electrumServer,
       int? torPort,
-      required bool skipCertVerification});
+      bool? validateDomain});
 
   Future<Uint8List> crateApiEnvoyWalletEnvoyAccountHandlerToRemoteUpdate(
       {required EnvoyAccountHandler that});
@@ -700,14 +700,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       {required DraftTransaction draftTransaction,
       required String electrumServer,
       int? torPort,
-      required bool skipCertVerification}) {
+      bool? validateDomain}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_draft_transaction(draftTransaction, serializer);
         sse_encode_String(electrumServer, serializer);
         sse_encode_opt_box_autoadd_u_16(torPort, serializer);
-        sse_encode_bool(skipCertVerification, serializer);
+        sse_encode_opt_box_autoadd_bool(validateDomain, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 9, port: port_);
       },
@@ -716,12 +716,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_broadcast_error,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerBroadcastConstMeta,
-      argValues: [
-        draftTransaction,
-        electrumServer,
-        torPort,
-        skipCertVerification
-      ],
+      argValues: [draftTransaction, electrumServer, torPort, validateDomain],
       apiImpl: this,
     ));
   }
@@ -733,7 +728,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           "draftTransaction",
           "electrumServer",
           "torPort",
-          "skipCertVerification"
+          "validateDomain"
         ],
       );
 
@@ -999,14 +994,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       {required String txid,
       required String electrumServer,
       int? torPort,
-      required bool skipCertVerification}) {
+      bool? validateDomain}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(txid, serializer);
         sse_encode_String(electrumServer, serializer);
         sse_encode_opt_box_autoadd_u_16(torPort, serializer);
-        sse_encode_bool(skipCertVerification, serializer);
+        sse_encode_opt_box_autoadd_bool(validateDomain, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 18, port: port_);
       },
@@ -1016,7 +1011,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       ),
       constMeta:
           kCrateApiEnvoyWalletEnvoyAccountHandlerFetchElectrumFeeConstMeta,
-      argValues: [txid, electrumServer, torPort, skipCertVerification],
+      argValues: [txid, electrumServer, torPort, validateDomain],
       apiImpl: this,
     ));
   }
@@ -1025,12 +1020,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       get kCrateApiEnvoyWalletEnvoyAccountHandlerFetchElectrumFeeConstMeta =>
           const TaskConstMeta(
             debugName: "EnvoyAccountHandler_fetch_electrum_fee",
-            argNames: [
-              "txid",
-              "electrumServer",
-              "torPort",
-              "skipCertVerification"
-            ],
+            argNames: ["txid", "electrumServer", "torPort", "validateDomain"],
           );
 
   @override
@@ -1704,7 +1694,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       required String electrumServer,
       int? torPort,
       int? stopGap,
-      required bool skipCertVerification}) {
+      bool? validateDomain}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -1713,7 +1703,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(electrumServer, serializer);
         sse_encode_opt_box_autoadd_u_16(torPort, serializer);
         sse_encode_opt_box_autoadd_u_16(stopGap, serializer);
-        sse_encode_bool(skipCertVerification, serializer);
+        sse_encode_opt_box_autoadd_bool(validateDomain, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 38, port: port_);
       },
@@ -1728,7 +1718,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         electrumServer,
         torPort,
         stopGap,
-        skipCertVerification
+        validateDomain
       ],
       apiImpl: this,
     ));
@@ -1743,7 +1733,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
               "electrumServer",
               "torPort",
               "stopGap",
-              "skipCertVerification"
+              "validateDomain"
             ],
           );
 
@@ -2084,7 +2074,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       {required SyncRequest syncRequest,
       required String electrumServer,
       int? torPort,
-      required bool skipCertVerification}) {
+      bool? validateDomain}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -2092,7 +2082,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             syncRequest, serializer);
         sse_encode_String(electrumServer, serializer);
         sse_encode_opt_box_autoadd_u_16(torPort, serializer);
-        sse_encode_bool(skipCertVerification, serializer);
+        sse_encode_opt_box_autoadd_bool(validateDomain, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 50, port: port_);
       },
@@ -2102,7 +2092,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiEnvoyWalletEnvoyAccountHandlerSyncWalletConstMeta,
-      argValues: [syncRequest, electrumServer, torPort, skipCertVerification],
+      argValues: [syncRequest, electrumServer, torPort, validateDomain],
       apiImpl: this,
     ));
   }
@@ -2115,7 +2105,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
               "syncRequest",
               "electrumServer",
               "torPort",
-              "skipCertVerification"
+              "validateDomain"
             ],
           );
 
@@ -2879,6 +2869,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  bool dco_decode_box_autoadd_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
+  }
+
+  @protected
   DraftTransaction dco_decode_box_autoadd_draft_transaction(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_draft_transaction(raw);
@@ -3281,6 +3277,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   AddressType? dco_decode_opt_box_autoadd_address_type(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_address_type(raw);
+  }
+
+  @protected
+  bool? dco_decode_opt_box_autoadd_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_bool(raw);
   }
 
   @protected
@@ -3863,6 +3865,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  bool sse_decode_box_autoadd_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_bool(deserializer));
+  }
+
+  @protected
   DraftTransaction sse_decode_box_autoadd_draft_transaction(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4386,6 +4394,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
     if (sse_decode_bool(deserializer)) {
       return (sse_decode_box_autoadd_address_type(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  bool? sse_decode_opt_box_autoadd_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_bool(deserializer));
     } else {
       return null;
     }
@@ -4982,6 +5001,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_draft_transaction(
       DraftTransaction self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5401,6 +5426,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_bool(self != null, serializer);
     if (self != null) {
       sse_encode_box_autoadd_address_type(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_bool(bool? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_bool(self, serializer);
     }
   }
 

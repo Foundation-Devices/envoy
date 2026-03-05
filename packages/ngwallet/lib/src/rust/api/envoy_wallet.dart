@@ -57,12 +57,12 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
           {required DraftTransaction draftTransaction,
           required String electrumServer,
           int? torPort,
-          required bool skipCertVerification}) =>
+          bool? validateDomain}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerBroadcast(
           draftTransaction: draftTransaction,
           electrumServer: electrumServer,
           torPort: torPort,
-          skipCertVerification: skipCertVerification);
+          validateDomain: validateDomain);
 
   Future<DraftTransaction> composeCancellationTx(
       {required BitcoinTransaction bitcoinTransaction});
@@ -99,13 +99,13 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
           {required String txid,
           required String electrumServer,
           int? torPort,
-          required bool skipCertVerification}) =>
+          bool? validateDomain}) =>
       RustLib.instance.api
           .crateApiEnvoyWalletEnvoyAccountHandlerFetchElectrumFee(
               txid: txid,
               electrumServer: electrumServer,
               torPort: torPort,
-              skipCertVerification: skipCertVerification);
+              validateDomain: validateDomain);
 
   static Future<EnvoyAccountHandler> fromConfig(
           {required String dbPath, required NgAccountConfig config}) =>
@@ -231,13 +231,13 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
           required String electrumServer,
           int? torPort,
           int? stopGap,
-          required bool skipCertVerification}) =>
+          bool? validateDomain}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerScanWallet(
           scanRequest: scanRequest,
           electrumServer: electrumServer,
           torPort: torPort,
           stopGap: stopGap,
-          skipCertVerification: skipCertVerification);
+          validateDomain: validateDomain);
 
   Future<void> sendUpdate();
 
@@ -266,12 +266,12 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
           {required SyncRequest syncRequest,
           required String electrumServer,
           int? torPort,
-          required bool skipCertVerification}) =>
+          bool? validateDomain}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerSyncWallet(
           syncRequest: syncRequest,
           electrumServer: electrumServer,
           torPort: torPort,
-          skipCertVerification: skipCertVerification);
+          validateDomain: validateDomain);
 
   Future<Uint8List> toRemoteUpdate();
 

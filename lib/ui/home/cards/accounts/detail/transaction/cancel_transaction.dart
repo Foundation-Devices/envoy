@@ -605,7 +605,7 @@ class _CancelTransactionProgressState
         draftTransaction: cancelTx,
         electrumServer: server,
         torPort: port,
-        skipCertVerification: Settings().skipCertVerification(server),
+        validateDomain: Settings().validateDomain(server),
       );
       await handler.updateBroadcastState(draftTransaction: cancelTx);
       await EnvoyStorage().addCancelState(

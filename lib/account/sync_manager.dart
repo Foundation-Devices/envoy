@@ -370,7 +370,7 @@ class SyncManager {
           electrumServer: server,
           torPort: port,
           stopGap: stopGap,
-          skipCertVerification: Settings().skipCertVerification(server));
+          validateDomain: Settings().validateDomain(server));
 
       if (account.handler != null) {
         await account.handler!
@@ -427,7 +427,7 @@ class SyncManager {
         syncRequest: syncRequest,
         electrumServer: server,
         torPort: port,
-        skipCertVerification: Settings().skipCertVerification(server),
+        validateDomain: Settings().validateDomain(server),
       );
       DateTime finish = DateTime.now();
       final duration = finish.difference(time);

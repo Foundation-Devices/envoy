@@ -523,7 +523,7 @@ impl EnvoyAccountHandler {
         txid: &str,
         electrum_server: &str,
         tor_port: Option<u16>,
-        skip_cert_verification: bool,
+        validate_domain: Option<bool>,
     ) -> Option<u64> {
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_deref();
@@ -531,7 +531,7 @@ impl EnvoyAccountHandler {
             txid,
             electrum_server,
             socks_proxy,
-            skip_cert_verification,
+            validate_domain,
         )
     }
 
@@ -557,7 +557,7 @@ impl EnvoyAccountHandler {
         sync_request: Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
         electrum_server: &str,
         tor_port: Option<u16>,
-        skip_cert_verification: bool,
+        validate_domain: Option<bool>,
     ) -> anyhow::Result<Arc<Mutex<Update>>> {
         info!(
             "Current Thread request: {:?}, {:?}",
@@ -572,7 +572,7 @@ impl EnvoyAccountHandler {
                 sync_request,
                 electrum_server,
                 socks_proxy,
-                skip_cert_verification,
+                validate_domain,
             )
             .expect("Electrum sync failed");
             Ok(Arc::new(Mutex::new(Update::from(update))))
@@ -586,7 +586,7 @@ impl EnvoyAccountHandler {
         electrum_server: &str,
         tor_port: Option<u16>,
         stop_gap: Option<u16>,
-        skip_cert_verification: bool,
+        validate_domain: Option<bool>,
     ) -> anyhow::Result<Arc<Mutex<Update>>> {
         let stop_gap_usize = stop_gap.map(|v| v as usize);
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
@@ -600,7 +600,7 @@ impl EnvoyAccountHandler {
                 electrum_server,
                 socks_proxy,
                 stop_gap_usize,
-                skip_cert_verification,
+                validate_domain,
             );
             match res {
                 Ok(update) => Ok(Arc::new(Mutex::new(Update::from(update)))),
@@ -860,7 +860,7 @@ impl EnvoyAccountHandler {
         draft_transaction: DraftTransaction,
         electrum_server: &str,
         tor_port: Option<u16>,
-        skip_cert_verification: bool,
+        validate_domain: Option<bool>,
     ) -> Result<String, BroadcastError> {
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_deref();
@@ -868,7 +868,7 @@ impl EnvoyAccountHandler {
             draft_transaction,
             electrum_server,
             socks_proxy,
-            skip_cert_verification,
+            validate_domain,
         )
         .map_err(BroadcastError::from)
         .map(|tx_id| tx_id.to_string())
