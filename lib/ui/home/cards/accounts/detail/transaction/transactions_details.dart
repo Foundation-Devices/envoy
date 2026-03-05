@@ -6,6 +6,7 @@ import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/business/fee_rate.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/business/settings.dart';
@@ -155,15 +156,14 @@ class _TransactionsDetailsWidgetState
       setState(() {
         _checkingBoost = false;
       });
-      int minRate = result.minFeeRate.toInt();
-      int maxRate = result.maxFeeRate.toInt();
-      int fasterFeeRate = minRate + 1;
+      FeeRate minRate = FeeRate.fromBigInt(result.minFeeRate.field0);
+      FeeRate maxRate = FeeRate.fromBigInt(result.maxFeeRate.field0);
+      FeeRate fasterFeeRate = minRate + FeeRate.fromSatPerVb(1);
       if (minRate == maxRate) {
         fasterFeeRate = maxRate;
-      } else {
-        if (minRate < maxRate) {
-          fasterFeeRate = (minRate + 1).clamp(minRate, maxRate);
-        }
+      } else if (minRate < maxRate) {
+        fasterFeeRate =
+            (minRate + FeeRate.fromSatPerVb(1)).clamp(minRate, maxRate);
       }
       ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
         standardFeeRate: minRate,

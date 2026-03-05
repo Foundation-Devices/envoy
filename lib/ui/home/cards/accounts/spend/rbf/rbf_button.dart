@@ -21,6 +21,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/business/fee_rate.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,7 +31,7 @@ import 'package:url_launcher/url_launcher.dart';
 class RBFSpendState {
   String receiveAddress;
   num receiveAmount;
-  int feeRate;
+  FeeRate feeRate;
   int originalAmount;
   DraftTransaction draftTx;
   BitcoinTransaction originalTx;
@@ -45,7 +46,7 @@ class RBFSpendState {
   });
 
   RBFSpendState? copyWith({
-    required int feeRate,
+    required FeeRate feeRate,
     required DraftTransaction preparedTx,
     BitcoinTransaction? originalTx,
   }) {
