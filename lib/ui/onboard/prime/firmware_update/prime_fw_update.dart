@@ -188,6 +188,10 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         },
         onSecondaryButtonTap: (context) async {
           await ref.read(onboardingDeviceProvider)?.cancelTransfer();
+          if (context.mounted) {
+            resetOnboardingPrimeProviders(ProviderScope.containerOf(context));
+            ref.read(onboardingDeviceProvider.notifier).state = null;
+          }
           completer.complete(true);
         },
       ),
@@ -403,7 +407,12 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
             child: EnvoyButton(
               S().component_done,
               type: EnvoyButtonTypes.primary,
-              onTap: () => context.go(ROUTE_ACCOUNTS_HOME),
+              onTap: () {
+                resetOnboardingPrimeProviders(
+                    ProviderScope.containerOf(context));
+                ref.read(onboardingDeviceProvider.notifier).state = null;
+                context.go(ROUTE_ACCOUNTS_HOME);
+              },
             ),
           ),
       ],
