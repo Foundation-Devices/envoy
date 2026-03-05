@@ -68,7 +68,7 @@ class FwUpdateHandler extends PassportMessageHandler {
       _downloadState.stream.asBroadcastStream().replayLatest(
             FwUpdateState(
               message: S().firmware_updatingDownload_downloading,
-              step: EnvoyStepState.IDLE,
+              step: EnvoyStepState.LOADING,
             ),
           );
 
@@ -124,10 +124,6 @@ class FwUpdateHandler extends PassportMessageHandler {
         EnvoyStepState.LOADING,
       );
       patches = await Server().fetchPrimePatches(currentVersion);
-      _updateDownloadState(
-        S().firmware_downloadingUpdate_downloaded,
-        EnvoyStepState.FINISHED,
-      );
     } catch (e, stack) {
       kPrint("failed to fetch patches: $e");
       debugPrintStack(stackTrace: stack);
@@ -156,8 +152,11 @@ class FwUpdateHandler extends PassportMessageHandler {
           }
           patchBinaries.add(binary);
         }
+        _updateDownloadState(
+          S().firmware_downloadingUpdate_downloaded,
+          EnvoyStepState.FINISHED,
+        );
       } catch (e, stack) {
-        kPrint("failed to fetch firmware: $e");
         _updateFwUpdateState(PrimeFwUpdateStep.error);
         await _handleFirmwareError(S().firmware_updateError_downloadFailed);
         EnvoyReport().log(
@@ -194,6 +193,7 @@ class FwUpdateHandler extends PassportMessageHandler {
         _processProgress(progress);
       }
     });
+
     DateTime dateTime = DateTime.now();
     try {
       dateTime = await NTP.now(timeout: const Duration(seconds: 1));
@@ -219,7 +219,8 @@ class FwUpdateHandler extends PassportMessageHandler {
     );
 
     if (ready) {
-      kPrint("Firmware payload encoded to file: ${tempFile.path}");
+      kPrint(
+          "Firmware payload encoded to file: ${tempFile.path} Size in MB: ${tempFile.lengthSync() / (1024 * 1024)}");
       final success = await qlConnection.transmitFromFile(tempFile.path);
       if (!success) {
         await qlConnection.writeMessage(
