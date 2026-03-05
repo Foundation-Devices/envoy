@@ -72,6 +72,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         CBConnectPeripheralOptionEnableTransportBridgingKey: false
     ]
 
+
     // MARK: - Initialization
 
     init(flutterController: FlutterViewController) {
@@ -146,6 +147,10 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         return centralManager
     }
 
+    private func isAccessoryAssociated(_ bluetoothId: UUID) -> Bool {
+        return session.accessories.contains { $0.bluetoothIdentifier == bluetoothId }
+    }
+
     // MARK: - Device Management
 
     /// Get or create a QLConnection for the given device ID.
@@ -207,6 +212,20 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
+        guard isAccessoryAssociated(uuid) else {
+            if let device = devices.removeValue(forKey: deviceId) {
+                device.cleanup()
+            }
+            result(
+                FlutterError(
+                    code: "ACCESSORY_NOT_ASSOCIATED",
+                    message: "Accessory is not associated on iOS",
+                    details: deviceId
+                )
+            )
+            return
+        }
+
         // Get or create QLConnection (may already exist from prepareDevice)
         let qlConnection = getOrCreateDevice(deviceId: deviceId)
 
@@ -248,12 +267,29 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
-        guard let accessory = session.accessories.first(where: { $0.bluetoothIdentifier == uuid }) else {
+        print("removeDeviceAndAccessory uuid \(uuid)\n")
+        guard let accessory = session.accessories.first(where: { $0.bluetoothIdentifier == uuid }) ?? pairedAccessories[uuid] else {
             pairedAccessories.removeValue(forKey: uuid)
             print("\(Self.TAG) No accessory found for device: \(deviceId)")
             //peripheral maybe removed by the user from the system settings so sending true, so the user can continue
             result(true)
             return
+        }
+
+        // Disconnect the peripheral before removing the accessory.
+        // even if the peripheral is currently disconnected (e.g. BLE was disabled on the device).
+        if let central = centralManager {
+            let cachedPeripherals = central.retrievePeripherals(withIdentifiers: [uuid])
+            let connectedPeripherals = central.retrieveConnectedPeripherals(withServices: [primeUUID])
+            let peripheral = cachedPeripherals.first
+                ?? connectedPeripherals.first(where: { $0.identifier == uuid })
+
+            if let peripheral = peripheral {
+                print("\(Self.TAG) Cancelling peripheral connection before removal: \(deviceId)")
+                central.cancelPeripheralConnection(peripheral)
+            } else {
+                print("\(Self.TAG) Peripheral not found in cache, proceeding with accessory removal anyway")
+            }
         }
 
         session.removeAccessory(accessory) { [weak self] error in
@@ -326,6 +362,16 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     private func attemptReconnection() {
         guard !pairedAccessories.isEmpty else {
             print("\(Self.TAG) No accessories available - stopping reconnection")
+            stopReconnection()
+            return
+        }
+
+        let staleIds = pairedAccessories.keys.filter { !isAccessoryAssociated($0) }
+        for bluetoothId in staleIds {
+            pairedAccessories.removeValue(forKey: bluetoothId)
+        }
+        guard !pairedAccessories.isEmpty else {
+            print("\(Self.TAG) No associated accessories available - stopping reconnection")
             stopReconnection()
             return
         }
@@ -580,6 +626,11 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     }
 
     private func connectToAccessoryPeripheral(bluetoothId: UUID) {
+        guard isAccessoryAssociated(bluetoothId) else {
+            print("\(Self.TAG) Skipping connect for unassociated accessory: \(bluetoothId.uuidString)")
+            return
+        }
+
         guard let central = centralManager, central.state == .poweredOn else {
             print("\(Self.TAG) Central manager not ready for connection")
             return
@@ -636,6 +687,15 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     }
 
     private func handleBluetoothPoweredOn(central: CBCentralManager) {
+        // Rebuild pairedAccessories from current session state.
+        var sessionPaired: [UUID: ASAccessory] = [:]
+        for accessory in session.accessories {
+            if let bluetoothId = accessory.bluetoothIdentifier {
+                sessionPaired[bluetoothId] = accessory
+            }
+        }
+        pairedAccessories = sessionPaired
+
         // Connect to all known paired accessories
         if !pairedAccessories.isEmpty {
             for (bluetoothId, accessory) in pairedAccessories {
@@ -651,8 +711,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
-        print("\(Self.TAG) Starting scan for peripherals...")
-        central.scanForPeripherals(withServices: [primeUUID], options: nil)
+        print("\(Self.TAG) No paired accessories available for auto-connect")
     }
 
     private func handleBluetoothPoweredOff() {
@@ -667,12 +726,24 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     private func handleRestoredPeripheral(peripheralId: String, central: CBCentralManager) {
         guard let uuid = UUID(uuidString: peripheralId) else {
             needsServiceRediscovery = false
+            restoredPeripheralId = nil
+            return
+        }
+
+        guard isAccessoryAssociated(uuid) else {
+            print("\(Self.TAG) Skipping restored peripheral without associated accessory: \(peripheralId)")
+            if let device = devices.removeValue(forKey: peripheralId) {
+                device.cleanup()
+            }
+            needsServiceRediscovery = false
+            restoredPeripheralId = nil
             return
         }
 
         let peripherals = central.retrievePeripherals(withIdentifiers: [uuid])
         guard let peripheral = peripherals.first else {
             needsServiceRediscovery = false
+            restoredPeripheralId = nil
             return
         }
 
@@ -699,6 +770,11 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
                 print("\(Self.TAG)   - Name: \(peripheral.name ?? "Unknown")")
                 print("\(Self.TAG)   - State: \(peripheral.state.rawValue)")
 
+                guard isAccessoryAssociated(peripheral.identifier) else {
+                    print("\(Self.TAG) Skipping unassociated restored peripheral: \(deviceId)")
+                    continue
+                }
+
                 // Create QLConnection for restored peripheral
                 let _ = getOrCreateDevice(deviceId: deviceId)
 
@@ -720,6 +796,10 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         central.stopScan()
 
         let deviceId = peripheral.identifier.uuidString
+        guard isAccessoryAssociated(peripheral.identifier) else {
+            print("\(Self.TAG) Ignoring discovered unassociated peripheral: \(deviceId)")
+            return
+        }
         sendScanEvent(type: "device_found", deviceId: deviceId, deviceName: peripheral.name)
 
         // Create QLConnection and connect
@@ -730,6 +810,16 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         let deviceId = peripheral.identifier.uuidString
         print("\(Self.TAG) Successfully connected to peripheral: \(peripheral.name ?? "Unknown") (\(deviceId))")
+
+        // Disconnect if there is no corresponding associated accessory.
+        guard isAccessoryAssociated(peripheral.identifier) else {
+            print("\(Self.TAG) No associated accessory found for peripheral: \(deviceId), disconnecting")
+            central.cancelPeripheralConnection(peripheral)
+            if let device = devices.removeValue(forKey: deviceId) {
+                device.cleanup()
+            }
+            return
+        }
 
         stopReconnection()
 

@@ -187,7 +187,9 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
   void updateBlePairState(String message, EnvoyStepState step) {
     final state = BleConnectionState(message: message, step: step);
     _lastState = state;
-    _blePairingState.add(state);
+    if (!_blePairingState.isClosed) {
+      _blePairingState.add(state);
+    }
   }
 
   Future<api.PairingResponse> waitForPairResponse({

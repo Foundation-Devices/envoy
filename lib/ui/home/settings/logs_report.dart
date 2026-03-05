@@ -89,6 +89,7 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                   ShareParams(
                     files: [XFile(path)],
                     subject: "text/plain",
+                    sharePositionOrigin: Rect.fromLTWH(0, 0, 100, 100),
                     text: "Envoy Log Report",
                   ),
                 );

@@ -214,9 +214,15 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
                           stackTrace: stack);
                     }
                     if (mounted && context.mounted) {
-                      resetOnboardingPrimeProviders(
-                        ProviderScope.containerOf(context),
-                      );
+                      try {
+                        resetOnboardingPrimeProviders(
+                          ProviderScope.containerOf(context),
+                        );
+                      } finally {
+                        ProviderScope.containerOf(context)
+                            .read(onboardingDeviceProvider.notifier)
+                            .state = null;
+                      }
                       Navigator.of(context).pop();
                       context.go("/");
                     }

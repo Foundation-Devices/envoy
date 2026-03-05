@@ -403,9 +403,14 @@ Future<void> pairWithDevice(BuildContext context, XidDocument xid) async {
     }
     //reset with new instance
     if (context.mounted) {
-      resetOnboardingPrimeProviders(providerContainer);
+      try {
+        resetOnboardingPrimeProviders(providerContainer);
+      } catch (e, stack) {
+        debugPrintStack(stackTrace: stack);
+      }
     }
-
+    providerContainer.read(onboardingDeviceProvider.notifier).state =
+        qlConnection;
     try {
       await qlConnection.pair(xid);
       final pairingResponse =
