@@ -5,6 +5,7 @@
 
 import 'dart:async';
 import 'dart:typed_data';
+
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/server.dart';
@@ -373,9 +374,11 @@ class FwUpdateHandler extends PassportMessageHandler {
       S().firmware_updatingDownload_downloading,
       EnvoyStepState.IDLE,
     );
-    _transferProgress.sink.add(
-      FwTransferProgress(progress: 0, remainingTime: ""),
-    );
+    if (!_transferProgress.isClosed) {
+      _transferProgress.sink.add(
+        FwTransferProgress(progress: 0, remainingTime: ""),
+      );
+    }
     newVersion = "";
   }
 

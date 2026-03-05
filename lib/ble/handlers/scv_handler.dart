@@ -144,7 +144,9 @@ class ScvHandler extends PassportMessageHandler {
       step: step,
       errorType: errorType,
     );
-    _scvUpdateController.add(state);
+    if (!_scvUpdateController.isClosed) {
+      _scvUpdateController.add(state);
+    }
     _lastState = state;
   }
 
