@@ -125,6 +125,10 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     }
   }
 
+  bool get _isSettingsUpdate =>
+      ref.read(onboardingDeviceProvider)?.getDevice()?.onboardingComplete ==
+      true;
+
   Future<bool> showExitWarning(BuildContext context) {
     final Completer<bool> completer = Completer<bool>();
     showEnvoyDialog(
@@ -211,10 +215,19 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
 
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (_, __) async {
-        final shouldExit = await showExitWarning(context);
-        if (shouldExit && context.mounted) {
-          context.go(ROUTE_ACCOUNTS_HOME);
+      onPopInvokedWithResult: (_, __) {
+        if (_isSettingsUpdate) {
+          // No disconnect needed — device is already paired. Go home directly.
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (context.mounted) context.go(ROUTE_ACCOUNTS_HOME);
+          });
+        } else {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            final shouldExit = await showExitWarning(context);
+            if (shouldExit && context.mounted) {
+              context.go(ROUTE_ACCOUNTS_HOME);
+            }
+          });
         }
       },
       child: OnboardPageBackground(
@@ -225,7 +238,11 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
             child: IconButton(
               icon: const Icon(Icons.close, color: Colors.black),
               onPressed: () {
-                GoRouter.of(context).pop();
+                if (_isSettingsUpdate) {
+                  context.go(ROUTE_ACCOUNTS_HOME);
+                } else {
+                  GoRouter.of(context).pop();
+                }
               },
             ),
           ),
@@ -316,26 +333,44 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     _controller?.stateMachine.boolean('happy')?.value = true;
     final fwHandler =
         ref.watch(onboardingDeviceProvider)?.qlHandler.fwUpdateHandler;
+    final isSettingsUpdate =
+        ref.watch(onboardingDeviceProvider)?.getDevice()?.onboardingComplete ==
+            true;
 
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          S().firmware_updateSuccess_content1(
-            "KeyOS v${fwHandler?.newVersion ?? ''}",
-          ),
-          textAlign: TextAlign.center,
-          style: EnvoyTypography.body.copyWith(
-            color: EnvoyColors.textSecondary,
-          ),
+        Column(
+          children: [
+            Text(
+              S().firmware_updateSuccess_content1(
+                "KeyOS v${fwHandler?.newVersion ?? ''}",
+              ),
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.body.copyWith(
+                color: EnvoyColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: EnvoySpacing.medium3),
+            if (!isSettingsUpdate)
+              Text(
+                S().firmware_updateSuccess_content2,
+                textAlign: TextAlign.center,
+                style: EnvoyTypography.body.copyWith(
+                  color: EnvoyColors.textSecondary,
+                ),
+              ),
+          ],
         ),
-        const SizedBox(height: EnvoySpacing.medium3),
-        Text(
-          S().firmware_updateSuccess_content2,
-          textAlign: TextAlign.center,
-          style: EnvoyTypography.body.copyWith(
-            color: EnvoyColors.textSecondary,
+        if (isSettingsUpdate)
+          Padding(
+            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+            child: EnvoyButton(
+              S().component_done,
+              type: EnvoyButtonTypes.primary,
+              onTap: () => context.go(ROUTE_ACCOUNTS_HOME),
+            ),
           ),
-        ),
       ],
     );
   }

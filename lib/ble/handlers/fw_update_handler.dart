@@ -53,6 +53,7 @@ class FwUpdateHandler extends PassportMessageHandler {
   final _transferState = StreamController<FwUpdateState>.broadcast();
   final _primeFwUpdate = StreamController<PrimeFwUpdateStep>.broadcast();
   final _transferProgress = StreamController<FwTransferProgress>.broadcast();
+  final _settingsUpdateStarted = StreamController<void>.broadcast();
 
   Stream<FwUpdateState> get fetchStateStream =>
       _fetchState.stream.asBroadcastStream();
@@ -73,6 +74,10 @@ class FwUpdateHandler extends PassportMessageHandler {
 
   Stream<FwUpdateState> get transferStateStream =>
       _transferState.stream.asBroadcastStream();
+
+  /// Emits when a firmware fetch request is received from an already-onboarded
+  Stream<void> get settingsUpdateStarted =>
+      _settingsUpdateStarted.stream.asBroadcastStream();
 
   Set<PrimeFwUpdateStep> get completedUpdateStates => _completedUpdateStates;
 
@@ -103,6 +108,10 @@ class FwUpdateHandler extends PassportMessageHandler {
   //Downloads and sends firmware update to the device
   Future<void> _handleFirmwareFetchRequest(String currentVersion) async {
     List<PrimePatch> patches = [];
+
+    if (qlConnection.getDevice()?.onboardingComplete == true) {
+      _settingsUpdateStarted.add(null);
+    }
 
     try {
       _completedUpdateStates = {};
@@ -260,6 +269,10 @@ class FwUpdateHandler extends PassportMessageHandler {
           ),
         );
         await qlConnection.writeMessage(response);
+
+        if (qlConnection.getDevice()?.onboardingComplete == true) {
+          _settingsUpdateStarted.add(null);
+        }
       }
       _updateFetchState(stepUpdate, EnvoyStepState.FINISHED);
     } catch (e, stack) {
@@ -387,6 +400,7 @@ class FwUpdateHandler extends PassportMessageHandler {
     _transferState.close();
     _primeFwUpdate.close();
     _transferProgress.close();
+    _settingsUpdateStarted.close();
     super.dispose();
   }
 }

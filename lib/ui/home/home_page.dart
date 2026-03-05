@@ -27,9 +27,12 @@ import 'package:envoy/ui/home/migration_dialogs.dart';
 import 'package:envoy/ui/home/top_bar_home.dart';
 import 'package:envoy/ui/lock/session_manager.dart';
 import 'package:envoy/ui/migrations/migration_manager.dart';
+import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/routes/route_state.dart';
+import 'package:envoy/ui/onboard/prime/prime_routes.dart'
+    show ONBOARD_PRIME_FIRMWARE_UPDATE;
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
@@ -590,6 +593,15 @@ class HomePageState extends ConsumerState<HomePage>
 
     ref.listen(onboardingStateStreamProvider, (previous, next) {
       _showTutorialIfNeeded(context);
+    });
+
+    ref.listen(settingsUpdateConnectionProvider, (previous, next) {
+      next.whenData((connection) {
+        final currentPath = ref.read(routePathProvider);
+        if (currentPath.contains(ONBOARD_PRIME_FIRMWARE_UPDATE)) return;
+        ref.read(onboardingDeviceProvider.notifier).state = connection;
+        context.goNamed(ONBOARD_PRIME_FIRMWARE_UPDATE);
+      });
     });
 
     double shieldTotalTop = _backgroundShown

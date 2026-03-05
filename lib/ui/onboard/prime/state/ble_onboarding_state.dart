@@ -3,6 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
+import 'dart:async';
+import 'package:async/async.dart';
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/handlers/fw_update_handler.dart';
 import 'package:envoy/ble/handlers/onboard_handler.dart';
 import 'package:envoy/ble/handlers/scv_handler.dart';
@@ -284,6 +287,29 @@ final connectAccountProvider = Provider<StepModel>((ref) {
       state: EnvoyStepState.IDLE,
     );
   }
+});
+
+final settingsUpdateConnectionProvider = StreamProvider<QLConnection>((ref) {
+  final asyncConnections = ref.watch(qlConnectionStreamProvider);
+  final connections = asyncConnections.valueOrNull ?? [];
+
+  if (connections.isEmpty) return const Stream.empty();
+
+  final controller = StreamController<QLConnection>();
+  final group = StreamGroup<QLConnection>();
+  for (final conn in connections) {
+    group.add(
+      conn.qlHandler.fwUpdateHandler.settingsUpdateStarted
+          .map<QLConnection>((_) => conn),
+    );
+  }
+  final sub = group.stream.listen(controller.add);
+  ref.onDispose(() {
+    sub.cancel();
+    group.close();
+    controller.close();
+  });
+  return controller.stream;
 });
 
 void resetOnboardingPrimeProviders(ProviderContainer container) {
