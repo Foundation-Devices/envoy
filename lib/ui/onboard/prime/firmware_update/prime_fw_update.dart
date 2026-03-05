@@ -179,8 +179,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
         typeOfMessage: PopUpState.warning,
         showCloseButton: true,
         title: S().firmware_connectionModalCancelUpdate_header,
-        content:
-            S().firmware_connectionModalCancelUpdate_content,
+        content: S().firmware_connectionModalCancelUpdate_content,
         primaryButtonLabel: S().component_cancel,
         secondaryButtonLabel: S().component_exit,
         onPrimaryButtonTap: (context) async {
