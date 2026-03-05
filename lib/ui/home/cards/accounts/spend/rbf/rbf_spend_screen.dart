@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'package:animations/animations.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/business/fee_rate.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -350,7 +351,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         pageBuilder: (context, animation, secondaryAnimation) {
           return FeeChooser(
             transaction,
-            onFeeSelect: (fee, context, bool customFee) {
+            allowSubOneInCustom: false,
+            onFeeSelect: (FeeRate fee, context, bool customFee) {
               _setFee(fee, context, customFee);
               ref.read(userHasChangedFeesProvider.notifier).state = true;
             },
@@ -593,7 +595,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       );
       await Future.delayed(const Duration(milliseconds: 50));
       ref.read(rbfSpendStateProvider.notifier).state = rbfState.copyWith(
-        feeRate: preparedTx.transaction.feeRate.toInt(),
+        feeRate: FeeRate.fromBigInt(preparedTx.transaction.feeRate.field0),
         preparedTx: preparedTx,
       );
       received = true;
@@ -707,9 +709,9 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     HapticFeedback.mediumImpact();
   }
 
-  Future _setFee(double fee, BuildContext context, bool customFee) async {
+  Future _setFee(FeeRate fee, BuildContext context, bool customFee) async {
     EnvoyAccount? account = ref.read(selectedAccountProvider);
-    num? existingFeeRate = ref.read(spendFeeRateProvider);
+    FeeRate? existingFeeRate = ref.read(spendFeeRateProvider);
     setState(() {
       _rebuildingTx = false;
     });
@@ -729,7 +731,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
 
       final transaction = await account.handler?.composeRbfPsbt(
         selectedOutputs: selectedOutputs,
-        feeRate: BigInt.from(fee),
+        feeRate: fee.asBigInt,
         bitcoinTransaction: originalTx,
       );
 
@@ -738,7 +740,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
       }
 
       ref.read(rbfSpendStateProvider.notifier).state = rbfState.copyWith(
-        feeRate: transaction.transaction.feeRate.toInt(),
+        feeRate: FeeRate.fromBigInt(transaction.transaction.feeRate.field0),
         preparedTx: transaction,
       );
 
@@ -814,7 +816,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
     try {
       final transaction = await account.handler?.composeRbfPsbt(
         selectedOutputs: selectedOutputs,
-        feeRate: BigInt.from(rbfState.feeRate),
+        feeRate: rbfState.feeRate.asBigInt,
         note: note,
         tag: changeOutputTag,
         bitcoinTransaction: rbfState.originalTx,
@@ -823,7 +825,7 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
         return;
       }
       ref.read(rbfSpendStateProvider.notifier).state = rbfState.copyWith(
-        feeRate: transaction.transaction.feeRate.toInt(),
+        feeRate: FeeRate.fromBigInt(transaction.transaction.feeRate.field0),
         preparedTx: transaction,
       );
     } catch (e) {
@@ -917,16 +919,15 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
           setState(() {
             _rebuildingTx = false;
           });
-          int minRate = result.minFeeRate.toInt();
-          int maxRate = result.maxFeeRate.toInt();
-          int fasterFeeRate = minRate + 1;
+          FeeRate minRate = FeeRate.fromBigInt(result.minFeeRate.field0);
+          FeeRate maxRate = FeeRate.fromBigInt(result.maxFeeRate.field0);
+          FeeRate fasterFeeRate = minRate + FeeRate.fromSatPerVb(1);
           kPrint("RBF: minRate: $minRate, maxRate: $maxRate");
           if (minRate == maxRate) {
             fasterFeeRate = maxRate;
-          } else {
-            if (minRate < maxRate) {
-              fasterFeeRate = (minRate + 1).clamp(minRate, maxRate);
-            }
+          } else if (minRate < maxRate) {
+            fasterFeeRate =
+                (minRate + FeeRate.fromSatPerVb(1)).clamp(minRate, maxRate);
           }
           ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
             standardFeeRate: minRate,

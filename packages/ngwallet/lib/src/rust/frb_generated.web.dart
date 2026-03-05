@@ -17,6 +17,7 @@ import 'frb_generated.dart';
 import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
 import 'third_party/ngwallet/config.dart';
+import 'third_party/ngwallet/fee_rate.dart';
 import 'third_party/ngwallet/send.dart';
 import 'third_party/ngwallet/sign_message.dart';
 import 'third_party/ngwallet/transaction.dart';
@@ -240,6 +241,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   EnvoySignMessage dco_decode_envoy_sign_message(dynamic raw);
+
+  @protected
+  FeeRateSatPerKvb dco_decode_fee_rate_sat_per_kvb(dynamic raw);
 
   @protected
   int dco_decode_i_32(dynamic raw);
@@ -595,6 +599,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   EnvoySignMessage sse_decode_envoy_sign_message(SseDeserializer deserializer);
+
+  @protected
+  FeeRateSatPerKvb sse_decode_fee_rate_sat_per_kvb(
+      SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
@@ -969,6 +977,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_envoy_sign_message(
       EnvoySignMessage self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_fee_rate_sat_per_kvb(
+      FeeRateSatPerKvb self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);

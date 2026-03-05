@@ -3291,7 +3291,7 @@ const _: fn() = || {
         let _: u32 = BitcoinTransaction.confirmations;
         let _: bool = BitcoinTransaction.is_confirmed;
         let _: u64 = BitcoinTransaction.fee;
-        let _: u64 = BitcoinTransaction.fee_rate;
+        let _: ngwallet::fee_rate::FeeRateSatPerKvb = BitcoinTransaction.fee_rate;
         let _: i64 = BitcoinTransaction.amount;
         let _: Vec<ngwallet::transaction::Input> = BitcoinTransaction.inputs;
         let _: String = BitcoinTransaction.address;
@@ -3308,6 +3308,10 @@ const _: fn() = || {
         let _: Option<String> = DraftTransaction.change_out_put_tag;
         let _: Vec<String> = DraftTransaction.input_tags;
         let _: bool = DraftTransaction.is_finalized;
+    }
+    {
+        let FeeRateSatPerKvb_ = None::<ngwallet::fee_rate::FeeRateSatPerKvb>.unwrap();
+        let _: u64 = FeeRateSatPerKvb_.0;
     }
     {
         let Input = None::<ngwallet::transaction::Input>.unwrap();
@@ -3370,15 +3374,15 @@ const _: fn() = || {
     }
     {
         let TransactionFeeResult = None::<ngwallet::send::TransactionFeeResult>.unwrap();
-        let _: u64 = TransactionFeeResult.max_fee_rate;
-        let _: u64 = TransactionFeeResult.min_fee_rate;
+        let _: ngwallet::fee_rate::FeeRateSatPerKvb = TransactionFeeResult.max_fee_rate;
+        let _: ngwallet::fee_rate::FeeRateSatPerKvb = TransactionFeeResult.min_fee_rate;
         let _: ngwallet::send::DraftTransaction = TransactionFeeResult.draft_transaction;
     }
     {
         let TransactionParams = None::<ngwallet::send::TransactionParams>.unwrap();
         let _: String = TransactionParams.address;
         let _: u64 = TransactionParams.amount;
-        let _: u64 = TransactionParams.fee_rate;
+        let _: ngwallet::fee_rate::FeeRateSatPerKvb = TransactionParams.fee_rate;
         let _: Vec<ngwallet::transaction::Output> = TransactionParams.selected_outputs;
         let _: Option<String> = TransactionParams.note;
         let _: Option<String> = TransactionParams.tag;
@@ -3667,7 +3671,7 @@ impl SseDecode for ngwallet::transaction::BitcoinTransaction {
         let mut var_confirmations = <u32>::sse_decode(deserializer);
         let mut var_isConfirmed = <bool>::sse_decode(deserializer);
         let mut var_fee = <u64>::sse_decode(deserializer);
-        let mut var_feeRate = <u64>::sse_decode(deserializer);
+        let mut var_feeRate = <ngwallet::fee_rate::FeeRateSatPerKvb>::sse_decode(deserializer);
         let mut var_amount = <i64>::sse_decode(deserializer);
         let mut var_inputs = <Vec<ngwallet::transaction::Input>>::sse_decode(deserializer);
         let mut var_address = <String>::sse_decode(deserializer);
@@ -3828,6 +3832,14 @@ impl SseDecode for crate::api::sign_message::EnvoySignMessage {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         return crate::api::sign_message::EnvoySignMessage {};
+    }
+}
+
+impl SseDecode for ngwallet::fee_rate::FeeRateSatPerKvb {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <u64>::sse_decode(deserializer);
+        return ngwallet::fee_rate::FeeRateSatPerKvb(var_field0);
     }
 }
 
@@ -4425,8 +4437,8 @@ impl SseDecode for ngwallet::sign_message::SignedMessage {
 impl SseDecode for ngwallet::send::TransactionFeeResult {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_maxFeeRate = <u64>::sse_decode(deserializer);
-        let mut var_minFeeRate = <u64>::sse_decode(deserializer);
+        let mut var_maxFeeRate = <ngwallet::fee_rate::FeeRateSatPerKvb>::sse_decode(deserializer);
+        let mut var_minFeeRate = <ngwallet::fee_rate::FeeRateSatPerKvb>::sse_decode(deserializer);
         let mut var_draftTransaction = <ngwallet::send::DraftTransaction>::sse_decode(deserializer);
         return ngwallet::send::TransactionFeeResult {
             max_fee_rate: var_maxFeeRate,
@@ -4441,7 +4453,7 @@ impl SseDecode for ngwallet::send::TransactionParams {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_address = <String>::sse_decode(deserializer);
         let mut var_amount = <u64>::sse_decode(deserializer);
-        let mut var_feeRate = <u64>::sse_decode(deserializer);
+        let mut var_feeRate = <ngwallet::fee_rate::FeeRateSatPerKvb>::sse_decode(deserializer);
         let mut var_selectedOutputs =
             <Vec<ngwallet::transaction::Output>>::sse_decode(deserializer);
         let mut var_note = <Option<String>>::sse_decode(deserializer);
@@ -5300,6 +5312,23 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sign_message::EnvoySignMessag
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<ngwallet::fee_rate::FeeRateSatPerKvb> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0 .0.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<ngwallet::fee_rate::FeeRateSatPerKvb>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<ngwallet::fee_rate::FeeRateSatPerKvb>>
+    for ngwallet::fee_rate::FeeRateSatPerKvb
+{
+    fn into_into_dart(self) -> FrbWrapper<ngwallet::fee_rate::FeeRateSatPerKvb> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for FrbWrapper<ngwallet::transaction::Input> {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -5906,7 +5935,7 @@ impl SseEncode for ngwallet::transaction::BitcoinTransaction {
         <u32>::sse_encode(self.confirmations, serializer);
         <bool>::sse_encode(self.is_confirmed, serializer);
         <u64>::sse_encode(self.fee, serializer);
-        <u64>::sse_encode(self.fee_rate, serializer);
+        <ngwallet::fee_rate::FeeRateSatPerKvb>::sse_encode(self.fee_rate, serializer);
         <i64>::sse_encode(self.amount, serializer);
         <Vec<ngwallet::transaction::Input>>::sse_encode(self.inputs, serializer);
         <String>::sse_encode(self.address, serializer);
@@ -6008,6 +6037,13 @@ impl SseEncode for crate::api::bip39::EnvoyBip39 {
 impl SseEncode for crate::api::sign_message::EnvoySignMessage {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+}
+
+impl SseEncode for ngwallet::fee_rate::FeeRateSatPerKvb {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <u64>::sse_encode(self.0, serializer);
+    }
 }
 
 impl SseEncode for i32 {
@@ -6498,8 +6534,8 @@ impl SseEncode for ngwallet::sign_message::SignedMessage {
 impl SseEncode for ngwallet::send::TransactionFeeResult {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <u64>::sse_encode(self.max_fee_rate, serializer);
-        <u64>::sse_encode(self.min_fee_rate, serializer);
+        <ngwallet::fee_rate::FeeRateSatPerKvb>::sse_encode(self.max_fee_rate, serializer);
+        <ngwallet::fee_rate::FeeRateSatPerKvb>::sse_encode(self.min_fee_rate, serializer);
         <ngwallet::send::DraftTransaction>::sse_encode(self.draft_transaction, serializer);
     }
 }
@@ -6509,7 +6545,7 @@ impl SseEncode for ngwallet::send::TransactionParams {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.address, serializer);
         <u64>::sse_encode(self.amount, serializer);
-        <u64>::sse_encode(self.fee_rate, serializer);
+        <ngwallet::fee_rate::FeeRateSatPerKvb>::sse_encode(self.fee_rate, serializer);
         <Vec<ngwallet::transaction::Output>>::sse_encode(self.selected_outputs, serializer);
         <Option<String>>::sse_encode(self.note, serializer);
         <Option<String>>::sse_encode(self.tag, serializer);

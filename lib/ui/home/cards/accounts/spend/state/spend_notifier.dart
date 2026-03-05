@@ -5,6 +5,7 @@
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/account/sync_manager.dart';
+import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/uniform_resource.dart';
@@ -16,6 +17,7 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/business/fee_rate.dart';
 import 'package:ngwallet/ngwallet.dart';
 
 class TransactionModel {
@@ -110,7 +112,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
   ({
     EnvoyAccount? account,
     int amount,
-    num feeRate,
+    FeeRate feeRate,
     EnvoyAccountHandler? handler,
     String sendTo,
     int spendableBalance,
@@ -179,14 +181,11 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         ..broadcastProgress = BroadcastProgress.staging
         ..loading = true;
 
-      if (feeRate == 0) {
-        feeRate = 1;
-      }
       bool sendMax = spendableBalance == amount;
       final params = TransactionParams(
         address: sendTo,
         amount: BigInt.from(amount),
-        feeRate: BigInt.from(feeRate.toInt()),
+        feeRate: FeeRateSatPerKvb(field0: feeRate.asBigInt),
         selectedOutputs: utxos,
         note: notes,
         doNotSpendChange: false,
@@ -211,9 +210,9 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
     } catch (e, stack) {
       EnvoyReport().log("Spend", "Error composing transaction: $e");
       debugPrintStack(stackTrace: stack);
-      //reset the fee rate to the one used in the transaction
-      ref.read(spendFeeRateProvider.notifier).state =
-          (state.draftTransaction?.transaction.feeRate)?.toInt() ?? 1;
+      ref.read(spendFeeRateProvider.notifier).state = FeeRate.fromBigInt(
+        state.draftTransaction?.transaction.feeRate.field0 ?? BigInt.from(1000),
+      );
       kPrint("setFee:Fallback fee rate: ${ref.read(spendFeeRateProvider)}");
       _handleComposeError(e);
     }
@@ -347,13 +346,12 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
           ..error = null
           ..broadcastProgress = BroadcastProgress.staging
           ..loading = true;
-        //remove if there is any duplicates
         bool sendMax = spendableBalance == amount;
-        final feeRate = Fees().slowRate(network);
+        final slowRate = FeeRate.fromSatPerVb(Fees().slowRate(network));
         final params = TransactionParams(
           address: sendTo,
           amount: BigInt.from(amount),
-          feeRate: BigInt.from(feeRate < 1 ? 1 : feeRate),
+          feeRate: FeeRateSatPerKvb(field0: slowRate.asBigInt),
           selectedOutputs: utxos,
           note: note,
           tag: changeOutput,
@@ -370,13 +368,13 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         );
         final preparedTransaction = feeCalcResult.draftTransaction;
 
-        //update the fee rate
         container.read(feeChooserStateProvider.notifier).state =
             FeeChooserState(
-          standardFeeRate: Fees().slowRate(network),
-          fasterFeeRate: Fees().fastRate(network),
-          minFeeRate: feeCalcResult.minFeeRate.toInt(),
-          maxFeeRate: feeCalcResult.maxFeeRate.toInt().clamp(2, 5000),
+          standardFeeRate: FeeRate.fromSatPerVb(Fees().slowRate(network)),
+          fasterFeeRate: FeeRate.fromSatPerVb(Fees().fastRate(network)),
+          minFeeRate: FeeRate.fromBigInt(feeCalcResult.minFeeRate.field0),
+          maxFeeRate: FeeRate.fromBigInt(feeCalcResult.maxFeeRate.field0)
+              .clamp(FeeRate.fromSatPerVb(2), FeeRate.fromSatPerVb(5000)),
         );
 
         _updateWithPreparedTransaction(preparedTransaction, params);
@@ -429,7 +427,32 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         draftTransaction: state.draftTransaction!,
       );
       syncManager.syncAccount(account);
-      Future.delayed(const Duration(seconds: 100));
+
+      final feeRate = state.transactionParams?.feeRate ??
+          FeeRateSatPerKvb(field0: BigInt.from(1000));
+      if (Settings().subSatFeeEnabled &&
+          !Settings().usingDefaultElectrumServer &&
+          FeeRate.fromBigInt(feeRate.field0).isSubSat) {
+        // Sub-sat txs may be silently dropped by the node if minrelaytxfee
+        // is too high. Poll the wallet tx list for up to ~15s to confirm.
+        final txId = state.draftTransaction!.transaction.txId;
+        bool found = false;
+        for (int i = 0; i < 8 && !found; i++) {
+          await Future.delayed(const Duration(seconds: 2));
+          syncManager.syncAccount(account);
+          await Future.delayed(const Duration(milliseconds: 500));
+          final txs = ref.read(transactionsProvider(account.id));
+          if (txs.any((tx) => tx.txId == txId)) {
+            found = true;
+          }
+        }
+        if (!found) {
+          state = state.clone()
+            ..broadcastProgress = BroadcastProgress.subsatFailed;
+          return false;
+        }
+      }
+
       state = state.clone()..broadcastProgress = BroadcastProgress.success;
       return true;
     } catch (e) {

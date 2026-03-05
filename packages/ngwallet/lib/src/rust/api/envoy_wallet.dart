@@ -6,6 +6,7 @@
 import '../frb_generated.dart';
 import '../lib.dart';
 import '../third_party/ngwallet/config.dart';
+import '../third_party/ngwallet/fee_rate.dart';
 import '../third_party/ngwallet/send.dart';
 import '../third_party/ngwallet/transaction.dart';
 import 'envoy_account.dart';

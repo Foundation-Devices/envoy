@@ -279,6 +279,7 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
           serverUrl: Settings().envoyServerAddress,
           proxyPort: Tor.instance.port,
         );
+
         data = EnvoySeed.extractDataFromPayload(backUpPayload);
       } catch (_) {
         data = null;
@@ -402,5 +403,20 @@ Future<void> recoverManually(
     if (context.mounted) {
       showInvalidSeedDialog(context: context);
     }
+  }
+}
+
+/// Checks if a cloud backup exists on the server for the given seed.
+Future<bool> hasServerBackupData(String seed) async {
+  try {
+    final backUpPayload = await Backup.getBackup(
+      seedWords: seed,
+      serverUrl: Settings().envoyServerAddress,
+      proxyPort: Tor.instance.port,
+    );
+    final data = EnvoySeed.extractDataFromPayload(backUpPayload);
+    return data.isNotEmpty;
+  } catch (_) {
+    return false;
   }
 }
