@@ -216,13 +216,6 @@ class QLConnection: NSObject {
     func connect(peripheral: CBPeripheral) {
         print("\(Self.TAG) [\(deviceId)] Connecting to: \(peripheral.name ?? "Unknown") (\(peripheral.identifier))")
 
-
-        // Close existing connection if any
-        if let existingPeripheral = connectedPeripheral, existingPeripheral.identifier != peripheral.identifier {
-            print("\(Self.TAG) [\(deviceId)] Closing existing connection")
-            delegate?.getCentralManager()?.cancelPeripheralConnection(existingPeripheral)
-        }
-
         sendConnectionEvent(type: "connection_attempt")
 
         connectedPeripheral = peripheral
@@ -265,6 +258,7 @@ class QLConnection: NSObject {
             "rssi": nil,
             "error": nil
         ]
+        sendConnectionEvent()
         result(statusData)
     }
 
