@@ -387,8 +387,8 @@ class QLConnection with EnvoyMessageWriter {
   /// Cancel ongoing transfer for this device
   Future<bool> cancelTransfer() async {
     try {
-      final result = await _methodChannel.invokeMethod<bool>("cancelTransfer");
-      return result ?? false;
+      final result = await _methodChannel.invokeMethod<Map>("cancelTransfer");
+      return result?["cancelled"] ?? false;
     } catch (e, stack) {
       debugPrintStack(
         label: "[$deviceId] Error cancelling transfer: $e",

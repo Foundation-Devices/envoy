@@ -56,16 +56,9 @@ class S {
 
   // skipped getter for the ':' key
 
-  // skipped getter for the 'FW_Version_No.' key
-
-  /// `bc1q abcd rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m 0p`
+  /// `a day ago`
   String get _ {
-    return Intl.message(
-      'bc1q abcd rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m 0p',
-      name: '_',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('a day ago', name: '_', desc: '', args: []);
   }
 
   /// `App Version`
@@ -328,6 +321,36 @@ class S {
     return Intl.message(
       'New Update - See what’s new.',
       name: 'accounts_toastNewUpdate_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Update - See what’s new.`
+  String get accounts_toast_newUpdate {
+    return Intl.message(
+      'New Update - See what’s new.',
+      name: 'accounts_toast_newUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment ID copied to clipboard.`
+  String get accounts_toast_paymentCopied {
+    return Intl.message(
+      'Payment ID copied to clipboard.',
+      name: 'accounts_toast_paymentCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction ID copied to clipboard.`
+  String get accounts_toast_txidCopied {
+    return Intl.message(
+      'Transaction ID copied to clipboard.',
+      name: 'accounts_toast_txidCopied',
       desc: '',
       args: [],
     );
@@ -703,6 +726,16 @@ class S {
     return Intl.message(
       'An incoming transaction will appear in your account shortly.',
       name: 'azteco_redeem_modal_success_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy backup is complete.`
+  String get backup_toast_envoyBackupComplete {
+    return Intl.message(
+      'Envoy backup is complete.',
+      name: 'backup_toast_envoyBackupComplete',
       desc: '',
       args: [],
     );
@@ -1655,6 +1688,46 @@ class S {
     );
   }
 
+  /// `Select State`
+  String get buy_defineLocation_selectState {
+    return Intl.message(
+      'Select State',
+      name: 'buy_defineLocation_selectState',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn’t decode UR.`
+  String get camera_toast_couldntDecodeUr {
+    return Intl.message(
+      'Couldn’t decode UR.',
+      name: 'camera_toast_couldntDecodeUr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not a valid address.`
+  String get camera_toast_notAValidAddress {
+    return Intl.message(
+      'Not a valid address.',
+      name: 'camera_toast_notAValidAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not a valid seed.`
+  String get camera_toast_notAValidSeed {
+    return Intl.message(
+      'Not a valid seed.',
+      name: 'camera_toast_notAValidSeed',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Coin Locked`
   String get card_coin_locked {
     return Intl.message(
@@ -1805,6 +1878,16 @@ class S {
     return Intl.message(
       'Locking coins will prevent them from being used in transactions',
       name: 'coincontrol_lock_coin_modal_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Less than 1 sat/vb is an advanced feature. `
+  String get coincontrol_subsat_selectorWarning {
+    return Intl.message(
+      'Less than 1 sat/vb is an advanced feature. ',
+      name: 'coincontrol_subsat_selectorWarning',
       desc: '',
       args: [],
     );
@@ -2105,16 +2188,6 @@ class S {
     return Intl.message(
       'Your transaction is ready \nto be sent',
       name: 'coincontrol_tx_detail_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Learn more`
-  String get coincontrol_tx_detail_high_fee_info_overlay_learnMore {
-    return Intl.message(
-      'Learn more',
-      name: 'coincontrol_tx_detail_high_fee_info_overlay_learnMore',
       desc: '',
       args: [],
     );
@@ -2755,11 +2828,11 @@ class S {
     return Intl.message('No', name: 'component_no', desc: '', args: []);
   }
 
-  /// `Learn more`
-  String get component_notificationLink {
+  /// `Issue establishing Tor connectivity`
+  String get component_notificationText {
     return Intl.message(
-      'Learn more',
-      name: 'component_notificationLink',
+      'Issue establishing Tor connectivity',
+      name: 'component_notificationText',
       desc: '',
       args: [],
     );
@@ -2950,7 +3023,15 @@ class S {
     );
   }
 
-  // skipped getter for the 'create_first_tag_modal_2_2_ie_text-field' key
+  /// `Enter new tag i.e. Exchange`
+  String get create_first_tag_modal_2_2_ie_text_field {
+    return Intl.message(
+      'Enter new tag i.e. Exchange',
+      name: 'create_first_tag_modal_2_2_ie_text_field',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `Suggestions`
   String get create_first_tag_modal_2_2_suggest {
@@ -3072,6 +3153,26 @@ class S {
     );
   }
 
+  /// `Descriptor copied to clipboard.`
+  String get descriptor_toast_descriptorCopied {
+    return Intl.message(
+      'Descriptor copied to clipboard.',
+      name: 'descriptor_toast_descriptorCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Signature copied to clipboard.`
+  String get descriptor_toast_signatureCopied {
+    return Intl.message(
+      'Signature copied to clipboard.',
+      name: 'descriptor_toast_signatureCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Accessory removed, please reconnect Prime.`
   String get device_deviceDetailsPrimeRemoved_accessoryRemoved {
     return Intl.message(
@@ -3162,11 +3263,31 @@ class S {
     );
   }
 
-  /// `Connecting to Prime`
+  /// `Connecting to Passport`
   String get devices_connectingToPrime_header {
     return Intl.message(
-      'Connecting to Prime',
+      'Connecting to Passport',
       name: 'devices_connectingToPrime_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy could not connect to Passport Prime. Make sure your Passport Prime is powered on, Bluetooth is enabled, and it is not already connected to another device.`
+  String get devices_connectionFailedModal_content {
+    return Intl.message(
+      'Envoy could not connect to Passport Prime. Make sure your Passport Prime is powered on, Bluetooth is enabled, and it is not already connected to another device.',
+      name: 'devices_connectionFailedModal_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connection Failed`
+  String get devices_connectionFailedModal_header {
+    return Intl.message(
+      'Connection Failed',
+      name: 'devices_connectionFailedModal_header',
       desc: '',
       args: [],
     );
@@ -4872,6 +4993,36 @@ class S {
     );
   }
 
+  /// `Cancel Update`
+  String get firmware_connectionModalCancelUpdate_cancelUpdate {
+    return Intl.message(
+      'Cancel Update',
+      name: 'firmware_connectionModalCancelUpdate_cancelUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This will cancel the firmware update. Passport Prime will remain on the current version.`
+  String get firmware_connectionModalCancelUpdate_content {
+    return Intl.message(
+      'This will cancel the firmware update. Passport Prime will remain on the current version.',
+      name: 'firmware_connectionModalCancelUpdate_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel Update?`
+  String get firmware_connectionModalCancelUpdate_header {
+    return Intl.message(
+      'Cancel Update?',
+      name: 'firmware_connectionModalCancelUpdate_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Update Downloaded`
   String get firmware_downloadingUpdate_downloaded {
     return Intl.message(
@@ -5202,10 +5353,10 @@ class S {
     );
   }
 
-  /// `BUY BITCOIN`
+  /// `Buy Bitcoin`
   String get header_buyBitcoin {
     return Intl.message(
-      'BUY BITCOIN',
+      'Buy Bitcoin',
       name: 'header_buyBitcoin',
       desc: '',
       args: [],
@@ -5794,6 +5945,46 @@ class S {
     );
   }
 
+  /// `Your Passport Prime {0} QuantumLink connection is no longer available. If you recently erased the device or unpaired Envoy, this is expected. If you didn't, contact support.\nEnvoy will remove this device from your phone's Bluetooth accessory list.`
+  String get manage_deviceDetailsUnpairedModalWarning_content {
+    return Intl.message(
+      'Your Passport Prime {0} QuantumLink connection is no longer available. If you recently erased the device or unpaired Envoy, this is expected. If you didn\'t, contact support.\nEnvoy will remove this device from your phone\'s Bluetooth accessory list.',
+      name: 'manage_deviceDetailsUnpairedModalWarning_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `QuantumLink Disconnected`
+  String get manage_deviceDetailsUnpairedModalWarning_header {
+    return Intl.message(
+      'QuantumLink Disconnected',
+      name: 'manage_deviceDetailsUnpairedModalWarning_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passport Prime {0} has been unpaired. Envoy will now remove the device from the Bluetooth accessory list of your phone.`
+  String get manage_deviceDetailsUnpairedModal_content {
+    return Intl.message(
+      'Passport Prime {0} has been unpaired. Envoy will now remove the device from the Bluetooth accessory list of your phone.',
+      name: 'manage_deviceDetailsUnpairedModal_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passport Unpaired`
+  String get manage_deviceDetailsUnpairedModal_header {
+    return Intl.message(
+      'Passport Unpaired',
+      name: 'manage_deviceDetailsUnpairedModal_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Pair Again`
   String get manage_deviceDetailsUnpaired_pairAgain {
     return Intl.message(
@@ -5814,10 +6005,10 @@ class S {
     );
   }
 
-  /// `Quantum Link`
+  /// `QuantumLink`
   String get manage_device_details_QuantumLink {
     return Intl.message(
-      'Quantum Link',
+      'QuantumLink',
       name: 'manage_device_details_QuantumLink',
       desc: '',
       args: [],
@@ -6852,6 +7043,66 @@ class S {
     return Intl.message('Support', name: 'menu_support', desc: '', args: []);
   }
 
+  /// `Account already connected.`
+  String get menu_toast_accountAlreadyConnected {
+    return Intl.message(
+      'Account already connected.',
+      name: 'menu_toast_accountAlreadyConnected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn’t delete Envoy seed.`
+  String get menu_toast_couldntDeleteEnvoySeed {
+    return Intl.message(
+      'Couldn’t delete Envoy seed.',
+      name: 'menu_toast_couldntDeleteEnvoySeed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Envoy seed deleted.`
+  String get menu_toast_envoySeedDeleted {
+    return Intl.message(
+      'Envoy seed deleted.',
+      name: 'menu_toast_envoySeedDeleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logs copied to clipboard.`
+  String get menu_toast_logsCopied {
+    return Intl.message(
+      'Logs copied to clipboard.',
+      name: 'menu_toast_logsCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Security check disabled`
+  String get menu_toast_securityCheckDisabled {
+    return Intl.message(
+      'Security check disabled',
+      name: 'menu_toast_securityCheckDisabled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An unexpected error occurred. Please try again.`
+  String get menu_toast_unexpectedError {
+    return Intl.message(
+      'An unexpected error occurred. Please try again.',
+      name: 'menu_toast_unexpectedError',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `From version 2.0.0, all address types are now accessible under a single account card.\n\nThe default receive address type can be changed in Settings.`
   String get onboardin_unifiedAccountsModal_content {
     return Intl.message(
@@ -6927,6 +7178,36 @@ class S {
     return Intl.message(
       'Advanced',
       name: 'onboarding_advanced_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome to Passport `
+  String get onboarding_appclip_header {
+    return Intl.message(
+      'Welcome to Passport ',
+      name: 'onboarding_appclip_header',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Install Envoy to set up your Passport Core.`
+  String get onboarding_appclip_subheaderCore {
+    return Intl.message(
+      'Install Envoy to set up your Passport Core.',
+      name: 'onboarding_appclip_subheaderCore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Install Envoy to set up your Passport Prime.`
+  String get onboarding_appclip_subheaderPrime {
+    return Intl.message(
+      'Install Envoy to set up your Passport Prime.',
+      name: 'onboarding_appclip_subheaderPrime',
       desc: '',
       args: [],
     );
@@ -7162,6 +7443,26 @@ class S {
     );
   }
 
+  /// `This will erase all onboarding progress. You will need to start the Passport Prime setup from the beginning.`
+  String get onboarding_connectionModalExitOnboarding_content {
+    return Intl.message(
+      'This will erase all onboarding progress. You will need to start the Passport Prime setup from the beginning.',
+      name: 'onboarding_connectionModalExitOnboarding_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exit Onboarding?`
+  String get onboarding_connectionModalExitOnboarding_header {
+    return Intl.message(
+      'Exit Onboarding?',
+      name: 'onboarding_connectionModalExitOnboarding_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No Updates Available`
   String get onboarding_connectionNoUpdates_noUpdates {
     return Intl.message(
@@ -7302,10 +7603,10 @@ class S {
     );
   }
 
-  /// `Re-syncing your accounts.\nPlease do not close Envoy.\n\n{amount} of {total_amount} synced`
+  /// `Migration in progress.\nPlease do not close Envoy.\n\n{amount} of {total_amount} processed.`
   String onboarding_migrating_xOfYSynced(Object amount, Object total_amount) {
     return Intl.message(
-      'Re-syncing your accounts.\nPlease do not close Envoy.\n\n$amount of $total_amount synced',
+      'Migration in progress.\nPlease do not close Envoy.\n\n$amount of $total_amount processed.',
       name: 'onboarding_migrating_xOfYSynced',
       desc: '',
       args: [amount, total_amount],
@@ -7752,10 +8053,10 @@ class S {
     );
   }
 
-  /// `Enter your explorer address`
+  /// `Enter explorer address`
   String get privacy_explorer_explorerAddress {
     return Intl.message(
-      'Enter your explorer address',
+      'Enter explorer address',
       name: 'privacy_explorer_explorerAddress',
       desc: '',
       args: [],
@@ -8127,6 +8428,16 @@ class S {
     return Intl.message(
       'Sign Message',
       name: 'receive_qr_signMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Address copied to clipboard.`
+  String get receive_toast_addressCopied {
+    return Intl.message(
+      'Address copied to clipboard.',
+      name: 'receive_toast_addressCopied',
       desc: '',
       args: [],
     );
@@ -8682,6 +8993,26 @@ class S {
     );
   }
 
+  /// `Failed to connect to Passport Prime. Please try again and contact support if issue persists.`
+  String get scanner_toast_failedConnectPrime {
+    return Intl.message(
+      'Failed to connect to Passport Prime. Please try again and contact support if issue persists.',
+      name: 'scanner_toast_failedConnectPrime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not a valid QR.`
+  String get scanner_toast_notValidQr {
+    return Intl.message(
+      'Not a valid QR.',
+      name: 'scanner_toast_notValidQr',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Ensure you are scanning a security check QR code from Passport.`
   String get scv_cameraModalUnexpectedQrFormat_content {
     return Intl.message(
@@ -8732,16 +9063,6 @@ class S {
     );
   }
 
-  /// `Transaction transfered`
-  String get send_QuantumReview_transactionTransferred {
-    return Intl.message(
-      'Transaction transfered',
-      name: 'send_QuantumReview_transactionTransferred',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Amount`
   String get send_build_amount {
     return Intl.message(
@@ -8777,6 +9098,16 @@ class S {
     return Intl.message(
       'View and Edit Details',
       name: 'send_build_viewEditDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activate`
+  String get send_editTxDetailsSubsatModal_activate {
+    return Intl.message(
+      'Activate',
+      name: 'send_editTxDetailsSubsatModal_activate',
       desc: '',
       args: [],
     );
@@ -9117,10 +9448,10 @@ class S {
     );
   }
 
-  /// `Transaction transferred`
+  /// `Transaction Transferred`
   String get send_quantumReview_transactionTransferred {
     return Intl.message(
-      'Transaction transferred',
+      'Transaction Transferred',
       name: 'send_quantumReview_transactionTransferred',
       desc: '',
       args: [],
@@ -9302,6 +9633,16 @@ class S {
     return Intl.message(
       'Receive to Taproot',
       name: 'settings_advanced_receiveToTaproot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset all Warnings`
+  String get settings_advanced_resetWarnings {
+    return Intl.message(
+      'Reset all Warnings',
+      name: 'settings_advanced_resetWarnings',
       desc: '',
       args: [],
     );
@@ -9547,10 +9888,10 @@ class S {
     );
   }
 
-  /// `Your transaction couldn’t be sent`
+  /// `Your transaction could not be sent`
   String get stalls_before_sending_tx_scanning_broadcasting_fail_heading {
     return Intl.message(
-      'Your transaction couldn’t be sent',
+      'Your transaction could not be sent',
       name: 'stalls_before_sending_tx_scanning_broadcasting_fail_heading',
       desc: '',
       args: [],
@@ -9562,6 +9903,18 @@ class S {
     return Intl.message(
       'Please check your connection and try again',
       name: 'stalls_before_sending_tx_scanning_broadcasting_fail_subheading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please ensure sure the connected node is able to broadcast transactions containing  sub-sat fee rates.`
+  String
+      get stalls_before_sending_tx_scanning_broadcasting_fail_subsat_subheading {
+    return Intl.message(
+      'Please ensure sure the connected node is able to broadcast transactions containing  sub-sat fee rates.',
+      name:
+          'stalls_before_sending_tx_scanning_broadcasting_fail_subsat_subheading',
       desc: '',
       args: [],
     );

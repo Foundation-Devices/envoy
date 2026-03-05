@@ -129,7 +129,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
       ref.read(onboardingDeviceProvider)?.getDevice()?.onboardingComplete ==
       true;
 
-  Future<bool> showExitWarning(BuildContext context) {
+  Future<bool> showExitWarningOnboarding(BuildContext context) {
     final Completer<bool> completer = Completer<bool>();
     showEnvoyDialog(
       context: context,
@@ -169,10 +169,35 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     return completer.future;
   }
 
+  Future<bool> showExitWarning(BuildContext context) {
+    final Completer<bool> completer = Completer<bool>();
+    showEnvoyDialog(
+      context: context,
+      dismissible: true,
+      dialog: EnvoyPopUp(
+        icon: EnvoyIcons.alert,
+        typeOfMessage: PopUpState.warning,
+        showCloseButton: true,
+        title: S().firmware_connectionModalCancelUpdate_header,
+        content: S().firmware_connectionModalCancelUpdate_content,
+        primaryButtonLabel: S().component_cancel,
+        secondaryButtonLabel: S().component_exit,
+        onPrimaryButtonTap: (context) async {
+          completer.complete(false);
+          Navigator.pop(context);
+        },
+        onSecondaryButtonTap: (context) async {
+          await ref.read(onboardingDeviceProvider)?.cancelTransfer();
+          completer.complete(true);
+        },
+      ),
+    );
+    return completer.future;
+  }
+
   @override
   Widget build(BuildContext context) {
     final primeUpdateState = ref.watch(primeUpdateStateProvider);
-
     ref.listen(onboardingStateStreamProvider, (prev, next) {
       next.whenData((state) {
         if (state == OnboardingState.firmwareUpdateScreen) {
@@ -218,12 +243,15 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
       onPopInvokedWithResult: (_, __) {
         if (_isSettingsUpdate) {
           // No disconnect needed — device is already paired. Go home directly.
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (context.mounted) context.go(ROUTE_ACCOUNTS_HOME);
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            final shouldExit = await showExitWarning(context);
+            if (shouldExit && context.mounted) {
+              context.go(ROUTE_ACCOUNTS_HOME);
+            }
           });
         } else {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
-            final shouldExit = await showExitWarning(context);
+            final shouldExit = await showExitWarningOnboarding(context);
             if (shouldExit && context.mounted) {
               context.go(ROUTE_ACCOUNTS_HOME);
             }
@@ -237,11 +265,18 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
             padding: const EdgeInsets.all(12),
             child: IconButton(
               icon: const Icon(Icons.close, color: Colors.black),
-              onPressed: () {
+              onPressed: () async {
                 if (_isSettingsUpdate) {
-                  context.go(ROUTE_ACCOUNTS_HOME);
+                  // No disconnect needed — device is already paired. Go home directly.
+                  final shouldExit = await showExitWarning(context);
+                  if (shouldExit && context.mounted) {
+                    context.go(ROUTE_ACCOUNTS_HOME);
+                  }
                 } else {
-                  GoRouter.of(context).pop();
+                  final shouldExit = await showExitWarningOnboarding(context);
+                  if (shouldExit && context.mounted) {
+                    context.go(ROUTE_ACCOUNTS_HOME);
+                  }
                 }
               },
             ),

@@ -161,7 +161,8 @@ class BleAccountHandler extends PassportMessageHandler {
     if (_sendingData) return;
 
     if (qlConnection.getDevice()?.onboardingComplete != true) {
-      kPrint("Device not onboarded, skipping sending exchange rate history.");
+      kPrint(
+          "Device not onboarded, skipping sending exchange rate history. ${qlConnection.deviceId}");
       return;
     }
     try {
@@ -183,6 +184,7 @@ class BleAccountHandler extends PassportMessageHandler {
         timestamp: BigInt.from(timestamp / 1000),
       );
 
+      kPrint("Sending exchange rate to Prime: ${qlConnection.deviceId}");
       qlConnection.writeMessage(
         api.QuantumLinkMessage.exchangeRate(exchangeRateMessage),
       );
