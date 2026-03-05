@@ -336,14 +336,22 @@ class Devices extends ChangeNotifier {
       final qlConnection = device.qlConnection();
       if (Platform.isIOS) {
         try {
-          final removed =
-              await BluetoothChannel().removeAccessory(qlConnection.deviceId);
-          if (removed) {
-            BluetoothChannel().removeDeviceChannel(qlConnection.deviceId);
-            await qlConnection.disconnect();
-          } else {
-            return;
+          final accessories = await BluetoothChannel().getAccessories();
+          final accessory = accessories.firstWhereOrNull(
+            (accessory) => accessory.peripheralId == qlConnection.deviceId,
+          );
+          if (accessory != null) {
+            final removed =
+                await BluetoothChannel().removeAccessory(qlConnection.deviceId);
+            if (removed) {
+              BluetoothChannel().removeDeviceChannel(qlConnection.deviceId);
+            } else {
+              //user denied accessory removal, due to the iOS Bluetooth permission prompt.
+              // we don't want to disconnect without removing the accessory first
+              return;
+            }
           }
+          await qlConnection.disconnect();
         } catch (e) {
           return;
         }
