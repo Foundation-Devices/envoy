@@ -64,20 +64,23 @@ sealed class FirmwareFetchEvent with _$FirmwareFetchEvent {
 
 class FirmwareFetchRequest {
   final String currentVersion;
+  final BigInt? chunkOffset;
 
   const FirmwareFetchRequest({
     required this.currentVersion,
+    this.chunkOffset,
   });
 
   @override
-  int get hashCode => currentVersion.hashCode;
+  int get hashCode => currentVersion.hashCode ^ chunkOffset.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is FirmwareFetchRequest &&
           runtimeType == other.runtimeType &&
-          currentVersion == other.currentVersion;
+          currentVersion == other.currentVersion &&
+          chunkOffset == other.chunkOffset;
 }
 
 @freezed
