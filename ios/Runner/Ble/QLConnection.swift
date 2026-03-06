@@ -171,8 +171,23 @@ class QLConnection: NSObject {
             }
 
             if let data = message as? Data {
-                let replyStatus = self.handleBinaryWrite(data: data)
-                reply(replyStatus)
+                Task { [weak self] in
+                    guard let self = self else {
+                        DispatchQueue.main.async {
+                            reply(Data())
+                        }
+                        return
+                    }
+
+                    let replyStatus = await self.handleBinaryWrite(data: data)
+                    if Thread.isMainThread {
+                        reply(replyStatus)
+                    } else {
+                        DispatchQueue.main.async {
+                            reply(replyStatus)
+                        }
+                    }
+                }
             } else {
                 reply(Data())
             }
@@ -393,7 +408,7 @@ class QLConnection: NSObject {
 
     // MARK: - Binary Write Handler
 
-    private func handleBinaryWrite(data: Data) -> Data {
+    private func handleBinaryWrite(data: Data) async -> Data {
         guard let peripheral = connectedPeripheral else {
             print("\(Self.TAG) [\(deviceId)] No connected peripheral")
             return Data()
@@ -419,22 +434,23 @@ class QLConnection: NSObject {
 
         let maxMTU = Self.BLE_PACKET_SIZE
 
-        Task {
-            if data.count <= maxMTU {
-                let _ = await bleWriteQueue?.enqueue(data: data) ?? false
-            } else {
-                let chunks = data.chunked(into: maxMTU)
-                print("\(Self.TAG) [\(deviceId)] Writing chunks: \(chunks.count)")
-                for chunk in chunks {
-                    Task {
-                        let _ = await bleWriteQueue?.enqueue(data: chunk) ?? false
-                    }
+        if data.count <= maxMTU {
+            let success = await bleWriteQueue?.enqueue(data: data) ?? false
+            return success ? Data([1]) : Data()
+        } else {
+            let chunks = data.chunked(into: maxMTU)
+            print("\(Self.TAG) [\(deviceId)] Writing chunks: \(chunks.count)")
+
+            for chunk in chunks {
+                let success = await bleWriteQueue?.enqueue(data: chunk) ?? false
+                if !success {
+                    print("\(Self.TAG) [\(deviceId)] Failed to enqueue chunk of size: \(chunk.count)")
+                    return Data()
                 }
             }
-        }
 
-        // Return success immediately (actual write happens asynchronously)
-        return Data([1])
+            return Data([1])
+        }
     }
 
     // MARK: - Event Sending
