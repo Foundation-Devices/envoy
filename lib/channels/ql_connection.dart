@@ -398,6 +398,33 @@ class QLConnection with EnvoyMessageWriter {
     }
   }
 
+  /// Request high BLE connection priority (Android only, no-op on iOS)
+  Future<bool> requestHighConnectionPriority() async {
+    if (!Platform.isAndroid) return false;
+    try {
+      final result =
+          await _methodChannel.invokeMethod<bool>('requestHighPriority');
+      return result ?? false;
+    } catch (e) {
+      debugPrint("[$deviceId] Error requesting high connection priority: $e");
+      return false;
+    }
+  }
+
+  /// Request balanced BLE connection priority (Android only, no-op on iOS)
+  Future<bool> requestBalancedConnectionPriority() async {
+    if (!Platform.isAndroid) return false;
+    try {
+      final result =
+          await _methodChannel.invokeMethod<bool>('requestBalancedPriority');
+      return result ?? false;
+    } catch (e) {
+      debugPrint(
+          "[$deviceId] Error requesting balanced connection priority: $e");
+      return false;
+    }
+  }
+
   /// Get the connected peripheral ID (MAC address/ Device UUID on ios)
   Future<String?> getConnectedPeripheralId() async {
     try {

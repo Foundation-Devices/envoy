@@ -43,7 +43,8 @@ void startBluetoothDisconnectionListener(BuildContext context, WidgetRef ref) {
     if (next.hasValue) {
       final event = next.value!;
       if (event.type == BluetoothConnectionEventType.deviceDisconnected &&
-          !isRebooting) {
+          !isRebooting &&
+          ref.context.mounted) {
         await Future.delayed(_connectionLostDialogDelay);
 
         final hasReconnected =

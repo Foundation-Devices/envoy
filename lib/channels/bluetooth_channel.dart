@@ -226,8 +226,7 @@ class BluetoothChannel {
     kPrint("setupBle: obtaining device channel for $resolvedDeviceId");
     //on IOS we need to reset the channel to clear any previous state since,
     //this is required for state sync.
-    final deviceChannel =
-        getDeviceChannel(resolvedDeviceId, reset: Platform.isIOS);
+    final deviceChannel = getDeviceChannel(resolvedDeviceId, reset: true);
 
     bool initiateBonding = false;
     kPrint("setupBle: waiting for connected event on $resolvedDeviceId");
