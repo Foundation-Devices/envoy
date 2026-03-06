@@ -480,7 +480,7 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         let isMidnight = (arguments["c"] as? Int ?? 1) == 1
         let passportDescriptor = ASDiscoveryDescriptor()
         passportDescriptor.bluetoothServiceUUID = primeUUID
-        passportDescriptor.bluetoothNameSubstring = "Prime"
+        passportDescriptor.bluetoothNameSubstring = "Passport"
 
         //Maybe tweak this if multiple primes present
         passportDescriptor.bluetoothRange = ASDiscoveryDescriptor.Range.default
