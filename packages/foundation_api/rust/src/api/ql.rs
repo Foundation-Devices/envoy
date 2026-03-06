@@ -284,6 +284,45 @@ pub async fn encode_to_update_file(
     anyhow::Ok(true)
 }
 
+pub async fn encode_to_chunks(
+    payload: Vec<Vec<u8>>,
+    sender: &QuantumLinkIdentity,
+    recipient: &XIDDocument,
+    chunk_size: usize,
+) -> anyhow::Result<Vec<QuantumLinkMessage>> {
+    debug!("SENDER: {:?}", sender.xid_document);
+    debug!("RECEIVER: {:?}", recipient);
+
+    if payload.is_empty() {
+        return Ok(Vec::new());
+    }
+
+    if payload.len() > (u8::MAX as usize) {
+        return Err(anyhow::anyhow!(
+            "Too many patches in payload: {} exceeds maximum of {}",
+            payload.len(),
+            u8::MAX
+        ));
+    }
+
+    let total_patches = payload.len() as u8;
+    let mut messages = Vec::new();
+
+    for (idx, patch_bytes) in payload.iter().enumerate() {
+        let patch_index = idx as u8;
+
+        let envoy_messages = split_fw_update_into_chunks(
+            patch_index,
+            total_patches,
+            patch_bytes.as_slice(),
+            chunk_size,
+        );
+        messages.extend(envoy_messages);
+    }
+
+    Ok(messages)
+}
+
 pub async fn generate_ql_identity() -> QuantumLinkIdentity {
     debug!("Generating identity");
     let identity = QuantumLinkIdentity::generate();

@@ -518,28 +518,19 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        EnvoyStepItem(
-          step: ref.watch(fwDownloadStateProvider),
-          highlight: false,
+        Expanded(child: SizedBox.expand()),
+        EnvoyButton(
+          S().common_button_contactSupport,
+          type: EnvoyButtonTypes.secondary,
+          onTap: () {
+            launchUrl(
+              Uri.parse(
+                "https://community.foundation.xyz/c/passport-prime/12",
+              ),
+            );
+          },
         ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            EnvoyButton(
-              S().common_button_contactSupport,
-              type: EnvoyButtonTypes.secondary,
-              onTap: () {
-                launchUrl(
-                  Uri.parse(
-                    "https://community.foundation.xyz/c/passport-prime/12",
-                  ),
-                );
-              },
-            ),
-            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          ],
-        ),
+        const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
       ],
     );
   }

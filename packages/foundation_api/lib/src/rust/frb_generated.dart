@@ -83,7 +83,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 169149212;
+  int get rustContentHash => -575115648;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -163,6 +163,12 @@ abstract class RustLibApi extends BaseApi {
       {required EnvoyMessage message,
       required QuantumLinkIdentity sender,
       required XidDocument recipient});
+
+  Future<List<QuantumLinkMessage>> crateApiQlEncodeToChunks(
+      {required List<Uint8List> payload,
+      required QuantumLinkIdentity sender,
+      required XidDocument recipient,
+      required BigInt chunkSize});
 
   Future<bool> crateApiQlEncodeToMagicBackupFile(
       {required List<int> payload,
@@ -871,6 +877,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<List<QuantumLinkMessage>> crateApiQlEncodeToChunks(
+      {required List<Uint8List> payload,
+      required QuantumLinkIdentity sender,
+      required XidDocument recipient,
+      required BigInt chunkSize}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_list_prim_u_8_strict(payload, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
+            sender, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
+            recipient, serializer);
+        sse_encode_usize(chunkSize, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 22, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_quantum_link_message,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiQlEncodeToChunksConstMeta,
+      argValues: [payload, sender, recipient, chunkSize],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiQlEncodeToChunksConstMeta => const TaskConstMeta(
+        debugName: "encode_to_chunks",
+        argNames: ["payload", "sender", "recipient", "chunkSize"],
+      );
+
+  @override
   Future<bool> crateApiQlEncodeToMagicBackupFile(
       {required List<int> payload,
       required QuantumLinkIdentity sender,
@@ -890,7 +929,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_usize(chunkSize, serializer);
         sse_encode_u_32(timestamp, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 22, port: port_);
+            funcId: 23, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -935,7 +974,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_usize(chunkSize, serializer);
         sse_encode_u_32(timestamp, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 23, port: port_);
+            funcId: 24, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -966,7 +1005,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 24, port: port_);
+            funcId: 25, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -991,7 +1030,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 25, port: port_);
+            funcId: 26, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -1015,7 +1054,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 26, port: port_);
+            funcId: 27, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -1039,7 +1078,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 27, port: port_);
+            funcId: 28, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -1063,7 +1102,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 28)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 29)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1086,7 +1125,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 29, port: port_);
+            funcId: 30, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1113,7 +1152,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             this_, serializer);
         sse_encode_box_autoadd_backup_chunk(chunk, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 30, port: port_);
+            funcId: 31, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -1140,7 +1179,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
             quantumLinkIdentity, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 31, port: port_);
+            funcId: 32, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -1167,7 +1206,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerQuantumLinkIdentity(
             quantumLinkIdentity, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 32, port: port_);
+            funcId: 33, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -1193,7 +1232,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerXIDDocument(
             xidDocument, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 33, port: port_);
+            funcId: 34, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -1846,9 +1885,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BigInt dco_decode_box_autoadd_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_u_64(raw);
+  }
+
+  @protected
   int dco_decode_box_autoadd_u_8(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
+  }
+
+  @protected
+  UnpairingRequest dco_decode_box_autoadd_unpairing_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_unpairing_request(raw);
+  }
+
+  @protected
+  UnpairingResponse dco_decode_box_autoadd_unpairing_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_unpairing_response(raw);
   }
 
   @protected
@@ -2080,10 +2137,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   FirmwareFetchRequest dco_decode_firmware_fetch_request(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 1)
-      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
     return FirmwareFetchRequest(
       currentVersion: dco_decode_String(arr[0]),
+      chunkOffset: dco_decode_opt_box_autoadd_u_64(arr[1]),
     );
   }
 
@@ -2200,6 +2258,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_quantum_link_message).toList();
+  }
+
+  @protected
   OnboardingState dco_decode_onboarding_state(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return OnboardingState.values[raw as int];
@@ -2237,6 +2301,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PassportMessage? dco_decode_opt_box_autoadd_passport_message(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_passport_message(raw);
+  }
+
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_u_64(raw);
   }
 
   @protected
@@ -2521,6 +2591,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return QuantumLinkMessage_TimezoneResponse(
           dco_decode_box_autoadd_timezone_response(raw[1]),
         );
+      case 34:
+        return QuantumLinkMessage_UnpairingRequest(
+          dco_decode_box_autoadd_unpairing_request(raw[1]),
+        );
+      case 35:
+        return QuantumLinkMessage_UnpairingResponse(
+          dco_decode_box_autoadd_unpairing_response(raw[1]),
+        );
       default:
         throw Exception("unreachable");
     }
@@ -2730,6 +2808,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void dco_decode_unit(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return;
+  }
+
+  @protected
+  UnpairingRequest dco_decode_unpairing_request(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 0)
+      throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
+    return UnpairingRequest();
+  }
+
+  @protected
+  UnpairingResponse dco_decode_unpairing_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return UnpairingResponse(
+      success: dco_decode_bool(arr[0]),
+    );
   }
 
   @protected
@@ -3371,9 +3469,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_u_64(deserializer));
+  }
+
+  @protected
   int sse_decode_box_autoadd_u_8(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_u_8(deserializer));
+  }
+
+  @protected
+  UnpairingRequest sse_decode_box_autoadd_unpairing_request(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_unpairing_request(deserializer));
+  }
+
+  @protected
+  UnpairingResponse sse_decode_box_autoadd_unpairing_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_unpairing_response(deserializer));
   }
 
   @protected
@@ -3585,7 +3703,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_currentVersion = sse_decode_String(deserializer);
-    return FirmwareFetchRequest(currentVersion: var_currentVersion);
+    var var_chunkOffset = sse_decode_opt_box_autoadd_u_64(deserializer);
+    return FirmwareFetchRequest(
+        currentVersion: var_currentVersion, chunkOffset: var_chunkOffset);
   }
 
   @protected
@@ -3717,6 +3837,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<QuantumLinkMessage> sse_decode_list_quantum_link_message(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <QuantumLinkMessage>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_quantum_link_message(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
@@ -3769,6 +3902,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
     if (sse_decode_bool(deserializer)) {
       return (sse_decode_box_autoadd_passport_message(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_u_64(deserializer));
     } else {
       return null;
     }
@@ -4031,6 +4175,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 33:
         var var_field0 = sse_decode_box_autoadd_timezone_response(deserializer);
         return QuantumLinkMessage_TimezoneResponse(var_field0);
+      case 34:
+        var var_field0 = sse_decode_box_autoadd_unpairing_request(deserializer);
+        return QuantumLinkMessage_UnpairingRequest(var_field0);
+      case 35:
+        var var_field0 =
+            sse_decode_box_autoadd_unpairing_response(deserializer);
+        return QuantumLinkMessage_UnpairingResponse(var_field0);
       default:
         throw UnimplementedError('');
     }
@@ -4219,6 +4370,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_decode_unit(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  UnpairingRequest sse_decode_unpairing_request(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return UnpairingRequest();
+  }
+
+  @protected
+  UnpairingResponse sse_decode_unpairing_response(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_success = sse_decode_bool(deserializer);
+    return UnpairingResponse(success: var_success);
   }
 
   @protected
@@ -4868,9 +5033,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_u_8(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_u_8(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_unpairing_request(
+      UnpairingRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_unpairing_request(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_unpairing_response(
+      UnpairingResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_unpairing_response(self, serializer);
   }
 
   @protected
@@ -5041,6 +5226,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       FirmwareFetchRequest self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.currentVersion, serializer);
+    sse_encode_opt_box_autoadd_u_64(self.chunkOffset, serializer);
   }
 
   @protected
@@ -5153,6 +5339,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_quantum_link_message(
+      List<QuantumLinkMessage> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_quantum_link_message(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_onboarding_state(
       OnboardingState self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5203,6 +5399,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_bool(self != null, serializer);
     if (self != null) {
       sse_encode_box_autoadd_passport_message(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_u_64(self, serializer);
     }
   }
 
@@ -5430,6 +5636,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case QuantumLinkMessage_TimezoneResponse(field0: final field0):
         sse_encode_i_32(33, serializer);
         sse_encode_box_autoadd_timezone_response(field0, serializer);
+      case QuantumLinkMessage_UnpairingRequest(field0: final field0):
+        sse_encode_i_32(34, serializer);
+        sse_encode_box_autoadd_unpairing_request(field0, serializer);
+      case QuantumLinkMessage_UnpairingResponse(field0: final field0):
+        sse_encode_i_32(35, serializer);
+        sse_encode_box_autoadd_unpairing_response(field0, serializer);
     }
   }
 
@@ -5588,6 +5800,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_unit(void self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_unpairing_request(
+      UnpairingRequest self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_unpairing_response(
+      UnpairingResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self.success, serializer);
   }
 
   @protected

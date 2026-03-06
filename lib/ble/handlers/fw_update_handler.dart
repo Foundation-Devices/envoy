@@ -10,13 +10,11 @@ import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/server.dart';
 import 'package:envoy/channels/ble_status.dart';
-import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
-import 'package:envoy/util/ntp.dart';
 import 'package:envoy/util/stream_replay_cache.dart';
 import 'package:envoy/util/transfer_rate_estimator.dart';
 import 'package:flutter/cupertino.dart';
@@ -48,7 +46,10 @@ class FwUpdateHandler extends PassportMessageHandler {
   // reset this every time a new transfer starts
   final _transferEstimator = TransferRateEstimator();
   StreamSubscription<WriteProgress>? _writeProgressSubscription;
+  ControlledQueue<api.QuantumLinkMessage>? _chunkQueue;
 
+  // High-water mark to prevent progress regression during chunk retries
+  double _highWaterProgress = 0.0;
   final _fetchState = StreamController<FwUpdateState>.broadcast();
   final _downloadState = StreamController<FwUpdateState>.broadcast();
   final _transferState = StreamController<FwUpdateState>.broadcast();
@@ -92,17 +93,23 @@ class FwUpdateHandler extends PassportMessageHandler {
 
   @override
   Future<void> handleMessage(api.QuantumLinkMessage message) async {
-    if (message
-        case api.QuantumLinkMessage_FirmwareUpdateCheckRequest updateRequest) {
-      currentVersion = updateRequest.field0.currentVersion;
-      _handleFwUpdateCheckRequest(currentVersion);
-    } else if (message
-        case api.QuantumLinkMessage_FirmwareFetchRequest fetchRequest) {
-      final version = fetchRequest.field0.currentVersion;
-      _handleFirmwareFetchRequest(version);
-    } else if (message
-        case api.QuantumLinkMessage_FirmwareInstallEvent installEvent) {
-      _handleOnboardingState(installEvent.field0);
+    switch (message) {
+      case api.QuantumLinkMessage_FirmwareUpdateCheckRequest updateRequest:
+        currentVersion = updateRequest.field0.currentVersion;
+        _handleFwUpdateCheckRequest(currentVersion);
+      case api.QuantumLinkMessage_FirmwareFetchRequest fetchRequest:
+        final api.FirmwareFetchRequest firmwareFetchRequest =
+            fetchRequest.field0;
+        if (firmwareFetchRequest.chunkOffset case final offset?) {
+          kPrint("Restarting chunkQueue from offset $offset");
+          _chunkQueue?.restartFrom(offset.toInt());
+          return;
+        }
+        _handleFirmwareFetchRequest(firmwareFetchRequest.currentVersion);
+      case api.QuantumLinkMessage_FirmwareInstallEvent installEvent:
+        _handleOnboardingState(installEvent.field0);
+      default:
+        break;
     }
   }
 
@@ -180,28 +187,11 @@ class FwUpdateHandler extends PassportMessageHandler {
   }
 
   Future<void> sendFirmwarePayload(List<Uint8List> patches) async {
-    final tempFile = await BluetoothChannel.getBleCacheFile(
-      patches.hashCode.toString(),
-    );
-
     // reset this every time a new transfer starts
     _transferEstimator.reset();
+    _highWaterProgress = 0.0;
 
     _writeProgressSubscription?.cancel();
-    _writeProgressSubscription =
-        qlConnection.writeProgressStream().listen((progress) {
-      if (progress.id == tempFile.path) {
-        _processProgress(progress);
-      }
-    });
-
-    DateTime dateTime = DateTime.now();
-    try {
-      dateTime = await NTP.now(timeout: const Duration(seconds: 1));
-    } catch (e) {
-      kPrint("NTP error: $e");
-    }
-    final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
 
     if (qlConnection.senderXid == null || qlConnection.recipientXid == null) {
       EnvoyReport().log(
@@ -210,33 +200,49 @@ class FwUpdateHandler extends PassportMessageHandler {
       );
       return;
     }
-    final ready = await api.encodeToUpdateFile(
+    final chunks = await api.encodeToChunks(
       payload: patches,
       sender: qlConnection.senderXid!,
       recipient: qlConnection.recipientXid!,
-      path: tempFile.path,
       chunkSize: bleChunkSize,
-      timestamp: timestampSeconds,
     );
 
-    if (ready) {
-      kPrint(
-          "Firmware payload encoded to file: ${tempFile.path} Size in MB: ${tempFile.lengthSync() / (1024 * 1024)}");
-      final success = await qlConnection.transmitFromFile(tempFile.path);
-      if (!success) {
-        await qlConnection.writeMessage(
-          api.QuantumLinkMessage.firmwareFetchEvent(
-            api.FirmwareFetchEvent.error(
-              error: "Firmware payload transmission failed!",
-            ),
-          ),
-        );
+    _chunkQueue = ControlledQueue(chunks.toList());
 
-        kPrint("Firmware payload transmission failed!");
-        return;
-      }
-      kPrint("Firmware payload sent successfully! $success");
+    try {
+      //only for android
+      await qlConnection.requestHighConnectionPriority();
+    } catch (_) {
+      kPrint(
+          "Failed to set high connection priority, proceeding with normal priority");
     }
+
+    unawaited(_chunkQueue?.start((index, api.QuantumLinkMessage message) async {
+      try {
+        kPrint("Sending chunk ${index + 1}/${chunks.length}");
+        final result = await qlConnection.writeMessage(message);
+        kPrint("Sent chunk ${index + 1}/${chunks.length} result: $result");
+        _processProgress(WriteProgress(
+          id: 'fw_update',
+          progress: (index + 1) / chunks.length,
+          totalBytes: chunks.length,
+          bytesProcessed: index + 1,
+        ));
+      } catch (e, stack) {
+        kPrint(
+            "Failed to send firmware chunk ${index + 1}/${chunks.length}: $e");
+        EnvoyReport().log(
+          "fw_update_handler",
+          "Chunk transmission error at index $index: $e",
+          stackTrace: stack,
+        );
+      }
+    }).whenComplete(() async {
+      //only for android
+      await qlConnection.requestBalancedConnectionPriority();
+    }));
+
+    kPrint("All FW chunks queued for sending. Total chunks: ${chunks.length}");
   }
 
   //Checks for firmware updates
@@ -347,7 +353,7 @@ class FwUpdateHandler extends PassportMessageHandler {
       },
       error: (event) {
         // Cancel any ongoing transfer
-        unawaited(qlConnection.cancelTransfer());
+        qlConnection.qlHandler.fwUpdateHandler.stopFirmwareTransfer();
         EnvoyReport().log(
           "fw_update_handler",
           "Firmware install error: ${event.error}",
@@ -358,9 +364,12 @@ class FwUpdateHandler extends PassportMessageHandler {
   }
 
   void _processProgress(WriteProgress wProgress) {
-    final progress = wProgress.progress;
     final totalBytes = wProgress.totalBytes;
     final bytesProcessed = wProgress.bytesProcessed;
+
+    // Clamp to high-water mark so progress never regresses during a chunk retry
+    final progress =
+        _highWaterProgress = wProgress.progress.clamp(_highWaterProgress, 1.0);
 
     final remainingTime = _transferEstimator.updateProgress(
       bytesProcessed: bytesProcessed,
@@ -398,6 +407,7 @@ class FwUpdateHandler extends PassportMessageHandler {
 
   @override
   void dispose() {
+    _chunkQueue?.dispose();
     _writeProgressSubscription?.cancel();
     _fetchState.close();
     _downloadState.close();
@@ -406,5 +416,81 @@ class FwUpdateHandler extends PassportMessageHandler {
     _transferProgress.close();
     _settingsUpdateStarted.close();
     super.dispose();
+  }
+
+  void stopFirmwareTransfer() {
+    _chunkQueue?.stop();
+  }
+}
+
+typedef SendOne<T> = Future<void> Function(int index, T item);
+
+class ControlledQueue<T> {
+  ControlledQueue(List<T> items) : _items = List<T>.from(items);
+
+  final List<T> _items;
+
+  int _cursor = 0;
+  int? _restartFrom;
+  bool _running = false;
+  bool _stopRequested = false;
+
+  bool get isRunning => _running;
+
+  int get currentIndex => _cursor;
+
+  bool get isCompleted => _cursor >= _items.length;
+
+  Future<void> start(SendOne<T> sendOne) async {
+    if (_running) return;
+
+    _running = true;
+    _stopRequested = false;
+
+    try {
+      while (!_stopRequested && _cursor < _items.length) {
+        if (_restartFrom != null) {
+          _cursor = _restartFrom!;
+          _restartFrom = null;
+        }
+
+        await sendOne(_cursor, _items[_cursor]);
+
+        // If restart was requested during await, next loop will jump.
+        if (_restartFrom == null) {
+          _cursor++;
+        }
+      }
+    } finally {
+      _running = false;
+    }
+  }
+
+  void stop() {
+    _stopRequested = true;
+  }
+
+  void restartFrom(int index) {
+    if (index < 0 || index >= _items.length) {
+      throw RangeError.index(index, _items, 'index');
+    }
+
+    _restartFrom = index;
+    _stopRequested = false;
+
+    // If not running now, next start() begins from this index.
+    if (!_running) {
+      _cursor = index;
+    }
+  }
+
+  void reset() {
+    _cursor = 0;
+    _restartFrom = null;
+    _stopRequested = false;
+  }
+
+  void dispose() {
+    stop();
   }
 }

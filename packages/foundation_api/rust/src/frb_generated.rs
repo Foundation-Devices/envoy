@@ -45,7 +45,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 169149212;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -575115648;
 
 // Section: executor
 
@@ -1119,6 +1119,87 @@ fn wire__crate__api__ql__encode_impl(
         },
     )
 }
+fn wire__crate__api__ql__encode_to_chunks_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "encode_to_chunks",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_payload = <Vec<Vec<u8>>>::sse_decode(&mut deserializer);
+            let api_sender = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<QuantumLinkIdentity>,
+            >>::sse_decode(&mut deserializer);
+            let api_recipient = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<XIDDocument>,
+            >>::sse_decode(&mut deserializer);
+            let api_chunk_size = <usize>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let mut api_sender_guard = None;
+                        let mut api_recipient_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_sender,
+                                        0,
+                                        false,
+                                    ),
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_recipient,
+                                        1,
+                                        false,
+                                    ),
+                                ],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => {
+                                    api_sender_guard =
+                                        Some(api_sender.lockable_decode_async_ref().await)
+                                }
+                                1 => {
+                                    api_recipient_guard =
+                                        Some(api_recipient.lockable_decode_async_ref().await)
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_sender_guard = api_sender_guard.unwrap();
+                        let api_recipient_guard = api_recipient_guard.unwrap();
+                        let output_ok = crate::api::ql::encode_to_chunks(
+                            api_payload,
+                            &*api_sender_guard,
+                            &*api_recipient_guard,
+                            api_chunk_size,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__ql__encode_to_magic_backup_file_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1852,6 +1933,7 @@ const _: fn() = || {
         let FirmwareFetchRequest =
             None::<foundation_api::api::firmware::FirmwareFetchRequest>.unwrap();
         let _: String = FirmwareFetchRequest.current_version;
+        let _: Option<u64> = FirmwareFetchRequest.chunk_offset;
     }
     match None::<foundation_api::api::firmware::FirmwareInstallEvent>.unwrap() {
         foundation_api::api::firmware::FirmwareInstallEvent::UpdateVerified => {}
@@ -2049,6 +2131,12 @@ const _: fn() = || {
         foundation_api::api::message::QuantumLinkMessage::TimezoneResponse(field0) => {
             let _: foundation_api::api::status::TimezoneResponse = field0;
         }
+        foundation_api::api::message::QuantumLinkMessage::UnpairingRequest(field0) => {
+            let _: foundation_api::api::pairing::UnpairingRequest = field0;
+        }
+        foundation_api::api::message::QuantumLinkMessage::UnpairingResponse(field0) => {
+            let _: foundation_api::api::pairing::UnpairingResponse = field0;
+        }
     }
     match None::<foundation_api::api::backup::RestoreMagicBackupEvent>.unwrap() {
         foundation_api::api::backup::RestoreMagicBackupEvent::NotFound => {}
@@ -2125,6 +2213,13 @@ const _: fn() = || {
         let TimezoneResponse = None::<foundation_api::api::status::TimezoneResponse>.unwrap();
         let _: i32 = TimezoneResponse.offset_minutes;
         let _: String = TimezoneResponse.zone;
+    }
+    {
+        let UnpairingRequest = None::<foundation_api::api::pairing::UnpairingRequest>.unwrap();
+    }
+    {
+        let UnpairingResponse = None::<foundation_api::api::pairing::UnpairingResponse>.unwrap();
+        let _: bool = UnpairingResponse.success;
     }
     match None::<foundation_api::api::scv::VerificationResult>.unwrap() {
         foundation_api::api::scv::VerificationResult::Success => {}
@@ -2651,8 +2746,10 @@ impl SseDecode for foundation_api::api::firmware::FirmwareFetchRequest {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_currentVersion = <String>::sse_decode(deserializer);
+        let mut var_chunkOffset = <Option<u64>>::sse_decode(deserializer);
         return foundation_api::api::firmware::FirmwareFetchRequest {
             current_version: var_currentVersion,
+            chunk_offset: var_chunkOffset,
         };
     }
 }
@@ -2810,6 +2907,18 @@ impl SseDecode for Vec<u8> {
     }
 }
 
+impl SseDecode for Vec<foundation_api::api::message::QuantumLinkMessage> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<foundation_api::api::message::QuantumLinkMessage>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for foundation_api::api::onboarding::OnboardingState {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2877,6 +2986,17 @@ impl SseDecode for Option<foundation_api::api::message::PassportMessage> {
             return Some(<foundation_api::api::message::PassportMessage>::sse_decode(
                 deserializer,
             ));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<u64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<u64>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -3281,6 +3401,20 @@ impl SseDecode for foundation_api::api::message::QuantumLinkMessage {
                     var_field0,
                 );
             }
+            34 => {
+                let mut var_field0 =
+                    <foundation_api::api::pairing::UnpairingRequest>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::UnpairingRequest(
+                    var_field0,
+                );
+            }
+            35 => {
+                let mut var_field0 =
+                    <foundation_api::api::pairing::UnpairingResponse>::sse_decode(deserializer);
+                return foundation_api::api::message::QuantumLinkMessage::UnpairingResponse(
+                    var_field0,
+                );
+            }
             _ => {
                 unimplemented!("");
             }
@@ -3521,6 +3655,23 @@ impl SseDecode for () {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {}
 }
 
+impl SseDecode for foundation_api::api::pairing::UnpairingRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        return foundation_api::api::pairing::UnpairingRequest {};
+    }
+}
+
+impl SseDecode for foundation_api::api::pairing::UnpairingResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_success = <bool>::sse_decode(deserializer);
+        return foundation_api::api::pairing::UnpairingResponse {
+            success: var_success,
+        };
+    }
+}
+
 impl SseDecode for usize {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3566,22 +3717,23 @@ fn pde_ffi_dispatcher_primary_impl(
         19 => wire__crate__api__ql__deserialize_ql_identity_impl(port, ptr, rust_vec_len, data_len),
         20 => wire__crate__api__ql__deserialize_xid_impl(port, ptr, rust_vec_len, data_len),
         21 => wire__crate__api__ql__encode_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire__crate__api__ql__encode_to_magic_backup_file_impl(
+        22 => wire__crate__api__ql__encode_to_chunks_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire__crate__api__ql__encode_to_magic_backup_file_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        23 => wire__crate__api__ql__encode_to_update_file_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire__crate__api__ql__generate_ql_identity_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire__crate__api__ql__get_arid_cache_impl(port, ptr, rust_vec_len, data_len),
-        26 => wire__crate__api__ql__get_decoder_impl(port, ptr, rust_vec_len, data_len),
-        27 => wire__crate__api__qr__get_qr_decoder_impl(port, ptr, rust_vec_len, data_len),
-        29 => wire__crate__api__qr__init_app_impl(port, ptr, rust_vec_len, data_len),
-        30 => wire__crate__api__ql__push_backup_chunk_impl(port, ptr, rust_vec_len, data_len),
-        31 => wire__crate__api__ql__serialize_ql_identity_impl(port, ptr, rust_vec_len, data_len),
-        32 => wire__crate__api__ql__serialize_xid_impl(port, ptr, rust_vec_len, data_len),
-        33 => wire__crate__api__ql__serialize_xid_document_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire__crate__api__ql__encode_to_update_file_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire__crate__api__ql__generate_ql_identity_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire__crate__api__ql__get_arid_cache_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire__crate__api__ql__get_decoder_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire__crate__api__qr__get_qr_decoder_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire__crate__api__qr__init_app_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire__crate__api__ql__push_backup_chunk_impl(port, ptr, rust_vec_len, data_len),
+        32 => wire__crate__api__ql__serialize_ql_identity_impl(port, ptr, rust_vec_len, data_len),
+        33 => wire__crate__api__ql__serialize_xid_impl(port, ptr, rust_vec_len, data_len),
+        34 => wire__crate__api__ql__serialize_xid_document_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -3664,7 +3816,7 @@ fn pde_ffi_dispatcher_sync_impl(
             rust_vec_len,
             data_len,
         ),
-        28 => wire__crate__api__qr__greet_impl(ptr, rust_vec_len, data_len),
+        29 => wire__crate__api__qr__greet_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -4280,7 +4432,11 @@ impl flutter_rust_bridge::IntoDart
     for FrbWrapper<foundation_api::api::firmware::FirmwareFetchRequest>
 {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        [self.0.current_version.into_into_dart().into_dart()].into_dart()
+        [
+            self.0.current_version.into_into_dart().into_dart(),
+            self.0.chunk_offset.into_into_dart().into_dart(),
+        ]
+        .into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
@@ -4882,6 +5038,12 @@ impl flutter_rust_bridge::IntoDart
             foundation_api::api::message::QuantumLinkMessage::TimezoneResponse(field0) => {
                 [33.into_dart(), field0.into_into_dart().into_dart()].into_dart()
             }
+            foundation_api::api::message::QuantumLinkMessage::UnpairingRequest(field0) => {
+                [34.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            foundation_api::api::message::QuantumLinkMessage::UnpairingResponse(field0) => {
+                [35.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
             _ => {
                 unimplemented!("");
             }
@@ -5186,6 +5348,40 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::status::T
     for foundation_api::api::status::TimezoneResponse
 {
     fn into_into_dart(self) -> FrbWrapper<foundation_api::api::status::TimezoneResponse> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::pairing::UnpairingRequest> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        Vec::<u8>::new().into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::pairing::UnpairingRequest>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::pairing::UnpairingRequest>>
+    for foundation_api::api::pairing::UnpairingRequest
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::pairing::UnpairingRequest> {
+        self.into()
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<foundation_api::api::pairing::UnpairingResponse> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.0.success.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<foundation_api::api::pairing::UnpairingResponse>
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<foundation_api::api::pairing::UnpairingResponse>>
+    for foundation_api::api::pairing::UnpairingResponse
+{
+    fn into_into_dart(self) -> FrbWrapper<foundation_api::api::pairing::UnpairingResponse> {
         self.into()
     }
 }
@@ -5619,6 +5815,7 @@ impl SseEncode for foundation_api::api::firmware::FirmwareFetchRequest {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.current_version, serializer);
+        <Option<u64>>::sse_encode(self.chunk_offset, serializer);
     }
 }
 
@@ -5748,6 +5945,16 @@ impl SseEncode for Vec<u8> {
     }
 }
 
+impl SseEncode for Vec<foundation_api::api::message::QuantumLinkMessage> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <foundation_api::api::message::QuantumLinkMessage>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for foundation_api::api::onboarding::OnboardingState {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5815,6 +6022,16 @@ impl SseEncode for Option<foundation_api::api::message::PassportMessage> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <foundation_api::api::message::PassportMessage>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<u64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <u64>::sse_encode(value, serializer);
         }
     }
 }
@@ -6136,6 +6353,14 @@ impl SseEncode for foundation_api::api::message::QuantumLinkMessage {
                 <i32>::sse_encode(33, serializer);
                 <foundation_api::api::status::TimezoneResponse>::sse_encode(field0, serializer);
             }
+            foundation_api::api::message::QuantumLinkMessage::UnpairingRequest(field0) => {
+                <i32>::sse_encode(34, serializer);
+                <foundation_api::api::pairing::UnpairingRequest>::sse_encode(field0, serializer);
+            }
+            foundation_api::api::message::QuantumLinkMessage::UnpairingResponse(field0) => {
+                <i32>::sse_encode(35, serializer);
+                <foundation_api::api::pairing::UnpairingResponse>::sse_encode(field0, serializer);
+            }
             _ => {
                 unimplemented!("");
             }
@@ -6344,6 +6569,18 @@ impl SseEncode for [u8; 32] {
 impl SseEncode for () {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+}
+
+impl SseEncode for foundation_api::api::pairing::UnpairingRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+}
+
+impl SseEncode for foundation_api::api::pairing::UnpairingResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.success, serializer);
+    }
 }
 
 impl SseEncode for usize {
