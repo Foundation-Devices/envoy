@@ -299,6 +299,10 @@ class QLConnection(
 
     @SuppressLint("MissingPermission")
     private fun getCurrentDeviceStatus(result: MethodChannel.Result) {
+        sendConnectionEvent(
+            if (isConnected()) BluetoothConnectionEventType.DEVICE_CONNECTED
+            else BluetoothConnectionEventType.DEVICE_DISCONNECTED
+        )
         result.success(
             BluetoothConnectionStatus(
                 type = null,
