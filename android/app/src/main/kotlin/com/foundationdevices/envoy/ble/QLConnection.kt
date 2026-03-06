@@ -173,6 +173,8 @@ class QLConnection(
             "isConnected" -> result.success(isConnected())
             "cancelTransfer" -> cancelTransfer(result)
             "reconnect" -> reconnect(result)
+            "requestHighPriority" -> requestHighPriority(result)
+            "requestBalancedPriority" -> requestBalancedPriority(result)
             else -> result.notImplemented()
         }
     }
@@ -436,6 +438,20 @@ class QLConnection(
             Log.e(TAG, "[$deviceId] Error reconnecting: ${e.message}")
             result.error("RECONNECT_ERROR", "Failed to reconnect: ${e.message}", null)
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun requestHighPriority(result: MethodChannel.Result) {
+        val success = bluetoothGatt?.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH) ?: false
+        Log.d(TAG, "[$deviceId] Requested high connection priority: ${if (success) "✓" else "✗"}")
+        result.success(success)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun requestBalancedPriority(result: MethodChannel.Result) {
+        val success = bluetoothGatt?.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_BALANCED) ?: false
+        Log.d(TAG, "[$deviceId] Requested balanced connection priority: ${if (success) "✓" else "✗"}")
+        result.success(success)
     }
 
     @SuppressLint("MissingPermission")
