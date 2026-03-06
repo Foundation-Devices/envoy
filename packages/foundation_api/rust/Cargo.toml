@@ -17,7 +17,7 @@ foundation-api = { git = "https://github.com/Foundation-Devices/foundation-api",
 btp = { git = "https://github.com/Foundation-Devices/foundation-api", tag = "5.4.2" }
 
 
-foundation-ur = { git = "https://github.com/Foundation-Devices/foundation-rs", rev = "c5036b857e847a5fe15375d2839cb68a29fd7963" }
+foundation-ur = { git = "https://github.com/Foundation-Devices/foundation-rs", rev = "670027f3d6957ee48b1eb5b03bb87194f9f4cb16" }
 sha2 = "0.10"
 
 tokio = { version = "1.34.0" , features = ["macros"]}
