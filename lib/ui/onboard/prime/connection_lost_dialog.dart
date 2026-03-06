@@ -47,10 +47,13 @@ void startBluetoothDisconnectionListener(BuildContext context, WidgetRef ref) {
           ref.context.mounted) {
         await Future.delayed(_connectionLostDialogDelay);
 
+        if (!context.mounted || _isDialogShowing) {
+          return;
+        }
         final hasReconnected =
             ref.read(onboardingDeviceProvider)?.lastDeviceStatus.connected ??
                 false;
-        if (!context.mounted || _isDialogShowing || hasReconnected) {
+        if (hasReconnected) {
           return;
         }
         showEnvoyDialog(

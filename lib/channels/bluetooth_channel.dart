@@ -230,6 +230,7 @@ class BluetoothChannel {
 
     bool initiateBonding = false;
     kPrint("setupBle: waiting for connected event on $resolvedDeviceId");
+    await deviceChannel.getCurrentDeviceStatus();
     final connect = await deviceChannel.connectionEvents.firstWhere((event) {
       debugPrint("[$resolvedDeviceId] events $event");
       try {
