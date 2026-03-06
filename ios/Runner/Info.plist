@@ -51,7 +51,7 @@
 	<key>NSAccessorySetupBluetoothNames</key>
 	<array>
 		<string>Passport Prime</string>
-		<string>Prime</string>
+		<string>Passport</string>
 	</array>
 	<key>NSAccessorySetupBluetoothServices</key>
 	<array>
