@@ -538,7 +538,7 @@ class BluetoothChannel(
         val foundMAC = knownPrimeDevicesMAC.contains(deviceId)
         var foundName = device.alias?.contains("Passport", ignoreCase = true) ?: false
 
-        if (device.alias?.contains("Prime", ignoreCase = true)){
+        if (device.alias?.contains("Prime", ignoreCase = true) == true){
             foundName = true
         }
         if (!foundMAC && !foundName) {
