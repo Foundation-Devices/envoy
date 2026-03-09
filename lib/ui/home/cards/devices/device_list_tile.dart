@@ -201,14 +201,16 @@ class _DeviceListTileState extends ConsumerState<DeviceListTile> {
                                               dismissible: true,
                                               useRootNavigator: true,
                                               dialog: EnvoyPopUp(
-                                                icon: EnvoyIcons.alert,
+                                                icon: EnvoyIcons.info,
                                                 typeOfMessage:
-                                                    PopUpState.warning,
-                                                showCloseButton: true,
-                                                content:
-                                                    "On your Prime device, please go to Settings > Update",
+                                                    PopUpState.deafult,
+                                                showCloseButton: false,
+                                                title: S()
+                                                    .devices_firmwareUpdateModal_header,
+                                                content: S()
+                                                    .devices_firmwareUpdateModal_content,
                                                 primaryButtonLabel:
-                                                    S().component_back,
+                                                    S().component_confirm,
                                                 onPrimaryButtonTap:
                                                     (context) async {
                                                   Navigator.pop(context);
