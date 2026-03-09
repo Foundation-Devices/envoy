@@ -5,6 +5,7 @@
 import 'dart:ui';
 
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/components/linear_gradient.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/home/cards/accounts/account_list_tile.dart';
@@ -532,12 +533,21 @@ class AccountChooserOverlayState extends State<AccountChooserOverlay>
                       title: AnimatedOpacity(
                         duration: Duration(milliseconds: _exiting ? 100 : 300),
                         opacity: _exiting ? 0 : 1,
-                        child: Text(
-                          widget.transferAccount == null
-                              ? S().header_chooseAccount
-                              : S().bottomNav_transfer.toUpperCase(),
-                          style: EnvoyTypography.subheading
-                              .copyWith(color: Colors.white),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            FittedBox(
+                              fit: BoxFit.fitWidth,
+                              child: Text(
+                                widget.transferAccount == null
+                                    ? S().header_chooseAccount
+                                    : S().bottomNav_transfer.toUpperCase(),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            const SizedBox(
+                                height: 50, child: IndicatorShield()),
+                          ],
                         ),
                       ),
                       leading: AnimatedOpacity(
