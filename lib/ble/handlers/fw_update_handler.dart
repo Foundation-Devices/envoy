@@ -37,10 +37,13 @@ class FwTransferProgress {
 class FwUpdateHandler extends PassportMessageHandler {
   FwUpdateHandler(super.connection);
 
+  static const int _averageTxSped = 30 * 1024;
+
   Set<PrimeFwUpdateStep> _completedUpdateStates = {};
 
   String newVersion = "";
   String currentVersion = "";
+  int totalPatchBytes = 0;
 
   // Transfer rate estimator
   // reset this every time a new transfer starts
@@ -77,15 +80,34 @@ class FwUpdateHandler extends PassportMessageHandler {
   Stream<FwUpdateState> get transferStateStream =>
       _transferState.stream.asBroadcastStream();
 
-  String _formatPatchSizes(List<Uint8List> patches) {
-    if (patches.isEmpty) {
-      return "[]";
-    }
-    return "[${patches.map((patch) => patch.length).join(", ")}]";
-  }
-
   String _formatMegabytes(int bytes) {
     return (bytes / (1024 * 1024)).toStringAsFixed(2);
+  }
+
+  int _getTotalPatchBytes(List<PrimePatch> patches) {
+    return patches.fold<int>(0, (total, patch) => total + patch.size);
+  }
+
+  String _formatEstimatedUpdateTime(int totalBytes) {
+    if (totalBytes <= 0) {
+      return "~5 min";
+    }
+
+    final minutes = totalBytes / _averageTxSped / 60;
+
+    if (minutes < 1) {
+      return "1 min";
+    }
+
+    final roundedMinutes = minutes < 10
+        ? (minutes * 10).ceilToDouble() / 10
+        : minutes.ceilToDouble();
+    final precision =
+        roundedMinutes.truncateToDouble() == roundedMinutes ? 0 : 1;
+
+    //add prime installation overhead, ~1 min
+    final totalTime = roundedMinutes + 1;
+    return "~${totalTime.toStringAsFixed(precision)} min";
   }
 
   /// Emits when a firmware fetch request is received from an already-onboarded
@@ -93,6 +115,8 @@ class FwUpdateHandler extends PassportMessageHandler {
       _settingsUpdateStarted.stream.asBroadcastStream();
 
   Set<PrimeFwUpdateStep> get completedUpdateStates => _completedUpdateStates;
+
+  String get estimatedUpdateTime => _formatEstimatedUpdateTime(totalPatchBytes);
 
   @override
   bool canHandle(api.QuantumLinkMessage message) {
@@ -174,7 +198,7 @@ class FwUpdateHandler extends PassportMessageHandler {
           patchBinaries.add(binary);
         }
         EnvoyReport().log("fw_update_handler",
-            "All patches downloaded: ${patchBinaries.length} patch(es), total size=${_formatMegabytes(patchBinaries.fold(0, (s, b) => s + b.length))} MB, patch sizes=${_formatPatchSizes(patchBinaries)}");
+            "All patches downloaded: ${patchBinaries.length} patch(es), total size=${_formatMegabytes(patchBinaries.fold(0, (s, b) => s + b.length))} MB}");
         _updateDownloadState(
           S().firmware_downloadingUpdate_downloaded,
           EnvoyStepState.FINISHED,
@@ -220,10 +244,7 @@ class FwUpdateHandler extends PassportMessageHandler {
         patches.fold<int>(0, (sum, patch) => sum + patch.length);
     EnvoyReport().log(
       "fw_update_handler",
-      "Firmware payload size: patches=${patches.length}, total size=${_formatMegabytes(totalPayloadBytes)} MB, patch sizes=${_formatPatchSizes(patches)}",
-    );
-    kPrint(
-      "Firmware payload size: patches=${patches.length}, total size=${_formatMegabytes(totalPayloadBytes)} MB, patch sizes=${_formatPatchSizes(patches)}",
+      "Firmware payload size: patches=${patches.length}, total size=${_formatMegabytes(totalPayloadBytes)} MB}",
     );
 
     EnvoyReport().log("fw_update_handler",
@@ -339,7 +360,11 @@ class FwUpdateHandler extends PassportMessageHandler {
 
   api.FirmwareUpdateAvailable updateAvailableMessage(List<PrimePatch> patches) {
     final latest = patches.last;
-
+    totalPatchBytes = _getTotalPatchBytes(patches);
+    EnvoyReport().log(
+      "fw_update_handler",
+      "Firmware payload size: patches=${patches.length}, total size=${_formatMegabytes(totalPatchBytes)} MB}",
+    );
     final changelog = patches.reversed.fold(
       "",
       (acc, p) => "$acc\n${p.changelog}",
@@ -349,7 +374,7 @@ class FwUpdateHandler extends PassportMessageHandler {
       version: latest.version,
       changelog: changelog,
       timestamp: latest.releaseDate.millisecondsSinceEpoch,
-      totalSize: 100,
+      totalSize: totalPatchBytes,
       patchCount: patches.length,
     );
   }
@@ -372,15 +397,23 @@ class FwUpdateHandler extends PassportMessageHandler {
   void _handleOnboardingState(api.FirmwareInstallEvent event) {
     event.map(
       updateVerified: (event) {
+        EnvoyReport().log("fw_update_handler",
+            "Install event: updateVerified — firmware signature/integrity check passed");
         _updateFwUpdateState(PrimeFwUpdateStep.verifying);
       },
       installing: (event) {
+        EnvoyReport().log("fw_update_handler",
+            "Install event: installing — device is applying the firmware");
         _updateFwUpdateState(PrimeFwUpdateStep.installing);
       },
       rebooting: (event) {
+        EnvoyReport().log("fw_update_handler",
+            "Install event: rebooting — device is rebooting into new firmware");
         _updateFwUpdateState(PrimeFwUpdateStep.rebooting);
       },
       success: (event) {
+        EnvoyReport().log("fw_update_handler",
+            "Install event: success — firmware update completed successfully, newVersion=$newVersion");
         _updateFwUpdateState(PrimeFwUpdateStep.finished);
       },
       error: (event) {
@@ -435,6 +468,7 @@ class FwUpdateHandler extends PassportMessageHandler {
       );
     }
     newVersion = "";
+    totalPatchBytes = 0;
   }
 
   @override
@@ -479,6 +513,9 @@ class ControlledQueue<T> {
     _running = true;
     _stopRequested = false;
 
+    EnvoyReport()
+        .log("ControlledQueue", "Queue started: total=${_items.length} items");
+
     try {
       while (!_stopRequested && _cursor < _items.length) {
         if (_restartFrom != null) {
@@ -486,6 +523,8 @@ class ControlledQueue<T> {
           _restartFrom = null;
         }
 
+        EnvoyReport().log(
+            "ControlledQueue", "Sending index $_cursor/${_items.length - 1}");
         await sendOne(_cursor, _items[_cursor]);
 
         // If restart was requested during await, next loop will jump.

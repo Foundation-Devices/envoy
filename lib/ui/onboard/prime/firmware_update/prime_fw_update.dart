@@ -440,8 +440,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
             const SizedBox(height: EnvoySpacing.xs),
             Text(
               S().firmware_updateAvailable_estimatedUpdateTime(
-                //TODO: proper size based time estimation
-                "${Platform.isAndroid ? '~1' : '~2.5'} min",
+                fwHandler?.estimatedUpdateTime ??
+                    (Platform.isAndroid ? "~1 min" : "~2.5 min"),
               ),
               textAlign: TextAlign.center,
               style: EnvoyTypography.body.copyWith(
