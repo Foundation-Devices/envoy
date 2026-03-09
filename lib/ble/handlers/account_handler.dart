@@ -157,6 +157,10 @@ class BleAccountHandler extends PassportMessageHandler {
   bool _sendingData = false;
   double _lastSentBtcPrice = 0.0;
 
+  void resetSendingState() {
+    _sendingData = false;
+  }
+
   Future<void> sendExchangeRate() async {
     if (_sendingData) return;
 
@@ -206,10 +210,12 @@ class BleAccountHandler extends PassportMessageHandler {
       final currency = ExchangeRate().history.currency;
 
       if (qlConnection.getDevice()?.onboardingComplete != true) {
+        _sendingData = false;
         kPrint("Device not onboarded, skipping sending exchange rate history.");
         return;
       }
       if (historyPoints.isEmpty) {
+        _sendingData = false;
         kPrint("No exchange rate history to send.");
         return;
       }
