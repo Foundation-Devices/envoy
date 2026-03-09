@@ -30,6 +30,7 @@ import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class OnboardPrimeFwUpdate extends ConsumerStatefulWidget {
   const OnboardPrimeFwUpdate({super.key});
@@ -66,12 +67,15 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     _controller!.stateMachine.boolean('indeterminate')?.value = true;
 
     setState(() => _isInitialized = true);
+
+    await WakelockPlus.enable(); // keep screen awake during onboarding
   }
 
   @override
   void dispose() {
     _controller?.dispose();
     _riveFile?.dispose();
+    unawaited(WakelockPlus.disable());
     super.dispose();
   }
 
