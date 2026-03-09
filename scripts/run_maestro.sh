@@ -38,6 +38,7 @@ APP_ID="com.foundationdevices.envoy"
 DEVICE_ID=""
 TEST_ARG=""
 BUILD_APP=false
+KEBAB_PID=""
 
 # ------------------------------------------------------------
 # Commands (override here if needed later)
@@ -171,7 +172,10 @@ if ! command -v adb >/dev/null 2>&1; then
 fi
 
 ADB_CMD="$(command -v adb)"
+# Export ANDROID_HOME so Maestro can find the Android SDK and adb
+export ANDROID_HOME="${ANDROID_HOME:-$(dirname "$(dirname "$ADB_CMD")")}"
 echo -e "${GREEN}✓${NC} adb found: $ADB_CMD"
+echo -e "${GREEN}✓${NC} ANDROID_HOME: $ANDROID_HOME"
 
 
 echo -e "${GREEN}✓${NC} Maestro found: $(command -v maestro)"
@@ -192,6 +196,18 @@ if [ -z "$DEVICE_ID" ]; then
 fi
 
 echo -e "${GREEN}✓${NC} Using device: $DEVICE_ID"
+
+# Kill any running Maestro MCP server processes that hold ADB connections
+MAESTRO_PIDS=$(pgrep -f "maestro.cli.AppKt mcp" 2>/dev/null || true)
+if [ -n "$MAESTRO_PIDS" ]; then
+    echo -e "${YELLOW}Stopping Maestro MCP server(s) (PIDs: $MAESTRO_PIDS)...${NC}"
+    echo "$MAESTRO_PIDS" | xargs kill 2>/dev/null || true
+    sleep 2
+fi
+
+# Clear stale ADB port forwards left by Maestro MCP sessions
+$ADB_CMD forward --remove-all 2>/dev/null
+echo -e "${GREEN}✓${NC} Cleared stale ADB port forwards"
 
 # ------------------------------------------------------------
 # Build & Install (optional)
@@ -329,6 +345,39 @@ record_failed_test() {
 }
 
 # ------------------------------------------------------------
+# Kebab HTTP Bridge
+# ------------------------------------------------------------
+start_kebab_bridge() {
+    if lsof -i :5555 >/dev/null 2>&1; then
+        echo -e "${GREEN}✓${NC} Kebab bridge already running on port 5555"
+        return
+    fi
+
+    echo -e "${YELLOW}Starting Kebab HTTP bridge...${NC}"
+    "$SCRIPT_DIR/kebab_server.sh" &
+    KEBAB_PID=$!
+    # Wait for the server to be ready
+    for i in $(seq 1 10); do
+        if curl -s http://localhost:5555/home >/dev/null 2>&1; then
+            echo -e "${GREEN}✓${NC} Kebab bridge started (PID: $KEBAB_PID)"
+            return
+        fi
+        sleep 1
+    done
+    echo -e "${YELLOW}⚠ Kebab bridge may not be ready — kebab commands might fail${NC}"
+}
+
+stop_kebab_bridge() {
+    if [ -n "$KEBAB_PID" ]; then
+        kill "$KEBAB_PID" 2>/dev/null
+        wait "$KEBAB_PID" 2>/dev/null
+        echo -e "${GREEN}✓${NC} Kebab bridge stopped"
+    fi
+}
+
+start_kebab_bridge
+
+# ------------------------------------------------------------
 # Test Runner
 # ------------------------------------------------------------
 PASSED=0
@@ -404,6 +453,8 @@ fi
 # ------------------------------------------------------------
 # Cleanup
 # ------------------------------------------------------------
+stop_kebab_bridge
+
 echo -e "${YELLOW}Uninstalling app...${NC}"
 $ADB_CMD -s "$DEVICE_ID" uninstall com.foundationdevices.envoy >/dev/null 2>&1 || true
 

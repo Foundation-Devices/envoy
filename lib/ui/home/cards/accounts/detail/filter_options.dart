@@ -57,9 +57,7 @@ class _FilterOptionsState extends ConsumerState<FilterOptions> {
                           ? AccountToggleState.coins
                           : AccountToggleState.tx;
                 },
-                value: toggleState == AccountToggleState.tx
-                    ? "Tx"
-                    : "Coins", // TODO: FIGMA
+                value: toggleState == AccountToggleState.tx ? "Tx" : "Coins",
               ),
               Flexible(
                 flex: 1,

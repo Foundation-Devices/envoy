@@ -182,8 +182,9 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
         .toList();
     List<EnvoyDropdownOption> divisionDropdownOptions = [];
     divisionDropdownOptions.add(
-      EnvoyDropdownOption(label: 'Select State', value: 'selectState'),
-    ); // TODO:Figma
+      EnvoyDropdownOption(
+          label: S().buy_defineLocation_selectState, value: 'selectState'),
+    );
     divisionDropdownOptions.addAll(
       selectedCountry!.divisions.map(
         (division) => EnvoyDropdownOption(label: division, value: division),
@@ -239,7 +240,7 @@ class _SelectRegionState extends ConsumerState<SelectRegion> {
                       setState(() {
                         selectedRegion = selectedOption!.label;
                         _divisionSelected =
-                            selectedOption.label != "Select State"; //TODO:Figma
+                            selectedOption.value != 'selectState';
                       });
                     },
                   ),

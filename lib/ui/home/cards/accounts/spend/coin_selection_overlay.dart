@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/fee_rate.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
@@ -778,9 +779,8 @@ class SpendRequirementOverlayState
       ///if the user changed the selection, validate the transaction
       if (coinSelectionDiff.isNotEmpty) {
         ///reset fees if coin selection changed
-        ref.read(spendFeeRateProvider.notifier).state = Fees().slowRate(
-          account!.network,
-        );
+        ref.read(spendFeeRateProvider.notifier).state =
+            FeeRate.fromSatPerVb(Fees().slowRate(account!.network));
         ref.read(spendTransactionProvider.notifier).validate(scope);
       }
 

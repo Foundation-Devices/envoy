@@ -15,6 +15,7 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
   ..selectedElectrumAddress = json['selectedElectrumAddress'] as String
   ..usingDefaultElectrumServer =
       json['usingDefaultElectrumServer'] as bool? ?? true
+  ..subSatFeeEnabled = json['subSatFeeEnabled'] as bool? ?? false
   ..usingTor = json['usingTor'] as bool
   ..syncToCloudSetting = json['syncToCloudSetting'] as bool? ?? true
   ..allowScreenshotsSetting = json['allowScreenshotsSetting'] as bool? ?? false
@@ -38,6 +39,7 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'environment': _$EnvironmentEnumMap[instance.environment]!,
       'selectedElectrumAddress': instance.selectedElectrumAddress,
       'usingDefaultElectrumServer': instance.usingDefaultElectrumServer,
+      'subSatFeeEnabled': instance.subSatFeeEnabled,
       'usingTor': instance.usingTor,
       'syncToCloudSetting': instance.syncToCloudSetting,
       'allowScreenshotsSetting': instance.allowScreenshotsSetting,

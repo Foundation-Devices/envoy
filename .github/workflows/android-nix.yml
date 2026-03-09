@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-name: Android (Nix)
+name: Android build (Nix)
 on:
   workflow_call:
   workflow_dispatch:
@@ -74,9 +74,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: app-release.apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/apk/release/app-release.apk
 
       - uses: actions/upload-artifact@v4
         with:
           name: app-release.aab
-          path: build/app/outputs/flutter-apk/app-release.aab
+          path: build/app/outputs/bundle/release/app-release.aab

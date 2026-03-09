@@ -20,6 +20,7 @@ use ngwallet::bdk_wallet::{KeychainKind, Update};
 use ngwallet::config::{
     AddressType, NgAccountBackup, NgAccountBuilder, NgAccountConfig, NgDescriptor,
 };
+use ngwallet::fee_rate::{FeeRateSatPerKvb, FeeRateSatPerKwu};
 use ngwallet::ngwallet::NgWallet;
 use ngwallet::send::{DraftTransaction, TransactionFeeResult, TransactionParams};
 use ngwallet::transaction;
@@ -825,7 +826,7 @@ impl EnvoyAccountHandler {
             .get_rbf_draft_tx(
                 selected_outputs,
                 bitcoin_transaction,
-                fee_rate,
+                FeeRateSatPerKwu::from(FeeRateSatPerKvb(fee_rate)),
                 None,
                 None,
                 note,

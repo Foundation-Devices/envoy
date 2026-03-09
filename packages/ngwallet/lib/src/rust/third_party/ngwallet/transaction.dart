@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../../frb_generated.dart';
+import 'fee_rate.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 class BitcoinTransaction {
@@ -12,7 +13,7 @@ class BitcoinTransaction {
   final int confirmations;
   final bool isConfirmed;
   final BigInt fee;
-  final BigInt feeRate;
+  final FeeRateSatPerKvb feeRate;
   final PlatformInt64 amount;
   final List<Input> inputs;
   final String address;
