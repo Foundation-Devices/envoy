@@ -77,6 +77,17 @@ class FwUpdateHandler extends PassportMessageHandler {
   Stream<FwUpdateState> get transferStateStream =>
       _transferState.stream.asBroadcastStream();
 
+  String _formatPatchSizes(List<Uint8List> patches) {
+    if (patches.isEmpty) {
+      return "[]";
+    }
+    return "[${patches.map((patch) => patch.length).join(", ")}]";
+  }
+
+  String _formatMegabytes(int bytes) {
+    return (bytes / (1024 * 1024)).toStringAsFixed(2);
+  }
+
   /// Emits when a firmware fetch request is received from an already-onboarded
   Stream<void> get settingsUpdateStarted =>
       _settingsUpdateStarted.stream.asBroadcastStream();
@@ -144,6 +155,8 @@ class FwUpdateHandler extends PassportMessageHandler {
     }
 
     if (patches.isEmpty) {
+      EnvoyReport()
+          .log("fw_update_handler", "No updates available — notifying device");
       await sendFirmwareFetchEvent(api.FirmwareFetchEvent.updateNotAvailable());
     } else {
       await sendFirmwareFetchEvent(
@@ -160,6 +173,8 @@ class FwUpdateHandler extends PassportMessageHandler {
           }
           patchBinaries.add(binary);
         }
+        EnvoyReport().log("fw_update_handler",
+            "All patches downloaded: ${patchBinaries.length} patch(es), total size=${_formatMegabytes(patchBinaries.fold(0, (s, b) => s + b.length))} MB, patch sizes=${_formatPatchSizes(patchBinaries)}");
         _updateDownloadState(
           S().firmware_downloadingUpdate_downloaded,
           EnvoyStepState.FINISHED,
@@ -200,6 +215,19 @@ class FwUpdateHandler extends PassportMessageHandler {
       );
       return;
     }
+
+    final totalPayloadBytes =
+        patches.fold<int>(0, (sum, patch) => sum + patch.length);
+    EnvoyReport().log(
+      "fw_update_handler",
+      "Firmware payload size: patches=${patches.length}, total size=${_formatMegabytes(totalPayloadBytes)} MB, patch sizes=${_formatPatchSizes(patches)}",
+    );
+    kPrint(
+      "Firmware payload size: patches=${patches.length}, total size=${_formatMegabytes(totalPayloadBytes)} MB, patch sizes=${_formatPatchSizes(patches)}",
+    );
+
+    EnvoyReport().log("fw_update_handler",
+        "Encoding ${patches.length} patch(es) into BLE chunks (chunkSize=$bleChunkSize)");
     final chunks = await api.encodeToChunks(
       payload: patches,
       sender: qlConnection.senderXid!,
@@ -212,7 +240,11 @@ class FwUpdateHandler extends PassportMessageHandler {
     try {
       //only for android
       await qlConnection.requestHighConnectionPriority();
-    } catch (_) {
+      EnvoyReport()
+          .log("fw_update_handler", "BLE high connection priority requested");
+    } catch (e) {
+      EnvoyReport().log("fw_update_handler",
+          "Failed to set high connection priority, proceeding with normal priority: $e");
       kPrint(
           "Failed to set high connection priority, proceeding with normal priority");
     }
