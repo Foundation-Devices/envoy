@@ -215,6 +215,19 @@ class FwUpdateHandler extends PassportMessageHandler {
       );
       return;
     }
+
+    final totalPayloadBytes =
+        patches.fold<int>(0, (sum, patch) => sum + patch.length);
+    EnvoyReport().log(
+      "fw_update_handler",
+      "Firmware payload size: patches=${patches.length}, total size=${_formatMegabytes(totalPayloadBytes)} MB, patch sizes=${_formatPatchSizes(patches)}",
+    );
+    kPrint(
+      "Firmware payload size: patches=${patches.length}, total size=${_formatMegabytes(totalPayloadBytes)} MB, patch sizes=${_formatPatchSizes(patches)}",
+    );
+
+    EnvoyReport().log("fw_update_handler",
+        "Encoding ${patches.length} patch(es) into BLE chunks (chunkSize=$bleChunkSize)");
     final chunks = await api.encodeToChunks(
       payload: patches,
       sender: qlConnection.senderXid!,
@@ -227,7 +240,11 @@ class FwUpdateHandler extends PassportMessageHandler {
     try {
       //only for android
       await qlConnection.requestHighConnectionPriority();
-    } catch (_) {
+      EnvoyReport()
+          .log("fw_update_handler", "BLE high connection priority requested");
+    } catch (e) {
+      EnvoyReport().log("fw_update_handler",
+          "Failed to set high connection priority, proceeding with normal priority: $e");
       kPrint(
           "Failed to set high connection priority, proceeding with normal priority");
     }
