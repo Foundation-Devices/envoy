@@ -37,6 +37,8 @@ class FwTransferProgress {
 class FwUpdateHandler extends PassportMessageHandler {
   FwUpdateHandler(super.connection);
 
+  // Average transfer speed in bytes per second, used for estimating remaining time. T
+  // his is a rough estimate and can vary based on device and connection quality.
   static const int _averageTxSped = 30 * 1024;
 
   Set<PrimeFwUpdateStep> _completedUpdateStates = {};
