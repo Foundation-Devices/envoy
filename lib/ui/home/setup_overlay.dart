@@ -452,9 +452,9 @@ Future<void> pairWithDevice(BuildContext context, XidDocument xid) async {
         dialog: EnvoyPopUp(
           icon: EnvoyIcons.alert,
           typeOfMessage: PopUpState.warning,
-          showCloseButton: true,
-          content:
-              "Passport Prime not connected. Please turn on your Passport Prime, ensure Bluetooth is enabled, and try again.",
+          showCloseButton: false,
+          title: S().devices_connectionFailedModal_header,
+          content: S().devices_connectionFailedModal_content,
           primaryButtonLabel: S().component_back,
           onPrimaryButtonTap: (ctx) async {
             Navigator.pop(ctx);
