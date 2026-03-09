@@ -3323,6 +3323,26 @@ class S {
     );
   }
 
+  /// `Firmware updates for Passport Prime must be initiated on device. Go to Settings > Update.`
+  String get devices_firmwareUpdateModal_content {
+    return Intl.message(
+      'Firmware updates for Passport Prime must be initiated on device. Go to Settings > Update.',
+      name: 'devices_firmwareUpdateModal_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Begin on Passport Prime`
+  String get devices_firmwareUpdateModal_header {
+    return Intl.message(
+      'Begin on Passport Prime',
+      name: 'devices_firmwareUpdateModal_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Your device is now ready to use.`
   String get devices_reconnectedSuccess_content {
     return Intl.message(
