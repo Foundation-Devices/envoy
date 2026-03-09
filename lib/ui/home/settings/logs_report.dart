@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class EnvoyLogsScreen extends ConsumerStatefulWidget {
   const EnvoyLogsScreen({super.key});
@@ -45,8 +46,7 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                     backgroundColor: Colors.lightBlue,
                     replaceExisting: true,
                     duration: const Duration(milliseconds: 3000),
-                    message: "Logs copied to clipboard",
-                    // TODO: FIGMA
+                    message: S().menu_toast_logsCopied,
                     icon: const Icon(Icons.copy, color: EnvoyColors.teal),
                   ).show(context);
                 }

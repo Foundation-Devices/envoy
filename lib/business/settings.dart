@@ -182,6 +182,9 @@ class Settings extends ChangeNotifier {
   @JsonKey(defaultValue: true)
   bool usingDefaultElectrumServer = true;
 
+  @JsonKey(defaultValue: false)
+  bool subSatFeeEnabled = false;
+
   String electrumAddress(Network network) {
     if (network == Network.testnet || network == Network.testnet4) {
       if (usingTor) {
@@ -216,6 +219,7 @@ class Settings extends ChangeNotifier {
   void setCustomElectrumAddress(String electrumAddress) {
     selectedElectrumAddress = electrumAddress;
     usingDefaultElectrumServer = false;
+    subSatFeeEnabled = false;
     store();
   }
 
@@ -252,6 +256,7 @@ class Settings extends ChangeNotifier {
   void setTorEnabled(bool torEnabled) {
     usingTor = torEnabled;
     if (torEnabled) {
+      ConnectivityManager().startTorGracePeriod();
       Tor.instance.enable();
     } else {
       Tor.instance.disable();
@@ -286,7 +291,7 @@ class Settings extends ChangeNotifier {
         return "https://staging.envoy.foundation.xyz";
       case Environment.production:
         return usingTor
-            ? "http://sb6kqsauvr2cw5n7nkel5jbwdvdjksfhwj62tpcruxtt2r2bg763mrid.onion"
+            ? "http://pcwglac5cacmdgviitf3mkyvrpcx4tkpeew7gyf4ipp4enskr37gquqd.onion"
             : "https://envoy.foundation.xyz";
     }
   }

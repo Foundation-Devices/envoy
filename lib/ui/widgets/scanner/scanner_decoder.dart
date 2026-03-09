@@ -4,14 +4,15 @@
 
 import 'package:envoy/business/uniform_resource.dart';
 import 'package:envoy/generated/l10n.dart';
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/theme/new_envoy_color.dart';
 
 class UnableToDecodeException implements Exception {
   @override
-  toString() => "Couldn't decode UR!";
+  toString() => S().camera_toast_couldntDecodeUr;
 }
 
 abstract class ScannerDecoder {
@@ -71,9 +72,10 @@ abstract class ScannerDecoder {
         EnvoyToast.dismissPreviousToasts(context);
         if (onRetry != null) onRetry();
       },
-      icon: const Icon(
-        Icons.info_outline,
-        color: EnvoyColors.white95,
+      icon: EnvoyIcon(
+        EnvoyIcons.alert,
+        color: NewEnvoyColor.contentNotice,
+        size: EnvoyIconSize.small,
       ),
     ).show(context);
   }

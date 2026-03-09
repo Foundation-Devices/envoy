@@ -65,6 +65,15 @@ class ConnectivityManager {
   int _consecutiveNguFailures = 0;
   static const int _maxFailuresBeforeUnreachable = 3;
 
+  // Grace period after enabling Tor to allow circuits to stabilize
+  DateTime? _torEnabledTimestamp;
+  static const Duration _torGracePeriod = Duration(seconds: 45);
+
+  bool get _inTorGracePeriod {
+    if (_torEnabledTimestamp == null || !torEnabled) return false;
+    return DateTime.now().difference(_torEnabledTimestamp!) < _torGracePeriod;
+  }
+
   /// Flag to prevent concurrent restartTor() calls
   bool _isRestartingTor = false;
 
@@ -112,6 +121,19 @@ class ConnectivityManager {
     events.close();
   }
 
+  /// Start a grace period after enabling Tor to allow circuits to stabilize.
+  /// During this period, failures are tracked but don't affect the UI state.
+  void startTorGracePeriod() {
+    _torEnabledTimestamp = DateTime.now();
+    _consecutiveElectrumFailures = 0;
+    _consecutiveNguFailures = 0;
+    // Reset connected states to give a fresh start
+    electrumConnected = true;
+    nguConnected = true;
+    events.add(ConnectivityManagerEvent.torStatusChange);
+    kPrint("Tor grace period started - ${_torGracePeriod.inSeconds}s");
+  }
+
   void electrumSuccess() {
     failedFoundationServerAttempts = 0;
     _consecutiveElectrumFailures = 0;
@@ -123,7 +145,12 @@ class ConnectivityManager {
   void electrumFailure() {
     _consecutiveElectrumFailures++;
     kPrint(
-        "Electrum failure strike $_consecutiveElectrumFailures/$_maxFailuresBeforeUnreachable");
+        "Electrum failure strike $_consecutiveElectrumFailures/$_maxFailuresBeforeUnreachable${_inTorGracePeriod ? ' (grace period)' : ''}");
+
+    // During Tor grace period, track failures but don't update UI state
+    if (_inTorGracePeriod) {
+      return;
+    }
 
     if (_consecutiveElectrumFailures >= _maxFailuresBeforeUnreachable) {
       electrumConnected = false;
@@ -143,7 +170,12 @@ class ConnectivityManager {
   void nguFailure() {
     _consecutiveNguFailures++;
     kPrint(
-        "NGU failure strike $_consecutiveNguFailures/$_maxFailuresBeforeUnreachable");
+        "NGU failure strike $_consecutiveNguFailures/$_maxFailuresBeforeUnreachable${_inTorGracePeriod ? ' (grace period)' : ''}");
+
+    // During Tor grace period, track failures but don't update UI state
+    if (_inTorGracePeriod) {
+      return;
+    }
 
     if (_consecutiveNguFailures >= _maxFailuresBeforeUnreachable) {
       nguConnected = false;

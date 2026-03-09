@@ -766,8 +766,6 @@ class EnvoySeed {
     }
 
     await Devices().restore(hasExitingSetup: hasExistingSetup);
-
-    await Devices().connect();
   }
 
   List<LegacyAccount> getLegacyAccountsFromMBJson(Map<String, String> data) {

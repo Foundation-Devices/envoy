@@ -6,9 +6,11 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
+import 'package:envoy/ui/components/envoy_bar.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/home/home_state.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -22,7 +24,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 
 class AddressCard extends ConsumerStatefulWidget {
   final EnvoyAccount account;
@@ -110,51 +111,31 @@ class _AddressCardState extends ConsumerState<AddressCard> {
               ),
             ),
           ),
-          Container(
-            margin: const EdgeInsets.only(
-              left: EnvoySpacing.medium2,
-              right: EnvoySpacing.medium2,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: EnvoySpacing.large2,
-                right: EnvoySpacing.large2,
-                bottom: EnvoySpacing.large1,
+          EnvoyBar(
+            bottomPadding: EnvoySpacing.large3,
+            items: [
+              EnvoyBarItem(
+                icon: EnvoyIcons.envelope,
+                text: S().receive_qr_signMessage,
+                onTap: () {
+                  context.push(ROUTE_ACCOUNT_SIGN_MESSAGE,
+                      extra: widget.account.id);
+                },
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      _copyAddressToClipboard(context, address);
-                    },
-                    icon: const EnvoyIcon(
-                      EnvoyIcons.copy,
-                      color: EnvoyColors.accentPrimary,
-                    ),
-                  ),
-                  EnvoyTextButton(
-                    onTap: () {
-                      GoRouter.of(context).pop();
-                    },
-                    label: S().component_ok,
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      SharePlus.instance.share(
-                        ShareParams(text: "bitcoin:$address"),
-                      );
-                    },
-                    icon: const EnvoyIcon(
-                      EnvoyIcons.externalLink,
-                      color: EnvoyColors.accentPrimary,
-                    ),
-                  ),
-                ],
+              EnvoyBarItem(
+                icon: EnvoyIcons.copy,
+                text: S().receive_qr_copy,
+                onTap: () => _copyAddressToClipboard(context, address),
               ),
-            ),
-          ),
+              EnvoyBarItem(
+                icon: EnvoyIcons.externalLink,
+                text: S().receive_qr_share,
+                onTap: () => SharePlus.instance.share(
+                  ShareParams(text: "bitcoin:$address"),
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );
@@ -167,7 +148,7 @@ class _AddressCardState extends ConsumerState<AddressCard> {
         backgroundColor: Colors.lightBlue,
         replaceExisting: true,
         duration: Duration(seconds: 1),
-        message: "Address copied to clipboard",
+        message: S().receive_toast_addressCopied,
         icon: EnvoyIcon(EnvoyIcons.info, color: EnvoyColors.accentPrimary),
       ).show(context, rootNavigator: true);
     }

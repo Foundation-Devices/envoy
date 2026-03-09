@@ -5,7 +5,6 @@
 # (27) boostScreen
 appId: com.foundationdevices.envoy
 ---
-
 #      //const hotSignetReceiveAddress =
 #      //    'tb1q94lefpc0sfeg623yjy5m0xtm05cpyq85r8f6er';
 #      // TODO: fill this wallet if there is no money from here https://signet257.bublina.eu.org/
@@ -21,14 +20,44 @@ appId: com.foundationdevices.envoy
 
 # send a tx
 - tapOn: Send
+
+# check if it is in sats
+# cycle to sats if not already there
+# cycle order: sats → fiat → btc → sats
+
+# if on btc, tap once to get to sats
+- runFlow:
+    when:
+      visible:
+        id: "amount_display btc"
+    commands:
+      - tapOn:
+          id: "amount_display btc"
+          # refresh send
+      - tapOn:
+          id: hamburger_menu
+      - tapOn: Send
+
+# if on fiat, tap twice to get to sats (fiat → btc → sats)
+- runFlow:
+    when:
+      visible:
+        id: "amount_display fiat"
+    commands:
+      - tapOn:
+          id: "amount_display fiat"
+      - tapOn:
+          id: "amount_display btc"
+          # refresh send
+      - tapOn:
+          id: hamburger_menu
+      - tapOn: Send
+
+# enter address
 - tapOn: Enter address
 - inputText: "tb1q94lefpc0sfeg623yjy5m0xtm05cpyq85r8f6er"
 
 - tapOn: Back
-
-# check if it is in sats
-- assertVisible:
-    id: amount_display sats
 
 # enter amount
 - tapOn: "5"
@@ -109,5 +138,68 @@ appId: com.foundationdevices.envoy
     visible: coin_lock_icon-unlocked
     timeout: 300000 # wait for 5 min
 
-# go to home
-- tapOn: Accounts
+##################### Simple RBF and Cancel test (ENV-2106)
+
+# go back to tx
+- tapOn: Tags
+
+# enter the sent tx
+- tapOn: |-
+    Sent
+    Awaiting confirmation
+
+# make sure it is boostable
+- assertVisible: |-
+    boost button-ready
+    Boost
+
+# and cancable
+- assertVisible: |-
+    cancel button-ready
+    Cancel Transaction
+
+# tap boost
+- tapOn: |-
+    boost button-ready
+    Boost
+
+# boost tx
+- tapOn: Continue
+- assertVisible: Boost Transaction
+- tapOn: Boost Transaction
+- tapOn: Continue
+
+# check the boosted tx
+- tapOn: |-
+    Boosted
+    Awaiting confirmation
+
+# make sure it is boostable
+- assertVisible: |-
+    boost button-ready
+    Boost
+
+# and cancable
+- assertVisible: |-
+    cancel button-ready
+    Cancel Transaction
+
+# Go ahead and cancel the transaction
+- tapOn: |-
+    cancel button-ready
+    Cancel Transaction
+- tapOn: Proceed with Cancellation
+- tapOn: Continue
+
+- tapOn: |-
+    Canceling
+    Awaiting confirmation
+
+# Check that no Boost or Cancel options are displayed
+- assertNotVisible: Boost
+- assertNotVisible: Cancel Transaction
+
+# go back to home
+- tapOn: Back
+- tapOn:
+    id: hamburger_menu

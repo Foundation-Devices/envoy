@@ -114,69 +114,74 @@ class _CancelTxButtonState extends ConsumerState<CancelTxButton> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Divider(),
-          GestureDetector(
-            onTapDown: (_) {
-              setState(() {
-                Haptics.lightImpact();
-              });
-            },
-            onTapUp: (_) {
-              ref.watch(rbfSpendStateProvider) != null && canCancel
-                  ? showEnvoyDialog(
-                      context: context,
-                      useRootNavigator: true,
-                      builder: Builder(
-                        builder: (context) => TxCancelDialog(
-                          originalTx: widget.transaction,
-                          cancelTx: widget.draftTransaction!,
-                        ),
-                      ),
-                    )
-                  : showNoCancelNoFundsDialog(context);
-            },
-            child: Container(
-              height: EnvoySpacing.medium2,
-              decoration: BoxDecoration(
-                color: EnvoyColors.chilli500.applyOpacity(
-                  widget.loading
-                      ? 1
-                      : (ref.watch(rbfSpendStateProvider) != null && canCancel
-                          ? 1
-                          : 0.5),
-                ),
-                borderRadius: BorderRadius.circular(EnvoySpacing.small),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  widget.loading
-                      ? const SizedBox.square(
-                          dimension: EnvoySpacing.medium1,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 1,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white,
-                            ),
+          Semantics(
+            container: true,
+            button: true,
+            label: 'cancel button-${widget.loading ? "loading" : "ready"}',
+            child: GestureDetector(
+              onTapDown: (_) {
+                setState(() {
+                  Haptics.lightImpact();
+                });
+              },
+              onTapUp: (_) {
+                ref.watch(rbfSpendStateProvider) != null && canCancel
+                    ? showEnvoyDialog(
+                        context: context,
+                        useRootNavigator: true,
+                        builder: Builder(
+                          builder: (context) => TxCancelDialog(
+                            originalTx: widget.transaction,
+                            cancelTx: widget.draftTransaction!,
                           ),
-                        )
-                      : Row(
-                          children: [
-                            const Icon(
-                              Icons.close,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                            const SizedBox(width: EnvoySpacing.xs),
-                            Text(
-                              S().coincontrol_tx_detail_passport_cta2,
-                              style: EnvoyTypography.button.copyWith(
-                                color: Colors.white,
+                        ),
+                      )
+                    : showNoCancelNoFundsDialog(context);
+              },
+              child: Container(
+                height: EnvoySpacing.medium2,
+                decoration: BoxDecoration(
+                  color: EnvoyColors.chilli500.applyOpacity(
+                    widget.loading
+                        ? 1
+                        : (ref.watch(rbfSpendStateProvider) != null && canCancel
+                            ? 1
+                            : 0.5),
+                  ),
+                  borderRadius: BorderRadius.circular(EnvoySpacing.small),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    widget.loading
+                        ? const SizedBox.square(
+                            dimension: EnvoySpacing.medium1,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 1,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
                               ),
                             ),
-                          ],
-                        ),
-                ],
+                          )
+                        : Row(
+                            children: [
+                              const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                              const SizedBox(width: EnvoySpacing.xs),
+                              Text(
+                                S().coincontrol_tx_detail_passport_cta2,
+                                style: EnvoyTypography.button.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                  ],
+                ),
               ),
             ),
           ),

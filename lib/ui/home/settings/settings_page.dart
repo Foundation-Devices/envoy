@@ -85,7 +85,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 () => s.displayFiat() != null,
                 (enabled) {
                   setState(() {
-                    s.setDisplayFiat(enabled ? "USD" : null); // TODO: FIGMA
+                    s.setDisplayFiat(enabled ? "USD" : null);
                     if (!enabled) {
                       ref.read(appUnitProvider.notifier).state =
                           s.displayUnitSat()

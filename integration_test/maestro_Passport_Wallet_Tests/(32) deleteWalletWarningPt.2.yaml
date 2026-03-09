@@ -1,0 +1,140 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (31) deleteWalletWarningPt.2 (+ Delete hot wallet test)
+appId: com.foundationdevices.envoy
+---
+
+# go to backups
+- tapOn:
+    id: hamburger_menu
+- tapOn: |-
+    BACKUPS
+    BACKUPS
+
+# press to erase wallet
+- tapOn: Erase Mobile Wallet
+
+# skip dialogs
+- tapOn: Continue
+- tapOn: Continue
+
+# make sure warning dialog is open
+- assertVisible: Delete Accounts anyway
+
+
+################## Delete hot wallet test
+
+# Tap Erase Wallets and Backups
+- tapOn: Delete Accounts anyway
+
+# Go through the deletion flow until you are asked to save the backup
+- tapOn: Show Seed
+- tapOn: Done
+- tapOn: Continue
+
+# Verify seed words
+- repeat:
+    while:
+      notVisible: "Continue"
+    commands:
+      - runFlow:
+          when:
+            visible: "What\u2019s your seed word number 1?"
+          commands:
+            - tapOn: "ripple"
+      - runFlow:
+          when:
+            visible: "What\u2019s your seed word number 2?"
+          commands:
+            - tapOn: "bomb"
+      - runFlow:
+          when:
+            visible: "What\u2019s your seed word number 3?"
+          commands:
+            - tapOn: "rich"
+      - runFlow:
+          when:
+            visible: "What\u2019s your seed word number 4?"
+          commands:
+            - tapOn: "talent"
+      - runFlow:
+          when:
+            visible: "What\u2019s your seed word number 5?"
+          commands:
+            - tapOn: "cloth"
+      - runFlow:
+          when:
+            visible: "What\u2019s your seed word number 6?"
+          commands:
+            - tapOn: "food"
+      - runFlow:
+          when:
+            visible: "What\u2019s your seed word number 7?"
+          commands:
+            - tapOn: "nation"
+      - runFlow:
+          when:
+            visible: "What\u2019s your seed word number 8?"
+          commands:
+            - tapOn: "trouble"
+      - runFlow:
+          when:
+            visible: "What\u2019s your seed word number 9?"
+          commands:
+            - tapOn: "section"
+      - runFlow:
+          when:
+            visible: "What\u2019s your seed word number 10?"
+          commands:
+            - tapOn: "lend"
+      - runFlow:
+          when:
+            visible: "What\u2019s your seed word number 11?"
+          commands:
+            - tapOn: "energy"
+      - runFlow:
+          when:
+            visible: "What\u2019s your seed word number 12?"
+          commands:
+            - tapOn: "head"
+
+# continue
+- tapOn: Continue
+- tapOn: Choose Destination
+
+- extendedWaitUntil:
+    visible: envoy_backup.mla
+    timeout: 180000 # wait for 3 min
+
+# Save the backup, tap continue
+- tapOn: SAVE
+
+# delete
+- tapOn: Delete Wallet
+
+- tapOn: Continue
+- tapOn: Skip
+
+# make sure the app works and goes around without crashing
+- assertNotVisible: Mobile Wallet
+
+- tapOn: Privacy
+- assertVisible: |-
+    Better 
+    Performance
+
+- tapOn: Learn
+- assertVisible: Videos
+
+- tapOn:
+    id: hamburger_menu
+- assertVisible: |-
+    ENVOY
+    off
+
+# go back to home
+- tapOn:
+    id: hamburger_menu
+- tapOn: Accounts

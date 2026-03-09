@@ -216,7 +216,7 @@ class _AddressDetailCardState extends ConsumerState<AddressDetailCard> {
         backgroundColor: Colors.lightBlue,
         replaceExisting: true,
         duration: Duration(seconds: 1),
-        message: "Address copied to clipboard",
+        message: S().receive_toast_addressCopied,
         icon: EnvoyIcon(
           EnvoyIcons.info,
           color: EnvoyColors.accentPrimary,

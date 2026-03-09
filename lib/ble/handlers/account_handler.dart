@@ -52,12 +52,42 @@ class BleAccountHandler extends PassportMessageHandler {
     kPrint("Got account update!");
     kPrint("Got payload! ${accountUpdate.accountId}");
     final payload = accountUpdate.update;
-    final config = await EnvoyAccountHandler.getConfigFromRemote(
+    var config = await EnvoyAccountHandler.getConfigFromRemote(
       remoteUpdate: payload,
     );
     kPrint(
       "Got config ${config.id} ${config.descriptors.map((e) => e.external_)}",
     );
+
+    // When a seed is imported from a Core to Prime, the serialized account
+    // data may carry the original Core's serial. Always use the connected
+    // Prime device's serial so the account is correctly identified as Prime.
+    // primeSerial is set synchronously on the pairing response, before the
+    // async addDevice() completes, so it is always available here.
+    final connectedSerial =
+        qlConnection.getDevice()?.serial ?? qlConnection.primeSerial;
+
+    if (connectedSerial != null && config.deviceSerial != connectedSerial) {
+      kPrint(
+        "Overriding deviceSerial from '${config.deviceSerial}' to '$connectedSerial'",
+      );
+      config = NgAccountConfig(
+        name: config.name,
+        color: config.color,
+        seedHasPassphrase: config.seedHasPassphrase,
+        deviceSerial: connectedSerial,
+        dateAdded: config.dateAdded,
+        preferredAddressType: config.preferredAddressType,
+        index: config.index,
+        descriptors: config.descriptors,
+        dateSynced: config.dateSynced,
+        network: config.network,
+        id: config.id,
+        multisig: config.multisig,
+        archived: config.archived,
+      );
+    }
+
     final fingerprint = NgAccountManager.getFingerprint(
       config.descriptors.first.internal,
     );

@@ -134,6 +134,9 @@ class Device {
 }
 
 class Devices extends ChangeNotifier {
+  // Prevent concurrent connect() calls
+  bool _isConnectingPrimes = false;
+
   @override
   // ignore: must_call_super
   void dispose({bool? force}) {
@@ -154,44 +157,95 @@ class Devices extends ChangeNotifier {
   }
 
   //reconnect to all paired primes
-  //TODO: fix simultaneous connections
   Future<void> connect() async {
-    if (getPrimeDevices.isEmpty) {
+    if (_isConnectingPrimes) {
+      kPrint("connect already in progress, skipping duplicate call");
       return;
     }
-    kPrint("Connecting to primes...");
-    final denied = await BluetoothManager.isBluetoothDenied();
-    if (denied) {
-      kPrint("Bluetooth permissions denied, cannot connect to device ");
-      await BluetoothManager().getPermissions();
-    }
-    if (await BluetoothManager.isBluetoothDenied()) {
-      kPrint("Bluetooth permissions still denied, cannot connect to device ");
+
+    final primes = getPrimeDevices;
+    if (primes.isEmpty) {
       return;
     }
-    //wait for the bluetooth manager to initialize
-    await Future.delayed(const Duration(seconds: 1));
-    kPrint("Connecting to ${getPrimeDevices.length} primes");
-    for (var device in getPrimeDevices) {
-      if (device.bleId.isNotEmpty) {
+    _isConnectingPrimes = true;
+    try {
+      kPrint("Connecting to primes...");
+
+      // Register native per-device channels first to avoid EventChannel listen races
+      // when Dart QLConnection instances are created.
+      for (final device in primes) {
         final deviceId =
             Platform.isAndroid ? device.bleId : device.peripheralId;
-
-        // 1. Create native QLConnection on platform level and sets up
-        //event-channels and method channels
-        await BluetoothChannel().prepareDevice(deviceId);
-
-        await Future.delayed(const Duration(milliseconds: 1500));
-
-        // 2. Create Dart QLConnection - connects to platform QLConnection eventChannel/methodChannel
-        final qlConnection = BluetoothChannel().getDeviceChannel(deviceId);
-
-        // 3. Set up XIDs before connection so messages can be decoded
-        await qlConnection.reconnect(device);
-
-        // 4. Now initiate BLE connection - events will be received by Dart
-        await BluetoothChannel().reconnect(deviceId);
+        if (deviceId.isEmpty) continue;
+        try {
+          await BluetoothChannel().prepareDevice(deviceId);
+        } catch (e, stack) {
+          kPrint("Failed to prepare device $deviceId: $e", stackTrace: stack);
+        }
       }
+
+      final denied = await BluetoothManager.isBluetoothDenied();
+      if (denied) {
+        kPrint("Bluetooth permissions denied, cannot connect to device ");
+        await BluetoothManager().getPermissions();
+      }
+      if (await BluetoothManager.isBluetoothDenied()) {
+        kPrint("Bluetooth permissions still denied, cannot connect to device ");
+        return;
+      }
+
+      // wait for the bluetooth manager to initialize
+      await Future.delayed(const Duration(seconds: 2));
+
+      final connectedIds = (await BluetoothChannel().getAccessories())
+          .where((d) => d.isConnected)
+          .map((d) => d.peripheralId)
+          .where((id) => id.isNotEmpty)
+          .toSet();
+
+      kPrint("Connecting to ${primes.length} primes");
+      for (final device in primes) {
+        final deviceId =
+            Platform.isAndroid ? device.bleId : device.peripheralId;
+        if (deviceId.isEmpty) continue;
+
+        try {
+          final hadChannel = BluetoothChannel().hasDeviceChannel(deviceId);
+
+          final shouldResetChannel = Platform.isAndroid &&
+              hadChannel &&
+              !connectedIds.contains(deviceId);
+
+          // Create/reset Dart side channel only after native prepareDevice() has run.
+          final qlConnection = BluetoothChannel().getDeviceChannel(
+            deviceId,
+            reset: shouldResetChannel,
+          );
+
+          // Restore XIDs before (re)connection so messages can be decoded.
+          await qlConnection.reconnect(device);
+
+          if (connectedIds.contains(deviceId)) {
+            kPrint("Device already connected: $deviceId");
+            continue;
+          }
+
+          // Initiate BLE connection - events will be received by Dart.
+          await BluetoothChannel().reconnect(deviceId);
+        } catch (e, stack) {
+          kPrint(
+            "Failed to reconnect device $deviceId: $e",
+            stackTrace: stack,
+          );
+        }
+      }
+    } catch (e, s) {
+      debugPrintStack(
+        label: "Error connecting to primes: $e",
+        stackTrace: s,
+      );
+    } finally {
+      _isConnectingPrimes = false;
     }
   }
 
@@ -280,10 +334,15 @@ class Devices extends ChangeNotifier {
   void deleteDevice(Device device) async {
     if (device.type == DeviceType.passportPrime) {
       final qlConnection = device.qlConnection();
-      await qlConnection.disconnect();
-      qlConnection.dispose();
+      BluetoothChannel().removeDeviceChannel(qlConnection.deviceId);
       if (Platform.isIOS) {
-        await BluetoothChannel().removeAccessory(qlConnection.deviceId);
+        final removed =
+            await BluetoothChannel().removeAccessory(qlConnection.deviceId);
+        if (removed) {
+          await qlConnection.disconnect();
+        }
+      } else if (Platform.isAndroid) {
+        await qlConnection.disconnect();
       }
     }
     // Delete connected accounts

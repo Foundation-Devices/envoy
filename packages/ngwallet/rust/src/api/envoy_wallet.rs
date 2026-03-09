@@ -20,6 +20,7 @@ use ngwallet::bdk_wallet::{KeychainKind, Update};
 use ngwallet::config::{
     AddressType, NgAccountBackup, NgAccountBuilder, NgAccountConfig, NgDescriptor,
 };
+use ngwallet::fee_rate::{FeeRateSatPerKvb, FeeRateSatPerKwu};
 use ngwallet::ngwallet::NgWallet;
 use ngwallet::send::{DraftTransaction, TransactionFeeResult, TransactionParams};
 use ngwallet::transaction;
@@ -369,7 +370,10 @@ impl EnvoyAccountHandler {
                     .map(|(address, address_type)| (address.to_string(), *address_type))
                     .collect::<Vec<(String, AddressType)>>();
 
-                let external_public_descriptors = account.get_external_public_descriptors();
+                let mut external_public_descriptors = account.get_external_public_descriptors();
+                external_public_descriptors.retain(|(address_type, _)| {
+                    *address_type == AddressType::P2tr || *address_type == AddressType::P2wpkh
+                });
 
                 Ok(EnvoyAccount {
                     name: config.name.clone(),
@@ -822,7 +826,7 @@ impl EnvoyAccountHandler {
             .get_rbf_draft_tx(
                 selected_outputs,
                 bitcoin_transaction,
-                fee_rate,
+                FeeRateSatPerKwu::from(FeeRateSatPerKvb(fee_rate)),
                 None,
                 None,
                 note,

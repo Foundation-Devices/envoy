@@ -6,6 +6,7 @@ import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
+import 'package:envoy/business/fee_rate.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/locale.dart';
 import 'package:envoy/business/settings.dart';
@@ -30,6 +31,7 @@ import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/transactions_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
@@ -154,15 +156,14 @@ class _TransactionsDetailsWidgetState
       setState(() {
         _checkingBoost = false;
       });
-      int minRate = result.minFeeRate.toInt();
-      int maxRate = result.maxFeeRate.toInt();
-      int fasterFeeRate = minRate + 1;
+      FeeRate minRate = FeeRate.fromBigInt(result.minFeeRate.field0);
+      FeeRate maxRate = FeeRate.fromBigInt(result.maxFeeRate.field0);
+      FeeRate fasterFeeRate = minRate + FeeRate.fromSatPerVb(1);
       if (minRate == maxRate) {
         fasterFeeRate = maxRate;
-      } else {
-        if (minRate < maxRate) {
-          fasterFeeRate = (minRate + 1).clamp(minRate, maxRate);
-        }
+      } else if (minRate < maxRate) {
+        fasterFeeRate =
+            (minRate + FeeRate.fromSatPerVb(1)).clamp(minRate, maxRate);
       }
       ref.read(feeChooserStateProvider.notifier).state = FeeChooserState(
         standardFeeRate: minRate,
@@ -608,11 +609,16 @@ class _TransactionsDetailsWidgetState
                           Clipboard.setData(
                             ClipboardData(text: tx.pullPaymentId!),
                           );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Payment ID copied to clipboard!'),
+                          EnvoyToast(
+                            backgroundColor: Colors.lightBlue,
+                            replaceExisting: true,
+                            duration: const Duration(seconds: 1),
+                            message: "Payment ID copied to clipboard",
+                            icon: const EnvoyIcon(
+                              EnvoyIcons.info,
+                              color: EnvoyColors.accentPrimary,
                             ),
-                          ); //TODO: FIGMA
+                          ).show(context, rootNavigator: true);
                         },
                         onTap: () {
                           setState(() {

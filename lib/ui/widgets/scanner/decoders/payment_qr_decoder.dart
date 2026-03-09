@@ -5,13 +5,14 @@
 import 'package:envoy/business/azteco_voucher.dart';
 import 'package:envoy/business/bip21.dart';
 import 'package:envoy/business/btcpay_voucher.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class InvalidAddressException implements Exception {
   @override
-  toString() => "Not a valid address";
+  toString() => S().camera_toast_notAValidAddress;
 }
 
 //specific QR decoder for home screen scans, handles azteco,BTCPay,

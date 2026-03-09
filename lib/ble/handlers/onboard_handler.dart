@@ -73,6 +73,9 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
         EnvoyStepState.FINISHED,
       );
       _pairingResponse = response;
+      // Store the serial synchronously so other handlers (e.g. BleAccountHandler)
+      // can use it before the async addDevice() call completes.
+      qlConnection.primeSerial = response.passportSerial.field0;
 
       if (response.onboardingComplete) {
         await addDevice(response);
