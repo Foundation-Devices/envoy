@@ -1381,7 +1381,7 @@ dependencies = [
 [[package]]
 name = "foundation-ur"
 version = "0.4.0"
-source = "git+https://github.com/Foundation-Devices/foundation-rs?rev=670027f3d6957ee48b1eb5b03bb87194f9f4cb16#670027f3d6957ee48b1eb5b03bb87194f9f4cb16"
+source = "git+https://github.com/Foundation-Devices/foundation-rs?tag=0.5.0#85984a453769c71b762bc0f2c5030450c4bc9166"
 dependencies = [
  "bitcoin_hashes 0.15.0",
  "crc",

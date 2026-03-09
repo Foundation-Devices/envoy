@@ -12,7 +12,7 @@ crate-type = ["cdylib", "staticlib", "rlib"]
 
 [dependencies]
 flutter_rust_bridge = "=2.11.1"
-foundation-ur = { git = "https://github.com/Foundation-Devices/foundation-rs", rev = "670027f3d6957ee48b1eb5b03bb87194f9f4cb16" }
+foundation-ur = { git = "https://github.com/Foundation-Devices/foundation-rs", tag = "0.5.0" }
 log = "0.4.14"
 
 [dependencies.getrandom]
