@@ -7,7 +7,9 @@ import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
+import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/settings.dart';
+import 'package:envoy/channels/ble_device_info.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -141,14 +143,61 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
 
     try {
       if (bleMacRegex.hasMatch(bleId ?? "")) {
-        if (!Platform.isIOS) {
-          await BluetoothManager().getPermissions();
-        }
-        _onboardingDevice = await BluetoothChannel().setupBle(
-          bleId ?? "",
-          colorWay,
-        );
+        if (Platform.isIOS) {
+          // On iOS, the system manages BLE accessories via the EAAccessory
+          // framework. We first check if the device is already connected as a
+          // system accessory before initiating a new setup flow.
+          final connectedDevices = await BluetoothChannel().getAccessories();
+          BleDeviceInfo? matchedDevice;
 
+          // Find if there an accessory that hasn't been paired with Envoy yet.
+          // this is usually case when user has already gone through the setup flow but didn't complete pairing
+          for (final device in connectedDevices) {
+            final isAlreadyPaired = Devices().getPrimeDevices.any(
+                  (paired) =>
+                      paired.bleId != device.peripheralId &&
+                      paired.peripheralId != device.peripheralId,
+                );
+            if (!isAlreadyPaired) {
+              matchedDevice = device;
+              break;
+            }
+          }
+          if (matchedDevice == null) {
+            // No matching accessory found — trigger the iOS accessory setup
+            // flow which will prompt the user to pair a new device.
+            _onboardingDevice = await BluetoothChannel().setupBle(
+              bleId ?? "",
+              colorWay,
+            );
+          } else if (matchedDevice.peripheralName
+              .toLowerCase()
+              .contains("prime")) {
+            // Accessory is already connected — skip setup and reuse the
+            // existing channel directly.
+            await BluetoothChannel().prepareDevice(matchedDevice.peripheralId);
+            if (!matchedDevice.isConnected) {
+              await BluetoothChannel().reconnect(matchedDevice.peripheralId);
+            }
+            _onboardingDevice =
+                BluetoothChannel().getDeviceChannel(matchedDevice.peripheralId);
+          } else {
+            // Accessory is not connected — trigger setup to establish a new
+            // connection with the device.
+            _onboardingDevice = await BluetoothChannel().setupBle(
+              bleId ?? "",
+              colorWay,
+            );
+          }
+        } else {
+          // On Android, BLE connection is managed directly without the
+          // accessory framework, so we just request permissions and connect.
+          await BluetoothManager().getPermissions();
+          _onboardingDevice = await BluetoothChannel().setupBle(
+            bleId ?? "",
+            colorWay,
+          );
+        }
         ref.read(onboardingDeviceProvider.notifier).state = _onboardingDevice;
         if (_onboardingDevice == null) {
           throw Exception("Got null device when trying to connect to Prime.");
@@ -269,6 +318,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
   }
 
   bool canPop = false;
+
   @override
   Widget build(BuildContext context) {
     startBluetoothDisconnectionListener(context, ref);
