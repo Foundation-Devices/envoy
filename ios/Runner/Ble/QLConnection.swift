@@ -60,6 +60,7 @@ class QLConnection: NSObject {
     // Write operation state
     private var bleWriteQueue: BleWriteQueue?
     private var deviceReady = false
+    private var isServiceDiscoveryInProgress = false
 
     // Transfer state
     private var transferTask: Task<Void, Never>?
@@ -225,16 +226,62 @@ class QLConnection: NSObject {
         return connectedPeripheral?.state == .connected
     }
 
+    func hasActiveOrPendingConnection(for peripheral: CBPeripheral) -> Bool {
+        guard let connectedPeripheral = connectedPeripheral,
+              connectedPeripheral.identifier == peripheral.identifier else {
+            return false
+        }
+
+        return connectedPeripheral.state == .connecting
+            || connectedPeripheral.state == .connected
+            || isServiceDiscoveryInProgress
+            || deviceReady
+    }
+
+    private func peripheralStateDescription(_ peripheral: CBPeripheral) -> String {
+        switch peripheral.state {
+        case .disconnected:
+            return "disconnected"
+        case .connecting:
+            return "connecting"
+        case .connected:
+            return "connected"
+        case .disconnecting:
+            return "disconnecting"
+        @unknown default:
+            return "unknown(\(peripheral.state.rawValue))"
+        }
+    }
+
     // MARK: - Connection Management
 
     /// Connect to a peripheral
     func connect(peripheral: CBPeripheral) {
+        if hasActiveOrPendingConnection(for: peripheral) {
+            print("\(Self.TAG) [\(deviceId)] Skipping duplicate connect request for \(peripheral.identifier) state=\(peripheralStateDescription(peripheral)) ready=\(deviceReady) discovering=\(isServiceDiscoveryInProgress)")
+            return
+        }
+
+        if peripheral.state == .connecting {
+            print("\(Self.TAG) [\(deviceId)] Peripheral is already connecting, attaching delegate only: \(peripheral.identifier)")
+            connectedPeripheral = peripheral
+            peripheral.delegate = self
+            return
+        }
+
+        if peripheral.state == .connected {
+            print("\(Self.TAG) [\(deviceId)] Peripheral is already connected before connect request, treating as didConnect: \(peripheral.identifier)")
+            onDidConnect(peripheral: peripheral)
+            return
+        }
+
         print("\(Self.TAG) [\(deviceId)] Connecting to: \(peripheral.name ?? "Unknown") (\(peripheral.identifier))")
 
         sendConnectionEvent(type: "connection_attempt")
 
         connectedPeripheral = peripheral
         peripheral.delegate = self
+        isServiceDiscoveryInProgress = false
 
         // Connect via central manager
         let connectOptions: [String: Any] = [
@@ -554,6 +601,7 @@ class QLConnection: NSObject {
         connectionEventSink = nil
         writeProgressEventSink = nil
         deviceReady = false
+        isServiceDiscoveryInProgress = false
 
         print("\(Self.TAG) [\(deviceId)] QLConnection cleaned up")
     }
@@ -618,11 +666,18 @@ extension QLConnection: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         if let error = error {
             print("\(Self.TAG) [\(deviceId)] Error discovering services: \(error.localizedDescription)")
+            isServiceDiscoveryInProgress = false
             return
         }
 
         guard let services = peripheral.services else {
             print("\(Self.TAG) [\(deviceId)] No services found")
+            isServiceDiscoveryInProgress = false
+            return
+        }
+
+        if deviceReady {
+            print("\(Self.TAG) [\(deviceId)] Ignoring duplicate service discovery for ready device: \(peripheral.identifier)")
             return
         }
 
@@ -641,11 +696,18 @@ extension QLConnection: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         if let error = error {
             print("\(Self.TAG) [\(deviceId)] Error discovering characteristics: \(error.localizedDescription)")
+            isServiceDiscoveryInProgress = false
             return
         }
 
         guard let characteristics = service.characteristics else {
             print("\(Self.TAG) [\(deviceId)] No characteristics found for service: \(service.uuid)")
+            isServiceDiscoveryInProgress = false
+            return
+        }
+
+        if deviceReady {
+            print("\(Self.TAG) [\(deviceId)] Ignoring duplicate characteristic discovery for ready device: \(peripheral.identifier)")
             return
         }
 
@@ -686,6 +748,7 @@ extension QLConnection: CBPeripheralDelegate {
         // Mark device as ready for communication
         if writeCharacteristic != nil || readCharacteristic != nil {
             deviceReady = true
+            isServiceDiscoveryInProgress = false
             print("\(Self.TAG) [\(deviceId)] Device is ready for communication")
 
             // Notify Flutter that device is ready for communication
@@ -693,6 +756,7 @@ extension QLConnection: CBPeripheralDelegate {
         } else {
             print("\(Self.TAG) [\(deviceId)] No usable characteristics found")
             deviceReady = false
+            isServiceDiscoveryInProgress = false
         }
     }
 
@@ -718,7 +782,9 @@ extension QLConnection: CBPeripheralDelegate {
         print("\(Self.TAG) [\(deviceId)] Notification state updated for \(characteristic.uuid): \(characteristic.isNotifying)")
     }
 
-  
+    func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
+        bleWriteQueue?.notifyReady()
+    }
 }
 
 // MARK: - Connection State Handlers (called by BluetoothChannel)
@@ -727,10 +793,21 @@ extension QLConnection {
 
     /// Called when the device successfully connects
     func onDidConnect(peripheral: CBPeripheral) {
+        if connectedPeripheral?.identifier == peripheral.identifier
+            && (deviceReady || isServiceDiscoveryInProgress) {
+            print("\(Self.TAG) [\(deviceId)] Ignoring duplicate didConnect for \(peripheral.identifier) ready=\(deviceReady) discovering=\(isServiceDiscoveryInProgress)")
+            return
+        }
+
         print("\(Self.TAG) [\(deviceId)] Successfully connected to peripheral: \(peripheral.name ?? "Unknown")")
         connectedPeripheral = peripheral
         peripheral.delegate = self
+        writeCharacteristic = nil
+        readCharacteristic = nil
+        bleWriteQueue?.cancel()
+        bleWriteQueue = nil
         deviceReady = false  // Will be set to true once characteristics are discovered
+        isServiceDiscoveryInProgress = true
 
         // Discover services
         peripheral.discoverServices([primeUUID])
@@ -748,6 +825,7 @@ extension QLConnection {
         print("\(Self.TAG) [\(deviceId)]   - connectedPeripheral: \(String(describing: connectedPeripheral?.identifier))")
         connectedPeripheral = nil
         deviceReady = false
+        isServiceDiscoveryInProgress = false
 
         sendConnectionEvent(type: "connection_error", error: error?.localizedDescription)
     }
@@ -764,6 +842,7 @@ extension QLConnection {
             bleWriteQueue?.cancel()
             bleWriteQueue = nil
             deviceReady = false
+            isServiceDiscoveryInProgress = false
         }
 
         sendConnectionEvent(type: "device_disconnected", error: error?.localizedDescription)

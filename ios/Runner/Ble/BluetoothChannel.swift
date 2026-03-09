@@ -647,6 +647,10 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
 
         // Get or create QLConnection and connect
         let qlConnection = getOrCreateDevice(deviceId: deviceId)
+        if qlConnection.hasActiveOrPendingConnection(for: peripheral) {
+            print("\(Self.TAG) Skipping duplicate accessory connect for peripheral: \(deviceId)")
+            return
+        }
         if peripheral.state == .connected {
             print("\(Self.TAG) Peripheral already connected, notifying directly: \(deviceId)")
             qlConnection.onDidConnect(peripheral: peripheral)
