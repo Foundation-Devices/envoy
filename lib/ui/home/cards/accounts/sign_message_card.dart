@@ -49,8 +49,10 @@ enum _InputPageState { input, qr }
 
 class SignMessageCard extends ConsumerStatefulWidget {
   final EnvoyAccount account;
+  final String? initialAddress;
 
-  SignMessageCard(this.account) : super(key: UniqueKey());
+  SignMessageCard(this.account, {this.initialAddress})
+      : super(key: UniqueKey());
 
   @override
   ConsumerState<SignMessageCard> createState() => _SignMessageCardState();
@@ -80,7 +82,13 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
 
     Future.delayed(const Duration(milliseconds: 10)).then((_) {
       ref.read(homeShellOptionsProvider.notifier).state = null;
+      ref.read(currentAddressDetailIndexProvider.notifier).state = null;
     });
+
+    if (widget.initialAddress != null && widget.initialAddress!.isNotEmpty) {
+      _addressController.text = widget.initialAddress!;
+      Future.microtask(() => _resolveAddress(widget.initialAddress!));
+    }
   }
 
   @override
@@ -341,6 +349,11 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
                   AddressSearchEntry(
                     controller: _addressController,
                     icon: EnvoyIcons.list,
+                    iconColor: EnvoyColors.accentPrimary,
+                    onIconTap: () {
+                      context.go(ROUTE_ACCOUNT_ADDRESSES,
+                          extra: widget.account.id);
+                    },
                     onChanged: (value) {
                       setState(() {});
                       _resolveAddress(value.trim());
