@@ -559,9 +559,11 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
                     child: TextField(
                       controller: widget.controller,
                       style: EnvoyTypography.body,
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.multiline,
+                      minLines: 1,
+                      maxLines: null,
                       onChanged: (value) {
-                        widget.onChanged(value);
+                        widget.onChanged(value.replaceAll(' ', ''));
                         setState(() {});
                       },
                       decoration: InputDecoration(
@@ -614,10 +616,11 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
                           await Clipboard.getData(Clipboard.kTextPlain);
                       String? text = cdata?.text;
                       if (text != null) {
+                        final raw = text.replaceAll(' ', '');
                         setState(() {
-                          widget.controller.text = text;
+                          widget.controller.text = _formatAddressChunked(raw);
                         });
-                        widget.onChanged(text);
+                        widget.onChanged(raw);
                       }
                     },
                   ),
@@ -654,10 +657,12 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
                         decoder: GenericQrDecoder(
                           onScan: (code) {
                             Navigator.of(context, rootNavigator: true).pop();
+                            final raw = code.replaceAll(' ', '');
                             setState(() {
-                              widget.controller.text = code;
+                              widget.controller.text =
+                                  _formatAddressChunked(raw);
                             });
-                            widget.onChanged(code);
+                            widget.onChanged(raw);
                           },
                         ),
                       );
@@ -669,6 +674,17 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
         ),
       ),
     );
+  }
+
+  String _formatAddressChunked(String address) {
+    final buffer = StringBuffer();
+    for (int i = 0; i < address.length; i++) {
+      buffer.write(address[i]);
+      if ((i + 1) % 4 == 0 && i != address.length - 1) {
+        buffer.write(' ');
+      }
+    }
+    return buffer.toString();
   }
 }
 

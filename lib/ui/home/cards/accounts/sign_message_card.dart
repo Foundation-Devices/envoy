@@ -86,7 +86,7 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
     });
 
     if (widget.initialAddress != null && widget.initialAddress!.isNotEmpty) {
-      _addressController.text = widget.initialAddress!;
+      _addressController.text = _formatAddressChunked(widget.initialAddress!);
       Future.microtask(() => _resolveAddress(widget.initialAddress!));
     }
   }
@@ -96,6 +96,17 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
     _addressController.dispose();
     _messageController.dispose();
     super.dispose();
+  }
+
+  String _formatAddressChunked(String address) {
+    final buffer = StringBuffer();
+    for (int i = 0; i < address.length; i++) {
+      buffer.write(address[i]);
+      if ((i + 1) % 4 == 0 && i != address.length - 1) {
+        buffer.write(' ');
+      }
+    }
+    return buffer.toString();
   }
 
   // --- Address Resolution ---
@@ -220,7 +231,7 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
 
   Future<void> _signHot() async {
     final message = _messageController.text.trim();
-    final address = _addressController.text.trim();
+    final address = _addressController.text.trim().replaceAll(' ', '');
     if (message.isEmpty || address.isEmpty) return;
     if (_resolvedDerivationPath == null) return;
 
@@ -293,7 +304,7 @@ class _SignMessageCardState extends ConsumerState<SignMessageCard> {
   }
 
   Future<void> _onSignatureScanned(String signature) async {
-    final address = _addressController.text.trim();
+    final address = _addressController.text.trim().replaceAll(' ', '');
     final message = _messageController.text.trim();
 
     final signed = SignedMessage(
