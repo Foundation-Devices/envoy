@@ -339,6 +339,8 @@
   "devices_empty_modal_video_cta1": "Comprar Passport",
   "devices_empty_modal_video_cta2": "Mirar Després",
   "devices_empty_text_explainer": "Assegureu el vostre Bitcoin amb Passport.",
+  "devices_firmwareUpdateModal_content": "Firmware updates for Passport Prime must be initiated on device. Go to Settings > Update.",
+  "devices_firmwareUpdateModal_header": "Begin on Passport Prime",
   "devices_reconnectedSuccess_content": "Your device is now ready to use.",
   "devices_reconnectedSuccess_header": "Device Reconnected Successfully!",
   "devices_reconnecting_content": "Connecting to Passport Prime",

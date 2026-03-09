@@ -1022,6 +1022,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
           "Protege a tua Bitcoin com o Passport.",
         ),
+        "devices_firmwareUpdateModal_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Firmware updates for Passport Prime must be initiated on device. Go to Settings > Update.",
+        ),
+        "devices_firmwareUpdateModal_header":
+            MessageLookupByLibrary.simpleMessage(
+          "Begin on Passport Prime",
+        ),
         "devices_reconnectedSuccess_content":
             MessageLookupByLibrary.simpleMessage(
           "Your device is now ready to use.",

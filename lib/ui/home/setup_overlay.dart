@@ -413,8 +413,10 @@ Future<void> pairWithDevice(BuildContext context, XidDocument xid) async {
         qlConnection;
     try {
       await qlConnection.pair(xid);
-      final pairingResponse =
-          await qlConnection.qlHandler.bleOnboardHandler.waitForPairResponse();
+      kPrint("Pairing initiated, waiting for response...");
+      final pairingResponse = await qlConnection.qlHandler.bleOnboardHandler
+          .waitForPairResponse(timeout: Duration(seconds: 10));
+
       if (context.mounted) {
         Navigator.pop(context);
         if (!pairingResponse.onboardingComplete) {
