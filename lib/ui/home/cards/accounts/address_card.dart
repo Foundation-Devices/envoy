@@ -118,8 +118,11 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                 icon: EnvoyIcons.envelope,
                 text: S().receive_qr_signMessage,
                 onTap: () {
-                  context.push(ROUTE_ACCOUNT_SIGN_MESSAGE,
-                      extra: widget.account.id);
+                  context
+                      .go(ROUTE_ACCOUNT_SIGN_MESSAGE, extra: <String, String?>{
+                    'accountId': widget.account.id,
+                    'address': address,
+                  });
                 },
               ),
               EnvoyBarItem(
