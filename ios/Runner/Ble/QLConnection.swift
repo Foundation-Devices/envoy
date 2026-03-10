@@ -228,7 +228,8 @@ class QLConnection: NSObject {
 
     func hasActiveOrPendingConnection(for peripheral: CBPeripheral) -> Bool {
         guard let connectedPeripheral = connectedPeripheral,
-              connectedPeripheral.identifier == peripheral.identifier else {
+            connectedPeripheral.identifier == peripheral.identifier
+        else {
             return false
         }
 
@@ -253,29 +254,43 @@ class QLConnection: NSObject {
         }
     }
 
+    private func isReady() -> Bool {
+        return connectedPeripheral?.state == .connected
+            && deviceReady
+            && writeCharacteristic != nil
+    }
+
     // MARK: - Connection Management
 
     /// Connect to a peripheral
     func connect(peripheral: CBPeripheral) {
         if hasActiveOrPendingConnection(for: peripheral) {
-            print("\(Self.TAG) [\(deviceId)] Skipping duplicate connect request for \(peripheral.identifier) state=\(peripheralStateDescription(peripheral)) ready=\(deviceReady) discovering=\(isServiceDiscoveryInProgress)")
+            print(
+                "\(Self.TAG) [\(deviceId)] Skipping duplicate connect request for \(peripheral.identifier) state=\(peripheralStateDescription(peripheral)) ready=\(deviceReady) discovering=\(isServiceDiscoveryInProgress)"
+            )
             return
         }
 
         if peripheral.state == .connecting {
-            print("\(Self.TAG) [\(deviceId)] Peripheral is already connecting, attaching delegate only: \(peripheral.identifier)")
+            print(
+                "\(Self.TAG) [\(deviceId)] Peripheral is already connecting, attaching delegate only: \(peripheral.identifier)"
+            )
             connectedPeripheral = peripheral
             peripheral.delegate = self
             return
         }
 
         if peripheral.state == .connected {
-            print("\(Self.TAG) [\(deviceId)] Peripheral is already connected before connect request, treating as didConnect: \(peripheral.identifier)")
+            print(
+                "\(Self.TAG) [\(deviceId)] Peripheral is already connected before connect request, treating as didConnect: \(peripheral.identifier)"
+            )
             onDidConnect(peripheral: peripheral)
             return
         }
 
-        print("\(Self.TAG) [\(deviceId)] Connecting to: \(peripheral.name ?? "Unknown") (\(peripheral.identifier))")
+        print(
+            "\(Self.TAG) [\(deviceId)] Connecting to: \(peripheral.name ?? "Unknown") (\(peripheral.identifier))"
+        )
 
         sendConnectionEvent(type: "connection_attempt")
 
@@ -289,7 +304,7 @@ class QLConnection: NSObject {
             CBConnectPeripheralOptionNotifyOnDisconnectionKey: true,
             CBConnectPeripheralOptionNotifyOnNotificationKey: true,
             CBConnectPeripheralOptionStartDelayKey: 0,
-            CBConnectPeripheralOptionEnableTransportBridgingKey: false
+            CBConnectPeripheralOptionEnableTransportBridgingKey: false,
         ]
 
         delegate?.getCentralManager()?.connect(peripheral, options: connectOptions)
@@ -314,11 +329,12 @@ class QLConnection: NSObject {
         let statusData: [String: Any?] = [
             "type": nil,
             "connected": isConnected(),
+            "ready": isReady(),
             "peripheralId": deviceId,
             "peripheralName": connectedPeripheral?.name ?? "Unknown Device",
             "bonded": isBonded,
             "rssi": nil,
-            "error": nil
+            "error": nil,
         ]
         sendConnectionEvent()
         result(statusData)
@@ -327,18 +343,26 @@ class QLConnection: NSObject {
     /// Reconnect to the device
     private func reconnect(result: @escaping FlutterResult) {
         guard let central = delegate?.getCentralManager(), central.state == .poweredOn else {
-            result(FlutterError(code: "NO_CENTRAL", message: "Central manager not available or not powered on", details: nil))
+            result(
+                FlutterError(
+                    code: "NO_CENTRAL", message: "Central manager not available or not powered on",
+                    details: nil))
             return
         }
 
         guard let uuid = UUID(uuidString: deviceId) else {
-            result(FlutterError(code: "INVALID_ID", message: "Invalid device ID: \(deviceId)", details: nil))
+            result(
+                FlutterError(
+                    code: "INVALID_ID", message: "Invalid device ID: \(deviceId)", details: nil))
             return
         }
 
         let peripherals = central.retrievePeripherals(withIdentifiers: [uuid])
         guard let peripheral = peripherals.first else {
-            result(FlutterError(code: "DEVICE_NOT_FOUND", message: "Device not found: \(deviceId)", details: nil))
+            result(
+                FlutterError(
+                    code: "DEVICE_NOT_FOUND", message: "Device not found: \(deviceId)", details: nil
+                ))
             return
         }
 
@@ -351,24 +375,34 @@ class QLConnection: NSObject {
 
     private func transmitFromFile(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let arguments = call.arguments as? [String: Any],
-              let path = arguments["path"] as? String else {
-            result(FlutterError(code: "INVALID_ARGUMENTS", message: "Expected path parameter", details: nil))
+            let path = arguments["path"] as? String
+        else {
+            result(
+                FlutterError(
+                    code: "INVALID_ARGUMENTS", message: "Expected path parameter", details: nil))
             return
         }
 
         if path.isEmpty {
-            result(FlutterError(code: "INVALID_PATH", message: "File path is null or empty", details: nil))
+            result(
+                FlutterError(
+                    code: "INVALID_PATH", message: "File path is null or empty", details: nil))
             return
         }
 
         let fileURL = URL(fileURLWithPath: path)
         guard FileManager.default.fileExists(atPath: path) else {
-            result(FlutterError(code: "FILE_NOT_FOUND", message: "File does not exist: \(path)", details: nil))
+            result(
+                FlutterError(
+                    code: "FILE_NOT_FOUND", message: "File does not exist: \(path)", details: nil))
             return
         }
 
         if transferTask != nil {
-            result(FlutterError(code: "TRANSFER_IN_PROGRESS", message: "Another transfer is already in progress", details: nil))
+            result(
+                FlutterError(
+                    code: "TRANSFER_IN_PROGRESS",
+                    message: "Another transfer is already in progress", details: nil))
             return
         }
 
@@ -388,7 +422,10 @@ class QLConnection: NSObject {
                 while true {
                     if Task.isCancelled {
                         await MainActor.run {
-                            result(FlutterError(code: "TRANSFER_CANCELLED", message: "Data transmission cancelled", details: nil))
+                            result(
+                                FlutterError(
+                                    code: "TRANSFER_CANCELLED",
+                                    message: "Data transmission cancelled", details: nil))
                         }
                         return
                     }
@@ -405,14 +442,18 @@ class QLConnection: NSObject {
                         throw NSError(
                             domain: "BLEWriteError",
                             code: 1,
-                            userInfo: [NSLocalizedDescriptionKey: "Failed to write data at byte \(bytesProcessed)"]
+                            userInfo: [
+                                NSLocalizedDescriptionKey:
+                                    "Failed to write data at byte \(bytesProcessed)"
+                            ]
                         )
                     }
 
                     bytesProcessed += Int64(data.count)
 
                     let progress = fileSize > 0 ? Float(bytesProcessed) / Float(fileSize) : 0.0
-                    sendWriteProgress(progress, id: path, bytesProcessed: bytesProcessed, totalBytes: fileSize)
+                    sendWriteProgress(
+                        progress, id: path, bytesProcessed: bytesProcessed, totalBytes: fileSize)
                 }
 
                 sendWriteProgress(1.0, id: path, bytesProcessed: fileSize, totalBytes: fileSize)
@@ -423,14 +464,20 @@ class QLConnection: NSObject {
                 await MainActor.run {
                     result([
                         "success": true,
-                        "message": "Large data processed successfully"
+                        "message": "Large data processed successfully",
                     ])
                 }
 
             } catch {
-                print("\(Self.TAG) [\(deviceId)] Error reading large data file: \(error.localizedDescription)")
+                print(
+                    "\(Self.TAG) [\(deviceId)] Error reading large data file: \(error.localizedDescription)"
+                )
                 await MainActor.run {
-                    result(FlutterError(code: "FILE_READ_ERROR", message: "Failed to read file: \(error.localizedDescription)", details: nil))
+                    result(
+                        FlutterError(
+                            code: "FILE_READ_ERROR",
+                            message: "Failed to read file: \(error.localizedDescription)",
+                            details: nil))
                 }
             }
 
@@ -491,7 +538,8 @@ class QLConnection: NSObject {
             for chunk in chunks {
                 let success = await bleWriteQueue?.enqueue(data: chunk) ?? false
                 if !success {
-                    print("\(Self.TAG) [\(deviceId)] Failed to enqueue chunk of size: \(chunk.count)")
+                    print(
+                        "\(Self.TAG) [\(deviceId)] Failed to enqueue chunk of size: \(chunk.count)")
                     return Data()
                 }
             }
@@ -509,22 +557,27 @@ class QLConnection: NSObject {
         let connectionData: [String: Any] = [
             "type": type as Any,
             "connected": isConnected(),
+            "ready": isReady(),
             "peripheralId": deviceId,
             "peripheralName": connectedPeripheral?.name ?? "Unknown Device",
             "bonded": isBonded,
             "timestamp": Date().timeIntervalSince1970 * 1000,
-            "error": error ?? NSNull()
+            "error": error ?? NSNull(),
         ]
 
         guard let sink = connectionEventSink else {
             needsToResendConnectionState = connectionData
-            print("\(Self.TAG) [\(deviceId)] Warning: Connection event sink not available, event not sent")
+            print(
+                "\(Self.TAG) [\(deviceId)] Warning: Connection event sink not available, event not sent"
+            )
             return
         }
 
         let send = {
             sink(connectionData)
-            print("\(Self.TAG) [\(self.deviceId)] Connection Event -> Flutter: connected=\(self.isConnected()), type=\(type ?? "nil")")
+            print(
+                "\(Self.TAG) [\(self.deviceId)] Connection Event -> Flutter: connected=\(self.isConnected()), type=\(type ?? "nil")"
+            )
         }
         if Thread.isMainThread {
             send()
@@ -536,14 +589,16 @@ class QLConnection: NSObject {
         }
     }
 
-    private func sendWriteProgress(_ progress: Float, id: String, bytesProcessed: Int64 = 0, totalBytes: Int64 = 0) {
+    private func sendWriteProgress(
+        _ progress: Float, id: String, bytesProcessed: Int64 = 0, totalBytes: Int64 = 0
+    ) {
         guard let sink = writeProgressEventSink else { return }
 
         let stateData: [String: Any] = [
             "id": id,
             "progress": progress,
             "bytes_processed": bytesProcessed,
-            "total_bytes": totalBytes
+            "total_bytes": totalBytes,
         ]
 
         let send = { sink(stateData) }
@@ -559,7 +614,9 @@ class QLConnection: NSObject {
             guard let self = self else { return }
             self.bleReadChannel.sendMessage(data) { reply in
                 if let error = reply as? FlutterError {
-                    print("\(Self.TAG) [\(self.deviceId)] Flutter binary data error: \(error.message ?? "Unknown error")")
+                    print(
+                        "\(Self.TAG) [\(self.deviceId)] Flutter binary data error: \(error.message ?? "Unknown error")"
+                    )
                 }
             }
         }
@@ -615,7 +672,9 @@ class QLConnection: NSObject {
             self.qlConnection = qlConnection
         }
 
-        func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+        func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink)
+            -> FlutterError?
+        {
             qlConnection?.connectionEventSink = events
 
             // Send any pending connection state
@@ -627,7 +686,8 @@ class QLConnection: NSObject {
             // Send current status when listener attaches
             if qlConnection?.connectedPeripheral != nil {
                 qlConnection?.sendConnectionEvent(
-                    type: qlConnection?.isConnected() == true ? "device_connected" : "device_disconnected"
+                    type: qlConnection?.isConnected() == true
+                        ? "device_connected" : "device_disconnected"
                 )
             }
 
@@ -707,19 +767,28 @@ extension QLConnection: CBPeripheralDelegate {
         }
 
         if deviceReady {
-            print("\(Self.TAG) [\(deviceId)] Ignoring duplicate characteristic discovery for ready device: \(peripheral.identifier)")
+            print(
+                "\(Self.TAG) [\(deviceId)] Ignoring duplicate characteristic discovery for ready device: \(peripheral.identifier)"
+            )
             return
         }
 
-        print("\(Self.TAG) [\(deviceId)] Discovered \(characteristics.count) characteristics for service \(service.uuid):")
+        print(
+            "\(Self.TAG) [\(deviceId)] Discovered \(characteristics.count) characteristics for service \(service.uuid):"
+        )
+
+        var didDiscoverWriteCharacteristic = false
 
         for characteristic in characteristics {
             // Store characteristics based on their properties
-            if characteristic.properties.contains(.write) ||
-                characteristic.properties.contains(.writeWithoutResponse) {
+            if characteristic.properties.contains(.write)
+                || characteristic.properties.contains(.writeWithoutResponse)
+            {
+                didDiscoverWriteCharacteristic = didDiscoverWriteCharacteristic || writeCharacteristic == nil
                 writeCharacteristic = characteristic
                 // Initialize write queue with new characteristic
-                bleWriteQueue = BleWriteQueue(peripheral: peripheral, characteristic: characteristic)
+                bleWriteQueue = BleWriteQueue(
+                    peripheral: peripheral, characteristic: characteristic)
                 print("\(Self.TAG) [\(deviceId)] Set write characteristic: \(characteristic.uuid)")
             }
 
@@ -742,8 +811,16 @@ extension QLConnection: CBPeripheralDelegate {
 
         // Log the final state
         print("\(Self.TAG) [\(deviceId)] Characteristics setup complete:")
-        print("\(Self.TAG) [\(deviceId)]   - Write characteristic: \(writeCharacteristic?.uuid.uuidString ?? "None")")
-        print("\(Self.TAG) [\(deviceId)]   - Read characteristic: \(readCharacteristic?.uuid.uuidString ?? "None")")
+        print(
+            "\(Self.TAG) [\(deviceId)]   - Write characteristic: \(writeCharacteristic?.uuid.uuidString ?? "None")"
+        )
+        print(
+            "\(Self.TAG) [\(deviceId)]   - Read characteristic: \(readCharacteristic?.uuid.uuidString ?? "None")"
+        )
+
+        if didDiscoverWriteCharacteristic {
+            sendConnectionEvent()
+        }
 
         // Mark device as ready for communication
         if writeCharacteristic != nil || readCharacteristic != nil {
@@ -794,8 +871,11 @@ extension QLConnection {
     /// Called when the device successfully connects
     func onDidConnect(peripheral: CBPeripheral) {
         if connectedPeripheral?.identifier == peripheral.identifier
-            && (deviceReady || isServiceDiscoveryInProgress) {
-            print("\(Self.TAG) [\(deviceId)] Ignoring duplicate didConnect for \(peripheral.identifier) ready=\(deviceReady) discovering=\(isServiceDiscoveryInProgress)")
+            && (deviceReady || isServiceDiscoveryInProgress)
+        {
+            print(
+                "\(Self.TAG) [\(deviceId)] Ignoring duplicate didConnect for \(peripheral.identifier) ready=\(deviceReady) discovering=\(isServiceDiscoveryInProgress)"
+            )
             return
         }
 

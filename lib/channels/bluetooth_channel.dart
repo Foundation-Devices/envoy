@@ -234,7 +234,7 @@ class BluetoothChannel {
     final connect = await deviceChannel.connectionEvents.firstWhere((event) {
       debugPrint("[$resolvedDeviceId] events $event");
       try {
-        if (event.connected &&
+        if (event.readyForWrite &&
             !initiateBonding &&
             !event.bonded &&
             Platform.isAndroid) {
