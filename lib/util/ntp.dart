@@ -12,12 +12,12 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 
 const _defaultLookup = 'pool.ntp.org';
-const _defaultInterval = Duration(minutes: 2);
 const _defaultCacheDuration = Duration(minutes: 2);
 
 class NTPUtil {
   static final NTPUtil _instance = NTPUtil._();
-  DateTime _dateTime = DateTime.now();
+  int _offsetMilliseconds = 0;
+  Future<void>? _syncFuture;
   StreamController<DateTime> ntpTimeStreamController =
       StreamController<DateTime>.broadcast();
 
@@ -32,19 +32,26 @@ class NTPUtil {
   NTPUtil._();
 
   static Future<void> init() async {
-    _instance._getNtpTime();
-    Timer.periodic(_defaultInterval, (timer) {
-      _instance._getNtpTime();
-    });
+    _instance._ensureOffsetLoaded();
   }
 
-  DateTime get dateTime => _dateTime;
+  DateTime get dateTime {
+    _ensureOffsetLoaded();
+    return DateTime.now().add(Duration(milliseconds: _offsetMilliseconds));
+  }
 
-  void _getNtpTime() async {
+  void _ensureOffsetLoaded() {
+    _syncFuture ??= _getNtpOffsetOnce();
+  }
+
+  Future<void> _getNtpOffsetOnce() async {
     try {
-      _dateTime = await NTP.now();
+      final offset = await NTP.getNtpOffset().timeout(
+            const Duration(seconds: 1),
+          );
+      _offsetMilliseconds = offset;
       if (!ntpTimeStreamController.isClosed) {
-        ntpTimeStreamController.add(_dateTime);
+        ntpTimeStreamController.add(dateTime);
       }
     } catch (e) {
       kPrint("Error getting NTP time: $e");

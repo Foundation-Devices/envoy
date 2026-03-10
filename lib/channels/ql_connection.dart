@@ -506,11 +506,7 @@ class QLConnection with EnvoyMessageWriter {
         "Sender XID not set for encoding message for device $deviceId",
       );
     }
-    try {
-      dateTime = await NTP.now(timeout: const Duration(seconds: 1));
-    } catch (e) {
-      kPrint("NTP error: $e");
-    }
+    dateTime = NTPUtil().dateTime;
     final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
     kPrint("Encoding Message timestamp: $timestampSeconds");
 
@@ -623,12 +619,7 @@ class QLConnection with EnvoyMessageWriter {
     required String filePath,
     required int chunkSize,
   }) async {
-    DateTime dateTime = DateTime.now();
-    try {
-      dateTime = await NTP.now(timeout: const Duration(seconds: 1));
-    } catch (e) {
-      kPrint("NTP error: $e");
-    }
+    final DateTime dateTime = NTPUtil().dateTime;
     if (_recipientXid == null) {
       throw Exception(
         "Recipient XID not set for encoding message for device $deviceId",
