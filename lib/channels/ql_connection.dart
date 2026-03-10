@@ -549,11 +549,15 @@ class QLConnection with EnvoyMessageWriter {
     );
     //
     //reset onboarding state
-    qlHandler.bleOnboardHandler.reset();
-    qlHandler.bleOnboardHandler.updateBlePairState(
-      "Connecting to Prime",
-      EnvoyStepState.LOADING,
-    );
+    try {
+      qlHandler.bleOnboardHandler.reset();
+      qlHandler.bleOnboardHandler.updateBlePairState(
+        "Connecting to Prime",
+        EnvoyStepState.LOADING,
+      );
+    } catch (e) {
+      kPrint("Error resetting onboard handler during pairing: $e");
+    }
 
     kPrint("Pairing...");
     final xid = await api.serializeXid(quantumLinkIdentity: _qlIdentity!);

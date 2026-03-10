@@ -13,6 +13,8 @@ import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
+import 'package:envoy/util/console.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
 
@@ -313,10 +315,15 @@ final settingsUpdateConnectionProvider = StreamProvider<QLConnection>((ref) {
 });
 
 void resetOnboardingPrimeProviders(ProviderContainer container) {
-  final device = container.read(onboardingDeviceProvider);
-  if (device != null) {
-    device.qlHandler.fwUpdateHandler.reset();
-    device.qlHandler.bleOnboardHandler.reset();
-    device.qlHandler.scvAccountHandler.reset();
+  try {
+    final device = container.read(onboardingDeviceProvider);
+    if (device != null) {
+      device.qlHandler.fwUpdateHandler.reset();
+      device.qlHandler.bleOnboardHandler.reset();
+      device.qlHandler.scvAccountHandler.reset();
+    }
+  } catch (e, stack) {
+    kPrint("Error resetting onboarding providers: $e");
+    debugPrintStack(stackTrace: stack);
   }
 }
