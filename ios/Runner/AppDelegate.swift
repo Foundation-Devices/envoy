@@ -306,10 +306,4 @@ func getSdCardBookmark() -> URL {
         return nil
     }
     
-    // keep your bundling stub (no changes)
-    public func dummyMethodToEnforceBundling() {
-        // This will never be called
-        ur_decoder()
-        tor_hello()
-    }
 }
