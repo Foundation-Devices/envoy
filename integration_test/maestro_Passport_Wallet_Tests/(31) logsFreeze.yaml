@@ -8,10 +8,10 @@ appId: com.foundationdevices.envoy
 
 # go to advanced / logs
 - tapOn:
-    id: hamburger_menu
+      id: hamburger_menu
 - tapOn: |-
-    SETTINGS
-    SETTINGS
+      SETTINGS
+      SETTINGS
 - tapOn: Advanced
 - tapOn: View Envoy Logs
 
@@ -19,10 +19,16 @@ appId: com.foundationdevices.envoy
 - tapOn: Copy logs
 
 # check for the toast
-- assertVisible: Logs copied to clipboard
+- assertVisible: |-
+      Logs copied to clipboard.
+      Logs copied to clipboard.
+
+# wait until toast is gone
+- assertNotVisible:
+      id: "toast_message"
 
 - tapOn: Back
 
 # go back to home
 - tapOn:
-    id: hamburger_menu
+      id: hamburger_menu

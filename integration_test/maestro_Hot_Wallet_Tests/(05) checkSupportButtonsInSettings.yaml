@@ -18,6 +18,13 @@ appId: com.foundationdevices.envoy
 - tapOn: Back
 - tapOn: COMMUNITY
 - tapOn: Back
+
+# hack to wait 3 sec
+- swipe:
+     start: "50%, 5%"
+     end: "50%, 5%"
+     duration: 3000
+             -
 - assertVisible: EMAIL # just check for the button
 
 # go back to home

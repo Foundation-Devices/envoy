@@ -1381,22 +1381,7 @@ dependencies = [
 [[package]]
 name = "foundation-ur"
 version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "de4d0b63162220b26a3a955478ebc02e51fe77aa38181d058c55f3d1d6664428"
-dependencies = [
- "bitcoin_hashes 0.15.0",
- "crc",
- "heapless",
- "itertools 0.10.5",
- "minicbor 0.24.4",
- "phf",
- "rand_xoshiro",
-]
-
-[[package]]
-name = "foundation-ur"
-version = "0.4.0"
-source = "git+https://github.com/Foundation-Devices/foundation-rs#b4a9d20d5091d8c1987374b067c56d3be1bdb5f4"
+source = "git+https://github.com/Foundation-Devices/foundation-rs?tag=0.5.0#85984a453769c71b762bc0f2c5030450c4bc9166"
 dependencies = [
  "bitcoin_hashes 0.15.0",
  "crc",
@@ -3147,7 +3132,7 @@ dependencies = [
  "btp",
  "flutter_rust_bridge",
  "foundation-api",
- "foundation-ur 0.4.0 (git+https://github.com/Foundation-Devices/foundation-rs)",
+ "foundation-ur",
  "log",
  "sha2",
  "tokio",
@@ -3199,7 +3184,7 @@ name = "rust_lib_ur"
 version = "0.1.0"
 dependencies = [
  "flutter_rust_bridge",
- "foundation-ur 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "foundation-ur",
  "getrandom 0.2.16",
  "log",
 ]
