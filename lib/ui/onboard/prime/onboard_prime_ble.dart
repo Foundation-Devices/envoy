@@ -205,8 +205,22 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
         if (Platform.isAndroid) {
           await Future.delayed(const Duration(seconds: 1));
         }
-        final connectionStatus = _onboardingDevice!.lastDeviceStatus;
-        if (!connectionStatus.connected && mounted) {
+        await Future.doWhile(
+          () async {
+            if (_onboardingDevice!.lastDeviceStatus.readyForWrite) {
+              return false;
+            }
+            await Future.delayed(const Duration(milliseconds: 500));
+            return true;
+          },
+        ).timeout(
+          const Duration(seconds: 10),
+          onTimeout: () {
+            throw BleSetupTimeoutException(
+                "Timed out waiting for device to be ready for communication.");
+          },
+        );
+        if (!_onboardingDevice!.lastDeviceStatus.readyForWrite && mounted) {
           setState(() {
             bleConnectState = BleConnectState.idle;
           });
@@ -215,7 +229,7 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
             throw Exception("Failed to connect to Prime device.");
           }
         }
-        if (mounted && connectionStatus.connected) {
+        if (mounted && _onboardingDevice!.lastDeviceStatus.readyForWrite) {
           setState(() {
             bleConnectState = BleConnectState.connected;
           });

@@ -73,7 +73,10 @@ class WriteProgress {
 
 class DeviceStatus {
   final BluetoothConnectionEventType? type;
+  //active ble connection
   final bool connected;
+  //found characteristics
+  final bool ready;
   final bool bonded;
   final String? peripheralId;
   final String? peripheralName;
@@ -83,6 +86,7 @@ class DeviceStatus {
   const DeviceStatus({
     this.type,
     required this.connected,
+    this.ready = false,
     this.peripheralId,
     this.peripheralName,
     this.error,
@@ -90,10 +94,13 @@ class DeviceStatus {
     this.bonded = false,
   });
 
+  bool get readyForWrite => connected && ready;
+
   factory DeviceStatus.fromMap(Map<dynamic, dynamic> map) {
     return DeviceStatus(
       type: _parseEventType(map['type']),
       connected: map['connected'] ?? false,
+      ready: map['ready'] ?? false,
       peripheralId: map['peripheralId']?.toString(),
       peripheralName: map['peripheralName']?.toString(),
       error: map['error']?.toString(),
@@ -143,6 +150,7 @@ class DeviceStatus {
     return 'BluetoothConnectionStatus {'
         'type: $type, '
         'connected: $connected, '
+        'ready: $ready, '
         'device: ${peripheralName ?? 'Unknown'}, '
         'bonded: $bonded '
         '${error != null ? ', error: $error' : ''}'
@@ -156,9 +164,13 @@ class DeviceStatus {
           runtimeType == other.runtimeType &&
           type == other.type &&
           connected == other.connected &&
+          ready == other.ready &&
           peripheralId == other.peripheralId;
 
   @override
   int get hashCode =>
-      type.hashCode ^ connected.hashCode ^ peripheralId.hashCode;
+      type.hashCode ^
+      connected.hashCode ^
+      ready.hashCode ^
+      peripheralId.hashCode;
 }

@@ -138,6 +138,10 @@ class QLConnection(
         @SuppressLint("MissingPermission")
         get() = connectedDevice?.bondState == BluetoothDevice.BOND_BONDED
 
+    private fun isReady(): Boolean {
+        return isConnected() && writeCharacteristic != null
+    }
+
     init {
         Log.d(TAG, "[$deviceId] QLConnection init - registering channels...")
 
@@ -157,7 +161,7 @@ class QLConnection(
                 }
             }
         }
-        if(isConnected()){
+        if (isConnected()) {
             sendConnectionEvent(BluetoothConnectionEventType.DEVICE_CONNECTED)
         }
     }
@@ -285,14 +289,17 @@ class QLConnection(
                 }
                 result.success(bondResult)
             }
+
             BluetoothDevice.BOND_BONDED -> {
                 Log.d(TAG, "[$deviceId] Device already bonded")
                 result.success(true)
             }
+
             BluetoothDevice.BOND_BONDING -> {
                 Log.d(TAG, "[$deviceId] Bonding in progress...")
                 result.success(true)
             }
+
             else -> result.success(false)
         }
     }
@@ -307,6 +314,7 @@ class QLConnection(
             BluetoothConnectionStatus(
                 type = null,
                 connected = isConnected(),
+                ready = isReady(),
                 peripheralId = deviceId,
                 peripheralName = connectedDevice?.name ?: "Unknown Device",
                 bonded = connectedDevice?.bondState == BluetoothDevice.BOND_BONDED,
@@ -529,11 +537,12 @@ class QLConnection(
     @SuppressLint("MissingPermission")
     private fun sendConnectionEvent(type: BluetoothConnectionEventType, error: String? = null) {
         scope.launch {
-            Log.i(TAG, "sendConnectionEvent: ${if(connectionEventSink==null) "no sink" else "has sink"}")
+            Log.i(TAG, "sendConnectionEvent: ${if (connectionEventSink == null) "no sink" else "has sink"}")
             connectionEventSink?.success(
                 BluetoothConnectionStatus(
                     type,
                     connected = isConnected(),
+                    ready = isReady(),
                     peripheralId = deviceId,
                     peripheralName = connectedDevice?.name ?: "Unknown Device",
                     bonded = connectedDevice?.bondState == BluetoothDevice.BOND_BONDED,
@@ -731,6 +740,7 @@ class QLConnection(
                                     CoroutineScope(Dispatchers.IO)
                                 )
                                 writeCharacteristic = characteristic
+                                sendConnectionEvent(type = BluetoothConnectionEventType.DEVICE_CONNECTED)
                             }
 
                             properties and BluetoothGattCharacteristic.PROPERTY_READ != 0 ||
@@ -761,7 +771,10 @@ class QLConnection(
                         }
                     }
 
-                    Log.d(TAG, "[$deviceId] Characteristics: write=${writeCharacteristic?.uuid}, read=${readCharacteristic?.uuid}")
+                    Log.d(
+                        TAG,
+                        "[$deviceId] Characteristics: write=${writeCharacteristic?.uuid}, read=${readCharacteristic?.uuid}"
+                    )
                 } else {
                     Log.w(TAG, "[$deviceId] Prime service not found")
                 }
@@ -787,7 +800,10 @@ class QLConnection(
                 pendingWriteData = null
                 writeRetryCount = 0
             } else {
-                Log.e(TAG, "[$deviceId] WRITE ERROR: char=${characteristic?.uuid}, status=$status, retry=$writeRetryCount/$MAX_WRITE_RETRIES")
+                Log.e(
+                    TAG,
+                    "[$deviceId] WRITE ERROR: char=${characteristic?.uuid}, status=$status, retry=$writeRetryCount/$MAX_WRITE_RETRIES"
+                )
 
                 if (writeRetryCount < MAX_WRITE_RETRIES && pendingWriteData != null && characteristic != null && gatt != null) {
                     writeRetryCount++

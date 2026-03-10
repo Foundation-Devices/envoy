@@ -260,12 +260,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
   Future<List<Uint8List>> encodeMessage({
     required api.QuantumLinkMessage message,
   }) async {
-    DateTime dateTime = DateTime.now();
-    try {
-      dateTime = await NTP.now(timeout: const Duration(seconds: 1));
-    } catch (e) {
-      kPrint("NTP error: $e");
-    }
+    final DateTime dateTime = NTPUtil().dateTime;
     final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
     kPrint("Encoding Message timestamp: $timestampSeconds");
 
@@ -288,12 +283,7 @@ class BluetoothManager extends WidgetsBindingObserver with EnvoyMessageWriter {
     required String filePath,
     required int chunkSize,
   }) async {
-    DateTime dateTime = DateTime.now();
-    try {
-      dateTime = await NTP.now(timeout: const Duration(seconds: 1));
-    } catch (e) {
-      kPrint("NTP error: $e");
-    }
+    final DateTime dateTime = NTPUtil().dateTime;
     final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
     kPrint("Encoding Message timestamp: $timestampSeconds");
     //

@@ -203,7 +203,6 @@ class Devices extends ChangeNotifier {
           .where((id) => id.isNotEmpty)
           .toSet();
 
-      kPrint("Connecting to ${primes.length} primes");
       for (final device in primes) {
         final deviceId =
             Platform.isAndroid ? device.bleId : device.peripheralId;
