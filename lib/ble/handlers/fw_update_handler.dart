@@ -104,12 +104,10 @@ class FwUpdateHandler extends PassportMessageHandler {
     final roundedMinutes = minutes < 10
         ? (minutes * 10).ceilToDouble() / 10
         : minutes.ceilToDouble();
-    final precision =
-        roundedMinutes.truncateToDouble() == roundedMinutes ? 0 : 1;
 
     //add prime installation overhead, ~1 min
-    final totalTime = roundedMinutes + 1;
-    return "~${totalTime.toStringAsFixed(precision)} min";
+    final totalTime = (roundedMinutes + 1).toInt();
+    return "~$totalTime min";
   }
 
   /// Emits when a firmware fetch request is received from an already-onboarded
