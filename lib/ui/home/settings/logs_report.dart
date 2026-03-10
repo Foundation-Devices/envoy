@@ -42,10 +42,13 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                 String logs = await EnvoyReport().getLogAsString(24);
                 await Clipboard.setData(ClipboardData(text: logs));
                 if (context.mounted) {
+                  const isMaestroTest = bool.fromEnvironment('IS_MAESTRO_TEST',
+                      defaultValue: false);
                   EnvoyToast(
                     backgroundColor: Colors.lightBlue,
                     replaceExisting: true,
-                    duration: const Duration(milliseconds: 3000),
+                    duration:
+                        Duration(milliseconds: isMaestroTest ? 10000 : 3000),
                     message: S().menu_toast_logsCopied,
                     icon: const Icon(Icons.copy, color: EnvoyColors.teal),
                   ).show(context);

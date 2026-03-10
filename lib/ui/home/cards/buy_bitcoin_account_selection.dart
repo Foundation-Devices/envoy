@@ -25,6 +25,7 @@ import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/shield.dart';
 import 'accounts/account_list_tile.dart';
 import 'package:envoy/ui/home/cards/buy_bitcoin.dart';
@@ -404,11 +405,18 @@ class ChooseAccountState extends State<ChooseAccount> {
                   title: AnimatedOpacity(
                     duration: Duration(milliseconds: _exiting ? 100 : 300),
                     opacity: _exiting ? 0 : 1,
-                    child: Text(
-                      S().header_chooseAccount,
-                      style: EnvoyTypography.subheading.copyWith(
-                        color: Colors.white,
-                      ),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Text(
+                            S().header_chooseAccount,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        const SizedBox(height: 50, child: IndicatorShield()),
+                      ],
                     ),
                   ),
                   leading: AnimatedOpacity(

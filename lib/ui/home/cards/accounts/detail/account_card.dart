@@ -180,7 +180,8 @@ class _AccountCardState extends ConsumerState<AccountCard>
     bool txFiltersEnabled = ref.watch(isTransactionFiltersEnabled);
     bool isMenuOpen = ref.watch(homePageOptionsVisibilityProvider);
 
-    var scanInProgress = SyncManager().isAccountFullScanInProgress(account);
+    var scanInProgress = ref.watch(accountSync) is Scanning &&
+        (ref.watch(accountSync) as Scanning).id == account.id;
 
     return MediaQuery.removePadding(
       context: context,
