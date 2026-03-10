@@ -222,6 +222,11 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
 
     ref.listen(primeUpdateStateProvider, (previous, next) async {
       _updateAnimState(next);
+      if (next == PrimeFwUpdateStep.finished && _isSettingsUpdate) {
+        resetOnboardingPrimeProviders(ProviderScope.containerOf(context));
+        ref.read(onboardingDeviceProvider.notifier).state = null;
+        if (context.mounted) context.go(ROUTE_ACCOUNTS_HOME);
+      }
     });
 
     Widget downloadImage = Image.asset(

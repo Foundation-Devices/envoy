@@ -405,8 +405,18 @@ class FwUpdateHandler extends PassportMessageHandler {
         EnvoyReport().log("fw_update_handler",
             "Install event: installing — device is applying the firmware");
         _updateFwUpdateState(PrimeFwUpdateStep.installing);
+        if (qlConnection.getDevice()?.onboardingComplete == true) {
+          EnvoyReport().log("fw_update_handler",
+              "Settings update — marking as finished on installing");
+          _updateFwUpdateState(PrimeFwUpdateStep.finished);
+        }
       },
       rebooting: (event) {
+        if (qlConnection.getDevice()?.onboardingComplete == true) {
+          EnvoyReport().log(
+              "fw_update_handler", "Settings update — ignoring reboot event");
+          return;
+        }
         EnvoyReport().log("fw_update_handler",
             "Install event: rebooting — device is rebooting into new firmware");
         _updateFwUpdateState(PrimeFwUpdateStep.rebooting);
