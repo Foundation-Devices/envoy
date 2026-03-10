@@ -370,6 +370,7 @@ class _PrimeOptionsWidgetState extends ConsumerState<PrimeOptionsWidget> {
                 ),
                 SizedBox(height: EnvoySpacing.xs),
                 Text(S().device_deviceDetailsPrimeRemoved_accessoryRemoved,
+                    textAlign: TextAlign.center,
                     style: EnvoyTypography.body.copyWith(
                       color: NewEnvoyColor.lightcopper500,
                     ))
