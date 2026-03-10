@@ -152,12 +152,17 @@ class EnvoyToastState extends State<EnvoyToast> {
                         child: Container(
                           margin:
                               const EdgeInsets.only(left: EnvoySpacing.small),
-                          child: Text(
-                            widget.message ?? "",
-                            overflow: widget.overflow ?? TextOverflow.ellipsis,
-                            maxLines: 2,
-                            style: EnvoyTypography.label.copyWith(
-                                color: NewEnvoyColor.contentPrimaryInverse),
+                          child: Semantics(
+                            identifier: "toast_message",
+                            label: widget.message ?? "",
+                            child: Text(
+                              widget.message ?? "",
+                              overflow:
+                                  widget.overflow ?? TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: EnvoyTypography.label.copyWith(
+                                  color: NewEnvoyColor.contentPrimaryInverse),
+                            ),
                           ),
                         ),
                       ),
