@@ -35,7 +35,7 @@ class BleAccountHandler extends PassportMessageHandler {
 
   void setupExchangeRateListener() {
     _onExchangeRateChanged = () {
-      unawaited(sendExchangeRate());
+      unawaited(sendExchangeRateHistory());
     };
     ExchangeRate().addListener(_onExchangeRateChanged);
   }
