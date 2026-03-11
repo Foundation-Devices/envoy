@@ -11,7 +11,7 @@ import 'package:envoy/util/console.dart';
 import 'package:flutter/material.dart';
 
 //default envoy session timeout
-const envoySessionTimeout = Duration(seconds: 60);
+const envoySessionTimeout = Duration(minutes: 5);
 
 // SessionManager is a singleton that listens to the app lifecycle and
 // manages the session timeout. It will show the AuthenticatePage if the app is resumed after the timeout..
