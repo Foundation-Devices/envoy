@@ -19,6 +19,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:foundation_api/foundation_api.dart';
+import 'package:envoy/business/exchange_rate.dart' as envoy;
 
 class BleConnectionState {
   final String message;
@@ -86,7 +87,9 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
         await EnvoySeed().generateAndBackupWalletSilently();
         //no need to send security challenge if onboarding is already complete
         try {
-          qlConnection.qlHandler.bleAccountHandler.sendExchangeRateHistory();
+          await qlConnection.qlHandler.bleAccountHandler
+              .sendExchangeRateHistory();
+          await envoy.ExchangeRate().refreshHistory();
         } catch (e) {
           kPrint(
             "Could not send exchange rate history at onboarding completion: ${e.toString()}",
