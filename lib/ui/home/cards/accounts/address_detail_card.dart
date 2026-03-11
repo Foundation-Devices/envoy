@@ -18,9 +18,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/cards/accounts/address_explorer_card.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/ui/components/envoy_bar.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
 
 class AddressDetailCard extends ConsumerStatefulWidget {
   final EnvoyAccount account;
@@ -136,47 +137,32 @@ class _AddressDetailCardState extends ConsumerState<AddressDetailCard> {
             ),
           ),
         ),
-        Container(
-          margin: const EdgeInsets.only(
-            left: EnvoySpacing.medium2,
-            right: EnvoySpacing.medium2,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(
-                left: EnvoySpacing.large2,
-                right: EnvoySpacing.large2,
-                bottom: EnvoySpacing.large1),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                IconButton(
-                    onPressed: () {
-                      _copyAddressToClipboard(context, address);
-                    },
-                    icon: const EnvoyIcon(
-                      EnvoyIcons.copy,
-                      color: EnvoyColors.accentPrimary,
-                    )),
-                EnvoyTextButton(
-                  onTap: () {
-                    GoRouter.of(context).pop();
-                  },
-                  label: S().component_ok,
-                ),
-                IconButton(
-                    onPressed: () {
-                      SharePlus.instance.share(ShareParams(
-                        text: "bitcoin:$address",
-                      ));
-                    },
-                    icon: const EnvoyIcon(
-                      EnvoyIcons.externalLink,
-                      color: EnvoyColors.accentPrimary,
-                    )),
-              ],
+        EnvoyBar(
+          bottomPadding: EnvoySpacing.large3,
+          items: [
+            EnvoyBarItem(
+              icon: EnvoyIcons.envelope,
+              text: S().receive_qr_signMessage,
+              onTap: () {
+                context.go(ROUTE_ACCOUNT_SIGN_MESSAGE, extra: <String, String?>{
+                  'accountId': widget.account.id,
+                  'address': address,
+                });
+              },
             ),
-          ),
+            EnvoyBarItem(
+              icon: EnvoyIcons.copy,
+              text: S().receive_qr_copy,
+              onTap: () => _copyAddressToClipboard(context, address),
+            ),
+            EnvoyBarItem(
+              icon: EnvoyIcons.externalLink,
+              text: S().receive_qr_share,
+              onTap: () => SharePlus.instance.share(
+                ShareParams(text: "bitcoin:$address"),
+              ),
+            ),
+          ],
         ),
       ]),
     );

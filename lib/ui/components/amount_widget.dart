@@ -30,6 +30,7 @@ class AmountWidget extends StatelessWidget {
   final String locale;
   final bool millionaireMode;
   final String? semanticSuffix;
+  final Color? colorOverride;
 
   const AmountWidget({
     super.key,
@@ -46,6 +47,7 @@ class AmountWidget extends StatelessWidget {
     required this.locale,
     this.millionaireMode = true,
     this.semanticSuffix,
+    this.colorOverride,
   });
 
   @override
@@ -89,7 +91,8 @@ class AmountWidget extends StatelessWidget {
                 locale: locale,
                 textScaleFactor: textScaleFactor,
                 millionaireMode: millionaireMode,
-                semanticSuffix: semanticSuffix),
+                semanticSuffix: semanticSuffix,
+                colorOverride: colorOverride),
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   badgeColor: badgeColor,
@@ -104,7 +107,8 @@ class AmountWidget extends StatelessWidget {
                   envoyAccount: envoyAccount,
                   locale: locale,
                   textScaleFactor: textScaleFactor,
-                  millionaireMode: millionaireMode),
+                  millionaireMode: millionaireMode,
+                  colorOverride: colorOverride),
           ],
         );
       case AmountWidgetStyle.normal:
@@ -125,7 +129,8 @@ class AmountWidget extends StatelessWidget {
                 locale: locale,
                 textScaleFactor: textScaleFactor,
                 millionaireMode: millionaireMode,
-                semanticSuffix: semanticSuffix),
+                semanticSuffix: semanticSuffix,
+                colorOverride: colorOverride),
             if (secondaryUnit != null)
               Padding(
                 padding: const EdgeInsets.only(top: EnvoySpacing.xs),
@@ -142,7 +147,8 @@ class AmountWidget extends StatelessWidget {
                     envoyAccount: envoyAccount,
                     locale: locale,
                     textScaleFactor: textScaleFactor,
-                    millionaireMode: millionaireMode),
+                    millionaireMode: millionaireMode,
+                    colorOverride: colorOverride),
               ),
           ],
         );
@@ -165,7 +171,8 @@ class AmountWidget extends StatelessWidget {
                 locale: locale,
                 textScaleFactor: textScaleFactor,
                 millionaireMode: millionaireMode,
-                semanticSuffix: semanticSuffix),
+                semanticSuffix: semanticSuffix,
+                colorOverride: colorOverride),
             if (secondaryUnit != null)
               Padding(
                 padding: const EdgeInsets.only(left: EnvoySpacing.small),
@@ -182,7 +189,8 @@ class AmountWidget extends StatelessWidget {
                     envoyAccount: envoyAccount,
                     locale: locale,
                     textScaleFactor: textScaleFactor,
-                    millionaireMode: millionaireMode),
+                    millionaireMode: millionaireMode,
+                    colorOverride: colorOverride),
               ),
           ],
         );
@@ -202,7 +210,8 @@ class AmountWidget extends StatelessWidget {
             sendScreen: true,
             textScaleFactor: textScaleFactor,
             millionaireMode: millionaireMode,
-            semanticSuffix: semanticSuffix);
+            semanticSuffix: semanticSuffix,
+            colorOverride: colorOverride);
     }
   }
 }
@@ -225,14 +234,12 @@ class PrimaryAmountWidget extends StatelessWidget {
   final double textScaleFactor;
   final bool millionaireMode;
   final String? semanticSuffix;
+  final Color? colorOverride;
 
-  final EnvoyIcons iconBtc = EnvoyIcons.btc;
-  final EnvoyIcons iconSat = EnvoyIcons.sats;
+  static const EnvoyIcons iconBtc = EnvoyIcons.btc;
+  static const EnvoyIcons iconSat = EnvoyIcons.sats;
 
-  final TextStyle textStyleFiatSymbol = EnvoyTypography.digitsMedium
-      .copyWith(color: EnvoyColors.textPrimary, fontSize: 24);
-
-  PrimaryAmountWidget(
+  const PrimaryAmountWidget(
       {super.key,
       required this.unit,
       required this.amountSats,
@@ -247,7 +254,8 @@ class PrimaryAmountWidget extends StatelessWidget {
       this.sendScreen = false,
       this.textScaleFactor = 1,
       required this.millionaireMode,
-      this.semanticSuffix});
+      this.semanticSuffix,
+      this.colorOverride});
 
   @override
   Widget build(BuildContext context) {
@@ -259,25 +267,27 @@ class PrimaryAmountWidget extends StatelessWidget {
       );
     }
 
+    final Color primaryColor = colorOverride ?? EnvoyColors.textPrimary;
+    final Color tertiaryColor = colorOverride ?? EnvoyColors.textTertiary;
+    final Color secondaryColor = colorOverride ?? EnvoyColors.textSecondary;
+
+    final TextStyle textStyleFiatSymbol = EnvoyTypography.digitsMedium
+        .copyWith(color: primaryColor, fontSize: 24);
+
     final TextStyle textStyleBlack = style == PrimaryAmountWidgetStyle.normal
-        ? EnvoyTypography.digitsMedium.copyWith(
-            color: EnvoyColors.textPrimary,
-          )
-        : EnvoyTypography.digitsLarge.copyWith(
-            color: EnvoyColors.textPrimary,
-          );
+        ? EnvoyTypography.digitsMedium.copyWith(color: primaryColor)
+        : EnvoyTypography.digitsLarge.copyWith(color: primaryColor);
 
     final TextStyle textStyleGray = style == PrimaryAmountWidgetStyle.normal
-        ? EnvoyTypography.digitsMedium.copyWith(color: EnvoyColors.textTertiary)
-        : EnvoyTypography.digitsLarge.copyWith(color: EnvoyColors.textTertiary);
+        ? EnvoyTypography.digitsMedium.copyWith(color: tertiaryColor)
+        : EnvoyTypography.digitsLarge.copyWith(color: tertiaryColor);
 
     final iconSize = style == PrimaryAmountWidgetStyle.normal
         ? EnvoyIconSize.small
         : EnvoyIconSize.normal;
 
-    final iconColor = style == PrimaryAmountWidgetStyle.normal
-        ? EnvoyColors.textTertiary
-        : EnvoyColors.textPrimary;
+    final iconColor =
+        style == PrimaryAmountWidgetStyle.normal ? tertiaryColor : primaryColor;
 
     final unitSpacing =
         style == PrimaryAmountWidgetStyle.normal ? 2.0 : EnvoySpacing.xs;
@@ -303,7 +313,7 @@ class PrimaryAmountWidget extends StatelessWidget {
                         ),
                         style: sendScreen
                             ? EnvoyTypography.digitsMedium
-                                .copyWith(color: EnvoyColors.textSecondary)
+                                .copyWith(color: secondaryColor)
                             : textStyleFiatSymbol,
                       )
                     : (envoyAccount?.network == Network.bitcoin
@@ -361,10 +371,11 @@ class SecondaryAmountWidget extends StatelessWidget {
   final Color? badgeColor;
   final EnvoyAccount? envoyAccount;
   final String locale;
-  final EnvoyIcons iconBtc = EnvoyIcons.btc;
+  static const EnvoyIcons iconBtc = EnvoyIcons.btc;
   final double textScaleFactor;
   final bool millionaireMode;
   final String? semanticSuffix;
+  final Color? colorOverride;
 
   const SecondaryAmountWidget(
       {super.key,
@@ -381,7 +392,8 @@ class SecondaryAmountWidget extends StatelessWidget {
       this.envoyAccount,
       this.textScaleFactor = 1,
       required this.millionaireMode,
-      this.semanticSuffix});
+      this.semanticSuffix,
+      this.colorOverride});
 
   @override
   Widget build(BuildContext context) {
@@ -393,14 +405,14 @@ class SecondaryAmountWidget extends StatelessWidget {
       );
     }
 
-    final TextStyle textStyle = EnvoyTypography.digitsSmall.copyWith(
-      color: style == SecondaryAmountWidgetStyle.normal
-          ? EnvoyColors.textPrimary
-          : EnvoyColors.accentPrimary,
-    );
-    final iconColor = style == SecondaryAmountWidgetStyle.normal
-        ? EnvoyColors.textPrimary
-        : EnvoyColors.accentPrimary;
+    final Color resolvedColor = colorOverride ??
+        (style == SecondaryAmountWidgetStyle.normal
+            ? EnvoyColors.textPrimary
+            : EnvoyColors.accentPrimary);
+
+    final TextStyle textStyle =
+        EnvoyTypography.digitsSmall.copyWith(color: resolvedColor);
+    final iconColor = resolvedColor;
 
     return Semantics(
       container: true,
