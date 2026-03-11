@@ -5,6 +5,8 @@ name: Android build (Nix)
 on:
   workflow_call:
   workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'  # Run daily at 2 AM UTC
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   NIX_CONFIG: access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
