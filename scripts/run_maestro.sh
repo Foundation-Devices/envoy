@@ -184,7 +184,24 @@ echo -e "${GREEN}✓${NC} Hot Wallet tests: $HOT_WALLET_TESTS_DIR"
 echo -e "${GREEN}✓${NC} Passport Wallet tests: $PASSPORT_WALLET_TESTS_DIR"
 
 # ------------------------------------------------------------
-# Device Detection
+# Kill ALL Maestro processes
+# ------------------------------------------------------------
+MAESTRO_PIDS=$(pgrep -f "maestro" 2>/dev/null || true)
+if [ -n "$MAESTRO_PIDS" ]; then
+    echo -e "${YELLOW}Killing all Maestro processes (PIDs: $MAESTRO_PIDS)...${NC}"
+    echo "$MAESTRO_PIDS" | xargs kill -9 2>/dev/null || true
+    sleep 2
+fi
+
+# Restart ADB server to clear any stale connections
+echo -e "${YELLOW}Restarting ADB server...${NC}"
+$ADB_CMD kill-server 2>/dev/null || true
+sleep 2
+$ADB_CMD start-server 2>/dev/null || true
+sleep 3
+
+# ------------------------------------------------------------
+# Device Detection (after ADB restart so device is fresh)
 # ------------------------------------------------------------
 if [ -z "$DEVICE_ID" ]; then
     DEVICE_ID=$($ADB_CMD devices | awk '$2=="device"{print $1; exit}')
@@ -197,17 +214,16 @@ fi
 
 echo -e "${GREEN}✓${NC} Using device: $DEVICE_ID"
 
-# Kill any running Maestro MCP server processes that hold ADB connections
-MAESTRO_PIDS=$(pgrep -f "maestro.cli.AppKt mcp" 2>/dev/null || true)
-if [ -n "$MAESTRO_PIDS" ]; then
-    echo -e "${YELLOW}Stopping Maestro MCP server(s) (PIDs: $MAESTRO_PIDS)...${NC}"
-    echo "$MAESTRO_PIDS" | xargs kill 2>/dev/null || true
-    sleep 2
-fi
-
-# Clear stale ADB port forwards left by Maestro MCP sessions
-$ADB_CMD forward --remove-all 2>/dev/null
+# Clear stale ADB port forwards
+$ADB_CMD -s "$DEVICE_ID" forward --remove-all 2>/dev/null
 echo -e "${GREEN}✓${NC} Cleared stale ADB port forwards"
+
+# ------------------------------------------------------------
+# Uninstall existing app for a clean install
+# ------------------------------------------------------------
+echo -e "${YELLOW}Uninstalling existing app...${NC}"
+$ADB_CMD -s "$DEVICE_ID" uninstall "$APP_ID" 2>/dev/null || true
+echo -e "${GREEN}✓${NC} App uninstalled (clean slate)"
 
 # ------------------------------------------------------------
 # Build & Install (optional)
@@ -222,14 +238,19 @@ if [ "$BUILD_APP" = true ]; then
         exit 1
     }
 
-
     echo -e "${YELLOW}Installing APK...${NC}"
-    $ADB_CMD -s "$DEVICE_ID" install -r build/app/outputs/flutter-apk/app-debug.apk || {
+    $ADB_CMD -s "$DEVICE_ID" install build/app/outputs/flutter-apk/app-debug.apk || {
         echo -e "${RED}✗ Install failed${NC}"
         exit 1
     }
 
     echo -e "${GREEN}✓${NC} APK installed"
+
+    # Launch app after clean install and wait for cold start to finish
+    echo -e "${YELLOW}Launching app (cold start after clean install)...${NC}"
+    $ADB_CMD -s "$DEVICE_ID" shell monkey -p "$APP_ID" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
+    sleep 25
+    echo -e "${GREEN}✓${NC} App ready"
 fi
 
 # ------------------------------------------------------------
@@ -301,11 +322,11 @@ stop_screen_recording() {
         ffmpeg -y -f concat -safe 0 -i "$concat_list" -c copy "$output_file" >/dev/null 2>&1
         if [ $? -ne 0 ]; then
             # Fallback: use the last segment
-            cp "${segments[-1]}" "$output_file"
+            cp "${segments[${#segments[@]}-1]}" "$output_file"
         fi
     else
         # No ffmpeg, use the last segment
-        cp "${segments[-1]}" "$output_file"
+        cp "${segments[${#segments[@]}-1]}" "$output_file"
     fi
 
     # Clean up
@@ -333,8 +354,8 @@ record_failed_test() {
     # Start recording
     start_screen_recording
 
-    # Re-run the failed test
-    maestro --device "$DEVICE_ID" test "$test_file" 2>&1 || true
+    # Re-run the failed test (suppress the verbose Maestro TUI output)
+    maestro --device "$DEVICE_ID" test "$test_file" >/dev/null 2>&1 || true
 
     # Stop recording and save video
     stop_screen_recording "$test_name"
@@ -350,8 +371,8 @@ record_failed_test() {
 # Kebab HTTP Bridge
 # ------------------------------------------------------------
 start_kebab_bridge() {
-    if lsof -i :5555 >/dev/null 2>&1; then
-        echo -e "${GREEN}✓${NC} Kebab bridge already running on port 5555"
+    if lsof -i :7555 >/dev/null 2>&1; then
+        echo -e "${GREEN}✓${NC} Kebab bridge already running on port 7555"
         return
     fi
 
@@ -360,7 +381,7 @@ start_kebab_bridge() {
     KEBAB_PID=$!
     # Wait for the server to be ready
     for i in $(seq 1 10); do
-        if curl -s http://localhost:5555/home >/dev/null 2>&1; then
+        if curl -s http://localhost:7555/home >/dev/null 2>&1; then
             echo -e "${GREEN}✓${NC} Kebab bridge started (PID: $KEBAB_PID)"
             return
         fi

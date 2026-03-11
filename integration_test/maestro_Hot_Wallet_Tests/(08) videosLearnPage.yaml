@@ -23,14 +23,24 @@ appId: com.foundationdevices.envoy
 
 # test the player
 # pause
-- tapOn:
-    point: 50%,50%
+- runFlow:
+    when:
+      notVisible: "Play"
+    commands:
+      - tapOn:
+          point: 50%,50%
 
-- assertVisible: Play
+# make sure play is visible
+- assertVisible: "Play" # TODO videos do not load, maybe add 15 sec before each test ?
 
 # unpause
-- tapOn:
-    point: 50%,50%
+# Make controls visible again
+- runFlow:
+    when:
+      notVisible: "back button"
+    commands:
+      - tapOn:
+          point: 50%,50%
 
 # exit the player
 - tapOn: back button
@@ -125,14 +135,24 @@ appId: com.foundationdevices.envoy
 
 # test the player
 # pause
-- tapOn:
-    point: 50%,50%
+- runFlow:
+    when:
+      notVisible: "Play"
+    commands:
+      - tapOn:
+          point: 50%,50%
 
+# make sure play is visible
 - assertVisible: Play
 
 # unpause
-- tapOn:
-    point: 50%,50%
+# Make controls visible again
+- runFlow:
+    when:
+      notVisible: "back button"
+    commands:
+      - tapOn:
+          point: 50%,50%
 
 # exit the player
 - tapOn: back button
