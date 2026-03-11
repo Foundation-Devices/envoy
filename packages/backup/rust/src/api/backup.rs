@@ -157,6 +157,13 @@ impl Backup {
 
         let password = Self::get_static_secret(seed_words).context("invalid password")?;
         let encrypted = Self::encrypt_backup(backup_data, &password);
+
+        // Save local backup
+        fs::write(local_backup, &encrypted).context("failed to write local backup")?;
+        if !perform_cloud {
+            return Ok(true);
+        }
+
         let challenge = match Self::get_challenge_async(server_url, proxy_port).await {
             None => {
                 anyhow::bail!("Unable to get challenge from server");
@@ -164,11 +171,6 @@ impl Backup {
             Some(c) => c,
         };
         let solution = effort::solve_challenge(&challenge.challenge, &tx).await;
-        // Save local backup
-        fs::write(local_backup, &encrypted).context("failed to write local backup")?;
-        if !perform_cloud {
-            return Ok(true);
-        }
         let post_success = Self::post_backup_async(
             server_url,
             proxy_port,
