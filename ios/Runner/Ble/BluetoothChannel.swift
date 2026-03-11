@@ -155,14 +155,15 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
 
     /// Get or create a QLConnection for the given device ID.
     /// This ensures the device's channels are registered before Dart tries to use them.
-    private func getOrCreateDevice(deviceId: String) -> QLConnection {
+    private func getOrCreateDevice(deviceId: String) -> QLConnection? {
         if let existingDevice = devices[deviceId] {
             return existingDevice
         }
 
         print("\(Self.TAG) Creating QLConnection for: \(deviceId)")
         guard let messenger = flutterController?.binaryMessenger else {
-            fatalError("Flutter binary messenger not available")
+            print("\(Self.TAG) Flutter binary messenger not available for device: \(deviceId)")
+            return nil
         }
 
         let device = QLConnection(
@@ -187,7 +188,16 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         }
 
         // Create QLConnection so its channels are registered
-        let _ = getOrCreateDevice(deviceId: deviceId)
+        guard getOrCreateDevice(deviceId: deviceId) != nil else {
+            result(
+                FlutterError(
+                    code: "BINARY_MESSENGER_UNAVAILABLE",
+                    message: "Flutter binary messenger not available",
+                    details: deviceId
+                )
+            )
+            return
+        }
         print("\(Self.TAG) Prepared device: \(deviceId)")
         result(true)
     }
@@ -227,7 +237,16 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         }
 
         // Get or create QLConnection (may already exist from prepareDevice)
-        let qlConnection = getOrCreateDevice(deviceId: deviceId)
+        guard let qlConnection = getOrCreateDevice(deviceId: deviceId) else {
+            result(
+                FlutterError(
+                    code: "BINARY_MESSENGER_UNAVAILABLE",
+                    message: "Flutter binary messenger not available",
+                    details: deviceId
+                )
+            )
+            return
+        }
 
         // Get the remote peripheral
         let peripherals = central.retrievePeripherals(withIdentifiers: [uuid])
@@ -555,7 +574,9 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         var deviceId: String? = nil
         if let bluetoothId = accessory.bluetoothIdentifier {
             deviceId = bluetoothId.uuidString
-            let _ = getOrCreateDevice(deviceId: deviceId!)
+            guard getOrCreateDevice(deviceId: deviceId!) != nil else {
+                return
+            }
         }
 
         // Send scan event to Flutter
@@ -598,7 +619,9 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             print("Found existing accessory on app open: \(accessory.displayName)")
             pairedAccessories[bluetoothId] = accessory
 
-            let _ = getOrCreateDevice(deviceId: bluetoothId.uuidString)
+            guard getOrCreateDevice(deviceId: bluetoothId.uuidString) != nil else {
+                continue
+            }
             sendScanEvent(type: "device_found", deviceId: bluetoothId.uuidString, deviceName: accessory.displayName)
 
             if let central = centralManager, central.state == .poweredOn {
@@ -646,7 +669,9 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         print("\(Self.TAG) Connecting to accessory peripheral: \(peripheral.name ?? "Unknown") (\(deviceId))")
 
         // Get or create QLConnection and connect
-        let qlConnection = getOrCreateDevice(deviceId: deviceId)
+        guard let qlConnection = getOrCreateDevice(deviceId: deviceId) else {
+            return
+        }
         if qlConnection.hasActiveOrPendingConnection(for: peripheral) {
             print("\(Self.TAG) Skipping duplicate accessory connect for peripheral: \(deviceId)")
             return
@@ -751,7 +776,11 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
             return
         }
 
-        let qlConnection = getOrCreateDevice(deviceId: peripheralId)
+        guard let qlConnection = getOrCreateDevice(deviceId: peripheralId) else {
+            needsServiceRediscovery = false
+            restoredPeripheralId = nil
+            return
+        }
 
         if peripheral.state == .connected {
             qlConnection.onDidConnect(peripheral: peripheral)
@@ -807,7 +836,9 @@ class BluetoothChannel: NSObject, CBCentralManagerDelegate, FlutterStreamHandler
         sendScanEvent(type: "device_found", deviceId: deviceId, deviceName: peripheral.name)
 
         // Create QLConnection and connect
-        let qlConnection = getOrCreateDevice(deviceId: deviceId)
+        guard let qlConnection = getOrCreateDevice(deviceId: deviceId) else {
+            return
+        }
         qlConnection.connect(peripheral: peripheral)
     }
 
