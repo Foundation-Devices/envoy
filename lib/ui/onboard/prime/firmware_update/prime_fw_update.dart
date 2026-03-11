@@ -610,6 +610,7 @@ class _PrimeFwDownloadProgressState
                                 EnvoyStepState.FINISHED)
                               Text(
                                 progressAsync.value.remainingTime.isEmpty
+                                    //TODO: copy update
                                     ? "Estimating remaining time..."
                                     : S()
                                         .firmware_downloadingUpdate_timeRemaining(

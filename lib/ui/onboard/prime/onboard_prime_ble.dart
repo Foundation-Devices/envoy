@@ -155,8 +155,8 @@ class _OnboardPrimeBluetoothState extends ConsumerState<OnboardPrimeBluetooth>
           for (final device in connectedDevices) {
             final isAlreadyPaired = Devices().getPrimeDevices.any(
                   (paired) =>
-                      paired.bleId != device.peripheralId &&
-                      paired.peripheralId != device.peripheralId,
+                      paired.bleId == device.peripheralId ||
+                      paired.peripheralId == device.peripheralId,
                 );
             if (!isAlreadyPaired) {
               matchedDevice = device;

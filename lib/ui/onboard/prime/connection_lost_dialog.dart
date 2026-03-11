@@ -119,7 +119,7 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
         throw Exception("No Previous connection...");
       }
       String deviceId = qlConnection.lastDeviceStatus.peripheralId ?? "";
-      await BluetoothManager().reconnect(deviceId);
+      await BluetoothChannel().reconnect(deviceId);
       await Future.delayed(const Duration(seconds: 2));
       if (qlConnection.lastDeviceStatus.connected && mounted) {
         Navigator.pop(context);

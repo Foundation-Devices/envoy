@@ -187,7 +187,6 @@ class HomePageState extends ConsumerState<HomePage>
   @override
   void initState() {
     super.initState();
-    Devices().connect();
     MigrationManager().resetMigrationPrefs();
     _resetTorWarningTimer();
     _resetServerDownWarningTimer();

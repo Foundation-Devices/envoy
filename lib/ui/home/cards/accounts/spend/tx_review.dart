@@ -10,6 +10,7 @@ import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/uniform_resource.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
@@ -1068,7 +1069,7 @@ class _TransactionReviewScreenState
     if (!isConnected) {
       final deviceId = Platform.isAndroid ? device.bleId : device.peripheralId;
       // try to connect to prime
-      BluetoothManager().reconnect(deviceId);
+      BluetoothChannel().reconnect(deviceId);
     }
   }
 

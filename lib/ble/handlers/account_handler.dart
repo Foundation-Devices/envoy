@@ -33,9 +33,16 @@ class BleAccountHandler extends PassportMessageHandler {
         message is api.QuantumLinkMessage_ApplyPassphrase;
   }
 
+  int lastExchangeRateHash = 0;
+
   void setupExchangeRateListener() {
-    _onExchangeRateChanged = () {
-      unawaited(sendExchangeRateHistory());
+    _onExchangeRateChanged = () async {
+      if (lastExchangeRateHash != ExchangeRate().history.hashCode) {
+        final result = await sendExchangeRateHistory();
+        if (result == true) {
+          lastExchangeRateHash = ExchangeRate().history.hashCode;
+        }
+      }
     };
     ExchangeRate().addListener(_onExchangeRateChanged);
   }
@@ -201,8 +208,8 @@ class BleAccountHandler extends PassportMessageHandler {
     }
   }
 
-  Future<void> sendExchangeRateHistory() async {
-    if (_sendingData) return;
+  Future<bool> sendExchangeRateHistory() async {
+    if (_sendingData) return false;
     try {
       _sendingData = true;
 
@@ -212,12 +219,12 @@ class BleAccountHandler extends PassportMessageHandler {
       if (qlConnection.getDevice()?.onboardingComplete != true) {
         _sendingData = false;
         kPrint("Device not onboarded, skipping sending exchange rate history.");
-        return;
+        return false;
       }
       if (historyPoints.isEmpty) {
         _sendingData = false;
         kPrint("No exchange rate history to send.");
-        return;
+        return false;
       }
 
       // Convert Dart RatePoint -> API PricePoint
@@ -233,15 +240,16 @@ class BleAccountHandler extends PassportMessageHandler {
         currencyCode: currency,
       );
 
-      await qlConnection.writeMessage(
+      final result = await qlConnection.writeMessage(
         api.QuantumLinkMessage.exchangeRateHistory(historyMessage),
       );
-
       kPrint(
         "Sent ${apiPoints.length} exchange rate points for currency $currency",
       );
+      return result;
     } catch (e) {
       kPrint('Failed to send exchange rate history: $e');
+      return false;
     } finally {
       _sendingData = false;
     }
