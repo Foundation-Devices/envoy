@@ -12,6 +12,7 @@ import 'package:envoy/business/devices.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/ntp.dart';
@@ -466,21 +467,34 @@ class QLConnection with EnvoyMessageWriter {
 
   @override
   Future<bool> writeMessage(api.QuantumLinkMessage message) async {
-    final data = await encodeMessage(message: message);
-    kPrint("Encoded message! Size: ${data.length}");
-    if (Platform.isIOS || Platform.isAndroid) {
-      final success = await writeAll(data);
-      if (!success) {
-        kPrint(
-          "[$deviceId] BLE write failed for message type: ${message.runtimeType}",
+    return _serializeWrite(() async {
+      final data = await encodeMessage(message: message);
+      kPrint("Encoded message! Size: ${data.length}");
+      if (Platform.isIOS || Platform.isAndroid) {
+        final success = await writeAll(data);
+        if (!success) {
+          kPrint(
+            "[$deviceId] BLE write failed for message type: ${message.runtimeType}",
+          );
+        }
+        return success;
+      } else {
+        throw UnimplementedError(
+          "Bluetooth write not implemented for this platform",
         );
       }
-      return success;
-    } else {
-      throw UnimplementedError(
-        "Bluetooth write not implemented for this platform",
-      );
-    }
+    }).timeout(
+      const Duration(seconds: 10),
+      onTimeout: () {
+        EnvoyReport().log(
+          "QLConnection",
+          "Timeout writing message of type ${message.runtimeType} to device $deviceId",
+        );
+        kPrint(
+            "[$deviceId] Timeout writing message of type ${message.runtimeType}");
+        return false;
+      },
+    );
   }
 
   @override
@@ -490,6 +504,20 @@ class QLConnection with EnvoyMessageWriter {
     final data = await encodeMessage(message: message);
     await writeAll(data);
     return Stream.empty();
+  }
+
+  Future<void> _writeChain = Future.value();
+
+  Future<T> _serializeWrite<T>(Future<T> Function() op) {
+    final completer = Completer<T>();
+    _writeChain = _writeChain.then((_) async {
+      try {
+        completer.complete(await op());
+      } catch (e, st) {
+        completer.completeError(e, st);
+      }
+    });
+    return completer.future;
   }
 
   Future<List<Uint8List>> encodeMessage({
