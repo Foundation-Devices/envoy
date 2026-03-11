@@ -367,10 +367,18 @@ final accountsRouter = StatefulShellBranch(
               path: _ACCOUNT_SIGN_MESSAGE,
               pageBuilder: (context, state) {
                 EnvoyAccount? account;
+                String? initialAddress;
                 try {
                   if (state.extra is String) {
                     account = NgAccountManager()
                         .getAccountById(state.extra as String);
+                  } else if (state.extra is Map<String, String?>) {
+                    final map = state.extra as Map<String, String?>;
+                    final accountId = map['accountId'];
+                    if (accountId != null) {
+                      account = NgAccountManager().getAccountById(accountId);
+                    }
+                    initialAddress = map['address'];
                   }
                   account ??= ProviderScope.containerOf(context)
                       .read(selectedAccountProvider);
@@ -378,7 +386,8 @@ final accountsRouter = StatefulShellBranch(
                     throw Exception("Account not found");
                   }
                   return wrapWithEnvoyPageAnimation(
-                    child: SignMessageCard(account),
+                    child: SignMessageCard(account,
+                        initialAddress: initialAddress),
                   );
                 } catch (e) {
                   return wrapWithEnvoyPageAnimation(

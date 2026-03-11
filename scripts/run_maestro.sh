@@ -260,16 +260,18 @@ stop_screen_recording() {
     local temp_dir
     temp_dir=$(mktemp -d)
 
-    # Kill the recording loop
+    # Send SIGINT to screenrecord on device FIRST so it finalizes the mp4 properly
+    # This must happen before killing the loop, because killing the loop sends
+    # SIGTERM to the adb process which can ungracefully disconnect screenrecord
+    $ADB_CMD -s "$DEVICE_ID" shell pkill -2 -f screenrecord 2>/dev/null
+    sleep 5
+
+    # Now kill the recording loop
     if [ -n "$RECORDING_LOOP_PID" ]; then
         kill "$RECORDING_LOOP_PID" 2>/dev/null
         wait "$RECORDING_LOOP_PID" 2>/dev/null
         RECORDING_LOOP_PID=""
     fi
-
-    # Send SIGINT (not SIGTERM) so screenrecord finalizes the mp4 properly
-    $ADB_CMD -s "$DEVICE_ID" shell pkill -2 -f screenrecord 2>/dev/null
-    sleep 5
 
     # Pull all segments from device
     local segments=()

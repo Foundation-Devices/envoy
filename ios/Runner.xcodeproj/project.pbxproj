@@ -15,9 +15,6 @@
 		6990A7EE2EE0F44800CF4CD2 /* QLConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6990A7EF2EE0F44200CF4CD2 /* QLConnection.swift */; };
 		69F1741D2EB4C0F00017F73A /* BluetoothChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F1741C2EB4C0E30017F73A /* BluetoothChannel.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
-		787400C02955C8010097D2C3 /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 787400BC2955C8010097D2C3 /* libur_ffi.a */; };
-		78CFC742291BC27600A3AFDC /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C3760C27F831AC005559E4 /* libur_ffi.a */; settings = {ATTRIBUTES = (Weak, ); }; };
-		78CFC76D292E5CE000A3AFDC /* libur_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78CFC769292E5CDF00A3AFDC /* libur_ffi.a */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -35,14 +32,8 @@
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		74CC16DF7BE40AC6836DFAFB /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		787400BA2955C8010097D2C3 /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet_ffi.a; path = "../target/aarch64-apple-ios-sim/debug/libwallet_ffi.a"; sourceTree = "<group>"; };
-		787400BC2955C8010097D2C3 /* libur_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libur_ffi.a; path = "../target/aarch64-apple-ios-sim/debug/libur_ffi.a"; sourceTree = "<group>"; };
 		788D58E02795A8DC00CD47BA /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		78ABDD292C46ED4500677063 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
-		78C3760C27F831AC005559E4 /* libur_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libur_ffi.a; path = "../target/aarch64-apple-ios/debug/libur_ffi.a"; sourceTree = "<group>"; };
-		78C3760E27F831B4005559E4 /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet_ffi.a; path = "../target/aarch64-apple-ios/debug/libwallet_ffi.a"; sourceTree = "<group>"; };
-		78CFC767292E5CDF00A3AFDC /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet_ffi.a; path = "../target/aarch64-apple-ios/release/libwallet_ffi.a"; sourceTree = "<group>"; };
-		78CFC769292E5CDF00A3AFDC /* libur_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libur_ffi.a; path = "../target/aarch64-apple-ios/release/libur_ffi.a"; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		867069CE368A4727B40B6338 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
@@ -60,10 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				78CFC76D292E5CE000A3AFDC /* libur_ffi.a in Frameworks */,
 				4BAFFFE02D0994DD00DAA96C /* CoreBluetooth.framework in Frameworks */,
-				787400C02955C8010097D2C3 /* libur_ffi.a in Frameworks */,
-				78CFC742291BC27600A3AFDC /* libur_ffi.a in Frameworks */,
 				018586C28C9F3439C93E928E /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -75,12 +63,6 @@
 			isa = PBXGroup;
 			children = (
 				78ABDD292C46ED4500677063 /* CoreBluetooth.framework */,
-				78CFC769292E5CDF00A3AFDC /* libur_ffi.a */,
-				787400BC2955C8010097D2C3 /* libur_ffi.a */,
-				78C3760E27F831B4005559E4 /* libwallet_ffi.a */,
-				78C3760C27F831AC005559E4 /* libur_ffi.a */,
-				78CFC767292E5CDF00A3AFDC /* libwallet_ffi.a */,
-				787400BA2955C8010097D2C3 /* libwallet_ffi.a */,
 				4BAFFFDA2D098D6900DAA96C /* bluart.framework */,
 				74CC16DF7BE40AC6836DFAFB /* Pods_Runner.framework */,
 			);
@@ -426,7 +408,6 @@
 					"$(inherited)",
 					"\"${DT_TOOLCHAIN_DIR}/usr/lib/swift/${PLATFORM_NAME}\"",
 					/usr/lib/swift,
-					"../target/aarch64-apple-ios/release",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.foundationdevices.envoy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -578,16 +559,6 @@
 					"$(inherited)",
 					"\"${DT_TOOLCHAIN_DIR}/usr/lib/swift/${PLATFORM_NAME}\"",
 					/usr/lib/swift,
-					"../target/aarch64-apple-ios/debug",
-					"../target/aarch64-apple-ios-sim/debug",
-				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = (
-					"$(inherited)",
-					"\"${DT_TOOLCHAIN_DIR}/usr/lib/swift/${PLATFORM_NAME}\"",
-					/usr/lib/swift,
-					"../target/aarch64-apple-ios/debug",
-					"../target/aarch64-apple-ios-sim/debug",
-					/opt/homebrew/Cellar/xz/5.4.6/lib,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.foundationdevices.envoy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -628,7 +599,6 @@
 					"$(inherited)",
 					"\"${DT_TOOLCHAIN_DIR}/usr/lib/swift/${PLATFORM_NAME}\"",
 					/usr/lib/swift,
-					"../target/aarch64-apple-ios/release",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.foundationdevices.envoy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
