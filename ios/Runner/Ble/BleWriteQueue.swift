@@ -6,9 +6,9 @@ class BleWriteQueue {
     private static let TAG = "BleWriteQueue"
 
     /**
-     
+
         The minimum amount of time we expect needs to elapse before the Write Without Response buffer is cleared in miliseconds.
-    
+
         The minimum connection interval time is 15 ms, as noted in this technical document: `https://developer.apple.com/library/archive/qa/qa1931/_index.html`. Therefore, it is reasonable to assume that past this interval, the BLE Radio will be powered up by the CoreBluetooth API / Subsystem to send the write values we've enqueued onto the CBPeripheral.
             based on https://github.com/NordicSemiconductor/IOS-nRF-Connect-Device-Manager/blob/e46fd30eda5397db0e58287f9236b9bfe8ef54f7/iOSMcuManagerLibrary/Source/Bluetooth/McuMgrBleROBWriteBuffer.swift#L29
         */
@@ -27,9 +27,13 @@ class BleWriteQueue {
     private var writeContinuation: CheckedContinuation<Bool, Never>?
     private var pendingWriteData: Data?
     private var pendingWriteGeneration: UInt64?
+    private var readyTimeoutWorkItem: DispatchWorkItem?
     private var queueGeneration: UInt64 = 0
 
-    init(peripheral: CBPeripheral, characteristic: CBCharacteristic) {
+    init(
+        peripheral: CBPeripheral,
+        characteristic: CBCharacteristic,
+    ) {
         self.gatt = peripheral
         self.characteristic = characteristic
 
@@ -38,9 +42,7 @@ class BleWriteQueue {
     }
 
     private func log(_ message: String) {
-        print(
-            "\(Self.TAG): \(message) [gen=\(queueGeneration) active=\(isActive) processing=\(isProcessing) queued=\(writeQueue.count) pending=\(pendingWriteData?.count ?? 0)]"
-        )
+        print("\(Self.TAG): \(message)")
     }
 
     private func startProcessingQueue() {
@@ -80,7 +82,7 @@ class BleWriteQueue {
                             self.log("Ignoring stale write completion for generation=\(generation)")
                             return
                         }
-                        
+
                         if !success {
                             self.log("ERROR write failed size=\(request.data.count); clearing queue")
                             self.isActive = false
@@ -92,7 +94,7 @@ class BleWriteQueue {
                         self.log("Write completed size=\(request.data.count)")
                         request.completion(true)
                         self.currentRequest = nil
-                        
+
                         // Continue processing if there are more items
                         if !self.writeQueue.isEmpty {
                             self.processQueue()
@@ -101,7 +103,7 @@ class BleWriteQueue {
                         }
                     }
                 }
-                
+
                 return
             }
         }
@@ -148,6 +150,7 @@ class BleWriteQueue {
                 self.log("Enqueued write size=\(data.count)")
 
                 if !self.isProcessing {
+                    self.isProcessing = true
                     self.log("Starting queue processing")
                     self.processQueue()
                 }
@@ -193,6 +196,8 @@ class BleWriteQueue {
                     self.writeContinuation = continuation
                     self.pendingWriteData = data
                     self.pendingWriteGeneration = generation
+                    self.scheduleReadyTimeout(generation: generation)
+
                 } else {
                     self.log("Writing immediately size=\(data.count)")
                     self.gatt.writeValue(data, for: self.characteristic, type: .withoutResponse)
@@ -222,6 +227,8 @@ class BleWriteQueue {
                 self.resetPendingWrite(result: false)
                 return
             }
+            self.readyTimeoutWorkItem?.cancel()
+            self.readyTimeoutWorkItem = nil
             self.writeContinuation = nil
             self.pendingWriteData = nil
             self.pendingWriteGeneration = nil
@@ -236,7 +243,48 @@ class BleWriteQueue {
         }
     }
 
+    private func scheduleReadyTimeout(generation: UInt64) {
+        readyTimeoutWorkItem?.cancel()
+
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self = self else { return }
+            guard self.isActive else { return }
+            guard let continuation = self.writeContinuation,
+                  let data = self.pendingWriteData,
+                  let pendingGeneration = self.pendingWriteGeneration else {
+                return
+            }
+            guard self.queueGeneration == generation, pendingGeneration == generation else {
+                self.log("Discarding stale timeout write size=\(data.count) generation=\(generation)")
+                self.resetPendingWrite(result: false)
+                return
+            }
+            guard self.gatt.state != .disconnected else {
+                self.log("Peripheral disconnected before timeout write size=\(data.count)")
+                self.resetPendingWrite(result: false)
+                return
+            }
+
+            self.log("Timeout elapsed; forcing pending write size=\(data.count)")
+            self.readyTimeoutWorkItem = nil
+            self.writeContinuation = nil
+            self.pendingWriteData = nil
+            self.pendingWriteGeneration = nil
+            self.gatt.writeValue(data, for: self.characteristic, type: .withoutResponse)
+            continuation.resume(returning: true)
+        }
+
+        readyTimeoutWorkItem = workItem
+        queue.asyncAfter(
+            deadline: .now() + .milliseconds(Self.CONNECTION_BUFFER_WAIT_TIME_MS),
+            execute: workItem
+        )
+    }
+
     private func resetPendingWrite(result: Bool) {
+        readyTimeoutWorkItem?.cancel()
+        readyTimeoutWorkItem = nil
+
         guard let continuation = writeContinuation else {
             pendingWriteData = nil
             pendingWriteGeneration = nil

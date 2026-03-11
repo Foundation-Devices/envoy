@@ -191,7 +191,11 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
           Navigator.pop(context);
         },
         onSecondaryButtonTap: (context) async {
-          await ref.read(onboardingDeviceProvider)?.cancelTransfer();
+          ref
+              .read(onboardingDeviceProvider)
+              ?.qlHandler
+              .fwUpdateHandler
+              .stopFirmwareTransfer();
           if (context.mounted) {
             resetOnboardingPrimeProviders(ProviderScope.containerOf(context));
             ref.read(onboardingDeviceProvider.notifier).state = null;
