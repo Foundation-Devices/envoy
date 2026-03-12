@@ -56,9 +56,14 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `a day ago`
+  /// `bc1q ar0s rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m dq`
   String get _ {
-    return Intl.message('a day ago', name: '_', desc: '', args: []);
+    return Intl.message(
+      'bc1q ar0s rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m dq',
+      name: '_',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `App Version`
@@ -3273,6 +3278,26 @@ class S {
     );
   }
 
+  /// `Envoy could not connect to Passport Prime. Make sure your Passport Prime is powered on, Bluetooth is enabled, and it is not already connected to another device.`
+  String get devices_connectionFailedModal_content {
+    return Intl.message(
+      'Envoy could not connect to Passport Prime. Make sure your Passport Prime is powered on, Bluetooth is enabled, and it is not already connected to another device.',
+      name: 'devices_connectionFailedModal_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connection Failed`
+  String get devices_connectionFailedModal_header {
+    return Intl.message(
+      'Connection Failed',
+      name: 'devices_connectionFailedModal_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Buy Passport`
   String get devices_empty_modal_video_cta1 {
     return Intl.message(
@@ -3298,6 +3323,26 @@ class S {
     return Intl.message(
       'Secure your Bitcoin with Passport.',
       name: 'devices_empty_text_explainer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Firmware updates for Passport Prime must be initiated on device. Go to Settings > Update.`
+  String get devices_firmwareUpdateModal_content {
+    return Intl.message(
+      'Firmware updates for Passport Prime must be initiated on device. Go to Settings > Update.',
+      name: 'devices_firmwareUpdateModal_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Begin on Passport Prime`
+  String get devices_firmwareUpdateModal_header {
+    return Intl.message(
+      'Begin on Passport Prime',
+      name: 'devices_firmwareUpdateModal_header',
       desc: '',
       args: [],
     );
@@ -4973,6 +5018,36 @@ class S {
     );
   }
 
+  /// `Cancel Update`
+  String get firmware_connectionModalCancelUpdate_cancelUpdate {
+    return Intl.message(
+      'Cancel Update',
+      name: 'firmware_connectionModalCancelUpdate_cancelUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This will cancel the firmware update. Passport Prime will remain on the current version.`
+  String get firmware_connectionModalCancelUpdate_content {
+    return Intl.message(
+      'This will cancel the firmware update. Passport Prime will remain on the current version.',
+      name: 'firmware_connectionModalCancelUpdate_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel Update?`
+  String get firmware_connectionModalCancelUpdate_header {
+    return Intl.message(
+      'Cancel Update?',
+      name: 'firmware_connectionModalCancelUpdate_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Update Downloaded`
   String get firmware_downloadingUpdate_downloaded {
     return Intl.message(
@@ -5895,10 +5970,10 @@ class S {
     );
   }
 
-  /// `Passport's QuantumLink connection is no longer available. If you recently erased Passport or unpaired Envoy, this is expected. If you didn't, please contact support.\nEnvoy will now remove the device from your phone's Bluetooth accessory list.`
+  /// `Your Passport Prime {0} QuantumLink connection is no longer available. If you recently erased the device or unpaired Envoy, this is expected. If you didn't, contact support.\nEnvoy will remove this device from your phone's Bluetooth accessory list.`
   String get manage_deviceDetailsUnpairedModalWarning_content {
     return Intl.message(
-      'Passport\'s QuantumLink connection is no longer available. If you recently erased Passport or unpaired Envoy, this is expected. If you didn\'t, please contact support.\nEnvoy will now remove the device from your phone\'s Bluetooth accessory list.',
+      'Your Passport Prime {0} QuantumLink connection is no longer available. If you recently erased the device or unpaired Envoy, this is expected. If you didn\'t, contact support.\nEnvoy will remove this device from your phone\'s Bluetooth accessory list.',
       name: 'manage_deviceDetailsUnpairedModalWarning_content',
       desc: '',
       args: [],
@@ -5915,10 +5990,10 @@ class S {
     );
   }
 
-  /// `Passport Prime has been unpaired. Envoy will now remove the device from the Bluetooth accessory list of your phone.`
+  /// `Passport Prime {0} has been unpaired. Envoy will now remove the device from the Bluetooth accessory list of your phone.`
   String get manage_deviceDetailsUnpairedModal_content {
     return Intl.message(
-      'Passport Prime has been unpaired. Envoy will now remove the device from the Bluetooth accessory list of your phone.',
+      'Passport Prime {0} has been unpaired. Envoy will now remove the device from the Bluetooth accessory list of your phone.',
       name: 'manage_deviceDetailsUnpairedModal_content',
       desc: '',
       args: [],
@@ -7393,6 +7468,26 @@ class S {
     );
   }
 
+  /// `This will erase all onboarding progress. You will need to start the Passport Prime setup from the beginning.`
+  String get onboarding_connectionModalExitOnboarding_content {
+    return Intl.message(
+      'This will erase all onboarding progress. You will need to start the Passport Prime setup from the beginning.',
+      name: 'onboarding_connectionModalExitOnboarding_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exit Onboarding?`
+  String get onboarding_connectionModalExitOnboarding_header {
+    return Intl.message(
+      'Exit Onboarding?',
+      name: 'onboarding_connectionModalExitOnboarding_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No Updates Available`
   String get onboarding_connectionNoUpdates_noUpdates {
     return Intl.message(
@@ -8303,20 +8398,20 @@ class S {
     );
   }
 
-  /// `Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account here.`
+  /// `Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account [[here]].`
   String get receive_mobileWallet_multiplePassportContent {
     return Intl.message(
-      'Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account here.',
+      'Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account [[here]].',
       name: 'receive_mobileWallet_multiplePassportContent',
       desc: '',
       args: [],
     );
   }
 
-  /// `Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  tap here.`
+  /// `Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  [[tap here]].`
   String get receive_mobileWallet_singlePassportContent {
     return Intl.message(
-      'Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  tap here.',
+      'Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  [[tap here]].',
       name: 'receive_mobileWallet_singlePassportContent',
       desc: '',
       args: [],
