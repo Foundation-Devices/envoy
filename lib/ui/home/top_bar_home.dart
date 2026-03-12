@@ -339,6 +339,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> {
         return S().header_buyBitcoin;
       case ROUTE_ACCOUNT_TRANSFER:
         return S().bottomNav_transfer;
+      case ROUTE_ACCOUNT_DESCRIPTOR:
+        return 'DESCRIPTOR';
       case ROUTE_ACCOUNT_ADDRESSES:
         return S().exploreAdresses_activityOptions_exploreAddresses;
       case ROUTE_ACCOUNT_SIGN_MESSAGE:
