@@ -13,13 +13,15 @@ import 'envoy_account.dart';
 import 'errors.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `bdk_db_path`, `get_descriptor`, `get_descriptors`, `setup_log_to_console`
+// These functions are ignored because they are not marked as `pub`: `bdk_db_path`, `get_descriptor`, `get_descriptors`, `is_cert_error`, `setup_log_to_console`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `fmt`
 
 Future<ServerFeatures> getServerFeatures(
-        {required String server, String? proxy}) =>
-    RustLib.instance.api
-        .crateApiEnvoyWalletGetServerFeatures(server: server, proxy: proxy);
+        {required String server,
+        String? proxy,
+        required bool validateDomain}) =>
+    RustLib.instance.api.crateApiEnvoyWalletGetServerFeatures(
+        server: server, proxy: proxy, validateDomain: validateDomain);
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Option < FullScanRequest < KeychainKind > > > >>>
 abstract class FullScanRequest implements RustOpaqueInterface {}
@@ -335,6 +337,7 @@ class ServerFeatures {
   final String? protocolMax;
   final String? hashFunction;
   final PlatformInt64? pruning;
+  final bool certError;
 
   const ServerFeatures({
     this.serverVersion,
@@ -343,6 +346,7 @@ class ServerFeatures {
     this.protocolMax,
     this.hashFunction,
     this.pruning,
+    required this.certError,
   });
 
   @override
@@ -352,7 +356,8 @@ class ServerFeatures {
       protocolMin.hashCode ^
       protocolMax.hashCode ^
       hashFunction.hashCode ^
-      pruning.hashCode;
+      pruning.hashCode ^
+      certError.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -364,5 +369,6 @@ class ServerFeatures {
           protocolMin == other.protocolMin &&
           protocolMax == other.protocolMax &&
           hashFunction == other.hashFunction &&
-          pruning == other.pruning;
+          pruning == other.pruning &&
+          certError == other.certError;
 }

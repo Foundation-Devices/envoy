@@ -369,7 +369,7 @@ abstract class RustLibApi extends BaseApi {
       required Network network});
 
   Future<ServerFeatures> crateApiEnvoyWalletGetServerFeatures(
-      {required String server, String? proxy});
+      {required String server, String? proxy, required bool validateDomain});
 
   Future<void> crateApiEnvoyWalletInitApp();
 
@@ -2467,12 +2467,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<ServerFeatures> crateApiEnvoyWalletGetServerFeatures(
-      {required String server, String? proxy}) {
+      {required String server, String? proxy, required bool validateDomain}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(server, serializer);
         sse_encode_opt_String(proxy, serializer);
+        sse_encode_bool(validateDomain, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 63, port: port_);
       },
@@ -2481,7 +2482,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: null,
       ),
       constMeta: kCrateApiEnvoyWalletGetServerFeaturesConstMeta,
-      argValues: [server, proxy],
+      argValues: [server, proxy, validateDomain],
       apiImpl: this,
     ));
   }
@@ -2489,7 +2490,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiEnvoyWalletGetServerFeaturesConstMeta =>
       const TaskConstMeta(
         debugName: "get_server_features",
-        argNames: ["server", "proxy"],
+        argNames: ["server", "proxy", "validateDomain"],
       );
 
   @override
@@ -3474,8 +3475,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ServerFeatures dco_decode_server_features(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 6)
-      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
     return ServerFeatures(
       serverVersion: dco_decode_opt_String(arr[0]),
       genesisHash: dco_decode_opt_list_prim_u_8_strict(arr[1]),
@@ -3483,6 +3484,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       protocolMax: dco_decode_opt_String(arr[3]),
       hashFunction: dco_decode_opt_String(arr[4]),
       pruning: dco_decode_opt_box_autoadd_i_64(arr[5]),
+      certError: dco_decode_bool(arr[6]),
     );
   }
 
@@ -4609,13 +4611,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_protocolMax = sse_decode_opt_String(deserializer);
     var var_hashFunction = sse_decode_opt_String(deserializer);
     var var_pruning = sse_decode_opt_box_autoadd_i_64(deserializer);
+    var var_certError = sse_decode_bool(deserializer);
     return ServerFeatures(
         serverVersion: var_serverVersion,
         genesisHash: var_genesisHash,
         protocolMin: var_protocolMin,
         protocolMax: var_protocolMax,
         hashFunction: var_hashFunction,
-        pruning: var_pruning);
+        pruning: var_pruning,
+        certError: var_certError);
   }
 
   @protected
@@ -5616,6 +5620,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_String(self.protocolMax, serializer);
     sse_encode_opt_String(self.hashFunction, serializer);
     sse_encode_opt_box_autoadd_i_64(self.pruning, serializer);
+    sse_encode_bool(self.certError, serializer);
   }
 
   @protected

@@ -234,8 +234,26 @@ class Settings extends ChangeNotifier {
     return !usingDefaultElectrumServer;
   }
 
+  @JsonKey(defaultValue: [])
+  List<String> skipCertValidationServers = [PublicServer.bitaroo.address];
+
   bool validateDomain(String server) {
-    return server != PublicServer.bitaroo.address;
+    return !skipCertValidationServers.contains(server);
+  }
+
+  void addSkipCertValidation(String server) {
+    if (!skipCertValidationServers.contains(server)) {
+      skipCertValidationServers.add(server);
+      notifyListeners();
+      store();
+    }
+  }
+
+  void removeSkipCertValidation(String server) {
+    if (skipCertValidationServers.remove(server)) {
+      notifyListeners();
+      store();
+    }
   }
 
   @JsonKey(defaultValue: "")

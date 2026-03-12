@@ -3166,12 +3166,16 @@ fn wire__crate__api__envoy_wallet__get_server_features_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_server = <String>::sse_decode(&mut deserializer);
             let api_proxy = <Option<String>>::sse_decode(&mut deserializer);
+            let api_validate_domain = <bool>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(
-                        crate::api::envoy_wallet::get_server_features(api_server, api_proxy),
-                    )?;
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::envoy_wallet::get_server_features(
+                            api_server,
+                            api_proxy,
+                            api_validate_domain,
+                        ))?;
                     Ok(output_ok)
                 })())
             }
@@ -4420,6 +4424,7 @@ impl SseDecode for crate::api::envoy_wallet::ServerFeatures {
         let mut var_protocolMax = <Option<String>>::sse_decode(deserializer);
         let mut var_hashFunction = <Option<String>>::sse_decode(deserializer);
         let mut var_pruning = <Option<i64>>::sse_decode(deserializer);
+        let mut var_certError = <bool>::sse_decode(deserializer);
         return crate::api::envoy_wallet::ServerFeatures {
             server_version: var_serverVersion,
             genesis_hash: var_genesisHash,
@@ -4427,6 +4432,7 @@ impl SseDecode for crate::api::envoy_wallet::ServerFeatures {
             protocol_max: var_protocolMax,
             hash_function: var_hashFunction,
             pruning: var_pruning,
+            cert_error: var_certError,
         };
     }
 }
@@ -5573,6 +5579,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::envoy_wallet::ServerFeatures 
             self.protocol_max.into_into_dart().into_dart(),
             self.hash_function.into_into_dart().into_dart(),
             self.pruning.into_into_dart().into_dart(),
+            self.cert_error.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -6540,6 +6547,7 @@ impl SseEncode for crate::api::envoy_wallet::ServerFeatures {
         <Option<String>>::sse_encode(self.protocol_max, serializer);
         <Option<String>>::sse_encode(self.hash_function, serializer);
         <Option<i64>>::sse_encode(self.pruning, serializer);
+        <bool>::sse_encode(self.cert_error, serializer);
     }
 }
 

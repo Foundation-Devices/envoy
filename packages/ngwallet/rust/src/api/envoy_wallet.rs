@@ -9,7 +9,7 @@ use crate::api::migration::get_last_used_index;
 use crate::frb_generated::StreamSink;
 use chrono::Utc;
 use flutter_rust_bridge::frb;
-use log::info;
+use log::{error, info};
 use ngwallet::account::{Descriptor, NgAccount};
 use ngwallet::bdk_electrum::electrum_client::{Client, ConfigBuilder, ElectrumApi, Socks5Config};
 use ngwallet::bdk_wallet::bitcoin::Address;
@@ -1144,10 +1144,24 @@ pub struct ServerFeatures {
     pub protocol_max: Option<String>,
     pub hash_function: Option<String>,
     pub pruning: Option<i64>,
+    pub cert_error: bool,
+}
+
+fn is_cert_error(msg: &str) -> bool {
+    msg.to_lowercase().contains("certificate")
 }
 
 #[frb]
-pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatures {
+pub fn get_server_features(
+    server: String,
+    proxy: Option<String>,
+    validate_domain: bool,
+) -> ServerFeatures {
+    // Mirror ngwallet's utils::build_electrum_client logic: when routing
+    // through a proxy (Tor) domain validation is always skipped, since the
+    // connection is anonymised and cert-pinning is meaningless over SOCKS5.
+    let effective_validate_domain = proxy.is_none() && validate_domain;
+
     let config = match proxy {
         Some(proxy_addr) => {
             let socks = Socks5Config::new(&proxy_addr);
@@ -1159,14 +1173,17 @@ pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatu
         }
         None => ConfigBuilder::new()
             .timeout(Some(30))
-            .validate_domain(false)
+            .validate_domain(effective_validate_domain)
             .build(),
     };
 
     let client = match Client::from_config(&server, config) {
         Ok(c) => c,
         Err(e) => {
-            eprintln!("Failed to connect: {}", e);
+            let cert = effective_validate_domain && is_cert_error(&e.to_string());
+            error!(
+                "[get_server_features] connect failed (server={server}, validate_domain={effective_validate_domain}, cert_error={cert}): {e}"
+            );
             return ServerFeatures {
                 server_version: None,
                 genesis_hash: None,
@@ -1174,21 +1191,32 @@ pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatu
                 protocol_max: None,
                 hash_function: None,
                 pruning: None,
+                cert_error: cert,
             };
         }
     };
 
     match client.server_features() {
-        Ok(f) => ServerFeatures {
-            server_version: Some(f.server_version),
-            genesis_hash: Some(f.genesis_hash.to_vec()),
-            protocol_min: Some(f.protocol_min),
-            protocol_max: Some(f.protocol_max),
-            hash_function: f.hash_function,
-            pruning: f.pruning,
-        },
+        Ok(f) => {
+            info!(
+                "[get_server_features] connected (server={server}, version={})",
+                f.server_version
+            );
+            ServerFeatures {
+                server_version: Some(f.server_version),
+                genesis_hash: Some(f.genesis_hash.to_vec()),
+                protocol_min: Some(f.protocol_min),
+                protocol_max: Some(f.protocol_max),
+                hash_function: f.hash_function,
+                pruning: f.pruning,
+                cert_error: false,
+            }
+        }
         Err(e) => {
-            eprintln!("Failed to get server features: {}", e);
+            let cert = effective_validate_domain && is_cert_error(&e.to_string());
+            error!(
+                "[get_server_features] server_features() failed (server={server}, validate_domain={effective_validate_domain}, cert_error={cert}): {e}"
+            );
             ServerFeatures {
                 server_version: None,
                 genesis_hash: None,
@@ -1196,6 +1224,7 @@ pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatu
                 protocol_max: None,
                 hash_function: None,
                 pruning: None,
+                cert_error: cert,
             }
         }
     }
