@@ -31,9 +31,9 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
   ..allowBuyInEnvoy = json['allowBuyInEnvoy'] as bool? ?? true
   ..skipCertValidationServers =
       (json['skipCertValidationServers'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ??
-      [];
+              ?.map((e) => e as String)
+              .toList() ??
+          [];
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'personalElectrumAddress': instance.personalElectrumAddress,
