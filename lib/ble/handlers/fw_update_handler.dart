@@ -137,7 +137,19 @@ class FwUpdateHandler extends PassportMessageHandler {
             fetchRequest.field0;
         if (firmwareFetchRequest.chunkOffset case final offset?) {
           kPrint("Restarting chunkQueue from offset $offset");
-          _chunkQueue?.restartFrom(offset.toInt());
+          final resumed = _chunkQueue?.restartFrom(offset.toInt());
+          if (resumed != null) {
+            // Queue had already finished — re-request high BLE priority
+            // and track the new send loop.
+            kPrint(
+                "Queue was completed, re-launching send loop from offset $offset");
+            try {
+              await qlConnection.requestHighConnectionPriority();
+            } catch (_) {}
+            unawaited(resumed.whenComplete(() async {
+              await qlConnection.requestBalancedConnectionPriority();
+            }));
+          }
           return;
         }
         _handleFirmwareFetchRequest(firmwareFetchRequest.currentVersion);
@@ -510,16 +522,21 @@ class ControlledQueue<T> {
   int? _restartFrom;
   bool _running = false;
   bool _stopRequested = false;
+  SendOne<T>? _sendOne;
 
   bool get isRunning => _running;
 
   int get currentIndex => _cursor;
 
-  bool get isCompleted => _cursor >= _items.length;
+  bool get isCompleted => _cursor >= _items.length && !_running;
 
   Future<void> start(SendOne<T> sendOne) async {
     if (_running) return;
+    _sendOne = sendOne;
+    await _run();
+  }
 
+  Future<void> _run() async {
     _running = true;
     _stopRequested = false;
 
@@ -535,7 +552,7 @@ class ControlledQueue<T> {
 
         EnvoyReport().log(
             "ControlledQueue", "Sending index $_cursor/${_items.length - 1}");
-        await sendOne(_cursor, _items[_cursor]);
+        await _sendOne!(_cursor, _items[_cursor]);
 
         // If restart was requested during await, next loop will jump.
         if (_restartFrom == null) {
@@ -551,7 +568,10 @@ class ControlledQueue<T> {
     _stopRequested = true;
   }
 
-  void restartFrom(int index) {
+  /// Restart sending from [index]. If the queue has already finished,
+  /// re-launches the send loop and returns the new [Future]; otherwise
+  /// the running loop picks up the new cursor and returns `null`.
+  Future<void>? restartFrom(int index) {
     if (index < 0 || index >= _items.length) {
       throw RangeError.index(index, _items, 'index');
     }
@@ -559,10 +579,16 @@ class ControlledQueue<T> {
     _restartFrom = index;
     _stopRequested = false;
 
-    // If not running now, next start() begins from this index.
     if (!_running) {
       _cursor = index;
+      // Re-launch the send loop if the queue already completed.
+      if (_sendOne != null) {
+        EnvoyReport().log("ControlledQueue",
+            "Re-launching completed queue from index $index/${_items.length - 1}");
+        return _run();
+      }
     }
+    return null;
   }
 
   void reset() {
