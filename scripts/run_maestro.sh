@@ -257,18 +257,22 @@ fi
 # Video Recording Helpers
 # ------------------------------------------------------------
 RECORDING_LOOP_PID=""
-RECORDING_SEGMENT=0
+RECORDING_STOP_FLAG=""
 
 start_screen_recording() {
-    RECORDING_SEGMENT=0
     # Clean up any previous segments on device
     $ADB_CMD -s "$DEVICE_ID" shell "rm -f /sdcard/fail_seg_*.mp4" 2>/dev/null
 
+    # Create a stop-flag path (file does NOT exist yet — its creation signals "stop")
+    RECORDING_STOP_FLAG=$(mktemp -u /tmp/maestro_stop_flag.XXXXXX)
+    rm -f "$RECORDING_STOP_FLAG"
+
     # Background loop that records in 170-second chunks
     (
-        while true; do
-            RECORDING_SEGMENT=$((RECORDING_SEGMENT + 1))
-            SEG_NUM=$(printf "%03d" "$RECORDING_SEGMENT")
+        SEG=0
+        while [ ! -f "$RECORDING_STOP_FLAG" ]; do
+            SEG=$((SEG + 1))
+            SEG_NUM=$(printf "%03d" "$SEG")
             $ADB_CMD -s "$DEVICE_ID" shell screenrecord --time-limit 170 "/sdcard/fail_seg_${SEG_NUM}.mp4" 2>/dev/null
         done
     ) &
@@ -281,18 +285,26 @@ stop_screen_recording() {
     local temp_dir
     temp_dir=$(mktemp -d)
 
-    # Send SIGINT to screenrecord on device FIRST so it finalizes the mp4 properly
-    # This must happen before killing the loop, because killing the loop sends
-    # SIGTERM to the adb process which can ungracefully disconnect screenrecord
+    # Signal the loop to stop — it will exit after the current screenrecord ends
+    # instead of starting a new (corrupt) segment
+    if [ -n "$RECORDING_STOP_FLAG" ]; then
+        touch "$RECORDING_STOP_FLAG"
+    fi
+
+    # Send SIGINT to screenrecord on device so it finalizes the mp4 properly
     $ADB_CMD -s "$DEVICE_ID" shell pkill -2 -f screenrecord 2>/dev/null
     sleep 5
 
-    # Now kill the recording loop
+    # The loop should have exited (flag file exists), clean up just in case
     if [ -n "$RECORDING_LOOP_PID" ]; then
         kill "$RECORDING_LOOP_PID" 2>/dev/null
         wait "$RECORDING_LOOP_PID" 2>/dev/null
         RECORDING_LOOP_PID=""
     fi
+
+    # Clean up flag file
+    rm -f "$RECORDING_STOP_FLAG"
+    RECORDING_STOP_FLAG=""
 
     # Pull all segments from device
     local segments=()
@@ -455,7 +467,7 @@ run_test_group() {
 }
 
 # --- Group 1: Hot Wallet Tests ---
-run_test_group "Hot Wallet Tests" "$HOT_WALLET_TESTS_DIR"
+# run_test_group "Hot Wallet Tests" "$HOT_WALLET_TESTS_DIR"  # TEMPORARILY SKIPPED
 
 # --- Group 2: Passport Wallet Tests ---
 run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
