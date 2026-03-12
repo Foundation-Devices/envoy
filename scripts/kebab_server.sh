@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # Lightweight HTTP-to-MQTT bridge for the Kebab rig.
-# Listens on localhost:5555 and forwards commands to MQTT using a persistent
+# Listens on localhost:7555 and forwards commands to MQTT using a persistent
 # connection (paho-mqtt), matching the kebab MCP server's approach.
 # Start before running Maestro tests, stop after.
 #
@@ -14,7 +14,7 @@
 # Usage:
 #   ./scripts/kebab_server.sh        # foreground
 #   ./scripts/kebab_server.sh &      # background
-#   curl http://localhost:5555/home   # send a command
+#   curl http://localhost:7555/home   # send a command
 
 set -euo pipefail
 
@@ -27,7 +27,7 @@ from datetime import datetime
 
 import paho.mqtt.client as mqtt
 
-PORT = 5555
+PORT = 7555
 MQTT_HOST = "127.0.0.1"
 MQTT_PORT = 1235
 MQTT_TOPIC = "kebab/command"

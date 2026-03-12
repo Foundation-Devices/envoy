@@ -6,8 +6,9 @@
 appId: com.foundationdevices.envoy
 ---
 
-- launchApp:
-    clearState: true
+# already starting clean
+#- launchApp:
+#    clearState: true
 
 # create MB
 - tapOn: |-

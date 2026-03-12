@@ -236,10 +236,10 @@ class PrimaryAmountWidget extends StatelessWidget {
   final String? semanticSuffix;
   final Color? colorOverride;
 
-  final EnvoyIcons iconBtc = EnvoyIcons.btc;
-  final EnvoyIcons iconSat = EnvoyIcons.sats;
+  static const EnvoyIcons iconBtc = EnvoyIcons.btc;
+  static const EnvoyIcons iconSat = EnvoyIcons.sats;
 
-  PrimaryAmountWidget(
+  const PrimaryAmountWidget(
       {super.key,
       required this.unit,
       required this.amountSats,
@@ -371,7 +371,7 @@ class SecondaryAmountWidget extends StatelessWidget {
   final Color? badgeColor;
   final EnvoyAccount? envoyAccount;
   final String locale;
-  final EnvoyIcons iconBtc = EnvoyIcons.btc;
+  static const EnvoyIcons iconBtc = EnvoyIcons.btc;
   final double textScaleFactor;
   final bool millionaireMode;
   final String? semanticSuffix;
