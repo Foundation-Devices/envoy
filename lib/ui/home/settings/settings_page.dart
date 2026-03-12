@@ -25,9 +25,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/state/app_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -264,9 +261,20 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     s.setShowTestnetAccounts,
                     semanticsLabel: "Testnet Toggle",
                     onEnabled: () {
-                      showEnvoyDialog(
-                        context: context,
-                        dialog: const TestnetInfoModal(),
+                      showEnvoyPopUp(
+                        context,
+                        S().settings_advanced_enabled_testnet_modal_subheading,
+                        S().component_continue,
+                        (context) {
+                          Navigator.pop(context);
+                        },
+                        learnMoreText: S().component_learnMore,
+                        onLearnMore: () {
+                          launchUrlString(
+                            "https://www.youtube.com/watch?v=nRGFAHlYIeU",
+                          );
+                        },
+                        icon: EnvoyIcons.info,
                       );
                     },
                   ),
@@ -282,9 +290,18 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     s.setShowSignetAccounts,
                     semanticsLabel: "Signet Toggle",
                     onEnabled: () {
-                      showEnvoyDialog(
-                        context: context,
-                        dialog: const SignetInfoModal(),
+                      showEnvoyPopUp(
+                        context,
+                        S().settings_advanced_enabled_signet_modal_subheading,
+                        S().component_continue,
+                        (context) {
+                          Navigator.pop(context);
+                        },
+                        learnMoreText: S().component_learnMore,
+                        onLearnMore: () {
+                          launchUrlString("https://en.bitcoin.it/wiki/Signet");
+                        },
+                        icon: EnvoyIcons.info,
                       );
                     },
                   ),
@@ -519,199 +536,6 @@ class _DevOptions extends ConsumerWidget {
               Navigator.pop(context);
             },
             child: const Text("Skip Prime security check"),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class TestnetInfoModal extends StatelessWidget {
-  const TestnetInfoModal({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    var textStyle = Theme.of(
-      context,
-    ).textTheme.bodyMedium?.copyWith(fontSize: 13);
-
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.75,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Semantics(
-                identifier: "settings_close",
-                child: IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 36),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/exclamation_icon.png",
-                  height: 60,
-                  width: 60,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 18.0),
-                  child: Text(
-                    S().settings_advanced_enabled_testnet_modal_subheading,
-                    textAlign: TextAlign.center,
-                    style: textStyle,
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.all(4)),
-                Padding(
-                  padding: const EdgeInsets.only(top: 18.0),
-                  child: LinkText(
-                    text: S().settings_advanced_enabled_testnet_modal_link,
-                    textStyle: textStyle,
-                    linkStyle: EnvoyTypography.button.copyWith(
-                      color: EnvoyColors.accentPrimary,
-                    ),
-                    onTap: () {
-                      launchUrlString(
-                        "https://www.youtube.com/watch?v=nRGFAHlYIeU",
-                      );
-                    },
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.all(4)),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 28),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: EnvoyButton(
-                    S().component_continue,
-                    type: EnvoyButtonTypes.primaryModal,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SignetInfoModal extends StatelessWidget {
-  const SignetInfoModal({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    var textStyle = Theme.of(
-      context,
-    ).textTheme.bodyMedium?.copyWith(fontSize: 13);
-
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.75,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Semantics(
-                container: true,
-                identifier: "signet_modal_close",
-                child: IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 36),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/exclamation_icon.png",
-                  height: 60,
-                  width: 60,
-                ),
-                Semantics(
-                  container: true,
-                  identifier: "signet_modal_subheading",
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 18.0),
-                    child: Text(
-                      S().settings_advanced_enabled_signet_modal_subheading,
-                      textAlign: TextAlign.center,
-                      style: textStyle,
-                    ),
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.all(4)),
-                Semantics(
-                  container: true,
-                  identifier: "signet_modal_link",
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 18.0),
-                    child: LinkText(
-                      text: S().settings_advanced_enabled_signet_modal_link,
-                      textStyle: textStyle,
-                      linkStyle: EnvoyTypography.button.copyWith(
-                        color: EnvoyColors.accentPrimary,
-                      ),
-                      onTap: () {
-                        launchUrlString("https://en.bitcoin.it/wiki/Signet");
-                      },
-                    ),
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.all(4)),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 28),
-            child: Column(
-              children: [
-                Semantics(
-                  container: true,
-                  identifier: "signet_modal_continue",
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: EnvoyButton(
-                      S().component_continue,
-                      type: EnvoyButtonTypes.primaryModal,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ),
         ],
       ),
