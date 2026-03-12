@@ -31,7 +31,7 @@ appId: com.foundationdevices.envoy
           point: 50%,50%
 
 # make sure play is visible
-- assertVisible: "Play" # TODO videos do not load, maybe add 15 sec before each test ?
+- assertVisible: "Play"
 
 # unpause
 # Make controls visible again

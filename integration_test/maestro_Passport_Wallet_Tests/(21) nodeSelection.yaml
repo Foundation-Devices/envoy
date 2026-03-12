@@ -22,7 +22,7 @@ appId: com.foundationdevices.envoy
 
 # delete anything before pasting
 - eraseText:
-      charactersToErase: 80
+      charactersToErase: 100
 
 # enter personal node
 - inputText: "ssl://mainnet-0.foundation.xyz:50002"

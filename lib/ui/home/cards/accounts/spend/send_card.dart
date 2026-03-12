@@ -8,7 +8,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/address_entry.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
@@ -127,26 +126,6 @@ class _SendCardState extends ConsumerState<SendCard>
   void _updateAmount(int amount) {
     ref.read(spendAmountProvider.notifier).state = amount;
     ref.read(spendTransactionProvider.notifier).reset();
-  }
-
-  Future<void> show(SpendOverlayContext overlayContext) async {
-    ref.read(spendEditModeProvider.notifier).state = overlayContext;
-    final account = ref.read(selectedAccountProvider);
-    if (account == null || overlayEntry != null) return;
-
-    overlayEntry = OverlayEntry(
-      builder: (context) {
-        return SpendRequirementOverlay(account: account);
-      },
-      maintainState: true,
-      opaque: false,
-    );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        Overlay.of(context, rootOverlay: true).insert(overlayEntry!);
-      }
-    });
   }
 
   @override
