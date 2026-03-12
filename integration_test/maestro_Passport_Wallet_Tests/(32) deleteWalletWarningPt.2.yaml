@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# (31) deleteWalletWarningPt.2 (+ Delete hot wallet test)
+# (32) deleteWalletWarningPt.2 (+ Delete hot wallet test)
 appId: com.foundationdevices.envoy
 ---
 
@@ -121,9 +121,7 @@ appId: com.foundationdevices.envoy
 - assertNotVisible: Mobile Wallet
 
 - tapOn: Privacy
-- assertVisible: |-
-    Better 
-    Performance
+- assertVisible: Node
 
 - tapOn: Learn
 - assertVisible: Videos
