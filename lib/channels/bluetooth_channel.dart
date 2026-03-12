@@ -255,7 +255,7 @@ class BluetoothChannel {
       return event.connected && event.bonded;
     }).timeout(
       Duration(seconds: 10),
-      onTimeout: ()  {
+      onTimeout: () {
         return deviceChannel.getCurrentDeviceStatus();
       },
     );
