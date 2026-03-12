@@ -231,7 +231,8 @@ class BluetoothChannel {
     bool initiateBonding = false;
     kPrint("setupBle: waiting for connected event on $resolvedDeviceId");
     await deviceChannel.getCurrentDeviceStatus();
-    final connect = await deviceChannel.connectionEvents.firstWhere((event) {
+    DeviceStatus? deviceStatus;
+    deviceStatus = await deviceChannel.connectionEvents.firstWhere((event) {
       debugPrint("[$resolvedDeviceId] events $event");
       try {
         if (event.readyForWrite &&
@@ -255,12 +256,12 @@ class BluetoothChannel {
     }).timeout(
       Duration(seconds: 10),
       onTimeout: () {
-        throw BleSetupTimeoutException("Pairing timed out");
+        return deviceChannel.getCurrentDeviceStatus();
       },
     );
-    if (connect.connected) {
+    if (deviceStatus.connected == true) {
       kPrint(
-          "setupBle success: deviceId=$resolvedDeviceId connected=${connect.connected}");
+          "setupBle success: deviceId=$resolvedDeviceId connected=${deviceStatus.connected}");
       return deviceChannel;
     } else {
       throw BleSetupTimeoutException("Pairing timed out");
