@@ -171,10 +171,12 @@ class _QrScannerState extends State<QrScanner>
                       size: 25,
                       color: Colors.white54,
                     ),
+                    padding: const EdgeInsets.all(EnvoySpacing.medium2),
                     onPressed: () => widget.onBackPressed(context),
                   ),
                   IconButton(
                     icon: const Icon(Icons.info_outline, color: Colors.white54),
+                    padding: const EdgeInsets.all(EnvoySpacing.medium2),
                     onPressed: () => showScanDialog(context, widget.infoType),
                   ),
                 ],
