@@ -1065,7 +1065,6 @@ class _AccountOptionsState extends ConsumerState<AccountOptions> {
                       } else {
                         ref.read(homePageBackgroundProvider.notifier).state =
                             HomePageBackgroundState.backups;
-                        navigator.pop();
                       }
                     },
                   ),
