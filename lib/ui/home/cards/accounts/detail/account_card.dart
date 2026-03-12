@@ -198,6 +198,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
               }
             },
             child: EnvoyPullToRefresh(
+              scrollController: _scrollController,
               onRefresh: () => SyncManager().syncAccount(account),
               pullIndicator: (progress) {
                 return Column(
@@ -484,7 +485,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
             return ListView.builder(
               //Space for the white gradient shadow at the bottom
               padding: const EdgeInsets.only(bottom: EnvoySpacing.medium3),
-              physics: const BouncingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               controller: _scrollController,
               itemCount: transactions.length,
               itemBuilder: (BuildContext context, int index) {
@@ -1268,12 +1269,17 @@ class EnvoyPullToRefresh extends StatefulWidget {
   /// shown when refreshing begins
   final Widget refreshIndicator;
 
+  /// when provided, dragging down while the list is scrolled drives the list
+  /// back toward the top instead of triggering pull-to-refresh
+  final ScrollController? scrollController;
+
   const EnvoyPullToRefresh({
     super.key,
     required this.child,
     required this.onRefresh,
     required this.pullIndicator,
     required this.refreshIndicator,
+    this.scrollController,
   });
 
   @override
@@ -1284,6 +1290,8 @@ class _EnvoyPullToRefreshState extends State<EnvoyPullToRefresh>
     with TickerProviderStateMixin {
   double _dragOffset = 0;
   bool _refreshing = false;
+  bool _scrollingList = false;
+  bool _listOverscrolling = false;
 
   static const double triggerDistance = 100;
   static const double maxIndicatorPull = 80;
@@ -1310,6 +1318,30 @@ class _EnvoyPullToRefreshState extends State<EnvoyPullToRefresh>
   }
 
   double get _progress => (_dragOffset / triggerDistance).clamp(0, 1);
+
+  bool _onScrollNotification(ScrollNotification notification) {
+    if (_refreshing) return false;
+
+    if (notification is OverscrollNotification &&
+        notification.metrics.extentBefore == 0 &&
+        notification.overscroll < 0) {
+      // User is pulling past the top of the list
+      _listOverscrolling = true;
+      setState(() {
+        _dragOffset =
+            (_dragOffset - notification.overscroll).clamp(0.0, triggerDistance);
+      });
+    } else if (notification is ScrollEndNotification && _listOverscrolling) {
+      _listOverscrolling = false;
+      if (_dragOffset >= triggerDistance) {
+        _triggerRefresh();
+      } else {
+        _animateBack(to: 0);
+      }
+    }
+
+    return false;
+  }
 
   void _animateBack({double to = 0}) {
     if (_refreshing) return; // block animations during refresh
@@ -1364,12 +1396,33 @@ class _EnvoyPullToRefreshState extends State<EnvoyPullToRefresh>
         // CONTENT
         GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onVerticalDragStart: (_) {
+          onVerticalDragStart: (details) {
             if (_refreshing) return;
             _springController.stop();
+            _scrollingList = false;
           },
           onVerticalDragUpdate: (details) {
             if (_refreshing) return;
+
+            final sc = widget.scrollController;
+            final isListScrolledDown =
+                sc != null && sc.hasClients && sc.offset > 0;
+
+            if (details.delta.dy > 0 &&
+                isListScrolledDown &&
+                _dragOffset == 0) {
+              // Drive the list back toward the top instead of pulling content down
+              _scrollingList = true;
+              final newOffset = (sc.offset - details.delta.dy)
+                  .clamp(0.0, sc.position.maxScrollExtent);
+              sc.jumpTo(newOffset);
+              return;
+            }
+
+            if (_scrollingList) {
+              _scrollingList = false;
+            }
+
             if (details.delta.dy < 0) return; // only downward pull
 
             setState(() {
@@ -1379,8 +1432,24 @@ class _EnvoyPullToRefreshState extends State<EnvoyPullToRefresh>
               }
             });
           },
-          onVerticalDragEnd: (_) {
-            if (_refreshing) return; // prevent extra animation triggers
+          onVerticalDragEnd: (details) {
+            if (_refreshing) return;
+
+            if (_scrollingList) {
+              _scrollingList = false;
+              final sc = widget.scrollController;
+              if (sc != null &&
+                  sc.hasClients &&
+                  details.velocity.pixelsPerSecond.dy > 200) {
+                sc.animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.decelerate,
+                );
+              }
+              return;
+            }
+
             if (_dragOffset >= triggerDistance) {
               _triggerRefresh();
             } else {
@@ -1389,7 +1458,10 @@ class _EnvoyPullToRefreshState extends State<EnvoyPullToRefresh>
           },
           child: Transform.translate(
             offset: Offset(0, _dragOffset),
-            child: widget.child,
+            child: NotificationListener<ScrollNotification>(
+              onNotification: _onScrollNotification,
+              child: widget.child,
+            ),
           ),
         ),
       ],
