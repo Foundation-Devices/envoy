@@ -467,7 +467,7 @@ run_test_group() {
 }
 
 # --- Group 1: Hot Wallet Tests ---
-# run_test_group "Hot Wallet Tests" "$HOT_WALLET_TESTS_DIR"  # TEMPORARILY SKIPPED
+run_test_group "Hot Wallet Tests" "$HOT_WALLET_TESTS_DIR"
 
 # --- Group 2: Passport Wallet Tests ---
 run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
