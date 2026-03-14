@@ -2,10 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+import 'package:video_player/video_player.dart';
 
 class EmbeddedVideo extends StatefulWidget {
   final String path;
@@ -22,50 +20,86 @@ class EmbeddedVideo extends StatefulWidget {
 }
 
 class EmbeddedVideoState extends State<EmbeddedVideo> {
-  VlcPlayerController? _videoPlayerController;
-  bool isPlaying = true;
-
-  Timer? _updatePositionTimer;
+  late final VideoPlayerController _videoPlayerController;
+  late final Future<void> _initializeVideoPlayerFuture;
   int _position = 0;
-  int _duration = 3;
+  int _duration = 1;
   bool _muted = false;
 
   @override
   void initState() {
     super.initState();
 
-    _videoPlayerController = VlcPlayerController.asset(
-      widget.path,
-      autoInitialize: true,
-      autoPlay: true,
-      hwAcc: HwAcc.full,
-      options: VlcPlayerOptions(),
-    );
-
-    _periodicallyUpdatePosition();
+    _videoPlayerController = VideoPlayerController.asset(widget.path);
+    _videoPlayerController.addListener(_onVideoUpdate);
+    _initializeVideoPlayerFuture =
+        _videoPlayerController.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _duration = _videoPlayerController.value.duration.inSeconds
+            .clamp(1, 1 << 30)
+            .toInt();
+      });
+      _videoPlayerController.play();
+    });
   }
 
-  void _periodicallyUpdatePosition() {
-    _updatePositionTimer = Timer.periodic(const Duration(seconds: 1), (
-      _,
-    ) async {
-      _position = (await _videoPlayerController!.getPosition()).inSeconds;
-      _duration = (await _videoPlayerController!.getDuration()).inSeconds;
+  void _onVideoUpdate() {
+    final value = _videoPlayerController.value;
+    if (!mounted || !value.isInitialized) {
+      return;
+    }
 
-      if (mounted) {
-        setState(() {});
-      }
-    });
+    final position = value.position.inSeconds;
+    final duration = value.duration.inSeconds.clamp(1, 1 << 30).toInt();
+
+    if (position != _position || duration != _duration) {
+      setState(() {
+        _position = position;
+        _duration = duration;
+      });
+    }
   }
 
   @override
   void dispose() {
-    _updatePositionTimer?.cancel();
-
-    _videoPlayerController?.stop().then((_) {
-      _videoPlayerController?.dispose();
-    });
+    _videoPlayerController
+      ..removeListener(_onVideoUpdate)
+      ..dispose();
     super.dispose();
+  }
+
+  Widget _player() {
+    return FutureBuilder<void>(
+      future: _initializeVideoPlayerFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError || !_videoPlayerController.value.isInitialized) {
+          return const Center(child: Icon(Icons.error, color: Colors.white));
+        }
+
+        return AspectRatio(
+          aspectRatio: widget.aspectRatio,
+          child: VideoPlayer(_videoPlayerController),
+        );
+      },
+    );
+  }
+
+  Future<void> _toggleMute() async {
+    final muted = !_muted;
+    await _videoPlayerController.setVolume(muted ? 0 : 1);
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _muted = muted;
+    });
   }
 
   @override
@@ -79,11 +113,7 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
           ),
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(8)),
-            child: VlcPlayer(
-              controller: _videoPlayerController!,
-              aspectRatio: widget.aspectRatio,
-              placeholder: const Center(child: CircularProgressIndicator()),
-            ),
+            child: _player(),
           ),
         ),
         Positioned.fill(
@@ -109,14 +139,7 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
               color: Colors.white,
               icon: Icon(_muted ? Icons.volume_off_sharp : Icons.volume_up),
               onPressed: () async {
-                setState(() {
-                  _muted = !_muted;
-                  if (_muted) {
-                    _videoPlayerController?.setVolume(0);
-                  } else {
-                    _videoPlayerController?.setVolume(100);
-                  }
-                });
+                await _toggleMute();
               },
             ),
           ),
@@ -126,11 +149,14 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
   }
 
   Future<void> _replay() async {
-    await _videoPlayerController?.setMediaFromAsset(widget.path);
-    await _videoPlayerController?.play();
+    if (!_videoPlayerController.value.isInitialized) {
+      return;
+    }
+    await _videoPlayerController.seekTo(Duration.zero);
+    await _videoPlayerController.play();
   }
 
   Future<void> pause() async {
-    await _videoPlayerController?.pause();
+    await _videoPlayerController.pause();
   }
 }
