@@ -52,24 +52,25 @@ class _AddressCardState extends ConsumerState<AddressCard> {
 
   @override
   Widget build(BuildContext context) {
+    final account = ref.watch(accountStateProvider(widget.account.id));
     String address = "";
     final isTaprootEnabled = Settings().enableTaprootSetting == true;
-    final noTaprootXpub = accountHasNoTaprootXpub(widget.account);
+    final noTaprootXpub = accountHasNoTaprootXpub(account);
     final Device? device =
         Devices().getDeviceBySerial(widget.account.deviceSerial ?? "");
     bool isPrime = device?.type == DeviceType.passportPrime;
     final bool isPrimeConnected = ref.watch(isPrimeConnectedProvider(device));
 
     if (isTaprootEnabled && noTaprootXpub) {
-      final segwitAddressRecord = widget.account.nextAddress.firstWhere(
+      final segwitAddressRecord = account?.nextAddress.firstWhere(
         (record) => record.$2 == AddressType.p2Wpkh, // native SegWit
         orElse: () => ('', AddressType.p2Wpkh),
       );
 
-      address = segwitAddressRecord.$1;
+      address = segwitAddressRecord?.$1 ?? "";
     } else {
       // Normal case: get preferred address
-      address = widget.account.getPreferredAddress();
+      address = account?.getPreferredAddress() ?? "";
     }
 
     return Padding(
