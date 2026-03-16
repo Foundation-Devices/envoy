@@ -28,7 +28,12 @@ Settings _$SettingsFromJson(Map<String, dynamic> json) => Settings()
       json['usingDefaultBlockExplorer'] as bool? ?? true
   ..personalBlockExplorerAddress =
       json['personalBlockExplorerAddress'] as String? ?? ''
-  ..allowBuyInEnvoy = json['allowBuyInEnvoy'] as bool? ?? true;
+  ..allowBuyInEnvoy = json['allowBuyInEnvoy'] as bool? ?? true
+  ..skipCertValidationServers =
+      (json['skipCertValidationServers'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [];
 
 Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'personalElectrumAddress': instance.personalElectrumAddress,
@@ -49,6 +54,7 @@ Map<String, dynamic> _$SettingsToJson(Settings instance) => <String, dynamic>{
       'usingDefaultBlockExplorer': instance.usingDefaultBlockExplorer,
       'personalBlockExplorerAddress': instance.personalBlockExplorerAddress,
       'allowBuyInEnvoy': instance.allowBuyInEnvoy,
+      'skipCertValidationServers': instance.skipCertValidationServers,
     };
 
 const _$DisplayUnitEnumMap = {DisplayUnit.btc: 'btc', DisplayUnit.sat: 'sat'};
