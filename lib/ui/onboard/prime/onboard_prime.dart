@@ -18,6 +18,7 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,8 +38,8 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   int colorWay = 1;
   bool onboardingComplete = false;
   ConnectivityState _connectivityState = ConnectivityState.checking;
+  bool _networkError = false;
   Timer? _retryTimer;
-  bool _isFirstAttempt = true;
 
   @override
   void initState() {
@@ -61,16 +62,32 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   }
 
   Future<void> _checkConnectivity() async {
-    final canReach = await ScvServer().canReachPrimeServer();
-    if (!mounted) return;
-
-    if (canReach) {
-      _retryTimer?.cancel();
+    try {
       setState(() {
-        _connectivityState = ConnectivityState.connected;
+        _connectivityState = ConnectivityState.checking;
       });
-    } else {
+      final canReach = await ScvServer().canReachPrimeServer();
+      if (canReach) {
+        _retryTimer?.cancel();
+        if (!mounted) return;
+        setState(() {
+          _networkError = false;
+          _connectivityState = ConnectivityState.connected;
+        });
+      } else {
+        setState(() {
+          _networkError = true;
+          _connectivityState = ConnectivityState.disconnected;
+        });
+        _scheduleRetry();
+      }
+    } catch (e, stackTrace) {
+      EnvoyReport().log("canReachPrimeServer",
+          "Error checking connectivity to Prime server: $e",
+          stackTrace: stackTrace);
+      if (!mounted) return;
       setState(() {
+        _networkError = true;
         _connectivityState = ConnectivityState.disconnected;
       });
       _scheduleRetry();
@@ -78,11 +95,8 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   }
 
   void _scheduleRetry() {
-    setState(() {
-      _isFirstAttempt = false;
-    });
     _retryTimer?.cancel();
-    _retryTimer = Timer(const Duration(seconds: 5), () {
+    _retryTimer = Timer(const Duration(seconds: 2), () {
       if (mounted && _connectivityState != ConnectivityState.connected) {
         _checkConnectivity();
       }
@@ -182,9 +196,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
-                                    if (_connectivityState ==
-                                            ConnectivityState.disconnected &&
-                                        !_isFirstAttempt) ...[
+                                    if (_networkError) ...[
                                       const SizedBox(
                                           height: EnvoySpacing.medium1),
                                       EnvoyIcon(
