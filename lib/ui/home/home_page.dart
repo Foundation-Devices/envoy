@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'dart:async';
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:envoy/account/accounts_manager.dart';
@@ -45,6 +44,7 @@ import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/ui/widgets/tutorial_page.dart';
 import 'package:envoy/util/amount.dart';
+import 'package:envoy/util/app_store_url.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
@@ -355,20 +355,11 @@ class HomePageState extends ConsumerState<HomePage>
         actionButtonText: S().component_update,
         onActionTap: () {
           EnvoyToast.dismissPreviousToasts(context);
-          final appStoreUrl = _getAppStoreUrl();
-          launchUrlString(appStoreUrl);
+          launchUrlString(getAppStoreUrl());
         },
       ).show(context);
     }
     isNewAppVersionAvailable.close();
-  }
-
-  String _getAppStoreUrl() {
-    if (Platform.isAndroid) {
-      return "https://play.google.com/store/apps/details?id=com.foundationdevices.envoy";
-    } else {
-      return "https://apps.apple.com/us/app/envoy-by-foundation/id1584811818";
-    }
   }
 
   void _notifyAboutTor() {
@@ -523,8 +514,7 @@ class HomePageState extends ConsumerState<HomePage>
       S().accounts_forceUpdate_subheading,
       S().accounts_forceUpdate_cta,
       (context) {
-        final appStoreUrl = _getAppStoreUrl();
-        launchUrlString(appStoreUrl);
+        launchUrlString(getAppStoreUrl());
       },
       title: S().accounts_forceUpdate_heading,
       icon: EnvoyIcons.download,
