@@ -375,8 +375,9 @@ stop_screen_recording() {
     echo -e "${CYAN}  ▶ Failure video saved: $output_file${NC}"
 }
 
-record_failed_test() {
+retry_failed_test() {
     local test_file="$1"
+    local is_last_test="$2"
     local test_name
     test_name="$(basename "$test_file" .yaml)"
     # Sanitize: replace spaces, parens, and special chars with underscores
@@ -393,17 +394,30 @@ record_failed_test() {
     # Start recording
     start_screen_recording
 
-    # Re-run the failed test (suppress the verbose Maestro TUI output)
-    maestro --device "$DEVICE_ID" test "$test_file" >/dev/null 2>&1 || true
+    # Re-run the failed test and capture exit code
+    RETRY_OUTPUT=$(maestro --device "$DEVICE_ID" test "$test_file" 2>&1)
+    local retry_exit=$?
 
     # Stop recording and save video
     stop_screen_recording "$test_name"
 
-    # Relaunch app (without clearing state) so the next test can continue
-    echo -e "${CYAN}  ▶ Relaunching app for next test...${NC}"
-    $ADB_CMD -s "$DEVICE_ID" shell am force-stop "$APP_ID"
-    $ADB_CMD -s "$DEVICE_ID" shell monkey -p "$APP_ID" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
-    sleep 15
+    if [ $retry_exit -eq 0 ]; then
+        # Retry passed — was a flaky failure, delete the video
+        echo -e "${GREEN}  ✓ Retry PASSED (flaky failure)${NC}"
+        rm -f "$FAIL_VIDEOS_DIR/${test_name}.mp4"
+    else
+        echo -e "${RED}  ✗ Retry also FAILED${NC}"
+    fi
+
+    # Only relaunch app if this is not the last test in the group
+    if [ "$is_last_test" != "true" ]; then
+        echo -e "${CYAN}  ▶ Relaunching app for next test...${NC}"
+        $ADB_CMD -s "$DEVICE_ID" shell am force-stop "$APP_ID"
+        $ADB_CMD -s "$DEVICE_ID" shell monkey -p "$APP_ID" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
+        sleep 15
+    fi
+
+    return $retry_exit
 }
 
 # ------------------------------------------------------------
@@ -445,10 +459,12 @@ start_kebab_bridge
 PASSED=0
 FAILED=0
 FAILED_TESTS=()
+FLAKY_TESTS=()
 
 run_single_test() {
     local test_file="$1"
     local group_name="$2"
+    local is_last_test="$3"
     local test_name
     test_name="$(basename "$test_file")"
 
@@ -462,9 +478,16 @@ run_single_test() {
         ((PASSED++))
     else
         print_test_failure "$test_name" "$OUTPUT" "$test_file" "$group_name"
-        record_failed_test "$test_file"
-        ((FAILED++))
-        FAILED_TESTS+=("$test_name")
+        # Retry once with video recording
+        if retry_failed_test "$test_file" "$is_last_test"; then
+            # Passed on retry — count as passed but mark flaky
+            echo -e "${YELLOW}  ⚠ Flaky:${NC} $test_name"
+            ((PASSED++))
+            FLAKY_TESTS+=("$test_name")
+        else
+            ((FAILED++))
+            FAILED_TESTS+=("$test_name")
+        fi
     fi
 }
 
@@ -483,13 +506,23 @@ run_test_group() {
             echo -e "${RED}✗ Test not found: $TEST_FILE${NC}"
             return
         }
-        run_single_test "$TEST_FILE" "$group_name"
+        run_single_test "$TEST_FILE" "$group_name" "true"
     else
         echo -e "${CYAN}Test files found:${NC}"
         ls -1 "$tests_dir"/*.yaml 2>&1 || echo "No files found!"
         echo ""
+        # Collect test files into an array to detect the last one
+        local test_files=()
         for test_file in "$tests_dir"/*.yaml; do
-            [ -f "$test_file" ] && run_single_test "$test_file" "$group_name"
+            [ -f "$test_file" ] && test_files+=("$test_file")
+        done
+        local total=${#test_files[@]}
+        local idx=0
+        for test_file in "${test_files[@]}"; do
+            ((idx++))
+            local is_last="false"
+            [ "$idx" -eq "$total" ] && is_last="true"
+            run_single_test "$test_file" "$group_name" "$is_last"
         done
     fi
 }
@@ -504,6 +537,14 @@ run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
 # Summary
 # ------------------------------------------------------------
 print_summary "$PASSED" "$FAILED"
+
+if [ ${#FLAKY_TESTS[@]} -gt 0 ]; then
+    echo -e "${YELLOW}Flaky tests (passed on retry):${NC}"
+    for test in "${FLAKY_TESTS[@]}"; do
+        echo -e "  ${YELLOW}⚠${NC} $test"
+    done
+    echo ""
+fi
 
 if [ ${#FAILED_TESTS[@]} -gt 0 ]; then
     echo -e "${RED}Failed tests:${NC}"
