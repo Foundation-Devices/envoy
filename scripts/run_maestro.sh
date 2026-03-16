@@ -99,9 +99,19 @@ print_test_failure() {
 
     # Try to find the line number in the YAML file
     if [ -n "$failed_cmd" ] && [ -f "$test_file" ]; then
-        # Extract the element/text that maestro couldn't find (e.g. from "Element not visible: Play")
         local search_term=""
+        # Try quoted text first: "some text"
         search_term=$(echo "$failed_cmd" | grep -oE '"[^"]+"' | head -1 | tr -d '"')
+        # Try text after common patterns: "not visible: XYZ", "Unable to find: XYZ"
+        if [ -z "$search_term" ]; then
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Vv]isible[: ]*//p' | head -1 | xargs)
+        fi
+        if [ -z "$search_term" ]; then
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Uu]nable to find[: ]*//p' | head -1 | xargs)
+        fi
+        if [ -z "$search_term" ]; then
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Tt]imed out[: ]*//p' | head -1 | xargs)
+        fi
 
         if [ -n "$search_term" ]; then
             local line_match=""
