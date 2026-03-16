@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'dart:io';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
@@ -339,8 +340,9 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
       case EnvoyNotificationType.security:
         break;
       case EnvoyNotificationType.envoyUpdate:
-        launchUrlString(
-            "https://github.com/Foundation-Devices/envoy/releases/tag/${widget.notification.body}");
+        launchUrlString(Platform.isAndroid
+            ? "https://play.google.com/store/apps/details?id=com.foundationdevices.envoy"
+            : "https://apps.apple.com/us/app/envoy-by-foundation/id1584811818");
     }
   }
 }
