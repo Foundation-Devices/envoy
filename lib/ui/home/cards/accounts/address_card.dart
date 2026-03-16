@@ -8,6 +8,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/detail/account_card.dart';
 import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
+import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
@@ -21,7 +22,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 
 class AddressCard extends ConsumerStatefulWidget {
   final EnvoyAccount account;
@@ -132,8 +132,13 @@ class _AddressCardState extends ConsumerState<AddressCard> {
                   ),
                   IconButton(
                     onPressed: () {
+                      final box = context.findRenderObject() as RenderBox?;
                       SharePlus.instance.share(
-                        ShareParams(text: "bitcoin:$address"),
+                        ShareParams(
+                          text: "bitcoin:$address",
+                          sharePositionOrigin:
+                              box!.localToGlobal(Offset.zero) & box.size,
+                        ),
                       );
                     },
                     icon: const EnvoyIcon(
