@@ -106,30 +106,11 @@ class BleAccountHandler extends PassportMessageHandler {
       );
     }
 
-    // Respect the local taproot setting: if taproot is enabled and the account
-    // has a taproot descriptor, prefer it — mirroring getPassportAccountFromJson.
     final taprootEnabled = Settings().taprootEnabled();
     final hasTaproot =
         config.descriptors.any((d) => d.addressType == AddressType.p2Tr);
     final desiredAddressType =
         (taprootEnabled && hasTaproot) ? AddressType.p2Tr : AddressType.p2Wpkh;
-    if (config.preferredAddressType != desiredAddressType) {
-      config = NgAccountConfig(
-        name: config.name,
-        color: config.color,
-        seedHasPassphrase: config.seedHasPassphrase,
-        deviceSerial: config.deviceSerial,
-        dateAdded: config.dateAdded,
-        preferredAddressType: desiredAddressType,
-        index: config.index,
-        descriptors: config.descriptors,
-        dateSynced: config.dateSynced,
-        network: config.network,
-        id: config.id,
-        multisig: config.multisig,
-        archived: config.archived,
-      );
-    }
 
     final fingerprint = NgAccountManager.getFingerprint(
       config.descriptors.first.internal,
@@ -162,6 +143,8 @@ class BleAccountHandler extends PassportMessageHandler {
         if (handler != null) {
           await handler.renameAccount(name: config.name);
           await handler.setArchived(archived: config.archived);
+          await handler.setPreferredAddressType(
+              addressType: desiredAddressType);
           kPrint("Account updated!");
           return;
         }
@@ -178,6 +161,8 @@ class BleAccountHandler extends PassportMessageHandler {
       await accountHandler.state(),
       accountHandler,
     );
+    await accountHandler.setPreferredAddressType(
+        addressType: desiredAddressType);
     kPrint("Account added!");
   }
 
