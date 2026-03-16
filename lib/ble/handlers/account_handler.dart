@@ -8,6 +8,7 @@ import 'package:collection/collection.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
@@ -95,6 +96,31 @@ class BleAccountHandler extends PassportMessageHandler {
         deviceSerial: connectedSerial,
         dateAdded: config.dateAdded,
         preferredAddressType: config.preferredAddressType,
+        index: config.index,
+        descriptors: config.descriptors,
+        dateSynced: config.dateSynced,
+        network: config.network,
+        id: config.id,
+        multisig: config.multisig,
+        archived: config.archived,
+      );
+    }
+
+    // Respect the local taproot setting: if taproot is enabled and the account
+    // has a taproot descriptor, prefer it — mirroring getPassportAccountFromJson.
+    final taprootEnabled = Settings().taprootEnabled();
+    final hasTaproot =
+        config.descriptors.any((d) => d.addressType == AddressType.p2Tr);
+    final desiredAddressType =
+        (taprootEnabled && hasTaproot) ? AddressType.p2Tr : AddressType.p2Wpkh;
+    if (config.preferredAddressType != desiredAddressType) {
+      config = NgAccountConfig(
+        name: config.name,
+        color: config.color,
+        seedHasPassphrase: config.seedHasPassphrase,
+        deviceSerial: config.deviceSerial,
+        dateAdded: config.dateAdded,
+        preferredAddressType: desiredAddressType,
         index: config.index,
         descriptors: config.descriptors,
         dateSynced: config.dateSynced,
