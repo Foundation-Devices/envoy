@@ -2510,6 +2510,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_explorer_title": MessageLookupByLibrary.simpleMessage(
           "Block Explorer",
         ),
+        "privacy_invalidCertificateModal_connectAnyway":
+            MessageLookupByLibrary.simpleMessage("Connect Anyway"),
+        "privacy_invalidCertificateModal_content":
+            MessageLookupByLibrary.simpleMessage(
+          "This node has an invalid or self-signed certificate. Your connection may not be secure.\nDo you want to connect anyway?",
+        ),
+        "privacy_invalidCertificateModal_header":
+            MessageLookupByLibrary.simpleMessage("Invalid Certificate"),
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
           "Millora la teva privacitat executant el teu propi node. Toca per obtenir més informació.",
         ),

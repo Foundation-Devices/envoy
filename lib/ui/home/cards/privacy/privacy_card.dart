@@ -89,6 +89,11 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
       Settings().useDefaultElectrumServer(false);
       return;
     }
+    if (newOption.value == "bitaroo") {
+      Settings().setCustomElectrumAddress(PublicServer.bitaroo.address);
+      Settings().useDefaultElectrumServer(false);
+      return;
+    }
   }
 
   void _handleExplorerDropdownChange(EnvoyDropdownOption newOption) {
@@ -233,6 +238,10 @@ class PrivacyCardState extends ConsumerState<PrivacyCard> {
                         EnvoyDropdownOption(
                           label: PublicServer.diyNodes.label,
                           value: "diyNodes",
+                        ),
+                        EnvoyDropdownOption(
+                          label: PublicServer.bitaroo.label,
+                          value: "bitaroo",
                         ),
                       ],
                       onOptionChanged: (selectedOption) {

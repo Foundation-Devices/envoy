@@ -369,7 +369,8 @@ class SyncManager {
           scanRequest: fullScanRequest,
           electrumServer: server,
           torPort: port,
-          stopGap: stopGap);
+          stopGap: stopGap,
+          validateDomain: Settings().validateDomain(server));
 
       if (account.handler != null) {
         await account.handler!
@@ -426,6 +427,7 @@ class SyncManager {
         syncRequest: syncRequest,
         electrumServer: server,
         torPort: port,
+        validateDomain: Settings().validateDomain(server),
       );
       DateTime finish = DateTime.now();
       final duration = finish.difference(time);
