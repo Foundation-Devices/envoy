@@ -212,12 +212,13 @@ appId: com.foundationdevices.envoy
 # turn them ON again
 - tapOn:
     id: Testnet Toggle-false
-- tapOn: Continue
+- tapOn:
+    id: PopUp Primary Button
 
 - tapOn:
     id: Signet Toggle-false
 - tapOn:
-    id: signet_modal_continue
+    id: PopUp Primary Button
 
 # disable taproot if enabled
 - runFlow:

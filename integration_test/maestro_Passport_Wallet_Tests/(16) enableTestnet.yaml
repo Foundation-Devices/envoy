@@ -41,7 +41,8 @@ appId: com.foundationdevices.envoy
           id: Testnet Toggle-false
 
 # Check that a pop up comes up and tap continue
-- tapOn: Continue
+- tapOn:
+    id: PopUp Primary Button
 
 # refresh settings
 - tapOn:
@@ -78,10 +79,10 @@ appId: com.foundationdevices.envoy
           id: Testnet Toggle-false
 
 - tapOn:
-    id: settings_close
+    id: PopUp Close Button
 
 # check that popup close
-- assertNotVisible: "Learn how to do that "
+- assertNotVisible: Enabling Signet adds a Signet version of your Envoy Wallet. This feature is primarily used by developers or testers and has zero value.
 
 # back to home
 - tapOn:
@@ -125,7 +126,8 @@ appId: com.foundationdevices.envoy
 
 - tapOn:
     id: Testnet Toggle-false
-- tapOn: Continue
+- tapOn:
+    id: PopUp Primary Button
 
 # go back
 - tapOn:
