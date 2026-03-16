@@ -82,20 +82,47 @@ print_test_success() {
 print_test_failure() {
     local test_name="$1"
     local output="$2"
+    local test_file="$3"
+    local group_name="$4"
 
-    echo -e "${RED}✗ FAILED:${NC} $test_name"
     echo ""
-    echo -e "${RED}─────────────────── Error Details ───────────────────${NC}"
+    echo -e "${RED}✗ FAILED:${NC} ${BOLD}$test_name${NC}"
+    echo -e "${RED}  Group:${NC}  $group_name"
 
-    if echo "$output" | grep -q "Failed at"; then
-        echo "$output" | sed -n '/Failed at/,+5p'
-    elif echo "$output" | grep -qi "error"; then
-        echo "$output" | grep -i "error" | head -10
-    else
-        echo "$output" | tail -20
+    # Extract the failed command from maestro output
+    local failed_cmd=""
+    failed_cmd=$(echo "$output" | grep -iE "element not visible|not visible|unable to find|not found|timed out|assertion.*failed|could not|couldn't" | head -1)
+
+    if [ -z "$failed_cmd" ]; then
+        failed_cmd=$(echo "$output" | sed -n '/Failed at/,+3p' | head -4)
     fi
 
-    echo -e "${RED}─────────────────────────────────────────────────────${NC}"
+    # Try to find the line number in the YAML file
+    if [ -n "$failed_cmd" ] && [ -f "$test_file" ]; then
+        # Extract the element/text that maestro couldn't find (e.g. from "Element not visible: Play")
+        local search_term=""
+        search_term=$(echo "$failed_cmd" | grep -oE '"[^"]+"' | head -1 | tr -d '"')
+
+        if [ -n "$search_term" ]; then
+            local line_match=""
+            line_match=$(grep -n "$search_term" "$test_file" | head -1)
+            if [ -n "$line_match" ]; then
+                local line_num="${line_match%%:*}"
+                local line_content="${line_match#*:}"
+                echo -e "${RED}  Line $line_num:${NC} $line_content"
+            fi
+        fi
+    fi
+
+    # Print the reason from maestro
+    if [ -n "$failed_cmd" ]; then
+        echo -e "${RED}  Reason:${NC} $failed_cmd"
+    else
+        # Fallback: last meaningful lines
+        echo -e "${RED}  Output:${NC}"
+        echo "$output" | grep -v '^$' | tail -5 | sed 's/^/    /'
+    fi
+    echo ""
 }
 
 print_summary() {
@@ -421,6 +448,7 @@ FAILED_TESTS=()
 
 run_single_test() {
     local test_file="$1"
+    local group_name="$2"
     local test_name
     test_name="$(basename "$test_file")"
 
@@ -433,7 +461,7 @@ run_single_test() {
         print_test_success "$test_name"
         ((PASSED++))
     else
-        print_test_failure "$test_name" "$OUTPUT"
+        print_test_failure "$test_name" "$OUTPUT" "$test_file" "$group_name"
         record_failed_test "$test_file"
         ((FAILED++))
         FAILED_TESTS+=("$test_name")
@@ -455,13 +483,13 @@ run_test_group() {
             echo -e "${RED}✗ Test not found: $TEST_FILE${NC}"
             return
         }
-        run_single_test "$TEST_FILE"
+        run_single_test "$TEST_FILE" "$group_name"
     else
         echo -e "${CYAN}Test files found:${NC}"
         ls -1 "$tests_dir"/*.yaml 2>&1 || echo "No files found!"
         echo ""
         for test_file in "$tests_dir"/*.yaml; do
-            [ -f "$test_file" ] && run_single_test "$test_file"
+            [ -f "$test_file" ] && run_single_test "$test_file" "$group_name"
         done
     fi
 }
