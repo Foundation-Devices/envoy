@@ -6,6 +6,12 @@
 
 set -o pipefail
 
+# Force line-buffered stdout in CI (otherwise output gets block-buffered)
+if [ -n "$CI" ] && command -v stdbuf >/dev/null 2>&1 && [ -z "$_LINE_BUFFERED" ]; then
+    export _LINE_BUFFERED=1
+    exec stdbuf -oL "$0" "$@"
+fi
+
 # ------------------------------------------------------------
 # OS Detection
 # ------------------------------------------------------------
@@ -102,9 +108,16 @@ print_test_failure() {
         local search_term=""
         # Try quoted text first: "some text"
         search_term=$(echo "$failed_cmd" | grep -oE '"[^"]+"' | head -1 | tr -d '"')
-        # Try text after common patterns: "not visible: XYZ", "Unable to find: XYZ"
+        # Try text after common patterns
         if [ -z "$search_term" ]; then
             search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Vv]isible[: ]*//p' | head -1 | xargs)
+        fi
+        if [ -z "$search_term" ]; then
+            # "Element not found: Text matching regex: Proceed with Cancellation"
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Ff]ound.*regex[: ]*//p' | head -1 | xargs)
+        fi
+        if [ -z "$search_term" ]; then
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Ff]ound[: ]*//p' | head -1 | xargs)
         fi
         if [ -z "$search_term" ]; then
             search_term=$(echo "$failed_cmd" | sed -n 's/.*[Uu]nable to find[: ]*//p' | head -1 | xargs)
