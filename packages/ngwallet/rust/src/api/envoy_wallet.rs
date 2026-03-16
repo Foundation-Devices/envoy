@@ -1085,15 +1085,17 @@ impl EnvoyAccountHandler {
     }
 
     pub fn delete_account(&mut self) -> anyhow::Result<()> {
-        // Remove database files
+        // Close database connections before removing files.
+        // Open handles can prevent directory deletion on some platforms.
+        self.ng_account.lock().unwrap().close();
+        self.stream_sink = None;
+        self.mempool_txs.clear();
+
         let db_path = Path::new(&self.directory_path);
         if db_path.exists() {
             std::fs::remove_dir_all(db_path)
                 .map_err(|e| anyhow!("Failed to remove account directory: {}", e))?;
         }
-        // Clear the account reference
-        self.stream_sink = None;
-        self.mempool_txs.clear();
         Ok(())
     }
 
