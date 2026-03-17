@@ -1,6 +1,4 @@
 PODS:
-  - bluart (0.0.1):
-    - FlutterMacOS
   - file_picker (0.0.1):
     - FlutterMacOS
   - file_saver (0.0.1):
@@ -48,7 +46,6 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
-  - bluart (from `Flutter/ephemeral/.symlinks/plugins/bluart/macos`)
   - file_picker (from `Flutter/ephemeral/.symlinks/plugins/file_picker/macos`)
   - file_saver (from `Flutter/ephemeral/.symlinks/plugins/file_saver/macos`)
   - flutter_local_notifications (from `Flutter/ephemeral/.symlinks/plugins/flutter_local_notifications/macos`)
@@ -75,8 +72,6 @@ SPEC REPOS:
     - ObjectBox
 
 EXTERNAL SOURCES:
-  bluart:
-    :path: Flutter/ephemeral/.symlinks/plugins/bluart/macos
   file_picker:
     :path: Flutter/ephemeral/.symlinks/plugins/file_picker/macos
   file_saver:
@@ -119,7 +114,6 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos
 
 SPEC CHECKSUMS:
-  bluart: caf23fac81f8c8f3ddea906181ec21eaa9135319
   file_picker: e716a70a9fe5fd9e09ebc922d7541464289443af
   file_saver: 44e6fbf666677faf097302460e214e977fdd977b
   flutter_local_notifications: 4b427ffabf278fc6ea9484c97505e231166927a5
