@@ -515,6 +515,13 @@ class Settings extends ChangeNotifier {
       }
     }
 
+    // Migration: skipCertValidationServers defaults to [] from json_serializable
+    // but should contain bitaroo by default for existing users.
+    if (singleton.skipCertValidationServers.isEmpty) {
+      singleton.skipCertValidationServers = [PublicServer.bitaroo.address];
+      await singleton.store();
+    }
+
     return singleton;
   }
 
