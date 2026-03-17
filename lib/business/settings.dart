@@ -234,6 +234,28 @@ class Settings extends ChangeNotifier {
     return !usingDefaultElectrumServer;
   }
 
+  @JsonKey(defaultValue: [])
+  List<String> skipCertValidationServers = [PublicServer.bitaroo.address];
+
+  bool validateDomain(String server) {
+    return !skipCertValidationServers.contains(server);
+  }
+
+  void addSkipCertValidation(String server) {
+    if (!skipCertValidationServers.contains(server)) {
+      skipCertValidationServers.add(server);
+      notifyListeners();
+      store();
+    }
+  }
+
+  void removeSkipCertValidation(String server) {
+    if (skipCertValidationServers.remove(server)) {
+      notifyListeners();
+      store();
+    }
+  }
+
   @JsonKey(defaultValue: "")
   String personalElectrumAddress = "";
 
@@ -467,13 +489,17 @@ class Settings extends ChangeNotifier {
       final isDiyNodes = PublicServer.diyNodes.address == currentNode;
       final isBlockstreamNodes =
           PublicServer.blockstream.address == currentNode;
+      final isBitarooNodes = PublicServer.bitaroo.address == currentNode;
       final isFoundationNodes = [
             ...getDefaultFulcrumServers(),
             getDefaultFulcrumServers(ssl: true),
           ].contains(currentNode) ||
           currentNode == mainnetOnionElectrumServer;
 
-      if (!isDiyNodes && !isBlockstreamNodes && !isFoundationNodes) {
+      if (!isDiyNodes &&
+          !isBlockstreamNodes &&
+          !isBitarooNodes &&
+          !isFoundationNodes) {
         singleton.personalElectrumAddress = currentNode;
         singleton.usingDefaultElectrumServer = false;
         await singleton.store();

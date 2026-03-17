@@ -61,7 +61,8 @@ appId: com.foundationdevices.envoy
       # turn it ON
       - tapOn:
           id: Signet Toggle-false
-      - tapOn: Continue
+      - tapOn:
+          id: PopUp Primary Button
       # refresh the settings page
       - tapOn:
           id: hamburger_menu

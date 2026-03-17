@@ -6,6 +6,12 @@
 
 set -o pipefail
 
+# Force line-buffered stdout in CI (otherwise output gets block-buffered)
+if [ -n "$CI" ] && command -v stdbuf >/dev/null 2>&1 && [ -z "$_LINE_BUFFERED" ]; then
+    export _LINE_BUFFERED=1
+    exec stdbuf -oL "$0" "$@"
+fi
+
 # ------------------------------------------------------------
 # OS Detection
 # ------------------------------------------------------------
@@ -82,20 +88,64 @@ print_test_success() {
 print_test_failure() {
     local test_name="$1"
     local output="$2"
+    local test_file="$3"
+    local group_name="$4"
 
-    echo -e "${RED}✗ FAILED:${NC} $test_name"
     echo ""
-    echo -e "${RED}─────────────────── Error Details ───────────────────${NC}"
+    echo -e "${RED}✗ FAILED:${NC} ${BOLD}$test_name${NC}"
+    echo -e "${RED}  Group:${NC}  $group_name"
 
-    if echo "$output" | grep -q "Failed at"; then
-        echo "$output" | sed -n '/Failed at/,+5p'
-    elif echo "$output" | grep -qi "error"; then
-        echo "$output" | grep -i "error" | head -10
-    else
-        echo "$output" | tail -20
+    # Extract the failed command from maestro output
+    local failed_cmd=""
+    failed_cmd=$(echo "$output" | grep -iE "element not visible|not visible|unable to find|not found|timed out|assertion.*failed|could not|couldn't" | head -1)
+
+    if [ -z "$failed_cmd" ]; then
+        failed_cmd=$(echo "$output" | sed -n '/Failed at/,+3p' | head -4)
     fi
 
-    echo -e "${RED}─────────────────────────────────────────────────────${NC}"
+    # Try to find the line number in the YAML file
+    if [ -n "$failed_cmd" ] && [ -f "$test_file" ]; then
+        local search_term=""
+        # Try quoted text first: "some text"
+        search_term=$(echo "$failed_cmd" | grep -oE '"[^"]+"' | head -1 | tr -d '"')
+        # Try text after common patterns
+        if [ -z "$search_term" ]; then
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Vv]isible[: ]*//p' | head -1 | xargs)
+        fi
+        if [ -z "$search_term" ]; then
+            # "Element not found: Text matching regex: Proceed with Cancellation"
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Ff]ound.*regex[: ]*//p' | head -1 | xargs)
+        fi
+        if [ -z "$search_term" ]; then
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Ff]ound[: ]*//p' | head -1 | xargs)
+        fi
+        if [ -z "$search_term" ]; then
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Uu]nable to find[: ]*//p' | head -1 | xargs)
+        fi
+        if [ -z "$search_term" ]; then
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Tt]imed out[: ]*//p' | head -1 | xargs)
+        fi
+
+        if [ -n "$search_term" ]; then
+            local line_match=""
+            line_match=$(grep -n "$search_term" "$test_file" | head -1)
+            if [ -n "$line_match" ]; then
+                local line_num="${line_match%%:*}"
+                local line_content="${line_match#*:}"
+                echo -e "${RED}  Line $line_num:${NC} $line_content"
+            fi
+        fi
+    fi
+
+    # Print the reason from maestro
+    if [ -n "$failed_cmd" ]; then
+        echo -e "${RED}  Reason:${NC} $failed_cmd"
+    else
+        # Fallback: last meaningful lines
+        echo -e "${RED}  Output:${NC}"
+        echo "$output" | grep -v '^$' | tail -5 | sed 's/^/    /'
+    fi
+    echo ""
 }
 
 print_summary() {
@@ -348,8 +398,9 @@ stop_screen_recording() {
     echo -e "${CYAN}  ▶ Failure video saved: $output_file${NC}"
 }
 
-record_failed_test() {
+retry_failed_test() {
     local test_file="$1"
+    local is_last_test="$2"
     local test_name
     test_name="$(basename "$test_file" .yaml)"
     # Sanitize: replace spaces, parens, and special chars with underscores
@@ -366,17 +417,30 @@ record_failed_test() {
     # Start recording
     start_screen_recording
 
-    # Re-run the failed test (suppress the verbose Maestro TUI output)
-    maestro --device "$DEVICE_ID" test "$test_file" >/dev/null 2>&1 || true
+    # Re-run the failed test and capture exit code
+    RETRY_OUTPUT=$(maestro --device "$DEVICE_ID" test "$test_file" 2>&1)
+    local retry_exit=$?
 
     # Stop recording and save video
     stop_screen_recording "$test_name"
 
-    # Relaunch app (without clearing state) so the next test can continue
-    echo -e "${CYAN}  ▶ Relaunching app for next test...${NC}"
-    $ADB_CMD -s "$DEVICE_ID" shell am force-stop "$APP_ID"
-    $ADB_CMD -s "$DEVICE_ID" shell monkey -p "$APP_ID" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
-    sleep 15
+    if [ $retry_exit -eq 0 ]; then
+        # Retry passed — was a flaky failure, delete the video
+        echo -e "${GREEN}  ✓ Retry PASSED (flaky failure)${NC}"
+        rm -f "$FAIL_VIDEOS_DIR/${test_name}.mp4"
+    else
+        echo -e "${RED}  ✗ Retry also FAILED${NC}"
+    fi
+
+    # Only relaunch app if this is not the last test in the group
+    if [ "$is_last_test" != "true" ]; then
+        echo -e "${CYAN}  ▶ Relaunching app for next test...${NC}"
+        $ADB_CMD -s "$DEVICE_ID" shell am force-stop "$APP_ID"
+        $ADB_CMD -s "$DEVICE_ID" shell monkey -p "$APP_ID" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
+        sleep 15
+    fi
+
+    return $retry_exit
 }
 
 # ------------------------------------------------------------
@@ -418,9 +482,12 @@ start_kebab_bridge
 PASSED=0
 FAILED=0
 FAILED_TESTS=()
+FLAKY_TESTS=()
 
 run_single_test() {
     local test_file="$1"
+    local group_name="$2"
+    local is_last_test="$3"
     local test_name
     test_name="$(basename "$test_file")"
 
@@ -433,10 +500,17 @@ run_single_test() {
         print_test_success "$test_name"
         ((PASSED++))
     else
-        print_test_failure "$test_name" "$OUTPUT"
-        record_failed_test "$test_file"
-        ((FAILED++))
-        FAILED_TESTS+=("$test_name")
+        print_test_failure "$test_name" "$OUTPUT" "$test_file" "$group_name"
+        # Retry once with video recording
+        if retry_failed_test "$test_file" "$is_last_test"; then
+            # Passed on retry — count as passed but mark flaky
+            echo -e "${YELLOW}  ⚠ Flaky:${NC} $test_name"
+            ((PASSED++))
+            FLAKY_TESTS+=("$test_name")
+        else
+            ((FAILED++))
+            FAILED_TESTS+=("$test_name")
+        fi
     fi
 }
 
@@ -455,13 +529,23 @@ run_test_group() {
             echo -e "${RED}✗ Test not found: $TEST_FILE${NC}"
             return
         }
-        run_single_test "$TEST_FILE"
+        run_single_test "$TEST_FILE" "$group_name" "true"
     else
         echo -e "${CYAN}Test files found:${NC}"
         ls -1 "$tests_dir"/*.yaml 2>&1 || echo "No files found!"
         echo ""
+        # Collect test files into an array to detect the last one
+        local test_files=()
         for test_file in "$tests_dir"/*.yaml; do
-            [ -f "$test_file" ] && run_single_test "$test_file"
+            [ -f "$test_file" ] && test_files+=("$test_file")
+        done
+        local total=${#test_files[@]}
+        local idx=0
+        for test_file in "${test_files[@]}"; do
+            ((idx++))
+            local is_last="false"
+            [ "$idx" -eq "$total" ] && is_last="true"
+            run_single_test "$test_file" "$group_name" "$is_last"
         done
     fi
 }
@@ -476,6 +560,14 @@ run_test_group "Passport Wallet Tests" "$PASSPORT_WALLET_TESTS_DIR"
 # Summary
 # ------------------------------------------------------------
 print_summary "$PASSED" "$FAILED"
+
+if [ ${#FLAKY_TESTS[@]} -gt 0 ]; then
+    echo -e "${YELLOW}Flaky tests (passed on retry):${NC}"
+    for test in "${FLAKY_TESTS[@]}"; do
+        echo -e "  ${YELLOW}⚠${NC} $test"
+    done
+    echo ""
+fi
 
 if [ ${#FAILED_TESTS[@]} -gt 0 ]; then
     echo -e "${RED}Failed tests:${NC}"

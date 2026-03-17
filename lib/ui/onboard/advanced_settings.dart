@@ -353,6 +353,10 @@ class _AdvancedSettingsOptionsState
                                           label: PublicServer.diyNodes.label,
                                           value: "diyNodes",
                                         ),
+                                        EnvoyDropdownOption(
+                                          label: PublicServer.bitaroo.label,
+                                          value: "bitaroo",
+                                        ),
                                       ],
                                       onOptionChanged: (selectedOption) {
                                         if (selectedOption != null) {
@@ -504,6 +508,10 @@ class _AdvancedSettingsOptionsState
     }
     if (newOption.value == "diyNodes") {
       Settings().setCustomElectrumAddress(PublicServer.diyNodes.address);
+      return;
+    }
+    if (newOption.value == "bitaroo") {
+      Settings().setCustomElectrumAddress(PublicServer.bitaroo.address);
       return;
     }
   }
