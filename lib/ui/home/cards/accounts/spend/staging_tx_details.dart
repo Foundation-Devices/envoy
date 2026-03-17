@@ -32,6 +32,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/ui/components/address_widget.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/choose_coins_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StagingTxDetails extends ConsumerStatefulWidget {
   final bool isRBFSpend;
@@ -108,6 +109,7 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
         displayFiatSendAmount! + displayFiatTotalChangeAmount;
 
     final sendScreenUnit = ref.watch(sendUnitProvider);
+    final uneconomicSpends = ref.watch(uneconomicSpendsProvider);
 
     /// if user selected unit from the form screen then use that, otherwise use the default
     DisplayUnit unit = sendScreenUnit == AmountDisplayUnit.btc
@@ -356,6 +358,46 @@ class _SpendTxDetailsState extends ConsumerState<StagingTxDetails>
                 );
               }),
         ),
+        if (uneconomicSpends) ...[
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium2),
+            child: EnvoyIcon(
+              EnvoyIcons.alert,
+              size: EnvoyIconSize.medium,
+              color: EnvoyColors.copper500,
+            ),
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: EnvoySpacing.large1),
+            child: Text(
+              S().coincontrol_tx_detail_high_fee_info_overlay_subheading,
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.info.copyWith(
+                color: EnvoyColors.textPrimary,
+              ),
+            ),
+          ),
+          const SizedBox(height: EnvoySpacing.small),
+          Padding(
+            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+            child: GestureDetector(
+              onTap: () {
+                launchUrl(
+                  Uri.parse(
+                    "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions",
+                  ),
+                );
+              },
+              child: Text(
+                S().component_learnMore,
+                style: EnvoyTypography.button.copyWith(
+                  color: EnvoyColors.accentPrimary,
+                ),
+              ),
+            ),
+          ),
+        ],
       ],
     ));
   }

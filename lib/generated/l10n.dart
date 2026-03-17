@@ -56,14 +56,9 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `bc1q ar0s rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m dq`
+  /// `a day ago`
   String get _ {
-    return Intl.message(
-      'bc1q ar0s rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m dq',
-      name: '_',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('a day ago', name: '_', desc: '', args: []);
   }
 
   /// `App Version`
@@ -8108,36 +8103,6 @@ class S {
     );
   }
 
-  /// `Connect Anyway`
-  String get privacy_invalidCertificateModal_connectAnyway {
-    return Intl.message(
-      'Connect Anyway',
-      name: 'privacy_invalidCertificateModal_connectAnyway',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `This node has an invalid or self-signed certificate. Your connection may not be secure.\nDo you want to connect anyway?`
-  String get privacy_invalidCertificateModal_content {
-    return Intl.message(
-      'This node has an invalid or self-signed certificate. Your connection may not be secure.\nDo you want to connect anyway?',
-      name: 'privacy_invalidCertificateModal_content',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Invalid Certificate`
-  String get privacy_invalidCertificateModal_header {
-    return Intl.message(
-      'Invalid Certificate',
-      name: 'privacy_invalidCertificateModal_header',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Improve your privacy by running your own node. Tap learn more above. `
   String get privacy_node_configure {
     return Intl.message(
@@ -8428,20 +8393,20 @@ class S {
     );
   }
 
-  /// `Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account [[here]].`
+  /// `Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account here.`
   String get receive_mobileWallet_multiplePassportContent {
     return Intl.message(
-      'Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account [[here]].',
+      'Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account here.',
       name: 'receive_mobileWallet_multiplePassportContent',
       desc: '',
       args: [],
     );
   }
 
-  /// `Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  [[tap here]].`
+  /// `Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  tap here.`
   String get receive_mobileWallet_singlePassportContent {
     return Intl.message(
-      'Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  [[tap here]].',
+      'Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  tap here.',
       name: 'receive_mobileWallet_singlePassportContent',
       desc: '',
       args: [],

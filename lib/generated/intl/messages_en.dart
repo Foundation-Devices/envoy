@@ -72,9 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage(
-          "bc1q ar0s rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m dq",
-        ),
+        "_": MessageLookupByLibrary.simpleMessage("a day ago"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences": MessageLookupByLibrary.simpleMessage(
           "Open Source Licences",
@@ -2443,14 +2441,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_explorer_title": MessageLookupByLibrary.simpleMessage(
           "Block Explorer",
         ),
-        "privacy_invalidCertificateModal_connectAnyway":
-            MessageLookupByLibrary.simpleMessage("Connect Anyway"),
-        "privacy_invalidCertificateModal_content":
-            MessageLookupByLibrary.simpleMessage(
-          "This node has an invalid or self-signed certificate. Your connection may not be secure.\nDo you want to connect anyway?",
-        ),
-        "privacy_invalidCertificateModal_header":
-            MessageLookupByLibrary.simpleMessage("Invalid Certificate"),
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
           "Improve your privacy by running your own node. Tap learn more above. ",
         ),
@@ -2542,11 +2532,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Use Taproot Address"),
         "receive_mobileWallet_multiplePassportContent":
             MessageLookupByLibrary.simpleMessage(
-          "Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account [[here]].",
+          "Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account here.",
         ),
         "receive_mobileWallet_singlePassportContent":
             MessageLookupByLibrary.simpleMessage(
-          "Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  [[tap here]].",
+          "Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  tap here.",
         ),
         "receive_qr_code_heading":
             MessageLookupByLibrary.simpleMessage("RECEIVE"),

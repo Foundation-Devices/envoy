@@ -13,6 +13,7 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
+import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
 import 'package:envoy/ui/onboard/prime/prime_routes.dart';
 import 'package:envoy/ui/onboard/prime/state/ble_onboarding_state.dart';
 import 'package:envoy/ui/routes/accounts_router.dart';
@@ -66,8 +67,29 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
           Navigator.pop(context);
         },
         onSecondaryButtonTap: (context) async {
+          final qlConnection = ref.read(onboardingDeviceProvider);
+          if (qlConnection == null) {
+            completer.complete(false);
+            Navigator.pop(context);
+            return;
+          }
+
+          if (Platform.isIOS) {
+            final id = qlConnection.deviceId;
+            final removed = await BluetoothChannel().removeAccessory(id);
+            if (!removed) {
+              return;
+            } else {
+              await qlConnection.disconnect();
+              await Future.delayed(const Duration(milliseconds: 200));
+            }
+          } else {
+            await qlConnection.disconnect();
+          }
           completer.complete(true);
-          Navigator.pop(context);
+          if (context.mounted) {
+            Navigator.pop(context);
+          }
         },
       ),
     );
@@ -78,6 +100,7 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
   Widget build(BuildContext context) {
     final firmWareCheck = ref.watch(firmWareUpdateProvider);
     final deviceCheck = ref.watch(deviceSecurityProvider);
+    startBluetoothDisconnectionListener(context, ref);
 
     ref.listen(onboardingStateStreamProvider, (prev, next) {
       next.whenData((state) {
@@ -253,6 +276,8 @@ class _PrimeOnboardParingState extends ConsumerState<PrimeOnboardParing> {
                       .removeAccessory(onboardingQlConnection!.deviceId);
                   if (removed) {
                     await onboardingQlConnection.disconnect();
+                  } else {
+                    return;
                   }
                 }
               } catch (e, stack) {

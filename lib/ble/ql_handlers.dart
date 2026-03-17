@@ -88,4 +88,18 @@ class QLHandlers {
 
   /// Get the underlying router if needed
   PassportMessageRouter get messageRouter => _messageRouter;
+
+  /// Dispose all handlers bound to this connection.
+  void dispose() {
+    _bleMagicBackupHandler.dispose();
+    _bleShardsHandler.dispose();
+    _bleAccountHandler.dispose();
+    _bleOnboardHandler.dispose();
+    _fwUpdateHandler.dispose();
+    _scvAccountHandler.dispose();
+    _heartbeatHandler.dispose();
+    _deviceHandler.dispose();
+    _timeZoneHandler.dispose();
+    _txHandler.dispose();
+  }
 }
