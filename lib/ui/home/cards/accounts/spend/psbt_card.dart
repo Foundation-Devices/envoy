@@ -15,6 +15,7 @@ import 'package:envoy/ui/home/cards/accounts/qr_tab.dart';
 import 'package:envoy/ui/shield.dart';
 import 'package:envoy/ui/shield_path.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as envoy_colors;
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/crypto_tx_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
 
 //ignore: must_be_immutable
 class PsbtCard extends ConsumerWidget {
@@ -182,8 +182,13 @@ class PsbtCard extends ConsumerWidget {
                     ),
                     IconButton(
                       onPressed: () {
+                        final box = context.findRenderObject() as RenderBox?;
                         SharePlus.instance.share(
-                          ShareParams(text: base64Encode(transaction.psbt)),
+                          ShareParams(
+                            text: base64Encode(transaction.psbt),
+                            sharePositionOrigin:
+                                box!.localToGlobal(Offset.zero) & box.size,
+                          ),
                         );
                       },
                       icon: const EnvoyIcon(
