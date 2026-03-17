@@ -234,7 +234,7 @@ class Settings extends ChangeNotifier {
     return !usingDefaultElectrumServer;
   }
 
-  @JsonKey(defaultValue: [])
+  @JsonKey(defaultValue: ["ssl://electrum.bitaroo.net:50002"])
   List<String> skipCertValidationServers = [PublicServer.bitaroo.address];
 
   bool validateDomain(String server) {
@@ -513,13 +513,6 @@ class Settings extends ChangeNotifier {
         singleton.usingDefaultElectrumServer = false;
         await singleton.store();
       }
-    }
-
-    // Migration: skipCertValidationServers defaults to [] from json_serializable
-    // but should contain bitaroo by default for existing users.
-    if (singleton.skipCertValidationServers.isEmpty) {
-      singleton.skipCertValidationServers = [PublicServer.bitaroo.address];
-      await singleton.store();
     }
 
     return singleton;
