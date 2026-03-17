@@ -5,6 +5,7 @@
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
+import 'package:envoy/util/app_store_url.dart';
 import 'package:envoy/util/string_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -317,8 +318,7 @@ class ActivityListTileState extends ConsumerState<ActivityListTile> {
       case EnvoyNotificationType.security:
         break;
       case EnvoyNotificationType.envoyUpdate:
-        launchUrlString(
-            "https://github.com/Foundation-Devices/envoy/releases/tag/${widget.notification.body}");
+        launchUrlString(getAppStoreUrl());
     }
   }
 }
