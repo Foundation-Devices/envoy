@@ -8,6 +8,7 @@ import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/account/envoy_transaction.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/updates_manager.dart';
+import 'package:envoy/util/envoy_storage.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
@@ -223,8 +224,11 @@ class Notifications {
           version,
           device.type,
         );
-        final newVersion = await UpdatesManager()
-            .getStoredFirmwareVersionString(device.type.index);
+        final newVersion = device.type == DeviceType.passportPrime
+            ? await EnvoyStorage()
+                .getPrimeFirmwareLatestVersion(sanitizeVersion(version))
+            : await UpdatesManager()
+                .getStoredFirmwareVersionString(device.type.index);
         for (var notification in notifications) {
           if (notification.body == newVersion) {
             fwUpdateAvailable = false;
