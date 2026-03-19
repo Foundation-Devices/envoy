@@ -621,24 +621,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_vlc_player:
-    dependency: "direct main"
-    description:
-      path: flutter_vlc_player
-      ref: "2dabebfd6caff27db87e9e917f8b87d6fc2ede3b"
-      resolved-ref: "2dabebfd6caff27db87e9e917f8b87d6fc2ede3b"
-      url: "https://github.com/foundation-devices/flutter_vlc_player.git"
-    source: git
-    version: "7.4.2"
-  flutter_vlc_player_platform_interface:
-    dependency: transitive
-    description:
-      path: flutter_vlc_player_platform_interface
-      ref: "2dabebfd6caff27db87e9e917f8b87d6fc2ede3b"
-      resolved-ref: "2dabebfd6caff27db87e9e917f8b87d6fc2ede3b"
-      url: "https://github.com/foundation-devices/flutter_vlc_player.git"
-    source: git
-    version: "3.0.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -1889,6 +1871,46 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  video_player:
+    dependency: "direct main"
+    description:
+      name: video_player
+      sha256: "096bc28ce10d131be80dfb00c223024eb0fba301315a406728ab43dd99c45bdf"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.10.1"
+  video_player_android:
+    dependency: transitive
+    description:
+      name: video_player_android
+      sha256: "9862c67c4661c98f30fe707bc1a4f97d6a0faa76784f485d282668e4651a7ac3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.9.4"
+  video_player_avfoundation:
+    dependency: transitive
+    description:
+      name: video_player_avfoundation
+      sha256: d1eb970495a76abb35e5fa93ee3c58bd76fb6839e2ddf2fbb636674f2b971dd4
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.8.9"
+  video_player_platform_interface:
+    dependency: transitive
+    description:
+      name: video_player_platform_interface
+      sha256: "57c5d73173f76d801129d0531c2774052c5a7c11ccb962f1830630decd9f24ec"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.6.0"
+  video_player_web:
+    dependency: transitive
+    description:
+      name: video_player_web
+      sha256: "9f3c00be2ef9b76a95d94ac5119fb843dca6f2c69e6c9968f6f2b6c9e7afbdeb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
   vm_service:
     dependency: transitive
     description:

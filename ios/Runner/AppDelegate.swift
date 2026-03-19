@@ -317,13 +317,6 @@ func getSdCardBookmark() -> URL {
         return nil
     }
     
-    // keep your bundling stub (no changes)
-    public func dummyMethodToEnforceBundling() {
-        // This will never be called
-        ur_decoder()
-        tor_hello()
-    }
-
 
     /// Check for data passed from App Clip via shared App Groups UserDefaults
     /// Returns the deep link URL if handoff data exists, nil otherwise
