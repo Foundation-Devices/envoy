@@ -18,7 +18,7 @@ struct ContentView: View {
                 endRadius: UIScreen.main.bounds.height
             )
             .ignoresSafeArea()
-            Image("bb")
+            Image("bg_pattern")
                 .resizable()
                 .ignoresSafeArea()
             
