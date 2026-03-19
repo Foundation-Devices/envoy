@@ -2,18 +2,20 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/business/fee_rate.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
 
-/// Shared Fee rate state for both normal spend and RBF spend screens
+/// Shared fee rate state for both normal spend and RBF spend screens.
+/// All rates are [FeeRate] objects — see [FeeRate] for unit details.
 
 class FeeChooserState {
-  final num standardFeeRate;
-  final num fasterFeeRate;
-  final int minFeeRate;
-  final int maxFeeRate;
+  final FeeRate standardFeeRate;
+  final FeeRate fasterFeeRate;
+  final FeeRate minFeeRate;
+  final FeeRate maxFeeRate;
 
   FeeChooserState({
     required this.standardFeeRate,
@@ -21,17 +23,18 @@ class FeeChooserState {
     required this.minFeeRate,
     required this.maxFeeRate,
   });
+
   @override
-  String toString() {
-    return "standardFeeRate: $standardFeeRate, fasterFeeRate: $fasterFeeRate, minFeeRate: $minFeeRate, maxFeeRate: $maxFeeRate";
-  }
+  String toString() =>
+      'standardFeeRate: $standardFeeRate, fasterFeeRate: $fasterFeeRate, '
+      'minFeeRate: $minFeeRate, maxFeeRate: $maxFeeRate';
 }
 
 final _defaultFeeChooserState = FeeChooserState(
-  standardFeeRate: 1,
-  fasterFeeRate: 2,
-  minFeeRate: 1,
-  maxFeeRate: 2,
+  standardFeeRate: FeeRate.fromSatPerKvb(1000),
+  fasterFeeRate: FeeRate.fromSatPerKvb(2000),
+  minFeeRate: FeeRate.fromSatPerKvb(1000),
+  maxFeeRate: FeeRate.fromSatPerKvb(2000),
 );
 
 final feeChooserStateProvider = StateProvider<FeeChooserState>((ref) {
@@ -40,32 +43,34 @@ final feeChooserStateProvider = StateProvider<FeeChooserState>((ref) {
     return _defaultFeeChooserState;
   }
   return FeeChooserState(
-    standardFeeRate: Fees().slowRate(account.network),
-    fasterFeeRate: Fees().fastRate(account.network),
-    minFeeRate: 1,
-    maxFeeRate: (Fees().fastRate(account.network)).floor(),
+    standardFeeRate: FeeRate.fromSatPerVb(Fees().slowRate(account.network)),
+    fasterFeeRate: FeeRate.fromSatPerVb(Fees().fastRate(account.network)),
+    minFeeRate: FeeRate.fromSatPerKvb(1000),
+    maxFeeRate: FeeRate.fromSatPerVb(Fees().fastRate(account.network)),
   );
 });
 
 final spendFeeProcessing = StateProvider((ref) => false);
-// final spendMaxFeeRateProvider = StateProvider((ref) => 2);
-// final spendMinFeeRateProvider = StateProvider((ref) => 1);
 
-final spendFeeRateProvider = StateProvider<num>((ref) {
+final spendFeeRateProvider = StateProvider<FeeRate>((ref) {
   EnvoyAccount? account = ref.watch(selectedAccountProvider);
   if (account == null) {
-    return 1;
+    return FeeRate.fromSatPerKvb(1000);
   }
-  return Fees().slowRate(account.network);
+  return FeeRate.fromSatPerVb(Fees().slowRate(account.network));
 });
 
-///returns estimated block time for the transaction
-///TODO: implement better mempool estimation
+/// Returns estimated block time for the transaction.
+/// TODO: implement better mempool estimation
 final spendEstimatedBlockTimeProvider = Provider<String>((ref) {
   final feeRate = ref.watch(spendFeeRateProvider);
   final account = ref.watch(selectedAccountProvider);
+  return getAproxTime(account, feeRate);
+});
+
+String getAproxTime(EnvoyAccount? account, FeeRate feeRate) {
   if (account == null) {
-    return "~10";
+    return "~10 min";
   }
 
   Network network = account.network;
@@ -77,17 +82,26 @@ final spendEstimatedBlockTimeProvider = Provider<String>((ref) {
 
   int feeHourRate = Fees().fees[network]?.mempoolHourRate ?? 1;
 
-  int selectedFeeRate = feeRate.toInt();
+  // Compare in sat/vB (int)
+  int selectedFeeRate = feeRate.satPerVb.toInt();
 
   if (feeRateFast <= selectedFeeRate) {
-    return "~10";
+    return "~10 min";
   } else if (feeHalfHourRate <= selectedFeeRate &&
       selectedFeeRate < feeRateFast) {
-    return "~20";
+    return "~20 min";
   } else if (feeHourRate <= selectedFeeRate &&
       selectedFeeRate < feeHalfHourRate) {
-    return "~30";
+    return "~30 min";
   } else {
-    return "40+";
+    return "40+ min";
   }
-});
+}
+
+/// fee [sats] = rate.satPerVb * vsize [vB]
+int getApproxFeeInSats({
+  required FeeRate feeRate,
+  required int txVSizeVb,
+}) {
+  return (feeRate.satPerVb * txVSizeVb).round();
+}

@@ -1,0 +1,52 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (17) selectCoinCancelAndCheckButtons
+appId: com.foundationdevices.envoy
+---
+
+# go to top
+- swipe:
+    direction: DOWN
+    duration: 500
+
+- tapOn: GH TEST ACC (#1)
+
+- tapOn: Activity
+
+- tapOn:
+    id: coin_tag_switch_Untagged_off
+
+# test the popup
+- tapOn:
+    id: coin_selection_cancel
+
+- extendedWaitUntil:
+    visible:
+      id: "popup_tertiary_No"
+    timeout: 5000
+
+- tapOn:
+    id: popup_tertiary_No
+
+# make sure popup is closed
+- assertVisible: Send Selected
+
+- tapOn:
+    id: coin_selection_cancel
+
+- extendedWaitUntil:
+    visible:
+      id: "PopUp Primary Button"
+    timeout: 5000
+
+- tapOn:
+    id: PopUp Primary Button
+
+# make sure the popup is closed
+- assertVisible: Receive
+
+# go home
+- tapOn:
+    id: hamburger_menu

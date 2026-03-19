@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/business/uniform_resource.dart';
+import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/widgets/scanner/scanner_decoder.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
@@ -13,7 +14,7 @@ class InvalidPairPayloadException implements Exception {
 
 class AccountAlreadyPairedException implements Exception {
   @override
-  toString() => "Account already connected";
+  toString() => S().menu_toast_accountAlreadyConnected;
 }
 
 class InvalidNetworkException implements Exception {
@@ -26,6 +27,12 @@ class PairPayloadDecoder extends ScannerDecoder {
   bool _scanFinished = false;
 
   PairPayloadDecoder({required this.onScan});
+
+  @override
+  void reset() {
+    super.reset();
+    _scanFinished = false;
+  }
 
   @override
   Future<void> onDetectBarCode(Barcode barCode) async {

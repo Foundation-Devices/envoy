@@ -7,6 +7,7 @@ import 'api/bip39.dart';
 import 'api/envoy_account.dart';
 import 'api/envoy_wallet.dart';
 import 'api/errors.dart';
+import 'api/sign_message.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
@@ -14,7 +15,9 @@ import 'frb_generated.dart';
 import 'lib.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 import 'third_party/ngwallet/config.dart';
+import 'third_party/ngwallet/fee_rate.dart';
 import 'third_party/ngwallet/send.dart';
+import 'third_party/ngwallet/sign_message.dart';
 import 'third_party/ngwallet/transaction.dart';
 
 abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
@@ -184,6 +187,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BitcoinTransaction dco_decode_box_autoadd_bitcoin_transaction(dynamic raw);
 
   @protected
+  bool dco_decode_box_autoadd_bool(dynamic raw);
+
+  @protected
   DraftTransaction dco_decode_box_autoadd_draft_transaction(dynamic raw);
 
   @protected
@@ -208,6 +214,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Output dco_decode_box_autoadd_output(dynamic raw);
 
   @protected
+  SignedMessage dco_decode_box_autoadd_signed_message(dynamic raw);
+
+  @protected
   TransactionParams dco_decode_box_autoadd_transaction_params(dynamic raw);
 
   @protected
@@ -230,6 +239,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   EnvoyBip39 dco_decode_envoy_bip_39(dynamic raw);
+
+  @protected
+  EnvoySignMessage dco_decode_envoy_sign_message(dynamic raw);
+
+  @protected
+  FeeRateSatPerKvb dco_decode_fee_rate_sat_per_kvb(dynamic raw);
 
   @protected
   int dco_decode_i_32(dynamic raw);
@@ -287,6 +302,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<(String, String)> dco_decode_list_record_string_string(dynamic raw);
 
   @protected
+  List<(int, String)> dco_decode_list_record_u_32_string(dynamic raw);
+
+  @protected
   Network dco_decode_network(dynamic raw);
 
   @protected
@@ -312,6 +330,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AddressType? dco_decode_opt_box_autoadd_address_type(dynamic raw);
+
+  @protected
+  bool? dco_decode_opt_box_autoadd_bool(dynamic raw);
 
   @protected
   PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw);
@@ -358,7 +379,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   (String, String) dco_decode_record_string_string(dynamic raw);
 
   @protected
+  (int, String) dco_decode_record_u_32_string(dynamic raw);
+
+  @protected
   ServerFeatures dco_decode_server_features(dynamic raw);
+
+  @protected
+  SignedMessage dco_decode_signed_message(dynamic raw);
 
   @protected
   TransactionFeeResult dco_decode_transaction_fee_result(dynamic raw);
@@ -518,6 +545,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  bool sse_decode_box_autoadd_bool(SseDeserializer deserializer);
+
+  @protected
   DraftTransaction sse_decode_box_autoadd_draft_transaction(
       SseDeserializer deserializer);
 
@@ -546,6 +576,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Output sse_decode_box_autoadd_output(SseDeserializer deserializer);
 
   @protected
+  SignedMessage sse_decode_box_autoadd_signed_message(
+      SseDeserializer deserializer);
+
+  @protected
   TransactionParams sse_decode_box_autoadd_transaction_params(
       SseDeserializer deserializer);
 
@@ -569,6 +603,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   EnvoyBip39 sse_decode_envoy_bip_39(SseDeserializer deserializer);
+
+  @protected
+  EnvoySignMessage sse_decode_envoy_sign_message(SseDeserializer deserializer);
+
+  @protected
+  FeeRateSatPerKvb sse_decode_fee_rate_sat_per_kvb(
+      SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
@@ -631,6 +672,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<(int, String)> sse_decode_list_record_u_32_string(
+      SseDeserializer deserializer);
+
+  @protected
   Network sse_decode_network(SseDeserializer deserializer);
 
   @protected
@@ -657,6 +702,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   AddressType? sse_decode_opt_box_autoadd_address_type(
       SseDeserializer deserializer);
+
+  @protected
+  bool? sse_decode_opt_box_autoadd_bool(SseDeserializer deserializer);
 
   @protected
   PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer);
@@ -706,7 +754,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  (int, String) sse_decode_record_u_32_string(SseDeserializer deserializer);
+
+  @protected
   ServerFeatures sse_decode_server_features(SseDeserializer deserializer);
+
+  @protected
+  SignedMessage sse_decode_signed_message(SseDeserializer deserializer);
 
   @protected
   TransactionFeeResult sse_decode_transaction_fee_result(
@@ -869,6 +923,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       BitcoinTransaction self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_bool(bool self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_draft_transaction(
       DraftTransaction self, SseSerializer serializer);
 
@@ -899,6 +956,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_output(Output self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_signed_message(
+      SignedMessage self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_transaction_params(
       TransactionParams self, SseSerializer serializer);
 
@@ -925,6 +986,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_envoy_bip_39(EnvoyBip39 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_envoy_sign_message(
+      EnvoySignMessage self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_fee_rate_sat_per_kvb(
+      FeeRateSatPerKvb self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
@@ -989,6 +1058,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<(String, String)> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_record_u_32_string(
+      List<(int, String)> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_network(Network self, SseSerializer serializer);
 
   @protected
@@ -1017,6 +1090,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_address_type(
       AddressType? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_bool(bool? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_i_64(
@@ -1069,8 +1145,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       (String, String) self, SseSerializer serializer);
 
   @protected
+  void sse_encode_record_u_32_string(
+      (int, String) self, SseSerializer serializer);
+
+  @protected
   void sse_encode_server_features(
       ServerFeatures self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_signed_message(SignedMessage self, SseSerializer serializer);
 
   @protected
   void sse_encode_transaction_fee_result(

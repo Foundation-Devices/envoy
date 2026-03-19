@@ -29,6 +29,8 @@ class AmountWidget extends StatelessWidget {
   final bool alignToEnd;
   final String locale;
   final bool millionaireMode;
+  final String? semanticSuffix;
+  final Color? colorOverride;
 
   const AmountWidget({
     super.key,
@@ -44,6 +46,8 @@ class AmountWidget extends StatelessWidget {
     this.alignToEnd = true,
     required this.locale,
     this.millionaireMode = true,
+    this.semanticSuffix,
+    this.colorOverride,
   });
 
   @override
@@ -86,7 +90,9 @@ class AmountWidget extends StatelessWidget {
                 envoyAccount: envoyAccount,
                 locale: locale,
                 textScaleFactor: textScaleFactor,
-                millionaireMode: millionaireMode),
+                millionaireMode: millionaireMode,
+                semanticSuffix: semanticSuffix,
+                colorOverride: colorOverride),
             if (secondaryUnit != null)
               SecondaryAmountWidget(
                   badgeColor: badgeColor,
@@ -101,7 +107,8 @@ class AmountWidget extends StatelessWidget {
                   envoyAccount: envoyAccount,
                   locale: locale,
                   textScaleFactor: textScaleFactor,
-                  millionaireMode: millionaireMode),
+                  millionaireMode: millionaireMode,
+                  colorOverride: colorOverride),
           ],
         );
       case AmountWidgetStyle.normal:
@@ -121,7 +128,9 @@ class AmountWidget extends StatelessWidget {
                 envoyAccount: envoyAccount,
                 locale: locale,
                 textScaleFactor: textScaleFactor,
-                millionaireMode: millionaireMode),
+                millionaireMode: millionaireMode,
+                semanticSuffix: semanticSuffix,
+                colorOverride: colorOverride),
             if (secondaryUnit != null)
               Padding(
                 padding: const EdgeInsets.only(top: EnvoySpacing.xs),
@@ -138,7 +147,8 @@ class AmountWidget extends StatelessWidget {
                     envoyAccount: envoyAccount,
                     locale: locale,
                     textScaleFactor: textScaleFactor,
-                    millionaireMode: millionaireMode),
+                    millionaireMode: millionaireMode,
+                    colorOverride: colorOverride),
               ),
           ],
         );
@@ -160,7 +170,9 @@ class AmountWidget extends StatelessWidget {
                 envoyAccount: envoyAccount,
                 locale: locale,
                 textScaleFactor: textScaleFactor,
-                millionaireMode: millionaireMode),
+                millionaireMode: millionaireMode,
+                semanticSuffix: semanticSuffix,
+                colorOverride: colorOverride),
             if (secondaryUnit != null)
               Padding(
                 padding: const EdgeInsets.only(left: EnvoySpacing.small),
@@ -177,7 +189,8 @@ class AmountWidget extends StatelessWidget {
                     envoyAccount: envoyAccount,
                     locale: locale,
                     textScaleFactor: textScaleFactor,
-                    millionaireMode: millionaireMode),
+                    millionaireMode: millionaireMode,
+                    colorOverride: colorOverride),
               ),
           ],
         );
@@ -196,7 +209,9 @@ class AmountWidget extends StatelessWidget {
             locale: locale,
             sendScreen: true,
             textScaleFactor: textScaleFactor,
-            millionaireMode: millionaireMode);
+            millionaireMode: millionaireMode,
+            semanticSuffix: semanticSuffix,
+            colorOverride: colorOverride);
     }
   }
 }
@@ -218,14 +233,13 @@ class PrimaryAmountWidget extends StatelessWidget {
   final String locale;
   final double textScaleFactor;
   final bool millionaireMode;
+  final String? semanticSuffix;
+  final Color? colorOverride;
 
-  final EnvoyIcons iconBtc = EnvoyIcons.btc;
-  final EnvoyIcons iconSat = EnvoyIcons.sats;
+  static const EnvoyIcons iconBtc = EnvoyIcons.btc;
+  static const EnvoyIcons iconSat = EnvoyIcons.sats;
 
-  final TextStyle textStyleFiatSymbol = EnvoyTypography.digitsMedium
-      .copyWith(color: EnvoyColors.textPrimary, fontSize: 24);
-
-  PrimaryAmountWidget(
+  const PrimaryAmountWidget(
       {super.key,
       required this.unit,
       required this.amountSats,
@@ -239,7 +253,9 @@ class PrimaryAmountWidget extends StatelessWidget {
       this.envoyAccount,
       this.sendScreen = false,
       this.textScaleFactor = 1,
-      required this.millionaireMode});
+      required this.millionaireMode,
+      this.semanticSuffix,
+      this.colorOverride});
 
   @override
   Widget build(BuildContext context) {
@@ -251,75 +267,92 @@ class PrimaryAmountWidget extends StatelessWidget {
       );
     }
 
+    final Color primaryColor = colorOverride ?? EnvoyColors.textPrimary;
+    final Color tertiaryColor = colorOverride ?? EnvoyColors.textTertiary;
+    final Color secondaryColor = colorOverride ?? EnvoyColors.textSecondary;
+
+    final TextStyle textStyleFiatSymbol = EnvoyTypography.digitsMedium
+        .copyWith(color: primaryColor, fontSize: 24);
+
     final TextStyle textStyleBlack = style == PrimaryAmountWidgetStyle.normal
-        ? EnvoyTypography.digitsMedium.copyWith(
-            color: EnvoyColors.textPrimary,
-          )
-        : EnvoyTypography.digitsLarge.copyWith(
-            color: EnvoyColors.textPrimary,
-          );
+        ? EnvoyTypography.digitsMedium.copyWith(color: primaryColor)
+        : EnvoyTypography.digitsLarge.copyWith(color: primaryColor);
 
     final TextStyle textStyleGray = style == PrimaryAmountWidgetStyle.normal
-        ? EnvoyTypography.digitsMedium.copyWith(color: EnvoyColors.textTertiary)
-        : EnvoyTypography.digitsLarge.copyWith(color: EnvoyColors.textTertiary);
+        ? EnvoyTypography.digitsMedium.copyWith(color: tertiaryColor)
+        : EnvoyTypography.digitsLarge.copyWith(color: tertiaryColor);
 
     final iconSize = style == PrimaryAmountWidgetStyle.normal
         ? EnvoyIconSize.small
         : EnvoyIconSize.normal;
 
-    final iconColor = style == PrimaryAmountWidgetStyle.normal
-        ? EnvoyColors.textTertiary
-        : EnvoyColors.textPrimary;
+    final iconColor =
+        style == PrimaryAmountWidgetStyle.normal ? tertiaryColor : primaryColor;
 
     final unitSpacing =
         style == PrimaryAmountWidgetStyle.normal ? 2.0 : EnvoySpacing.xs;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-            padding: EdgeInsets.only(right: unitSpacing),
-            child: unit == AmountDisplayUnit.fiat
-                ? Text(
-                    symbolFiat,
-                    textHeightBehavior: const TextHeightBehavior(
-                      applyHeightToFirstAscent: false,
-                      applyHeightToLastDescent: false,
-                    ),
-                    style: sendScreen
-                        ? EnvoyTypography.digitsMedium
-                            .copyWith(color: EnvoyColors.textSecondary)
-                        : textStyleFiatSymbol,
-                  )
-                : (envoyAccount?.network == Network.bitcoin
-                    ? EnvoyIcon(
-                        unit == AmountDisplayUnit.btc ? iconBtc : iconSat,
-                        size: iconSize,
-                        color: iconColor,
+    return Semantics(
+      container: true,
+      explicitChildNodes: true,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Semantics(
+            container: true,
+            identifier: 'primary_amount_icon',
+            child: Padding(
+                padding: EdgeInsets.only(right: unitSpacing),
+                child: unit == AmountDisplayUnit.fiat
+                    ? Text(
+                        symbolFiat,
+                        textHeightBehavior: const TextHeightBehavior(
+                          applyHeightToFirstAscent: false,
+                          applyHeightToLastDescent: false,
+                        ),
+                        style: sendScreen
+                            ? EnvoyTypography.digitsMedium
+                                .copyWith(color: secondaryColor)
+                            : textStyleFiatSymbol,
                       )
-                    : getNonMainnetIcon(unit, badgeColor!, envoyAccount!,
-                        iconSize: iconSize, iconColor: iconColor))),
-        RichText(
-          textScaler: TextScaler.linear(textScaleFactor),
-          text: TextSpan(
-            children: unit == AmountDisplayUnit.btc
-                ? buildPrimaryBtcTextSpans(amountSats, decimalSeparator,
-                    groupSeparator, textStyleBlack, textStyleGray)
-                : unit == AmountDisplayUnit.fiat
-                    ? buildFiatTextSpans(
-                        amountSats,
-                        fxRateFiat!,
-                        textStyleBlack,
-                        locale,
-                        decimalSeparator,
-                        groupSeparator,
-                        millionaireMode: millionaireMode)
-                    : buildPrimarySatsTextSpans(amountSats, groupSeparator,
-                        textStyleBlack, textStyleGray),
+                    : (envoyAccount?.network == Network.bitcoin
+                        ? EnvoyIcon(
+                            unit == AmountDisplayUnit.btc ? iconBtc : iconSat,
+                            size: iconSize,
+                            color: iconColor,
+                          )
+                        : getNonMainnetIcon(unit, badgeColor!, envoyAccount!,
+                            iconSize: iconSize, iconColor: iconColor))),
           ),
-        ),
-      ],
+          Semantics(
+            container: true,
+            identifier: semanticSuffix != null
+                ? 'primary_amount $semanticSuffix'
+                : 'primary_amount_value',
+            label: '$amountSats',
+            child: RichText(
+              textScaler: TextScaler.linear(textScaleFactor),
+              text: TextSpan(
+                children: unit == AmountDisplayUnit.btc
+                    ? buildPrimaryBtcTextSpans(amountSats, decimalSeparator,
+                        groupSeparator, textStyleBlack, textStyleGray)
+                    : unit == AmountDisplayUnit.fiat
+                        ? buildFiatTextSpans(
+                            amountSats,
+                            fxRateFiat!,
+                            textStyleBlack,
+                            locale,
+                            decimalSeparator,
+                            groupSeparator,
+                            millionaireMode: millionaireMode)
+                        : buildPrimarySatsTextSpans(amountSats, groupSeparator,
+                            textStyleBlack, textStyleGray),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -338,9 +371,11 @@ class SecondaryAmountWidget extends StatelessWidget {
   final Color? badgeColor;
   final EnvoyAccount? envoyAccount;
   final String locale;
-  final EnvoyIcons iconBtc = EnvoyIcons.btc;
+  static const EnvoyIcons iconBtc = EnvoyIcons.btc;
   final double textScaleFactor;
   final bool millionaireMode;
+  final String? semanticSuffix;
+  final Color? colorOverride;
 
   const SecondaryAmountWidget(
       {super.key,
@@ -356,7 +391,9 @@ class SecondaryAmountWidget extends StatelessWidget {
       this.badgeColor,
       this.envoyAccount,
       this.textScaleFactor = 1,
-      required this.millionaireMode});
+      required this.millionaireMode,
+      this.semanticSuffix,
+      this.colorOverride});
 
   @override
   Widget build(BuildContext context) {
@@ -368,56 +405,70 @@ class SecondaryAmountWidget extends StatelessWidget {
       );
     }
 
-    final TextStyle textStyle = EnvoyTypography.digitsSmall.copyWith(
-      color: style == SecondaryAmountWidgetStyle.normal
-          ? EnvoyColors.textPrimary
-          : EnvoyColors.accentPrimary,
-    );
-    final iconColor = style == SecondaryAmountWidgetStyle.normal
-        ? EnvoyColors.textPrimary
-        : EnvoyColors.accentPrimary;
+    final Color resolvedColor = colorOverride ??
+        (style == SecondaryAmountWidgetStyle.normal
+            ? EnvoyColors.textPrimary
+            : EnvoyColors.accentPrimary);
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-            padding: const EdgeInsets.only(right: 2.0),
-            child: unit == AmountDisplayUnit.btc
-                ? (envoyAccount?.network == Network.bitcoin
-                    ? EnvoyIcon(
-                        iconBtc,
-                        size: EnvoyIconSize.extraSmall,
-                        color: iconColor,
-                      )
-                    : getNonMainnetIcon(unit, badgeColor!, envoyAccount!,
-                        iconSize: EnvoyIconSize.extraSmall,
-                        iconColor: iconColor))
-                : Text(
-                    symbolFiat,
-                    textHeightBehavior: const TextHeightBehavior(
-                      applyHeightToFirstAscent: false,
-                      applyHeightToLastDescent: false,
-                    ),
-                    style: textStyle,
-                  )),
-        RichText(
-          textScaler: TextScaler.linear(textScaleFactor),
-          text: TextSpan(
-              children: unit == AmountDisplayUnit.fiat
-                  ? buildFiatTextSpans(
-                      amountSats,
-                      fxRateFiat!,
-                      displayFiat: displayFiat,
-                      textStyle,
-                      locale,
-                      decimalSeparator,
-                      groupSeparator,
-                      millionaireMode: millionaireMode)
-                  : buildSecondaryBtcTextSpans(amountSats, decimalSeparator,
-                      groupSeparator, textStyle, textStyle)),
-        ),
-      ],
+    final TextStyle textStyle =
+        EnvoyTypography.digitsSmall.copyWith(color: resolvedColor);
+    final iconColor = resolvedColor;
+
+    return Semantics(
+      container: true,
+      explicitChildNodes: true,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Semantics(
+            container: true,
+            identifier: 'secondary_amount_icon',
+            child: Padding(
+                padding: const EdgeInsets.only(right: 2.0),
+                child: unit == AmountDisplayUnit.btc
+                    ? (envoyAccount?.network == Network.bitcoin
+                        ? EnvoyIcon(
+                            iconBtc,
+                            size: EnvoyIconSize.extraSmall,
+                            color: iconColor,
+                          )
+                        : getNonMainnetIcon(unit, badgeColor!, envoyAccount!,
+                            iconSize: EnvoyIconSize.extraSmall,
+                            iconColor: iconColor))
+                    : Text(
+                        symbolFiat,
+                        textHeightBehavior: const TextHeightBehavior(
+                          applyHeightToFirstAscent: false,
+                          applyHeightToLastDescent: false,
+                        ),
+                        style: textStyle,
+                      )),
+          ),
+          Semantics(
+            container: true,
+            identifier: semanticSuffix != null
+                ? 'secondary_amount $semanticSuffix'
+                : 'secondary_amount_value',
+            child: RichText(
+              textScaler: TextScaler.linear(textScaleFactor),
+              text: TextSpan(
+                  children: unit == AmountDisplayUnit.fiat
+                      ? buildFiatTextSpans(
+                          amountSats,
+                          fxRateFiat!,
+                          displayFiat: displayFiat,
+                          textStyle,
+                          locale,
+                          decimalSeparator,
+                          groupSeparator,
+                          millionaireMode: millionaireMode)
+                      : buildSecondaryBtcTextSpans(amountSats, decimalSeparator,
+                          groupSeparator, textStyle, textStyle)),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

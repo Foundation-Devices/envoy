@@ -330,71 +330,95 @@ class AtmDialogInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(EnvoySpacing.medium2),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: GestureDetector(
-              child: const EnvoyIcon(EnvoyIcons.close),
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium2),
-            child: EnvoyIcon(
-              EnvoyIcons.location,
-              size: EnvoyIconSize.big,
-            ),
-          ),
-          Text(
-            name ?? "No name info",
-            textAlign: TextAlign.center,
-            style: EnvoyTypography.subheading,
-          ),
-          if (description != null)
-            Padding(
-              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-              child: Text(
-                description!,
-                textAlign: TextAlign.center,
-                style: EnvoyTypography.info,
-              ),
-            ),
-          if (address != null)
-            Padding(
-              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-              child: Text(address!, textAlign: TextAlign.center),
-            ),
-          if (openingHours != null)
-            Padding(
-              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-              child: Text(
-                  "${S().buy_bitcoin_buyOptions_atms_map_modal_openingHours}\n $openingHours",
-                  textAlign: TextAlign.center),
-            ),
-          if (website != null)
-            Padding(
-              padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
-              child: GestureDetector(
-                child: Text(
-                  website!,
-                  textAlign: TextAlign.center,
-                  style: EnvoyTypography.button
-                      .copyWith(color: EnvoyColors.accentPrimary),
+    return Semantics(
+      identifier: "atm_dialog_info",
+      child: Padding(
+        padding: const EdgeInsets.all(EnvoySpacing.medium2),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: Semantics(
+                identifier: "atm_dialog_close",
+                child: GestureDetector(
+                  child: const EnvoyIcon(EnvoyIcons.close),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
-                onTap: () {
-                  launchUrl(Uri.parse(website!));
-                },
               ),
             ),
-          if (address == null && description == null && website == null)
-            const Text("No extra details available for this atm."),
-        ],
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: EnvoySpacing.medium2),
+              child: EnvoyIcon(
+                EnvoyIcons.location,
+                size: EnvoyIconSize.big,
+              ),
+            ),
+            Semantics(
+              container: true,
+              identifier: "atm_dialog_name",
+              child: Text(
+                name ?? "No name info",
+                textAlign: TextAlign.center,
+                style: EnvoyTypography.subheading,
+              ),
+            ),
+            if (description != null)
+              Semantics(
+                container: true,
+                identifier: "atm_dialog_description",
+                child: Padding(
+                  padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+                  child: Text(
+                    description!,
+                    textAlign: TextAlign.center,
+                    style: EnvoyTypography.info,
+                  ),
+                ),
+              ),
+            if (address != null)
+              Semantics(
+                container: true,
+                identifier: "atm_dialog_address",
+                child: Padding(
+                  padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+                  child: Text(address!, textAlign: TextAlign.center),
+                ),
+              ),
+            if (openingHours != null)
+              Semantics(
+                identifier: "atm_dialog_opening_hours",
+                child: Padding(
+                  padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+                  child: Text(
+                      "${S().buy_bitcoin_buyOptions_atms_map_modal_openingHours}\n $openingHours",
+                      textAlign: TextAlign.center),
+                ),
+              ),
+            if (website != null)
+              Semantics(
+                identifier: "atm_dialog_website",
+                child: Padding(
+                  padding: const EdgeInsets.only(top: EnvoySpacing.medium1),
+                  child: GestureDetector(
+                    child: Text(
+                      website!,
+                      textAlign: TextAlign.center,
+                      style: EnvoyTypography.button
+                          .copyWith(color: EnvoyColors.accentPrimary),
+                    ),
+                    onTap: () {
+                      launchUrl(Uri.parse(website!));
+                    },
+                  ),
+                ),
+              ),
+            if (address == null && description == null && website == null)
+              const Text("No extra details available for this atm."),
+          ],
+        ),
       ),
     );
   }

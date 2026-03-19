@@ -104,25 +104,32 @@ class _CreateCoinTagWarningState extends ConsumerState<CreateCoinTagWarning> {
         children: [
           Align(
             alignment: Alignment.centerRight,
-            child: IconButton(
-              padding: const EdgeInsets.all(EnvoySpacing.small),
-              icon: const Icon(Icons.close),
-              onPressed: () {
-                if (ref.read(selectedAccountProvider) != null) {
-                  coinSelectionOverlayKey.currentState?.show(
-                    SpendOverlayContext.preselectCoins,
-                  );
-                }
-                Navigator.of(context).pop();
-              },
+            child: Semantics(
+              identifier: "coin_tag_warning_close",
+              child: IconButton(
+                padding: const EdgeInsets.all(EnvoySpacing.small),
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  if (ref.read(selectedAccountProvider) != null) {
+                    coinSelectionOverlayKey.currentState?.show(
+                      SpendOverlayContext.preselectCoins,
+                    );
+                  }
+                  Navigator.of(context).pop();
+                },
+              ),
             ),
           ),
           const SizedBox(height: EnvoySpacing.small),
           Image.asset("assets/exclamation_icon.png", height: 68, width: 68),
           const SizedBox(height: EnvoySpacing.medium1),
-          Text(
-            S().change_output_from_multiple_tags_modal_heading,
-            style: EnvoyTypography.heading,
+          Semantics(
+            container: true,
+            identifier: "coin_tag_warning_title",
+            child: Text(
+              S().change_output_from_multiple_tags_modal_heading,
+              style: EnvoyTypography.heading,
+            ),
           ),
           const SizedBox(height: EnvoySpacing.medium1),
           Padding(

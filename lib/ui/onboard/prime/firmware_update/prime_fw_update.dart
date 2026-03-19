@@ -141,7 +141,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
       dialog: EnvoyPopUp(
         icon: EnvoyIcons.alert,
         typeOfMessage: PopUpState.warning,
-        showCloseButton: true,
+        showCloseButton: false,
         title: S().onboarding_connectionModalAbort_header,
         content: S().onboarding_connectionModalAbort_content,
         primaryButtonLabel: S().component_cancel,
@@ -181,7 +181,7 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
       dialog: EnvoyPopUp(
         icon: EnvoyIcons.alert,
         typeOfMessage: PopUpState.warning,
-        showCloseButton: true,
+        showCloseButton: false,
         title: S().firmware_connectionModalCancelUpdate_header,
         content: S().firmware_connectionModalCancelUpdate_content,
         primaryButtonLabel: S().component_cancel,

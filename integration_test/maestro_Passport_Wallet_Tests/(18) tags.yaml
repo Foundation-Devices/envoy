@@ -1,0 +1,112 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (18) tags
+appId: com.foundationdevices.envoy
+---
+
+- tapOn: GH TEST ACC (#1)
+
+- tapOn: Activity
+
+# 1) Select a coin from Untagged
+- tapOn:
+    id: coin_tag_switch_Untagged_off
+
+# 2) Tap Tag selected
+- tapOn: Tag Selected
+
+- tapOn:
+    id: coin_tag_warning_close
+
+- tapOn:
+    id: coin_tag_switch_Untagged_off
+
+- tapOn: Tag Selected
+
+- tapOn: Continue
+
+- tapOn: Expenses
+
+- tapOn: Continue
+
+# 8) Check that the pop up closes and the coin is tagged (to avoid ENV-2434)
+- assertVisible: Expenses
+
+# Verify "Selected Amount" is NOT on screen
+- assertNotVisible: Send Selected
+
+# 3) Verify "Choose a Tag" is NOT on screen
+- assertNotVisible: Choose a Tag
+
+# 9) Open the tag created
+- tapOn: Expenses
+
+# 10) Select the coin form the tag
+- tapOn:
+    id: coin_tag_switch_Expenses_off
+
+# 10) Tap Retag selected
+- tapOn: Retag Selected
+
+- tapOn:
+    id: coin_tag_warning_close
+
+# 12) Repeat steps 10 and 11
+- tapOn:
+    id: coin_tag_switch_Expenses_off
+
+- tapOn: Retag Selected
+
+- tapOn: Continue
+
+# Verify "Selected Amount" is NOT on screen
+- assertNotVisible: Send Selected
+
+# 14) Write anything in the Choose a tag field
+- tapOn: Enter new tag i.e. Exchange
+- inputText: "Whatever"
+
+# 15) Tap Continue
+- tapOn: Continue
+
+- tapOn: Back
+
+# 16) Check the pop up closes and the coin has been tagged to the tag written in step 14
+- assertVisible: Whatever
+
+# Verify "Selected Amount" is NOT on screen
+- assertNotVisible: Send Selected
+
+# 3) Verify "Choose a Tag" is NOT on screen
+- assertNotVisible: Choose a Tag
+
+# 17) Open the tag written in step 14
+- tapOn: Whatever
+
+# 18) Tap the three dots on the top right corner
+- tapOn:
+    id: coin_tag_ellipsis_menu
+
+# 19) Tap Delete tag
+- tapOn: DELETE TAG
+
+# 20) Tap Back
+- tapOn:
+    id: PopUp Primary Button
+
+# 21) repeat steps 18 and 19
+- tapOn: DELETE TAG
+
+# 22) Tap Delete tag
+- tapOn:
+    id: popup_tertiary_Delete Tag
+
+# 23) Check the tag disappears and the coin  is moved back to Untagged
+- assertNotVisible: Whatever
+- assertVisible: Untagged
+
+# go home
+- tapOn:
+    id: hamburger_menu

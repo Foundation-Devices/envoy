@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:envoy/generated/l10n.dart';
 
 class EnvoyLogsScreen extends ConsumerStatefulWidget {
   const EnvoyLogsScreen({super.key});
@@ -41,12 +42,14 @@ class _EnvoyLogsScreenState extends ConsumerState<EnvoyLogsScreen> {
                 String logs = await EnvoyReport().getLogAsString(24);
                 await Clipboard.setData(ClipboardData(text: logs));
                 if (context.mounted) {
+                  const isMaestroTest = bool.fromEnvironment('IS_MAESTRO_TEST',
+                      defaultValue: false);
                   EnvoyToast(
                     backgroundColor: Colors.lightBlue,
                     replaceExisting: true,
-                    duration: const Duration(milliseconds: 2000),
-                    message: "Logs copied to clipboard",
-                    // TODO: FIGMA
+                    duration:
+                        Duration(milliseconds: isMaestroTest ? 10000 : 3000),
+                    message: S().menu_toast_logsCopied,
                     icon: const Icon(Icons.copy, color: EnvoyColors.teal),
                   ).show(context);
                 }

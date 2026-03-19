@@ -11,6 +11,7 @@ final homeShellOptionsProvider = StateProvider<HomeShellOptions?>(
 );
 
 final homePageTitleProvider = StateProvider<String>((ref) => "");
+final currentAddressDetailIndexProvider = StateProvider<int?>((ref) => null);
 final hideBottomNavProvider = StateProvider<bool>((ref) => false);
 final buyBTCPageProvider = StateProvider<bool>((ref) => false);
 final backupPageProvider = StateProvider<bool>((ref) => false);

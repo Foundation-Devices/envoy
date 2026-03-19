@@ -1,0 +1,118 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (12) coinBackIssue
+appId: com.foundationdevices.envoy
+---
+
+# go to tags
+- tapOn: Primary (#0)
+- tapOn: Activity
+- tapOn: Untagged
+
+# select two random coins on index 2 and 3 (so we can check indexes)
+- tapOn:
+    text: coin switch false
+    index: 2
+# this is on index 3 but when true it will turn to "false index 2"
+- tapOn:
+    text: coin switch false
+    index: 2
+
+# 10 step, native back out of coins and coin selection
+
+# native back on this screen is on index 1 since there is top bar on index 0
+- tapOn:
+    text: Back
+    index: 1
+
+# native back again (there is no top bar back here)
+- tapOn:
+    text: Back
+
+# Check the pop up comes
+- assertVisible:
+    id: envoy_icon_alert
+
+# 11 step, Check that the behavior is the same as if the user
+# tapped "No" - AKA, return to the previous view and
+# make sure the coin selected on step 1 remains selected
+
+- tapOn: Back
+
+# check the selected coin
+
+- tapOn: Untagged
+
+# tap them again to verify that the indexes are correct
+
+# now we have coins "true 0" and "true 1" - they are actually index 2 and 3
+- tapOn:
+    text: coin switch true
+    index: 0
+
+# this is now no index coin
+- tapOn:
+    text: coin switch true
+
+# turn them on again
+
+- tapOn:
+    text: coin switch false
+    index: 2
+# this is on index 3 but when true it will turn to "false index 2"
+- tapOn:
+    text: coin switch false
+    index: 2
+
+# Tap the "x" next to Selected Amount
+- tapOn:
+    id: coin_selection_cancel
+
+# check that the popup comes up
+- assertVisible:
+    id: envoy_icon_alert
+
+# Repeat steps 10 and 11
+# native back
+- tapOn:
+    text: Back
+    index: 1
+
+# native back again
+- tapOn:
+    text: Back
+    index: 1
+
+# native back again
+- tapOn:
+    text: Back
+
+# Check that the behavior is the same as if the user
+# tapped "No" - AKA, return to the previous view and
+# make sure the coin selected on step 1 remains selected
+
+- tapOn: Back
+
+# check the selected coin
+
+- tapOn: Untagged
+
+# tap them again to verify that the indexes are correct
+
+# now we have coins "true 0" and "true 1" - they are actually index 2 and 3
+- tapOn:
+    text: coin switch true
+    index: 0
+
+# this is now no index coin
+- tapOn:
+    text: coin switch true
+
+# the indexes are good
+
+# go back to home
+- tapOn: Back
+- tapOn:
+    id: hamburger_menu

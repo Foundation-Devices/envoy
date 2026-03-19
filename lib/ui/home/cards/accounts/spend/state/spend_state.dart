@@ -4,6 +4,7 @@
 
 import 'package:envoy/business/coin_tag.dart';
 import 'package:envoy/business/coins.dart';
+import 'package:envoy/business/fee_rate.dart';
 import 'package:envoy/business/fees.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
@@ -19,8 +20,9 @@ import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/tuple.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ngwallet/ngwallet.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/fee_slider.dart';
 
-enum BroadcastProgress { inProgress, success, failed, staging }
+enum BroadcastProgress { inProgress, success, failed, staging, subsatFailed }
 
 //user can spend coins in 3 contexts, preselectCoins,edit from transaction
 //review screen and edit from RBF screen
@@ -245,8 +247,8 @@ void clearSpendState(ProviderContainer ref) {
     ref.read(spendAmountProvider.notifier).state = 0;
     //reset fee to default
     if (ref.read(selectedAccountProvider) != null) {
-      ref.read(spendFeeRateProvider.notifier).state = Fees().slowRate(
-        ref.read(selectedAccountProvider)!.network,
+      ref.read(spendFeeRateProvider.notifier).state = FeeRate.fromSatPerVb(
+        Fees().slowRate(ref.read(selectedAccountProvider)!.network),
       );
     }
 
@@ -262,6 +264,7 @@ void clearSpendState(ProviderContainer ref) {
     ref.read(displayFiatSendAmountProvider.notifier).state = 0;
     ref.read(coinSelectionStateProvider.notifier).reset();
     ref.read(spendTransactionProvider.notifier).reset();
+    ref.read(selectedFeeOptionProvider.notifier).state = FeeOption.standard;
   } catch (e, s) {
     kPrint("Error clearing spend state: $e", stackTrace: s);
   }

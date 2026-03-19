@@ -62,11 +62,18 @@ class UpdatesManager {
 
     // TODO: Check this against a live endpoint
     if (patches.isNotEmpty) {
-      EnvoyStorage().addNewFirmware(
-        DeviceType.passportPrime.index,
-        patches.first.version,
-        "",
-      );
+      // Only consider stable (non-pre-release) patches for the red dot.
+      // If the chain contains only beta versions, treat it as no update available.
+      final stablePatches =
+          patches.where((p) => !isPreRelease(p.version)).toList();
+
+      if (stablePatches.isNotEmpty) {
+        EnvoyStorage().addNewFirmware(
+          DeviceType.passportPrime.index,
+          stablePatches.first.version,
+          "",
+        );
+      }
     }
     // The update check returned no patches, which indicates no newer firmware is available.
     else {
@@ -284,14 +291,32 @@ class UpdatesManager {
     );
     if (storedVersionString == null) return false;
 
-    final currentVersion = Version.parse(
+    // Never show a red dot when the latest known firmware is a pre-release.
+    // This covers stale storage from before this fix and non-Prime device types.
+    if (isPreRelease(storedVersionString)) return false;
+
+    final storedVersion = Version.parse(
       storedVersionString.replaceAll("v", ""),
     );
-    return currentVersion > parsedVersion;
+    return storedVersion > parsedVersion;
   }
 }
 
 String sanitizeVersion(String version) {
-  // Remove the v and keep only letters and numbers (Prime sends us NULL chars sometimes)
-  return version.replaceAll("v", "").replaceAll(RegExp(r'[^a-zA-Z0-9.]'), '');
+  // Remove the v prefix and any non-printable characters (Prime sends us NULL chars sometimes)
+  final cleaned =
+      version.replaceAll("v", "").replaceAll(RegExp(r'[^\x20-\x7E]'), '');
+  // Extract only the MAJOR.MINOR.PATCH numeric portion (strips pre-release like b8, beta8, etc.)
+  final match = RegExp(r'^(\d+\.\d+\.\d+)').firstMatch(cleaned);
+  return match?.group(1) ?? cleaned;
+}
+
+/// Returns true if [version] is a pre-release (e.g. "2.1.1b3", "2.1.1beta3", "2.1.1-rc1").
+/// A stable release matches exactly MAJOR.MINOR.PATCH with no extra characters.
+bool isPreRelease(String version) {
+  final cleaned = version
+      .replaceAll("v", "")
+      .replaceAll(RegExp(r'[^\x20-\x7E]'), '')
+      .trim();
+  return !RegExp(r'^\d+\.\d+\.\d+$').hasMatch(cleaned);
 }

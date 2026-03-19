@@ -1,0 +1,58 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (08) androidNativeBack
+appId: com.foundationdevices.envoy
+---
+
+- tapOn:
+    id: hamburger_menu
+
+- tapOn: Back
+
+# comfirm you are back to home
+- assertVisible: ACCOUNTS off
+
+- tapOn:
+    id: hamburger_menu
+
+- tapOn: |-
+    SETTINGS
+    SETTINGS
+
+- tapOn: Back
+
+# confirm you are back to Envoy
+- assertVisible: ENVOY off
+
+- tapOn: |-
+    BACKUPS
+    BACKUPS
+
+- tapOn: Back
+
+# confirm you are back to Envoy
+- assertVisible: ENVOY off
+
+- tapOn: |-
+    SUPPORT
+    SUPPORT
+
+- tapOn: Back
+
+# confirm you are back to Envoy
+- assertVisible: ENVOY off
+
+- tapOn: |-
+    ABOUT
+    ABOUT
+
+- tapOn: Back
+
+# confirm you are back to Envoy
+- assertVisible: ENVOY off
+
+# go back to home
+- tapOn:
+    id: hamburger_menu

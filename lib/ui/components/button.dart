@@ -89,7 +89,7 @@ class EnvoyButtonState extends State<EnvoyButton> {
             duration: _animationsDuration,
             decoration: BoxDecoration(
               color: _getBackgroundColor(),
-              borderRadius: BorderRadius.circular(EnvoySpacing.small),
+              borderRadius: BorderRadius.circular(EnvoySpacing.medium1),
             ),
             child: Center(
               child: Stack(
@@ -169,7 +169,11 @@ class EnvoyButtonState extends State<EnvoyButton> {
 
   Color _getMainColor() {
     if (isPressed) {
-      return EnvoyColors.accentPrimary;
+      if (widget.type == ButtonType.secondary) {
+        return EnvoyColors.textPrimary;
+      } else {
+        return EnvoyColors.accentPrimary;
+      }
     }
 
     if (widget.textColor != null) {
@@ -178,7 +182,7 @@ class EnvoyButtonState extends State<EnvoyButton> {
 
     if (widget.type == ButtonType.secondary ||
         widget.type == ButtonType.tertiary) {
-      return EnvoyColors.accentPrimary;
+      return EnvoyColors.textSecondary;
     }
 
     return EnvoyColors.textPrimaryInverse;

@@ -4,6 +4,7 @@
 
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,10 +57,16 @@ class AddressWidget extends StatelessWidget {
         } else {
           Clipboard.setData(ClipboardData(text: address));
           if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text('Address copied to clipboard!')), //TODO: FIGMA
-            );
+            EnvoyToast(
+              backgroundColor: Colors.lightBlue,
+              replaceExisting: true,
+              duration: const Duration(seconds: 1),
+              message: S().receive_toast_addressCopied,
+              icon: const EnvoyIcon(
+                EnvoyIcons.info,
+                color: EnvoyColors.accentPrimary,
+              ),
+            ).show(context, rootNavigator: true);
           }
         }
       },
@@ -169,10 +176,17 @@ void showWarningOnAddressCopy(BuildContext context, String address) {
       S().component_continue,
       (BuildContext context) {
         Clipboard.setData(ClipboardData(text: address));
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Address copied to clipboard!"), //TODO: FIGMA
-        ));
         Navigator.pop(context);
+        EnvoyToast(
+          backgroundColor: Colors.lightBlue,
+          replaceExisting: true,
+          duration: const Duration(seconds: 2),
+          message: S().receive_toast_addressCopied,
+          icon: const EnvoyIcon(
+            EnvoyIcons.info,
+            color: EnvoyColors.accentPrimary,
+          ),
+        ).show(context, rootNavigator: true);
       },
       icon: EnvoyIcons.info,
       secondaryButtonLabel: S().component_cancel,
@@ -182,9 +196,9 @@ void showWarningOnAddressCopy(BuildContext context, String address) {
       checkBoxText: S().component_dontShowAgain,
       checkedValue: false,
       onCheckBoxChanged: (checkedValue) {
-        if (!checkedValue) {
+        if (checkedValue) {
           EnvoyStorage().addPromptState(DismissiblePrompt.copyAddressWarning);
-        } else if (checkedValue) {
+        } else {
           EnvoyStorage()
               .removePromptState(DismissiblePrompt.copyAddressWarning);
         }

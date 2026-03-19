@@ -1,0 +1,172 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (22) nodePrefixAndSuffix
+appId: com.foundationdevices.envoy
+---
+
+# go to privacy
+- tapOn: Privacy
+
+- tapOn: Foundation (Default)
+
+# Select Personal Node
+- tapOn: Personal Node
+
+# Check that it gets selected and the field to enter the personal node shows up
+- assertVisible: Personal Node
+- assertVisible: Enter your node address
+
+# delete anything from the field before testing
+- tapOn: Enter your node address
+- eraseText:
+      charactersToErase: 100
+
+################## check for 50002
+# enter node
+- inputText: "mainnet-0.foundation.xyz:50002"
+
+# check if it connects
+- extendedWaitUntil:
+      visible: "Connected to Fulcrum 1.11.1"
+      timeout: 300000 # wait for 5 min
+
+# check if the "ssl://" prefix shows up
+- assertVisible: ssl://mainnet-0.foundation.xyz:50002
+
+# delete the input
+- tapOn: Enter your node address
+- eraseText:
+      charactersToErase: 100
+
+##################
+# enter node
+- inputText: "192.168.xxx.xxx:50002"
+
+# check if it does not connect
+- extendedWaitUntil:
+      visible: "Couldn't reach node."
+      timeout: 300000 # wait for 5 min
+
+# check if the "ssl://" prefix shows up
+- assertVisible: ssl://192.168.xxx.xxx:50002
+
+# delete the input
+- tapOn: Enter your node address
+- eraseText:
+      charactersToErase: 100
+
+################## check for 50001
+# enter node
+- inputText: "mainnet-0.foundation.xyz:50001"
+
+# check if it connects
+- extendedWaitUntil:
+      visible: "Connected to Fulcrum 1.11.1"
+      timeout: 300000 # wait for 5 min
+
+# check if the "tcp://" prefix shows up
+- assertVisible: tcp://mainnet-0.foundation.xyz:50001
+
+# delete the input
+- tapOn: Enter your node address
+- eraseText:
+      charactersToErase: 100
+
+##################
+# enter node
+- inputText: "192.168.xxx.xxx:50001"
+
+# check if it does not connect
+- extendedWaitUntil:
+      visible: "Couldn't reach node."
+      timeout: 300000 # wait for 5 min
+
+# check if the "tcp://" prefix shows up
+- assertVisible: tcp://192.168.xxx.xxx:50001
+
+# delete the input
+- tapOn: Enter your node address
+- eraseText:
+      charactersToErase: 100
+
+# Now do all the tests again if there is a :t / :s at the end ///////////////////
+
+################## check for 50002:t
+# enter node
+- inputText: "mainnet-0.foundation.xyz:50002:s"
+
+# check if it connects
+- extendedWaitUntil:
+      visible: "Connected to Fulcrum 1.11.1"
+      timeout: 300000 # wait for 5 min
+
+# check if the "ssl://" prefix shows up
+- assertVisible: ssl://mainnet-0.foundation.xyz:50002
+
+# delete the input
+- tapOn: Enter your node address
+- eraseText:
+      charactersToErase: 100
+
+##################
+# enter node
+- inputText: "192.168.xxx.xxx:50002:s"
+
+# check if it does not connect
+- extendedWaitUntil:
+      visible: "Couldn't reach node."
+      timeout: 300000 # wait for 5 min
+
+# check if the "ssl://" prefix shows up
+- assertVisible: ssl://192.168.xxx.xxx:50002
+
+# delete the input
+- tapOn: Enter your node address
+- eraseText:
+      charactersToErase: 100
+
+################## check for 50001:t
+# enter node
+- inputText: "mainnet-0.foundation.xyz:50001:t"
+
+# check if it connects
+- extendedWaitUntil:
+      visible: "Connected to Fulcrum 1.11.1"
+      timeout: 300000 # wait for 5 min
+
+# check if the "tcp://" prefix shows up
+- assertVisible: tcp://mainnet-0.foundation.xyz:50001
+
+# delete the input
+- tapOn: Enter your node address
+- eraseText:
+      charactersToErase: 100
+
+##################
+# enter node
+- inputText: "192.168.xxx.xxx:50001:t"
+
+# check if it does not connect
+- extendedWaitUntil:
+      visible: "Couldn't reach node."
+      timeout: 300000 # wait for 5 min
+
+# check if the "tcp://" prefix shows up
+- assertVisible: tcp://192.168.xxx.xxx:50001
+
+# delete the input
+- tapOn: Enter your node address
+- eraseText:
+      charactersToErase: 100
+
+# change back to Foundation default
+- tapOn: Personal Node
+
+- tapOn:
+      text: "Foundation (Default)"
+      index: 0
+
+# go home
+- tapOn: Accounts

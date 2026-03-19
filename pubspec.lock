@@ -408,6 +408,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  event_bus:
+    dependency: transitive
+    description:
+      name: event_bus
+      sha256: "1a55e97923769c286d295240048fc180e7b0768902c3c2e869fe059aafa15304"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -545,7 +553,7 @@ packages:
     source: hosted
     version: "2.6.1"
   flutter_rust_bridge:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: flutter_rust_bridge
       sha256: "37ef40bc6f863652e865f0b2563ea07f0d3c58d8efad803cc01933a4b2ee067e"
@@ -844,6 +852,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.9.5"
+  kebab_mcp:
+    dependency: "direct dev"
+    description:
+      path: "packages/kebab_mcp"
+      relative: true
+    source: path
+    version: "0.1.0"
   latlng:
     dependency: "direct main"
     description:
@@ -980,6 +995,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.1"
+  mcp_dart:
+    dependency: transitive
+    description:
+      name: mcp_dart
+      sha256: "9b4f808d739c563bd6c68b5829d6a7a7a5b0a15928927b8e548e30b66a61eb9b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.2"
   meta:
     dependency: transitive
     description:
@@ -1012,6 +1035,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.4.6"
+  mqtt_client:
+    dependency: transitive
+    description:
+      name: mqtt_client
+      sha256: fd22ea00a4c7b5623e01000a91a256d62a8bacba38e9812170458070c52affed
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.11.9"
   ngwallet:
     dependency: "direct main"
     description:
@@ -1287,8 +1318,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: d313918fee125f49221868fe7930d0d5dc7f3235
-      resolved-ref: d313918fee125f49221868fe7930d0d5dc7f3235
+      ref: "360893aedfed969a852a147bab6b8689f03e722c"
+      resolved-ref: "360893aedfed969a852a147bab6b8689f03e722c"
       url: "https://github.com/Foundation-Devices/qr_code_scanner.git"
     source: git
     version: "2.0.14"
@@ -1380,6 +1411,13 @@ packages:
     dependency: transitive
     description:
       path: "packages/shards/rust_builder"
+      relative: true
+    source: path
+    version: "0.0.1"
+  rust_lib_ur:
+    dependency: transitive
+    description:
+      path: "packages/ur/rust_builder"
       relative: true
     source: path
     version: "0.0.1"

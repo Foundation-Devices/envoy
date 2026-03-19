@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import 'package:envoy/ui/theme/envoy_colors.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ import 'package:flutter/material.dart';
 class EnvoyFilterChip extends StatelessWidget {
   final bool selected;
   final String text;
-  final IconData? icon;
+  final EnvoyIcons? icon;
   final GestureTapCallback? onTap;
 
   const EnvoyFilterChip(
@@ -49,9 +50,9 @@ class EnvoyFilterChip extends StatelessWidget {
               if (icon != null)
                 Padding(
                   padding: const EdgeInsets.all(EnvoySpacing.xs),
-                  child: Icon(
-                    icon,
-                    size: 18,
+                  child: EnvoyIcon(
+                    icon!,
+                    size: EnvoyIconSize.extraSmall,
                     color: foregroundColor,
                   ),
                 ),

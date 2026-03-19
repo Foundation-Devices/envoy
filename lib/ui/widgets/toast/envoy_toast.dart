@@ -5,8 +5,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:envoy/ui/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/theme/new_envoy_color.dart';
 import 'package:envoy/ui/widgets/toast/toast_route.dart';
 import 'package:flutter/material.dart';
 
@@ -137,7 +138,9 @@ class EnvoyToastState extends State<EnvoyToast> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Container(
-                  padding: const EdgeInsets.only(left: 18, right: 6),
+                  padding: const EdgeInsets.only(
+                    left: 18,
+                  ),
                   child: widget.icon ?? Container(),
                 ),
                 Expanded(
@@ -147,15 +150,19 @@ class EnvoyToastState extends State<EnvoyToast> {
                     children: [
                       Expanded(
                         child: Container(
-                          margin: const EdgeInsets.only(left: 10),
-                          child: Text(
-                            widget.message ?? "",
-                            overflow: widget.overflow ?? TextOverflow.ellipsis,
-                            maxLines: 2,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(color: Colors.white, fontSize: 11),
+                          margin:
+                              const EdgeInsets.only(left: EnvoySpacing.small),
+                          child: Semantics(
+                            identifier: "toast_message",
+                            label: widget.message ?? "",
+                            child: Text(
+                              widget.message ?? "",
+                              overflow:
+                                  widget.overflow ?? TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: EnvoyTypography.label.copyWith(
+                                  color: NewEnvoyColor.contentPrimaryInverse),
+                            ),
                           ),
                         ),
                       ),
@@ -167,13 +174,8 @@ class EnvoyToastState extends State<EnvoyToast> {
                             padding: const EdgeInsets.all(EnvoySpacing.xs),
                             child: Text(
                               widget.actionButtonText ?? "",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(
-                                    color: EnvoyColors.darkTeal,
-                                    fontSize: 11,
-                                  ),
+                              style: EnvoyTypography.label
+                                  .copyWith(color: NewEnvoyColor.contentLink),
                             ),
                           ),
                         ),

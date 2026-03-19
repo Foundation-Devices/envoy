@@ -12,6 +12,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:envoy/ui/state/home_page_state.dart';
 
 class AboutPage extends ConsumerStatefulWidget {
   const AboutPage({super.key});
@@ -69,9 +70,12 @@ class _AboutPageState extends ConsumerState<AboutPage> {
                 future: PackageInfo.fromPlatform(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return AboutText(
-                      "${snapshot.data!.version} (${snapshot.data!.buildNumber})",
-                      dark: true,
+                    return Semantics(
+                      identifier: "app_version",
+                      child: AboutText(
+                        "${snapshot.data!.version} (${snapshot.data!.buildNumber})",
+                        dark: true,
+                      ),
                     );
                   } else {
                     return const SizedBox.shrink();
@@ -88,9 +92,11 @@ class _AboutPageState extends ConsumerState<AboutPage> {
               AboutButton(
                 S().about_show,
                 onTap: () {
+                  ref.read(homePageBackgroundProvider.notifier).state =
+                      HomePageBackgroundState.licence;
                   showLicensePage(
                     context: context,
-                    applicationName: "Envoy", // TODO: FIGMA
+                    applicationName: "Envoy",
                     useRootNavigator: true,
                     applicationLegalese:
                         "This program is free software: you can redistribute it and/or modify " // TODO: FIGMA

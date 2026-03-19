@@ -1,0 +1,82 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (01) buyAtmFilterByCountryAndFlowToMap
+appId: com.foundationdevices.envoy
+---
+
+# already starting clean
+#- launchApp:
+#    clearState: true
+
+# create MB
+- tapOn: |-
+    Create a 
+    Mobile Wallet
+
+- tapOn: Continue
+
+- extendedWaitUntil:
+    visible: "Android Backs Up Every 24h"
+    timeout: 300000 # wait 5 min
+- tapOn: Continue
+- tapOn: Continue
+- tapOn: Continue
+
+# Make sure you are in Home
+- assertVisible: ACCOUNTS
+
+- tapOn:
+    id: QR Shield Buy
+
+# select state
+- tapOn: United States
+
+- scrollUntilVisible:
+    element:
+      text: Spain
+    speed: 45
+    timeout: 130000
+
+- tapOn:
+    text: Spain
+
+- tapOn: Select State
+
+- repeat:
+    while:
+      notVisible: Granada
+    commands:
+      - swipe:
+          start: "50%, 70%"
+          end: "50%, 50%"
+          duration: 300
+
+- tapOn: Granada
+
+- tapOn: Continue
+
+- tapOn: ATMs
+
+- tapOn: Continue
+
+# wait until map opens
+- extendedWaitUntil:
+    visible:
+      id: "envoy_icon_plus"
+    timeout: 15000
+#open firts pin on the map
+- tapOn:
+    id: envoy_icon_location
+
+# check that the atm address is in Spain Granada
+- assertVisible: Bulevard Billy Wilder, Pulianas
+
+# go back to home
+- tapOn:
+    id: atm_dialog_close
+- tapOn:
+    id: envoy_icon_close
+- tapOn:
+    id: hamburger_menu

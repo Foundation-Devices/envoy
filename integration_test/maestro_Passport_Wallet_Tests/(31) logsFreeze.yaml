@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: 2026 Foundation Devices Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# (31) logsFreeze
+appId: com.foundationdevices.envoy
+---
+
+# go to advanced / logs
+- tapOn:
+      id: hamburger_menu
+- tapOn: |-
+      SETTINGS
+      SETTINGS
+- tapOn: Advanced
+- tapOn: View Envoy Logs
+
+# copy logs
+- tapOn: Copy logs
+
+# check for the toast
+- assertVisible: |-
+      Logs copied to clipboard.
+      Logs copied to clipboard.
+
+# wait until toast is gone
+- assertNotVisible:
+      id: "toast_message"
+
+- tapOn: Back
+
+# go back to home
+- tapOn:
+      id: hamburger_menu

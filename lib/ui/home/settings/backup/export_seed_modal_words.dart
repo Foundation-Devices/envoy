@@ -70,148 +70,131 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
                         slivers: [
                           SliverPadding(
                             padding: EdgeInsets.symmetric(
-                              horizontal: constraints.maxWidth < 250 ? 0 : 34,
-                            ),
+                                horizontal:
+                                    constraints.maxWidth < 250 ? 0 : 34),
                             sliver: SliverFillRemaining(
                               fillOverscroll: false,
                               hasScrollBody: true,
-                              child: Builder(
-                                builder: (context) {
-                                  const TextStyle textTheme = TextStyle(
-                                    overflow: TextOverflow.fade,
+                              child: Builder(builder: (context) {
+                                const TextStyle textTheme = TextStyle(
                                     fontSize: 15,
                                     color: Colors.black87,
-                                    fontWeight: FontWeight.bold,
-                                  );
+                                    fontWeight: FontWeight.bold);
 
-                                  if (needListView) {
-                                    return ListView(
-                                      shrinkWrap: true,
-                                      children: widget.seed.map((word) {
-                                        return Container(
-                                          height: 32,
-                                          margin: const EdgeInsets.symmetric(
-                                            vertical: EnvoySpacing.medium1,
-                                            horizontal: EnvoySpacing.small,
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: EnvoySpacing.small,
-                                          ),
-                                          constraints: const BoxConstraints(
-                                            maxWidth: 200,
-                                            maxHeight: 80,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey[300],
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                "${widget.seed.indexOf(word) + 1}.",
-                                                textScaler: MediaQuery.of(
-                                                  context,
-                                                ).textScaler.clamp(
+                                if (needListView) {
+                                  return ListView(
+                                    shrinkWrap: true,
+                                    children: widget.seed.map((word) {
+                                      return Container(
+                                        height: 32,
+                                        margin: const EdgeInsets.symmetric(
+                                          vertical: EnvoySpacing.medium1,
+                                          horizontal: EnvoySpacing.small,
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: EnvoySpacing.small,
+                                        ),
+                                        constraints: const BoxConstraints(
+                                          maxWidth: 200,
+                                          maxHeight: 80,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[300],
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              "${widget.seed.indexOf(word) + 1}.",
+                                              textScaler: MediaQuery.of(context)
+                                                  .textScaler
+                                                  .clamp(
                                                       maxScaleFactor: 1.5,
-                                                      minScaleFactor: .8,
-                                                    ),
-                                                style: textTheme,
-                                              ),
-                                              Flexible(
+                                                      minScaleFactor: .8),
+                                              style: textTheme,
+                                            ),
+                                            Flexible(
+                                              child: FittedBox(
+                                                fit: BoxFit.scaleDown,
                                                 child: Text(
                                                   word,
                                                   style: textTheme,
-                                                  maxLines: 1,
-                                                  textScaler: MediaQuery.of(
-                                                    context,
-                                                  ).textScaler.clamp(
-                                                        maxScaleFactor: 1.5,
-                                                        minScaleFactor: .8,
-                                                      ),
-                                                  softWrap: false,
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                        );
-                                      }).toList(),
-                                    );
-                                  }
-                                  return PageView.builder(
-                                    controller: _pageController,
-                                    itemBuilder: (context, pageIndex) {
-                                      var seedList = widget.seed;
-                                      List<String> section1 = [];
-                                      List<String> section2 = [];
-                                      if (pageIndex == 0) {
-                                        section1 = seedList.sublist(0, 6);
-                                        section2 = seedList.sublist(6, 12);
-                                      } else {
-                                        if (seedList.length == 24) {
-                                          section1 = seedList.sublist(12, 18);
-                                          section2 = seedList.sublist(18, 24);
-                                        }
-                                      }
-
-                                      List<Tuple<int, String>>
-                                          section1WithIndex = [];
-                                      List<Tuple<int, String>>
-                                          section2WithIndex = [];
-
-                                      section1.asMap().forEach((
-                                        index,
-                                        element,
-                                      ) {
-                                        int value = pageIndex == 0
-                                            ? index + 1
-                                            : index + 13;
-                                        section1WithIndex.add(
-                                          Tuple(value, element),
-                                        );
-                                      });
-
-                                      section2.asMap().forEach((
-                                        index,
-                                        element,
-                                      ) {
-                                        int value = pageIndex == 0
-                                            ? index + 7
-                                            : index + 19;
-                                        section2WithIndex.add(
-                                          Tuple(value, element),
-                                        );
-                                      });
-
-                                      return Builder(
-                                        builder: (context) {
-                                          return Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Flexible(
-                                                child: _buildMnemonicColumn(
-                                                  section1WithIndex,
-                                                ),
-                                              ),
-                                              Flexible(
-                                                child: _buildMnemonicColumn(
-                                                  section2WithIndex,
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        },
+                                            ),
+                                          ],
+                                        ),
                                       );
-                                    },
-                                    itemCount: widget.seed.length == 12 ? 1 : 2,
+                                    }).toList(),
                                   );
-                                },
-                              ),
+                                }
+                                return PageView.builder(
+                                  controller: _pageController,
+                                  itemBuilder: (context, pageIndex) {
+                                    var seedList = widget.seed;
+                                    List<String> section1 = [];
+                                    List<String> section2 = [];
+                                    if (pageIndex == 0) {
+                                      section1 = seedList.sublist(0, 6);
+                                      section2 = seedList.sublist(6, 12);
+                                    } else {
+                                      if (seedList.length == 24) {
+                                        section1 = seedList.sublist(12, 18);
+                                        section2 = seedList.sublist(18, 24);
+                                      }
+                                    }
+
+                                    List<Tuple<int, String>> section1WithIndex =
+                                        [];
+                                    List<Tuple<int, String>> section2WithIndex =
+                                        [];
+
+                                    section1.asMap().forEach((
+                                      index,
+                                      element,
+                                    ) {
+                                      int value = pageIndex == 0
+                                          ? index + 1
+                                          : index + 13;
+                                      section1WithIndex.add(
+                                        Tuple(value, element),
+                                      );
+                                    });
+
+                                    section2.asMap().forEach((
+                                      index,
+                                      element,
+                                    ) {
+                                      int value = pageIndex == 0
+                                          ? index + 7
+                                          : index + 19;
+                                      section2WithIndex.add(
+                                        Tuple(value, element),
+                                      );
+                                    });
+
+                                    return SingleChildScrollView(
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Flexible(
+                                              child: _buildMnemonicColumn(
+                                                  section1WithIndex)),
+                                          Flexible(
+                                              child: _buildMnemonicColumn(
+                                                  section2WithIndex)),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                  itemCount: widget.seed.length == 12 ? 1 : 2,
+                                );
+                              }),
                             ),
                           ),
                           SliverToBoxAdapter(
@@ -284,11 +267,7 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
 
   Widget _buildMnemonicColumn(List<Tuple<int, String>> list) {
     const TextStyle textTheme = TextStyle(
-      overflow: TextOverflow.fade,
-      fontSize: 15,
-      color: Colors.black87,
-      fontWeight: FontWeight.bold,
-    );
+        fontSize: 15, color: Colors.black87, fontWeight: FontWeight.bold);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: list.map((word) {
@@ -307,14 +286,15 @@ class _ExportSeedModalWordsState extends State<ExportSeedModalWords> {
           child: Row(
             children: [
               Text("${word.item1}. ", style: textTheme),
-              Flexible(
+              Expanded(
+                  child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
                 child: Text(
                   word.item2,
                   style: textTheme,
-                  maxLines: 1,
-                  softWrap: false,
                 ),
-              ),
+              )),
             ],
           ),
         );

@@ -131,10 +131,64 @@ final mainnetAccountsProvider =
   return filteredEnvoyAccounts;
 });
 
-final accountStateProvider = StateProvider.family<EnvoyAccount?, String?>((
-  ref,
-  id,
-) {
+final signetAccountsProvider =
+    Provider.family<List<EnvoyAccount>, EnvoyAccount?>(
+        (ref, selectedEnvoyAccount) {
+  final accounts = ref.watch(accountsProvider);
+  final order = ref.watch(accountOrderStream);
+
+// We filter everything but signet
+  final filteredEnvoyAccounts =
+      accounts.where((account) => account.network == Network.signet).toList();
+
+  sortByAccountOrder(filteredEnvoyAccounts, order, (account) => account.id);
+
+  return filteredEnvoyAccounts;
+});
+
+final testnetAccountsProvider =
+    Provider.family<List<EnvoyAccount>, EnvoyAccount?>(
+        (ref, selectedEnvoyAccount) {
+  final accounts = ref.watch(accountsProvider);
+  final order = ref.watch(accountOrderStream);
+
+// We filter everything but testnet
+  final filteredEnvoyAccounts =
+      accounts.where((account) => account.network == Network.testnet4).toList();
+
+  sortByAccountOrder(filteredEnvoyAccounts, order, (account) => account.id);
+
+  return filteredEnvoyAccounts;
+});
+
+final mainnetAccountsCountProvider = Provider<int>((ref) {
+  final accounts = ref.watch(mainnetAccountsProvider(null));
+  return accounts.length;
+});
+
+final signetAccountsCountProvider = Provider<int>((ref) {
+  final accounts = ref.watch(signetAccountsProvider(null));
+  return accounts.length;
+});
+
+final testnetAccountsCountProvider = Provider<int>((ref) {
+  final accounts = ref.watch(testnetAccountsProvider(null));
+  return accounts.length;
+});
+
+final accountsCountByNetworkProvider =
+    Provider.family<int, Network>((ref, network) {
+  final accounts = switch (network) {
+    Network.bitcoin => ref.watch(mainnetAccountsProvider(null)),
+    Network.signet => ref.watch(signetAccountsProvider(null)),
+    Network.testnet4 => ref.watch(testnetAccountsProvider(null)),
+    _ => <EnvoyAccount>[],
+  };
+  return accounts.length;
+});
+
+final accountStateProvider =
+    StateProvider.family<EnvoyAccount?, String?>((ref, id) {
   final accounts = ref.watch(accountsProvider);
   final account = accounts.singleWhereOrNull((element) => element.id == id);
   if (account == null) {
@@ -156,6 +210,17 @@ final accountsZeroBalanceProvider = Provider<bool>((ref) {
   final accounts = ref.watch(accountsProvider);
   for (final account in accounts) {
     if (account.balance.toInt() > 0) {
+      return false;
+    }
+  }
+  return true;
+});
+
+// True if hot wallet account have 0 balance
+final hotWalletAccountsEmptyProvider = Provider<bool>((ref) {
+  final accounts = ref.watch(accountsProvider);
+  for (final account in accounts) {
+    if (account.isHot && account.balance != BigInt.zero) {
       return false;
     }
   }

@@ -46,11 +46,11 @@ Future<bool> openBackupFile(BuildContext buildContext, {String? seed}) async {
   return success;
 }
 
-Future<void> openBeefQABackupFile(BuildContext buildContext) async {
+Future<void> openMaestroBackupFile(BuildContext buildContext) async {
   final navigator = Navigator.of(buildContext);
   final context = buildContext;
 
-  String path = 'assets/beefqa_backup.mla.txt';
+  String path = 'assets/maestro_backup.mla.txt';
 
   var success = false;
   var seed = await EnvoySeed().get();
@@ -60,7 +60,7 @@ Future<void> openBeefQABackupFile(BuildContext buildContext) async {
     final bytes = byteData.buffer.asUint8List();
 
     final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/beefqa_backup.mla.txt');
+    final file = File('${directory.path}/maestro_backup.mla.txt');
 
     await file.writeAsBytes(bytes);
 

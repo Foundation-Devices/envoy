@@ -8,7 +8,6 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/address_entry.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
-import 'package:envoy/ui/home/cards/accounts/spend/coin_selection_overlay.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/envoy_text_button.dart';
@@ -26,7 +25,12 @@ import 'package:ngwallet/ngwallet.dart';
 
 //ignore: must_be_immutable
 class SendCard extends ConsumerStatefulWidget {
-  const SendCard({super.key});
+  final String? transferAddress;
+
+  const SendCard({
+    super.key,
+    required this.transferAddress,
+  });
 
   @override
   ConsumerState<SendCard> createState() => _SendCardState();
@@ -42,7 +46,7 @@ class _SendCardState extends ConsumerState<SendCard>
   Future<void> _onPaste(ParseResult parsed) async {
     setState(() {
       if (parsed.address != null) {
-        _controller.text = parsed.address!;
+        _controller.text = _formatAddress(parsed.address!);
         ref.read(spendAddressProvider.notifier).state = parsed.address!;
       }
 
@@ -54,6 +58,17 @@ class _SendCardState extends ConsumerState<SendCard>
         }
       }
     });
+  }
+
+  String _formatAddress(String address) {
+    final buffer = StringBuffer();
+    for (int i = 0; i < address.length; i++) {
+      buffer.write(address[i]);
+      if ((i + 1) % 4 == 0 && i != address.length - 1) {
+        buffer.write(' ');
+      }
+    }
+    return buffer.toString();
   }
 
   @override
@@ -74,6 +89,13 @@ class _SendCardState extends ConsumerState<SendCard>
       account = ref.read(selectedAccountProvider);
       // Ensure validation error state is cleared on initialization
       ref.read(spendValidationErrorProvider.notifier).state = null;
+
+      // Auto-set the transfer address if provided
+      if (widget.transferAddress != null) {
+        _controller.text = widget.transferAddress!;
+        ref.read(spendAddressProvider.notifier).state = widget.transferAddress!;
+      }
+
       if (ref.read(spendAmountProvider) != 0) {
         setAmount(ref.read(spendAmountProvider));
       }
@@ -104,26 +126,6 @@ class _SendCardState extends ConsumerState<SendCard>
   void _updateAmount(int amount) {
     ref.read(spendAmountProvider.notifier).state = amount;
     ref.read(spendTransactionProvider.notifier).reset();
-  }
-
-  Future<void> show(SpendOverlayContext overlayContext) async {
-    ref.read(spendEditModeProvider.notifier).state = overlayContext;
-    final account = ref.read(selectedAccountProvider);
-    if (account == null || overlayEntry != null) return;
-
-    overlayEntry = OverlayEntry(
-      builder: (context) {
-        return SpendRequirementOverlay(account: account);
-      },
-      maintainState: true,
-      opaque: false,
-    );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        Overlay.of(context, rootOverlay: true).insert(overlayEntry!);
-      }
-    });
   }
 
   @override

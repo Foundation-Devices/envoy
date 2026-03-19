@@ -233,24 +233,28 @@ class _CoinBalanceWidgetState extends ConsumerState<CoinBalanceWidget> {
               ref.watch(tagProvider(widget.coinTag.name)) ?? widget.coinTag;
           return tag.isAllCoinsLocked
               ? const SizedBox.shrink()
-              : CoinTagSwitch(
-                  value: isSelected
-                      ? CoinTagSwitchState.on
-                      : CoinTagSwitchState.off,
-                  onChanged: (value) {
-                    if (widget.onEnable != null && !isSelected) {
-                      widget.onEnable!();
-                    }
-                    final selectionState = ref.read(
-                      coinSelectionStateProvider.notifier,
-                    );
-                    if (value == CoinTagSwitchState.on) {
-                      selectionState.add(output.getId());
-                    } else {
-                      selectionState.remove(output.getId());
-                    }
-                  },
-                );
+              : Semantics(
+                  label: "coin switch ${isSelected ? 'true' : 'false'}",
+                  toggled: isSelected,
+                  container: true,
+                  child: CoinTagSwitch(
+                    value: isSelected
+                        ? CoinTagSwitchState.on
+                        : CoinTagSwitchState.off,
+                    onChanged: (value) {
+                      if (widget.onEnable != null && !isSelected) {
+                        widget.onEnable!();
+                      }
+                      final selectionState = ref.read(
+                        coinSelectionStateProvider.notifier,
+                      );
+                      if (value == CoinTagSwitchState.on) {
+                        selectionState.add(output.getId());
+                      } else {
+                        selectionState.remove(output.getId());
+                      }
+                    },
+                  ));
         },
       ),
     );
@@ -397,37 +401,42 @@ class CoinTagBalanceWidget extends ConsumerWidget {
                   if (isRbfChangeOutput) {
                     coinTagSwitchState = CoinTagSwitchState.on;
                   }
-                  return CoinTagSwitch(
-                    triState: true,
-                    value: coinTagSwitchState,
-                    onChanged: (value) {
-                      final selectionState = ref.read(
-                        coinSelectionStateProvider.notifier,
-                      );
-                      bool hasLockedItems = coinTag.numOfLockedCoins != 0;
-                      if (hasLockedItems && value == CoinTagSwitchState.on) {
-                        final ids = coinTag.utxo
-                            .where((element) => !element.doNotSpend)
-                            .map((e) => e.getId())
-                            .toList();
-                        selectionState.removeAll(ids);
-                      } else {
-                        if (value == CoinTagSwitchState.on ||
-                            value == CoinTagSwitchState.partial) {
-                          final ids = coinTag.utxo
-                              .where((element) => !element.doNotSpend)
-                              .map((e) => e.getId())
-                              .toList();
-                          selectionState.addAll(ids);
-                        } else {
+                  return Semantics(
+                    container: true,
+                    identifier:
+                        "coin_tag_switch_${coinTag.name}_${coinTagSwitchState.name}",
+                    child: CoinTagSwitch(
+                      triState: true,
+                      value: coinTagSwitchState,
+                      onChanged: (value) {
+                        final selectionState = ref.read(
+                          coinSelectionStateProvider.notifier,
+                        );
+                        bool hasLockedItems = coinTag.numOfLockedCoins != 0;
+                        if (hasLockedItems && value == CoinTagSwitchState.on) {
                           final ids = coinTag.utxo
                               .where((element) => !element.doNotSpend)
                               .map((e) => e.getId())
                               .toList();
                           selectionState.removeAll(ids);
+                        } else {
+                          if (value == CoinTagSwitchState.on ||
+                              value == CoinTagSwitchState.partial) {
+                            final ids = coinTag.utxo
+                                .where((element) => !element.doNotSpend)
+                                .map((e) => e.getId())
+                                .toList();
+                            selectionState.addAll(ids);
+                          } else {
+                            final ids = coinTag.utxo
+                                .where((element) => !element.doNotSpend)
+                                .map((e) => e.getId())
+                                .toList();
+                            selectionState.removeAll(ids);
+                          }
                         }
-                      }
-                    },
+                      },
+                    ),
                   );
                 },
               ),
@@ -546,17 +555,22 @@ class CoinLockButtonState extends State<CoinLockButton> {
     final borderColor = widget.locked ? EnvoyColors.copper : EnvoyColors.grey85;
     final icon = widget.locked ? "locked" : "unlocked";
 
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: borderColor, width: 1),
-      ),
-      child: SvgPicture.asset(
-        "assets/components/icons/$icon.svg",
-        width: 18.0,
-        height: 18.0,
-        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+    return Semantics(
+      container: true,
+      button: true,
+      label: 'coin_lock_icon-$icon',
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: borderColor, width: 1),
+        ),
+        child: SvgPicture.asset(
+          "assets/components/icons/$icon.svg",
+          width: 18.0,
+          height: 18.0,
+          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+        ),
       ),
     );
   }
@@ -610,15 +624,16 @@ class CoinLockButtonState extends State<CoinLockButton> {
 //Widget to show coin tag selections and lock states
 class CoinSubTitleText extends ConsumerWidget {
   final Tag tag;
+  final Color? textColor;
 
-  const CoinSubTitleText(this.tag, {super.key});
+  const CoinSubTitleText(this.tag, {super.key, this.textColor});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     String message = getMessage(tag, ref);
     return Text(
       message,
-      style: EnvoyTypography.info.copyWith(color: Colors.white),
+      style: EnvoyTypography.info.copyWith(color: textColor ?? Colors.white),
     );
   }
 }

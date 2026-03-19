@@ -74,8 +74,6 @@ class NgAccountManager extends ChangeNotifier {
 
   final List<(EnvoyAccount, EnvoyAccountHandler)> _accountsHandler = [];
   var s = Settings();
-  static late final bool isTesting;
-
   static const String accountsPrefKey = "ng_accounts";
   static const String v1AccountsPrefKey = "accounts";
 
@@ -102,9 +100,6 @@ class NgAccountManager extends ChangeNotifier {
 
   static Future<NgAccountManager> init() async {
     var singleton = NgAccountManager._instance;
-    // IS_TEST flag from run_integration_tests.sh
-    isTesting = const bool.fromEnvironment('IS_TEST', defaultValue: true);
-
     try {
       await RustLib.init();
     } catch (e, stack) {
@@ -263,11 +258,9 @@ class NgAccountManager extends ChangeNotifier {
       subscription?.cancel();
     }
 
-    if (!isTesting) {
-      SyncManager().dispose();
-      if (force == true) {
-        super.dispose();
-      }
+    SyncManager().dispose();
+    if (force == true) {
+      super.dispose();
     }
   }
 
@@ -295,6 +288,7 @@ class NgAccountManager extends ChangeNotifier {
     return false;
   }
 
+  @Deprecated('Use hotWalletAccountsEmptyProvider instead')
   bool hotWalletAccountsEmpty() {
     for (var account in accounts) {
       if (account.isHot && account.balance != BigInt.zero) {

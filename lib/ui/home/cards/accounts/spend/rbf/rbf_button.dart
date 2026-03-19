@@ -21,6 +21,7 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/toast/envoy_toast.dart';
+import 'package:envoy/business/fee_rate.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,7 +31,7 @@ import 'package:url_launcher/url_launcher.dart';
 class RBFSpendState {
   String receiveAddress;
   num receiveAmount;
-  int feeRate;
+  FeeRate feeRate;
   int originalAmount;
   DraftTransaction draftTx;
   BitcoinTransaction originalTx;
@@ -45,7 +46,7 @@ class RBFSpendState {
   });
 
   RBFSpendState? copyWith({
-    required int feeRate,
+    required FeeRate feeRate,
     required DraftTransaction preparedTx,
     BitcoinTransaction? originalTx,
   }) {
@@ -129,51 +130,56 @@ class _TxRBFButtonState extends ConsumerState<TxRBFButton> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        if (widget.loading) return;
-        _showRBFDialog(context);
-      },
-      child: _buildButtonContainer(
-        active: ref.watch(rbfSpendStateProvider) != null || widget.loading,
-        child: widget.loading
-            ? const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(width: EnvoySpacing.xs),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: EnvoySpacing.medium2,
-                      vertical: EnvoySpacing.xs,
-                    ),
-                    child: SizedBox.square(
-                      dimension: 12,
-                      child: CircularProgressIndicator(
-                        color: EnvoyColors.solidWhite,
-                        strokeWidth: 2,
+    return Semantics(
+      container: true,
+      button: true,
+      label: 'boost button-${widget.loading ? "loading" : "ready"}',
+      child: GestureDetector(
+        onTap: () {
+          if (widget.loading) return;
+          _showRBFDialog(context);
+        },
+        child: _buildButtonContainer(
+          active: ref.watch(rbfSpendStateProvider) != null || widget.loading,
+          child: widget.loading
+              ? const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(width: EnvoySpacing.xs),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: EnvoySpacing.medium2,
+                        vertical: EnvoySpacing.xs,
+                      ),
+                      child: SizedBox.square(
+                        dimension: 12,
+                        child: CircularProgressIndicator(
+                          color: EnvoyColors.solidWhite,
+                          strokeWidth: 2,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: EnvoySpacing.xs),
-                ],
-              )
-            : Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  const EnvoyIcon(EnvoyIcons.rbf_boost, color: Colors.white),
-                  const SizedBox(width: EnvoySpacing.xs),
-                  Text(
-                    S().coindetails_overlay_confirmation_boost,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                ],
-              ),
+                    SizedBox(width: EnvoySpacing.xs),
+                  ],
+                )
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    const EnvoyIcon(EnvoyIcons.rbf_boost, color: Colors.white),
+                    const SizedBox(width: EnvoySpacing.xs),
+                    Text(
+                      S().coindetails_overlay_confirmation_boost,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                  ],
+                ),
+        ),
       ),
     );
   }

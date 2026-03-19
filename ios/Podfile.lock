@@ -49,6 +49,8 @@ PODS:
     - Flutter
   - rust_lib_shards (0.0.1):
     - Flutter
+  - rust_lib_ur (0.0.1):
+    - Flutter
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -86,6 +88,7 @@ DEPENDENCIES:
   - rust_lib_http_tor (from `.symlinks/plugins/rust_lib_http_tor/ios`)
   - rust_lib_ngwallet (from `.symlinks/plugins/rust_lib_ngwallet/ios`)
   - rust_lib_shards (from `.symlinks/plugins/rust_lib_shards/ios`)
+  - rust_lib_ur (from `.symlinks/plugins/rust_lib_ur/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
@@ -143,6 +146,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/rust_lib_ngwallet/ios"
   rust_lib_shards:
     :path: ".symlinks/plugins/rust_lib_shards/ios"
+  rust_lib_ur:
+    :path: ".symlinks/plugins/rust_lib_ur/ios"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
   shared_preferences_foundation:
@@ -186,6 +191,7 @@ SPEC CHECKSUMS:
   rust_lib_http_tor: 0fcda57f1a6c6046f5f62488ef5bce90aa30694a
   rust_lib_ngwallet: 3a8d019b362008e31221ba4b2263988fcc0bf802
   rust_lib_shards: 8e23064d2ebd38e6a70dc5a2fd05747544c14005
+  rust_lib_ur: b8ae26f3fe44408cb5bd20c0bf244cd0a0413a6d
   share_plus: 8b6f8b3447e494cca5317c8c3073de39b3600d1f
   shared_preferences_foundation: 5086985c1d43c5ba4d5e69a4e8083a389e2909e6
   sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d

@@ -6,19 +6,22 @@
 import '../frb_generated.dart';
 import '../lib.dart';
 import '../third_party/ngwallet/config.dart';
+import '../third_party/ngwallet/fee_rate.dart';
 import '../third_party/ngwallet/send.dart';
 import '../third_party/ngwallet/transaction.dart';
 import 'envoy_account.dart';
 import 'errors.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `bdk_db_path`, `get_descriptor`, `get_descriptors`, `setup_log_to_console`
+// These functions are ignored because they are not marked as `pub`: `bdk_db_path`, `get_descriptor`, `get_descriptors`, `is_cert_error`, `setup_log_to_console`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `fmt`
 
 Future<ServerFeatures> getServerFeatures(
-        {required String server, String? proxy}) =>
-    RustLib.instance.api
-        .crateApiEnvoyWalletGetServerFeatures(server: server, proxy: proxy);
+        {required String server,
+        String? proxy,
+        required bool validateDomain}) =>
+    RustLib.instance.api.crateApiEnvoyWalletGetServerFeatures(
+        server: server, proxy: proxy, validateDomain: validateDomain);
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Arc < Mutex < Option < FullScanRequest < KeychainKind > > > >>>
 abstract class FullScanRequest implements RustOpaqueInterface {}
@@ -55,11 +58,13 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   static Future<String> broadcast(
           {required DraftTransaction draftTransaction,
           required String electrumServer,
-          int? torPort}) =>
+          int? torPort,
+          bool? validateDomain}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerBroadcast(
           draftTransaction: draftTransaction,
           electrumServer: electrumServer,
-          torPort: torPort);
+          torPort: torPort,
+          validateDomain: validateDomain);
 
   Future<DraftTransaction> composeCancellationTx(
       {required BitcoinTransaction bitcoinTransaction});
@@ -95,10 +100,14 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   static Future<BigInt?> fetchElectrumFee(
           {required String txid,
           required String electrumServer,
-          int? torPort}) =>
+          int? torPort,
+          bool? validateDomain}) =>
       RustLib.instance.api
           .crateApiEnvoyWalletEnvoyAccountHandlerFetchElectrumFee(
-              txid: txid, electrumServer: electrumServer, torPort: torPort);
+              txid: txid,
+              electrumServer: electrumServer,
+              torPort: torPort,
+              validateDomain: validateDomain);
 
   static Future<EnvoyAccountHandler> fromConfig(
           {required String dbPath, required NgAccountConfig config}) =>
@@ -193,6 +202,14 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
       RustLib.instance.api
           .crateApiEnvoyWalletEnvoyAccountHandlerOpenAccount(dbPath: dbPath);
 
+  /// Get addresses for the given index range without revealing them.
+  /// Set `is_change` to true for change addresses, false for receive addresses.
+  Future<List<(int, String)>> peekAddresses(
+      {required AddressType addressType,
+      required int fromIndex,
+      required int toIndex,
+      required bool isChange});
+
   Future<void> renameAccount({required String name});
 
   Future<void> renameTag({required String existingTag, String? newTag});
@@ -214,11 +231,15 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   static Future<WalletUpdate> scanWallet(
           {required FullScanRequest scanRequest,
           required String electrumServer,
-          int? torPort}) =>
+          int? torPort,
+          int? stopGap,
+          bool? validateDomain}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerScanWallet(
           scanRequest: scanRequest,
           electrumServer: electrumServer,
-          torPort: torPort);
+          torPort: torPort,
+          stopGap: stopGap,
+          validateDomain: validateDomain);
 
   Future<void> sendUpdate();
 
@@ -246,11 +267,13 @@ abstract class EnvoyAccountHandler implements RustOpaqueInterface {
   static Future<WalletUpdate> syncWallet(
           {required SyncRequest syncRequest,
           required String electrumServer,
-          int? torPort}) =>
+          int? torPort,
+          bool? validateDomain}) =>
       RustLib.instance.api.crateApiEnvoyWalletEnvoyAccountHandlerSyncWallet(
           syncRequest: syncRequest,
           electrumServer: electrumServer,
-          torPort: torPort);
+          torPort: torPort,
+          validateDomain: validateDomain);
 
   Future<Uint8List> toRemoteUpdate();
 
@@ -314,6 +337,7 @@ class ServerFeatures {
   final String? protocolMax;
   final String? hashFunction;
   final PlatformInt64? pruning;
+  final bool certError;
 
   const ServerFeatures({
     this.serverVersion,
@@ -322,6 +346,7 @@ class ServerFeatures {
     this.protocolMax,
     this.hashFunction,
     this.pruning,
+    required this.certError,
   });
 
   @override
@@ -331,7 +356,8 @@ class ServerFeatures {
       protocolMin.hashCode ^
       protocolMax.hashCode ^
       hashFunction.hashCode ^
-      pruning.hashCode;
+      pruning.hashCode ^
+      certError.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -343,5 +369,6 @@ class ServerFeatures {
           protocolMin == other.protocolMin &&
           protocolMax == other.protocolMax &&
           hashFunction == other.hashFunction &&
-          pruning == other.pruning;
+          pruning == other.pruning &&
+          certError == other.certError;
 }

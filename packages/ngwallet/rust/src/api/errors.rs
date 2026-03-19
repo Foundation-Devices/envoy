@@ -52,7 +52,7 @@ impl TxComposeError {
                     TxComposeError::InsufficientFees(required.to_sat())
                 }
                 CreateTxError::FeeRateTooLow { required } => {
-                    TxComposeError::InsufficientFeeRate(required.to_sat_per_vb_floor())
+                    TxComposeError::InsufficientFeeRate(required.to_sat_per_kwu() * 4)
                 }
                 CreateTxError::NoUtxosSelected => {
                     TxComposeError::Error("No Utxos Selected".to_string())

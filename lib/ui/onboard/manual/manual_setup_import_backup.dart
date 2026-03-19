@@ -35,13 +35,9 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
   rive.RiveWidgetController? _controller;
   bool _isInitialized = false;
   bool _isRecoveryInProgress = false;
-  late final bool isTest;
-
   @override
   void initState() {
     super.initState();
-    // IS_TEST flag from run_integration_tests.sh
-    isTest = const bool.fromEnvironment('IS_TEST', defaultValue: true);
     _initRive();
   }
 
@@ -133,23 +129,26 @@ class _ManualSetupImportBackupState extends State<ManualSetupImportBackup> {
                 padding: const EdgeInsets.symmetric(
                   horizontal: EnvoySpacing.large3,
                 ),
-                child: GestureDetector(
-                  onLongPress: () {
-                    if (isTest) {
+                child: Semantics(
+                  label: "Import Backup Image",
+                  button: true,
+                  enabled: true,
+                  child: GestureDetector(
+                    onLongPress: () {
                       setState(() {
                         _isRecoveryInProgress = true;
                       });
-                      openBeefQABackupFile(context).then((value) {
+                      openMaestroBackupFile(context).then((value) {
                         setState(() {
                           _isRecoveryInProgress = false;
                         });
                       });
-                    }
-                  },
-                  child: Image.asset(
-                    "assets/fw_download.png",
-                    width: 150,
-                    height: 150,
+                    },
+                    child: Image.asset(
+                      "assets/fw_download.png",
+                      width: 150,
+                      height: 150,
+                    ),
                   ),
                 ),
               ),
@@ -280,6 +279,7 @@ class _RecoverFromSeedLoaderState extends State<RecoverFromSeedLoader> {
           serverUrl: Settings().envoyServerAddress,
           proxyPort: Tor.instance.port,
         );
+
         data = EnvoySeed.extractDataFromPayload(backUpPayload);
       } catch (_) {
         data = null;
@@ -403,5 +403,20 @@ Future<void> recoverManually(
     if (context.mounted) {
       showInvalidSeedDialog(context: context);
     }
+  }
+}
+
+/// Checks if a cloud backup exists on the server for the given seed.
+Future<bool> hasServerBackupData(String seed) async {
+  try {
+    final backUpPayload = await Backup.getBackup(
+      seedWords: seed,
+      serverUrl: Settings().envoyServerAddress,
+      proxyPort: Tor.instance.port,
+    );
+    final data = EnvoySeed.extractDataFromPayload(backUpPayload);
+    return data.isNotEmpty;
+  } catch (_) {
+    return false;
   }
 }

@@ -220,7 +220,12 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
           },
           child: Transform.translate(
             offset: Offset(_offsetX * size.width * .5, 0.0),
-            child: widget.child,
+            child: Semantics(
+              container: true,
+              identifier:
+                  "account_card_${widget.account.name}_${widget.account.isHot ? "hot" : "cold"}_${widget.account.network}",
+              child: widget.child,
+            ),
           ),
         ),
       ],

@@ -10,13 +10,16 @@ import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/magic/magic_recover_wallet.dart';
+import 'package:envoy/ui/onboard/manual/manual_setup_import_backup.dart';
 import 'package:envoy/ui/onboard/magic/magic_setup_generate.dart';
 import 'package:envoy/ui/onboard/routes/onboard_routes.dart';
 import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
+import 'package:envoy/ui/onboard/onboard_page_wrapper.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart' as rive;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:envoy/ui/onboard/onboard_welcome.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -38,12 +41,58 @@ bool _checkedMagicBackUpInWelcomeScreen = false;
 
 class _OnboardEnvoyWelcomeScreenState
     extends ConsumerState<OnboardEnvoyWelcomeScreen> {
-  final bool _magicBackUpEnabled = Settings().syncToCloud;
+  bool _checkingBackup = false;
+  rive.File? _riveFile;
+  rive.RiveWidgetController? _riveController;
+  bool _riveInitialized = false;
+
+  void _initRive() async {
+    _riveFile = await rive.File.asset(
+      "assets/envoy_loader.riv",
+      riveFactory: rive.Factory.rive,
+    );
+    _riveController = rive.RiveWidgetController(
+      _riveFile!,
+      stateMachineSelector: rive.StateMachineSelector.byName('STM'),
+    );
+    // ignore: deprecated_member_use
+    _riveController?.stateMachine.boolean("indeterminate")?.value = true;
+    if (mounted) {
+      setState(() => _riveInitialized = true);
+    }
+  }
+
+  @override
+  void dispose() {
+    _riveController?.dispose();
+    _riveFile?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final bool magicBackUpEnabled = Settings().syncToCloud;
     final bool isOnboardingComplete =
         LocalStorage().prefs.getBool(PREFS_ONBOARDED) ?? false;
+
+    if (_checkingBackup) {
+      return OnboardPageBackground(
+        child: Center(
+          child: Container(
+            constraints: BoxConstraints.tight(const Size.fromHeight(240)),
+            child: Transform.scale(
+              scale: 1.2,
+              child: _riveInitialized && _riveController != null
+                  ? rive.RiveWidget(
+                      controller: _riveController!,
+                      fit: rive.Fit.contain,
+                    )
+                  : const SizedBox(),
+            ),
+          ),
+        ),
+      );
+    }
 
     return EnvoyPatternScaffold(
       gradientHeight: 1.8,
@@ -73,7 +122,7 @@ class _OnboardEnvoyWelcomeScreenState
               onTap: () {
                 // TODO: implement real path
 
-                if (_magicBackUpEnabled) {
+                if (magicBackUpEnabled) {
                   //reset flags since the user manually trying to recover
                   ref.read(triedAutomaticRecovery.notifier).state = false;
                   ref.read(successfulManualRecovery.notifier).state = false;
@@ -129,7 +178,7 @@ class _OnboardEnvoyWelcomeScreenState
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Text(
-                                        _magicBackUpEnabled
+                                        magicBackUpEnabled
                                             ? S()
                                                 .onboarding_magicUserMobileIntro_header
                                             : S()
@@ -141,7 +190,7 @@ class _OnboardEnvoyWelcomeScreenState
                                         height: EnvoySpacing.small,
                                       ),
                                       Text(
-                                        _magicBackUpEnabled
+                                        magicBackUpEnabled
                                             ? S()
                                                 .onboarding_magicUserMobileIntro_content1
                                             : S()
@@ -155,7 +204,7 @@ class _OnboardEnvoyWelcomeScreenState
                                         height: EnvoySpacing.small,
                                       ),
                                       Text(
-                                        _magicBackUpEnabled
+                                        magicBackUpEnabled
                                             ? S()
                                                 .onboarding_magicUserMobileIntro_content2
                                             : S()
@@ -193,7 +242,7 @@ class _OnboardEnvoyWelcomeScreenState
                             S().onboarding_magicUserMobileIntro_learnMoreMagicBackups,
                             type: EnvoyButtonTypes.tertiary,
                             onTap: () {
-                              if (_magicBackUpEnabled) {
+                              if (magicBackUpEnabled) {
                                 launchUrl(
                                   Uri.parse(
                                     "https://docs.foundation.xyz/backups/envoy/#magic-backup",
@@ -215,7 +264,7 @@ class _OnboardEnvoyWelcomeScreenState
                               Radius.circular(EnvoySpacing.small),
                             ),
                             onTap: () {
-                              if (_magicBackUpEnabled) {
+                              if (magicBackUpEnabled) {
                                 context.pushNamed(
                                   ONBOARD_ENVOY_MAGIC_GENERATE_SETUP,
                                 );
@@ -244,19 +293,37 @@ class _OnboardEnvoyWelcomeScreenState
     if (mounted) {
       Future.delayed(const Duration(milliseconds: 100)).then((value) async {
         String? seed = await EnvoySeed().get();
+
         //while pop back to home, welcome screen will init again, so we need to check if we already tried automatic recovery
         if (mounted) {
-          //user disabled magicbackup,but we found seed in keychain/android
+          //user disabled magic backup,but we found seed in keychain/android
           if (!Settings().syncToCloud && seed != null) {
-            //shows user warning about existing seed and proceeds to recover
-            await _showSeedAlert();
-            if (mounted) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const MagicRecoverWallet(),
-                ),
-              );
+            _initRive(); // rive while checking server backup
+            setState(() => _checkingBackup = true);
+            final hasBackup = await hasServerBackupData(seed);
+            if (hasBackup) {
+              //shows user warning about existing seed and proceeds to recover
+              await _showSeedAlert();
+              if (mounted) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MagicRecoverWallet(),
+                  ),
+                );
+              }
+            } else {
+              //no server data, found seed, navigate to manual seed
+              if (mounted) {
+                final seedList = seed.split(" ");
+                EnvoySeed().create(seedList);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ManualSetupImportBackup(),
+                  ),
+                );
+              }
             }
           } else {
             if (!ref.read(triedAutomaticRecovery) &&
@@ -284,7 +351,7 @@ class _OnboardEnvoyWelcomeScreenState
     super.initState();
 
     // Pre-load Rive file so MagicSetupGenerate shows instantly
-    if (_magicBackUpEnabled) {
+    if (Settings().syncToCloud) {
       ref.read(magicSetupRiveFileProvider);
     }
   }

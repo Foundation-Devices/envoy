@@ -12,6 +12,7 @@ import 'package:envoy/ui/components/select_dropdown.dart';
 import 'package:envoy/ui/components/settings_header.dart';
 import 'package:envoy/ui/components/toggle.dart';
 import 'package:envoy/ui/fading_edge_scroll_view.dart';
+import 'package:envoy/ui/home/settings/block_explorer_entry.dart';
 import 'package:envoy/ui/home/settings/electrum_server_entry.dart';
 import 'package:envoy/ui/indicator_shield.dart';
 import 'package:envoy/ui/onboard/onboarding_page.dart';
@@ -42,6 +43,7 @@ class _AdvancedSettingsOptionsState
   final ScrollController _scrollController = ScrollController();
   bool _betterPerformance = !Settings().torEnabled();
   bool _showPersonalNodeTextField = getInitialElectrumDropdownIndex() == 1;
+  bool _showPersonalExplorerTextField = !Settings().usingDefaultBlockExplorer;
 
   @override
   Widget build(BuildContext context) {
@@ -171,6 +173,7 @@ class _AdvancedSettingsOptionsState
                                             bottom: 2,
                                           ),
                                           child: EnvoyToggle(
+                                            label: "magic backup",
                                             value: Settings().syncToCloud,
                                             onChanged: (bool value) async {
                                               if (!value) {
@@ -350,6 +353,10 @@ class _AdvancedSettingsOptionsState
                                           label: PublicServer.diyNodes.label,
                                           value: "diyNodes",
                                         ),
+                                        EnvoyDropdownOption(
+                                          label: PublicServer.bitaroo.label,
+                                          value: "bitaroo",
+                                        ),
                                       ],
                                       onOptionChanged: (selectedOption) {
                                         if (selectedOption != null) {
@@ -367,6 +374,63 @@ class _AdvancedSettingsOptionsState
                                         child: ElectrumServerEntry(
                                           s.getPersonalElectrumAddress,
                                           s.setPersonalElectrumAddress,
+                                        ),
+                                      ),
+                                    ),
+                                  buildDivider(),
+                                  SettingsHeader(
+                                    title: S().privacy_explorer_title,
+                                    linkText: S().component_learnMore,
+                                    onTap: () {
+                                      launchUrl(
+                                        Uri.parse(
+                                          "https://docs.foundation.xyz/envoy/envoy-menu/privacy/#block-explorer",
+                                        ),
+                                        mode: LaunchMode.externalApplication,
+                                      );
+                                    },
+                                    icon: EnvoyIcons.node,
+                                  ),
+                                  const SizedBox(height: EnvoySpacing.medium2),
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: EnvoyDropdown(
+                                      openAbove: true,
+                                      dropdownMaxHeight: 100,
+                                      initialIndex:
+                                          Settings().usingDefaultBlockExplorer
+                                              ? 0
+                                              : 1,
+                                      options: [
+                                        EnvoyDropdownOption(
+                                          label: S()
+                                              .privacy_node_nodeType_foundation,
+                                          value: "foundation",
+                                        ),
+                                        EnvoyDropdownOption(
+                                          label: S()
+                                              .privacy_explorer_explorerType_personal,
+                                          value: "personalExplorer",
+                                        ),
+                                      ],
+                                      onOptionChanged: (selectedOption) {
+                                        if (selectedOption != null) {
+                                          _handleExplorerDropdownChange(
+                                            selectedOption,
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  if (_showPersonalExplorerTextField)
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: EnvoySpacing.medium1,
+                                      ),
+                                      child: SingleChildScrollView(
+                                        child: BlockExplorerEntry(
+                                          s.getPersonalBlockExplorerAddress,
+                                          s.setPersonalBlockExplorerAddress,
                                         ),
                                       ),
                                     ),
@@ -398,6 +462,23 @@ class _AdvancedSettingsOptionsState
     );
   }
 
+  void _handleExplorerDropdownChange(EnvoyDropdownOption newOption) {
+    if (newOption.value == "foundation") {
+      setState(() {
+        _showPersonalExplorerTextField = false;
+      });
+      Settings().setUsingDefaultBlockExplorer(true);
+      return;
+    }
+    if (newOption.value == "personalExplorer") {
+      setState(() {
+        _showPersonalExplorerTextField = true;
+      });
+      Settings().setUsingDefaultBlockExplorer(false);
+      return;
+    }
+  }
+
   Future<void> _handleDropdownChange(EnvoyDropdownOption newOption) async {
     setState(() {
       _showPersonalNodeTextField = newOption.value == "personalNode";
@@ -427,6 +508,10 @@ class _AdvancedSettingsOptionsState
     }
     if (newOption.value == "diyNodes") {
       Settings().setCustomElectrumAddress(PublicServer.diyNodes.address);
+      return;
+    }
+    if (newOption.value == "bitaroo") {
+      Settings().setCustomElectrumAddress(PublicServer.bitaroo.address);
       return;
     }
   }

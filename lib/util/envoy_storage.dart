@@ -113,6 +113,7 @@ const String apiKeysStoreName = "api_keys";
 const String primeDataStoreName = "prime";
 const String quantumLinkIdentityStoreName = "ql_identity";
 const String stripeStoreName = "stripe";
+const String txFirstSeenStoreName = "tx_first_seen";
 
 ///keeps track of the prime account full scan status, and migration,
 ///no backup for this store
@@ -178,6 +179,9 @@ class EnvoyStorage {
 
   StoreRef<int, String> quantumLinkIdentityStore =
       StoreRef<int, String>(quantumLinkIdentityStoreName);
+
+  final StoreRef<String, int> txFirstSeenStore =
+      StoreRef<String, int>(txFirstSeenStoreName);
 
   //do not include in backup
   StoreRef<String, bool> accountFullsScanStateStore =
@@ -417,7 +421,7 @@ class EnvoyStorage {
               purchaseViewToken: e['purchaseViewToken'] as String,
               rampId: e['rampId'] as String?,
               vsize: BigInt.zero,
-              feeRate: BigInt.zero,
+              feeRate: FeeRateSatPerKvb(field0: BigInt.zero),
               rampFee: e['rampFee'] as int?);
         }
         if (type == wallet.TransactionType.stripe) {
@@ -431,7 +435,7 @@ class EnvoyStorage {
               address: e["address"] as String,
               stripeId: e['stripeId'] as String?,
               vsize: BigInt.zero,
-              feeRate: BigInt.zero,
+              feeRate: FeeRateSatPerKvb(field0: BigInt.zero),
               stripeFee: e['stripeFee'] as int?,
               note: e['note'] as String?);
         }
@@ -440,7 +444,7 @@ class EnvoyStorage {
               txId: e.key as String,
               accountId: e["account"] as String,
               vsize: BigInt.zero,
-              feeRate: BigInt.zero,
+              feeRate: FeeRateSatPerKvb(field0: BigInt.zero),
               timestamp:
                   DateTime.fromMillisecondsSinceEpoch(e["timestamp"] as int),
               fee: BigInt.from((e["fee"] as int? ?? 0)),
@@ -463,7 +467,7 @@ class EnvoyStorage {
               fee: BigInt.from((e["fee"] as int? ?? 0)),
               address: e["address"] as String,
               vsize: BigInt.zero,
-              feeRate: BigInt.zero,
+              feeRate: FeeRateSatPerKvb(field0: BigInt.zero),
               note: e['note'] as String?);
         }
         return EnvoyTransaction(
@@ -476,7 +480,7 @@ class EnvoyStorage {
             blockHeight: 0,
             confirmations: 0,
             vsize: BigInt.zero,
-            feeRate: BigInt.zero,
+            feeRate: FeeRateSatPerKvb(field0: BigInt.zero),
             isConfirmed: false,
             note: e['note'] as String?,
             accountId: e["account"] as String,
@@ -1152,6 +1156,36 @@ class EnvoyStorage {
 
   Future<T?> getNoBackUpPreference<T>(String key) async {
     return await (noBackUpPrefsStore.record(key).get(_db)) as T?;
+  }
+
+  Future<bool> setTxFirstSeen(String txId, DateTime firstSeen) async {
+    await txFirstSeenStore
+        .record(txId)
+        .put(_db, firstSeen.millisecondsSinceEpoch);
+    return true;
+  }
+
+  Future<bool> deleteTxFirstSeen(String txId) async {
+    final record = txFirstSeenStore.record(txId);
+    if (await record.exists(_db)) {
+      await record.delete(_db);
+      return true;
+    }
+    return false;
+  }
+
+  Future<Map<String, DateTime>> getAllTxFirstSeen() async {
+    final snapshots = await txFirstSeenStore.find(_db); // all records [web:5]
+    return {
+      for (final s in snapshots)
+        s.key: DateTime.fromMillisecondsSinceEpoch(s.value),
+    };
+  }
+
+  Future<DateTime?> getTxFirstSeen(String txId) async {
+    final millis = await txFirstSeenStore.record(txId).get(_db);
+    if (millis == null) return null;
+    return DateTime.fromMillisecondsSinceEpoch(millis);
   }
 
   Database db() => _db;

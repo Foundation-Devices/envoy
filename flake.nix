@@ -92,11 +92,90 @@
           exec ${pkgs.nodejs}/bin/npx @localazy/cli "$@"
         '';
 
+        # Fake rustup shim so Cargokit doesn't explode on CI.
+        #
+        # Cargokit (the Flutter<->Rust bridge build tool) hardcodes calls to
+        # `rustup` everywhere: resolving the binary, listing toolchains/targets,
+        # and running builds via `rustup run <toolchain> cargo build ...`.
+        # Since we use fenix (Nix-managed Rust), there's no real rustup.
+        #
+        # This shim pretends to be rustup just enough to keep Cargokit happy:
+        #   - "toolchain list/install" -> reports "stable" as installed
+        #   - "target list --installed" -> discovers targets from the Nix sysroot
+        #   - "target add / component add" -> no-ops (Nix already has everything)
+        #   - "run <toolchain> <cmd> <args...>" -> drops the rustup wrapper and
+        #     just execs the command directly with Nix-provided tools
+        rustup-shim = pkgs.writeShellScriptBin "rustup" ''
+          case "''${1:-}" in
+            # Cargokit calls `rustup toolchain list` to discover installed
+            # toolchains, then filters for lines starting with
+            # "stable|beta|nightly". We report "stable" so it's satisfied.
+            toolchain)
+              case "''${2:-}" in
+                list)
+                  echo "stable (default)"
+                  exit 0
+                  ;;
+                install)
+                  # Already managed by Nix, nothing to do.
+                  echo "rustup shim: toolchain already provided by Nix, skipping install"
+                  exit 0
+                  ;;
+              esac
+              ;;
+
+            # Cargokit calls `rustup target list --toolchain <t> --installed`
+            # to check which cross-compilation targets are available.
+            # We look at the actual Nix sysroot to report real installed targets.
+            target)
+              case "''${2:-}" in
+                list)
+                  sysroot=$(rustc --print sysroot)
+                  # Each installed target has a lib dir under sysroot/lib/rustlib/<triple>/
+                  for dir in "$sysroot"/lib/rustlib/*/lib; do
+                    if [ -d "$dir" ]; then
+                      basename "$(dirname "$dir")"
+                    fi
+                  done
+                  exit 0
+                  ;;
+                add)
+                  # Already managed by Nix, nothing to do.
+                  echo "rustup shim: target already provided by Nix, skipping add"
+                  exit 0
+                  ;;
+              esac
+              ;;
+
+            # Cargokit calls `rustup component add rust-src --toolchain nightly`
+            # for -Z build-std support. Nix already includes rust-src if specified
+            # in rust-toolchain.toml, so this is a no-op.
+            component)
+              echo "rustup shim: component already provided by Nix, skipping"
+              exit 0
+              ;;
+
+            # This is the big one. Cargokit runs all builds through:
+            #   rustup run <toolchain> cargo build <args...>
+            # We just strip "run <toolchain>" and exec the rest directly,
+            # since Nix already has the right cargo/rustc on PATH.
+            run)
+              shift  # drop "run"
+              shift  # drop toolchain name (e.g. "stable")
+              exec "$@"
+              ;;
+          esac
+
+          echo "rustup shim: unhandled command: $*" >&2
+          exit 1
+        '';
+
         buildInputs =
           with pkgs;
           [
             # Rust tools
             rustToolchain
+            rustup-shim # fake rustup for Cargokit (see shim definition above)
             rust-bindgen
 
             # Flutter

@@ -22,6 +22,8 @@ class EnvoyAmount extends StatelessWidget {
     this.alignToEnd = true,
     this.millionaireMode = true,
     this.unit,
+    this.semanticSuffix,
+    this.colorOverride,
   });
 
   final int amountSats;
@@ -31,6 +33,8 @@ class EnvoyAmount extends StatelessWidget {
   final AmountDisplayUnit? unit;
   final bool millionaireMode;
   final double? displayFiatAmount;
+  final String? semanticSuffix;
+  final Color? colorOverride;
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +72,8 @@ class EnvoyAmount extends StatelessWidget {
       alignToEnd: alignToEnd,
       locale: currentLocale,
       millionaireMode: millionaireMode,
+      semanticSuffix: semanticSuffix,
+      colorOverride: colorOverride,
     );
   }
 }

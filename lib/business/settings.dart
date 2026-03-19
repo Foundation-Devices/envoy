@@ -182,6 +182,9 @@ class Settings extends ChangeNotifier {
   @JsonKey(defaultValue: true)
   bool usingDefaultElectrumServer = true;
 
+  @JsonKey(defaultValue: false)
+  bool subSatFeeEnabled = false;
+
   String electrumAddress(Network network) {
     if (network == Network.testnet || network == Network.testnet4) {
       if (usingTor) {
@@ -216,6 +219,7 @@ class Settings extends ChangeNotifier {
   void setCustomElectrumAddress(String electrumAddress) {
     selectedElectrumAddress = electrumAddress;
     usingDefaultElectrumServer = false;
+    subSatFeeEnabled = false;
     store();
   }
 
@@ -228,6 +232,28 @@ class Settings extends ChangeNotifier {
 
   bool customElectrumEnabled() {
     return !usingDefaultElectrumServer;
+  }
+
+  @JsonKey(defaultValue: ["ssl://electrum.bitaroo.net:50002"])
+  List<String> skipCertValidationServers = [PublicServer.bitaroo.address];
+
+  bool validateDomain(String server) {
+    return !skipCertValidationServers.contains(server);
+  }
+
+  void addSkipCertValidation(String server) {
+    if (!skipCertValidationServers.contains(server)) {
+      skipCertValidationServers.add(server);
+      notifyListeners();
+      store();
+    }
+  }
+
+  void removeSkipCertValidation(String server) {
+    if (skipCertValidationServers.remove(server)) {
+      notifyListeners();
+      store();
+    }
   }
 
   @JsonKey(defaultValue: "")
@@ -392,6 +418,33 @@ class Settings extends ChangeNotifier {
   }
 
   @JsonKey(defaultValue: true)
+  bool usingDefaultBlockExplorer = true;
+
+  @JsonKey(defaultValue: "")
+  String personalBlockExplorerAddress = "";
+
+  bool isUsingDefaultBlockExplorer() {
+    return usingDefaultBlockExplorer;
+  }
+
+  void setUsingDefaultBlockExplorer(bool enabled) {
+    usingDefaultBlockExplorer = enabled;
+    notifyListeners();
+    store();
+  }
+
+  String getPersonalBlockExplorerAddress() {
+    return personalBlockExplorerAddress;
+  }
+
+  Future<void> setPersonalBlockExplorerAddress(String address) async {
+    personalBlockExplorerAddress = address;
+    usingDefaultBlockExplorer = false;
+    notifyListeners();
+    store();
+  }
+
+  @JsonKey(defaultValue: true)
   bool allowBuyInEnvoy = true;
 
   bool isAllowedBuyInEnvoy() {
@@ -436,13 +489,17 @@ class Settings extends ChangeNotifier {
       final isDiyNodes = PublicServer.diyNodes.address == currentNode;
       final isBlockstreamNodes =
           PublicServer.blockstream.address == currentNode;
+      final isBitarooNodes = PublicServer.bitaroo.address == currentNode;
       final isFoundationNodes = [
             ...getDefaultFulcrumServers(),
             getDefaultFulcrumServers(ssl: true),
           ].contains(currentNode) ||
           currentNode == mainnetOnionElectrumServer;
 
-      if (!isDiyNodes && !isBlockstreamNodes && !isFoundationNodes) {
+      if (!isDiyNodes &&
+          !isBlockstreamNodes &&
+          !isBitarooNodes &&
+          !isFoundationNodes) {
         singleton.personalElectrumAddress = currentNode;
         singleton.usingDefaultElectrumServer = false;
         await singleton.store();

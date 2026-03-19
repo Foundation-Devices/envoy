@@ -9,7 +9,7 @@ use crate::api::migration::get_last_used_index;
 use crate::frb_generated::StreamSink;
 use chrono::Utc;
 use flutter_rust_bridge::frb;
-use log::info;
+use log::{error, info};
 use ngwallet::account::{Descriptor, NgAccount};
 use ngwallet::bdk_electrum::electrum_client::{Client, ConfigBuilder, ElectrumApi, Socks5Config};
 use ngwallet::bdk_wallet::bitcoin::Address;
@@ -20,6 +20,7 @@ use ngwallet::bdk_wallet::{KeychainKind, Update};
 use ngwallet::config::{
     AddressType, NgAccountBackup, NgAccountBuilder, NgAccountConfig, NgDescriptor,
 };
+use ngwallet::fee_rate::{FeeRateSatPerKvb, FeeRateSatPerKwu};
 use ngwallet::ngwallet::NgWallet;
 use ngwallet::send::{DraftTransaction, TransactionFeeResult, TransactionParams};
 use ngwallet::transaction;
@@ -413,6 +414,44 @@ impl EnvoyAccountHandler {
             .collect::<Vec<(String, AddressType)>>()
     }
 
+    /// Get addresses for the given index range without revealing them.
+    /// Set `is_change` to true for change addresses, false for receive addresses.
+    pub fn peek_addresses(
+        &self,
+        address_type: AddressType,
+        from_index: u32,
+        to_index: u32,
+        is_change: bool,
+    ) -> Vec<(u32, String)> {
+        let account = self.ng_account.lock().unwrap();
+        let wallets = account.wallets.read().unwrap();
+
+        // Find wallet matching address_type
+        let wallet = wallets.iter().find(|w| w.address_type == address_type);
+        let keychain = if is_change {
+            KeychainKind::Internal
+        } else {
+            KeychainKind::External
+        };
+
+        if let Some(ng_wallet) = wallet {
+            let bdk_wallet = ng_wallet.bdk_wallet.lock().unwrap();
+            (from_index..to_index)
+                .filter_map(|idx| {
+                    bdk_wallet
+                        .peek_address(keychain, idx)
+                        .address
+                        .to_string()
+                        .into()
+                })
+                .enumerate()
+                .map(|(i, addr)| (from_index + i as u32, addr))
+                .collect()
+        } else {
+            vec![]
+        }
+    }
+
     pub fn request_full_scan(
         &mut self,
         address_type: AddressType,
@@ -484,10 +523,16 @@ impl EnvoyAccountHandler {
         txid: &str,
         electrum_server: &str,
         tor_port: Option<u16>,
+        validate_domain: Option<bool>,
     ) -> Option<u64> {
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_deref();
-        NgAccount::<Connection>::fetch_fee_from_electrum(txid, electrum_server, socks_proxy)
+        NgAccount::<Connection>::fetch_fee_from_electrum(
+            txid,
+            electrum_server,
+            socks_proxy,
+            validate_domain,
+        )
     }
 
     pub fn update_tx_fee(
@@ -512,6 +557,7 @@ impl EnvoyAccountHandler {
         sync_request: Arc<Mutex<Option<SyncRequest<(KeychainKind, u32)>>>>,
         electrum_server: &str,
         tor_port: Option<u16>,
+        validate_domain: Option<bool>,
     ) -> anyhow::Result<Arc<Mutex<Update>>> {
         info!(
             "Current Thread request: {:?}, {:?}",
@@ -522,8 +568,13 @@ impl EnvoyAccountHandler {
         let socks_proxy = socks_proxy.as_deref();
         let mut scan_request_guard = sync_request.lock().expect("Failed to lock request");
         if let Some(sync_request) = scan_request_guard.take() {
-            let update = NgWallet::<Connection>::sync(sync_request, electrum_server, socks_proxy)
-                .expect("Electrum sync failed");
+            let update = NgWallet::<Connection>::sync(
+                sync_request,
+                electrum_server,
+                socks_proxy,
+                validate_domain,
+            )
+            .expect("Electrum sync failed");
             Ok(Arc::new(Mutex::new(Update::from(update))))
         } else {
             Err(anyhow!("No sync request found"))
@@ -534,16 +585,24 @@ impl EnvoyAccountHandler {
         scan_request: Arc<Mutex<Option<FullScanRequest<KeychainKind>>>>,
         electrum_server: &str,
         tor_port: Option<u16>,
+        stop_gap: Option<u16>,
+        validate_domain: Option<bool>,
     ) -> anyhow::Result<Arc<Mutex<Update>>> {
+        let stop_gap_usize = stop_gap.map(|v| v as usize);
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_deref();
         let mut scan_request_guard = scan_request
             .lock()
             .expect("Failed to lock scan request mutex");
         if let Some(scan_request) = scan_request_guard.take() {
-            // Use take() to move the value out
-            // Simulate a delay for the scan operation
-            match NgWallet::<Connection>::scan(scan_request, electrum_server, socks_proxy) {
+            let res = NgWallet::<Connection>::scan(
+                scan_request,
+                electrum_server,
+                socks_proxy,
+                stop_gap_usize,
+                validate_domain,
+            );
+            match res {
                 Ok(update) => Ok(Arc::new(Mutex::new(Update::from(update)))),
                 Err(er) => Err(anyhow!("Error during scan: {}", er)),
             }
@@ -781,7 +840,7 @@ impl EnvoyAccountHandler {
             .get_rbf_draft_tx(
                 selected_outputs,
                 bitcoin_transaction,
-                fee_rate,
+                FeeRateSatPerKwu::from(FeeRateSatPerKvb(fee_rate)),
                 None,
                 None,
                 note,
@@ -801,12 +860,18 @@ impl EnvoyAccountHandler {
         draft_transaction: DraftTransaction,
         electrum_server: &str,
         tor_port: Option<u16>,
+        validate_domain: Option<bool>,
     ) -> Result<String, BroadcastError> {
         let socks_proxy = tor_port.map(|port| format!("127.0.0.1:{}", port));
         let socks_proxy = socks_proxy.as_deref();
-        NgAccount::<Connection>::broadcast_psbt(draft_transaction, electrum_server, socks_proxy)
-            .map_err(BroadcastError::from)
-            .map(|tx_id| tx_id.to_string())
+        NgAccount::<Connection>::broadcast_psbt(
+            draft_transaction,
+            electrum_server,
+            socks_proxy,
+            validate_domain,
+        )
+        .map_err(BroadcastError::from)
+        .map(|tx_id| tx_id.to_string())
     }
     pub fn validate_address(address: &str, network: Option<Network>) -> bool {
         match Address::from_str(address) {
@@ -1020,15 +1085,17 @@ impl EnvoyAccountHandler {
     }
 
     pub fn delete_account(&mut self) -> anyhow::Result<()> {
-        // Remove database files
+        // Close database connections before removing files.
+        // Open handles can prevent directory deletion on some platforms.
+        self.ng_account.lock().unwrap().close();
+        self.stream_sink = None;
+        self.mempool_txs.clear();
+
         let db_path = Path::new(&self.directory_path);
         if db_path.exists() {
             std::fs::remove_dir_all(db_path)
                 .map_err(|e| anyhow!("Failed to remove account directory: {}", e))?;
         }
-        // Clear the account reference
-        self.stream_sink = None;
-        self.mempool_txs.clear();
         Ok(())
     }
 
@@ -1079,10 +1146,24 @@ pub struct ServerFeatures {
     pub protocol_max: Option<String>,
     pub hash_function: Option<String>,
     pub pruning: Option<i64>,
+    pub cert_error: bool,
+}
+
+fn is_cert_error(msg: &str) -> bool {
+    msg.to_lowercase().contains("certificate")
 }
 
 #[frb]
-pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatures {
+pub fn get_server_features(
+    server: String,
+    proxy: Option<String>,
+    validate_domain: bool,
+) -> ServerFeatures {
+    // Mirror ngwallet's utils::build_electrum_client logic: when routing
+    // through a proxy (Tor) domain validation is always skipped, since the
+    // connection is anonymised and cert-pinning is meaningless over SOCKS5.
+    let effective_validate_domain = proxy.is_none() && validate_domain;
+
     let config = match proxy {
         Some(proxy_addr) => {
             let socks = Socks5Config::new(&proxy_addr);
@@ -1094,14 +1175,17 @@ pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatu
         }
         None => ConfigBuilder::new()
             .timeout(Some(30))
-            .validate_domain(false)
+            .validate_domain(effective_validate_domain)
             .build(),
     };
 
     let client = match Client::from_config(&server, config) {
         Ok(c) => c,
         Err(e) => {
-            eprintln!("Failed to connect: {}", e);
+            let cert = effective_validate_domain && is_cert_error(&e.to_string());
+            error!(
+                "[get_server_features] connect failed (server={server}, validate_domain={effective_validate_domain}, cert_error={cert}): {e}"
+            );
             return ServerFeatures {
                 server_version: None,
                 genesis_hash: None,
@@ -1109,21 +1193,32 @@ pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatu
                 protocol_max: None,
                 hash_function: None,
                 pruning: None,
+                cert_error: cert,
             };
         }
     };
 
     match client.server_features() {
-        Ok(f) => ServerFeatures {
-            server_version: Some(f.server_version),
-            genesis_hash: Some(f.genesis_hash.to_vec()),
-            protocol_min: Some(f.protocol_min),
-            protocol_max: Some(f.protocol_max),
-            hash_function: f.hash_function,
-            pruning: f.pruning,
-        },
+        Ok(f) => {
+            info!(
+                "[get_server_features] connected (server={server}, version={})",
+                f.server_version
+            );
+            ServerFeatures {
+                server_version: Some(f.server_version),
+                genesis_hash: Some(f.genesis_hash.to_vec()),
+                protocol_min: Some(f.protocol_min),
+                protocol_max: Some(f.protocol_max),
+                hash_function: f.hash_function,
+                pruning: f.pruning,
+                cert_error: false,
+            }
+        }
         Err(e) => {
-            eprintln!("Failed to get server features: {}", e);
+            let cert = effective_validate_domain && is_cert_error(&e.to_string());
+            error!(
+                "[get_server_features] server_features() failed (server={server}, validate_domain={effective_validate_domain}, cert_error={cert}): {e}"
+            );
             ServerFeatures {
                 server_version: None,
                 genesis_hash: None,
@@ -1131,6 +1226,7 @@ pub fn get_server_features(server: String, proxy: Option<String>) -> ServerFeatu
                 protocol_max: None,
                 hash_function: None,
                 pruning: None,
+                cert_error: cert,
             }
         }
     }
