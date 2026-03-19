@@ -6,8 +6,10 @@ import 'dart:async';
 
 import 'package:envoy/business/local_storage.dart';
 import 'package:envoy/business/scv_server.dart';
+import 'package:envoy/business/server.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/envoy_pattern_scaffold.dart';
 import 'package:envoy/ui/onboard/prime/connection_lost_dialog.dart';
@@ -18,10 +20,13 @@ import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/util/app_store_url.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 enum ConnectivityState { checking, connected, disconnected }
 
@@ -37,8 +42,8 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   int colorWay = 1;
   bool onboardingComplete = false;
   ConnectivityState _connectivityState = ConnectivityState.checking;
+  bool _networkError = false;
   Timer? _retryTimer;
-  bool _isFirstAttempt = true;
 
   @override
   void initState() {
@@ -61,28 +66,70 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
   }
 
   Future<void> _checkConnectivity() async {
-    final canReach = await ScvServer().canReachPrimeServer();
-    if (!mounted) return;
-
-    if (canReach) {
-      _retryTimer?.cancel();
+    try {
       setState(() {
+        _connectivityState = ConnectivityState.checking;
+      });
+      final canReach = await ScvServer().canReachPrimeServer();
+      if (!mounted) return;
+
+      if (!canReach) {
+        if (!mounted) return;
+        setState(() {
+          _networkError = true;
+          _connectivityState = ConnectivityState.disconnected;
+        });
+        _scheduleRetry();
+        return;
+      }
+
+      _retryTimer?.cancel();
+
+      final isDeprecated = await Server()
+          .checkForForceUpdate()
+          .timeout(const Duration(seconds: 10), onTimeout: () => false);
+      if (!mounted) return;
+
+      if (isDeprecated) {
+        showForceUpdateDialog();
+        return;
+      }
+
+      setState(() {
+        _networkError = false;
         _connectivityState = ConnectivityState.connected;
       });
-    } else {
+    } catch (e, stackTrace) {
+      EnvoyReport().log("canReachPrimeServer",
+          "Error checking connectivity to Prime server: $e",
+          stackTrace: stackTrace);
+      if (!mounted) return;
       setState(() {
+        _networkError = true;
         _connectivityState = ConnectivityState.disconnected;
       });
       _scheduleRetry();
     }
   }
 
+  void showForceUpdateDialog() {
+    showEnvoyPopUp(
+      context,
+      S().accounts_forceUpdate_subheading,
+      S().accounts_forceUpdate_cta,
+      (context) {
+        launchUrlString(getAppStoreUrl());
+      },
+      title: S().accounts_forceUpdate_heading,
+      icon: EnvoyIcons.download,
+      dismissible: false,
+      showCloseButton: false,
+    );
+  }
+
   void _scheduleRetry() {
-    setState(() {
-      _isFirstAttempt = false;
-    });
     _retryTimer?.cancel();
-    _retryTimer = Timer(const Duration(seconds: 5), () {
+    _retryTimer = Timer(const Duration(seconds: 2), () {
       if (mounted && _connectivityState != ConnectivityState.connected) {
         _checkConnectivity();
       }
@@ -182,9 +229,7 @@ class _OnboardPrimeWelcomeState extends State<OnboardPrimeWelcome> {
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
-                                    if (_connectivityState ==
-                                            ConnectivityState.disconnected &&
-                                        !_isFirstAttempt) ...[
+                                    if (_networkError) ...[
                                       const SizedBox(
                                           height: EnvoySpacing.medium1),
                                       EnvoyIcon(

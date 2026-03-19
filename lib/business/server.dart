@@ -158,6 +158,7 @@ class PrimePatch {
   final String baseVersion;
   final String signedSha256;
   final String unsignedSha256;
+  final int size;
   final String updateFilename;
   final String signatureFilename;
   final String url;
@@ -169,6 +170,7 @@ class PrimePatch {
     required this.baseVersion,
     required this.signedSha256,
     required this.unsignedSha256,
+    required this.size,
     required this.updateFilename,
     required this.signatureFilename,
     required this.url,
@@ -182,6 +184,7 @@ class PrimePatch {
       baseVersion: json['base_version'],
       signedSha256: json['signed_sha256'],
       unsignedSha256: json['unsigned_sha256'],
+      size: (json['size'] as num?)?.toInt() ?? 0,
       updateFilename: json['update_filename'],
       signatureFilename: json['signature_filename'],
       url: json['url'],
@@ -218,6 +221,7 @@ class FirmwareUpdate {
   final String changeLog;
   final DateTime releaseDate;
   final int deviceId;
+  final int size;
 
   FirmwareUpdate({
     required this.version,
@@ -228,6 +232,7 @@ class FirmwareUpdate {
     required this.changeLog,
     required this.releaseDate,
     required this.deviceId,
+    required this.size,
   });
 
   factory FirmwareUpdate.fromJson(Map<String, dynamic> json) {
@@ -235,6 +240,7 @@ class FirmwareUpdate {
     return FirmwareUpdate(
       deviceId: fw['device_id'],
       sha256: fw['sha256'],
+      size: fw['size'],
       md5: fw['md5'],
       url: fw['url'],
       changeLog: fw['changelog'],

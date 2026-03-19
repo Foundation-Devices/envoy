@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -153,22 +154,24 @@ class ScvServer {
   /// Checks if the Prime security check server is reachable.
   /// Returns true if we can connect to the server, false otherwise.
   Future<bool> canReachPrimeServer() async {
-    try {
-      final uri = Uri.parse(ScvServer.primeSecurityCheckBaseUrl);
-      if (Settings().torEnabled()) {
-        await Tor.instance.isReady();
-      } else {
-        // DNS lookup for faster network check (clearnet only).
-        await InternetAddress.lookup(uri.host);
-        return true;
-      }
-      final response = await http.get('$primeSecurityCheckBaseUrl/challenge');
-      kPrint("connectivity check status code: ${response.statusCode}");
-      return response.statusCode == 200;
-    } catch (e) {
-      kPrint("connectivity check failed: $e");
-      return false;
+    await Future.delayed(const Duration(seconds: 4));
+    final uri = Uri.parse(ScvServer.primeSecurityCheckBaseUrl);
+    if (Settings().torEnabled()) {
+      kPrint("Tor enabled, checking connectivity...");
+      await Tor.instance.isReady().timeout(const Duration(seconds: 20),
+          onTimeout: () {
+        throw TimeoutException("Tor is not ready", Duration(seconds: 20));
+      });
+      kPrint("Tor ready, checking connectivity... $uri");
+    } else {
+      await InternetAddress.lookup(uri.host)
+          .timeout(const Duration(seconds: 15));
+      return true;
     }
+    final response = await http
+        .get('$primeSecurityCheckBaseUrl/challenge')
+        .timeout(const Duration(seconds: 15));
+    return response.statusCode == 200;
   }
 
   Future<ChallengeRequest?> getPrimeChallenge() async {
