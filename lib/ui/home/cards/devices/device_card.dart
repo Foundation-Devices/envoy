@@ -215,45 +215,10 @@ class _DeviceCardState extends ConsumerState<DeviceCard> {
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: EnvoySpacing.xs,
                       ),
-                      title: Text(
-                        S().manage_device_details_devicePaired,
-                        style: listItemTheme,
-                      ),
-                      trailing: Text(
-                        timeago.format(
-                          widget.device.datePaired,
-                          locale: activeLocale.languageCode,
-                        ),
-                        style: listItemTheme,
-                      ),
-                    ),
-                    if (widget.device.type == DeviceType.passportPrime)
-                      Divider(color: NewEnvoyColor.neutral200, height: 1),
-                    if (widget.device.type == DeviceType.passportPrime)
-                      ListTile(
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: EnvoySpacing.xs,
-                        ),
-                        title: Text(
-                          S().manage_device_details_deviceSerial,
-                          style: EnvoyTypography.body
-                              .copyWith(color: NewEnvoyColor.contentPrimary),
-                        ),
-                        trailing: Text(
-                          widget.device.serial,
-                          style: EnvoyTypography.body
-                              .copyWith(color: NewEnvoyColor.contentSecondary),
-                        ),
-                      ),
-                    Divider(color: NewEnvoyColor.neutral200, height: 1),
-                    ListTile(
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: EnvoySpacing.xs,
-                      ),
                       dense: true,
                       minLeadingWidth: 0,
                       leading: EnvoyIcon(
-                        EnvoyIcons.devices,
+                        EnvoyIcons.chain,
                         color: deviceRemovedFromHostSystemSettings
                             ? NewEnvoyColor.contentDisabled
                             : Colors.black,
