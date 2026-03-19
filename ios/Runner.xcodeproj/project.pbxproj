@@ -8,27 +8,56 @@
 
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
-		23765585387AB0275F2EEF0C /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16B29BE2F48EC1FE1838CF3C /* Pods_Runner.framework */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		4BAFFFE02D0994DD00DAA96C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78ABDD292C46ED4500677063 /* CoreBluetooth.framework */; };
 		6990A7ED2EE0F44700CF4CD2 /* BleWriteQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6990A7EC2EE0F44100CF4CD2 /* BleWriteQueue.swift */; };
 		6990A7EE2EE0F44800CF4CD2 /* QLConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6990A7EF2EE0F44200CF4CD2 /* QLConnection.swift */; };
+		69D2B1EF2F69CA150036674A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 69D2B1EE2F69CA150036674A /* Assets.xcassets */; };
 		69F1741D2EB4C0F00017F73A /* BluetoothChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F1741C2EB4C0E30017F73A /* BluetoothChannel.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
+		8800949AD6C32651F388DDEA /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4859BA05316580FFDCCF61F /* Pods_Runner.framework */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		E0C0A0001000000000000003 /* EnvoyClipApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C0A0001000000000000002 /* EnvoyClipApp.swift */; };
+		E0C0A0001000000000000005 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C0A0001000000000000004 /* ContentView.swift */; };
+		E0C0A0001000000000000007 /* DeepLinkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C0A0001000000000000006 /* DeepLinkHandler.swift */; };
+		E0C0A0001000000000000020 /* EnvoyClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = E0C0A0001000000000000001 /* EnvoyClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		E0C0A000100000000000001D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E0C0A0001000000000000015;
+			remoteInfo = EnvoyClip;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E0C0A000100000000000001F /* Embed App Clips */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/AppClips";
+			dstSubfolderSpec = 16;
+			files = (
+				E0C0A0001000000000000020 /* EnvoyClip.app in Embed App Clips */,
+			);
+			name = "Embed App Clips";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		0D2EFE841B5F5051B111CDBD /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
-		16B29BE2F48EC1FE1838CF3C /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1DAB4F3963A2F6707F8D3868 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		4BAFFFDA2D098D6900DAA96C /* bluart.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = bluart.framework; path = "../../../../../../../../envoy-dev/ios/build/Release-iphoneos/bluart.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6990A7EC2EE0F44100CF4CD2 /* BleWriteQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BleWriteQueue.swift; sourceTree = "<group>"; };
 		6990A7EF2EE0F44200CF4CD2 /* QLConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QLConnection.swift; sourceTree = "<group>"; };
+		69D2B1EE2F69CA150036674A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		69F1741C2EB4C0E30017F73A /* BluetoothChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothChannel.swift; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -42,8 +71,16 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9C752AC07CDEC330E7AEC68D /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
-		D14AA65F35F73DAEBB9DA9E9 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
+		9835A716F1D5216132F34964 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		A4859BA05316580FFDCCF61F /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D40DD8AEB3F43BACB067FB51 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
+		E0C0A0001000000000000001 /* EnvoyClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EnvoyClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0C0A0001000000000000002 /* EnvoyClipApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvoyClipApp.swift; sourceTree = "<group>"; };
+		E0C0A0001000000000000004 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E0C0A0001000000000000006 /* DeepLinkHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkHandler.swift; sourceTree = "<group>"; };
+		E0C0A000100000000000000C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E0C0A000100000000000000D /* EnvoyClip.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EnvoyClip.entitlements; sourceTree = "<group>"; };
+		E0C0A0001000000000000021 /* AppClip.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = AppClip.xcconfig; path = Flutter/AppClip.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,7 +89,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				4BAFFFE02D0994DD00DAA96C /* CoreBluetooth.framework in Frameworks */,
-				23765585387AB0275F2EEF0C /* Pods_Runner.framework in Frameworks */,
+				8800949AD6C32651F388DDEA /* Pods_Runner.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0C0A0001000000000000018 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,7 +108,7 @@
 			children = (
 				78ABDD292C46ED4500677063 /* CoreBluetooth.framework */,
 				4BAFFFDA2D098D6900DAA96C /* bluart.framework */,
-				16B29BE2F48EC1FE1838CF3C /* Pods_Runner.framework */,
+				A4859BA05316580FFDCCF61F /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -82,9 +126,9 @@
 		908B40D4A37F60A75D094BD8 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				D14AA65F35F73DAEBB9DA9E9 /* Pods-Runner.debug.xcconfig */,
-				1DAB4F3963A2F6707F8D3868 /* Pods-Runner.release.xcconfig */,
-				9C752AC07CDEC330E7AEC68D /* Pods-Runner.profile.xcconfig */,
+				0D2EFE841B5F5051B111CDBD /* Pods-Runner.debug.xcconfig */,
+				D40DD8AEB3F43BACB067FB51 /* Pods-Runner.release.xcconfig */,
+				9835A716F1D5216132F34964 /* Pods-Runner.profile.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -96,6 +140,7 @@
 				9740EEB21CF90195004384FC /* Debug.xcconfig */,
 				7AFA3C8E1D35360C0083082E /* Release.xcconfig */,
 				9740EEB31CF90195004384FC /* Generated.xcconfig */,
+				E0C0A0001000000000000021 /* AppClip.xcconfig */,
 			);
 			name = Flutter;
 			sourceTree = "<group>";
@@ -105,6 +150,7 @@
 			children = (
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
+				E0C0A0001000000000000011 /* EnvoyClip */,
 				97C146EF1CF9000F007C117D /* Products */,
 				908B40D4A37F60A75D094BD8 /* Pods */,
 				13500A27E223965968B383DF /* Frameworks */,
@@ -115,6 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
+				E0C0A0001000000000000001 /* EnvoyClip.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -136,6 +183,19 @@
 			path = Runner;
 			sourceTree = "<group>";
 		};
+		E0C0A0001000000000000011 /* EnvoyClip */ = {
+			isa = PBXGroup;
+			children = (
+				69D2B1EE2F69CA150036674A /* Assets.xcassets */,
+				E0C0A0001000000000000002 /* EnvoyClipApp.swift */,
+				E0C0A0001000000000000004 /* ContentView.swift */,
+				E0C0A000100000000000000C /* Info.plist */,
+				E0C0A000100000000000000D /* EnvoyClip.entitlements */,
+				E0C0A0001000000000000006 /* DeepLinkHandler.swift */,
+			);
+			path = EnvoyClip;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -143,23 +203,42 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
 			buildPhases = (
-				03EDF63615F91D3B0B0F73C4 /* [CP] Check Pods Manifest.lock */,
+				11C2C8A26153290B73037455 /* [CP] Check Pods Manifest.lock */,
 				9740EEB61CF901F6004384FC /* Run Script */,
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
+				E0C0A000100000000000001F /* Embed App Clips */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
-				259E59C92D472972C536DA4E /* [CP] Embed Pods Frameworks */,
-				F9796DAE24F9B069F703DEC1 /* [CP] Copy Pods Resources */,
+				81D4DD1AF85B395A5FDFDFE6 /* [CP] Embed Pods Frameworks */,
+				6763891AE3C4676D1E47F167 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				E0C0A000100000000000001E /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
+		};
+		E0C0A0001000000000000015 /* EnvoyClip */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E0C0A000100000000000001C /* Build configuration list for PBXNativeTarget "EnvoyClip" */;
+			buildPhases = (
+				E0C0A0001000000000000016 /* Sources */,
+				E0C0A0001000000000000017 /* Resources */,
+				E0C0A0001000000000000018 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = EnvoyClip;
+			productName = EnvoyClip;
+			productReference = E0C0A0001000000000000001 /* EnvoyClip.app */;
+			productType = "com.apple.product-type.application.on-demand-install-capable";
 		};
 /* End PBXNativeTarget section */
 
@@ -173,6 +252,9 @@
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 1100;
+					};
+					E0C0A0001000000000000015 = {
+						CreatedOnToolsVersion = 15.0;
 					};
 				};
 			};
@@ -190,6 +272,7 @@
 			projectRoot = "";
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
+				E0C0A0001000000000000015 /* EnvoyClip */,
 			);
 		};
 /* End PBXProject section */
@@ -206,10 +289,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E0C0A0001000000000000017 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				69D2B1EF2F69CA150036674A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		03EDF63615F91D3B0B0F73C4 /* [CP] Check Pods Manifest.lock */ = {
+		11C2C8A26153290B73037455 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -231,23 +322,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		259E59C92D472972C536DA4E /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -264,22 +338,7 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
 		};
-		9740EEB61CF901F6004384FC /* Run Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
-		};
-		F9796DAE24F9B069F703DEC1 /* [CP] Copy Pods Resources */ = {
+		6763891AE3C4676D1E47F167 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -296,6 +355,38 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		81D4DD1AF85B395A5FDFDFE6 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9740EEB61CF901F6004384FC /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -311,7 +402,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E0C0A0001000000000000016 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0C0A0001000000000000003 /* EnvoyClipApp.swift in Sources */,
+				E0C0A0001000000000000005 /* ContentView.swift in Sources */,
+				E0C0A0001000000000000007 /* DeepLinkHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E0C0A000100000000000001E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E0C0A0001000000000000015 /* EnvoyClip */;
+			targetProxy = E0C0A000100000000000001D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		97C146FA1CF9000F007C117D /* Main.storyboard */ = {
@@ -612,6 +721,111 @@
 			};
 			name = Release;
 		};
+		E0C0A0001000000000000019 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E0C0A0001000000000000021 /* AppClip.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = EnvoyClip/EnvoyClip.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = F56X5L36T7;
+				ENABLE_PREVIEWS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = EnvoyClip/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Envoy;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.foundationdevices.envoy.appclip;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		E0C0A000100000000000001A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E0C0A0001000000000000021 /* AppClip.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = EnvoyClip/EnvoyClip.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = F56X5L36T7;
+				ENABLE_PREVIEWS = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = EnvoyClip/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Envoy;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.foundationdevices.envoy.appclip;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Osize";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		E0C0A000100000000000001B /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E0C0A0001000000000000021 /* AppClip.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = EnvoyClip/EnvoyClip.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = F56X5L36T7;
+				ENABLE_PREVIEWS = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = EnvoyClip/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Envoy;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.foundationdevices.envoy.appclip;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Osize";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Profile;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -631,6 +845,16 @@
 				97C147061CF9000F007C117D /* Debug */,
 				97C147071CF9000F007C117D /* Release */,
 				249021D4217E4FDB00AE95B9 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E0C0A000100000000000001C /* Build configuration list for PBXNativeTarget "EnvoyClip" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E0C0A0001000000000000019 /* Debug */,
+				E0C0A000100000000000001A /* Release */,
+				E0C0A000100000000000001B /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
