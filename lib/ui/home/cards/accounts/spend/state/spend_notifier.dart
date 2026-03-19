@@ -421,6 +421,7 @@ class TransactionModeNotifier extends StateNotifier<TransactionModel> {
         draftTransaction: state.draftTransaction!,
         electrumServer: server,
         torPort: port,
+        validateDomain: Settings().validateDomain(server),
       );
       await handler.updateBroadcastState(
         draftTransaction: state.draftTransaction!,

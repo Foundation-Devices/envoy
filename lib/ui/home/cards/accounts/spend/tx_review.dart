@@ -11,9 +11,11 @@ import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/fee_rate.dart';
 import 'package:envoy/business/uniform_resource.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_checkbox.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
+import 'package:envoy/ui/components/linear_gradient.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
@@ -35,8 +37,10 @@ import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
+import 'package:envoy/util/haptics.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -76,6 +80,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
   rive.File? _riveFile;
   rive.RiveWidgetController? _controller;
   bool _isInitialized = false;
+  bool _primeTransferMode = false;
 
   @override
   void initState() {
@@ -153,6 +158,7 @@ class _TxReviewState extends ConsumerState<TxReview> {
               key: const Key("review"),
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
               child: TransactionReviewScreen(
+                primeTransferMode: _primeTransferMode,
                 onBroadcast: () => _onBroadCast(context),
               ),
             )
@@ -184,7 +190,20 @@ class _TxReviewState extends ConsumerState<TxReview> {
     );
     final bool isPrime = device?.type == DeviceType.passportPrime;
     if (isPrime && psbt != null && device != null) {
+      // Prime transfer flow,this disables coin selection
+      // and shows prime transfer status in the review screen
+      setState(() {
+        _primeTransferMode = true;
+      });
+
       kPrint("Sending to prime $psbt");
+      final bool isConnected = ref.read(primeQLActivityProvider(device));
+      if (isConnected == false) {
+        EnvoyReport().log("TxReview",
+            "Prime QL not connected for transfer, cannot send transaction");
+        return;
+      }
+
       ref.read(transferTransactionStateProvider.notifier).updateStep(
             S().send_quantumReview_transferringTransaction,
             EnvoyStepState.LOADING,
@@ -579,8 +598,10 @@ class _TxReviewState extends ConsumerState<TxReview> {
 
 class TransactionReviewScreen extends ConsumerStatefulWidget {
   final Function onBroadcast;
+  final bool primeTransferMode;
 
-  const TransactionReviewScreen({super.key, required this.onBroadcast});
+  const TransactionReviewScreen(
+      {super.key, required this.onBroadcast, this.primeTransferMode = false});
 
   @override
   ConsumerState createState() => _TransactionReviewScreenState();
@@ -592,6 +613,13 @@ class _TransactionReviewScreenState
     stepName: S().onboarding_connectionIntro_connectedToPrime,
     state: EnvoyStepState.IDLE,
   );
+  FixedExtentScrollController? _primeStatusWheelController;
+  int _selectedPrimeStatusIndex = 1;
+
+  FixedExtentScrollController get _statusWheelController =>
+      _primeStatusWheelController ??=
+          FixedExtentScrollController(initialItem: _selectedPrimeStatusIndex);
+
   StreamSubscription<QuantumLinkMessage_BroadcastTransaction>?
       _primeTransactionsSubscription;
 
@@ -655,6 +683,73 @@ class _TransactionReviewScreenState
     }
   }
 
+  StepModel _buildPrimeConnectionState(bool isConnected) {
+    if (isConnected) {
+      return StepModel(
+        stepName: S().onboarding_connectionIntro_connectedToPrime,
+        state: EnvoyStepState.FINISHED,
+      );
+    }
+
+    return StepModel(
+      stepName: "Reconnecting to Prime",
+      state: EnvoyStepState.LOADING,
+    );
+  }
+
+  void _animatePrimeStatusToIndex(int index) {
+    if (!mounted || !widget.primeTransferMode) {
+      return;
+    }
+
+    if (!_statusWheelController.hasClients) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _animatePrimeStatusToIndex(index);
+      });
+      return;
+    }
+
+    _statusWheelController
+        .animateToItem(
+      index,
+      duration: const Duration(milliseconds: 260),
+      curve: Curves.easeInOut,
+    )
+        .then((_) {
+      if (!mounted) {
+        return;
+      }
+      if (_selectedPrimeStatusIndex != index) {
+        setState(() {
+          _selectedPrimeStatusIndex = index;
+        });
+      }
+    }).catchError((_) {
+      if (!mounted || !_statusWheelController.hasClients) {
+        return;
+      }
+      _statusWheelController.jumpToItem(index);
+      if (_selectedPrimeStatusIndex != index) {
+        setState(() {
+          _selectedPrimeStatusIndex = index;
+        });
+      }
+    });
+  }
+
+  void _scrollToPrimeStatus(int index) {
+    if (ref.read(spendTransactionProvider).isFinalized) {
+      return;
+    }
+    if (!mounted || !widget.primeTransferMode) {
+      return;
+    }
+
+    if (_selectedPrimeStatusIndex != index) {
+      _animatePrimeStatusToIndex(index);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     EnvoyAccount? account = ref.watch(selectedAccountProvider);
@@ -692,18 +787,35 @@ class _TransactionReviewScreenState
     if (device == null) {
       isPrime = false;
     }
-    final bool isConnected = ref.read(isPrimeConnectedProvider(device));
-    if (isConnected) {
-      _primeConnectionState = StepModel(
-        stepName: S().onboarding_connectionIntro_connectedToPrime,
-        state: EnvoyStepState.FINISHED,
-      );
-    } else {
-      _primeConnectionState = StepModel(
-        stepName: S().devices_reconnecting_content,
-        state: EnvoyStepState.LOADING,
-      );
-    }
+    ref.listen<bool>(isPrimeConnectedProvider(device), (previous, next) {
+      final nextStep = _buildPrimeConnectionState(next);
+      final isWaitingForTransfer =
+          ref.read(transferTransactionStateProvider).state ==
+              EnvoyStepState.LOADING;
+      final isWaitingForSigning =
+          ref.read(signTransactionStateProvider).state ==
+              EnvoyStepState.LOADING;
+      if (nextStep.state == EnvoyStepState.FINISHED) {
+        if (isWaitingForTransfer) {
+          _scrollToPrimeStatus(1);
+        } else if (isWaitingForSigning) {
+          _scrollToPrimeStatus(2);
+        }
+      } else {
+        _scrollToPrimeStatus(0);
+      }
+    });
+    ref.listen<StepModel>(transferTransactionStateProvider, (previous, next) {
+      _scrollToPrimeStatus(1);
+    });
+    ref.listen<StepModel>(signTransactionStateProvider, (previous, next) {
+      _scrollToPrimeStatus(2);
+      if (next.state == EnvoyStepState.FINISHED) {
+        Haptics.heavyImpact();
+      }
+    });
+    final bool isConnected = ref.watch(isPrimeConnectedProvider(device));
+    _primeConnectionState = _buildPrimeConnectionState(isConnected);
 
     String header = (account.isHot || transactionModel.isFinalized)
         ? S().coincontrol_tx_detail_heading
@@ -719,8 +831,7 @@ class _TransactionReviewScreenState
         .round();
 
     final enableButton = (!transactionModel.loading && !isPrime) ||
-        ((account.isHot || transactionModel.isFinalized) ||
-            (isPrime && isConnected));
+        ((account.isHot || transactionModel.isFinalized) || (isPrime));
 
     return PopScope(
       canPop: false,
@@ -779,7 +890,7 @@ class _TransactionReviewScreenState
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   const Padding(padding: EdgeInsets.all(6)),
-                  if (!transactionModel.isFinalized || account.isHot)
+                  if (transactionModel.canModify && !widget.primeTransferMode)
                     EnvoyButton(
                       enabled: !transactionModel.loading,
                       S().send_build_viewEditDetails,
@@ -987,6 +1098,7 @@ class _TransactionReviewScreenState
   @override
   void dispose() {
     _primeTransactionsSubscription?.cancel();
+    _primeStatusWheelController?.dispose();
     super.dispose();
   }
 
@@ -995,22 +1107,68 @@ class _TransactionReviewScreenState
     if (!isConnected) {
       final deviceId = Platform.isAndroid ? device.bleId : device.peripheralId;
       // try to connect to prime
-      BluetoothManager().reconnect(deviceId);
+      BluetoothChannel().reconnect(deviceId);
     }
   }
 
-  Column transactionPrimeStatus(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        EnvoyStepItem(step: _primeConnectionState),
-        SizedBox(height: EnvoySpacing.medium1),
-        EnvoyStepItem(step: ref.watch(transferTransactionStateProvider)),
-        SizedBox(height: EnvoySpacing.medium1),
-        EnvoyStepItem(step: ref.watch(signTransactionStateProvider)),
-      ],
+  Widget transactionPrimeStatus(BuildContext context) {
+    if (widget.primeTransferMode == false) {
+      return const SizedBox();
+    }
+    final steps = [
+      _primeConnectionState,
+      ref.watch(transferTransactionStateProvider),
+      ref.watch(signTransactionStateProvider),
+    ];
+
+    return GridPaper(
+      color: Colors.transparent,
+      child: SizedBox(
+        height: 84,
+        child: ScrollGradientMask(
+          topGradientValue: 0.16,
+          bottomGradientValue: 0.84,
+          child: ListWheelScrollView.useDelegate(
+            controller: _statusWheelController,
+            physics: const FixedExtentScrollPhysics(
+              parent: ClampingScrollPhysics(),
+            ),
+            itemExtent: 36,
+            diameterRatio: 2.9,
+            onSelectedItemChanged: (index) {
+              if (index == _selectedPrimeStatusIndex) {
+                return;
+              }
+              setState(() {
+                _selectedPrimeStatusIndex = index;
+              });
+            },
+            childDelegate: ListWheelChildListDelegate(
+              children: steps
+                  .asMap()
+                  .entries
+                  .map(
+                    (e) => ConstrainedBox(
+                      constraints: BoxConstraints(minWidth: 210),
+                      child: AnimatedScale(
+                        scale: e.key == _selectedPrimeStatusIndex ? 1.01 : 1.0,
+                        duration: Duration(milliseconds: 200),
+                        child: Container(
+                          color: Colors.transparent,
+                          child: EnvoyStepItem(
+                            key: ValueKey(e.key),
+                            step: e.value,
+                            highlight: e.key == _selectedPrimeStatusIndex,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+        ),
+      ),
     );
   }
 

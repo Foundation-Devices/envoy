@@ -501,6 +501,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_broadcast_impl(
                 <ngwallet::send::DraftTransaction>::sse_decode(&mut deserializer);
             let api_electrum_server = <String>::sse_decode(&mut deserializer);
             let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
+            let api_validate_domain = <Option<bool>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, crate::api::errors::BroadcastError>((move || {
@@ -508,6 +509,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_broadcast_impl(
                         api_draft_transaction,
                         &api_electrum_server,
                         api_tor_port,
+                        api_validate_domain,
                     )?;
                     Ok(output_ok)
                 })())
@@ -947,6 +949,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_fetch_electrum_fee_impl(
             let api_txid = <String>::sse_decode(&mut deserializer);
             let api_electrum_server = <String>::sse_decode(&mut deserializer);
             let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
+            let api_validate_domain = <Option<bool>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, ()>(
@@ -956,6 +959,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_fetch_electrum_fee_impl(
                                 &api_txid,
                                 &api_electrum_server,
                                 api_tor_port,
+                                api_validate_domain,
                             )
                             .await,
                         )?;
@@ -1961,6 +1965,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_scan_wallet_impl(
             let api_electrum_server = <String>::sse_decode(&mut deserializer);
             let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
             let api_stop_gap = <Option<u16>>::sse_decode(&mut deserializer);
+            let api_validate_domain = <Option<bool>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
@@ -1970,6 +1975,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_scan_wallet_impl(
                             &api_electrum_server,
                             api_tor_port,
                             api_stop_gap,
+                            api_validate_domain,
                         )
                         .await?;
                         Ok(output_ok)
@@ -2570,6 +2576,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_sync_wallet_impl(
                 );
             let api_electrum_server = <String>::sse_decode(&mut deserializer);
             let api_tor_port = <Option<u16>>::sse_decode(&mut deserializer);
+            let api_validate_domain = <Option<bool>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
@@ -2578,6 +2585,7 @@ fn wire__crate__api__envoy_wallet__EnvoyAccountHandler_sync_wallet_impl(
                             api_sync_request,
                             &api_electrum_server,
                             api_tor_port,
+                            api_validate_domain,
                         )
                         .await?;
                         Ok(output_ok)
@@ -3158,12 +3166,16 @@ fn wire__crate__api__envoy_wallet__get_server_features_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_server = <String>::sse_decode(&mut deserializer);
             let api_proxy = <Option<String>>::sse_decode(&mut deserializer);
+            let api_validate_domain = <bool>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
-                    let output_ok = Result::<_, ()>::Ok(
-                        crate::api::envoy_wallet::get_server_features(api_server, api_proxy),
-                    )?;
+                    let output_ok =
+                        Result::<_, ()>::Ok(crate::api::envoy_wallet::get_server_features(
+                            api_server,
+                            api_proxy,
+                            api_validate_domain,
+                        ))?;
                     Ok(output_ok)
                 })())
             }
@@ -4189,6 +4201,17 @@ impl SseDecode for Option<ngwallet::config::AddressType> {
     }
 }
 
+impl SseDecode for Option<bool> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<bool>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<i64> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -4401,6 +4424,7 @@ impl SseDecode for crate::api::envoy_wallet::ServerFeatures {
         let mut var_protocolMax = <Option<String>>::sse_decode(deserializer);
         let mut var_hashFunction = <Option<String>>::sse_decode(deserializer);
         let mut var_pruning = <Option<i64>>::sse_decode(deserializer);
+        let mut var_certError = <bool>::sse_decode(deserializer);
         return crate::api::envoy_wallet::ServerFeatures {
             server_version: var_serverVersion,
             genesis_hash: var_genesisHash,
@@ -4408,6 +4432,7 @@ impl SseDecode for crate::api::envoy_wallet::ServerFeatures {
             protocol_max: var_protocolMax,
             hash_function: var_hashFunction,
             pruning: var_pruning,
+            cert_error: var_certError,
         };
     }
 }
@@ -5554,6 +5579,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::envoy_wallet::ServerFeatures 
             self.protocol_max.into_into_dart().into_dart(),
             self.hash_function.into_into_dart().into_dart(),
             self.pruning.into_into_dart().into_dart(),
+            self.cert_error.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -6325,6 +6351,16 @@ impl SseEncode for Option<ngwallet::config::AddressType> {
     }
 }
 
+impl SseEncode for Option<bool> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <bool>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<i64> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -6511,6 +6547,7 @@ impl SseEncode for crate::api::envoy_wallet::ServerFeatures {
         <Option<String>>::sse_encode(self.protocol_max, serializer);
         <Option<String>>::sse_encode(self.hash_function, serializer);
         <Option<i64>>::sse_encode(self.pruning, serializer);
+        <bool>::sse_encode(self.cert_error, serializer);
     }
 }
 

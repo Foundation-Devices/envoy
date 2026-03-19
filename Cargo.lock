@@ -691,7 +691,7 @@ dependencies = [
 [[package]]
 name = "btp"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.4.2#8291859b55a8cb5d9d97c0f36c593e3e5f7689a5"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.4.6#2be09d6a8bb45963e3c6faa13c47f9cc20bba48a"
 dependencies = [
  "bytemuck",
  "consts",
@@ -1365,7 +1365,7 @@ dependencies = [
 [[package]]
 name = "foundation-api"
 version = "2.0.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.4.2#8291859b55a8cb5d9d97c0f36c593e3e5f7689a5"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.4.6#2be09d6a8bb45963e3c6faa13c47f9cc20bba48a"
 dependencies = [
  "bc-components",
  "bc-envelope",
@@ -2356,7 +2356,7 @@ dependencies = [
 [[package]]
 name = "ngwallet"
 version = "1.1.1"
-source = "git+https://github.com/Foundation-Devices/ngwallet?tag=3.0.0#10db4380e9339a0640fd3e94921c12cdf3b5c181"
+source = "git+https://github.com/Foundation-Devices/ngwallet?tag=3.1.0#97f0722213207bad670067e68c239d284b40d10d"
 dependencies = [
  "anyhow",
  "bdk_core",
@@ -2878,7 +2878,7 @@ dependencies = [
 [[package]]
 name = "quantum-link-macros"
 version = "0.1.0"
-source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.4.2#8291859b55a8cb5d9d97c0f36c593e3e5f7689a5"
+source = "git+https://github.com/Foundation-Devices/foundation-api?tag=5.4.6#2be09d6a8bb45963e3c6faa13c47f9cc20bba48a"
 dependencies = [
  "proc-macro2",
  "quote",

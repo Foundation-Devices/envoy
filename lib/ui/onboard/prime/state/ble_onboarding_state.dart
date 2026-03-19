@@ -3,6 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // ignore_for_file: constant_identifier_names
 
+import 'dart:async';
+import 'package:async/async.dart';
+import 'package:envoy/ble/bluetooth_manager.dart';
 import 'package:envoy/ble/handlers/fw_update_handler.dart';
 import 'package:envoy/ble/handlers/onboard_handler.dart';
 import 'package:envoy/ble/handlers/scv_handler.dart';
@@ -10,6 +13,8 @@ import 'package:envoy/channels/ql_connection.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/onboard/prime/firmware_update/prime_fw_update_state.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
+import 'package:envoy/util/console.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation_api/foundation_api.dart';
 
@@ -286,12 +291,39 @@ final connectAccountProvider = Provider<StepModel>((ref) {
   }
 });
 
-void resetOnboardingPrimeProviders(ProviderContainer container) {
-  final device = container.read(onboardingDeviceProvider);
-  if (device != null) {
-    device.qlHandler.fwUpdateHandler.reset();
-    device.qlHandler.bleOnboardHandler.reset();
-    device.qlHandler.scvAccountHandler.reset();
+final settingsUpdateConnectionProvider = StreamProvider<QLConnection>((ref) {
+  final asyncConnections = ref.watch(qlConnectionStreamProvider);
+  final connections = asyncConnections.valueOrNull ?? [];
+
+  if (connections.isEmpty) return const Stream.empty();
+
+  final controller = StreamController<QLConnection>();
+  final group = StreamGroup<QLConnection>();
+  for (final conn in connections) {
+    group.add(
+      conn.qlHandler.fwUpdateHandler.settingsUpdateStarted
+          .map<QLConnection>((_) => conn),
+    );
   }
-  container.read(onboardingDeviceProvider.notifier).state = null;
+  final sub = group.stream.listen(controller.add);
+  ref.onDispose(() {
+    sub.cancel();
+    group.close();
+    controller.close();
+  });
+  return controller.stream;
+});
+
+void resetOnboardingPrimeProviders(ProviderContainer container) {
+  try {
+    final device = container.read(onboardingDeviceProvider);
+    if (device != null) {
+      device.qlHandler.fwUpdateHandler.reset();
+      device.qlHandler.bleOnboardHandler.reset();
+      device.qlHandler.scvAccountHandler.reset();
+    }
+  } catch (e, stack) {
+    kPrint("Error resetting onboarding providers: $e");
+    debugPrintStack(stackTrace: stack);
+  }
 }

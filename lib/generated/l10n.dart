@@ -8108,6 +8108,36 @@ class S {
     );
   }
 
+  /// `Connect Anyway`
+  String get privacy_invalidCertificateModal_connectAnyway {
+    return Intl.message(
+      'Connect Anyway',
+      name: 'privacy_invalidCertificateModal_connectAnyway',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This node has an invalid or self-signed certificate. Your connection may not be secure.\nDo you want to connect anyway?`
+  String get privacy_invalidCertificateModal_content {
+    return Intl.message(
+      'This node has an invalid or self-signed certificate. Your connection may not be secure.\nDo you want to connect anyway?',
+      name: 'privacy_invalidCertificateModal_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Certificate`
+  String get privacy_invalidCertificateModal_header {
+    return Intl.message(
+      'Invalid Certificate',
+      name: 'privacy_invalidCertificateModal_header',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Improve your privacy by running your own node. Tap learn more above. `
   String get privacy_node_configure {
     return Intl.message(
