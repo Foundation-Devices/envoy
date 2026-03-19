@@ -7,6 +7,7 @@ import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:envoy/ble/bluetooth_manager.dart';
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/components/pop_up.dart';
@@ -29,6 +30,7 @@ import 'package:foundation_api/foundation_api.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rive/rive.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class OnboardPrimeFwUpdate extends ConsumerStatefulWidget {
   const OnboardPrimeFwUpdate({super.key});
@@ -65,12 +67,15 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     _controller!.stateMachine.boolean('indeterminate')?.value = true;
 
     setState(() => _isInitialized = true);
+
+    await WakelockPlus.enable(); // keep screen awake during onboarding
   }
 
   @override
   void dispose() {
     _controller?.dispose();
     _riveFile?.dispose();
+    unawaited(WakelockPlus.disable());
     super.dispose();
   }
 
@@ -124,7 +129,11 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     }
   }
 
-  Future<bool> showExitWarning(BuildContext context) {
+  bool get _isSettingsUpdate =>
+      ref.read(onboardingDeviceProvider)?.getDevice()?.onboardingComplete ==
+      true;
+
+  Future<bool> showExitWarningOnboarding(BuildContext context) {
     final Completer<bool> completer = Completer<bool>();
     showEnvoyDialog(
       context: context,
@@ -142,8 +151,56 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
           Navigator.pop(context);
         },
         onSecondaryButtonTap: (context) async {
+          final qlConnection = ref.read(onboardingDeviceProvider);
+          if (qlConnection == null) {
+            completer.complete(false);
+            Navigator.pop(context);
+            return;
+          }
+          await qlConnection.disconnect();
+          await Future.delayed(const Duration(milliseconds: 200));
+          if (Platform.isIOS) {
+            final id = qlConnection.deviceId;
+            await BluetoothChannel().removeAccessory(id);
+          }
           completer.complete(true);
+          if (context.mounted) {
+            Navigator.pop(context);
+          }
+        },
+      ),
+    );
+    return completer.future;
+  }
+
+  Future<bool> showExitWarning(BuildContext context) {
+    final Completer<bool> completer = Completer<bool>();
+    showEnvoyDialog(
+      context: context,
+      dismissible: true,
+      dialog: EnvoyPopUp(
+        icon: EnvoyIcons.alert,
+        typeOfMessage: PopUpState.warning,
+        showCloseButton: false,
+        title: S().firmware_connectionModalCancelUpdate_header,
+        content: S().firmware_connectionModalCancelUpdate_content,
+        primaryButtonLabel: S().component_cancel,
+        secondaryButtonLabel: S().component_exit,
+        onPrimaryButtonTap: (context) async {
+          completer.complete(false);
           Navigator.pop(context);
+        },
+        onSecondaryButtonTap: (context) async {
+          ref
+              .read(onboardingDeviceProvider)
+              ?.qlHandler
+              .fwUpdateHandler
+              .stopFirmwareTransfer();
+          if (context.mounted) {
+            resetOnboardingPrimeProviders(ProviderScope.containerOf(context));
+            ref.read(onboardingDeviceProvider.notifier).state = null;
+          }
+          completer.complete(true);
         },
       ),
     );
@@ -153,7 +210,6 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
   @override
   Widget build(BuildContext context) {
     final primeUpdateState = ref.watch(primeUpdateStateProvider);
-
     ref.listen(onboardingStateStreamProvider, (prev, next) {
       next.whenData((state) {
         if (state == OnboardingState.firmwareUpdateScreen) {
@@ -170,6 +226,11 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
 
     ref.listen(primeUpdateStateProvider, (previous, next) async {
       _updateAnimState(next);
+      if (next == PrimeFwUpdateStep.finished && _isSettingsUpdate) {
+        resetOnboardingPrimeProviders(ProviderScope.containerOf(context));
+        ref.read(onboardingDeviceProvider.notifier).state = null;
+        if (context.mounted) context.go(ROUTE_ACCOUNTS_HOME);
+      }
     });
 
     Widget downloadImage = Image.asset(
@@ -196,10 +257,22 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
 
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (_, __) async {
-        final shouldExit = await showExitWarning(context);
-        if (shouldExit && context.mounted) {
-          context.go(ROUTE_ACCOUNTS_HOME);
+      onPopInvokedWithResult: (_, __) {
+        if (_isSettingsUpdate) {
+          // No disconnect needed — device is already paired. Go home directly.
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            final shouldExit = await showExitWarning(context);
+            if (shouldExit && context.mounted) {
+              context.go(ROUTE_ACCOUNTS_HOME);
+            }
+          });
+        } else {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            final shouldExit = await showExitWarningOnboarding(context);
+            if (shouldExit && context.mounted) {
+              context.go(ROUTE_ACCOUNTS_HOME);
+            }
+          });
         }
       },
       child: OnboardPageBackground(
@@ -209,8 +282,19 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
             padding: const EdgeInsets.all(12),
             child: IconButton(
               icon: const Icon(Icons.close, color: Colors.black),
-              onPressed: () {
-                GoRouter.of(context).pop();
+              onPressed: () async {
+                if (_isSettingsUpdate) {
+                  // No disconnect needed — device is already paired. Go home directly.
+                  final shouldExit = await showExitWarning(context);
+                  if (shouldExit && context.mounted) {
+                    context.go(ROUTE_ACCOUNTS_HOME);
+                  }
+                } else {
+                  final shouldExit = await showExitWarningOnboarding(context);
+                  if (shouldExit && context.mounted) {
+                    context.go(ROUTE_ACCOUNTS_HOME);
+                  }
+                }
               },
             ),
           ),
@@ -301,26 +385,49 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
     _controller?.stateMachine.boolean('happy')?.value = true;
     final fwHandler =
         ref.watch(onboardingDeviceProvider)?.qlHandler.fwUpdateHandler;
+    final isSettingsUpdate =
+        ref.watch(onboardingDeviceProvider)?.getDevice()?.onboardingComplete ==
+            true;
 
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          S().firmware_updateSuccess_content1(
-            "KeyOS v${fwHandler?.newVersion ?? ''}",
-          ),
-          textAlign: TextAlign.center,
-          style: EnvoyTypography.body.copyWith(
-            color: EnvoyColors.textSecondary,
-          ),
+        Column(
+          children: [
+            Text(
+              S().firmware_updateSuccess_content1(
+                "KeyOS v${fwHandler?.newVersion ?? ''}",
+              ),
+              textAlign: TextAlign.center,
+              style: EnvoyTypography.body.copyWith(
+                color: EnvoyColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: EnvoySpacing.medium3),
+            if (!isSettingsUpdate)
+              Text(
+                S().firmware_updateSuccess_content2,
+                textAlign: TextAlign.center,
+                style: EnvoyTypography.body.copyWith(
+                  color: EnvoyColors.textSecondary,
+                ),
+              ),
+          ],
         ),
-        const SizedBox(height: EnvoySpacing.medium3),
-        Text(
-          S().firmware_updateSuccess_content2,
-          textAlign: TextAlign.center,
-          style: EnvoyTypography.body.copyWith(
-            color: EnvoyColors.textSecondary,
+        if (isSettingsUpdate)
+          Padding(
+            padding: const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+            child: EnvoyButton(
+              S().component_done,
+              type: EnvoyButtonTypes.primary,
+              onTap: () {
+                resetOnboardingPrimeProviders(
+                    ProviderScope.containerOf(context));
+                ref.read(onboardingDeviceProvider.notifier).state = null;
+                context.go(ROUTE_ACCOUNTS_HOME);
+              },
+            ),
           ),
-        ),
       ],
     );
   }
@@ -346,8 +453,8 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
             const SizedBox(height: EnvoySpacing.xs),
             Text(
               S().firmware_updateAvailable_estimatedUpdateTime(
-                //TODO: proper size based time estimation
-                "${Platform.isAndroid ? '~1' : '~2.5'} min",
+                fwHandler?.estimatedUpdateTime ??
+                    (Platform.isAndroid ? "~1 min" : "~2.5 min"),
               ),
               textAlign: TextAlign.center,
               style: EnvoyTypography.body.copyWith(
@@ -424,28 +531,19 @@ class _OnboardPrimeFwUpdateState extends ConsumerState<OnboardPrimeFwUpdate> {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        EnvoyStepItem(
-          step: ref.watch(fwDownloadStateProvider),
-          highlight: false,
+        Expanded(child: SizedBox.expand()),
+        EnvoyButton(
+          S().common_button_contactSupport,
+          type: EnvoyButtonTypes.secondary,
+          onTap: () {
+            launchUrl(
+              Uri.parse(
+                "https://community.foundation.xyz/c/passport-prime/12",
+              ),
+            );
+          },
         ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            EnvoyButton(
-              S().common_button_contactSupport,
-              type: EnvoyButtonTypes.secondary,
-              onTap: () {
-                launchUrl(
-                  Uri.parse(
-                    "https://community.foundation.xyz/c/passport-prime/12",
-                  ),
-                );
-              },
-            ),
-            const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
-          ],
-        ),
+        const Padding(padding: EdgeInsets.all(EnvoySpacing.small)),
       ],
     );
   }
@@ -512,6 +610,7 @@ class _PrimeFwDownloadProgressState
                                 EnvoyStepState.FINISHED)
                               Text(
                                 progressAsync.value.remainingTime.isEmpty
+                                    //TODO: copy update
                                     ? "Estimating remaining time..."
                                     : S()
                                         .firmware_downloadingUpdate_timeRemaining(

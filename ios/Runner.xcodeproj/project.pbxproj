@@ -25,7 +25,6 @@
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
-		4BAFFFDA2D098D6900DAA96C /* bluart.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = bluart.framework; path = "../../../../../../../../envoy-dev/ios/build/Release-iphoneos/bluart.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6990A7EC2EE0F44100CF4CD2 /* BleWriteQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BleWriteQueue.swift; sourceTree = "<group>"; };
 		6990A7EF2EE0F44200CF4CD2 /* QLConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QLConnection.swift; sourceTree = "<group>"; };
 		69F1741C2EB4C0E30017F73A /* BluetoothChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothChannel.swift; sourceTree = "<group>"; };
@@ -63,7 +62,6 @@
 			isa = PBXGroup;
 			children = (
 				78ABDD292C46ED4500677063 /* CoreBluetooth.framework */,
-				4BAFFFDA2D098D6900DAA96C /* bluart.framework */,
 				74CC16DF7BE40AC6836DFAFB /* Pods_Runner.framework */,
 			);
 			name = Frameworks;

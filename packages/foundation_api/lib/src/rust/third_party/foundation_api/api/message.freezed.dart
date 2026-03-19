@@ -65,6 +65,8 @@ mixin _$QuantumLinkMessage {
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -111,6 +113,8 @@ mixin _$QuantumLinkMessage {
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -156,6 +160,8 @@ mixin _$QuantumLinkMessage {
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -233,6 +239,10 @@ mixin _$QuantumLinkMessage {
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -297,6 +307,10 @@ mixin _$QuantumLinkMessage {
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -357,6 +371,10 @@ mixin _$QuantumLinkMessage {
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -503,6 +521,8 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return exchangeRate(field0);
   }
@@ -552,6 +572,8 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return exchangeRate?.call(field0);
   }
@@ -600,6 +622,8 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (exchangeRate != null) {
@@ -683,6 +707,10 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return exchangeRate(this);
   }
@@ -750,6 +778,10 @@ class _$QuantumLinkMessage_ExchangeRateImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return exchangeRate?.call(this);
   }
@@ -813,6 +845,10 @@ class _$QuantumLinkMessage_ExchangeRateImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (exchangeRate != null) {
@@ -959,6 +995,8 @@ class _$QuantumLinkMessage_ExchangeRateHistoryImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return exchangeRateHistory(field0);
   }
@@ -1008,6 +1046,8 @@ class _$QuantumLinkMessage_ExchangeRateHistoryImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return exchangeRateHistory?.call(field0);
   }
@@ -1056,6 +1096,8 @@ class _$QuantumLinkMessage_ExchangeRateHistoryImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (exchangeRateHistory != null) {
@@ -1139,6 +1181,10 @@ class _$QuantumLinkMessage_ExchangeRateHistoryImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return exchangeRateHistory(this);
   }
@@ -1206,6 +1252,10 @@ class _$QuantumLinkMessage_ExchangeRateHistoryImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return exchangeRateHistory?.call(this);
   }
@@ -1269,6 +1319,10 @@ class _$QuantumLinkMessage_ExchangeRateHistoryImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (exchangeRateHistory != null) {
@@ -1422,6 +1476,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return firmwareUpdateCheckRequest(field0);
   }
@@ -1471,6 +1527,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return firmwareUpdateCheckRequest?.call(field0);
   }
@@ -1519,6 +1577,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (firmwareUpdateCheckRequest != null) {
@@ -1602,6 +1662,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return firmwareUpdateCheckRequest(this);
   }
@@ -1669,6 +1733,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return firmwareUpdateCheckRequest?.call(this);
   }
@@ -1732,6 +1800,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckRequestImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (firmwareUpdateCheckRequest != null) {
@@ -1897,6 +1969,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return firmwareUpdateCheckResponse(field0);
   }
@@ -1946,6 +2020,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return firmwareUpdateCheckResponse?.call(field0);
   }
@@ -1994,6 +2070,8 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (firmwareUpdateCheckResponse != null) {
@@ -2077,6 +2155,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return firmwareUpdateCheckResponse(this);
   }
@@ -2144,6 +2226,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return firmwareUpdateCheckResponse?.call(this);
   }
@@ -2207,6 +2293,10 @@ class _$QuantumLinkMessage_FirmwareUpdateCheckResponseImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (firmwareUpdateCheckResponse != null) {
@@ -2355,6 +2445,8 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return firmwareFetchRequest(field0);
   }
@@ -2404,6 +2496,8 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return firmwareFetchRequest?.call(field0);
   }
@@ -2452,6 +2546,8 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (firmwareFetchRequest != null) {
@@ -2535,6 +2631,10 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return firmwareFetchRequest(this);
   }
@@ -2602,6 +2702,10 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return firmwareFetchRequest?.call(this);
   }
@@ -2665,6 +2769,10 @@ class _$QuantumLinkMessage_FirmwareFetchRequestImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (firmwareFetchRequest != null) {
@@ -2824,6 +2932,8 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return firmwareFetchEvent(field0);
   }
@@ -2873,6 +2983,8 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return firmwareFetchEvent?.call(field0);
   }
@@ -2921,6 +3033,8 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (firmwareFetchEvent != null) {
@@ -3004,6 +3118,10 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return firmwareFetchEvent(this);
   }
@@ -3071,6 +3189,10 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return firmwareFetchEvent?.call(this);
   }
@@ -3134,6 +3256,10 @@ class _$QuantumLinkMessage_FirmwareFetchEventImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (firmwareFetchEvent != null) {
@@ -3294,6 +3420,8 @@ class _$QuantumLinkMessage_FirmwareInstallEventImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return firmwareInstallEvent(field0);
   }
@@ -3343,6 +3471,8 @@ class _$QuantumLinkMessage_FirmwareInstallEventImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return firmwareInstallEvent?.call(field0);
   }
@@ -3391,6 +3521,8 @@ class _$QuantumLinkMessage_FirmwareInstallEventImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (firmwareInstallEvent != null) {
@@ -3474,6 +3606,10 @@ class _$QuantumLinkMessage_FirmwareInstallEventImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return firmwareInstallEvent(this);
   }
@@ -3541,6 +3677,10 @@ class _$QuantumLinkMessage_FirmwareInstallEventImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return firmwareInstallEvent?.call(this);
   }
@@ -3604,6 +3744,10 @@ class _$QuantumLinkMessage_FirmwareInstallEventImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (firmwareInstallEvent != null) {
@@ -3751,6 +3895,8 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return deviceStatus(field0);
   }
@@ -3800,6 +3946,8 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return deviceStatus?.call(field0);
   }
@@ -3848,6 +3996,8 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (deviceStatus != null) {
@@ -3931,6 +4081,10 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return deviceStatus(this);
   }
@@ -3998,6 +4152,10 @@ class _$QuantumLinkMessage_DeviceStatusImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return deviceStatus?.call(this);
   }
@@ -4061,6 +4219,10 @@ class _$QuantumLinkMessage_DeviceStatusImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (deviceStatus != null) {
@@ -4206,6 +4368,8 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return envoyStatus(field0);
   }
@@ -4255,6 +4419,8 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return envoyStatus?.call(field0);
   }
@@ -4303,6 +4469,8 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (envoyStatus != null) {
@@ -4386,6 +4554,10 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return envoyStatus(this);
   }
@@ -4453,6 +4625,10 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return envoyStatus?.call(this);
   }
@@ -4516,6 +4692,10 @@ class _$QuantumLinkMessage_EnvoyStatusImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (envoyStatus != null) {
@@ -4661,6 +4841,8 @@ class _$QuantumLinkMessage_PairingRequestImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return pairingRequest(field0);
   }
@@ -4710,6 +4892,8 @@ class _$QuantumLinkMessage_PairingRequestImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return pairingRequest?.call(field0);
   }
@@ -4758,6 +4942,8 @@ class _$QuantumLinkMessage_PairingRequestImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (pairingRequest != null) {
@@ -4841,6 +5027,10 @@ class _$QuantumLinkMessage_PairingRequestImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return pairingRequest(this);
   }
@@ -4908,6 +5098,10 @@ class _$QuantumLinkMessage_PairingRequestImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return pairingRequest?.call(this);
   }
@@ -4971,6 +5165,10 @@ class _$QuantumLinkMessage_PairingRequestImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (pairingRequest != null) {
@@ -5116,6 +5314,8 @@ class _$QuantumLinkMessage_PairingResponseImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return pairingResponse(field0);
   }
@@ -5165,6 +5365,8 @@ class _$QuantumLinkMessage_PairingResponseImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return pairingResponse?.call(field0);
   }
@@ -5213,6 +5415,8 @@ class _$QuantumLinkMessage_PairingResponseImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (pairingResponse != null) {
@@ -5296,6 +5500,10 @@ class _$QuantumLinkMessage_PairingResponseImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return pairingResponse(this);
   }
@@ -5363,6 +5571,10 @@ class _$QuantumLinkMessage_PairingResponseImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return pairingResponse?.call(this);
   }
@@ -5426,6 +5638,10 @@ class _$QuantumLinkMessage_PairingResponseImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (pairingResponse != null) {
@@ -5583,6 +5799,8 @@ class _$QuantumLinkMessage_SecurityCheckImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return securityCheck(field0);
   }
@@ -5632,6 +5850,8 @@ class _$QuantumLinkMessage_SecurityCheckImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return securityCheck?.call(field0);
   }
@@ -5680,6 +5900,8 @@ class _$QuantumLinkMessage_SecurityCheckImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (securityCheck != null) {
@@ -5763,6 +5985,10 @@ class _$QuantumLinkMessage_SecurityCheckImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return securityCheck(this);
   }
@@ -5830,6 +6056,10 @@ class _$QuantumLinkMessage_SecurityCheckImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return securityCheck?.call(this);
   }
@@ -5893,6 +6123,10 @@ class _$QuantumLinkMessage_SecurityCheckImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (securityCheck != null) {
@@ -6038,6 +6272,8 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return onboardingState(field0);
   }
@@ -6087,6 +6323,8 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return onboardingState?.call(field0);
   }
@@ -6135,6 +6373,8 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (onboardingState != null) {
@@ -6218,6 +6458,10 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return onboardingState(this);
   }
@@ -6285,6 +6529,10 @@ class _$QuantumLinkMessage_OnboardingStateImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return onboardingState?.call(this);
   }
@@ -6348,6 +6596,10 @@ class _$QuantumLinkMessage_OnboardingStateImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (onboardingState != null) {
@@ -6491,6 +6743,8 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return signPsbt(field0);
   }
@@ -6540,6 +6794,8 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return signPsbt?.call(field0);
   }
@@ -6588,6 +6844,8 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (signPsbt != null) {
@@ -6671,6 +6929,10 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return signPsbt(this);
   }
@@ -6738,6 +7000,10 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return signPsbt?.call(this);
   }
@@ -6801,6 +7067,10 @@ class _$QuantumLinkMessage_SignPsbtImpl extends QuantumLinkMessage_SignPsbt {
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (signPsbt != null) {
@@ -6946,6 +7216,8 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return broadcastTransaction(field0);
   }
@@ -6995,6 +7267,8 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return broadcastTransaction?.call(field0);
   }
@@ -7043,6 +7317,8 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (broadcastTransaction != null) {
@@ -7126,6 +7402,10 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return broadcastTransaction(this);
   }
@@ -7193,6 +7473,10 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return broadcastTransaction?.call(this);
   }
@@ -7256,6 +7540,10 @@ class _$QuantumLinkMessage_BroadcastTransactionImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (broadcastTransaction != null) {
@@ -7403,6 +7691,8 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return accountUpdate(field0);
   }
@@ -7452,6 +7742,8 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return accountUpdate?.call(field0);
   }
@@ -7500,6 +7792,8 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (accountUpdate != null) {
@@ -7583,6 +7877,10 @@ class _$QuantumLinkMessage_AccountUpdateImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return accountUpdate(this);
   }
@@ -7650,6 +7948,10 @@ class _$QuantumLinkMessage_AccountUpdateImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return accountUpdate?.call(this);
   }
@@ -7713,6 +8015,10 @@ class _$QuantumLinkMessage_AccountUpdateImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (accountUpdate != null) {
@@ -7858,6 +8164,8 @@ class _$QuantumLinkMessage_ApplyPassphraseImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return applyPassphrase(field0);
   }
@@ -7907,6 +8215,8 @@ class _$QuantumLinkMessage_ApplyPassphraseImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return applyPassphrase?.call(field0);
   }
@@ -7955,6 +8265,8 @@ class _$QuantumLinkMessage_ApplyPassphraseImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (applyPassphrase != null) {
@@ -8038,6 +8350,10 @@ class _$QuantumLinkMessage_ApplyPassphraseImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return applyPassphrase(this);
   }
@@ -8105,6 +8421,10 @@ class _$QuantumLinkMessage_ApplyPassphraseImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return applyPassphrase?.call(this);
   }
@@ -8168,6 +8488,10 @@ class _$QuantumLinkMessage_ApplyPassphraseImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (applyPassphrase != null) {
@@ -8322,6 +8646,8 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledRequestImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return envoyMagicBackupEnabledRequest(field0);
   }
@@ -8371,6 +8697,8 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledRequestImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return envoyMagicBackupEnabledRequest?.call(field0);
   }
@@ -8419,6 +8747,8 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledRequestImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (envoyMagicBackupEnabledRequest != null) {
@@ -8502,6 +8832,10 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledRequestImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return envoyMagicBackupEnabledRequest(this);
   }
@@ -8569,6 +8903,10 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledRequestImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return envoyMagicBackupEnabledRequest?.call(this);
   }
@@ -8632,6 +8970,10 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledRequestImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (envoyMagicBackupEnabledRequest != null) {
@@ -8790,6 +9132,8 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledResponseImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return envoyMagicBackupEnabledResponse(field0);
   }
@@ -8839,6 +9183,8 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledResponseImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return envoyMagicBackupEnabledResponse?.call(field0);
   }
@@ -8887,6 +9233,8 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledResponseImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (envoyMagicBackupEnabledResponse != null) {
@@ -8970,6 +9318,10 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledResponseImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return envoyMagicBackupEnabledResponse(this);
   }
@@ -9037,6 +9389,10 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledResponseImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return envoyMagicBackupEnabledResponse?.call(this);
   }
@@ -9100,6 +9456,10 @@ class _$QuantumLinkMessage_EnvoyMagicBackupEnabledResponseImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (envoyMagicBackupEnabledResponse != null) {
@@ -9251,6 +9611,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupEnabledImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return primeMagicBackupEnabled(field0);
   }
@@ -9300,6 +9662,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupEnabledImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return primeMagicBackupEnabled?.call(field0);
   }
@@ -9348,6 +9712,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupEnabledImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (primeMagicBackupEnabled != null) {
@@ -9431,6 +9797,10 @@ class _$QuantumLinkMessage_PrimeMagicBackupEnabledImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return primeMagicBackupEnabled(this);
   }
@@ -9498,6 +9868,10 @@ class _$QuantumLinkMessage_PrimeMagicBackupEnabledImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return primeMagicBackupEnabled?.call(this);
   }
@@ -9561,6 +9935,10 @@ class _$QuantumLinkMessage_PrimeMagicBackupEnabledImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (primeMagicBackupEnabled != null) {
@@ -9716,6 +10094,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusRequestImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return primeMagicBackupStatusRequest(field0);
   }
@@ -9765,6 +10145,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusRequestImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return primeMagicBackupStatusRequest?.call(field0);
   }
@@ -9813,6 +10195,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusRequestImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (primeMagicBackupStatusRequest != null) {
@@ -9896,6 +10280,10 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusRequestImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return primeMagicBackupStatusRequest(this);
   }
@@ -9963,6 +10351,10 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusRequestImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return primeMagicBackupStatusRequest?.call(this);
   }
@@ -10026,6 +10418,10 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusRequestImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (primeMagicBackupStatusRequest != null) {
@@ -10182,6 +10578,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusResponseImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return primeMagicBackupStatusResponse(field0);
   }
@@ -10231,6 +10629,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusResponseImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return primeMagicBackupStatusResponse?.call(field0);
   }
@@ -10279,6 +10679,8 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusResponseImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (primeMagicBackupStatusResponse != null) {
@@ -10362,6 +10764,10 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusResponseImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return primeMagicBackupStatusResponse(this);
   }
@@ -10429,6 +10835,10 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusResponseImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return primeMagicBackupStatusResponse?.call(this);
   }
@@ -10492,6 +10902,10 @@ class _$QuantumLinkMessage_PrimeMagicBackupStatusResponseImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (primeMagicBackupStatusResponse != null) {
@@ -10639,6 +11053,8 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return backupShardRequest(field0);
   }
@@ -10688,6 +11104,8 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return backupShardRequest?.call(field0);
   }
@@ -10736,6 +11154,8 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (backupShardRequest != null) {
@@ -10819,6 +11239,10 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return backupShardRequest(this);
   }
@@ -10886,6 +11310,10 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return backupShardRequest?.call(this);
   }
@@ -10949,6 +11377,10 @@ class _$QuantumLinkMessage_BackupShardRequestImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (backupShardRequest != null) {
@@ -11109,6 +11541,8 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return backupShardResponse(field0);
   }
@@ -11158,6 +11592,8 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return backupShardResponse?.call(field0);
   }
@@ -11206,6 +11642,8 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (backupShardResponse != null) {
@@ -11289,6 +11727,10 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return backupShardResponse(this);
   }
@@ -11356,6 +11798,10 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return backupShardResponse?.call(this);
   }
@@ -11419,6 +11865,10 @@ class _$QuantumLinkMessage_BackupShardResponseImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (backupShardResponse != null) {
@@ -11567,6 +12017,8 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return restoreShardRequest(field0);
   }
@@ -11616,6 +12068,8 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return restoreShardRequest?.call(field0);
   }
@@ -11664,6 +12118,8 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (restoreShardRequest != null) {
@@ -11747,6 +12203,10 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return restoreShardRequest(this);
   }
@@ -11814,6 +12274,10 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return restoreShardRequest?.call(this);
   }
@@ -11877,6 +12341,10 @@ class _$QuantumLinkMessage_RestoreShardRequestImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (restoreShardRequest != null) {
@@ -12037,6 +12505,8 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return restoreShardResponse(field0);
   }
@@ -12086,6 +12556,8 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return restoreShardResponse?.call(field0);
   }
@@ -12134,6 +12606,8 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (restoreShardResponse != null) {
@@ -12217,6 +12691,10 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return restoreShardResponse(this);
   }
@@ -12284,6 +12762,10 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return restoreShardResponse?.call(this);
   }
@@ -12347,6 +12829,10 @@ class _$QuantumLinkMessage_RestoreShardResponseImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (restoreShardResponse != null) {
@@ -12509,6 +12995,8 @@ class _$QuantumLinkMessage_CreateMagicBackupEventImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return createMagicBackupEvent(field0);
   }
@@ -12558,6 +13046,8 @@ class _$QuantumLinkMessage_CreateMagicBackupEventImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return createMagicBackupEvent?.call(field0);
   }
@@ -12606,6 +13096,8 @@ class _$QuantumLinkMessage_CreateMagicBackupEventImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (createMagicBackupEvent != null) {
@@ -12689,6 +13181,10 @@ class _$QuantumLinkMessage_CreateMagicBackupEventImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return createMagicBackupEvent(this);
   }
@@ -12756,6 +13252,10 @@ class _$QuantumLinkMessage_CreateMagicBackupEventImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return createMagicBackupEvent?.call(this);
   }
@@ -12819,6 +13319,10 @@ class _$QuantumLinkMessage_CreateMagicBackupEventImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (createMagicBackupEvent != null) {
@@ -12982,6 +13486,8 @@ class _$QuantumLinkMessage_CreateMagicBackupResultImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return createMagicBackupResult(field0);
   }
@@ -13031,6 +13537,8 @@ class _$QuantumLinkMessage_CreateMagicBackupResultImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return createMagicBackupResult?.call(field0);
   }
@@ -13079,6 +13587,8 @@ class _$QuantumLinkMessage_CreateMagicBackupResultImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (createMagicBackupResult != null) {
@@ -13162,6 +13672,10 @@ class _$QuantumLinkMessage_CreateMagicBackupResultImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return createMagicBackupResult(this);
   }
@@ -13229,6 +13743,10 @@ class _$QuantumLinkMessage_CreateMagicBackupResultImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return createMagicBackupResult?.call(this);
   }
@@ -13292,6 +13810,10 @@ class _$QuantumLinkMessage_CreateMagicBackupResultImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (createMagicBackupResult != null) {
@@ -13445,6 +13967,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupRequestImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return restoreMagicBackupRequest(field0);
   }
@@ -13494,6 +14018,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupRequestImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return restoreMagicBackupRequest?.call(field0);
   }
@@ -13542,6 +14068,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupRequestImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (restoreMagicBackupRequest != null) {
@@ -13625,6 +14153,10 @@ class _$QuantumLinkMessage_RestoreMagicBackupRequestImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return restoreMagicBackupRequest(this);
   }
@@ -13692,6 +14224,10 @@ class _$QuantumLinkMessage_RestoreMagicBackupRequestImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return restoreMagicBackupRequest?.call(this);
   }
@@ -13755,6 +14291,10 @@ class _$QuantumLinkMessage_RestoreMagicBackupRequestImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (restoreMagicBackupRequest != null) {
@@ -13918,6 +14458,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupEventImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return restoreMagicBackupEvent(field0);
   }
@@ -13967,6 +14509,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupEventImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return restoreMagicBackupEvent?.call(field0);
   }
@@ -14015,6 +14559,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupEventImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (restoreMagicBackupEvent != null) {
@@ -14098,6 +14644,10 @@ class _$QuantumLinkMessage_RestoreMagicBackupEventImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return restoreMagicBackupEvent(this);
   }
@@ -14165,6 +14715,10 @@ class _$QuantumLinkMessage_RestoreMagicBackupEventImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return restoreMagicBackupEvent?.call(this);
   }
@@ -14228,6 +14782,10 @@ class _$QuantumLinkMessage_RestoreMagicBackupEventImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (restoreMagicBackupEvent != null) {
@@ -14393,6 +14951,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupResultImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return restoreMagicBackupResult(field0);
   }
@@ -14442,6 +15002,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupResultImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return restoreMagicBackupResult?.call(field0);
   }
@@ -14490,6 +15052,8 @@ class _$QuantumLinkMessage_RestoreMagicBackupResultImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (restoreMagicBackupResult != null) {
@@ -14573,6 +15137,10 @@ class _$QuantumLinkMessage_RestoreMagicBackupResultImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return restoreMagicBackupResult(this);
   }
@@ -14640,6 +15208,10 @@ class _$QuantumLinkMessage_RestoreMagicBackupResultImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return restoreMagicBackupResult?.call(this);
   }
@@ -14703,6 +15275,10 @@ class _$QuantumLinkMessage_RestoreMagicBackupResultImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (restoreMagicBackupResult != null) {
@@ -14849,6 +15425,8 @@ class _$QuantumLinkMessage_HeartbeatImpl extends QuantumLinkMessage_Heartbeat {
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return heartbeat(field0);
   }
@@ -14898,6 +15476,8 @@ class _$QuantumLinkMessage_HeartbeatImpl extends QuantumLinkMessage_Heartbeat {
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return heartbeat?.call(field0);
   }
@@ -14946,6 +15526,8 @@ class _$QuantumLinkMessage_HeartbeatImpl extends QuantumLinkMessage_Heartbeat {
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (heartbeat != null) {
@@ -15029,6 +15611,10 @@ class _$QuantumLinkMessage_HeartbeatImpl extends QuantumLinkMessage_Heartbeat {
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return heartbeat(this);
   }
@@ -15096,6 +15682,10 @@ class _$QuantumLinkMessage_HeartbeatImpl extends QuantumLinkMessage_Heartbeat {
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return heartbeat?.call(this);
   }
@@ -15159,6 +15749,10 @@ class _$QuantumLinkMessage_HeartbeatImpl extends QuantumLinkMessage_Heartbeat {
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (heartbeat != null) {
@@ -15304,6 +15898,8 @@ class _$QuantumLinkMessage_TimezoneRequestImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return timezoneRequest(field0);
   }
@@ -15353,6 +15949,8 @@ class _$QuantumLinkMessage_TimezoneRequestImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return timezoneRequest?.call(field0);
   }
@@ -15401,6 +15999,8 @@ class _$QuantumLinkMessage_TimezoneRequestImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (timezoneRequest != null) {
@@ -15484,6 +16084,10 @@ class _$QuantumLinkMessage_TimezoneRequestImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return timezoneRequest(this);
   }
@@ -15551,6 +16155,10 @@ class _$QuantumLinkMessage_TimezoneRequestImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return timezoneRequest?.call(this);
   }
@@ -15614,6 +16222,10 @@ class _$QuantumLinkMessage_TimezoneRequestImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (timezoneRequest != null) {
@@ -15759,6 +16371,8 @@ class _$QuantumLinkMessage_TimezoneResponseImpl
     required TResult Function(Heartbeat field0) heartbeat,
     required TResult Function(TimezoneRequest field0) timezoneRequest,
     required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
   }) {
     return timezoneResponse(field0);
   }
@@ -15808,6 +16422,8 @@ class _$QuantumLinkMessage_TimezoneResponseImpl
     TResult? Function(Heartbeat field0)? heartbeat,
     TResult? Function(TimezoneRequest field0)? timezoneRequest,
     TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
   }) {
     return timezoneResponse?.call(field0);
   }
@@ -15856,6 +16472,8 @@ class _$QuantumLinkMessage_TimezoneResponseImpl
     TResult Function(Heartbeat field0)? heartbeat,
     TResult Function(TimezoneRequest field0)? timezoneRequest,
     TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
     required TResult orElse(),
   }) {
     if (timezoneResponse != null) {
@@ -15939,6 +16557,10 @@ class _$QuantumLinkMessage_TimezoneResponseImpl
         timezoneRequest,
     required TResult Function(QuantumLinkMessage_TimezoneResponse value)
         timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
   }) {
     return timezoneResponse(this);
   }
@@ -16006,6 +16628,10 @@ class _$QuantumLinkMessage_TimezoneResponseImpl
         timezoneRequest,
     TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
   }) {
     return timezoneResponse?.call(this);
   }
@@ -16069,6 +16695,10 @@ class _$QuantumLinkMessage_TimezoneResponseImpl
     TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
     TResult Function(QuantumLinkMessage_TimezoneResponse value)?
         timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
     required TResult orElse(),
   }) {
     if (timezoneResponse != null) {
@@ -16092,5 +16722,953 @@ abstract class QuantumLinkMessage_TimezoneResponse extends QuantumLinkMessage {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$QuantumLinkMessage_TimezoneResponseImplCopyWith<
           _$QuantumLinkMessage_TimezoneResponseImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$QuantumLinkMessage_UnpairingRequestImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_UnpairingRequestImplCopyWith(
+          _$QuantumLinkMessage_UnpairingRequestImpl value,
+          $Res Function(_$QuantumLinkMessage_UnpairingRequestImpl) then) =
+      __$$QuantumLinkMessage_UnpairingRequestImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({UnpairingRequest field0});
+}
+
+/// @nodoc
+class __$$QuantumLinkMessage_UnpairingRequestImplCopyWithImpl<$Res>
+    extends _$QuantumLinkMessageCopyWithImpl<$Res,
+        _$QuantumLinkMessage_UnpairingRequestImpl>
+    implements _$$QuantumLinkMessage_UnpairingRequestImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_UnpairingRequestImplCopyWithImpl(
+      _$QuantumLinkMessage_UnpairingRequestImpl _value,
+      $Res Function(_$QuantumLinkMessage_UnpairingRequestImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$QuantumLinkMessage_UnpairingRequestImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as UnpairingRequest,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$QuantumLinkMessage_UnpairingRequestImpl
+    extends QuantumLinkMessage_UnpairingRequest {
+  const _$QuantumLinkMessage_UnpairingRequestImpl(this.field0) : super._();
+
+  @override
+  final UnpairingRequest field0;
+
+  @override
+  String toString() {
+    return 'QuantumLinkMessage.unpairingRequest(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$QuantumLinkMessage_UnpairingRequestImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$QuantumLinkMessage_UnpairingRequestImplCopyWith<
+          _$QuantumLinkMessage_UnpairingRequestImpl>
+      get copyWith => __$$QuantumLinkMessage_UnpairingRequestImplCopyWithImpl<
+          _$QuantumLinkMessage_UnpairingRequestImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(ExchangeRate field0) exchangeRate,
+    required TResult Function(ExchangeRateHistory field0) exchangeRateHistory,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareInstallEvent field0) firmwareInstallEvent,
+    required TResult Function(DeviceStatus field0) deviceStatus,
+    required TResult Function(EnvoyStatus field0) envoyStatus,
+    required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(OnboardingState field0) onboardingState,
+    required TResult Function(SignPsbt field0) signPsbt,
+    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(ApplyPassphrase field0) applyPassphrase,
+    required TResult Function(EnvoyMagicBackupEnabledRequest field0)
+        envoyMagicBackupEnabledRequest,
+    required TResult Function(EnvoyMagicBackupEnabledResponse field0)
+        envoyMagicBackupEnabledResponse,
+    required TResult Function(PrimeMagicBackupEnabled field0)
+        primeMagicBackupEnabled,
+    required TResult Function(PrimeMagicBackupStatusRequest field0)
+        primeMagicBackupStatusRequest,
+    required TResult Function(PrimeMagicBackupStatusResponse field0)
+        primeMagicBackupStatusResponse,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
+    required TResult Function(CreateMagicBackupEvent field0)
+        createMagicBackupEvent,
+    required TResult Function(CreateMagicBackupResult field0)
+        createMagicBackupResult,
+    required TResult Function(RestoreMagicBackupRequest field0)
+        restoreMagicBackupRequest,
+    required TResult Function(RestoreMagicBackupEvent field0)
+        restoreMagicBackupEvent,
+    required TResult Function(RestoreMagicBackupResult field0)
+        restoreMagicBackupResult,
+    required TResult Function(Heartbeat field0) heartbeat,
+    required TResult Function(TimezoneRequest field0) timezoneRequest,
+    required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
+  }) {
+    return unpairingRequest(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ExchangeRate field0)? exchangeRate,
+    TResult? Function(ExchangeRateHistory field0)? exchangeRateHistory,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareInstallEvent field0)? firmwareInstallEvent,
+    TResult? Function(DeviceStatus field0)? deviceStatus,
+    TResult? Function(EnvoyStatus field0)? envoyStatus,
+    TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(OnboardingState field0)? onboardingState,
+    TResult? Function(SignPsbt field0)? signPsbt,
+    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(ApplyPassphrase field0)? applyPassphrase,
+    TResult? Function(EnvoyMagicBackupEnabledRequest field0)?
+        envoyMagicBackupEnabledRequest,
+    TResult? Function(EnvoyMagicBackupEnabledResponse field0)?
+        envoyMagicBackupEnabledResponse,
+    TResult? Function(PrimeMagicBackupEnabled field0)? primeMagicBackupEnabled,
+    TResult? Function(PrimeMagicBackupStatusRequest field0)?
+        primeMagicBackupStatusRequest,
+    TResult? Function(PrimeMagicBackupStatusResponse field0)?
+        primeMagicBackupStatusResponse,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult? Function(CreateMagicBackupEvent field0)? createMagicBackupEvent,
+    TResult? Function(CreateMagicBackupResult field0)? createMagicBackupResult,
+    TResult? Function(RestoreMagicBackupRequest field0)?
+        restoreMagicBackupRequest,
+    TResult? Function(RestoreMagicBackupEvent field0)? restoreMagicBackupEvent,
+    TResult? Function(RestoreMagicBackupResult field0)?
+        restoreMagicBackupResult,
+    TResult? Function(Heartbeat field0)? heartbeat,
+    TResult? Function(TimezoneRequest field0)? timezoneRequest,
+    TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
+  }) {
+    return unpairingRequest?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ExchangeRate field0)? exchangeRate,
+    TResult Function(ExchangeRateHistory field0)? exchangeRateHistory,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareInstallEvent field0)? firmwareInstallEvent,
+    TResult Function(DeviceStatus field0)? deviceStatus,
+    TResult Function(EnvoyStatus field0)? envoyStatus,
+    TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(OnboardingState field0)? onboardingState,
+    TResult Function(SignPsbt field0)? signPsbt,
+    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(ApplyPassphrase field0)? applyPassphrase,
+    TResult Function(EnvoyMagicBackupEnabledRequest field0)?
+        envoyMagicBackupEnabledRequest,
+    TResult Function(EnvoyMagicBackupEnabledResponse field0)?
+        envoyMagicBackupEnabledResponse,
+    TResult Function(PrimeMagicBackupEnabled field0)? primeMagicBackupEnabled,
+    TResult Function(PrimeMagicBackupStatusRequest field0)?
+        primeMagicBackupStatusRequest,
+    TResult Function(PrimeMagicBackupStatusResponse field0)?
+        primeMagicBackupStatusResponse,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult Function(CreateMagicBackupEvent field0)? createMagicBackupEvent,
+    TResult Function(CreateMagicBackupResult field0)? createMagicBackupResult,
+    TResult Function(RestoreMagicBackupRequest field0)?
+        restoreMagicBackupRequest,
+    TResult Function(RestoreMagicBackupEvent field0)? restoreMagicBackupEvent,
+    TResult Function(RestoreMagicBackupResult field0)? restoreMagicBackupResult,
+    TResult Function(Heartbeat field0)? heartbeat,
+    TResult Function(TimezoneRequest field0)? timezoneRequest,
+    TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
+    required TResult orElse(),
+  }) {
+    if (unpairingRequest != null) {
+      return unpairingRequest(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(QuantumLinkMessage_ExchangeRate value)
+        exchangeRate,
+    required TResult Function(QuantumLinkMessage_ExchangeRateHistory value)
+        exchangeRateHistory,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareInstallEvent value)
+        firmwareInstallEvent,
+    required TResult Function(QuantumLinkMessage_DeviceStatus value)
+        deviceStatus,
+    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
+    required TResult Function(QuantumLinkMessage_PairingRequest value)
+        pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_OnboardingState value)
+        onboardingState,
+    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
+    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
+        broadcastTransaction,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_ApplyPassphrase value)
+        applyPassphrase,
+    required TResult Function(
+            QuantumLinkMessage_EnvoyMagicBackupEnabledRequest value)
+        envoyMagicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_EnvoyMagicBackupEnabledResponse value)
+        envoyMagicBackupEnabledResponse,
+    required TResult Function(QuantumLinkMessage_PrimeMagicBackupEnabled value)
+        primeMagicBackupEnabled,
+    required TResult Function(
+            QuantumLinkMessage_PrimeMagicBackupStatusRequest value)
+        primeMagicBackupStatusRequest,
+    required TResult Function(
+            QuantumLinkMessage_PrimeMagicBackupStatusResponse value)
+        primeMagicBackupStatusResponse,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
+    required TResult Function(QuantumLinkMessage_CreateMagicBackupEvent value)
+        createMagicBackupEvent,
+    required TResult Function(QuantumLinkMessage_CreateMagicBackupResult value)
+        createMagicBackupResult,
+    required TResult Function(
+            QuantumLinkMessage_RestoreMagicBackupRequest value)
+        restoreMagicBackupRequest,
+    required TResult Function(QuantumLinkMessage_RestoreMagicBackupEvent value)
+        restoreMagicBackupEvent,
+    required TResult Function(QuantumLinkMessage_RestoreMagicBackupResult value)
+        restoreMagicBackupResult,
+    required TResult Function(QuantumLinkMessage_Heartbeat value) heartbeat,
+    required TResult Function(QuantumLinkMessage_TimezoneRequest value)
+        timezoneRequest,
+    required TResult Function(QuantumLinkMessage_TimezoneResponse value)
+        timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
+  }) {
+    return unpairingRequest(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult? Function(QuantumLinkMessage_ExchangeRateHistory value)?
+        exchangeRateHistory,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareInstallEvent value)?
+        firmwareInstallEvent,
+    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult? Function(QuantumLinkMessage_PairingResponse value)?
+        pairingResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_OnboardingState value)?
+        onboardingState,
+    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_ApplyPassphrase value)?
+        applyPassphrase,
+    TResult? Function(QuantumLinkMessage_EnvoyMagicBackupEnabledRequest value)?
+        envoyMagicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_EnvoyMagicBackupEnabledResponse value)?
+        envoyMagicBackupEnabledResponse,
+    TResult? Function(QuantumLinkMessage_PrimeMagicBackupEnabled value)?
+        primeMagicBackupEnabled,
+    TResult? Function(QuantumLinkMessage_PrimeMagicBackupStatusRequest value)?
+        primeMagicBackupStatusRequest,
+    TResult? Function(QuantumLinkMessage_PrimeMagicBackupStatusResponse value)?
+        primeMagicBackupStatusResponse,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult? Function(QuantumLinkMessage_CreateMagicBackupEvent value)?
+        createMagicBackupEvent,
+    TResult? Function(QuantumLinkMessage_CreateMagicBackupResult value)?
+        createMagicBackupResult,
+    TResult? Function(QuantumLinkMessage_RestoreMagicBackupRequest value)?
+        restoreMagicBackupRequest,
+    TResult? Function(QuantumLinkMessage_RestoreMagicBackupEvent value)?
+        restoreMagicBackupEvent,
+    TResult? Function(QuantumLinkMessage_RestoreMagicBackupResult value)?
+        restoreMagicBackupResult,
+    TResult? Function(QuantumLinkMessage_Heartbeat value)? heartbeat,
+    TResult? Function(QuantumLinkMessage_TimezoneRequest value)?
+        timezoneRequest,
+    TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
+        timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
+  }) {
+    return unpairingRequest?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult Function(QuantumLinkMessage_ExchangeRateHistory value)?
+        exchangeRateHistory,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareInstallEvent value)?
+        firmwareInstallEvent,
+    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
+    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_ApplyPassphrase value)? applyPassphrase,
+    TResult Function(QuantumLinkMessage_EnvoyMagicBackupEnabledRequest value)?
+        envoyMagicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_EnvoyMagicBackupEnabledResponse value)?
+        envoyMagicBackupEnabledResponse,
+    TResult Function(QuantumLinkMessage_PrimeMagicBackupEnabled value)?
+        primeMagicBackupEnabled,
+    TResult Function(QuantumLinkMessage_PrimeMagicBackupStatusRequest value)?
+        primeMagicBackupStatusRequest,
+    TResult Function(QuantumLinkMessage_PrimeMagicBackupStatusResponse value)?
+        primeMagicBackupStatusResponse,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult Function(QuantumLinkMessage_CreateMagicBackupEvent value)?
+        createMagicBackupEvent,
+    TResult Function(QuantumLinkMessage_CreateMagicBackupResult value)?
+        createMagicBackupResult,
+    TResult Function(QuantumLinkMessage_RestoreMagicBackupRequest value)?
+        restoreMagicBackupRequest,
+    TResult Function(QuantumLinkMessage_RestoreMagicBackupEvent value)?
+        restoreMagicBackupEvent,
+    TResult Function(QuantumLinkMessage_RestoreMagicBackupResult value)?
+        restoreMagicBackupResult,
+    TResult Function(QuantumLinkMessage_Heartbeat value)? heartbeat,
+    TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
+    TResult Function(QuantumLinkMessage_TimezoneResponse value)?
+        timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
+    required TResult orElse(),
+  }) {
+    if (unpairingRequest != null) {
+      return unpairingRequest(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class QuantumLinkMessage_UnpairingRequest extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_UnpairingRequest(
+          final UnpairingRequest field0) =
+      _$QuantumLinkMessage_UnpairingRequestImpl;
+  const QuantumLinkMessage_UnpairingRequest._() : super._();
+
+  @override
+  UnpairingRequest get field0;
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$QuantumLinkMessage_UnpairingRequestImplCopyWith<
+          _$QuantumLinkMessage_UnpairingRequestImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$QuantumLinkMessage_UnpairingResponseImplCopyWith<$Res> {
+  factory _$$QuantumLinkMessage_UnpairingResponseImplCopyWith(
+          _$QuantumLinkMessage_UnpairingResponseImpl value,
+          $Res Function(_$QuantumLinkMessage_UnpairingResponseImpl) then) =
+      __$$QuantumLinkMessage_UnpairingResponseImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({UnpairingResponse field0});
+}
+
+/// @nodoc
+class __$$QuantumLinkMessage_UnpairingResponseImplCopyWithImpl<$Res>
+    extends _$QuantumLinkMessageCopyWithImpl<$Res,
+        _$QuantumLinkMessage_UnpairingResponseImpl>
+    implements _$$QuantumLinkMessage_UnpairingResponseImplCopyWith<$Res> {
+  __$$QuantumLinkMessage_UnpairingResponseImplCopyWithImpl(
+      _$QuantumLinkMessage_UnpairingResponseImpl _value,
+      $Res Function(_$QuantumLinkMessage_UnpairingResponseImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(_$QuantumLinkMessage_UnpairingResponseImpl(
+      null == field0
+          ? _value.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as UnpairingResponse,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$QuantumLinkMessage_UnpairingResponseImpl
+    extends QuantumLinkMessage_UnpairingResponse {
+  const _$QuantumLinkMessage_UnpairingResponseImpl(this.field0) : super._();
+
+  @override
+  final UnpairingResponse field0;
+
+  @override
+  String toString() {
+    return 'QuantumLinkMessage.unpairingResponse(field0: $field0)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$QuantumLinkMessage_UnpairingResponseImpl &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, field0);
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$QuantumLinkMessage_UnpairingResponseImplCopyWith<
+          _$QuantumLinkMessage_UnpairingResponseImpl>
+      get copyWith => __$$QuantumLinkMessage_UnpairingResponseImplCopyWithImpl<
+          _$QuantumLinkMessage_UnpairingResponseImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(ExchangeRate field0) exchangeRate,
+    required TResult Function(ExchangeRateHistory field0) exchangeRateHistory,
+    required TResult Function(FirmwareUpdateCheckRequest field0)
+        firmwareUpdateCheckRequest,
+    required TResult Function(FirmwareUpdateCheckResponse field0)
+        firmwareUpdateCheckResponse,
+    required TResult Function(FirmwareFetchRequest field0) firmwareFetchRequest,
+    required TResult Function(FirmwareFetchEvent field0) firmwareFetchEvent,
+    required TResult Function(FirmwareInstallEvent field0) firmwareInstallEvent,
+    required TResult Function(DeviceStatus field0) deviceStatus,
+    required TResult Function(EnvoyStatus field0) envoyStatus,
+    required TResult Function(PairingRequest field0) pairingRequest,
+    required TResult Function(PairingResponse field0) pairingResponse,
+    required TResult Function(SecurityCheck field0) securityCheck,
+    required TResult Function(OnboardingState field0) onboardingState,
+    required TResult Function(SignPsbt field0) signPsbt,
+    required TResult Function(BroadcastTransaction field0) broadcastTransaction,
+    required TResult Function(AccountUpdate field0) accountUpdate,
+    required TResult Function(ApplyPassphrase field0) applyPassphrase,
+    required TResult Function(EnvoyMagicBackupEnabledRequest field0)
+        envoyMagicBackupEnabledRequest,
+    required TResult Function(EnvoyMagicBackupEnabledResponse field0)
+        envoyMagicBackupEnabledResponse,
+    required TResult Function(PrimeMagicBackupEnabled field0)
+        primeMagicBackupEnabled,
+    required TResult Function(PrimeMagicBackupStatusRequest field0)
+        primeMagicBackupStatusRequest,
+    required TResult Function(PrimeMagicBackupStatusResponse field0)
+        primeMagicBackupStatusResponse,
+    required TResult Function(BackupShardRequest field0) backupShardRequest,
+    required TResult Function(BackupShardResponse field0) backupShardResponse,
+    required TResult Function(RestoreShardRequest field0) restoreShardRequest,
+    required TResult Function(RestoreShardResponse field0) restoreShardResponse,
+    required TResult Function(CreateMagicBackupEvent field0)
+        createMagicBackupEvent,
+    required TResult Function(CreateMagicBackupResult field0)
+        createMagicBackupResult,
+    required TResult Function(RestoreMagicBackupRequest field0)
+        restoreMagicBackupRequest,
+    required TResult Function(RestoreMagicBackupEvent field0)
+        restoreMagicBackupEvent,
+    required TResult Function(RestoreMagicBackupResult field0)
+        restoreMagicBackupResult,
+    required TResult Function(Heartbeat field0) heartbeat,
+    required TResult Function(TimezoneRequest field0) timezoneRequest,
+    required TResult Function(TimezoneResponse field0) timezoneResponse,
+    required TResult Function(UnpairingRequest field0) unpairingRequest,
+    required TResult Function(UnpairingResponse field0) unpairingResponse,
+  }) {
+    return unpairingResponse(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(ExchangeRate field0)? exchangeRate,
+    TResult? Function(ExchangeRateHistory field0)? exchangeRateHistory,
+    TResult? Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult? Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult? Function(FirmwareInstallEvent field0)? firmwareInstallEvent,
+    TResult? Function(DeviceStatus field0)? deviceStatus,
+    TResult? Function(EnvoyStatus field0)? envoyStatus,
+    TResult? Function(PairingRequest field0)? pairingRequest,
+    TResult? Function(PairingResponse field0)? pairingResponse,
+    TResult? Function(SecurityCheck field0)? securityCheck,
+    TResult? Function(OnboardingState field0)? onboardingState,
+    TResult? Function(SignPsbt field0)? signPsbt,
+    TResult? Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult? Function(AccountUpdate field0)? accountUpdate,
+    TResult? Function(ApplyPassphrase field0)? applyPassphrase,
+    TResult? Function(EnvoyMagicBackupEnabledRequest field0)?
+        envoyMagicBackupEnabledRequest,
+    TResult? Function(EnvoyMagicBackupEnabledResponse field0)?
+        envoyMagicBackupEnabledResponse,
+    TResult? Function(PrimeMagicBackupEnabled field0)? primeMagicBackupEnabled,
+    TResult? Function(PrimeMagicBackupStatusRequest field0)?
+        primeMagicBackupStatusRequest,
+    TResult? Function(PrimeMagicBackupStatusResponse field0)?
+        primeMagicBackupStatusResponse,
+    TResult? Function(BackupShardRequest field0)? backupShardRequest,
+    TResult? Function(BackupShardResponse field0)? backupShardResponse,
+    TResult? Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult? Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult? Function(CreateMagicBackupEvent field0)? createMagicBackupEvent,
+    TResult? Function(CreateMagicBackupResult field0)? createMagicBackupResult,
+    TResult? Function(RestoreMagicBackupRequest field0)?
+        restoreMagicBackupRequest,
+    TResult? Function(RestoreMagicBackupEvent field0)? restoreMagicBackupEvent,
+    TResult? Function(RestoreMagicBackupResult field0)?
+        restoreMagicBackupResult,
+    TResult? Function(Heartbeat field0)? heartbeat,
+    TResult? Function(TimezoneRequest field0)? timezoneRequest,
+    TResult? Function(TimezoneResponse field0)? timezoneResponse,
+    TResult? Function(UnpairingRequest field0)? unpairingRequest,
+    TResult? Function(UnpairingResponse field0)? unpairingResponse,
+  }) {
+    return unpairingResponse?.call(field0);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(ExchangeRate field0)? exchangeRate,
+    TResult Function(ExchangeRateHistory field0)? exchangeRateHistory,
+    TResult Function(FirmwareUpdateCheckRequest field0)?
+        firmwareUpdateCheckRequest,
+    TResult Function(FirmwareUpdateCheckResponse field0)?
+        firmwareUpdateCheckResponse,
+    TResult Function(FirmwareFetchRequest field0)? firmwareFetchRequest,
+    TResult Function(FirmwareFetchEvent field0)? firmwareFetchEvent,
+    TResult Function(FirmwareInstallEvent field0)? firmwareInstallEvent,
+    TResult Function(DeviceStatus field0)? deviceStatus,
+    TResult Function(EnvoyStatus field0)? envoyStatus,
+    TResult Function(PairingRequest field0)? pairingRequest,
+    TResult Function(PairingResponse field0)? pairingResponse,
+    TResult Function(SecurityCheck field0)? securityCheck,
+    TResult Function(OnboardingState field0)? onboardingState,
+    TResult Function(SignPsbt field0)? signPsbt,
+    TResult Function(BroadcastTransaction field0)? broadcastTransaction,
+    TResult Function(AccountUpdate field0)? accountUpdate,
+    TResult Function(ApplyPassphrase field0)? applyPassphrase,
+    TResult Function(EnvoyMagicBackupEnabledRequest field0)?
+        envoyMagicBackupEnabledRequest,
+    TResult Function(EnvoyMagicBackupEnabledResponse field0)?
+        envoyMagicBackupEnabledResponse,
+    TResult Function(PrimeMagicBackupEnabled field0)? primeMagicBackupEnabled,
+    TResult Function(PrimeMagicBackupStatusRequest field0)?
+        primeMagicBackupStatusRequest,
+    TResult Function(PrimeMagicBackupStatusResponse field0)?
+        primeMagicBackupStatusResponse,
+    TResult Function(BackupShardRequest field0)? backupShardRequest,
+    TResult Function(BackupShardResponse field0)? backupShardResponse,
+    TResult Function(RestoreShardRequest field0)? restoreShardRequest,
+    TResult Function(RestoreShardResponse field0)? restoreShardResponse,
+    TResult Function(CreateMagicBackupEvent field0)? createMagicBackupEvent,
+    TResult Function(CreateMagicBackupResult field0)? createMagicBackupResult,
+    TResult Function(RestoreMagicBackupRequest field0)?
+        restoreMagicBackupRequest,
+    TResult Function(RestoreMagicBackupEvent field0)? restoreMagicBackupEvent,
+    TResult Function(RestoreMagicBackupResult field0)? restoreMagicBackupResult,
+    TResult Function(Heartbeat field0)? heartbeat,
+    TResult Function(TimezoneRequest field0)? timezoneRequest,
+    TResult Function(TimezoneResponse field0)? timezoneResponse,
+    TResult Function(UnpairingRequest field0)? unpairingRequest,
+    TResult Function(UnpairingResponse field0)? unpairingResponse,
+    required TResult orElse(),
+  }) {
+    if (unpairingResponse != null) {
+      return unpairingResponse(field0);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(QuantumLinkMessage_ExchangeRate value)
+        exchangeRate,
+    required TResult Function(QuantumLinkMessage_ExchangeRateHistory value)
+        exchangeRateHistory,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckRequest value)
+        firmwareUpdateCheckRequest,
+    required TResult Function(
+            QuantumLinkMessage_FirmwareUpdateCheckResponse value)
+        firmwareUpdateCheckResponse,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)
+        firmwareFetchRequest,
+    required TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)
+        firmwareFetchEvent,
+    required TResult Function(QuantumLinkMessage_FirmwareInstallEvent value)
+        firmwareInstallEvent,
+    required TResult Function(QuantumLinkMessage_DeviceStatus value)
+        deviceStatus,
+    required TResult Function(QuantumLinkMessage_EnvoyStatus value) envoyStatus,
+    required TResult Function(QuantumLinkMessage_PairingRequest value)
+        pairingRequest,
+    required TResult Function(QuantumLinkMessage_PairingResponse value)
+        pairingResponse,
+    required TResult Function(QuantumLinkMessage_SecurityCheck value)
+        securityCheck,
+    required TResult Function(QuantumLinkMessage_OnboardingState value)
+        onboardingState,
+    required TResult Function(QuantumLinkMessage_SignPsbt value) signPsbt,
+    required TResult Function(QuantumLinkMessage_BroadcastTransaction value)
+        broadcastTransaction,
+    required TResult Function(QuantumLinkMessage_AccountUpdate value)
+        accountUpdate,
+    required TResult Function(QuantumLinkMessage_ApplyPassphrase value)
+        applyPassphrase,
+    required TResult Function(
+            QuantumLinkMessage_EnvoyMagicBackupEnabledRequest value)
+        envoyMagicBackupEnabledRequest,
+    required TResult Function(
+            QuantumLinkMessage_EnvoyMagicBackupEnabledResponse value)
+        envoyMagicBackupEnabledResponse,
+    required TResult Function(QuantumLinkMessage_PrimeMagicBackupEnabled value)
+        primeMagicBackupEnabled,
+    required TResult Function(
+            QuantumLinkMessage_PrimeMagicBackupStatusRequest value)
+        primeMagicBackupStatusRequest,
+    required TResult Function(
+            QuantumLinkMessage_PrimeMagicBackupStatusResponse value)
+        primeMagicBackupStatusResponse,
+    required TResult Function(QuantumLinkMessage_BackupShardRequest value)
+        backupShardRequest,
+    required TResult Function(QuantumLinkMessage_BackupShardResponse value)
+        backupShardResponse,
+    required TResult Function(QuantumLinkMessage_RestoreShardRequest value)
+        restoreShardRequest,
+    required TResult Function(QuantumLinkMessage_RestoreShardResponse value)
+        restoreShardResponse,
+    required TResult Function(QuantumLinkMessage_CreateMagicBackupEvent value)
+        createMagicBackupEvent,
+    required TResult Function(QuantumLinkMessage_CreateMagicBackupResult value)
+        createMagicBackupResult,
+    required TResult Function(
+            QuantumLinkMessage_RestoreMagicBackupRequest value)
+        restoreMagicBackupRequest,
+    required TResult Function(QuantumLinkMessage_RestoreMagicBackupEvent value)
+        restoreMagicBackupEvent,
+    required TResult Function(QuantumLinkMessage_RestoreMagicBackupResult value)
+        restoreMagicBackupResult,
+    required TResult Function(QuantumLinkMessage_Heartbeat value) heartbeat,
+    required TResult Function(QuantumLinkMessage_TimezoneRequest value)
+        timezoneRequest,
+    required TResult Function(QuantumLinkMessage_TimezoneResponse value)
+        timezoneResponse,
+    required TResult Function(QuantumLinkMessage_UnpairingRequest value)
+        unpairingRequest,
+    required TResult Function(QuantumLinkMessage_UnpairingResponse value)
+        unpairingResponse,
+  }) {
+    return unpairingResponse(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult? Function(QuantumLinkMessage_ExchangeRateHistory value)?
+        exchangeRateHistory,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult? Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult? Function(QuantumLinkMessage_FirmwareInstallEvent value)?
+        firmwareInstallEvent,
+    TResult? Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult? Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult? Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult? Function(QuantumLinkMessage_PairingResponse value)?
+        pairingResponse,
+    TResult? Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult? Function(QuantumLinkMessage_OnboardingState value)?
+        onboardingState,
+    TResult? Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult? Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult? Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult? Function(QuantumLinkMessage_ApplyPassphrase value)?
+        applyPassphrase,
+    TResult? Function(QuantumLinkMessage_EnvoyMagicBackupEnabledRequest value)?
+        envoyMagicBackupEnabledRequest,
+    TResult? Function(QuantumLinkMessage_EnvoyMagicBackupEnabledResponse value)?
+        envoyMagicBackupEnabledResponse,
+    TResult? Function(QuantumLinkMessage_PrimeMagicBackupEnabled value)?
+        primeMagicBackupEnabled,
+    TResult? Function(QuantumLinkMessage_PrimeMagicBackupStatusRequest value)?
+        primeMagicBackupStatusRequest,
+    TResult? Function(QuantumLinkMessage_PrimeMagicBackupStatusResponse value)?
+        primeMagicBackupStatusResponse,
+    TResult? Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult? Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult? Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult? Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult? Function(QuantumLinkMessage_CreateMagicBackupEvent value)?
+        createMagicBackupEvent,
+    TResult? Function(QuantumLinkMessage_CreateMagicBackupResult value)?
+        createMagicBackupResult,
+    TResult? Function(QuantumLinkMessage_RestoreMagicBackupRequest value)?
+        restoreMagicBackupRequest,
+    TResult? Function(QuantumLinkMessage_RestoreMagicBackupEvent value)?
+        restoreMagicBackupEvent,
+    TResult? Function(QuantumLinkMessage_RestoreMagicBackupResult value)?
+        restoreMagicBackupResult,
+    TResult? Function(QuantumLinkMessage_Heartbeat value)? heartbeat,
+    TResult? Function(QuantumLinkMessage_TimezoneRequest value)?
+        timezoneRequest,
+    TResult? Function(QuantumLinkMessage_TimezoneResponse value)?
+        timezoneResponse,
+    TResult? Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult? Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
+  }) {
+    return unpairingResponse?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(QuantumLinkMessage_ExchangeRate value)? exchangeRate,
+    TResult Function(QuantumLinkMessage_ExchangeRateHistory value)?
+        exchangeRateHistory,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckRequest value)?
+        firmwareUpdateCheckRequest,
+    TResult Function(QuantumLinkMessage_FirmwareUpdateCheckResponse value)?
+        firmwareUpdateCheckResponse,
+    TResult Function(QuantumLinkMessage_FirmwareFetchRequest value)?
+        firmwareFetchRequest,
+    TResult Function(QuantumLinkMessage_FirmwareFetchEvent value)?
+        firmwareFetchEvent,
+    TResult Function(QuantumLinkMessage_FirmwareInstallEvent value)?
+        firmwareInstallEvent,
+    TResult Function(QuantumLinkMessage_DeviceStatus value)? deviceStatus,
+    TResult Function(QuantumLinkMessage_EnvoyStatus value)? envoyStatus,
+    TResult Function(QuantumLinkMessage_PairingRequest value)? pairingRequest,
+    TResult Function(QuantumLinkMessage_PairingResponse value)? pairingResponse,
+    TResult Function(QuantumLinkMessage_SecurityCheck value)? securityCheck,
+    TResult Function(QuantumLinkMessage_OnboardingState value)? onboardingState,
+    TResult Function(QuantumLinkMessage_SignPsbt value)? signPsbt,
+    TResult Function(QuantumLinkMessage_BroadcastTransaction value)?
+        broadcastTransaction,
+    TResult Function(QuantumLinkMessage_AccountUpdate value)? accountUpdate,
+    TResult Function(QuantumLinkMessage_ApplyPassphrase value)? applyPassphrase,
+    TResult Function(QuantumLinkMessage_EnvoyMagicBackupEnabledRequest value)?
+        envoyMagicBackupEnabledRequest,
+    TResult Function(QuantumLinkMessage_EnvoyMagicBackupEnabledResponse value)?
+        envoyMagicBackupEnabledResponse,
+    TResult Function(QuantumLinkMessage_PrimeMagicBackupEnabled value)?
+        primeMagicBackupEnabled,
+    TResult Function(QuantumLinkMessage_PrimeMagicBackupStatusRequest value)?
+        primeMagicBackupStatusRequest,
+    TResult Function(QuantumLinkMessage_PrimeMagicBackupStatusResponse value)?
+        primeMagicBackupStatusResponse,
+    TResult Function(QuantumLinkMessage_BackupShardRequest value)?
+        backupShardRequest,
+    TResult Function(QuantumLinkMessage_BackupShardResponse value)?
+        backupShardResponse,
+    TResult Function(QuantumLinkMessage_RestoreShardRequest value)?
+        restoreShardRequest,
+    TResult Function(QuantumLinkMessage_RestoreShardResponse value)?
+        restoreShardResponse,
+    TResult Function(QuantumLinkMessage_CreateMagicBackupEvent value)?
+        createMagicBackupEvent,
+    TResult Function(QuantumLinkMessage_CreateMagicBackupResult value)?
+        createMagicBackupResult,
+    TResult Function(QuantumLinkMessage_RestoreMagicBackupRequest value)?
+        restoreMagicBackupRequest,
+    TResult Function(QuantumLinkMessage_RestoreMagicBackupEvent value)?
+        restoreMagicBackupEvent,
+    TResult Function(QuantumLinkMessage_RestoreMagicBackupResult value)?
+        restoreMagicBackupResult,
+    TResult Function(QuantumLinkMessage_Heartbeat value)? heartbeat,
+    TResult Function(QuantumLinkMessage_TimezoneRequest value)? timezoneRequest,
+    TResult Function(QuantumLinkMessage_TimezoneResponse value)?
+        timezoneResponse,
+    TResult Function(QuantumLinkMessage_UnpairingRequest value)?
+        unpairingRequest,
+    TResult Function(QuantumLinkMessage_UnpairingResponse value)?
+        unpairingResponse,
+    required TResult orElse(),
+  }) {
+    if (unpairingResponse != null) {
+      return unpairingResponse(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class QuantumLinkMessage_UnpairingResponse extends QuantumLinkMessage {
+  const factory QuantumLinkMessage_UnpairingResponse(
+          final UnpairingResponse field0) =
+      _$QuantumLinkMessage_UnpairingResponseImpl;
+  const QuantumLinkMessage_UnpairingResponse._() : super._();
+
+  @override
+  UnpairingResponse get field0;
+
+  /// Create a copy of QuantumLinkMessage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$QuantumLinkMessage_UnpairingResponseImplCopyWith<
+          _$QuantumLinkMessage_UnpairingResponseImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

@@ -28,12 +28,7 @@ class TimeZoneHandler extends PassportMessageHandler {
   }
 
   Future<void> _sendTimezoneResponse() async {
-    DateTime dateTime = DateTime.now();
-    try {
-      dateTime = await NTP.now(timeout: const Duration(milliseconds: 500));
-    } catch (e) {
-      kPrint("NTP error: $e");
-    }
+    final DateTime dateTime = NTPUtil().dateTime;
     final zone = await _platform.invokeMethod('get_time_zone');
 
     final timezoneResponse = api.TimezoneResponse(
