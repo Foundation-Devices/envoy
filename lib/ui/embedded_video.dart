@@ -22,8 +22,7 @@ class EmbeddedVideo extends StatefulWidget {
 class EmbeddedVideoState extends State<EmbeddedVideo> {
   late final VideoPlayerController _videoPlayerController;
   late final Future<void> _initializeVideoPlayerFuture;
-  int _position = 0;
-  int _duration = 1;
+  bool _showReplay = false;
   bool _muted = false;
 
   @override
@@ -37,11 +36,6 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
       if (!mounted) {
         return;
       }
-      setState(() {
-        _duration = _videoPlayerController.value.duration.inSeconds
-            .clamp(1, 1 << 30)
-            .toInt();
-      });
       _videoPlayerController.play();
     });
   }
@@ -52,13 +46,10 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
       return;
     }
 
-    final position = value.position.inSeconds;
-    final duration = value.duration.inSeconds.clamp(1, 1 << 30).toInt();
-
-    if (position != _position || duration != _duration) {
+    final showReplay = value.isCompleted;
+    if (showReplay != _showReplay) {
       setState(() {
-        _position = position;
-        _duration = duration;
+        _showReplay = showReplay;
       });
     }
   }
@@ -117,16 +108,20 @@ class EmbeddedVideoState extends State<EmbeddedVideo> {
           ),
         ),
         Positioned.fill(
-          child: GestureDetector(
-            onTap: () async {
-              await _replay();
-            },
-            child: Align(
-              alignment: Alignment.center,
-              child: AnimatedOpacity(
-                opacity: _position >= _duration - 1 ? 1.0 : 0.0,
-                duration: const Duration(seconds: 1),
-                child: const Icon(Icons.replay, size: 60, color: Colors.white),
+          child: IgnorePointer(
+            ignoring: !_showReplay,
+            child: GestureDetector(
+              onTap: () async {
+                await _replay();
+              },
+              child: Align(
+                alignment: Alignment.center,
+                child: AnimatedOpacity(
+                  opacity: _showReplay ? 1.0 : 0.0,
+                  duration: const Duration(seconds: 1),
+                  child:
+                      const Icon(Icons.replay, size: 60, color: Colors.white),
+                ),
               ),
             ),
           ),

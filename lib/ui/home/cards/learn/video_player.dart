@@ -36,7 +36,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
   bool _isPlaying = true;
   late final AnimationController _playPauseIconController;
 
-  final int _playThreshold = 2000000; // Download 2MB before trying playback.
+  final int _playThreshold = 1000000; // Download 1MB before trying playback.
   final int _desiredResolution = 540;
 
   double _playerProgress = 0;
@@ -51,14 +51,11 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
   double _downloadProgressRaw = 0; // latest raw completion [0..1]
   double _downloadProgressUi = 0; // throttled UI progress [0..1]
   DateTime? _lastDownloadUiUpdateAt;
-  double? _pendingSeekProgress; // queued target as normalized [0..1]
-  bool _pendingSeekInFlight = false;
 
   static const _isMaestroTest =
       bool.fromEnvironment('IS_MAESTRO_TEST', defaultValue: false);
   Timer? _updatePositionTimer;
   Timer? _hideTopBarTimer;
-  Timer? _showTorExplainerTimer;
   Timer? _showTimelineTimer;
 
   void Function()? _cancelDownload;
@@ -66,13 +63,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
   bool _playerExited = false;
   bool _isClosing = false;
 
-  bool get _isWaitingForPendingSeek {
-    if (_downloadProgressRaw >= 1) {
-      return false;
-    }
-    final pending = _pendingSeekProgress;
-    return pending != null && _downloadProgressRaw + 1e-6 < pending;
-  }
+  bool get _isWaitingForPendingSeek => false;
 
   double _metadataDurationSeconds() {
     return widget.video.duration <= 0 ? 1.0 : widget.video.duration.toDouble();
@@ -81,7 +72,6 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
   void _updateDownloadProgress(double completion, {bool force = false}) {
     final progress = completion.clamp(0, 1).toDouble();
     _downloadProgressRaw = progress;
-    unawaited(_resolvePendingSeekIfReady());
 
     final now = DateTime.now();
     final shouldRebuild = force ||
@@ -144,14 +134,12 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
     final Completer<void> completer = Completer<void>();
 
     getApplicationCacheDirectory().then((dir) async {
-      _streamFile = File(
+      final streamFile = File(
         '${dir.path}/stream_${DateTime.now().microsecondsSinceEpoch}.mp4',
       );
-      if (_streamFile == null) {
-        throw Exception("Failed to create stream file");
-      }
+      _streamFile = streamFile;
       final download = await HttpTor().getFile(
-        _streamFile!.path,
+        streamFile.path,
         _getDownloadLink(),
       );
 
@@ -179,7 +167,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
                 progress.downloaded >= progress.total) &&
             _controller == null) {
           final controller = vp.VideoPlayerController.file(
-            _streamFile!,
+            streamFile,
             videoPlayerOptions: vp.VideoPlayerOptions(
               allowBackgroundPlayback: false,
             ),
@@ -231,55 +219,6 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
     periodicallyHideBar();
   }
 
-  Future<void> _resolvePendingSeekIfReady() async {
-    if (_pendingSeekInFlight) {
-      return;
-    }
-    final pendingProgress = _pendingSeekProgress;
-    if (pendingProgress == null ||
-        _downloadProgressRaw + 1e-6 < pendingProgress) {
-      return;
-    }
-
-    final controller = _controller;
-    if (controller == null || !controller.value.isInitialized) {
-      return;
-    }
-
-    _pendingSeekInFlight = true;
-    try {
-      final targetProgress = _pendingSeekProgress;
-      if (targetProgress == null) {
-        return;
-      }
-
-      final targetSeconds = (_metadataDurationSeconds() * targetProgress)
-          .clamp(0, _metadataDurationSeconds())
-          .toDouble();
-      _pendingSeekProgress = null;
-
-      await controller.seekTo(
-        Duration(milliseconds: (targetSeconds * 1000).round()),
-      );
-      await controller.play();
-
-      if (!mounted || _playerExited) {
-        return;
-      }
-      setState(() {
-        _playerProgress = targetSeconds;
-        _isPlaying = controller.value.isPlaying;
-      });
-      _syncPlayPauseIcon(_isPlaying);
-    } finally {
-      _pendingSeekInFlight = false;
-      if (_pendingSeekProgress != null &&
-          _downloadProgressRaw + 1e-6 >= _pendingSeekProgress!) {
-        unawaited(_resolvePendingSeekIfReady());
-      }
-    }
-  }
-
   void showTimeline() {
     if (!_visibleTimeline && mounted && !_playerExited) {
       setState(() {
@@ -323,17 +262,6 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
         return;
       }
 
-      if (_pendingSeekProgress != null) {
-        final previousIsPlaying = _isPlaying;
-        if (previousIsPlaying) {
-          setState(() {
-            _isPlaying = false;
-          });
-          _syncPlayPauseIcon(false);
-        }
-        return;
-      }
-
       final previousIsPlaying = _isPlaying;
       setState(() {
         _playerProgress = value.position.inSeconds.toDouble();
@@ -358,7 +286,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
     unawaited(exitPlayer());
     final streamFile = _streamFile;
     if (streamFile != null) {
-      unawaited(streamFile.delete().then((_) {}).catchError((_) {}));
+      unawaited(streamFile.delete());
     }
     super.dispose();
   }
@@ -405,7 +333,6 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
         (clampedSeconds / maxDuration).clamp(0, 1).toDouble();
 
     if (_downloadProgressRaw + 1e-6 >= targetProgress) {
-      _pendingSeekProgress = null;
       await controller.seekTo(
         Duration(milliseconds: (clampedSeconds * 1000).round()),
       );
@@ -418,17 +345,15 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
       return;
     }
 
-    _pendingSeekProgress = targetProgress;
-    await controller.pause();
+    final currentSeconds = controller.value.position.inSeconds.toDouble();
     if (!mounted || _playerExited) {
       return;
     }
     setState(() {
-      _playerProgress = clampedSeconds;
-      _isPlaying = false;
+      _playerProgress = currentSeconds;
+      _isPlaying = controller.value.isPlaying;
     });
-    _syncPlayPauseIcon(false);
-    unawaited(_resolvePendingSeekIfReady());
+    _syncPlayPauseIcon(_isPlaying);
   }
 
   void _syncPlayPauseIcon(bool isPlaying, {bool animated = true}) {
@@ -571,9 +496,10 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
                                     horizontal: 25.0,
                                   ),
                                   child: LinearProgressIndicator(
-                                    color: EnvoyColors.grey85,
-                                    backgroundColor: Colors.white,
+                                    color: Colors.white70,
+                                    backgroundColor: Colors.grey,
                                     value: _downloadProgressUi,
+                                    borderRadius: BorderRadius.circular(50),
                                   ),
                                 ),
                                 Slider(
@@ -711,11 +637,9 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
 
     _hideTopBarTimer?.cancel();
     _updatePositionTimer?.cancel();
-    _showTorExplainerTimer?.cancel();
     _showTimelineTimer?.cancel();
     _hideTopBarTimer = null;
     _updatePositionTimer = null;
-    _showTorExplainerTimer = null;
     _showTimelineTimer = null;
 
     final controller = _controller;
