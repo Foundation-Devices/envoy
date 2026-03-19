@@ -7,11 +7,14 @@ import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/amount_widget.dart';
 import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/spend_fee_state.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_notifier.dart';
+import 'package:envoy/ui/home/cards/accounts/spend/state/spend_state.dart';
 import 'package:envoy/ui/home/cards/accounts/spend/tx_review.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
+import 'package:envoy/ui/theme/new_envoy_color.dart';
 import 'package:envoy/ui/widgets/color_util.dart';
 import 'package:envoy/ui/widgets/envoy_amount_widget.dart';
 import 'package:envoy/util/console.dart';
@@ -134,11 +137,77 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
       setFees(feeChooserState);
       calculateFeeBoundary();
     });
-
+    TransactionModel transactionModel = ref.watch(spendTransactionProvider);
+    final coinSelectionChanged = ref.watch(coinSelectionChangedProvider);
+    final userSelectedCoinsThisSession =
+        ref.watch(userSelectedCoinsThisSessionProvider);
+    final transactionInputsChanged =
+        ref.watch(transactionInputsChangedProvider);
+    final userHasChangedFees = ref.watch(userHasChangedFeesProvider);
+    final showFeeChangeNotice = userSelectedCoinsThisSession &&
+        coinSelectionChanged &&
+        transactionInputsChanged &&
+        userHasChangedFees;
+    final uneconomicSpends = ref.watch(uneconomicSpendsProvider);
     return DraggableOverlay(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (transactionModel.mode == SpendMode.sendMax ||
+              showFeeChangeNotice ||
+              uneconomicSpends)
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  vertical: EnvoySpacing.small, horizontal: EnvoySpacing.xs),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 16,
+                    child: Center(
+                      child: EnvoyIcon(EnvoyIcons.info,
+                          size: EnvoyIconSize.superSmall,
+                          color: NewEnvoyColor.contentTertiary),
+                    ),
+                  ),
+                  SizedBox(width: EnvoySpacing.xs),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          showFeeChangeNotice
+                              ? S().coincontrol_tx_detail_feeChange_information
+                              : uneconomicSpends
+                                  ? S()
+                                      .coincontrol_tx_detail_high_fee_info_overlay_subheading
+                                  : S().send_reviewScreen_sendMaxWarning,
+                          style: EnvoyTypography.info
+                              .copyWith(color: NewEnvoyColor.contentTertiary),
+                          textAlign: TextAlign.start,
+                        ),
+                        if (uneconomicSpends)
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: EnvoySpacing.xs),
+                            child: GestureDetector(
+                              onTap: () {
+                                //TODO: open link
+                              },
+                              child: Text(
+                                S().component_learnMore,
+                                style: EnvoyTypography.info
+                                    .copyWith(color: NewEnvoyColor.contentLink),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           _FeeOptionRow(
             selected: _selectedOption == FeeOption.fast,
             title: S().coincontrol_tx_detail_fee_fast,
@@ -225,7 +294,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
             title: S().coincontrol_tx_detail_fee_custom,
             subtitle: _showCustom
                 ? getAproxTime(account, ref.watch(_selectedFeeStateProvider))
-                : null, // _selectedFeeStateProvider is sat/kvB
+                : null,
+            // _selectedFeeStateProvider is sat/kvB
             trailing: _showCustom
                 ? (account != null)
                     ? Row(
