@@ -348,7 +348,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     },
                   ),
                   EnvoyBarItem(
-                    icon: EnvoyIcons.send,
+                    icon: EnvoyIcons.arrow_up_right,
                     text: S().receive_tx_list_send,
                     enabled: !scanInProgress,
                     onTap: () async {
@@ -363,7 +363,7 @@ class _AccountCardState extends ConsumerState<AccountCard>
                     },
                   ),
                   EnvoyBarItem(
-                    icon: EnvoyIcons.externalLink,
+                    icon: EnvoyIcons.qr_scan,
                     text: S().receive_tx_list_scan,
                     enabled: !scanInProgress,
                     onTap: () {
