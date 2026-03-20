@@ -27,6 +27,7 @@ import 'package:envoy/ui/home/cards/accounts/detail/filter_options.dart';
 import 'package:envoy/business/fee_rate.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 enum FeeOption {
   fast,
@@ -193,7 +194,8 @@ class _FeeChooserState extends ConsumerState<FeeChooser>
                                 const EdgeInsets.only(top: EnvoySpacing.xs),
                             child: GestureDetector(
                               onTap: () {
-                                //TODO: open link
+                                launchUrlString(
+                                    "https://docs.foundation.xyz/troubleshooting/envoy/#boosting-or-canceling-transactions");
                               },
                               child: Text(
                                 S().component_learnMore,
