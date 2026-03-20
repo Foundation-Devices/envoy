@@ -48,7 +48,7 @@ appId: com.foundationdevices.envoy
 # wait for tx confirmation
 - extendedWaitUntil:
     visible: Your transaction was successfully sent
-    timeout: 300000 # wait for 5 min
+    timeout: 120000 # wait for 2 min
 
 - tapOn: Continue
 
