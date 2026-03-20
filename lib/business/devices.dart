@@ -330,6 +330,19 @@ class Devices extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> reorderDevices(List<String> serials) async {
+    devices.sort((a, b) {
+      final ai = serials.indexOf(a.serial);
+      final bi = serials.indexOf(b.serial);
+      // Devices not in the order list go to the end
+      if (ai == -1) return 1;
+      if (bi == -1) return -1;
+      return ai.compareTo(bi);
+    });
+    await storeDevices();
+    notifyListeners();
+  }
+
   Future deleteDevice(Device device) async {
     if (device.type == DeviceType.passportPrime) {
       final qlConnection = device.qlConnection();
