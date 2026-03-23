@@ -526,8 +526,7 @@ List<TextSpan> buildPrimaryBtcTextSpans(
 
       if (char == decimalSeparator) {
         foundDecimalSep = true;
-        textSpans.add(_createTextSpan(
-            char, hasMultipleIntegerDigits ? textStyleGray! : textStyleBlack!));
+        textSpans.add(_createTextSpan(char, textStyleBlack!));
       } else if (char == groupSeparator) {
         // Group separator in integer part: always black
         textSpans.add(_createTextSpan(char, textStyleBlack!));
