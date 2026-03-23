@@ -17,6 +17,12 @@ import 'package:envoy/business/locale.dart';
 String btcSatoshiSeparator = fiatDecimalSeparator;
 String thousandSatSeparator = fiatGroupSeparator;
 
+/// Returns true if the sats amount has 9+ digits (>= 100,000,000)
+/// and should be displayed in BTC even when user prefers sats.
+bool satsExceedDisplayLimit(int amountSats) {
+  return amountSats.abs() >= 100000000;
+}
+
 NumberFormat satsFormatter =
     NumberFormat("###,###,###,###,###,###,###", currentLocale);
 
@@ -53,9 +59,15 @@ String removeFiatTrailingZeros(String fiatAmount) {
 String convertSatsToBtcString(int amountSats, {bool trailingZeros = false}) {
   final amountBtc = amountSats / 100000000;
 
+  // 9-digit rule: limit total displayed digits to 9
+  int integerPart = amountBtc.truncate().abs();
+  int integerDigitCount = integerPart == 0 ? 1 : integerPart.toString().length;
+  int maxDecimals =
+      integerDigitCount <= 1 ? 8 : (9 - integerDigitCount).clamp(0, 8);
+
   NumberFormat formatter = NumberFormat.decimalPattern(currentLocale);
-  formatter.minimumFractionDigits = trailingZeros ? 8 : 0;
-  formatter.maximumFractionDigits = 8; // Always allow up to 8 decimals
+  formatter.minimumFractionDigits = trailingZeros ? maxDecimals : 0;
+  formatter.maximumFractionDigits = maxDecimals;
 
   return formatter.format(amountBtc);
 }
