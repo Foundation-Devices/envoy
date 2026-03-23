@@ -65,11 +65,34 @@ String convertSatsToBtcString(int amountSats, {bool trailingZeros = false}) {
   int maxDecimals =
       integerDigitCount <= 1 ? 8 : (9 - integerDigitCount).clamp(0, 8);
 
-  NumberFormat formatter = NumberFormat.decimalPattern(currentLocale);
-  formatter.minimumFractionDigits = trailingZeros ? maxDecimals : 0;
-  formatter.maximumFractionDigits = maxDecimals;
+  // Truncate (not round) to maxDecimals via string manipulation
+  String fullPrecision = amountBtc.toStringAsFixed(8);
+  List<String> parts = fullPrecision.split('.');
+  String intPart = parts[0];
+  String decPart = parts.length > 1 ? parts[1] : '';
 
-  return formatter.format(amountBtc);
+  if (decPart.length > maxDecimals) {
+    decPart = decPart.substring(0, maxDecimals);
+  }
+
+  if (!trailingZeros) {
+    decPart = decPart.replaceAll(RegExp(r'0+$'), '');
+  } else {
+    decPart = decPart.padRight(maxDecimals, '0');
+  }
+
+  // Format integer part with locale grouping
+  NumberFormat intFormatter = NumberFormat.decimalPattern(currentLocale);
+  intFormatter.maximumFractionDigits = 0;
+  String formattedInt = intFormatter.format(int.parse(intPart));
+
+  if (decPart.isEmpty) {
+    return formattedInt;
+  }
+
+  String decSep =
+      NumberFormat.decimalPattern(currentLocale).symbols.DECIMAL_SEP;
+  return '$formattedInt$decSep$decPart';
 }
 
 int convertSatsStringToSats(String amountSats) {

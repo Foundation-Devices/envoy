@@ -140,6 +140,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
 
   void onNumPadEvents(dynamic event) {
     final s = Settings();
+    bool commaMoved = false;
 
     TransactionModel tx = ref.read(spendTransactionProvider);
     // Lock numpad while loading after tapping confirm
@@ -231,7 +232,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
             String afterDec = _enteredAmount.substring(decSepIndex + 1);
             int intDigits = beforeDec.replaceAll(RegExp('[^0-9]'), '').length;
             int maxDecimals = intDigits <= 1 ? 8 : (9 - intDigits).clamp(0, 8);
-            if (afterDec.length > maxDecimals) {
+            if (afterDec.length >= maxDecimals) {
               if (_autoSwitchedToBtc) {
                 // "Move the comma": append digit in sats space
                 int digit = int.tryParse(event) ?? 0;
@@ -244,6 +245,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
                   _enteredAmount =
                       getDisplayAmount(_amountSats, AmountDisplayUnit.btc);
                 });
+                commaMoved = true;
                 break;
               }
               break;
@@ -277,7 +279,9 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
         }
     }
 
-    _amountSats = getAmountSats();
+    if (!commaMoved) {
+      _amountSats = getAmountSats();
+    }
 
     // Auto-switch: sats → BTC when reaching 9+ sats digits
     if (unit == AmountDisplayUnit.sat && satsExceedDisplayLimit(_amountSats)) {
