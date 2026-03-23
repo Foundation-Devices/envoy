@@ -15,11 +15,14 @@ appId: com.foundationdevices.envoy
 
 # check the buttons
 - tapOn: DOCUMENTATION
-- tapOn: Back
-- tapOn: COMMUNITY
-- tapOn: Back
+- pressKey: back
+- swipe:
+     start: "50%, 5%"
+     end: "50%, 5%"
+     duration: 3000
 
-# hack to wait 3 sec
+- tapOn: COMMUNITY
+- pressKey: back
 - swipe:
      start: "50%, 5%"
      end: "50%, 5%"
