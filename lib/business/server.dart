@@ -221,7 +221,7 @@ class FirmwareUpdate {
   final String changeLog;
   final DateTime releaseDate;
   final int deviceId;
-  final int size;
+  final int? size;
 
   FirmwareUpdate({
     required this.version,
@@ -232,7 +232,7 @@ class FirmwareUpdate {
     required this.changeLog,
     required this.releaseDate,
     required this.deviceId,
-    required this.size,
+    this.size,
   });
 
   factory FirmwareUpdate.fromJson(Map<String, dynamic> json) {
