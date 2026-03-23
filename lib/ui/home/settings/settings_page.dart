@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/home/settings/dev_options_page.dart';
 import 'package:envoy/ui/home/settings/fiat/settings_fiat_chooser.dart';
 import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
@@ -15,10 +15,7 @@ import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/util/bug_report_helper.dart';
-import 'package:envoy/util/console.dart';
 import 'package:envoy/util/easing.dart';
-import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -168,9 +165,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ? GestureDetector(
                     onTap: () {
                       showDialog(
+                        fullscreenDialog: true,
                         context: context,
                         builder: (context) {
-                          return const _DevOptions();
+                          return const DevOptionsPage();
                         },
                       );
                     },
@@ -186,9 +184,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                 onTap: () {
                                   // TODO: FIGMA
                                   showDialog(
+                                    fullscreenDialog: true,
                                     context: context,
                                     builder: (context) {
-                                      return const _DevOptions();
+                                      return const DevOptionsPage();
                                     },
                                   );
                                 },
@@ -389,88 +388,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       // If the xpub (pair.$2) is empty, this account lacks a taproot xpub
       return taprootDescriptor.$2.isEmpty;
     });
-  }
-}
-
-class _DevOptions extends ConsumerWidget {
-  const _DevOptions();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    bool loading = false;
-    return AlertDialog(
-      backgroundColor: Colors.white,
-      title: const Text("Developer options"),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextButton(
-            onPressed: () {
-              EnvoyStorage().clearDismissedStatesStore();
-              Navigator.pop(context);
-            },
-            child: const Text("Clear Prompt states"),
-          ),
-          TextButton(
-            onPressed: () {
-              EnvoyStorage().clearPendingStore();
-              Navigator.pop(context);
-            },
-            child: const Text("Clear Azteco states"),
-          ),
-          TextButton(
-            onPressed: () {
-              EnvoyReport().clearAll();
-              Navigator.pop(context);
-            },
-            child: const Text("Clear Envoy Logs"),
-          ),
-          TextButton(
-            onPressed: () {
-              EnvoyStorage().clear();
-              Navigator.pop(context);
-            },
-            child: const Text("Clear Envoy Preferences"),
-          ),
-          StatefulBuilder(
-            builder: (context, setState) {
-              if (loading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              return TextButton(
-                onPressed: () async {
-                  final navigator = Navigator.of(context);
-                  try {
-                    setState(() {
-                      loading = true;
-                    });
-                    await EnvoySeed().delete();
-                    setState(() {
-                      loading = false;
-                    });
-                    navigator.pop();
-                  } catch (e) {
-                    setState(() {
-                      loading = false;
-                    });
-                    navigator.pop();
-                    kPrint(e);
-                  }
-                },
-                child: const Text("Wipe Envoy Wallet"),
-              );
-            },
-          ),
-          TextButton(
-            onPressed: () {
-              Settings().skipPrimeSecurityCheck = true;
-              Navigator.pop(context);
-            },
-            child: const Text("Skip Prime security check"),
-          ),
-        ],
-      ),
-    );
   }
 }
 
