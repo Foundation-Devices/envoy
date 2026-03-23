@@ -331,6 +331,15 @@ class Settings extends ChangeNotifier {
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool skipPrimeSecurityCheck = false;
 
+  // Dev option - not persisted
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool useBetaPrimePatches = false;
+
+  void setUseBetaPrimePatches(bool enabled) {
+    useBetaPrimePatches = enabled;
+    notifyListeners();
+  }
+
   @JsonKey(defaultValue: false)
   bool showTestnetAccountsSetting = false;
 

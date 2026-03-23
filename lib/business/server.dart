@@ -36,8 +36,9 @@ class Server {
   }
 
   Future<List<PrimePatch>> fetchPrimePatches(String currentVersion) async {
+    final betaParam = Settings().useBetaPrimePatches ? '&beta=1' : '';
     final response = await http!.get(
-      '$_serverAddress/prime/patches?version=$currentVersion',
+      '$_serverAddress/prime/patches?version=$currentVersion$betaParam',
     );
 
     if (response.statusCode == 200) {

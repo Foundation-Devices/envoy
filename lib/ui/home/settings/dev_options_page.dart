@@ -175,7 +175,7 @@ class _DevOptionsPageState extends State<DevOptionsPage> {
                 Colors.transparent,
               ),
               title: const Text(
-                "Use dev Envoy server",
+                "Enable beta Firmware updates",
                 style: TextStyle(
                   color: titleColor,
                   fontSize: 16,
@@ -185,16 +185,15 @@ class _DevOptionsPageState extends State<DevOptionsPage> {
               subtitle: const Padding(
                 padding: EdgeInsets.only(top: 4),
                 child: Text(
-                  "Route Envoy requests through the dev server. Intended for internal team testing only.",
+                  "Include beta firmware updates in passport firmware update checks. Intended for internal team testing only.",
                   style: TextStyle(color: subtitleColor, fontSize: 13),
                 ),
               ),
-              value: Settings().useEnvoyDevServer,
+              value: Settings().useBetaPrimePatches,
               onChanged: (enabled) async {
                 setState(() {
-                  Settings().setUseEnvoyDevServer(enabled);
+                  Settings().setUseBetaPrimePatches(enabled);
                 });
-                await KeysManager().fetchKeysFromServer();
               },
             ),
             const SizedBox(height: 18),
