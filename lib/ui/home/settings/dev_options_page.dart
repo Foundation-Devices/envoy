@@ -156,6 +156,7 @@ class _DevOptionsPageState extends State<DevOptionsPage> {
             ),
             SwitchListTile(
               dense: true,
+              selected: Settings().useBetaFwUpdate,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 6,
@@ -188,7 +189,7 @@ class _DevOptionsPageState extends State<DevOptionsPage> {
                   style: TextStyle(color: subtitleColor, fontSize: 13),
                 ),
               ),
-              value: Settings().useBetaPrimePatches,
+              value: Settings().useBetaFwUpdate,
               onChanged: (enabled) async {
                 setState(() {
                   Settings().setUseBetaPrimePatches(enabled);

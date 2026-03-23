@@ -333,10 +333,10 @@ class Settings extends ChangeNotifier {
 
   // Dev option - not persisted
   @JsonKey(includeFromJson: false, includeToJson: false)
-  bool useBetaPrimePatches = false;
+  bool useBetaFwUpdate = false;
 
   void setUseBetaPrimePatches(bool enabled) {
-    useBetaPrimePatches = enabled;
+    useBetaFwUpdate = enabled;
     notifyListeners();
   }
 
