@@ -203,11 +203,11 @@ class QLConnection with EnvoyMessageWriter {
       kPrint("[$deviceId] Identity not set yet, skipping data handling");
       return;
     }
-    debugIdentities(
-      message: "_handleData to device...",
-      identity: _qlIdentity!,
-      recipient: _recipientXid!,
-    );
+    // debugIdentities(
+    //   message: "_handleData to device...",
+    //   identity: _qlIdentity!,
+    //   recipient: _recipientXid!,
+    // );
     final message = await _decode(data, _qlIdentity!);
     if (message != null) {
       _qlHandlers.dispatch(message);
