@@ -142,7 +142,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
         senderXid: senderXid,
         peripheralId: qlConnection.deviceId,
         onboardingComplete: response.onboardingComplete,
-        primeBackupEnabled: Settings().syncToCloud,
+        primeBackupEnabled: null,
       );
       await Devices().add(device);
     } catch (e, stack) {
