@@ -27,6 +27,11 @@ appId: com.foundationdevices.envoy
 # enter node
 - inputText: "mainnet-0.foundation.xyz:50002"
 
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
+
 # check if it connects
 - extendedWaitUntil:
       visible: "Connected to Fulcrum 1.11.1"
@@ -43,6 +48,11 @@ appId: com.foundationdevices.envoy
 ##################
 # enter node
 - inputText: "192.168.xxx.xxx:50002"
+
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
 
 # check if it does not connect
 - extendedWaitUntil:
@@ -61,6 +71,11 @@ appId: com.foundationdevices.envoy
 # enter node
 - inputText: "mainnet-0.foundation.xyz:50001"
 
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
+
 # check if it connects
 - extendedWaitUntil:
       visible: "Connected to Fulcrum 1.11.1"
@@ -78,6 +93,11 @@ appId: com.foundationdevices.envoy
 # enter node
 - inputText: "192.168.xxx.xxx:50001"
 
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
+
 # check if it does not connect
 - extendedWaitUntil:
       visible: "Couldn't reach node."
@@ -93,9 +113,14 @@ appId: com.foundationdevices.envoy
 
 # Now do all the tests again if there is a :t / :s at the end ///////////////////
 
-################## check for 50002:t
+################## check for 50002:s
 # enter node
 - inputText: "mainnet-0.foundation.xyz:50002:s"
+
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
 
 # check if it connects
 - extendedWaitUntil:
@@ -114,6 +139,11 @@ appId: com.foundationdevices.envoy
 # enter node
 - inputText: "192.168.xxx.xxx:50002:s"
 
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
+
 # check if it does not connect
 - extendedWaitUntil:
       visible: "Couldn't reach node."
@@ -131,6 +161,11 @@ appId: com.foundationdevices.envoy
 # enter node
 - inputText: "mainnet-0.foundation.xyz:50001:t"
 
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
+
 # check if it connects
 - extendedWaitUntil:
       visible: "Connected to Fulcrum 1.11.1"
@@ -147,6 +182,11 @@ appId: com.foundationdevices.envoy
 ##################
 # enter node
 - inputText: "192.168.xxx.xxx:50001:t"
+
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
 
 # check if it does not connect
 - extendedWaitUntil:

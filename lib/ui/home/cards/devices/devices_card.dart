@@ -174,14 +174,9 @@ class _DevicesListState extends ConsumerState<DevicesList> {
 class GhostDevice extends StatelessWidget {
   GhostDevice({super.key});
 
-  final device = Device(
-    "Primary",
-    DeviceType.passportGen12,
-    "serial",
-    DateTime.now(),
-    "2.1.1",
-    Colors.grey,
-  );
+  final device = Device("Prime", DeviceType.passportPrime, "serial",
+      DateTime.now(), "1.2.0", Colors.grey,
+      deviceColor: DeviceColor.dark);
 
   @override
   Widget build(BuildContext context) {
