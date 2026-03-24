@@ -6,14 +6,12 @@ import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/components/pop_up.dart';
-import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/settings/dev_options_page.dart';
 import 'package:envoy/ui/home/settings/fiat/settings_fiat_chooser.dart';
 import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
 import 'package:envoy/ui/home/setup_overlay.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
@@ -462,4 +460,3 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     });
   }
 }
-
