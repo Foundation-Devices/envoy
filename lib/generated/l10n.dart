@@ -56,14 +56,9 @@ class S {
 
   // skipped getter for the ':' key
 
-  /// `bc1q ar0s rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m dq`
+  /// `6:15`
   String get _ {
-    return Intl.message(
-      'bc1q ar0s rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m dq',
-      name: '_',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('6:15', name: '_', desc: '', args: []);
   }
 
   /// `App Version`
@@ -5048,11 +5043,31 @@ class S {
     );
   }
 
+  /// `About 1 minute remains`
+  String get firmware_downloadingUpdate_aboutOneMin {
+    return Intl.message(
+      'About 1 minute remains',
+      name: 'firmware_downloadingUpdate_aboutOneMin',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Update Downloaded`
   String get firmware_downloadingUpdate_downloaded {
     return Intl.message(
       'Update Downloaded',
       name: 'firmware_downloadingUpdate_downloaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Estimating remaining time…`
+  String get firmware_downloadingUpdate_estimating {
+    return Intl.message(
+      'Estimating remaining time…',
+      name: 'firmware_downloadingUpdate_estimating',
       desc: '',
       args: [],
     );

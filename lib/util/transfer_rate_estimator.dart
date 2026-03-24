@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import 'package:envoy/generated/l10n.dart';
+
 class TransferRateEstimator {
   DateTime? _transferStartTime;
   DateTime? _lastUpdateTime;
@@ -108,7 +110,7 @@ class TransferRateEstimator {
 
   String _formatTimeRemaining(int seconds) {
     if (seconds < 60) {
-      return "About 1 min";
+      return S().firmware_downloadingUpdate_aboutOneMin;
     } else if (seconds < 3600) {
       final minutes = (seconds / 60).ceil();
       return "$minutes min";
