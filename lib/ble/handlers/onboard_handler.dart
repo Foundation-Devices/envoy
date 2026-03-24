@@ -80,9 +80,10 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
 
       if (response.onboardingComplete) {
         await addDevice(response);
-        UpdatesManager().checkAndStoreLatestPrimeFirmware(
-          _pairingResponse?.passportFirmwareVersion.field0,
-        );
+        final fwVersion = _pairingResponse?.passportFirmwareVersion.field0;
+        if (fwVersion != null) {
+          UpdatesManager().checkAndStoreLatestPrimeFirmware(fwVersion);
+        }
         await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
         await EnvoySeed().generateAndBackupWalletSilently();
         //no need to send security challenge if onboarding is already complete
@@ -167,9 +168,10 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
       try {
         if (_pairingResponse != null) {
           await addDevice(_pairingResponse!);
-          UpdatesManager().checkAndStoreLatestPrimeFirmware(
-            _pairingResponse?.passportFirmwareVersion.field0,
-          );
+          final fwVersion = _pairingResponse?.passportFirmwareVersion.field0;
+          if (fwVersion != null) {
+            UpdatesManager().checkAndStoreLatestPrimeFirmware(fwVersion);
+          }
           await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
         }
         await EnvoySeed().generateAndBackupWalletSilently();
