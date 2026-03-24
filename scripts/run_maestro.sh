@@ -6,6 +6,12 @@
 
 set -o pipefail
 
+# Force line-buffered stdout in CI (otherwise output gets block-buffered)
+if [ -n "$CI" ] && command -v stdbuf >/dev/null 2>&1 && [ -z "$_LINE_BUFFERED" ]; then
+    export _LINE_BUFFERED=1
+    exec stdbuf -oL "$0" "$@"
+fi
+
 # ------------------------------------------------------------
 # OS Detection
 # ------------------------------------------------------------
@@ -99,9 +105,26 @@ print_test_failure() {
 
     # Try to find the line number in the YAML file
     if [ -n "$failed_cmd" ] && [ -f "$test_file" ]; then
-        # Extract the element/text that maestro couldn't find (e.g. from "Element not visible: Play")
         local search_term=""
+        # Try quoted text first: "some text"
         search_term=$(echo "$failed_cmd" | grep -oE '"[^"]+"' | head -1 | tr -d '"')
+        # Try text after common patterns
+        if [ -z "$search_term" ]; then
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Vv]isible[: ]*//p' | head -1 | xargs)
+        fi
+        if [ -z "$search_term" ]; then
+            # "Element not found: Text matching regex: Proceed with Cancellation"
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Ff]ound.*regex[: ]*//p' | head -1 | xargs)
+        fi
+        if [ -z "$search_term" ]; then
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Nn]ot [Ff]ound[: ]*//p' | head -1 | xargs)
+        fi
+        if [ -z "$search_term" ]; then
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Uu]nable to find[: ]*//p' | head -1 | xargs)
+        fi
+        if [ -z "$search_term" ]; then
+            search_term=$(echo "$failed_cmd" | sed -n 's/.*[Tt]imed out[: ]*//p' | head -1 | xargs)
+        fi
 
         if [ -n "$search_term" ]; then
             local line_match=""
@@ -200,7 +223,15 @@ fi
 
 ADB_CMD="$(command -v adb)"
 # Export ANDROID_HOME so Maestro can find the Android SDK and adb
-export ANDROID_HOME="${ANDROID_HOME:-$(dirname "$(dirname "$ADB_CMD")")}"
+if [ -z "$ANDROID_HOME" ]; then
+    if [ "$PLATFORM" = "linux" ] && [ -d "$HOME/Android/Sdk" ]; then
+        export ANDROID_HOME="$HOME/Android/Sdk"
+    elif [ "$PLATFORM" = "mac" ] && [ -d "$HOME/Library/Android/sdk" ]; then
+        export ANDROID_HOME="$HOME/Library/Android/sdk"
+    else
+        export ANDROID_HOME="$(dirname "$(dirname "$ADB_CMD")")"
+    fi
+fi
 echo -e "${GREEN}✓${NC} adb found: $ADB_CMD"
 echo -e "${GREEN}✓${NC} ANDROID_HOME: $ANDROID_HOME"
 
@@ -213,7 +244,14 @@ echo -e "${GREEN}✓${NC} Passport Wallet tests: $PASSPORT_WALLET_TESTS_DIR"
 # ------------------------------------------------------------
 # Kill ALL Maestro processes
 # ------------------------------------------------------------
-MAESTRO_PIDS=$(pgrep -f "maestro" 2>/dev/null || true)
+# Build a list of ancestor PIDs so we don't kill ourselves or parent chain (just, shell, etc.)
+_EXCLUDE_PIDS="$$"
+_PID=$PPID
+while [ "${_PID:-1}" -gt 1 ]; do
+    _EXCLUDE_PIDS="$_EXCLUDE_PIDS|$_PID"
+    _PID=$(ps -o ppid= -p "$_PID" 2>/dev/null | tr -d ' ')
+done
+MAESTRO_PIDS=$(pgrep -f "maestro" 2>/dev/null | grep -vE "^($_EXCLUDE_PIDS)$" || true)
 if [ -n "$MAESTRO_PIDS" ]; then
     echo -e "${YELLOW}Killing all Maestro processes (PIDs: $MAESTRO_PIDS)...${NC}"
     echo "$MAESTRO_PIDS" | xargs kill -9 2>/dev/null || true

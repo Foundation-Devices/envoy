@@ -57,7 +57,7 @@ target/
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
 
-# Android Docker builds
+# Android builds
 release/
 
 # Localazy creds

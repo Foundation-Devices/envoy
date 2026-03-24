@@ -29,33 +29,44 @@ import 'package:go_router/go_router.dart';
 /// but we only want to show one dialog at a time.
 /// this flag will be set to false when the dialog widget get disposed.
 bool _isDialogShowing = false;
+const Duration _connectionLostDialogDelay = Duration(seconds: 30);
 
 /// Starts listening for onboarding device bluetooth disconnection events and shows a dialog if disconnected
 void startBluetoothDisconnectionListener(BuildContext context, WidgetRef ref) {
   ref.listen(onboardingDeviceConnectionStatusStream, (
     previous,
     next,
-  ) {
+  ) async {
     final lastState = ref.read(primeUpdateStateProvider);
     final isRebooting = lastState == PrimeFwUpdateStep.rebooting ||
         lastState == PrimeFwUpdateStep.installing;
     if (next.hasValue) {
       final event = next.value!;
       if (event.type == BluetoothConnectionEventType.deviceDisconnected &&
-          !isRebooting) {
-        if (context.mounted && !_isDialogShowing) {
-          showEnvoyDialog(
-            context: context,
-            useRootNavigator: true,
-            dismissible: false,
-            dialog: const ConnectionLostDialog(),
-          );
-          _isDialogShowing = true;
+          !isRebooting &&
+          ref.context.mounted) {
+        await Future.delayed(_connectionLostDialogDelay);
+
+        if (!context.mounted || _isDialogShowing) {
+          return;
         }
+        final hasReconnected =
+            ref.read(onboardingDeviceProvider)?.lastDeviceStatus.connected ??
+                false;
+        if (hasReconnected) {
+          return;
+        }
+        showEnvoyDialog(
+          context: context,
+          useRootNavigator: true,
+          dismissible: false,
+          dialog: const ConnectionLostDialog(),
+        );
+        _isDialogShowing = true;
       } else if (event.type == BluetoothConnectionEventType.deviceConnected) {
         //maybe handle dialog dismissal??
         if (_isDialogShowing && context.mounted && Navigator.canPop(context)) {
-          Navigator.pop(context);
+          Navigator.of(context, rootNavigator: true).pop();
           _isDialogShowing = false;
         }
       }
@@ -108,7 +119,7 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
         throw Exception("No Previous connection...");
       }
       String deviceId = qlConnection.lastDeviceStatus.peripheralId ?? "";
-      await BluetoothManager().reconnect(deviceId);
+      await BluetoothChannel().reconnect(deviceId);
       await Future.delayed(const Duration(seconds: 2));
       if (qlConnection.lastDeviceStatus.connected && mounted) {
         Navigator.pop(context);
@@ -197,6 +208,8 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
                             .removeAccessory(onboardingDevice!.deviceId);
                         if (removed) {
                           await onboardingDevice.disconnect();
+                        } else {
+                          return;
                         }
                       }
                     } catch (e, stack) {
@@ -205,9 +218,15 @@ class _ConnectionLostModalState extends ConsumerState<ConnectionLostModal> {
                           stackTrace: stack);
                     }
                     if (mounted && context.mounted) {
-                      resetOnboardingPrimeProviders(
-                        ProviderScope.containerOf(context),
-                      );
+                      try {
+                        resetOnboardingPrimeProviders(
+                          ProviderScope.containerOf(context),
+                        );
+                      } finally {
+                        ProviderScope.containerOf(context)
+                            .read(onboardingDeviceProvider.notifier)
+                            .state = null;
+                      }
                       Navigator.of(context).pop();
                       context.go("/");
                     }

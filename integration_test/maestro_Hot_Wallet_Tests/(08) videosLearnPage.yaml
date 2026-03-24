@@ -37,13 +37,13 @@ appId: com.foundationdevices.envoy
 # Make controls visible again
 - runFlow:
     when:
-      notVisible: "back button"
+      notVisible: "Back"
     commands:
       - tapOn:
           point: 50%,50%
 
 # exit the player
-- tapOn: back button
+- tapOn: Back
 
 # make sure you are back to LEARN
 - assertVisible: |-
@@ -130,7 +130,7 @@ appId: com.foundationdevices.envoy
                 when:
                   visible: "Envoy is loading your video over the Tor Network"
                 commands:
-                  - tapOn: back button
+                  - tapOn: Back
                   - tapOn: "video card.*"
 
 # test the player
@@ -149,13 +149,13 @@ appId: com.foundationdevices.envoy
 # Make controls visible again
 - runFlow:
     when:
-      notVisible: "back button"
+      notVisible: "Back"
     commands:
       - tapOn:
           point: 50%,50%
 
 # exit the player
-- tapOn: back button
+- tapOn: Back
 
 # make sure you are back to LEARN
 - assertVisible: |-
@@ -183,7 +183,7 @@ appId: com.foundationdevices.envoy
                 when:
                   visible: "Envoy is loading your video over the Tor Network"
                 commands:
-                  - tapOn: back button
+                  - tapOn: Back
                   - tapOn: "video card.*"
 
 # Use android's native back to make sure it

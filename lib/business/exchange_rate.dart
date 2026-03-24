@@ -323,6 +323,10 @@ class ExchangeRate extends ChangeNotifier {
     return (_usdRate ?? 0) * amountSats / 100000000;
   }
 
+  Future<void> refreshHistory() async {
+    await _getUsdRate();
+  }
+
   // double FIAT to string FIAT
   String formatFiatToString(double amount, {bool isPrimaryValue = false}) {
     if (isPrimaryValue && amount == 0) {

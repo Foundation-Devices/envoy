@@ -108,6 +108,7 @@ enum EnvoyIcons {
   unlocked,
   coins,
   save,
+  chain,
 }
 
 class EnvoyIcon extends StatelessWidget {
