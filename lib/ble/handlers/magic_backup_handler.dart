@@ -62,6 +62,12 @@ class BleMagicBackupHandler extends PassportMessageHandler {
       case api.CreateMagicBackupEvent_Start():
         final payload = event.field0;
         kPrint("Magic Backup Start Event: $payload");
+        final device = qlConnection.getDevice();
+        if (device != null) {
+          unawaited(
+            Devices().updatePrimeBackupStatus(true, device),
+          );
+        }
         _collectBackupChunks = await api.collectBackupChunks(
           seedFingerprint: payload.seedFingerprint,
           totalChunks: payload.totalChunks,
@@ -218,11 +224,6 @@ class BleMagicBackupHandler extends PassportMessageHandler {
         api.EnvoyMagicBackupEnabledResponse(enabled: Settings().syncToCloud),
       ),
     );
-
-    final device = qlConnection.getDevice();
-    if (device != null) {
-      await Devices().updatePrimeBackupStatus(Settings().syncToCloud, device);
-    }
   }
 
   Future<void> _handleStatusRequest(

@@ -123,12 +123,15 @@ class _EnvoyTextFieldState extends State<EnvoyTextField> {
                   children: [
                     const SizedBox(width: EnvoySpacing.medium1),
                     if (widget.isLoading ?? false)
-                      const SizedBox(
-                        width: EnvoySpacing.medium1,
-                        height: EnvoySpacing.medium1,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 1.5,
-                          color: EnvoyColors.textPrimary,
+                      Semantics(
+                        label: 'Loading',
+                        child: const SizedBox(
+                          width: EnvoySpacing.medium1,
+                          height: EnvoySpacing.medium1,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 1.5,
+                            color: EnvoyColors.textPrimary,
+                          ),
                         ),
                       ),
                     Padding(
