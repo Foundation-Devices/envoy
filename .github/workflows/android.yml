@@ -5,13 +5,16 @@
 name: Android build
 
 on:
+  push:
+    branches:
+      - 2.2.13 # Workaround to have this run despite being deprecated on main
   workflow_dispatch:
   schedule:
-    - cron: '0 2 * * *'  # Run daily at 2 AM UTC
+    - cron: "0 2 * * *" # Run daily at 2 AM UTC
 
 jobs:
   build-android:
-    runs-on: [ self-hosted, Linux, X64 ]
+    runs-on: [self-hosted, Linux, X64]
 
     steps:
       - uses: extractions/setup-just@v1
@@ -30,7 +33,6 @@ jobs:
         with:
           name: envoy-apk
           path: release/app-release.apk
-
 
       - uses: actions/upload-artifact@v4
         with:

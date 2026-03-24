@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
