@@ -631,12 +631,12 @@ class EnvoyStorage {
     return notes;
   }
 
-  void clearDismissedStatesStore() async {
-    dismissedPromptsStore.delete(_db);
+  Future<void> clearDismissedStatesStore() async {
+    await dismissedPromptsStore.delete(_db);
   }
 
-  void clearPendingStore() async {
-    pendingTxStore.delete(_db);
+  Future<void> clearPendingStore() async {
+    await pendingTxStore.delete(_db);
   }
 
   Future addNewFirmware(int deviceId, String version, String path,
