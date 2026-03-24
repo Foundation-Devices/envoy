@@ -56,9 +56,9 @@ class BleWriteQueue(
                     val durationMs = duration.inWholeMilliseconds
                     // Throttle writes to respect BLE throughput limits (~80 kBps).
                     // If the write completed faster than MIN_WRITE_CYCLE_MS, we delay
-                    if (durationMs < MIN_WRITE_CYCLE_MS) {
-                        delay(MIN_WRITE_CYCLE_MS - durationMs)
-                    }
+//                    if (durationMs < MIN_WRITE_CYCLE_MS) {
+//                        delay(MIN_WRITE_CYCLE_MS - durationMs)
+//                    }
                 }
                 req.result.complete(true)
             }

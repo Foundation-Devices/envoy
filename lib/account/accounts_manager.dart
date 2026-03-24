@@ -149,6 +149,8 @@ class NgAccountManager extends ChangeNotifier {
     sortByAccountOrder(_accountsHandler, order, (e) => e.$1.id);
     await deriveMissingTypes();
 
+    setTaprootEnabled(Settings().taprootEnabled());
+
     _accountsOrder.sink.add(order);
 
     SyncManager().startSync();

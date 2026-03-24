@@ -223,7 +223,15 @@ fi
 
 ADB_CMD="$(command -v adb)"
 # Export ANDROID_HOME so Maestro can find the Android SDK and adb
-export ANDROID_HOME="${ANDROID_HOME:-$(dirname "$(dirname "$ADB_CMD")")}"
+if [ -z "$ANDROID_HOME" ]; then
+    if [ "$PLATFORM" = "linux" ] && [ -d "$HOME/Android/Sdk" ]; then
+        export ANDROID_HOME="$HOME/Android/Sdk"
+    elif [ "$PLATFORM" = "mac" ] && [ -d "$HOME/Library/Android/sdk" ]; then
+        export ANDROID_HOME="$HOME/Library/Android/sdk"
+    else
+        export ANDROID_HOME="$(dirname "$(dirname "$ADB_CMD")")"
+    fi
+fi
 echo -e "${GREEN}✓${NC} adb found: $ADB_CMD"
 echo -e "${GREEN}✓${NC} ANDROID_HOME: $ANDROID_HOME"
 
@@ -236,7 +244,14 @@ echo -e "${GREEN}✓${NC} Passport Wallet tests: $PASSPORT_WALLET_TESTS_DIR"
 # ------------------------------------------------------------
 # Kill ALL Maestro processes
 # ------------------------------------------------------------
-MAESTRO_PIDS=$(pgrep -f "maestro" 2>/dev/null || true)
+# Build a list of ancestor PIDs so we don't kill ourselves or parent chain (just, shell, etc.)
+_EXCLUDE_PIDS="$$"
+_PID=$PPID
+while [ "${_PID:-1}" -gt 1 ]; do
+    _EXCLUDE_PIDS="$_EXCLUDE_PIDS|$_PID"
+    _PID=$(ps -o ppid= -p "$_PID" 2>/dev/null | tr -d ' ')
+done
+MAESTRO_PIDS=$(pgrep -f "maestro" 2>/dev/null | grep -vE "^($_EXCLUDE_PIDS)$" || true)
 if [ -n "$MAESTRO_PIDS" ]; then
     echo -e "${YELLOW}Killing all Maestro processes (PIDs: $MAESTRO_PIDS)...${NC}"
     echo "$MAESTRO_PIDS" | xargs kill -9 2>/dev/null || true

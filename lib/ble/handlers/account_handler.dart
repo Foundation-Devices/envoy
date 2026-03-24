@@ -8,6 +8,7 @@ import 'package:collection/collection.dart';
 import 'package:envoy/account/accounts_manager.dart';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/exchange_rate.dart';
+import 'package:envoy/business/settings.dart';
 import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
@@ -20,6 +21,8 @@ class BleAccountHandler extends PassportMessageHandler {
   Stream<api.ApplyPassphrase?> get applyPassphraseStream =>
       _applyPassphraseStream.stream.asBroadcastStream();
 
+  late final void Function() _onExchangeRateChanged;
+
   BleAccountHandler(super.connection) {
     setupExchangeRateListener();
   }
@@ -31,10 +34,25 @@ class BleAccountHandler extends PassportMessageHandler {
         message is api.QuantumLinkMessage_ApplyPassphrase;
   }
 
+  int lastExchangeRateHash = 0;
+
   void setupExchangeRateListener() {
-    ExchangeRate().addListener(() async {
-      await sendExchangeRate();
-    });
+    _onExchangeRateChanged = () async {
+      if (lastExchangeRateHash != ExchangeRate().history.hashCode) {
+        final result = await sendExchangeRateHistory();
+        if (result == true) {
+          lastExchangeRateHash = ExchangeRate().history.hashCode;
+        }
+      }
+    };
+    ExchangeRate().addListener(_onExchangeRateChanged);
+  }
+
+  @override
+  void dispose() {
+    ExchangeRate().removeListener(_onExchangeRateChanged);
+    _applyPassphraseStream.close();
+    super.dispose();
   }
 
   @override
@@ -88,6 +106,12 @@ class BleAccountHandler extends PassportMessageHandler {
       );
     }
 
+    final taprootEnabled = Settings().taprootEnabled();
+    final hasTaproot =
+        config.descriptors.any((d) => d.addressType == AddressType.p2Tr);
+    final desiredAddressType =
+        (taprootEnabled && hasTaproot) ? AddressType.p2Tr : AddressType.p2Wpkh;
+
     final fingerprint = NgAccountManager.getFingerprint(
       config.descriptors.first.internal,
     );
@@ -119,6 +143,8 @@ class BleAccountHandler extends PassportMessageHandler {
         if (handler != null) {
           await handler.renameAccount(name: config.name);
           await handler.setArchived(archived: config.archived);
+          await handler.setPreferredAddressType(
+              addressType: desiredAddressType);
           kPrint("Account updated!");
           return;
         }
@@ -135,6 +161,8 @@ class BleAccountHandler extends PassportMessageHandler {
       await accountHandler.state(),
       accountHandler,
     );
+    await accountHandler.setPreferredAddressType(
+        addressType: desiredAddressType);
     kPrint("Account added!");
   }
 
@@ -147,11 +175,16 @@ class BleAccountHandler extends PassportMessageHandler {
   bool _sendingData = false;
   double _lastSentBtcPrice = 0.0;
 
+  void resetSendingState() {
+    _sendingData = false;
+  }
+
   Future<void> sendExchangeRate() async {
     if (_sendingData) return;
 
     if (qlConnection.getDevice()?.onboardingComplete != true) {
-      kPrint("Device not onboarded, skipping sending exchange rate history.");
+      kPrint(
+          "Device not onboarded, skipping sending exchange rate history. ${qlConnection.deviceId}");
       return;
     }
     try {
@@ -173,6 +206,7 @@ class BleAccountHandler extends PassportMessageHandler {
         timestamp: BigInt.from(timestamp / 1000),
       );
 
+      kPrint("Sending exchange rate to Prime: ${qlConnection.deviceId}");
       qlConnection.writeMessage(
         api.QuantumLinkMessage.exchangeRate(exchangeRateMessage),
       );
@@ -185,8 +219,8 @@ class BleAccountHandler extends PassportMessageHandler {
     }
   }
 
-  Future<void> sendExchangeRateHistory() async {
-    if (_sendingData) return;
+  Future<bool> sendExchangeRateHistory() async {
+    if (_sendingData) return false;
     try {
       _sendingData = true;
 
@@ -194,12 +228,14 @@ class BleAccountHandler extends PassportMessageHandler {
       final currency = ExchangeRate().history.currency;
 
       if (qlConnection.getDevice()?.onboardingComplete != true) {
+        _sendingData = false;
         kPrint("Device not onboarded, skipping sending exchange rate history.");
-        return;
+        return false;
       }
       if (historyPoints.isEmpty) {
+        _sendingData = false;
         kPrint("No exchange rate history to send.");
-        return;
+        return false;
       }
 
       // Convert Dart RatePoint -> API PricePoint
@@ -215,15 +251,16 @@ class BleAccountHandler extends PassportMessageHandler {
         currencyCode: currency,
       );
 
-      await qlConnection.writeMessage(
+      final result = await qlConnection.writeMessage(
         api.QuantumLinkMessage.exchangeRateHistory(historyMessage),
       );
-
       kPrint(
         "Sent ${apiPoints.length} exchange rate points for currency $currency",
       );
+      return result;
     } catch (e) {
       kPrint('Failed to send exchange rate history: $e');
+      return false;
     } finally {
       _sendingData = false;
     }

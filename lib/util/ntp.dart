@@ -12,11 +12,12 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 
 const _defaultLookup = 'pool.ntp.org';
-const _defaultInterval = Duration(minutes: 2);
+const _defaultCacheDuration = Duration(minutes: 2);
 
 class NTPUtil {
   static final NTPUtil _instance = NTPUtil._();
-  DateTime _dateTime = DateTime.now();
+  int _offsetMilliseconds = 0;
+  Future<void>? _syncFuture;
   StreamController<DateTime> ntpTimeStreamController =
       StreamController<DateTime>.broadcast();
 
@@ -31,19 +32,26 @@ class NTPUtil {
   NTPUtil._();
 
   static Future<void> init() async {
-    _instance._getNtpTime();
-    Timer.periodic(_defaultInterval, (timer) {
-      _instance._getNtpTime();
-    });
+    _instance._ensureOffsetLoaded();
   }
 
-  DateTime get dateTime => _dateTime;
+  DateTime get dateTime {
+    _ensureOffsetLoaded();
+    return DateTime.now().add(Duration(milliseconds: _offsetMilliseconds));
+  }
 
-  void _getNtpTime() async {
+  void _ensureOffsetLoaded() {
+    _syncFuture ??= _getNtpOffsetOnce();
+  }
+
+  Future<void> _getNtpOffsetOnce() async {
     try {
-      _dateTime = await NTP.now();
+      final offset = await NTP.getNtpOffset().timeout(
+            const Duration(seconds: 1),
+          );
+      _offsetMilliseconds = offset;
       if (!ntpTimeStreamController.isClosed) {
-        ntpTimeStreamController.add(_dateTime);
+        ntpTimeStreamController.add(dateTime);
       }
     } catch (e) {
       kPrint("Error getting NTP time: $e");
@@ -393,12 +401,60 @@ class _NTPMessage {
 }
 
 class NTP {
+  static final Map<String, _NtpOffsetCacheEntry> _offsetCache =
+      <String, _NtpOffsetCacheEntry>{};
+  static final Map<String, Future<int>> _inflightOffsetRequests =
+      <String, Future<int>>{};
+
   /// Return NTP delay in milliseconds
   static Future<int> getNtpOffset({
     String lookUpAddress = _defaultLookup,
     int port = 123,
     DateTime? localTime,
     Duration? timeout,
+    Duration cacheDuration = _defaultCacheDuration,
+    bool forceRefresh = false,
+  }) async {
+    final String cacheKey = '$lookUpAddress:$port';
+    if (!forceRefresh) {
+      final int? cachedOffset =
+          _readCachedOffset(cacheKey: cacheKey, maxAge: cacheDuration);
+      if (cachedOffset != null) {
+        return cachedOffset;
+      }
+      final Future<int>? inflightRequest = _inflightOffsetRequests[cacheKey];
+      if (inflightRequest != null) {
+        return inflightRequest;
+      }
+    }
+
+    final Future<int> offsetRequest = _fetchNtpOffset(
+      lookUpAddress: lookUpAddress,
+      port: port,
+      localTime: localTime,
+      timeout: timeout,
+    );
+    _inflightOffsetRequests[cacheKey] = offsetRequest;
+
+    try {
+      final int offset = await offsetRequest;
+      _offsetCache[cacheKey] = _NtpOffsetCacheEntry(
+        offsetMilliseconds: offset,
+        fetchedAt: DateTime.now(),
+      );
+      return offset;
+    } finally {
+      if (identical(_inflightOffsetRequests[cacheKey], offsetRequest)) {
+        _inflightOffsetRequests.remove(cacheKey);
+      }
+    }
+  }
+
+  static Future<int> _fetchNtpOffset({
+    required String lookUpAddress,
+    required int port,
+    required DateTime? localTime,
+    required Duration? timeout,
   }) async {
     final List<InternetAddress> addresses =
         await InternetAddress.lookup(lookUpAddress);
@@ -455,11 +511,32 @@ class NTP {
     return offset;
   }
 
+  static int? _readCachedOffset({
+    required String cacheKey,
+    required Duration maxAge,
+  }) {
+    final _NtpOffsetCacheEntry? cacheEntry = _offsetCache[cacheKey];
+    if (cacheEntry == null) {
+      return null;
+    }
+
+    final bool isValid =
+        DateTime.now().difference(cacheEntry.fetchedAt) <= maxAge;
+    if (isValid) {
+      return cacheEntry.offsetMilliseconds;
+    }
+
+    _offsetCache.remove(cacheKey);
+    return null;
+  }
+
   /// Get current NTP time
   static Future<DateTime> now({
     String lookUpAddress = _defaultLookup,
     int port = 123,
     Duration? timeout,
+    Duration cacheDuration = _defaultCacheDuration,
+    bool forceRefresh = false,
   }) async {
     final DateTime localTime = DateTime.now();
     final int offset = await getNtpOffset(
@@ -467,6 +544,8 @@ class NTP {
       port: port,
       localTime: localTime,
       timeout: timeout,
+      cacheDuration: cacheDuration,
+      forceRefresh: forceRefresh,
     );
 
     return localTime.add(Duration(milliseconds: offset));
@@ -484,4 +563,14 @@ class NTP {
 
     return (localClockOffset * 1000).toInt();
   }
+}
+
+class _NtpOffsetCacheEntry {
+  _NtpOffsetCacheEntry({
+    required this.offsetMilliseconds,
+    required this.fetchedAt,
+  });
+
+  final int offsetMilliseconds;
+  final DateTime fetchedAt;
 }
