@@ -94,6 +94,17 @@ Future<bool> encodeToUpdateFile(
         chunkSize: chunkSize,
         timestamp: timestamp);
 
+Future<List<QuantumLinkMessage>> encodeToChunks(
+        {required List<Uint8List> payload,
+        required QuantumLinkIdentity sender,
+        required XidDocument recipient,
+        required BigInt chunkSize}) =>
+    RustLib.instance.api.crateApiQlEncodeToChunks(
+        payload: payload,
+        sender: sender,
+        recipient: recipient,
+        chunkSize: chunkSize);
+
 Future<QuantumLinkIdentity> generateQlIdentity() =>
     RustLib.instance.api.crateApiQlGenerateQlIdentity();
 

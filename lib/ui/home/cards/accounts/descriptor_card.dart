@@ -164,9 +164,15 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
                   icon: EnvoyIcons.externalLink,
                   text: S().receive_qr_share,
                   onTap: () {
-                    SharePlus.instance.share(ShareParams(
-                      text: descriptor,
-                    ));
+                    final box = context.findRenderObject() as RenderBox?;
+                    SharePlus.instance.share(
+                      ShareParams(
+                        text: descriptor,
+                        sharePositionOrigin: box == null
+                            ? null
+                            : box.localToGlobal(Offset.zero) & box.size,
+                      ),
+                    );
                   }),
             ],
           )

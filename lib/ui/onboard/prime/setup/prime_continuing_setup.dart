@@ -4,7 +4,9 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:async';
+import 'dart:io';
 
+import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
 import 'package:envoy/ui/components/pop_up.dart';
@@ -92,8 +94,25 @@ class _PrimeContinuingSetupState extends ConsumerState<PrimeContinuingSetup> {
           Navigator.pop(context);
         },
         onSecondaryButtonTap: (context) async {
+          final qlConnection = ref.read(onboardingDeviceProvider);
+          if (qlConnection == null) {
+            completer.complete(false);
+            Navigator.pop(context);
+            return;
+          }
+          await qlConnection.disconnect();
+          await Future.delayed(const Duration(milliseconds: 200));
+          if (Platform.isIOS) {
+            final id = qlConnection.deviceId;
+            final removed = await BluetoothChannel().removeAccessory(id);
+            if (!removed) {
+              return;
+            }
+          }
           completer.complete(true);
-          Navigator.pop(context);
+          if (context.mounted) {
+            Navigator.pop(context);
+          }
         },
       ),
     );

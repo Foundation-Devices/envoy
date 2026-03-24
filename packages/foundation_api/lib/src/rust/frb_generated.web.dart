@@ -364,7 +364,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TimezoneResponse dco_decode_box_autoadd_timezone_response(dynamic raw);
 
   @protected
+  BigInt dco_decode_box_autoadd_u_64(dynamic raw);
+
+  @protected
   int dco_decode_box_autoadd_u_8(dynamic raw);
+
+  @protected
+  UnpairingRequest dco_decode_box_autoadd_unpairing_request(dynamic raw);
+
+  @protected
+  UnpairingResponse dco_decode_box_autoadd_unpairing_response(dynamic raw);
 
   @protected
   VerificationResult dco_decode_box_autoadd_verification_result(dynamic raw);
@@ -461,6 +470,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<QuantumLinkMessage> dco_decode_list_quantum_link_message(dynamic raw);
+
+  @protected
   OnboardingState dco_decode_onboarding_state(dynamic raw);
 
   @protected
@@ -478,6 +490,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PassportMessage? dco_decode_opt_box_autoadd_passport_message(dynamic raw);
+
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
 
   @protected
   int? dco_decode_opt_box_autoadd_u_8(dynamic raw);
@@ -577,6 +592,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void dco_decode_unit(dynamic raw);
+
+  @protected
+  UnpairingRequest dco_decode_unpairing_request(dynamic raw);
+
+  @protected
+  UnpairingResponse dco_decode_unpairing_response(dynamic raw);
 
   @protected
   BigInt dco_decode_usize(dynamic raw);
@@ -916,7 +937,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
+
+  @protected
   int sse_decode_box_autoadd_u_8(SseDeserializer deserializer);
+
+  @protected
+  UnpairingRequest sse_decode_box_autoadd_unpairing_request(
+      SseDeserializer deserializer);
+
+  @protected
+  UnpairingResponse sse_decode_box_autoadd_unpairing_response(
+      SseDeserializer deserializer);
 
   @protected
   VerificationResult sse_decode_box_autoadd_verification_result(
@@ -1026,6 +1058,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<QuantumLinkMessage> sse_decode_list_quantum_link_message(
+      SseDeserializer deserializer);
+
+  @protected
   OnboardingState sse_decode_onboarding_state(SseDeserializer deserializer);
 
   @protected
@@ -1044,6 +1080,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   PassportMessage? sse_decode_opt_box_autoadd_passport_message(
       SseDeserializer deserializer);
+
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
 
   @protected
   int? sse_decode_opt_box_autoadd_u_8(SseDeserializer deserializer);
@@ -1150,6 +1189,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_decode_unit(SseDeserializer deserializer);
+
+  @protected
+  UnpairingRequest sse_decode_unpairing_request(SseDeserializer deserializer);
+
+  @protected
+  UnpairingResponse sse_decode_unpairing_response(SseDeserializer deserializer);
 
   @protected
   BigInt sse_decode_usize(SseDeserializer deserializer);
@@ -1491,7 +1536,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       TimezoneResponse self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_u_8(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_unpairing_request(
+      UnpairingRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_unpairing_response(
+      UnpairingResponse self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_verification_result(
@@ -1603,6 +1659,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_quantum_link_message(
+      List<QuantumLinkMessage> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_onboarding_state(
       OnboardingState self, SseSerializer serializer);
 
@@ -1622,6 +1682,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_passport_message(
       PassportMessage? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_u_8(int? self, SseSerializer serializer);
@@ -1737,6 +1800,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_unit(void self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_unpairing_request(
+      UnpairingRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_unpairing_response(
+      UnpairingResponse self, SseSerializer serializer);
 
   @protected
   void sse_encode_usize(BigInt self, SseSerializer serializer);

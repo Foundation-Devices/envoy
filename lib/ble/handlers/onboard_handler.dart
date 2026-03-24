@@ -19,6 +19,7 @@ import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:foundation_api/foundation_api.dart' as api;
 import 'package:foundation_api/foundation_api.dart';
+import 'package:envoy/business/exchange_rate.dart' as envoy;
 
 class BleConnectionState {
   final String message;
@@ -79,14 +80,17 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
 
       if (response.onboardingComplete) {
         await addDevice(response);
-        UpdatesManager().checkAndStoreLatestPrimeFirmware(
-          _pairingResponse?.passportFirmwareVersion.field0,
-        );
+        final fwVersion = _pairingResponse?.passportFirmwareVersion.field0;
+        if (fwVersion != null) {
+          UpdatesManager().checkAndStoreLatestPrimeFirmware(fwVersion);
+        }
         await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
         await EnvoySeed().generateAndBackupWalletSilently();
         //no need to send security challenge if onboarding is already complete
         try {
-          qlConnection.qlHandler.bleAccountHandler.sendExchangeRateHistory();
+          await qlConnection.qlHandler.bleAccountHandler
+              .sendExchangeRateHistory();
+          await envoy.ExchangeRate().refreshHistory();
         } catch (e) {
           kPrint(
             "Could not send exchange rate history at onboarding completion: ${e.toString()}",
@@ -127,7 +131,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
       //   message: "SAVING recipientXid",
       // );
       final device = Device(
-        "Prime",
+        "Passport Prime",
         DeviceType.passportPrime,
         response.passportSerial.field0,
         DateTime.now(),
@@ -164,15 +168,18 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
       try {
         if (_pairingResponse != null) {
           await addDevice(_pairingResponse!);
-          UpdatesManager().checkAndStoreLatestPrimeFirmware(
-            _pairingResponse?.passportFirmwareVersion.field0,
-          );
+          final fwVersion = _pairingResponse?.passportFirmwareVersion.field0;
+          if (fwVersion != null) {
+            UpdatesManager().checkAndStoreLatestPrimeFirmware(fwVersion);
+          }
           await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
         }
         await EnvoySeed().generateAndBackupWalletSilently();
         if (qlConnection.getDevice() != null) {
           await Devices().markPrimeOnboarded(true, qlConnection.getDevice()!);
         }
+        kPrint(
+            "Onboarding complete, device added. Sending exchange rate history...");
         await qlConnection.qlHandler.bleAccountHandler
             .sendExchangeRateHistory();
       } catch (e) {
@@ -185,7 +192,9 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
   void updateBlePairState(String message, EnvoyStepState step) {
     final state = BleConnectionState(message: message, step: step);
     _lastState = state;
-    _blePairingState.add(state);
+    if (!_blePairingState.isClosed) {
+      _blePairingState.add(state);
+    }
   }
 
   Future<api.PairingResponse> waitForPairResponse({
@@ -208,5 +217,12 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
     _pairingResponse = null;
     _completedOnboardingStates.clear();
     updateBlePairState("Connecting to device", EnvoyStepState.IDLE);
+  }
+
+  @override
+  void dispose() {
+    _blePairingState.close();
+    _onboardingState.close();
+    super.dispose();
   }
 }

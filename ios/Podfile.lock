@@ -6,9 +6,6 @@ PODS:
   - Flutter (1.0.0)
   - flutter_secure_storage (6.0.0):
     - Flutter
-  - flutter_vlc_player (3.0.3):
-    - Flutter
-    - MobileVLCKit (~> 3.6.1b1)
   - in_app_purchase_storekit (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -17,7 +14,6 @@ PODS:
   - local_auth_darwin (0.0.1):
     - Flutter
     - FlutterMacOS
-  - MobileVLCKit (3.6.1b1)
   - MTBBarcodeScanner (5.0.11)
   - ObjectBox (4.4.1)
   - objectbox_flutter_libs (0.0.1):
@@ -63,6 +59,9 @@ PODS:
     - Flutter
   - url_launcher_ios (0.0.1):
     - Flutter
+  - video_player_avfoundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - wakelock_plus (0.0.1):
     - Flutter
 
@@ -71,7 +70,6 @@ DEPENDENCIES:
   - file_saver (from `.symlinks/plugins/file_saver/ios`)
   - Flutter (from `Flutter`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
-  - flutter_vlc_player (from `.symlinks/plugins/flutter_vlc_player/ios`)
   - in_app_purchase_storekit (from `.symlinks/plugins/in_app_purchase_storekit/darwin`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - local_auth_darwin (from `.symlinks/plugins/local_auth_darwin/darwin`)
@@ -94,11 +92,11 @@ DEPENDENCIES:
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - tor (from `.symlinks/plugins/tor/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
   - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
 
 SPEC REPOS:
   trunk:
-    - MobileVLCKit
     - MTBBarcodeScanner
     - ObjectBox
 
@@ -111,8 +109,6 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
-  flutter_vlc_player:
-    :path: ".symlinks/plugins/flutter_vlc_player/ios"
   in_app_purchase_storekit:
     :path: ".symlinks/plugins/in_app_purchase_storekit/darwin"
   integration_test:
@@ -158,6 +154,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/tor/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
+  video_player_avfoundation:
+    :path: ".symlinks/plugins/video_player_avfoundation/darwin"
   wakelock_plus:
     :path: ".symlinks/plugins/wakelock_plus/ios"
 
@@ -171,11 +169,9 @@ SPEC CHECKSUMS:
   file_saver: 503e386464dbe118f630e17b4c2e1190fa0cf808
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_secure_storage: d33dac7ae2ea08509be337e775f6b59f1ff45f12
-  flutter_vlc_player: 1508e7989e41d11328e4fa4c9a1f188c7cf4cf7a
   in_app_purchase_storekit: 2342c0a5da86593124d08dd13d920f39a52b273a
   integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
   local_auth_darwin: 63c73d6d28cc3e239be2b6aa460ea6e317cd5100
-  MobileVLCKit: 2d9c7c373393ae43086aeeff890bf0b1afc15c5c
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   ObjectBox: 7da4aceb5013d041bfafdbc6d744a26918b09757
   objectbox_flutter_libs: 7a6ea1d74b43f5d970e6571d1b79e4b181b33d81
@@ -197,6 +193,7 @@ SPEC CHECKSUMS:
   sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
   tor: 662a9f5b980b5c86decb8ba611de9bcd4c8286eb
   url_launcher_ios: bb13df5870e8c4234ca12609d04010a21be43dfa
+  video_player_avfoundation: 7993f492ae0bd77edaea24d9dc051d8bb2cd7c86
   wakelock_plus: 76957ab028e12bfa4e66813c99e46637f367fc7e
 
 PODFILE CHECKSUM: 0ca84cefa7f2127eeb30c78f8bacb271e71f39b5

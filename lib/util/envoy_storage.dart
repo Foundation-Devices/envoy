@@ -640,13 +640,27 @@ class EnvoyStorage {
   }
 
   Future addNewFirmware(int deviceId, String version, String path,
-      {List<PackageAction>? packageActions}) async {
+      {List<PackageAction>? packageActions, String? currentVersion}) async {
+    final existing =
+        (await firmwareStore.record(deviceId).get(_db)) ?? <String, dynamic>{};
+
+    // Preserve the per-version map used for Prime's per-device update check.
+    Map<String, dynamic>? updatedVersions;
+    if (currentVersion != null) {
+      final versions =
+          Map<String, dynamic>.from((existing['versions'] as Map?) ?? {});
+      versions[currentVersion] = version;
+      updatedVersions = versions;
+    }
+
     await firmwareStore.record(deviceId).put(_db, {
+      ...existing,
       'version': version,
       'path': path,
       if (packageActions != null)
         'packageActions':
             packageActions.map((e) => _packageActionToMap(e)).toList(),
+      if (updatedVersions != null) 'versions': updatedVersions,
     });
     return true;
   }
@@ -655,6 +669,14 @@ class EnvoyStorage {
     var finder = Finder(filter: Filter.byKey(deviceId));
     var firmware = await firmwareStore.find(_db, finder: finder);
     return transformFirmware(firmware);
+  }
+
+  Future<String?> getPrimeFirmwareLatestVersion(String currentVersion) async {
+    final record =
+        await firmwareStore.record(2 /* passportPrime.index */).get(_db);
+    if (record == null) return null;
+    final versions = record['versions'] as Map?;
+    return versions?[currentVersion] as String?;
   }
 
   FirmwareInfo? transformFirmware(List<RecordSnapshot<Key?, Value?>> records) {
@@ -823,7 +845,7 @@ class EnvoyStorage {
     // Remove 'firmware' store if it exists
     if (map['stores'] is List) {
       map['stores'] = (map['stores'] as List)
-          .where((store) => store['name'] != 'firmware')
+          .where((store) => store['name'] != firmwareStoreName)
           .toList();
     }
 
