@@ -6,9 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 
 class DraggableOverlay extends StatefulWidget {
-  const DraggableOverlay({super.key, required this.child});
+  const DraggableOverlay({super.key, required this.child, this.closeResult});
 
   final Widget child;
+
+  /// Value returned to the caller via [Navigator.pop] when the overlay is
+  /// dismissed by tapping the backdrop or dragging down. Has no effect when
+  /// the route is popped via the system back gesture/button (which returns
+  /// null by default).
+  final dynamic closeResult;
 
   @override
   State<DraggableOverlay> createState() => _DraggableOverlayState();
@@ -24,7 +30,9 @@ class _DraggableOverlayState extends State<DraggableOverlay>
   void _close() async {
     await _controller.reverse();
     if (!mounted) return;
-    if (Navigator.of(context).canPop()) Navigator.of(context).pop();
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop(widget.closeResult);
+    }
   }
 
   @override
