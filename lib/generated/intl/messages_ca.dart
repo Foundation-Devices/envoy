@@ -72,9 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage(
-          "bc1q ar0s rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m dq",
-        ),
+        "_": MessageLookupByLibrary.simpleMessage("6:15"),
         "about_appVersion": MessageLookupByLibrary.simpleMessage(
           "Versió de l\'aplicació",
         ),
@@ -1557,8 +1555,12 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "firmware_connectionModalCancelUpdate_header":
             MessageLookupByLibrary.simpleMessage("Cancel Update?"),
+        "firmware_downloadingUpdate_aboutOneMin":
+            MessageLookupByLibrary.simpleMessage("About 1 minute remains"),
         "firmware_downloadingUpdate_downloaded":
             MessageLookupByLibrary.simpleMessage("Update Downloaded"),
+        "firmware_downloadingUpdate_estimating":
+            MessageLookupByLibrary.simpleMessage("Estimating remaining time…"),
         "firmware_downloadingUpdate_header":
             MessageLookupByLibrary.simpleMessage(
           "Downloading Update",

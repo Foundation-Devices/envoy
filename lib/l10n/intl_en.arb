@@ -1,6 +1,6 @@
 {
   ":": ":",
-  "_": "bc1q ar0s rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m dq",
+  "_": "6:15",
   "about_appVersion": "App Version",
   "about_openSourceLicences": "Open Source Licences",
   "about_privacyPolicy": "Privacy Policy",
@@ -511,7 +511,9 @@
   "firmware_connectionModalCancelUpdate_cancelUpdate": "Cancel Update",
   "firmware_connectionModalCancelUpdate_content": "This will cancel the firmware update. Passport Prime will remain on the current version.",
   "firmware_connectionModalCancelUpdate_header": "Cancel Update?",
+  "firmware_downloadingUpdate_aboutOneMin": "About 1 minute remains",
   "firmware_downloadingUpdate_downloaded": "Update Downloaded",
+  "firmware_downloadingUpdate_estimating": "Estimating remaining time…",
   "firmware_downloadingUpdate_header": "Downloading Update",
   "firmware_downloadingUpdate_timeRemaining": "{time_remaining} remaining",
   "firmware_downloadingUpdate_transferring": "Transferring to Passport Prime",
