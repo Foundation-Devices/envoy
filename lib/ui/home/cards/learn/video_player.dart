@@ -244,7 +244,9 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer>
     // Keep the screen on
     WakelockPlus.enable();
 
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    SystemChrome.setEnabledSystemUIMode(
+      _isMaestroTest ? SystemUiMode.immersiveSticky : SystemUiMode.immersive,
+    );
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
