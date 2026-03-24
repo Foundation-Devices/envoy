@@ -9,6 +9,7 @@ import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DevOptionsPage extends StatefulWidget {
   const DevOptionsPage({super.key});
@@ -359,6 +360,37 @@ class _DevOptionTile extends StatelessWidget {
           : () async {
               await onTap!();
             },
+    );
+  }
+}
+
+class DevBannerWrapper extends StatelessWidget {
+  final Widget child;
+
+  const DevBannerWrapper({
+    super.key,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, child) {
+        final settings = ref.watch(settingsProvider);
+        if (settings.useBetaFwUpdate) {
+          return Directionality(
+            textDirection: TextDirection.ltr,
+            child: Banner(
+              message: 'BETA',
+              location: BannerLocation.bottomEnd,
+              color: Colors.orangeAccent,
+              child: child!,
+            ),
+          );
+        }
+        return child!;
+      },
+      child: child,
     );
   }
 }
