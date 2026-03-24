@@ -1,0 +1,5 @@
+// AppClip.xcconfig
+// Configuration for App Clip target - only includes version variables
+// DO NOT include Debug/Release.xcconfig which pulls in CocoaPods dependencies
+
+#include "Generated.xcconfig"

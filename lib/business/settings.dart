@@ -234,7 +234,7 @@ class Settings extends ChangeNotifier {
     return !usingDefaultElectrumServer;
   }
 
-  @JsonKey(defaultValue: [])
+  @JsonKey(defaultValue: ["ssl://electrum.bitaroo.net:50002"])
   List<String> skipCertValidationServers = [PublicServer.bitaroo.address];
 
   bool validateDomain(String server) {

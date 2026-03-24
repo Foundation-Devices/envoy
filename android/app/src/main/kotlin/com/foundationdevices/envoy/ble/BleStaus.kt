@@ -36,6 +36,7 @@ enum class BluetoothConnectionEventType {
 data class BluetoothConnectionStatus(
     val type: BluetoothConnectionEventType? = null,
     val connected: Boolean,
+    val ready: Boolean,
     val bonded: Boolean,
     val peripheralId: String? = null,
     val peripheralName: String? = null,
@@ -49,6 +50,7 @@ data class BluetoothConnectionStatus(
         return mapOf(
             "type" to type?.toStringValue(),
             "connected" to connected,
+            "ready" to ready,
             "peripheralId" to peripheralId,
             "peripheralName" to peripheralName,
             "error" to error,
@@ -59,6 +61,6 @@ data class BluetoothConnectionStatus(
 
     override fun toString(): String {
         val errorInfo = if (error != null) ", error: $error" else ""
-        return "BluetoothConnectionStatus{type: $type, connected: $connected , bonded ${bonded}, error: $errorInfo}"
+        return "BluetoothConnectionStatus{type: $type, connected: $connected, ready: $ready, bonded $bonded, error: $errorInfo}"
     }
 }
