@@ -29,8 +29,6 @@ import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/business/region_manager.dart';
 import 'package:envoy/ui/state/home_page_state.dart';
 
-import '../../../util/bug_report_helper.dart' show EnvoyReport;
-
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
 
