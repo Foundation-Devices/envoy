@@ -36,8 +36,13 @@ class Server {
   }
 
   Future<List<PrimePatch>> fetchPrimePatches(String currentVersion) async {
+    final betaParam = Settings().useBetaFwUpdate ? '&beta=1' : '';
+    if (Settings().useBetaFwUpdate) {
+      kPrint(
+          "Fetching beta prime patches, url: '$_serverAddress/prime/patches?version=$currentVersion$betaParam'");
+    }
     final response = await http!.get(
-      '$_serverAddress/prime/patches?version=$currentVersion',
+      '$_serverAddress/prime/patches?version=$currentVersion$betaParam',
     );
 
     if (response.statusCode == 200) {
