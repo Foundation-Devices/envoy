@@ -2,21 +2,21 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/envoy_button.dart';
+import 'package:envoy/ui/home/settings/dev_options_page.dart';
 import 'package:envoy/ui/home/settings/fiat/settings_fiat_chooser.dart';
 import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
 import 'package:envoy/ui/home/settings/setting_toggle.dart';
 import 'package:envoy/ui/home/setup_overlay.dart';
+import 'package:envoy/ui/onboard/onboarding_page.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/util/bug_report_helper.dart';
-import 'package:envoy/util/console.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -183,9 +183,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ? GestureDetector(
                     onTap: () {
                       showDialog(
+                        fullscreenDialog: true,
                         context: context,
                         builder: (context) {
-                          return const _DevOptions();
+                          return const DevOptionsPage();
                         },
                       );
                     },
@@ -201,9 +202,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                 onTap: () {
                                   // TODO: FIGMA
                                   showDialog(
+                                    fullscreenDialog: true,
                                     context: context,
                                     builder: (context) {
-                                      return const _DevOptions();
+                                      return const DevOptionsPage();
                                     },
                                   );
                                 },
@@ -461,81 +463,173 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   }
 }
 
-class _DevOptions extends ConsumerWidget {
-  const _DevOptions();
+class TestnetInfoModal extends StatelessWidget {
+  const TestnetInfoModal({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    bool loading = false;
-    return AlertDialog(
-      backgroundColor: Colors.white,
-      title: const Text("Developer options"),
-      content: Column(
+  Widget build(BuildContext context) {
+    var textStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(fontSize: 13);
+
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.75,
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          TextButton(
-            onPressed: () {
-              EnvoyStorage().clearDismissedStatesStore();
-              Navigator.pop(context);
-            },
-            child: const Text("Clear Prompt states"),
-          ),
-          TextButton(
-            onPressed: () {
-              EnvoyStorage().clearPendingStore();
-              Navigator.pop(context);
-            },
-            child: const Text("Clear Azteco states"),
-          ),
-          TextButton(
-            onPressed: () {
-              EnvoyReport().clearAll();
-              Navigator.pop(context);
-            },
-            child: const Text("Clear Envoy Logs"),
-          ),
-          TextButton(
-            onPressed: () {
-              EnvoyStorage().clear();
-              Navigator.pop(context);
-            },
-            child: const Text("Clear Envoy Preferences"),
-          ),
-          StatefulBuilder(
-            builder: (context, setState) {
-              if (loading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              return TextButton(
-                onPressed: () async {
-                  final navigator = Navigator.of(context);
-                  try {
-                    setState(() {
-                      loading = true;
-                    });
-                    await EnvoySeed().delete();
-                    setState(() {
-                      loading = false;
-                    });
-                    navigator.pop();
-                  } catch (e) {
-                    setState(() {
-                      loading = false;
-                    });
-                    navigator.pop();
-                    kPrint(e);
-                  }
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
                 },
-                child: const Text("Wipe Envoy Wallet"),
-              );
-            },
+              ),
+            ),
           ),
-          TextButton(
-            onPressed: () {
-              Settings().skipPrimeSecurityCheck = true;
-              Navigator.pop(context);
-            },
-            child: const Text("Skip Prime security check"),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 36),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/exclamation_icon.png",
+                  height: 60,
+                  width: 60,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 18.0),
+                  child: Text(
+                    S().settings_advanced_enabled_testnet_modal_subheading,
+                    textAlign: TextAlign.center,
+                    style: textStyle,
+                  ),
+                ),
+                const Padding(padding: EdgeInsets.all(4)),
+                Padding(
+                  padding: const EdgeInsets.only(top: 18.0),
+                  child: LinkText(
+                    text: S().settings_advanced_enabled_testnet_modal_link,
+                    textStyle: textStyle,
+                    linkStyle: EnvoyTypography.button.copyWith(
+                      color: EnvoyColors.accentPrimary,
+                    ),
+                    onTap: () {
+                      launchUrlString(
+                        "https://www.youtube.com/watch?v=nRGFAHlYIeU",
+                      );
+                    },
+                  ),
+                ),
+                const Padding(padding: EdgeInsets.all(4)),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 28),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: EnvoyButton(
+                    S().component_continue,
+                    type: EnvoyButtonTypes.primaryModal,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SignetInfoModal extends StatelessWidget {
+  const SignetInfoModal({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var textStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(fontSize: 13);
+
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.75,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 36),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/exclamation_icon.png",
+                  height: 60,
+                  width: 60,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 18.0),
+                  child: Text(
+                    S().settings_advanced_enabled_signet_modal_subheading,
+                    textAlign: TextAlign.center,
+                    style: textStyle,
+                  ),
+                ),
+                const Padding(padding: EdgeInsets.all(4)),
+                Padding(
+                  padding: const EdgeInsets.only(top: 18.0),
+                  child: LinkText(
+                    text: S().settings_advanced_enabled_signet_modal_link,
+                    textStyle: textStyle,
+                    linkStyle: EnvoyTypography.button.copyWith(
+                      color: EnvoyColors.accentPrimary,
+                    ),
+                    onTap: () {
+                      launchUrlString("https://en.bitcoin.it/wiki/Signet");
+                    },
+                  ),
+                ),
+                const Padding(padding: EdgeInsets.all(4)),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 28),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: EnvoyButton(
+                    S().component_continue,
+                    type: EnvoyButtonTypes.primaryModal,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
