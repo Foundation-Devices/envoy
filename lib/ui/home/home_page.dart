@@ -117,8 +117,6 @@ class HomePageState extends ConsumerState<HomePage>
   double _optionsHeight = 0;
   final backButtonDispatcher = RootBackButtonDispatcher();
 
-  final double _bottomTabBarHeight = 70.0;
-
   Function()? _rightAction;
 
   IconData? _rightActionIcon;
@@ -543,12 +541,10 @@ class HomePageState extends ConsumerState<HomePage>
     double shieldTopOptionsShown =
         shieldTop + _optionsHeight; // TODO: This needs to be programmatic
 
-    double bottomTabBarShieldOffset = 15;
     double shieldHeight = screenHeight -
-        _bottomTabBarHeight -
-        bottomOffset -
-        shieldTop -
-        bottomTabBarShieldOffset;
+        kBottomNavigationBarHeight -
+        _cachedBottomInset -
+        shieldTop;
 
     double shieldHeightModalShown = screenHeight * 0.85 - bottomOffset;
     double shieldHeightOptionsShown = screenHeight * 0.76 - bottomOffset;
