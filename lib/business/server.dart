@@ -36,8 +36,13 @@ class Server {
   }
 
   Future<List<PrimePatch>> fetchPrimePatches(String currentVersion) async {
+    final betaParam = Settings().useBetaFwUpdate ? '&beta=1' : '';
+    if (Settings().useBetaFwUpdate) {
+      kPrint(
+          "Fetching beta prime patches, url: '$_serverAddress/prime/patches?version=$currentVersion$betaParam'");
+    }
     final response = await http!.get(
-      '$_serverAddress/prime/patches?version=$currentVersion',
+      '$_serverAddress/prime/patches?version=$currentVersion$betaParam',
     );
 
     if (response.statusCode == 200) {
@@ -221,7 +226,7 @@ class FirmwareUpdate {
   final String changeLog;
   final DateTime releaseDate;
   final int deviceId;
-  final int size;
+  final int? size;
 
   FirmwareUpdate({
     required this.version,
@@ -232,7 +237,7 @@ class FirmwareUpdate {
     required this.changeLog,
     required this.releaseDate,
     required this.deviceId,
-    required this.size,
+    this.size,
   });
 
   factory FirmwareUpdate.fromJson(Map<String, dynamic> json) {
