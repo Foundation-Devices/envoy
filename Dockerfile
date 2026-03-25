@@ -90,12 +90,12 @@ RUN cargo install --force --locked bindgen-cli
 ENV PUB_CACHE=/pub-cache
 
 # Store GH access token
-ARG GITHUB_ACCESS_TOKEN
-ENV GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN
-RUN echo $GITHUB_ACCESS_TOKEN > .github-access-token
-
-RUN gh auth login --with-token < .github-access-token
-RUN gh auth setup-git
+# ARG GITHUB_ACCESS_TOKEN
+# ENV GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN
+# RUN echo $GITHUB_ACCESS_TOKEN > .github-access-token
+#
+# RUN gh auth login --with-token < .github-access-token
+# RUN gh auth setup-git
 
 RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
 ENV CARGO_NET_GIT_FETCH_WITH_CLI=true
