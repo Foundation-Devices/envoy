@@ -151,9 +151,6 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    final double additionalBottomPadding =
-        MediaQuery.viewPaddingOf(context).bottom;
-
 // homeTabRoutes are defined in the same order as the bottom navigation bar.
     // Get only the FIRST route in the list (e.g. "/devices")
     final routeList = ref.watch(routeMatchListProvider);
@@ -171,10 +168,11 @@ class EnvoyBottomNavigationState extends ConsumerState<EnvoyBottomNavigation> {
       });
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: (Platform.isAndroid ? EnvoySpacing.xs : EnvoySpacing.small) +
-            additionalBottomPadding,
+    return SafeArea(
+      bottom: true,
+      maintainBottomViewPadding: true,
+      minimum: EdgeInsets.only(
+        bottom: Platform.isAndroid ? EnvoySpacing.xs : EnvoySpacing.small,
       ),
       child: EnvoyBottomNavBar(
         _navBarItems(),
@@ -248,11 +246,11 @@ class EnvoyBottomNavBar extends StatelessWidget {
       );
 
   @override
-  Widget build(final BuildContext context) => Container(
-        color: Colors.transparent,
-        child: SizedBox(
-          width: double.infinity,
-          height: 73,
+  Widget build(final BuildContext context) => Semantics(
+        container: true,
+        explicitChildNodes: true,
+        child: Container(
+          color: Colors.transparent,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
