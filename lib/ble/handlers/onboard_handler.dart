@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:envoy/ble/quantum_link_router.dart';
 import 'package:envoy/business/devices.dart';
 import 'package:envoy/business/envoy_seed.dart';
-import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/envoy_colors.dart';
@@ -80,9 +79,10 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
 
       if (response.onboardingComplete) {
         await addDevice(response);
-        UpdatesManager().checkAndStoreLatestPrimeFirmware(
-          _pairingResponse?.passportFirmwareVersion.field0,
-        );
+        final fwVersion = _pairingResponse?.passportFirmwareVersion.field0;
+        if (fwVersion != null) {
+          UpdatesManager().checkAndStoreLatestPrimeFirmware(fwVersion);
+        }
         await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
         await EnvoySeed().generateAndBackupWalletSilently();
         //no need to send security challenge if onboarding is already complete
@@ -142,7 +142,7 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
         senderXid: senderXid,
         peripheralId: qlConnection.deviceId,
         onboardingComplete: response.onboardingComplete,
-        primeBackupEnabled: Settings().syncToCloud,
+        primeBackupEnabled: null,
       );
       await Devices().add(device);
     } catch (e, stack) {
@@ -167,9 +167,10 @@ class BleOnboardHandler extends PassportMessageHandler with ChangeNotifier {
       try {
         if (_pairingResponse != null) {
           await addDevice(_pairingResponse!);
-          UpdatesManager().checkAndStoreLatestPrimeFirmware(
-            _pairingResponse?.passportFirmwareVersion.field0,
-          );
+          final fwVersion = _pairingResponse?.passportFirmwareVersion.field0;
+          if (fwVersion != null) {
+            UpdatesManager().checkAndStoreLatestPrimeFirmware(fwVersion);
+          }
           await EnvoyStorage().setBool(PREFS_ONBOARDED, true);
         }
         await EnvoySeed().generateAndBackupWalletSilently();

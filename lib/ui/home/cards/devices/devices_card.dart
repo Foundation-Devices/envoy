@@ -56,46 +56,58 @@ class DevicesCardState extends ConsumerState<DevicesCard>
     super.build(context);
     // ignore: unused_local_variable
 
-    return DevicesList();
+    return const DevicesList();
   }
 
   @override
   bool get wantKeepAlive => false;
 }
 
-//ignore: must_be_immutable
 class DevicesList extends ConsumerStatefulWidget {
-  DevicesList() : super(key: UniqueKey());
+  const DevicesList({super.key});
 
   @override
   ConsumerState<DevicesList> createState() => _DevicesListState();
 }
 
 class _DevicesListState extends ConsumerState<DevicesList> {
+  final ScrollController _scrollController = ScrollController();
+
+  List<String> _devicesOrder = [];
+
   void _redraw() {
-    setState(() {});
+    final currentSerials = Devices().devices.map((d) => d.serial).toList();
+    final newOrder =
+        _devicesOrder.where((s) => currentSerials.contains(s)).toList();
+    for (final serial in currentSerials) {
+      if (!newOrder.contains(serial)) newOrder.add(serial);
+    }
+    setState(() {
+      _devicesOrder = newOrder;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
-    // Redraw when we there are changes in devices
+    _devicesOrder = Devices().devices.map((d) => d.serial).toList();
     Devices().addListener(_redraw);
   }
 
   @override
   void dispose() {
-    super.dispose();
+    _scrollController.dispose();
     Devices().removeListener(_redraw);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final devices = Devices().devices;
+
     return PopScope(
       canPop: false,
-      child: Devices().devices.isEmpty
+      child: devices.isEmpty
           ? Column(
               children: [
                 Padding(
@@ -112,58 +124,55 @@ class _DevicesListState extends ConsumerState<DevicesList> {
                 topGradientValue: 0.075,
                 bottomGradientValue: 0.905,
                 end: 0.97,
-                child: CustomScrollView(
-                  slivers: [
-                    const SliverToBoxAdapter(
-                        child: SizedBox(
-                      height: EnvoySpacing.medium2,
-                    )),
-                    const SliverPadding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.xs / 2)),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          var device = Devices().devices[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: EnvoySpacing.medium2),
-                            child: DeviceListTile(
-                              device,
-                              onTap: () async {
-                                ref
-                                    .read(homePageOptionsVisibilityProvider
-                                        .notifier)
-                                    .state = false;
-                                Future.delayed(
-                                    const Duration(milliseconds: 200), () {
-                                  if (context.mounted) {
-                                    context.go(ROUTE_DEVICE_DETAIL,
-                                        extra: device);
-                                  }
-                                });
-                                // widget.navigator!.push(DeviceCard(
-                                //     device,
-                                //     widget.navigator,
-                                //     DeviceOptions(
-                                //       device,
-                                //       navigator: widget.navigator,
-                                //     )));
-                              },
-                            ),
-                          );
-                        },
-                        childCount: Devices().devices.length,
+                child: ReorderableListView(
+                  scrollController: _scrollController,
+                  header: const SizedBox(height: EnvoySpacing.medium2),
+                  footer: const SizedBox(height: EnvoySpacing.medium2 * 2),
+                  padding: EdgeInsets.zero,
+                  proxyDecorator: (widget, index, animation) {
+                    return FadeTransition(
+                      opacity:
+                          animation.drive(Tween<double>(begin: 1.0, end: 0.5)),
+                      child: ScaleTransition(
+                        scale: animation
+                            .drive(Tween<double>(begin: 0.95, end: 1.02)),
+                        child: widget,
                       ),
-                    ),
-                    const SliverPadding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: EnvoySpacing.medium2)),
-                    const SliverToBoxAdapter(
-                        child: SizedBox(
-                      height: EnvoySpacing.medium2,
-                    )),
-                  ],
+                    );
+                  },
+                  onReorder: (oldIndex, newIndex) {
+                    if (oldIndex < newIndex) newIndex -= 1;
+                    setState(() {
+                      final serial = _devicesOrder.removeAt(oldIndex);
+                      _devicesOrder.insert(newIndex, serial);
+                    });
+                    Future.microtask(
+                        () => Devices().reorderDevices(_devicesOrder));
+                  },
+                  children: _devicesOrder
+                      .map((serial) =>
+                          devices.where((d) => d.serial == serial).firstOrNull)
+                      .nonNulls
+                      .map((device) {
+                    return Padding(
+                      key: ValueKey(device.serial),
+                      padding:
+                          const EdgeInsets.only(bottom: EnvoySpacing.medium2),
+                      child: DeviceListTile(
+                        device,
+                        onTap: () async {
+                          ref
+                              .read(homePageOptionsVisibilityProvider.notifier)
+                              .state = false;
+                          Future.delayed(const Duration(milliseconds: 200), () {
+                            if (context.mounted) {
+                              context.go(ROUTE_DEVICE_DETAIL, extra: device);
+                            }
+                          });
+                        },
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
             ),
