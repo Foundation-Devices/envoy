@@ -19,6 +19,7 @@ import 'package:envoy/business/prime_shard.dart';
 import 'package:envoy/business/scheduler.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/business/updates_manager.dart';
+import 'package:envoy/ui/home/settings/dev_options_page.dart';
 import 'package:envoy/ui/lock/authenticate_page.dart';
 import 'package:envoy/ui/migrations/migration_app.dart';
 import 'package:envoy/ui/migrations/migration_manager.dart';
@@ -190,40 +191,44 @@ class _EnvoyAppState extends State<EnvoyApp> {
     timeago.setLocaleMessages('ca', timeago.CaMessages());
 
     return ProviderScope(
-      child: MaterialApp.router(
-        localizationsDelegates: const [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: S.delegate.supportedLocales,
-        debugShowCheckedModeBanner: false,
-        title: 'Envoy',
-        themeMode: ThemeMode.light,
-        theme: ThemeData(
-          textTheme: envoyTextTheme,
-          pageTransitionsTheme: const PageTransitionsTheme(
-            builders: {
-              TargetPlatform.android: EnvoyOpenUpwardsPageTransitionsBuilder(),
-              TargetPlatform.iOS: EnvoyOpenUpwardsPageTransitionsBuilder(),
-              TargetPlatform.linux: EnvoyOpenUpwardsPageTransitionsBuilder(),
-              TargetPlatform.macOS: EnvoyOpenUpwardsPageTransitionsBuilder(),
-              TargetPlatform.windows: EnvoyOpenUpwardsPageTransitionsBuilder(),
-            },
+      child: DevBannerWrapper(
+        child: MaterialApp.router(
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          debugShowCheckedModeBanner: false,
+          title: 'Envoy',
+          themeMode: ThemeMode.light,
+          theme: ThemeData(
+            textTheme: envoyTextTheme,
+            pageTransitionsTheme: const PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android:
+                    EnvoyOpenUpwardsPageTransitionsBuilder(),
+                TargetPlatform.iOS: EnvoyOpenUpwardsPageTransitionsBuilder(),
+                TargetPlatform.linux: EnvoyOpenUpwardsPageTransitionsBuilder(),
+                TargetPlatform.macOS: EnvoyOpenUpwardsPageTransitionsBuilder(),
+                TargetPlatform.windows:
+                    EnvoyOpenUpwardsPageTransitionsBuilder(),
+              },
+            ),
+            primaryColor: envoyAccentColor,
+            brightness: Brightness.light,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.black,
+              elevation: 0,
+              centerTitle: true,
+            ),
+            scaffoldBackgroundColor: envoyBaseColor,
+            useMaterial3: false,
           ),
-          primaryColor: envoyAccentColor,
-          brightness: Brightness.light,
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.black,
-            elevation: 0,
-            centerTitle: true,
-          ),
-          scaffoldBackgroundColor: envoyBaseColor,
-          useMaterial3: false,
+          routerConfig: mainRouter,
+          scrollBehavior: GlobalScrollBehavior(),
         ),
-        routerConfig: mainRouter,
-        scrollBehavior: GlobalScrollBehavior(),
       ),
     );
   }
