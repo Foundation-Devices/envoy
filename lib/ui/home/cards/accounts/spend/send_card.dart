@@ -14,6 +14,7 @@ import 'package:envoy/ui/home/cards/envoy_text_button.dart';
 import 'package:envoy/ui/home/home_state.dart';
 import 'package:envoy/ui/state/send_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
+import 'package:envoy/util/amount.dart';
 import 'package:envoy/util/build_context_extension.dart';
 import 'package:envoy/util/console.dart';
 import 'package:flutter/cupertino.dart';
@@ -51,10 +52,16 @@ class _SendCardState extends ConsumerState<SendCard>
       }
 
       if (parsed.amountSats != null) {
-        setAmount(parsed.amountSats!);
-
-        if (parsed.unit != null) {
-          ref.read(sendUnitProvider.notifier).state = parsed.unit!;
+        AmountDisplayUnit? unit = parsed.unit;
+        bool autoSwitched = false;
+        if (unit == AmountDisplayUnit.sat &&
+            satsExceedDisplayLimit(parsed.amountSats!)) {
+          unit = AmountDisplayUnit.btc;
+          autoSwitched = true;
+        }
+        setAmount(parsed.amountSats!, autoSwitchedToBtc: autoSwitched);
+        if (unit != null) {
+          ref.read(sendUnitProvider.notifier).state = unit;
         }
       }
     });
@@ -110,7 +117,7 @@ class _SendCardState extends ConsumerState<SendCard>
     });
   }
 
-  void setAmount(int amount) {
+  void setAmount(int amount, {bool autoSwitchedToBtc = false}) {
     ref.read(spendAmountProvider.notifier).state = amount;
     setState(() {
       _amountEntry = AmountEntry(
@@ -119,6 +126,7 @@ class _SendCardState extends ConsumerState<SendCard>
         account: account,
         initalSatAmount: amount,
         onPaste: _onPaste,
+        autoSwitchedToBtc: autoSwitchedToBtc,
       );
     });
   }

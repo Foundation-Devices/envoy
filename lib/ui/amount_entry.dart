@@ -42,6 +42,7 @@ class AmountEntry extends ConsumerStatefulWidget {
   final int initalSatAmount;
   final Function(ParseResult)? onPaste;
   final bool trailingZeroes;
+  final bool autoSwitchedToBtc;
 
   const AmountEntry({
     this.account,
@@ -49,6 +50,7 @@ class AmountEntry extends ConsumerStatefulWidget {
     this.initalSatAmount = 0,
     this.onPaste,
     this.trailingZeroes = false,
+    this.autoSwitchedToBtc = false,
     super.key,
   });
 
@@ -67,6 +69,7 @@ class AmountEntryState extends ConsumerState<AmountEntry> {
   @override
   void initState() {
     super.initState();
+    _autoSwitchedToBtc = widget.autoSwitchedToBtc;
     var unit = ref.read(sendUnitProvider);
 
     if (widget.initalSatAmount > 0) {
