@@ -218,6 +218,11 @@ class _CardSwipeWrapperState extends ConsumerState<CardSwipeWrapper>
                   );
             }
           },
+          onHorizontalDragCancel: () {
+            _runSpringSimulation(Offset.zero, size);
+            thresholdReached = false;
+            _iconController.reverse();
+          },
           child: Transform.translate(
             offset: Offset(_offsetX * size.width * .5, 0.0),
             child: Semantics(
