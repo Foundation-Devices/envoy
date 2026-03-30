@@ -43,24 +43,17 @@ class UpdatesManager {
       });
     }
 
-    final primeDevices = Devices().getPrimeDevices;
-    if (primeDevices.isNotEmpty) {
-      await checkAndStoreLatestPrimeFirmware(
-        primeDevices.first.firmwareVersion,
-      );
+    for (final device in Devices().getPrimeDevices) {
+      await checkAndStoreLatestPrimeFirmware(device.firmwareVersion);
     }
   }
 
   Future<void> checkAndStoreLatestPrimeFirmware(
-    String? currentFirmwareVersion,
+    String currentFirmwareVersion,
   ) async {
-    if (currentFirmwareVersion == null) {
-      return;
-    }
-
+    final sanitized = sanitizeVersion(currentFirmwareVersion);
     final patches = await Server().fetchPrimePatches(currentFirmwareVersion);
 
-    // TODO: Check this against a live endpoint
     if (patches.isNotEmpty) {
       // Only consider stable (non-pre-release) patches for the red dot.
       // If the chain contains only beta versions, treat it as no update available.
@@ -68,19 +61,21 @@ class UpdatesManager {
           patches.where((p) => !isPreRelease(p.version)).toList();
 
       if (stablePatches.isNotEmpty) {
-        EnvoyStorage().addNewFirmware(
+        await EnvoyStorage().addNewFirmware(
           DeviceType.passportPrime.index,
           stablePatches.first.version,
           "",
+          currentVersion: sanitized,
         );
       }
-    }
-    // The update check returned no patches, which indicates no newer firmware is available.
-    else {
-      EnvoyStorage().addNewFirmware(
+      // Only beta patches — no stable update, leave existing entry alone.
+    } else {
+      // No patches: device is already on the latest the server serves.
+      await EnvoyStorage().addNewFirmware(
         DeviceType.passportPrime.index,
-        currentFirmwareVersion,
+        sanitized,
         "",
+        currentVersion: sanitized,
       );
     }
   }
@@ -285,7 +280,19 @@ class UpdatesManager {
   }
 
   Future<bool> shouldUpdate(String version, DeviceType type) async {
-    final parsedVersion = Version.parse(sanitizeVersion(version));
+    final sanitized = sanitizeVersion(version);
+    final parsedVersion = Version.parse(sanitized);
+
+    // Prime stores the latest version per current-version inside firmwareStore,
+    // since the server returns patches relative to the device's starting version.
+    if (type == DeviceType.passportPrime) {
+      final latestVersion =
+          await EnvoyStorage().getPrimeFirmwareLatestVersion(sanitized);
+      if (latestVersion == null) return false;
+      if (isPreRelease(latestVersion)) return false;
+      return Version.parse(sanitizeVersion(latestVersion)) > parsedVersion;
+    }
+
     final storedVersionString = await getStoredFirmwareVersionString(
       type.index,
     );

@@ -159,6 +159,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
             //clear coins selection when exiting RBF screen
             ref.read(coinSelectionFromWallet.notifier).reset();
             ref.read(coinSelectionStateProvider.notifier).reset();
+            ref.read(spendEditModeProvider.notifier).state =
+                SpendOverlayContext.hidden;
             clearSpendState(scope);
           },
           child: background(
@@ -464,8 +466,10 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
                 return route.settings is MaterialPage;
               });
               final providerScope = ProviderScope.containerOf(context);
-              clearSpendState(providerScope);
               providerScope.read(coinSelectionStateProvider.notifier).reset();
+              providerScope.read(spendEditModeProvider.notifier).state =
+                  SpendOverlayContext.hidden;
+              clearSpendState(providerScope);
               GoRouter.of(context).go(ROUTE_ACCOUNT_DETAIL);
             },
             type: ButtonType.primary,
@@ -836,7 +840,8 @@ class _RBFSpendScreenState extends ConsumerState<RBFSpendScreen> {
   //show edit coins screen,
   //if the user changed coin selection, recalculate the fee boundaries and rebuild the boosted tx
   Future<void> _editCoins(BuildContext context) async {
-    // nešto ovde
+    ref.read(spendEditModeProvider.notifier).state =
+        SpendOverlayContext.rbfSelection;
     final selectedAccount = ref.read(selectedAccountProvider);
 
     final account = ref.read(selectedAccountProvider);
