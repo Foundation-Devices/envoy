@@ -187,6 +187,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BitcoinTransaction dco_decode_box_autoadd_bitcoin_transaction(dynamic raw);
 
   @protected
+  bool dco_decode_box_autoadd_bool(dynamic raw);
+
+  @protected
   DraftTransaction dco_decode_box_autoadd_draft_transaction(dynamic raw);
 
   @protected
@@ -327,6 +330,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AddressType? dco_decode_opt_box_autoadd_address_type(dynamic raw);
+
+  @protected
+  bool? dco_decode_opt_box_autoadd_bool(dynamic raw);
 
   @protected
   PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw);
@@ -539,6 +545,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  bool sse_decode_box_autoadd_bool(SseDeserializer deserializer);
+
+  @protected
   DraftTransaction sse_decode_box_autoadd_draft_transaction(
       SseDeserializer deserializer);
 
@@ -693,6 +702,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   AddressType? sse_decode_opt_box_autoadd_address_type(
       SseDeserializer deserializer);
+
+  @protected
+  bool? sse_decode_opt_box_autoadd_bool(SseDeserializer deserializer);
 
   @protected
   PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer);
@@ -911,6 +923,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       BitcoinTransaction self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_bool(bool self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_draft_transaction(
       DraftTransaction self, SseSerializer serializer);
 
@@ -1075,6 +1090,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_address_type(
       AddressType? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_bool(bool? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_i_64(

@@ -8,7 +8,9 @@ import 'package:envoy/business/connectivity_manager.dart';
 import 'package:envoy/business/node_url.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
+import 'package:envoy/ui/components/pop_up.dart';
 import 'package:envoy/ui/components/text_field.dart';
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/widgets/scanner/decoders/generic_qr_decoder.dart';
 import 'package:envoy/ui/widgets/scanner/qr_scanner.dart';
@@ -212,27 +214,60 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
 
   void _tryGetServerFeatures(String address, bool useTor) async {
     final proxy = useTor ? "127.0.0.1:${Tor.instance.port}" : null;
-    const maxRetries = 3;
 
+    // First attempt: respect the per-server cert-validation setting.
+    final shouldValidate = Settings().validateDomain(address);
+    if (shouldValidate) {
+      try {
+        final validated = await getServerFeatures(
+          server: address,
+          proxy: proxy,
+          validateDomain: true,
+        );
+
+        if (validated.serverVersion != null && validated.genesisHash != null) {
+          _handleFeaturesSuccess(validated);
+          return;
+        }
+
+        if (validated.certError) {
+          // Cert validation failed – ask the user whether to proceed anyway
+          final proceed = await _showCertErrorDialog();
+          if (!proceed) {
+            ConnectivityManager().electrumFailure();
+            if (mounted) {
+              setState(() {
+                _state = ElectrumServerEntryState.invalid;
+                _isError = true;
+                _textBelow =
+                    "Certificate validation failed."; // TODO: add localazy
+              });
+            }
+            return;
+          }
+          // Persist the user's choice so future connections skip validation
+          Settings().addSkipCertValidation(address);
+        }
+      } catch (_) {}
+    }
+
+    // Connect without cert validation: either cert error accepted by user,
+    // or the validated attempt failed for a non-cert reason.
+    const maxRetries = 3;
     for (int attempt = 0; attempt <= maxRetries; attempt++) {
       try {
-        final features = await getServerFeatures(server: address, proxy: proxy);
+        final features = await getServerFeatures(
+          server: address,
+          proxy: proxy,
+          validateDomain: false,
+        );
 
         final isValid =
             features.serverVersion != null && features.genesisHash != null;
         if (isValid) {
-          ConnectivityManager().electrumSuccess();
-          if (mounted) {
-            setState(() {
-              _state = ElectrumServerEntryState.valid;
-              _isError = false;
-              _textBelow =
-                  "${S().privacy_node_connectedTo} ${features.serverVersion}";
-            });
-          }
+          _handleFeaturesSuccess(features);
           return;
         } else if (attempt == maxRetries) {
-          // Valid response structure but missing critical fields
           ConnectivityManager().electrumFailure();
           if (mounted) {
             setState(() {
@@ -259,9 +294,44 @@ class _ElectrumServerEntryState extends ConsumerState<ElectrumServerEntry> {
         }
       }
 
-      // Only delay if we're going to try again
       await Future.delayed(const Duration(seconds: 1));
     }
+  }
+
+  void _handleFeaturesSuccess(ServerFeatures features) {
+    ConnectivityManager().electrumSuccess();
+    if (mounted) {
+      setState(() {
+        _state = ElectrumServerEntryState.valid;
+        _isError = false;
+        _textBelow =
+            "${S().privacy_node_connectedTo} ${features.serverVersion}";
+      });
+    }
+  }
+
+  Future<bool> _showCertErrorDialog() async {
+    if (!mounted) return false;
+    final completer = Completer<bool>();
+    showEnvoyPopUp(
+      context,
+      S().privacy_invalidCertificateModal_content,
+      S().privacy_invalidCertificateModal_connectAnyway,
+      (ctx) {
+        Navigator.of(ctx).pop();
+        completer.complete(true);
+      },
+      title: S().privacy_invalidCertificateModal_header,
+      secondaryButtonLabel: S().component_back,
+      onSecondaryButtonTap: (ctx) {
+        Navigator.of(ctx).pop();
+        completer.complete(false);
+      },
+      icon: EnvoyIcons.info,
+      dismissible: false,
+      showCloseButton: false,
+    );
+    return completer.future;
   }
 
   Future<void> _checkEsploraServer(String address) async {

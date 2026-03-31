@@ -66,6 +66,7 @@ class BluetoothChannel {
   /// Get or create a device channel for the given device ID.
   /// This creates the device-specific channels if they don't exist.
   QLConnection getDeviceChannel(String deviceId, {bool reset = false}) {
+    kPrint("Requesting device channel for deviceId=$deviceId reset=$reset");
     if (reset) {
       _deviceChannels[deviceId]?.dispose();
       _deviceChannels.remove(deviceId);
@@ -225,15 +226,16 @@ class BluetoothChannel {
     kPrint("setupBle: obtaining device channel for $resolvedDeviceId");
     //on IOS we need to reset the channel to clear any previous state since,
     //this is required for state sync.
-    final deviceChannel =
-        getDeviceChannel(resolvedDeviceId, reset: Platform.isIOS);
+    final deviceChannel = getDeviceChannel(resolvedDeviceId, reset: true);
 
     bool initiateBonding = false;
     kPrint("setupBle: waiting for connected event on $resolvedDeviceId");
-    final connect = await deviceChannel.connectionEvents.firstWhere((event) {
+    await deviceChannel.getCurrentDeviceStatus();
+    DeviceStatus? deviceStatus;
+    deviceStatus = await deviceChannel.connectionEvents.firstWhere((event) {
       debugPrint("[$resolvedDeviceId] events $event");
       try {
-        if (event.connected &&
+        if (event.readyForWrite &&
             !initiateBonding &&
             !event.bonded &&
             Platform.isAndroid) {
@@ -254,12 +256,12 @@ class BluetoothChannel {
     }).timeout(
       Duration(seconds: 10),
       onTimeout: () {
-        throw BleSetupTimeoutException("Pairing timed out");
+        return deviceChannel.getCurrentDeviceStatus();
       },
     );
-    if (connect.connected) {
+    if (deviceStatus.connected == true) {
       kPrint(
-          "setupBle success: deviceId=$resolvedDeviceId connected=${connect.connected}");
+          "setupBle success: deviceId=$resolvedDeviceId connected=${deviceStatus.connected}");
       return deviceChannel;
     } else {
       throw BleSetupTimeoutException("Pairing timed out");

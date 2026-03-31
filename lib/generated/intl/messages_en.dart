@@ -72,7 +72,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "_": MessageLookupByLibrary.simpleMessage("a day ago"),
+        "_": MessageLookupByLibrary.simpleMessage(
+          "bc1q ar0s rrr7 xfkv y5l6 43ly dnw9 re59 gtzz wf5m dq",
+        ),
         "about_appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "about_openSourceLicences": MessageLookupByLibrary.simpleMessage(
           "Open Source Licences",
@@ -983,6 +985,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
           "Connecting to Passport",
         ),
+        "devices_connectionFailedModal_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Envoy could not connect to Passport Prime. Make sure your Passport Prime is powered on, Bluetooth is enabled, and it is not already connected to another device.",
+        ),
+        "devices_connectionFailedModal_header":
+            MessageLookupByLibrary.simpleMessage("Connection Failed"),
         "devices_empty_modal_video_cta1": MessageLookupByLibrary.simpleMessage(
           "Buy Passport",
         ),
@@ -991,6 +999,14 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "devices_empty_text_explainer": MessageLookupByLibrary.simpleMessage(
           "Secure your Bitcoin with Passport.",
+        ),
+        "devices_firmwareUpdateModal_content":
+            MessageLookupByLibrary.simpleMessage(
+          "Firmware updates for Passport Prime must be initiated on device. Go to Settings > Update.",
+        ),
+        "devices_firmwareUpdateModal_header":
+            MessageLookupByLibrary.simpleMessage(
+          "Begin on Passport Prime",
         ),
         "devices_reconnectedSuccess_content":
             MessageLookupByLibrary.simpleMessage(
@@ -1492,6 +1508,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "finish_connectedSuccess_header": MessageLookupByLibrary.simpleMessage(
           "Wallet Connected Successfully",
         ),
+        "firmware_connectionModalCancelUpdate_cancelUpdate":
+            MessageLookupByLibrary.simpleMessage("Cancel Update"),
+        "firmware_connectionModalCancelUpdate_content":
+            MessageLookupByLibrary.simpleMessage(
+          "This will cancel the firmware update. Passport Prime will remain on the current version.",
+        ),
+        "firmware_connectionModalCancelUpdate_header":
+            MessageLookupByLibrary.simpleMessage("Cancel Update?"),
         "firmware_downloadingUpdate_downloaded":
             MessageLookupByLibrary.simpleMessage("Update Downloaded"),
         "firmware_downloadingUpdate_header":
@@ -1769,13 +1793,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Re-connect QuantumLink"),
         "manage_deviceDetailsUnpairedModalWarning_content":
             MessageLookupByLibrary.simpleMessage(
-          "Passport\'s QuantumLink connection is no longer available. If you recently erased Passport or unpaired Envoy, this is expected. If you didn\'t, please contact support.\nEnvoy will now remove the device from your phone\'s Bluetooth accessory list.",
+          "Your Passport Prime {0} QuantumLink connection is no longer available. If you recently erased the device or unpaired Envoy, this is expected. If you didn\'t, contact support.\nEnvoy will remove this device from your phone\'s Bluetooth accessory list.",
         ),
         "manage_deviceDetailsUnpairedModalWarning_header":
             MessageLookupByLibrary.simpleMessage("QuantumLink Disconnected"),
         "manage_deviceDetailsUnpairedModal_content":
             MessageLookupByLibrary.simpleMessage(
-          "Passport Prime has been unpaired. Envoy will now remove the device from the Bluetooth accessory list of your phone.",
+          "Passport Prime {0} has been unpaired. Envoy will now remove the device from the Bluetooth accessory list of your phone.",
         ),
         "manage_deviceDetailsUnpairedModal_header":
             MessageLookupByLibrary.simpleMessage("Passport Unpaired"),
@@ -2223,6 +2247,12 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
         "onboarding_connectionModalAbort_header":
             MessageLookupByLibrary.simpleMessage("Exit Onboarding?"),
+        "onboarding_connectionModalExitOnboarding_content":
+            MessageLookupByLibrary.simpleMessage(
+          "This will erase all onboarding progress. You will need to start the Passport Prime setup from the beginning.",
+        ),
+        "onboarding_connectionModalExitOnboarding_header":
+            MessageLookupByLibrary.simpleMessage("Exit Onboarding?"),
         "onboarding_connectionNoUpdates_noUpdates":
             MessageLookupByLibrary.simpleMessage("No Updates Available"),
         "onboarding_connectionUpdatesAvailable_updatesAvailable":
@@ -2413,6 +2443,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacy_explorer_title": MessageLookupByLibrary.simpleMessage(
           "Block Explorer",
         ),
+        "privacy_invalidCertificateModal_connectAnyway":
+            MessageLookupByLibrary.simpleMessage("Connect Anyway"),
+        "privacy_invalidCertificateModal_content":
+            MessageLookupByLibrary.simpleMessage(
+          "This node has an invalid or self-signed certificate. Your connection may not be secure.\nDo you want to connect anyway?",
+        ),
+        "privacy_invalidCertificateModal_header":
+            MessageLookupByLibrary.simpleMessage("Invalid Certificate"),
         "privacy_node_configure": MessageLookupByLibrary.simpleMessage(
           "Improve your privacy by running your own node. Tap learn more above. ",
         ),
@@ -2504,11 +2542,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Use Taproot Address"),
         "receive_mobileWallet_multiplePassportContent":
             MessageLookupByLibrary.simpleMessage(
-          "Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account here.",
+          "Funds sent to this address can be spent using only your phone. To secure funds offline, choose a Passport account [[here]].",
         ),
         "receive_mobileWallet_singlePassportContent":
             MessageLookupByLibrary.simpleMessage(
-          "Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  tap here.",
+          "Funds sent to this address can be spent using only your phone. To secure funds offline with Passport  [[tap here]].",
         ),
         "receive_qr_code_heading":
             MessageLookupByLibrary.simpleMessage("RECEIVE"),

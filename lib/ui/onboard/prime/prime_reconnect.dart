@@ -88,7 +88,10 @@ class _PrimeReconnectState extends ConsumerState<PrimeReconnect> {
 
       _deviceListener = () {
         final primes = devices.getPrimeDevices;
-        if (primes.where((d) => d.bleId == targetBleId).isNotEmpty) {
+        if (primes
+            .where(
+                (d) => d.bleId == targetBleId || d.peripheralId == targetBleId)
+            .isNotEmpty) {
           foundDevice = true;
           kPrint("Device found with matching BLE ID: $targetBleId");
         }

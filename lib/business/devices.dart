@@ -203,7 +203,6 @@ class Devices extends ChangeNotifier {
           .where((id) => id.isNotEmpty)
           .toSet();
 
-      kPrint("Connecting to ${primes.length} primes");
       for (final device in primes) {
         final deviceId =
             Platform.isAndroid ? device.bleId : device.peripheralId;
@@ -331,15 +330,42 @@ class Devices extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteDevice(Device device) async {
+  Future<void> reorderDevices(List<String> serials) async {
+    devices.sort((a, b) {
+      final ai = serials.indexOf(a.serial);
+      final bi = serials.indexOf(b.serial);
+      // Devices not in the order list go to the end
+      if (ai == -1) return 1;
+      if (bi == -1) return -1;
+      return ai.compareTo(bi);
+    });
+    await storeDevices();
+    notifyListeners();
+  }
+
+  Future deleteDevice(Device device) async {
     if (device.type == DeviceType.passportPrime) {
       final qlConnection = device.qlConnection();
-      BluetoothChannel().removeDeviceChannel(qlConnection.deviceId);
       if (Platform.isIOS) {
-        final removed =
-            await BluetoothChannel().removeAccessory(qlConnection.deviceId);
-        if (removed) {
+        try {
+          final accessories = await BluetoothChannel().getAccessories();
+          final accessory = accessories.firstWhereOrNull(
+            (accessory) => accessory.peripheralId == qlConnection.deviceId,
+          );
+          if (accessory != null) {
+            final removed =
+                await BluetoothChannel().removeAccessory(qlConnection.deviceId);
+            if (removed) {
+              BluetoothChannel().removeDeviceChannel(qlConnection.deviceId);
+            } else {
+              //user denied accessory removal, due to the iOS Bluetooth permission prompt.
+              // we don't want to disconnect without removing the accessory first
+              return;
+            }
+          }
           await qlConnection.disconnect();
+        } catch (e) {
+          return;
         }
       } else if (Platform.isAndroid) {
         await qlConnection.disconnect();

@@ -22,7 +22,7 @@ appId: com.foundationdevices.envoy
 
 # delete anything before pasting
 - eraseText:
-    charactersToErase: 80
+      charactersToErase: 100
 
 # enter personal node
 - inputText: "ssl://mainnet-0.foundation.xyz:50002"
@@ -56,7 +56,9 @@ appId: com.foundationdevices.envoy
 # change back to Foundation default
 - tapOn: Personal Node
 
-- tapOn: Foundation (Default)
+- tapOn:
+      text: "Foundation (Default)"
+      index: 0
 
 # go back to home
 - tapOn: Accounts

@@ -63,8 +63,7 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
     }
 
     Future.delayed(const Duration(milliseconds: 10)).then((value) {
-      ref.read(homePageTitleProvider.notifier).state =
-          S().manage_account_address_heading;
+      ref.read(homePageTitleProvider.notifier).state = "";
       ref.read(homeShellOptionsProvider.notifier).state = null;
     });
   }
@@ -146,13 +145,6 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
           EnvoyBar(
             items: [
               EnvoyBarItem(
-                icon: EnvoyIcons.download,
-                text: S().receive_qr_copy,
-                onTap: () {
-                  // TODO: add "Download QR" code
-                },
-              ),
-              EnvoyBarItem(
                   icon: EnvoyIcons.copy,
                   text: S().receive_qr_copy,
                   onTap: () {
@@ -172,9 +164,15 @@ class _DescriptorCardState extends ConsumerState<DescriptorCard> {
                   icon: EnvoyIcons.externalLink,
                   text: S().receive_qr_share,
                   onTap: () {
-                    SharePlus.instance.share(ShareParams(
-                      text: descriptor,
-                    ));
+                    final box = context.findRenderObject() as RenderBox?;
+                    SharePlus.instance.share(
+                      ShareParams(
+                        text: descriptor,
+                        sharePositionOrigin: box == null
+                            ? null
+                            : box.localToGlobal(Offset.zero) & box.size,
+                      ),
+                    );
                   }),
             ],
           )

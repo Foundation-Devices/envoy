@@ -15,9 +15,19 @@ appId: com.foundationdevices.envoy
 
 # check the buttons
 - tapOn: DOCUMENTATION
-- tapOn: Back
+- pressKey: back
+- swipe:
+     start: "50%, 5%"
+     end: "50%, 5%"
+     duration: 3000
+
 - tapOn: COMMUNITY
-- tapOn: Back
+- pressKey: back
+- swipe:
+     start: "50%, 5%"
+     end: "50%, 5%"
+     duration: 3000
+
 - assertVisible: EMAIL # just check for the button
 
 # go back to home

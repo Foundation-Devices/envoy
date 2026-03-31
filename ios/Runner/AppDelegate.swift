@@ -19,6 +19,8 @@ private let primeSecretsFileName = "prime.secrets"
 
 private var folderAccessResult: FlutterResult? = nil
 
+private let appGroupID = "group.com.foundationdevices.envoy"
+
 func getSdCardBookmark() -> URL {
     let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
     return paths[0].appendingPathComponent("sd_card")
@@ -135,9 +137,18 @@ func getSdCardBookmark() -> URL {
         }
         
         GeneratedPluginRegistrant.register(with: self)
-            
+
         // Bluetooth channel is already initialized in the property declaration
-        
+
+        // Check for App Clip handoff data and navigate if present
+        if let handoffURL = checkAppClipHandoff() {
+            // Delay navigation slightly to ensure Flutter is ready
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                if let controller = self?.window?.rootViewController as? FlutterViewController {
+                    controller.engine.navigationChannel.invokeMethod("pushRoute", arguments: handoffURL.absoluteString)
+                }
+            }
+        }
 
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
@@ -306,10 +317,44 @@ func getSdCardBookmark() -> URL {
         return nil
     }
     
-    // keep your bundling stub (no changes)
-    public func dummyMethodToEnforceBundling() {
-        // This will never be called
-        ur_decoder()
-        tor_hello()
+
+    /// Check for data passed from App Clip via shared App Groups UserDefaults
+    /// Returns the deep link URL if handoff data exists, nil otherwise
+    private func checkAppClipHandoff() -> URL? {
+        
+        /// Clear App Clip handoff data from shared UserDefaults
+         func clearAppClipHandoffData() {
+            guard let defaults = UserDefaults(suiteName: appGroupID) else { return }
+
+            defaults.removeObject(forKey: "appClip_deepLinkURL")
+            defaults.removeObject(forKey: "appClip_timestamp")
+
+            defaults.synchronize()
+        }
+        
+        
+        guard let defaults = UserDefaults(suiteName: appGroupID) else {
+            return nil
+        }
+
+        // Check if there's handoff data from App Clip
+        guard let deepLinkString = defaults.string(forKey: "appClip_deepLinkURL"),
+              let timestamp = defaults.object(forKey: "appClip_timestamp") as? Date else {
+            return nil
+        }
+
+        // Only accept handoff data that's less than 6 hours old
+        let maxAge: TimeInterval = 6 * 60 * 60 // 6 hours
+        guard Date().timeIntervalSince(timestamp) < maxAge else {
+            // Clear stale handoff data
+            clearAppClipHandoffData()
+            return nil
+        }
+
+        // Clear handoff data after reading
+        clearAppClipHandoffData()
+
+        return URL(string: deepLinkString)
     }
+
 }

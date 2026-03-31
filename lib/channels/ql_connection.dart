@@ -12,6 +12,7 @@ import 'package:envoy/business/devices.dart';
 import 'package:envoy/channels/ble_status.dart';
 import 'package:envoy/channels/bluetooth_channel.dart';
 import 'package:envoy/ui/widgets/envoy_step_item.dart';
+import 'package:envoy/util/bug_report_helper.dart';
 import 'package:envoy/util/console.dart';
 import 'package:envoy/util/list_utils.dart';
 import 'package:envoy/util/ntp.dart';
@@ -180,6 +181,8 @@ class QLConnection with EnvoyMessageWriter {
           BluetoothConnectionEventType.deviceDisconnected) {
         _awaitingHeartbeatAfterConnect = false;
         qlHandler.heartbeatHandler.lastHeartbeat = null;
+        qlHandler.bleAccountHandler.resetSendingState();
+        _sendingExRate = false;
         _emitQLActiveIfChanged();
       }
       kPrint(
@@ -200,6 +203,11 @@ class QLConnection with EnvoyMessageWriter {
       kPrint("[$deviceId] Identity not set yet, skipping data handling");
       return;
     }
+    // debugIdentities(
+    //   message: "_handleData to device...",
+    //   identity: _qlIdentity!,
+    //   recipient: _recipientXid!,
+    // );
     final message = await _decode(data, _qlIdentity!);
     if (message != null) {
       _qlHandlers.dispatch(message);
@@ -229,13 +237,13 @@ class QLConnection with EnvoyMessageWriter {
 
   // send exchange rate history on ble connect.
   void onQLConnected() async {
-    kPrint("[$deviceId] QL Connected");
+    kPrint("[$deviceId] onQLConnected ");
     if (getDevice()?.onboardingComplete == true && !_sendingExRate) {
       try {
         _sendingExRate = true;
-        qlHandler.bleAccountHandler.sendExchangeRateHistory();
+        await qlHandler.bleAccountHandler.sendExchangeRateHistory();
         await Future.delayed(const Duration(seconds: 1));
-        qlHandler.bleAccountHandler.sendExchangeRate();
+        await qlHandler.bleAccountHandler.sendExchangeRate();
       } finally {
         _sendingExRate = false;
       }
@@ -387,13 +395,40 @@ class QLConnection with EnvoyMessageWriter {
   /// Cancel ongoing transfer for this device
   Future<bool> cancelTransfer() async {
     try {
-      final result = await _methodChannel.invokeMethod<bool>("cancelTransfer");
-      return result ?? false;
+      final result = await _methodChannel.invokeMethod<Map>("cancelTransfer");
+      return result?["cancelled"] ?? false;
     } catch (e, stack) {
       debugPrintStack(
         label: "[$deviceId] Error cancelling transfer: $e",
         stackTrace: stack,
       );
+      return false;
+    }
+  }
+
+  /// Request high BLE connection priority (Android only, no-op on iOS)
+  Future<bool> requestHighConnectionPriority() async {
+    if (!Platform.isAndroid) return false;
+    try {
+      final result =
+          await _methodChannel.invokeMethod<bool>('requestHighPriority');
+      return result ?? false;
+    } catch (e) {
+      debugPrint("[$deviceId] Error requesting high connection priority: $e");
+      return false;
+    }
+  }
+
+  /// Request balanced BLE connection priority (Android only, no-op on iOS)
+  Future<bool> requestBalancedConnectionPriority() async {
+    if (!Platform.isAndroid) return false;
+    try {
+      final result =
+          await _methodChannel.invokeMethod<bool>('requestBalancedPriority');
+      return result ?? false;
+    } catch (e) {
+      debugPrint(
+          "[$deviceId] Error requesting balanced connection priority: $e");
       return false;
     }
   }
@@ -432,21 +467,34 @@ class QLConnection with EnvoyMessageWriter {
 
   @override
   Future<bool> writeMessage(api.QuantumLinkMessage message) async {
-    final data = await encodeMessage(message: message);
-    kPrint("Encoded message! Size: ${data.length}");
-    if (Platform.isIOS || Platform.isAndroid) {
-      final success = await writeAll(data);
-      if (!success) {
-        kPrint(
-          "[$deviceId] BLE write failed for message type: ${message.runtimeType}",
+    return _serializeWrite(() async {
+      final data = await encodeMessage(message: message);
+      kPrint("Encoded message! Size: ${data.length}");
+      if (Platform.isIOS || Platform.isAndroid) {
+        final success = await writeAll(data);
+        if (!success) {
+          kPrint(
+            "[$deviceId] BLE write failed for message type: ${message.runtimeType}",
+          );
+        }
+        return success;
+      } else {
+        throw UnimplementedError(
+          "Bluetooth write not implemented for this platform",
         );
       }
-      return success;
-    } else {
-      throw UnimplementedError(
-        "Bluetooth write not implemented for this platform",
-      );
-    }
+    }).timeout(
+      const Duration(seconds: 10),
+      onTimeout: () {
+        EnvoyReport().log(
+          "QLConnection",
+          "Timeout writing message of type ${message.runtimeType} to device $deviceId",
+        );
+        kPrint(
+            "[$deviceId] Timeout writing message of type ${message.runtimeType}");
+        return false;
+      },
+    );
   }
 
   @override
@@ -456,6 +504,20 @@ class QLConnection with EnvoyMessageWriter {
     final data = await encodeMessage(message: message);
     await writeAll(data);
     return Stream.empty();
+  }
+
+  Future<void> _writeChain = Future.value();
+
+  Future<T> _serializeWrite<T>(Future<T> Function() op) {
+    final completer = Completer<T>();
+    _writeChain = _writeChain.then((_) async {
+      try {
+        completer.complete(await op());
+      } catch (e, st) {
+        completer.completeError(e, st);
+      }
+    });
+    return completer.future;
   }
 
   Future<List<Uint8List>> encodeMessage({
@@ -472,11 +534,7 @@ class QLConnection with EnvoyMessageWriter {
         "Sender XID not set for encoding message for device $deviceId",
       );
     }
-    try {
-      dateTime = await NTP.now(timeout: const Duration(seconds: 1));
-    } catch (e) {
-      kPrint("NTP error: $e");
-    }
+    dateTime = NTPUtil().dateTime;
     final timestampSeconds = (dateTime.millisecondsSinceEpoch ~/ 1000);
     kPrint("Encoding Message timestamp: $timestampSeconds");
 
@@ -498,6 +556,7 @@ class QLConnection with EnvoyMessageWriter {
   void dispose() {
     _deviceStatusSubscription?.cancel();
     _qlActivityMonitorTimer?.cancel();
+    _qlHandlers.dispose();
     _readController.close();
     _qlActiveController.close();
     _bleReadChannel.setMessageHandler(null);
@@ -514,11 +573,15 @@ class QLConnection with EnvoyMessageWriter {
     );
     //
     //reset onboarding state
-    qlHandler.bleOnboardHandler.reset();
-    qlHandler.bleOnboardHandler.updateBlePairState(
-      "Connecting to Prime",
-      EnvoyStepState.LOADING,
-    );
+    try {
+      qlHandler.bleOnboardHandler.reset();
+      qlHandler.bleOnboardHandler.updateBlePairState(
+        "Connecting to Prime",
+        EnvoyStepState.LOADING,
+      );
+    } catch (e) {
+      kPrint("Error resetting onboard handler during pairing: $e");
+    }
 
     kPrint("Pairing...");
     final xid = await api.serializeXid(quantumLinkIdentity: _qlIdentity!);
@@ -584,12 +647,7 @@ class QLConnection with EnvoyMessageWriter {
     required String filePath,
     required int chunkSize,
   }) async {
-    DateTime dateTime = DateTime.now();
-    try {
-      dateTime = await NTP.now(timeout: const Duration(seconds: 1));
-    } catch (e) {
-      kPrint("NTP error: $e");
-    }
+    final DateTime dateTime = NTPUtil().dateTime;
     if (_recipientXid == null) {
       throw Exception(
         "Recipient XID not set for encoding message for device $deviceId",

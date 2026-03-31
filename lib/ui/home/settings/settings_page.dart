@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import 'package:envoy/business/envoy_seed.dart';
 import 'package:envoy/business/settings.dart';
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/amount_entry.dart';
 import 'package:envoy/ui/components/pop_up.dart';
+import 'package:envoy/ui/home/settings/dev_options_page.dart';
 import 'package:envoy/ui/home/settings/fiat/settings_fiat_chooser.dart';
 import 'package:envoy/ui/home/settings/logs_report.dart';
 import 'package:envoy/ui/home/settings/setting_text.dart';
@@ -15,8 +15,6 @@ import 'package:envoy/ui/home/setup_overlay.dart';
 import 'package:envoy/ui/state/accounts_state.dart';
 import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
-import 'package:envoy/util/bug_report_helper.dart';
-import 'package:envoy/util/console.dart';
 import 'package:envoy/util/easing.dart';
 import 'package:envoy/util/envoy_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -25,9 +23,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/onboard/onboarding_page.dart';
-import 'package:envoy/ui/widgets/blur_dialog.dart';
 import 'package:envoy/ui/state/app_unit_state.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
@@ -186,9 +181,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ? GestureDetector(
                     onTap: () {
                       showDialog(
+                        fullscreenDialog: true,
                         context: context,
                         builder: (context) {
-                          return const _DevOptions();
+                          return const DevOptionsPage();
                         },
                       );
                     },
@@ -204,9 +200,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                 onTap: () {
                                   // TODO: FIGMA
                                   showDialog(
+                                    fullscreenDialog: true,
                                     context: context,
                                     builder: (context) {
-                                      return const _DevOptions();
+                                      return const DevOptionsPage();
                                     },
                                   );
                                 },
@@ -264,9 +261,20 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     s.setShowTestnetAccounts,
                     semanticsLabel: "Testnet Toggle",
                     onEnabled: () {
-                      showEnvoyDialog(
-                        context: context,
-                        dialog: const TestnetInfoModal(),
+                      showEnvoyPopUp(
+                        context,
+                        S().settings_advanced_enabled_testnet_modal_subheading,
+                        S().component_continue,
+                        (context) {
+                          Navigator.pop(context);
+                        },
+                        learnMoreText: S().component_learnMore,
+                        onLearnMore: () {
+                          launchUrlString(
+                            "https://www.youtube.com/watch?v=nRGFAHlYIeU",
+                          );
+                        },
+                        icon: EnvoyIcons.info,
                       );
                     },
                   ),
@@ -282,9 +290,18 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     s.setShowSignetAccounts,
                     semanticsLabel: "Signet Toggle",
                     onEnabled: () {
-                      showEnvoyDialog(
-                        context: context,
-                        dialog: const SignetInfoModal(),
+                      showEnvoyPopUp(
+                        context,
+                        S().settings_advanced_enabled_signet_modal_subheading,
+                        S().component_continue,
+                        (context) {
+                          Navigator.pop(context);
+                        },
+                        learnMoreText: S().component_learnMore,
+                        onLearnMore: () {
+                          launchUrlString("https://en.bitcoin.it/wiki/Signet");
+                        },
+                        icon: EnvoyIcons.info,
                       );
                     },
                   ),
@@ -441,280 +458,5 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       // If the xpub (pair.$2) is empty, this account lacks a taproot xpub
       return taprootDescriptor.$2.isEmpty;
     });
-  }
-}
-
-class _DevOptions extends ConsumerWidget {
-  const _DevOptions();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    bool loading = false;
-    return AlertDialog(
-      backgroundColor: Colors.white,
-      title: const Text("Developer options"),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextButton(
-            onPressed: () {
-              EnvoyStorage().clearDismissedStatesStore();
-              Navigator.pop(context);
-            },
-            child: const Text("Clear Prompt states"),
-          ),
-          TextButton(
-            onPressed: () {
-              EnvoyStorage().clearPendingStore();
-              Navigator.pop(context);
-            },
-            child: const Text("Clear Azteco states"),
-          ),
-          TextButton(
-            onPressed: () {
-              EnvoyReport().clearAll();
-              Navigator.pop(context);
-            },
-            child: const Text("Clear Envoy Logs"),
-          ),
-          TextButton(
-            onPressed: () {
-              EnvoyStorage().clear();
-              Navigator.pop(context);
-            },
-            child: const Text("Clear Envoy Preferences"),
-          ),
-          StatefulBuilder(
-            builder: (context, setState) {
-              if (loading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              return TextButton(
-                onPressed: () async {
-                  final navigator = Navigator.of(context);
-                  try {
-                    setState(() {
-                      loading = true;
-                    });
-                    await EnvoySeed().delete();
-                    setState(() {
-                      loading = false;
-                    });
-                    navigator.pop();
-                  } catch (e) {
-                    setState(() {
-                      loading = false;
-                    });
-                    navigator.pop();
-                    kPrint(e);
-                  }
-                },
-                child: const Text("Wipe Envoy Wallet"),
-              );
-            },
-          ),
-          TextButton(
-            onPressed: () {
-              Settings().skipPrimeSecurityCheck = true;
-              Navigator.pop(context);
-            },
-            child: const Text("Skip Prime security check"),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class TestnetInfoModal extends StatelessWidget {
-  const TestnetInfoModal({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    var textStyle = Theme.of(
-      context,
-    ).textTheme.bodyMedium?.copyWith(fontSize: 13);
-
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.75,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Semantics(
-                identifier: "settings_close",
-                child: IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 36),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/exclamation_icon.png",
-                  height: 60,
-                  width: 60,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 18.0),
-                  child: Text(
-                    S().settings_advanced_enabled_testnet_modal_subheading,
-                    textAlign: TextAlign.center,
-                    style: textStyle,
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.all(4)),
-                Padding(
-                  padding: const EdgeInsets.only(top: 18.0),
-                  child: LinkText(
-                    text: S().settings_advanced_enabled_testnet_modal_link,
-                    textStyle: textStyle,
-                    linkStyle: EnvoyTypography.button.copyWith(
-                      color: EnvoyColors.accentPrimary,
-                    ),
-                    onTap: () {
-                      launchUrlString(
-                        "https://www.youtube.com/watch?v=nRGFAHlYIeU",
-                      );
-                    },
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.all(4)),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 28),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: EnvoyButton(
-                    S().component_continue,
-                    type: EnvoyButtonTypes.primaryModal,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SignetInfoModal extends StatelessWidget {
-  const SignetInfoModal({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    var textStyle = Theme.of(
-      context,
-    ).textTheme.bodyMedium?.copyWith(fontSize: 13);
-
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.75,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Semantics(
-                container: true,
-                identifier: "signet_modal_close",
-                child: IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 36),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/exclamation_icon.png",
-                  height: 60,
-                  width: 60,
-                ),
-                Semantics(
-                  container: true,
-                  identifier: "signet_modal_subheading",
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 18.0),
-                    child: Text(
-                      S().settings_advanced_enabled_signet_modal_subheading,
-                      textAlign: TextAlign.center,
-                      style: textStyle,
-                    ),
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.all(4)),
-                Semantics(
-                  container: true,
-                  identifier: "signet_modal_link",
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 18.0),
-                    child: LinkText(
-                      text: S().settings_advanced_enabled_signet_modal_link,
-                      textStyle: textStyle,
-                      linkStyle: EnvoyTypography.button.copyWith(
-                        color: EnvoyColors.accentPrimary,
-                      ),
-                      onTap: () {
-                        launchUrlString("https://en.bitcoin.it/wiki/Signet");
-                      },
-                    ),
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.all(4)),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 28),
-            child: Column(
-              children: [
-                Semantics(
-                  container: true,
-                  identifier: "signet_modal_continue",
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: EnvoyButton(
-                      S().component_continue,
-                      type: EnvoyButtonTypes.primaryModal,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

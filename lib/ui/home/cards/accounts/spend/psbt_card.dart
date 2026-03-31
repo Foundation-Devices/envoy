@@ -4,12 +4,18 @@
 
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:envoy/generated/l10n.dart';
 import 'package:envoy/ui/animated_qr_image.dart';
 import 'package:envoy/ui/components/envoy_scaffold.dart';
+import 'package:envoy/ui/components/step_indicator.dart';
+import 'package:envoy/ui/envoy_button.dart';
 import 'package:envoy/ui/home/cards/accounts/accounts_state.dart';
+import 'package:envoy/ui/routes/accounts_router.dart';
+import 'package:envoy/ui/routes/routes.dart';
 import 'package:envoy/ui/shield_path.dart';
 import 'package:envoy/ui/theme/envoy_colors.dart' as envoy_colors;
+import 'package:envoy/ui/theme/envoy_icons.dart';
 import 'package:envoy/ui/theme/envoy_spacing.dart';
 import 'package:envoy/ui/theme/envoy_typography.dart';
 import 'package:envoy/ui/theme/new_envoy_color.dart';
@@ -18,11 +24,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ngwallet/ngwallet.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:envoy/ui/theme/envoy_icons.dart';
-import 'package:envoy/ui/components/step_indicator.dart';
-import 'package:envoy/ui/envoy_button.dart';
-import 'package:envoy/ui/routes/accounts_router.dart';
-import 'package:envoy/ui/routes/routes.dart';
 
 enum _QrDensity { low, medium, high }
 
@@ -176,12 +177,15 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
                       child: Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                                width: 1,
-                                color: envoy_colors.EnvoyColors.border2),
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(EnvoySpacing.medium1))),
+                          color: Colors.white,
+                          border: Border.all(
+                            width: 1,
+                            color: envoy_colors.EnvoyColors.border2,
+                          ),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(EnvoySpacing.medium1),
+                          ),
+                        ),
                         child: AspectRatio(
                           aspectRatio: 1.0,
                           child: Align(
@@ -220,9 +224,15 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
                     EnvoyButton(
                       S().send_QrScan_saveToFile,
                       onTap: () {
-                        SharePlus.instance.share(ShareParams(
-                          text: base64Encode(widget.transaction.psbt),
-                        ));
+                        final box = context.findRenderObject() as RenderBox?;
+                        SharePlus.instance.share(
+                          ShareParams(
+                            text: base64Encode(widget.transaction.psbt),
+                            sharePositionOrigin: box == null
+                                ? null
+                                : box.localToGlobal(Offset.zero) & box.size,
+                          ),
+                        );
                       },
                       type: EnvoyButtonTypes.tertiary,
                       leading: EnvoyIcon(
@@ -246,10 +256,9 @@ class _PsbtCardState extends ConsumerState<PsbtCard> {
                       enabled: !isDisabled,
                       onTap: () {
                         GoRouter.of(context).pushNamed(
-                            widget.rbfFlow
-                                ? PSBT_SCAN_QR
-                                : ACCOUNT_SEND_SCAN_QR,
-                            extra: widget.transaction);
+                          widget.rbfFlow ? PSBT_SCAN_QR : ACCOUNT_SEND_SCAN_QR,
+                          extra: widget.transaction,
+                        );
                       },
                     ),
                   ],

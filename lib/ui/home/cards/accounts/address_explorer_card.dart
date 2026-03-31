@@ -491,12 +491,16 @@ class AddressSearchEntry extends StatefulWidget {
   final TextEditingController controller;
   final Function(String) onChanged;
   final EnvoyIcons? icon;
+  final Function()? onIconTap;
+  final Color? iconColor;
 
   const AddressSearchEntry({
     super.key,
     required this.controller,
     required this.onChanged,
     this.icon,
+    this.onIconTap,
+    this.iconColor,
   });
 
   @override
@@ -522,12 +526,19 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (widget.icon != null)
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: _verticalPadding),
-                    child: EnvoyIcon(
-                      widget.icon!,
-                      size: EnvoyIconSize.extraSmall,
-                      color: EnvoyColors.textTertiary,
+                  GestureDetector(
+                    onTap: () {
+                      if (widget.onIconTap != null) {
+                        widget.onIconTap!();
+                      }
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: _verticalPadding),
+                      child: EnvoyIcon(
+                        widget.icon!,
+                        size: EnvoyIconSize.extraSmall,
+                        color: widget.iconColor ?? EnvoyColors.textTertiary,
+                      ),
                     ),
                   ),
 
@@ -548,9 +559,11 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
                     child: TextField(
                       controller: widget.controller,
                       style: EnvoyTypography.body,
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.multiline,
+                      minLines: 1,
+                      maxLines: null,
                       onChanged: (value) {
-                        widget.onChanged(value);
+                        widget.onChanged(value.replaceAll(' ', ''));
                         setState(() {});
                       },
                       decoration: InputDecoration(
@@ -603,10 +616,11 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
                           await Clipboard.getData(Clipboard.kTextPlain);
                       String? text = cdata?.text;
                       if (text != null) {
+                        final raw = text.replaceAll(' ', '');
                         setState(() {
-                          widget.controller.text = text;
+                          widget.controller.text = _formatAddressChunked(raw);
                         });
-                        widget.onChanged(text);
+                        widget.onChanged(raw);
                       }
                     },
                   ),
@@ -643,10 +657,12 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
                         decoder: GenericQrDecoder(
                           onScan: (code) {
                             Navigator.of(context, rootNavigator: true).pop();
+                            final raw = code.replaceAll(' ', '');
                             setState(() {
-                              widget.controller.text = code;
+                              widget.controller.text =
+                                  _formatAddressChunked(raw);
                             });
-                            widget.onChanged(code);
+                            widget.onChanged(raw);
                           },
                         ),
                       );
@@ -658,6 +674,17 @@ class _AddressSearchEntryState extends State<AddressSearchEntry> {
         ),
       ),
     );
+  }
+
+  String _formatAddressChunked(String address) {
+    final buffer = StringBuffer();
+    for (int i = 0; i < address.length; i++) {
+      buffer.write(address[i]);
+      if ((i + 1) % 4 == 0 && i != address.length - 1) {
+        buffer.write(' ');
+      }
+    }
+    return buffer.toString();
   }
 }
 
@@ -700,12 +727,13 @@ class _AddressListItem extends StatelessWidget {
             // Index
             Text(
               "${addressInfo.index}:",
-              style: EnvoyTypography.body.copyWith(
-                color: isHighlighted
-                    ? NewEnvoyColor.contentNotice
-                    : EnvoyColors.textSecondary,
-                fontWeight: FontWeight.w500,
-              ),
+              style: EnvoyTypography.body
+                  .copyWith(
+                    color: isHighlighted
+                        ? NewEnvoyColor.contentNotice
+                        : NewEnvoyColor.contentTertiary,
+                  )
+                  .setWeight(FontWeight.w500),
             ),
             const SizedBox(width: EnvoySpacing.small),
 
@@ -713,11 +741,13 @@ class _AddressListItem extends StatelessWidget {
             Expanded(
               child: Text(
                 _formatAddress(addressInfo.address),
-                style: EnvoyTypography.body.copyWith(
-                  color: isHighlighted
-                      ? NewEnvoyColor.contentNotice
-                      : EnvoyColors.textPrimary,
-                ),
+                style: EnvoyTypography.body
+                    .copyWith(
+                      color: isHighlighted
+                          ? NewEnvoyColor.contentNotice
+                          : NewEnvoyColor.contentPrimary,
+                    )
+                    .setWeight(FontWeight.w500),
               ),
             ),
 
@@ -726,6 +756,9 @@ class _AddressListItem extends StatelessWidget {
               account: account,
               amountSats: addressInfo.balanceSats,
               amountWidgetStyle: AmountWidgetStyle.normal,
+              colorOverride: addressInfo.balanceSats == 0
+                  ? NewEnvoyColor.contentDisabled
+                  : null,
             ),
           ],
         ),
@@ -735,7 +768,11 @@ class _AddressListItem extends StatelessWidget {
 
   String _formatAddress(String address) {
     if (address.length <= 20) return address;
-    return "${address.substring(0, 8)} ... ${address.substring(address.length - 8)}";
+    final start = address.substring(0, 8);
+    final end = address.substring(address.length - 8);
+    final startChunked = "${start.substring(0, 4)} ${start.substring(4)}";
+    final endChunked = "${end.substring(0, 4)} ${end.substring(4)}";
+    return "$startChunked ... $endChunked";
   }
 }
 

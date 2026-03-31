@@ -21,18 +21,21 @@ appId: com.foundationdevices.envoy
 # delete anything from the field before testing
 - tapOn: Enter your node address
 - eraseText:
-    charactersToErase: 80
-- eraseText:
-    charactersToErase: 80
+      charactersToErase: 100
 
 ################## check for 50002
 # enter node
 - inputText: "mainnet-0.foundation.xyz:50002"
 
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
+
 # check if it connects
 - extendedWaitUntil:
-    visible: "Connected to Fulcrum 1.11.1"
-    timeout: 180000 # wait for 3 min
+      visible: "Connected to Fulcrum 1.11.1"
+      timeout: 300000 # wait for 5 min
 
 # check if the "ssl://" prefix shows up
 - assertVisible: ssl://mainnet-0.foundation.xyz:50002
@@ -40,18 +43,21 @@ appId: com.foundationdevices.envoy
 # delete the input
 - tapOn: Enter your node address
 - eraseText:
-    charactersToErase: 80
-- eraseText:
-    charactersToErase: 80
+      charactersToErase: 100
 
 ##################
 # enter node
 - inputText: "192.168.xxx.xxx:50002"
 
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
+
 # check if it does not connect
 - extendedWaitUntil:
-    visible: "Couldn't reach node."
-    timeout: 180000 # wait for 3 min
+      visible: "Couldn't reach node."
+      timeout: 300000 # wait for 5 min
 
 # check if the "ssl://" prefix shows up
 - assertVisible: ssl://192.168.xxx.xxx:50002
@@ -59,18 +65,21 @@ appId: com.foundationdevices.envoy
 # delete the input
 - tapOn: Enter your node address
 - eraseText:
-    charactersToErase: 80
-- eraseText:
-    charactersToErase: 80
+      charactersToErase: 100
 
 ################## check for 50001
 # enter node
 - inputText: "mainnet-0.foundation.xyz:50001"
 
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
+
 # check if it connects
 - extendedWaitUntil:
-    visible: "Connected to Fulcrum 1.11.1"
-    timeout: 180000 # wait for 3 min
+      visible: "Connected to Fulcrum 1.11.1"
+      timeout: 300000 # wait for 5 min
 
 # check if the "tcp://" prefix shows up
 - assertVisible: tcp://mainnet-0.foundation.xyz:50001
@@ -78,18 +87,21 @@ appId: com.foundationdevices.envoy
 # delete the input
 - tapOn: Enter your node address
 - eraseText:
-    charactersToErase: 80
-- eraseText:
-    charactersToErase: 80
+      charactersToErase: 100
 
 ##################
 # enter node
 - inputText: "192.168.xxx.xxx:50001"
 
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
+
 # check if it does not connect
 - extendedWaitUntil:
-    visible: "Couldn't reach node."
-    timeout: 180000 # wait for 3 min
+      visible: "Couldn't reach node."
+      timeout: 300000 # wait for 5 min
 
 # check if the "tcp://" prefix shows up
 - assertVisible: tcp://192.168.xxx.xxx:50001
@@ -97,20 +109,23 @@ appId: com.foundationdevices.envoy
 # delete the input
 - tapOn: Enter your node address
 - eraseText:
-    charactersToErase: 80
-- eraseText:
-    charactersToErase: 80
+      charactersToErase: 100
 
 # Now do all the tests again if there is a :t / :s at the end ///////////////////
 
-################## check for 50002:t
+################## check for 50002:s
 # enter node
 - inputText: "mainnet-0.foundation.xyz:50002:s"
 
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
+
 # check if it connects
 - extendedWaitUntil:
-    visible: "Connected to Fulcrum 1.11.1"
-    timeout: 180000 # wait for 3 min
+      visible: "Connected to Fulcrum 1.11.1"
+      timeout: 300000 # wait for 5 min
 
 # check if the "ssl://" prefix shows up
 - assertVisible: ssl://mainnet-0.foundation.xyz:50002
@@ -118,18 +133,21 @@ appId: com.foundationdevices.envoy
 # delete the input
 - tapOn: Enter your node address
 - eraseText:
-    charactersToErase: 80
-- eraseText:
-    charactersToErase: 80
+      charactersToErase: 100
 
 ##################
 # enter node
 - inputText: "192.168.xxx.xxx:50002:s"
 
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
+
 # check if it does not connect
 - extendedWaitUntil:
-    visible: "Couldn't reach node."
-    timeout: 180000 # wait for 3 min
+      visible: "Couldn't reach node."
+      timeout: 300000 # wait for 5 min
 
 # check if the "ssl://" prefix shows up
 - assertVisible: ssl://192.168.xxx.xxx:50002
@@ -137,18 +155,21 @@ appId: com.foundationdevices.envoy
 # delete the input
 - tapOn: Enter your node address
 - eraseText:
-    charactersToErase: 80
-- eraseText:
-    charactersToErase: 80
+      charactersToErase: 100
 
 ################## check for 50001:t
 # enter node
 - inputText: "mainnet-0.foundation.xyz:50001:t"
 
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
+
 # check if it connects
 - extendedWaitUntil:
-    visible: "Connected to Fulcrum 1.11.1"
-    timeout: 180000 # wait for 3 min
+      visible: "Connected to Fulcrum 1.11.1"
+      timeout: 300000 # wait for 5 min
 
 # check if the "tcp://" prefix shows up
 - assertVisible: tcp://mainnet-0.foundation.xyz:50001
@@ -156,18 +177,21 @@ appId: com.foundationdevices.envoy
 # delete the input
 - tapOn: Enter your node address
 - eraseText:
-    charactersToErase: 80
-- eraseText:
-    charactersToErase: 80
+      charactersToErase: 100
 
 ##################
 # enter node
 - inputText: "192.168.xxx.xxx:50001:t"
 
+# wait for loading to finish
+- extendedWaitUntil:
+      notVisible: "Loading"
+      timeout: 300000 # wait for 5 min
+
 # check if it does not connect
 - extendedWaitUntil:
-    visible: "Couldn't reach node."
-    timeout: 180000 # wait for 3 min
+      visible: "Couldn't reach node."
+      timeout: 300000 # wait for 5 min
 
 # check if the "tcp://" prefix shows up
 - assertVisible: tcp://192.168.xxx.xxx:50001
@@ -175,13 +199,14 @@ appId: com.foundationdevices.envoy
 # delete the input
 - tapOn: Enter your node address
 - eraseText:
-    charactersToErase: 80
-- eraseText:
-    charactersToErase: 80
+      charactersToErase: 100
 
 # change back to Foundation default
 - tapOn: Personal Node
-- tapOn: Foundation (Default)
+
+- tapOn:
+      text: "Foundation (Default)"
+      index: 0
 
 # go home
 - tapOn: Accounts
