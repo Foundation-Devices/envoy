@@ -35,6 +35,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.FileInputStream
+import java.util.Locale
 import java.util.UUID
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -366,13 +367,12 @@ class BluetoothChannel(
             Log.w(TAG, "No ongoing scan to stop: ${e.message}")
         }
 
-        // Build scan filters
-        var scanFilters = knownPrimeDevicesMAC.map { bleMac ->
+        var scanFilters = knownPrimeDevicesMAC.mapNotNull { bleMac ->
             ScanFilter.Builder()
                 .setDeviceAddress(bleMac)
-                .setServiceUuid(ParcelUuid(PRIME_SERVICE_UUID))
                 .build()
         }
+
 
         if (scanFilters.isEmpty()) {
             scanFilters = listOf(
