@@ -154,7 +154,7 @@ class NgAccountManager extends ChangeNotifier {
     sortByAccountOrder(_accountsHandler, order, (e) => e.$1.id);
     await deriveMissingTypes();
 
-    setTaprootEnabled(Settings().taprootEnabled());
+    await setTaprootEnabled(Settings().taprootEnabled());
 
     _accountsOrder.sink.add(order);
 
@@ -400,7 +400,7 @@ class NgAccountManager extends ChangeNotifier {
     return "${deviceSerial}_${network.toLowerCase()}_${fingerprint.toLowerCase()}_acc_$number";
   }
 
-  void setTaprootEnabled(bool taprootEnabled) async {
+  Future<void> setTaprootEnabled(bool taprootEnabled) async {
     for (var handler in handlers) {
       try {
         //if wallets contains taproot and p2wpkh, then set the preferred address type
