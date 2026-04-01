@@ -93,6 +93,7 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   await LocalStorage.init();
   await RiveNative.init();
   NgAccountManager.init();
+  await Settings.restore();
 
   if (!(await MigrationManager().isMigrationRequired())) {
     kPrint("Restoring accounts");
@@ -100,7 +101,6 @@ Future<void> initSingletons({bool integrationTestsRunning = false}) async {
   }
   await NTPUtil.init();
   await EnvoyScheduler.init();
-  await Settings.restore();
   await ExchangeRate.init();
 
   EnvoyReport().init();
